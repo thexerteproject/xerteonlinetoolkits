@@ -1,0 +1,11 @@
+.menu_holder{
+	margin:20px 20px;
+}
+
+.menu_button{
+	width:45%; 
+	ext-align:center; 
+	float:left; 
+	position:relative; 
+	padding:5px
+}
