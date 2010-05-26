@@ -25,7 +25,7 @@
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
 
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
-      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
 
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
 
@@ -36,6 +36,9 @@
       <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true">CDATA</customHotspots>]]></customHotspots>
       <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" tip="Enter a tooltip for the image"/>]]></hotspotImage>
       <mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"/>]]></mcq>
+
+      <list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list>
+
       <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" label="Check" feedback="Enter the Feedback" align="Left" panelWidth="Medium"/>]]></buttonQuestion>
 
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
@@ -50,7 +53,7 @@
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate>
       <jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing>
-      <iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie"/>]]></iSpring>
+      <iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring>
       <flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper>
       <textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF>
       <videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch>
@@ -216,6 +219,7 @@
 
     <name type="TextInput" label="Page Title"/>
     <url type="Media" label="ISpring Movie"/>
+    <version type="ComboBox" options="Free,Pro" label="Version" width="100"/>
 
   </iSpring>
 
@@ -271,6 +275,19 @@
 
   </mcq>
 
+  <!--INTERACTIVE LIST----------------------------------------------------------------->
+  <list menu="Interactivity" menuItem="Interactive List" icon="icList" remove="true" thumb="thumbs/list.jpg" hint="Presents an interactive list.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Page Text" height="200"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the list item"/>]]></nestedPage>
+    </newNodes>
+
+  </list>
+
   
   <!--DRAG DROP LABEL INTERACTION------------------------------------------------------>
   <dragDropLabel menu="Interactivity" menuItem = "Drag and Drop Labelling" icon="icTagBlue" remove="true" thumb="thumbs/labelling.jpg" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region.">
@@ -280,7 +297,7 @@
     <url type="media" label="Image"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <tip type="TextInput" label="Image Tooltip"/>
-
+    <highlightColour type="ColourPicker" label="Highlight Colour"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
