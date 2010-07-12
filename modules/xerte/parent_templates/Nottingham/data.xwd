@@ -50,6 +50,7 @@
       <columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage>
 
 
+      <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="Medium"/>]]></links>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate>
       <jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing>
@@ -57,6 +58,9 @@
       <flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper>
       <textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF>
       <videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch>
+      
+      <morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" url2="Select Image" zoomSpeed="3"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages>
+      
       <imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image">Enter text for the page here</imageViewer>]]></imageViewer>    
       <transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader>
       <audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow>
@@ -91,6 +95,18 @@
   </buttonNav>
 
 
+  <!--MORPH IMAGES-------------------------------------------------------------------------->
+  <morphImages menu="Media" menuItem="Morph Images" icon="icZoomIn" remove="true" thumb="thumbs/morphImages.jpg" hint="Allows one image to morph into another">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="media" label="Image One" optional="true"/>
+    <url2 type="media" label="Image Two" optional="true"/>
+    <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1"/>
+
+  </morphImages>
+
+
   <!--SLIDESHOW------------------------------------------------------------------------------>
   <slideshow menu="Navigators" menuItem="Slideshow" icon="icPages" remove="true" thumb="thumbs/slideNav.jpg" hint="Presents a sequence of pages of related text and graphical content navigated with two arrow controls." sortChildren="true">
     <name type="TextInput" label="Page Title"/>
@@ -104,6 +120,28 @@
     </newNodes>
 
   </slideshow>
+
+
+  <!--LINKS PAGE------------------------------------------------------------------------------>
+  <links menu="Navigators" meunItem="Hyperlinks" icon="icWorld" remove="true" thumb="thumbs/links.jpg" hint="The links apge page allows you to easily assemble a page of keyboard accessible links">
+    
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="100" label="Page Title"/>
+    <cols type="NumericStepper" min="1" max="5" step="1" label="Number of Columns"/>
+    <height type="ComboBox" options="Small,Medium,Large" data="55,80,105" step="1" label="Link Height" width="100"/>
+
+    <newNodes>
+      <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL"/>]]></link>
+    </newNodes>
+
+  </links>
+
+  <link icon="icTagGreen">
+    <name type="TextInput" label="Link Title"/>
+    <text type="TextArea" height="100" label="Link Description"/>
+    <url type="TextInput" label="URL"/>
+    <image type="media" label="Image" optional="true"/>
+  </link>
   
 
   <!--ACCORDION NAVIGATOR------------------------------------------------------------------->
