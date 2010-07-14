@@ -1,4 +1,4 @@
-﻿<wizard menus="Text,Media,Interactivity,Misc">
+﻿<wizard menus="Text,Media,Interactivity,Games,Misc">
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
@@ -11,16 +11,21 @@
 
     <newNodes>
 
+      <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
+
       <rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left" showMedia="false"/>]]></rss>
       <translation><![CDATA[<translation name="Enter the Title" instruction="Enter Instructions" showMedia="false"/>]]></translation>
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here" showMedia="false"/>]]></quiz>
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" showMedia="false"/>]]></dialog>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" showMedia="false"/>]]></gapFill>
+
+      <reconstruct><![CDATA[<reconstruct name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here." feedback="Enter feedback here" showMedia="false"/>]]></reconstruct>
+
       <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" showMedia="false"/>]]></categories>
       <order><![CDATA[<order name="Enter Title" instructions="Provide instructions here" showMedia="false"/>]]></order>
       <dictation><![CDATA[<dictation name="Enter Title" instructions="Provide instructions here" feedback="Provide feedback here" showMedia="false"/>]]></dictation>
       <textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" showMedia="false"/>]]></textMatch>
-      <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" answer="Provide a model answer here" showMedia="false"/>]]></modify>
+      <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here" showMedia="false"/>]]></modify>
       <mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium" showMedia="false"/>]]></mcq>
       <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" label="Check" feedback="Enter the Feedback" align="Left" panelWidth="Medium" showMedia="false"/>]]></buttonQuestion>
       <reading><![CDATA[<reading name="Enter Title" instructions="Provide instructions here" feedback="Provide Feedback Here" showMedia="false"/>]]></reading>
@@ -39,12 +44,21 @@
 
   </learningObject>
 
+
+  <!--HANGMAN------------------------------------------------------------>
+  <hangman menu="Games" menuITem="Hangman" icon="icPageWhite" remove="true" thumb="thumbs/hangman.jpg" hint="A Hangman game. Create a list of words for the learner to work out.">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Instructions" height="100"/>
+    <words type="TextArea" label="Words" height="100"/>
+  </hangman>
+
   <!--TRANSLATOR------------------------------------------------------------>
-  <translation menu="Interactivity" menuItem="Translation" icon="icComment" remove="true" thumb="thumbs/stimulus.jpg" hint="Poses a stimulating question to the learner, with feedback available through a button.">
+  <translation menu="Interactivity" menuItem="Translation" icon="icComment" remove="true" thumb="thumbs/translation.jpg" hint="A tool allowing users to translate text from language to another using machine translation.">
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </translation>
 
@@ -58,6 +72,7 @@
     <showMedia type="CheckBox" label="Show Media"/>
 
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
    </buttonQuestion>
 
@@ -67,9 +82,11 @@
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
     <text type="TextArea" label="Initial Text" height="100"/>
+    <prompt type="TextArea" label="Answer Prompt" height="100"/>
     <answer type="TextArea" label="Model Answer" height="100"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
   </modify>
   
 
@@ -81,6 +98,7 @@
     <type type="ComboBox" options="Single Answer,Multiple Answer" width="120" label="Question Type"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <newNodes>
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
@@ -95,6 +113,7 @@
     <feedback type="textArea" height="50" label="Feedback"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
     
     <newNodes>
       <category><![CDATA[<category name="category name"/>]]></category>
@@ -126,6 +145,7 @@
     <attempts type="ComboBox" width="100" options="1,2,3,4" label="Attempts before hint"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <newNodes>
       <dialogStep><![CDATA[<dialogStep name="question" question="Write your question here." answer="Enter Answer" hint="Enter a hint"/>]]></dialogStep>
@@ -141,6 +161,7 @@
     <hint type="TextInput" label="Hint"/> 
 
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </dialogStep>
 
@@ -152,9 +173,10 @@
     <text type="TextArea" height="100" label="Instructions"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <newNodes>
-      <sentence><![CDATA[<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here"/>]]></sentence>
+      <sentence><![CDATA[<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint"/>]]></sentence>
     </newNodes>
 
   </textMatch>
@@ -162,12 +184,14 @@
   <sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
     <name type="TextInput" label="Name"/>
     <p1 type="TextArea" height="50" label="Part 1"/>
+    <hint type="TextArea" height="50" label="Hint"/>
     <p2 type="TextArea" height="50" label="Part 2"/>
   </sentence>
 
 
   <!--GAP FILL INTERACTION-------------------------------------------------------->
   <gapFill menu="Interactivity" menuItem="Gap Fill Exercise" icon="icTextEntry" remove="true" thumb="thumbs/gapFill.jpg" hint="An interaction for creating a drag-and-drop or fill-in-the-blank gap-fill exercise.">
+
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="100" label="Introductory Text"/>
     <passage type="TextArea" height="150" label="Gap Fill Text"/>
@@ -175,8 +199,24 @@
     <feedback type="TextArea" height="50" label="Feedback"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
+    <noise type="TextArea" height="50" label="Distractors" optional="true"/>
 
   </gapFill>
+
+
+  <!--RECONSTRUCTION INTERACTION-------------------------------------------------------->
+  <reconstruct menu="Interactivity" menuItem="Reconstruction Exercise" icon="icBrick" remove="true" thumb="thumbs/reconstruct.jpg" hint="An interaction for recreating a passage of text by guessing at words it might contain.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="100" label="Introductory Text"/>
+    <passage type="TextArea" height="150" label="Gap Fill Text"/>
+    <feedback type="TextArea" height="50" label="Feedback"/>
+    <showMedia type="CheckBox" label="Show Media"/>
+    <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
+
+  </reconstruct>
 
 
   <!--TITLE PAGE------------------------------------------------------->
@@ -185,6 +225,7 @@
     <size type="ComboBox" label="Text Size" options="20,24,30,36,40,48,70" width="100"/> 
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </title>
 
@@ -194,6 +235,7 @@
     <name type="TextInput" label="Page Title"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </bullets>
 
@@ -203,6 +245,7 @@
     <name type="TextInput" label="Page Title"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
   </text>
 
   <!--YOUTUBE VIDEO--------------------------------------------------------------->
@@ -212,28 +255,31 @@
     <text type="textArea" label="Instructions" height="300"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </youtube>
 
 
   <!--TEXT VIDEO------------------------------------------------------------------------>
-  <textVideo menu="Media" type="text" label="Page Text" height="180" menuItem="Video" icon="icPageWhiteFilm" remove="true" thumb="thumbs/textVideo.jpg" hint="A page for integrating FLV video files.">
+  <textVideo menu="Media" type="text" label="Page Text" height="180" menuItem="Video" icon="icPageWhiteFilm" remove="true" thumb="thumbs/video.jpg" hint="A page for integrating FLV video files.">
 
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Video File"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </textVideo>
 
 
   <!--TEXT SOUND PAGE------------------------------------------------------->
-  <textSound type="text" label="Page Text" height="300" menu="Media" menuItem="Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and sound.">
+  <textSound type="text" label="Page Text" height="300" menu="Media" menuItem="Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/sound.jpg" hint="A page for presenting text and sound.">
 
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Sound"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
     
   </textSound>
 
@@ -245,6 +291,7 @@
     <modelFile type="media" label="Xerte Model"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <initObject type="TextInput" label="InitObject" optional="true"/>
 
@@ -260,6 +307,7 @@
     <feedback type="textArea" label="Feedback" height="120"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <scorm type="combobox" label="Scorm Tracking" options="Track First Score,Track Last Score" defaultValue="Track First Score" optional="true" width="150"/>
 
@@ -295,6 +343,7 @@
     <feedback type="textArea" label="Feedback" height="120"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </dictation>
 
@@ -306,6 +355,7 @@
     <feedback type="textArea" label="Feedback" height="120"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </order>
 
@@ -339,6 +389,7 @@
     <feedback type="textArea" label="Feedback" height="120"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
     <newNodes>
       <exercise><![CDATA[<exercise lang1="Language 1" lang2="Language 2"/>]]></exercise>
@@ -361,6 +412,7 @@
     <url type="textInput" label="Feed URL"/>
     <showMedia type="CheckBox" label="Show Media"/>
     <image optional="true" label="Image" type="media"/>
+    <help optional="true" label="Help" type="textArea" height="100"/>
 
   </rss>
 
