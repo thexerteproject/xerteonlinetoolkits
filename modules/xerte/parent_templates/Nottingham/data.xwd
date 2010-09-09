@@ -3,7 +3,7 @@
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" label="Learning Object Title"/>
-    <navigation type="ComboBox" options="Linear,Menu" label="Navigation" width="100"/>
+    <navigation type="ComboBox" options="Linear,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
 
@@ -29,7 +29,7 @@
 
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
 
-      <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" labelSize="Small"/>]]></categories>
+      <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here"/>]]></categories>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
       <timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here"/>]]></timeline>
       <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None"/>]]></annotatedDiagram>
@@ -50,7 +50,7 @@
       <columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage>
 
 
-      <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="Medium"/>]]></links>
+      <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate>
       <jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing>
@@ -59,7 +59,7 @@
       <textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF>
       <videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch>
       
-      <morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" url2="Select Image" zoomSpeed="3"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages>
+      <morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter tooltip for image 1" url2="Select Image" tip2="Enter tooltip for image 2" buttonLabel="Zoom" zoomSpeed="3"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages>
       
       <imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image">Enter text for the page here</imageViewer>]]></imageViewer>    
       <transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader>
@@ -100,8 +100,11 @@
 
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="250" label="Text"/>
-    <url type="media" label="Image One" optional="true"/>
-    <url2 type="media" label="Image Two" optional="true"/>
+    <url type="media" label="Image One"/>
+    <tip1 type="TextInput" label="Tooltip 1"/>
+    <url2 type="media" label="Image Two"/>
+    <tip2 type="TextInput" label="Tooltip 2"/>
+    <buttonLabel type="TextInput" label="Button Label"/>
     <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1"/>
 
   </morphImages>
@@ -446,7 +449,6 @@
 
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="250" label="Text"/>
-    <labelSize type="ComboBox" label="Label Size" options="Small,Medium,Large" width="100"/> 
 
     <narration type="media" label="Narration" optional="true"/>
 
@@ -602,7 +604,7 @@
     <sound optional="true" type="media" label="Sound"/>
     <narration type="media" label="Narration" optional="true"/>
     <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
-    
+
   </textGraphics>
 
 
@@ -672,7 +674,7 @@
     <narration type="media" label="Narration" optional="true"/>
     <movieSize type="textInput" label="Movie Size" optional="true"/>
     <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
-    <initObject type="TextInput" label="Init Object" optional="true"/>
+    <initObject type="TextArea" height="60" label="Init Object" optional="true"/>
 
   </textSWF>
 
