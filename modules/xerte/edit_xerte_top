@@ -31,6 +31,12 @@ function bunload(){
 
 }
 
+function receive_picture(url){
+
+	alert(url);
+
+}
+
 </script>
 </head>
 
@@ -39,6 +45,7 @@ function bunload(){
 <div style="margin:0 auto; width:800px">
 	<div class="edit_topbar" style="width:800px">
 		<img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
+		<a style="color:#000; font-size:65%" href="javascript:window.moveTo(0,0);window.resizeTo(screen.width,screen.height);">Maximise Window Size</a>
 		<img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
 	</div>	
 </div> 
@@ -47,7 +54,6 @@ function bunload(){
 		  This text is replaced by the Flash movie.
 	</div>
 </center>
-
 <script type="text/javascript">
    var so = new SWFObject("modules/xerte/engine/wizard.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
    so.addParam("quality", "high");
