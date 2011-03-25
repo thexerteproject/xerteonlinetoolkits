@@ -16,6 +16,7 @@
 
     <newNodes>
 
+      <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode>
       <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="tags" term="Enter Tags" results="20"/>]]></delicious>
       <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" align="Left">Enter Embed Code Here</youtube>]]></youtube>
       <youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"/>]]></youtuberss>
@@ -33,7 +34,7 @@
       <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here"/>]]></categories>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
       <timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here"/>]]></timeline>
-      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None"/>]]></annotatedDiagram>
+      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
       <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true">CDATA</customHotspots>]]></customHotspots>
       <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" tip="Enter a tooltip for the image"/>]]></hotspotImage>
       <buttonSequence><![CDATA[<buttonSequence name="Enter page Title" text="Enter Text for the page" intro="Enter Introduction here" align="Left" panelWidth="Medium"/>]]></buttonSequence>
@@ -53,6 +54,7 @@
 
 
       <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
+      <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
       <captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate>
@@ -69,6 +71,7 @@
       <audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow>
       <textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Tooltip" reset="true">Enter text for the page here</textVideo>]]></textVideo>
       <textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip">Enter text for the page here</bleedingImage>]]></bleedingImage>
       <textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip">Enter text for the page here</textGraphics>]]></textGraphics>    
 
       <summary><![CDATA[<summary name="Enter Page Title" summary="Summarise the key points" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary>  
@@ -91,6 +94,8 @@
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
     <buttonWidth type="NumericStepper" min="20" max="250" step="10" label="Button Width" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -112,6 +117,10 @@
     <buttonLabel type="TextInput" label="Button Label"/>
     <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
   </morphImages>
 
   <!--MODEL ANSWER INTERACTION--------------------------------------------------------------->
@@ -125,11 +134,12 @@
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
     <image optional="true" type="media" label="Image"/>
   </modelAnswer>
-
-
 
 
   <!--SLIDESHOW------------------------------------------------------------------------------>
@@ -138,6 +148,8 @@
     <text type="TextArea" height="250" label="Text"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -154,6 +166,10 @@
     <text type="TextArea" height="100" label="Page Title"/>
     <cols type="NumericStepper" min="1" max="5" step="1" label="Number of Columns"/>
     <height type="ComboBox" options="Small,Medium,Large" data="55,80,105" step="1" label="Link Height" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
       <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL"/>]]></link>
@@ -175,6 +191,8 @@
     <text type="TextArea" height="250" label="Text"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -192,6 +210,8 @@
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
     <tabWidth type="NumericStepper" min="20" max="250" step="10" label="Tab Width" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -206,6 +226,8 @@
 
     <name type="TextInput" label="Page Title"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -237,6 +259,8 @@
     <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
     <url type="media" label="Image"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </imageViewer>
@@ -250,6 +274,8 @@
     <text type="TextArea" label="Page Text" height="200"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -268,6 +294,8 @@
     <pause type="ComboBox" label="Pause on Synchpoints" options="True,False" width="100"/>
     <erase type="ComboBox" label="Erase" options="True,False" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -284,6 +312,10 @@
     <url type="Media" label="ISpring Movie"/>
     <version type="ComboBox" options="Free,Pro" label="Version" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
   </iSpring>
 
 
@@ -295,6 +327,8 @@
     <text type="TextArea" label="Page Text" height="200"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -315,17 +349,24 @@
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </buttonQuestion>
 
 
+  <!--BUTTON SEQUENCE PAGE-------------------------------------------------------------->
   <buttonSequence menu="Interactivity" menuItem="Button Sequence" icon="icButtons" remove="true" thumb="thumbs/buttonSequence.jpg" hint="Presents a sequence of button interactions with text">
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="200" label="Text"/>
     <intro type="TextArea" height="100" label="Introduction"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
       <button><![CDATA[<button name="name" text="Feedback"/>]]></button>
@@ -351,6 +392,8 @@
     <type type="ComboBox" options="Single Answer,Multiple Answer" width="120" label="Question Type"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -364,6 +407,9 @@
 
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" label="Page Text" height="200"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -382,6 +428,9 @@
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <tip type="TextInput" label="Image Tooltip"/>
     <highlightColour type="ColourPicker" label="Highlight Colour"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -398,6 +447,11 @@
     <lineWidth type="NumericStepper" min="0" max="5" step="1" label="Highlight Width"/>
     <interactivity type="ComboBox" options="Hotspots,Labels,Show Me" label="Interactivity" width="100"/>
     <showShapes type="CheckBox" label="Show Shapes"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
   </customHotspots>
 
 
@@ -410,8 +464,12 @@
     <tip type="TextInput" label="Image Tooltip"/>
     <colour type="ColourPicker" label="Highlight Colour"/>
     <shape type="ComboBox" options="None,Oval,Rectangle,Arrow" width="120" label="Shape"/>
+    <align type="COmboBox" label="Align" options="Left,Top" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
 
     <newNodes>
       <hotspotGroup><![CDATA[<hotspotGroup name="name" text="Description for the hotspot"/>]]></hotspotGroup>
@@ -428,6 +486,8 @@
     <text type="TextArea" height="100" label="Text"/>
     <attempts type="ComboBox" width="100" options="1,2,3,4" label="Attempts before hint"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -455,6 +515,8 @@
     <interactivity type="ComboBox" options="Timeline,Matching Pairs" width="120" label="Interactivity"/>
     <feedback type="TextArea" height="100" label="Feedback"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -481,7 +543,9 @@
     <interactivity type="ComboBox" label="Interactivity" options="Drag Drop,Fill in Blank" width="100"/>
     <feedback type="TextArea" height="50" label="Feedback"/>
     <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
-
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </gapFill>
@@ -493,6 +557,8 @@
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="250" label="Text"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -531,6 +597,8 @@
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <tip type="TextInput" label="Image Tooltip"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
@@ -570,6 +638,8 @@
     <name type="TextInput" label="Page Title"/>
     <keywords type="TextInput" label="Keyword(s)"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </flickr>
@@ -581,7 +651,10 @@
     <name type="TextInput" label="Page Title"/>
     <size type="ComboBox" label="Text Size" options="20,24,30,36,40,48,70" width="100"/> 
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
     <bgImage type="media" label="Background Image" optional="true"/>
     <bgImageAlpha type="NumericStepper" min="10" max="100" step="10" label="Background Alpha" optional="true"/>
     <titleVAlign label="Title Vertical Align" type="ComboBox" width="120" options="Top,Middle,Bottom" data="20,200,400" optional="true"/>
@@ -597,6 +670,8 @@
 
     <name type="TextInput" label="Page Title"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
     
   </bullets>
@@ -610,6 +685,9 @@
     <textWidth type="comboBox" label="Text Width" options="Small,Medium,Large,Full" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
     
     <subSuper type="CheckBox" label="Superscript Support" optional= "true" default="false"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
     
   </text>
@@ -622,6 +700,8 @@
     <summary type="TextArea" height="100" label="Summary"/>
     <nextsteps type="TextArea" height="100" label="Next Steps"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </summary>
@@ -636,6 +716,8 @@
     <prereq type="TextArea" height="100" label="Pre-requisites"/>
     <howto type="TextArea" height="100" label="How To Use"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </orient>
@@ -650,11 +732,40 @@
     <url type="media" label="Image"/>
     <tip type="TextInput" label="Image Tooltip"/>
 
-    <sound optional="true" type="media" label="Sound"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+    
+    <imageMargin optional="true" type="NumericStepper" min="0" max="50" step="1" label="Image Margin"/>
+    <hidePanel optional="true" type="checkBox" defaultvalue="false" label="Hide Panel"/>
     <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
 
+    <sound optional="true" type="media" label="Sound"/>
+
   </textGraphics>
+
+  <!--Bleeding Image Page------------------------------------------------------------------------------------------->
+  <bleedingImage type="text" label="Page Text" height="200" menu="Media" menuItem="Advanced Image" icon="icPageWhiteImage2" remove="true" thumb="thumbs/bleedingImage.jpg" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
+    <imagesize type="ComboBox" label="Image Size" options="auto,full screen" width="100"/>
+    <url type="media" label="Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <linktarget type="textInput"  label="Link target e.g _blank" optional="true" width="70"/>
+    <link type="textInput" label="Link and icon" optional="true"/>
+    <sound optional="true" type="media" label="Sound"/>
+    <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
+    <addmargin type="Checkbox" defaultvalue="false" label="Image Margin" optional="true"/>
+    <size type="ComboBox" label="Text Size" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>
+    
+  </bleedingImage>
 
 
   <!--TEXT VIDEO------------------------------------------------------------------------>
@@ -667,6 +778,8 @@
 
     <movieSize type="textInput" label="Video Size" optional="true" defaultValue="320,240"/>
     <transcript type="textArea" height="150" label="Transcript" optional="true"/>
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </textVideo>
@@ -686,7 +799,8 @@
     <newNodes>
       <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>
     </newNodes>
-
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </chart>
@@ -706,6 +820,8 @@
     <align type="comboBox" options="left,right" label="Alignment" width="100"/>
     <interactivity type="ComboBox" label="Interactivity" options="off,on" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </textDrawing>
@@ -720,7 +836,10 @@
     
     <tip type="TextInput" label="Image Tooltip"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
     <movieSize type="textInput" label="Movie Size" optional="true"/>
     <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
     <initObject type="TextArea" height="60" label="Init Object" optional="true"/>
@@ -734,6 +853,8 @@
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Captivate SWF File"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </captivate>
@@ -744,6 +865,8 @@
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Raptivity SWF File"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </raptivity>
@@ -755,6 +878,8 @@
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Jing SWF File"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </jing>
@@ -766,6 +891,8 @@
     <name type="TextInput" label="Page Title"/>
     <url type="media" label="Flash Paper SWF File"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </flashPaper>
@@ -778,6 +905,10 @@
     <modelFile type="media" label="Xerte Model"/>
 
     <initObject type="TextInput" label="InitObject" optional="true"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
   </xerteModel>
 
@@ -796,6 +927,9 @@
 
     <video type="media" label="Video" optional="true"/>
     <scorm type="combobox" label="Scorm Tracking" options="Track First Score,Track Last Score" defaultValue="Track First Score" optional="true" width="150"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
     
 
@@ -838,6 +972,8 @@
     <tooltip type="TextInput" label="Map Tooltip"/>
     <link type="checkbox" label="Link to Map"/>
     
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </map>
@@ -850,6 +986,8 @@
     <url type="textInput" label="Feed URL"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </rss>
@@ -862,6 +1000,8 @@
     <url type="textInput" label="Article URL"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </wiki>
@@ -874,6 +1014,8 @@
     <url type="textInput" label="Search Term"/>
     <results type="NumericStepper" min="5" max="50" step="1" label="Number of Results"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </youtuberss>
@@ -886,6 +1028,8 @@
     <search type="ComboBox" label="Search in" options="recent,popular,user" width="100"/>
     <results type="NumericStepper" min="5" max="100" step="1" label="Number of Results"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </delicious>
@@ -896,10 +1040,28 @@
     <name type="TextInput" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <autoplay type="Checkbox" label="Autoplay" optional="true"/>
 
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
   </youtube>
+
+  <!--QRcode PAGE------------------------------------------------------->
+  <QRcode type="text" label="Page Text" height="300" menu="Misc" menuItem="QR Code" icon="icQRCode" remove="true" thumb="thumbs/QRcode.jpg" hint="A page for generating and presenting QR codes. You can also add an optional sound to this page.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="TextInput" label="Type or Paste a URL"/>
+    <tip type="TextInput" label="QR code Tooltip"/>
+
+    <sound optional="true" type="media" label="Sound"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+  </QRcode>
 
 
   <!--KML LAYER-------------------------------------------------------------------------->
@@ -908,5 +1070,36 @@
     <colour type="ColourPicker" label="Legend Colour"/>
     <url type="media" label="KML File"/>
   </kml>
+
+
+  <!--MULTIPLE PERSPECTIVES PAGE------------------------------------------------------->
+  <perspectives menu="Media" menuItem="Multiple Perspectives" icon="icUser" remove="true" thumb="thumbs/perspectives.jpg" hint="A page for multiple video and sound clips to be viewed and compared.">
+    <name type="Textinput" label="Page Title"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video"></movie>]]></movie>
+      <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound"></sound>]]></sound>
+    </newNodes>
+
+  </perspectives>
+
+  <movie duplicate="true" menuItem="Video" remove="true" icon="icPageWhiteFilm">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Video File"/>
+  </movie>
+
+  <sound duplicate="true" menuItem="Sound" remove="true" icon="icSound">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Sound File"/>
+    <img type="media" label="Image" optional="true"></img>
+    <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
+  </sound>
+
 
 </wizard>

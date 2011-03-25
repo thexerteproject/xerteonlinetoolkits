@@ -378,6 +378,7 @@
   <card icon="icArrowRefresh">
     <name type="textInput" label="Language 1"/>
     <text type="textInput" label="Language 2"/>
+    <sound type="media" label="Sound" optional="true"/>
   </card>
 
 
