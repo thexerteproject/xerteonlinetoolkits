@@ -1,6 +1,4 @@
-<?PHP
-
-	/**
+<?PHP     /**
 	 * 
 	 * Edit page, brings up the xerte editor window
 	 *
@@ -9,7 +7,7 @@
 	 * @copyright Copyright (c) 2008,2009 University of Nottingham
 	 * @package
 	 */
-	
+
 	require("config.php");
 	require("session.php");
 
@@ -30,6 +28,8 @@
 	 */
 
 	function update_access_time($row_edit){
+	
+		global $xerte_toolkits_site;
 
 		mysql_query("UPDATE " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET date_accessed=\"" . date('Y-m-d') . "\" WHERE template_id=" . $row_edit['template_id']);
 
@@ -62,9 +62,9 @@
 		$query_for_edit_content_response = mysql_query($query_for_edit_content);
 		
 		$row_edit = mysql_fetch_array($query_for_edit_content_response);
-				
+
 		if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])){	
-	
+
 		/*
 		* Check if user is editor (could be read only)
 		*/
@@ -90,13 +90,19 @@
 						$lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt");
 	
 						$temp = explode("*",$lock_file_data);
+
+						if(count($temp)==1){
+
+							$temp = explode(" ",$lock_file_data);					
+
+						}
 	
 						$lock_file_creator = $temp[0];
 	
 						/*
 						* Check if lock file creator is current user, if so, continue into the code
 						*/
-	
+
 						if($lock_file_creator==$_SESSION['toolkits_logon_username']){
 	
 							if(update_access_time($row_edit)){
@@ -119,22 +125,54 @@
 	
 							}
 	
-						}else{	
+						}else{
 						
-							/*
-							* Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
-							*/
+							if(isset($_POST['lockfile_clear'])){
+
+								/*
+								* Delete the lockfile
+								*/
+
+								$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
+		
+								fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
+			
+								fclose($file_handle);
+						
+								/*
+								* Update the time this template was last edited
+								*/
+	
+								if(update_access_time($row_edit)){
+	
+									require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+	
+									output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
+	
+								}else{
+	
+									error_show_template();
+		
+								}
+
+							}else{
+						
+								/*
+								* Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
+								*/
 					
-							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " ";
+								$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " ";
 	
-							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
+								$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
 	
-							fwrite($file_handle, $new_lock_file);
+								fwrite($file_handle, $new_lock_file);
 	
-							fclose($file_handle);
+								fclose($file_handle);
 	
-							output_locked_file_code($lock_file_creator);
-	
+								output_locked_file_code($lock_file_creator);
+
+							}
+							
 						}
 			
 					}else{
@@ -190,7 +228,7 @@
 				}
 	
 			}else{
-			
+		
 				/*
 				* One editor (and no sharing) for this prohect, so continue without creating a lock file
 				*/

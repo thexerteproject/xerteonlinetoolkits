@@ -1,6 +1,4 @@
-<?PHP
-
-// level is a global variable used to stylise the folder nesting
+<?PHP     // level is a global variable used to stylise the folder nesting
 
 $level=-1;
 
@@ -517,7 +515,9 @@ function error_show_template(){
 
 function output_locked_file_code($lock_file_creator){
 		
-	echo "this file is in use by $lock_file_creator and will be made available to you when the current editor closes it down";
+	echo "<p>This file is currently being edited by $lock_file_creator.</p><p> If you are sure this is not the case, then you can edit the file by clicking the button below. If you continue and there are two people editing at once, there is a risk the file will become corrupted.</p><p> Otherwise, please wait until the current editor closes the file and it will be made available to you when the current editor closes it down.</p>";
+		
+	echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"Delete Lockfile\" /></form>";
 
 }
 

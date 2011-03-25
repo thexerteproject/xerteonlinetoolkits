@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * get_template_screen_size, opens an RLT to get the sizes for the preview window
 	 *

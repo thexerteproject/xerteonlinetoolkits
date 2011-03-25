@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * gif template, allows the site ti display the html for the gift panel
 	 *
@@ -24,7 +24,7 @@
 
 	if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-		echo "<div class=\"share_top\"><p class=\"header\"><span>To give this project to someone, please type their name here</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+		echo "<div class=\"share_top\"><p class=\"header\"><span>To give this project to someone, please type their name here. The user must have an account on the site to appear in this search.</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
 
 	}else{
 

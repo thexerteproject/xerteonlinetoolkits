@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * duplicate page, allows the site to edit a xerte module
 *

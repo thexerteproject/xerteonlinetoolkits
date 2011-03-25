@@ -1,4 +1,4 @@
-<?PHP // Code to run the ajax query to show and allow the usert to change a templates notes
+<?PHP     // Code to run the ajax query to show and allow the usert to change a templates notes
 	//
 	// Version 1.0 University of Nottingham
 

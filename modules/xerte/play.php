@@ -1,4 +1,4 @@
-<?PHP require("module_functions.php");
+<?PHP     require("module_functions.php");
 
 //Function show_template
 //

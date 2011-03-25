@@ -6,7 +6,7 @@
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
     <media type="Media" label="Media"/>
-    <language type="ComboBox" options="French,German,Italian,Polish,Portuguese,Spanish" width="120" label="Language"/>
+    <language type="ComboBox" options="Chinese,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language"/>
     <transcript type="TextArea" height="300" label="Transcript"/>
 
     <newNodes>

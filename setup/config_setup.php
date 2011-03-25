@@ -50,11 +50,12 @@ Use your <a href="phpinfo.php" target="_blank">PHP info page</a> to find the 'Lo
 	<li><b>The PHP "Sessions" Settings</b> - Please see <a href="http://uk2.php.net/manual/en/session.installation.php">PHP's own guide</a> for more details. Sessions should be turned on by default in a PHP install. Again, XAMPP users should find this is installed by default.<b>Some of the session file settings in index, integration and session.php have been commented out - you may wish to look at which settings work best for you </b>.</li>
 	<li><b>The PHP "LDAP" Settings</b> - Please see <a href="http://uk2.php.net/manual/en/ldap.setup.php">PHP's own guide</a> for more details. If you don't want to use LDAP you could write your own authentication code, or refer to the readme.txt in the main install folder on how to run an LDAP free version of the code.</li>
 	<li><b>The PHP "Mail" Settings</b> - Please see <a href="http://uk2.php.net/manual/en/mail.setup.php">PHP's own guide</a> for more details. As the page lists, you may need to set the following variables - <b>SMTP, smtp_port, sendmail_from </b> and <b>sendmail_path</b>. Should you wish to, you can run the code without mail, but some modifications to the feedback and version control pages would be required.</li>	
+	<li><b>The PHP "Zlib" Settings</b> - Please see <a href="http://uk2.php.net/manual/en/zlib.setup.php">PHP's own guide</a> for more details. If you wish to export projects or make SCORM packages, you will need this library to be installed.</li>	
 </ol>	
 
 </p>
 <p>
-	<a href="page1.php" style="border:0; text-decoration:none"><img src="next.gif" /></a>
+	<a href="file_system_test.php" style="border:0; text-decoration:none"><img src="next.gif" /></a>
 </p>
 </body>
 </html>

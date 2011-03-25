@@ -109,7 +109,15 @@
 		
 		}
 
-		echo " Other</p><p class=\"share_explain_paragraph\">Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.<form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\">" . $_POST['server_string'] . "</textarea></form></p>";
+		echo " Other</p><p class=\"share_explain_paragraph\">Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.<form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\">";
+		
+		if(isset($_POST['server_string'])){
+		
+			echo $_POST['server_string'];
+		
+		}
+		 
+		echo "</textarea></form></p>";
 
 		if(template_share_status("Private")){
 		

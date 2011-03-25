@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * new template page, allows the site to make a new xerte module
 *

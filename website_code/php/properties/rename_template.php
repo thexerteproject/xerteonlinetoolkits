@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * rename template, allows a user to rename a template
 *

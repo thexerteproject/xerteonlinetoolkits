@@ -8,7 +8,7 @@
 
 			$php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 	
-			if(!strpos($php_check,"<?")){
+			if(!strpos($php_check,"<?PHP     ")){
 
 				$new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
 

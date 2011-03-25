@@ -1,4 +1,6 @@
-<?PHP require("../../../config.php");
+<?PHP     
+
+require("../../../config.php");
 require("../../../session.php");
 
 require("../database_library.php");
@@ -9,6 +11,8 @@ if(is_user_admin()){
 	$path = $xerte_toolkits_site->error_log_path;
 
 	$error_file_list = opendir($path);
+	
+	echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><a href=\"javascript:delete_error_logs()\">Delete all error logs</a></div>";
 
 	while($file = readdir($error_file_list)){
 
@@ -20,7 +24,7 @@ if(is_user_admin()){
 
 			$query_for_full_name_response = mysql_query($query_for_full_name);
 
-			$row_name = mysql_fetch_array($query_for_full_name_response);
+			$row_name = mysql_fetch_array($query_for_full_name_response);			
 	
 			if(mysql_num_rows($query_for_full_name_response)!=0){
 

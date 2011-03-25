@@ -1,7 +1,6 @@
-<?PHP require("../../../config.php");
-require("../../../session.php");
+<?PHP     
 
-
+require("../../../config.php");
 require("../database_library.php");
 require("../user_library.php");
 require("../error_library.php");
@@ -93,9 +92,9 @@ if(is_user_admin()){
 
 		echo "<p>The php library path is <form><textarea id=\"php_library_path\">" . $row['php_library_path'] . "</textarea></form></p>";	
 
-		echo "<p>The root file path is <form><textarea id=\"root_file_path\">" . $row['root_file_path'] . "</textarea></form></p>";	
+		echo "<p>The root file path is <form><textarea id=\"root_file_path\">" . str_replace("\\","/",$row['root_file_path']) . "</textarea></form></p>";	
 
-		echo "<p>The import path is <form><textarea id=\"import_path\">" . $row['import_path'] . "</textarea></form></p>";	
+		echo "<p>The import path is <form><textarea id=\"import_path\">" . str_replace("\\","/",$row['import_path']) . "</textarea></form></p>";	
 
 	echo "</div>";
 

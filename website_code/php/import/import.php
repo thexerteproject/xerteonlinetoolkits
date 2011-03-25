@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * Import page, imports a users template
 	 *
@@ -15,6 +15,8 @@ include "../template_library.php";
 include "../file_library.php";
 include "../template_status.php";
 include "../database_library.php";
+
+ini_set('memory_limit','64M');
 
 $likelihood_array = array();
 $delete_folder_array = array();

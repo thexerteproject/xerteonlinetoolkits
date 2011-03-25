@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * xml changetemplate, changes the xml share for this template
 *
@@ -73,7 +73,7 @@ if(is_numeric($_POST['template_id'])){
 
 		echo "<p class=\"header\"><span>XML Sharing</span></p>";			
 
-		echo "<p class=\"share_status_paragraph\">In this section you can set up the XML Sharing for one of your projects. This allows your work to be used in other systems</p>";
+		echo "<p class=\"share_status_paragraph\">In this section you can set up the XML Sharing for one of your projects. Your project must be published for this to work. This allows your work to be used in other systems</p>";
 		$query = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"xml\" AND template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
 
 		$query_response = mysql_query($query);

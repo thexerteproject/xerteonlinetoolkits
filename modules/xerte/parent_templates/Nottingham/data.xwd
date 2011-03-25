@@ -646,7 +646,7 @@
 
     <name type="TextInput" label="Page Title"/>
     <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
-    <imagesize type="ComboBox" label="Image Size" options="auto,full screen" width="100"/>
+    <imagesize type="ComboBox" label="Image Size" options="auto,actual size,full screen" width="100"/>
     <url type="media" label="Image"/>
     <tip type="TextInput" label="Image Tooltip"/>
 

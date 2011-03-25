@@ -496,6 +496,26 @@ function errors_list(template){
 
 }
 
+// Function delete error logs
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// deletes all error logs
+
+function delete_error_logs(){
+
+	if(setup_ajax()!=false){
+
+		var url="delete_error_list.php";
+
+		management_ajax_send_prepare(url);
+
+		xmlHttp.send('logon_id=1'); 
+
+	}
+
+}
+
 // Function delete sharing template
 //
 // Version 1.0 University of Nottingham
@@ -512,6 +532,50 @@ function delete_template(template){
 
 		xmlHttp.send('template_id=' + template); 
 
+	}
+
+}
+
+// Function give a project 
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// remove a share, and check who did it
+
+function change_owner(template_id){
+
+	if(setup_ajax()!=false){
+
+		var url="change_owner.php";
+
+		xmlHttp.open("post",management_ajax_php_path + url,true);
+		xmlHttp.onreadystatechange=change_owner_stateChanged;
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		
+		login = (document.getElementById(template_id + "_new_owner").value);
+
+		xmlHttp.send('template_id=' + template_id + '&new_user=' + login);
+
+	}
+
+}
+
+// Function give a project 
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// remove a share, and check who did it
+
+function change_owner_stateChanged(){
+
+	if (xmlHttp.readyState==4){ 
+
+		if(xmlHttp.responseText!=""){
+			
+			alert("User successfully changed");
+			users_list();			
+
+		}
 	}
 
 }

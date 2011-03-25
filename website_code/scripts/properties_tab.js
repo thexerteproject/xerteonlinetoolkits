@@ -1076,7 +1076,7 @@ function name_select_gift_template(){
 			document.getElementById('area2').innerHTML="<p>Names will appear here</p>";
 		}
 
-		if(is_ok_name(search_string)){
+		if(is_ok_user(search_string)){
 
 			var url="name_select_gift_template.php";
 
@@ -1114,7 +1114,7 @@ function name_select_template(){
 			document.getElementById('area2').innerHTML="<p>Names will appear here</p>";
 		}
 
-		if(is_ok_name(search_string)){
+		if(is_ok_user(search_string)){
 
 			var url="name_select_template.php";
 

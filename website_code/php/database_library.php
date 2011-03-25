@@ -1,4 +1,4 @@
-<?PHP /**	
+<?PHP     /**	
 	 * 
 	 * Database library, code for connecting to the database
 	 *
@@ -39,6 +39,8 @@ function database_connect($success_string, $error_string){
 		die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error() );
 		
 	}
+	
+	$database_fail = false;
 
 	mysql_select_db($xerte_toolkits_site->database_name) or die($database_fail = true);
 	

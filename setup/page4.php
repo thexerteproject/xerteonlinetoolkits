@@ -1,4 +1,6 @@
-<?PHP include ("../database.php");
+<?PHP 
+
+	include ("../database.php");
 
 	$mysql_connect_id = mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
 
@@ -19,14 +21,18 @@
 	$query = "insert  into " . $xerte_toolkits_site->database_table_prefix . "sitedetails(site_id) VALUES ( \"1\")";
 	
 	$query_response = mysql_query($query);
+
+	$fail_string = "";
+
+	$success_string = "";
 		
 	if(!$query_response){
 	
-			echo "The sitedetails site ID query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site ID query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site ID query succeeded <br>";
+			$success_string .= "The sitedetails site ID query succeeded <br>";
 	
 	}
 	
@@ -36,11 +42,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site url query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site url query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site url query succeeded <br>";
+			$success_string .= "The sitedetails site url query succeeded <br>";
 	
 	}
 	
@@ -50,11 +56,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails apache query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails apache query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails apache query succeeded <br>";
+			$success_string .= "The sitedetails apache query succeeded <br>";
 	
 	}
 	
@@ -64,11 +70,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails apache query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails apache query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails apache query succeeded <br>";
+			$success_string .= "The sitedetails apache query succeeded <br>";
 	
 	}
 	
@@ -78,11 +84,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails mimetypes query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails mimetypes query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails mimetypes query succeeded <br>";
+			$success_string .= "The sitedetails mimetypes query succeeded <br>";
 	
 	}
 	
@@ -92,39 +98,45 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails LDAP preference query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails LDAP preference query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails LDAP preference query succeeded <br>";
+			$success_string .= "The sitedetails LDAP preference query succeeded <br>";
 	
 	}
 	
-	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set LDAP_preference=\"" . $_POST['LDAP_preference'] . "\" where site_id=\"1\"";
-	
+	$query = "insert into " . $xerte_toolkits_site->database_table_prefix . "ldap(ldap_filter)values('" . $_POST['LDAP_filter'] . "')";
+
 	$query_response = mysql_query($query);
-	
+
+	$ldap = mysql_insert_id();
+		
 	if(!$query_response){
 	
-			echo "The sitedetails LDAP preference query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails LDAP preference query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails LDAP preference query succeeded <br>";
+			$success_string .= "The sitedetails LDAP preference query succeeded <br>";
 	
 	}
 	
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set LDAP_filter=\"" . $_POST['LDAP_filter'] . "\" where site_id=\"1\"";
+
+	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_filter_attr=\"" . $_POST['LDAP_preference'] . "\" where ldap_id=\"" . $ldap . "\"";
 	
 	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails LDAP_filter query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails LDAP_filter query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails LDAP_filter query succeeded <br>";
+			$success_string .= "The sitedetails LDAP_filter query succeeded <br>";
 	
 	}
 	
@@ -134,11 +146,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails integration_config_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails integration_config_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails integration_config_path query succeeded <br>";
+			$success_string .= "The sitedetails integration_config_path query succeeded <br>";
 	
 	}
 	
@@ -148,11 +160,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails admin_username query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails admin_username query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails admin_username query succeeded <br>";
+			$success_string .= "The sitedetails admin_username query succeeded <br>";
 	
 	}
 	
@@ -162,11 +174,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails admin_password query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails admin_password query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails admin_password query succeeded <br>";
+			$success_string .= "The sitedetails admin_password query succeeded <br>";
 	
 	}
 	
@@ -176,11 +188,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_session_name query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_session_name query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_session_name query succeeded <br>";
+			$success_string .= "The sitedetails site_session_name query succeeded <br>";
 	
 	}
 	
@@ -190,11 +202,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_title query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_title query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_title query succeeded <br>";
+			$success_string .= "The sitedetails site_title query succeeded <br>";
 	
 	}
 	
@@ -204,11 +216,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_name query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_name query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_name query succeeded <br>";
+			$success_string .= "The sitedetails site_name query succeeded <br>";
 	
 	}
 	
@@ -218,11 +230,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_logo query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_logo query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_logo query succeeded <br>";
+			$success_string .= "The sitedetails site_logo query succeeded <br>";
 	
 	}
 	
@@ -232,11 +244,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails organisational_logo query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails organisational_logo query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails organisational_logo query succeeded <br>";
+			$success_string .= "The sitedetails organisational_logo query succeeded <br>";
 	
 	}
 	
@@ -246,11 +258,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails welcome_message query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails welcome_message query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails welcome_message query succeeded <br>";
+			$success_string .= "The sitedetails welcome_message query succeeded <br>";
 	
 	}
 	
@@ -260,11 +272,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_text query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_text query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_text query succeeded <br>";
+			$success_string .= "The sitedetails site_text query succeeded <br>";
 	
 	}
 	
@@ -274,11 +286,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails news_text query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails news_text query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails news_text query succeeded <br>";
+			$success_string .= "The sitedetails news_text query succeeded <br>";
 	
 	}
 	
@@ -288,11 +300,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails pod_one query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails pod_one query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails pod_one query succeeded <br>";
+			$success_string .= "The sitedetails pod_one query succeeded <br>";
 	
 	}
 	
@@ -302,11 +314,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails pod_two query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails pod_two query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails pod_two query succeeded <br>";
+			$success_string .= "The sitedetails pod_two query succeeded <br>";
 	
 	}
 	
@@ -316,11 +328,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails copyright query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails copyright query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails copyright query succeeded <br>";
+			$success_string .= "The sitedetails copyright query succeeded <br>";
 	
 	}
 	
@@ -330,11 +342,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails rss_title query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails rss_title query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails rss_title query succeeded <br>";
+			$success_string .= "The sitedetails rss_title query succeeded <br>";
 	
 	}
 	
@@ -344,11 +356,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails synd_publisher query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails synd_publisher query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails synd_publisher query succeeded <br>";
+			$success_string .= "The sitedetails synd_publisher query succeeded <br>";
 	
 	}
 	
@@ -358,11 +370,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails synd_rights query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails synd_rights query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails synd_rights query succeeded <br>";
+			$success_string .= "The sitedetails synd_rights query succeeded <br>";
 	
 	}
 	
@@ -372,11 +384,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails synd_license query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails synd_license query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails synd_license query succeeded <br>";
+			$success_string .= "The sitedetails synd_license query succeeded <br>";
 	
 	}
 	
@@ -386,11 +398,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails demonstration_page query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails demonstration_page query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails demonstration_page query succeeded <br>";
+			$success_string .= "The sitedetails demonstration_page query succeeded <br>";
 	
 	}
 
@@ -400,11 +412,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails form_string query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails form_string query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails form_string query succeeded <br>";
+			$success_string .= "The sitedetails form_string query succeeded <br>";
 	
 	}
 	
@@ -414,11 +426,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails peer_form_string query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails peer_form_string query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails peer_form_string query succeeded <br>";
+			$success_string .= "The sitedetails peer_form_string query succeeded <br>";
 	
 	}
 	
@@ -428,11 +440,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails module_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails module_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails module_path query succeeded <br>";
+			$success_string .= "The sitedetails module_path query succeeded <br>";
 	
 	}
 	
@@ -442,11 +454,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails website_code_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails website_code_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails website_code_path query succeeded <br>";
+			$success_string .= "The sitedetails website_code_path query succeeded <br>";
 	
 	}
 	
@@ -456,11 +468,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails users_file_area_short query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails users_file_area_short query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails users_file_area_short query succeeded <br>";
+			$success_string .= "The sitedetails users_file_area_short query succeeded <br>";
 	
 	}
 	
@@ -470,11 +482,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails php_library_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails php_library_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails php_library_path query succeeded <br>";
+			$success_string .= "The sitedetails php_library_path query succeeded <br>";
 	
 	}
 	
@@ -494,11 +506,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails import_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails import_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails import_path query succeeded <br>";
+			$success_string .= "The sitedetails import_path query succeeded <br>";
 	
 	}
 	
@@ -520,11 +532,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails root_file_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails root_file_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails root_file_path query succeeded <br>";
+			$success_string .= "The sitedetails root_file_path query succeeded <br>";
 	
 	}
 	
@@ -534,11 +546,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails play_edit_preview_query query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails play_edit_preview_query query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails play_edit_preview_queryquery succeeded <br>";
+			$success_string .= "The sitedetails play_edit_preview_queryquery succeeded <br>";
 	
 	}
 	
@@ -548,11 +560,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails error_log_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails error_log_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails error_log_path query succeeded <br>";
+			$success_string .= "The sitedetails error_log_path query succeeded <br>";
 	
 	}
 	
@@ -562,11 +574,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails email_error_list query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails email_error_list query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails email_error_list query succeeded <br>";
+			$success_string .= "The sitedetails email_error_list query succeeded <br>";
 	
 	}
 	
@@ -576,11 +588,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails error_log_message query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails error_log_message query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails error_log_message query succeeded <br>";
+			$success_string .= "The sitedetails error_log_message query succeeded <br>";
 	
 	}
 	
@@ -590,11 +602,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails max_error_size query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails max_error_size query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails max_error_size query succeeded <br>";
+			$success_string .= "The sitedetails max_error_size query succeeded <br>";
 	
 	}
 
@@ -604,81 +616,101 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails error_email_message query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails error_email_message query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails error_email_message query succeeded <br>";
+			$success_string .= "The sitedetails error_email_message query succeeded <br>";
 	
 	}
 	
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set ldap_host=\"" . $_POST['ldap_host'] . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_host=\"" . $_POST['ldap_host'] . "\" where ldap_id=\"" . $ldap . "\"";
+
+	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails ldap_host query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails ldap_host query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails ldap_host query succeeded <br>";
+			$success_string .= "The sitedetails ldap_host query succeeded <br>";
 	
 	}
 	
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set ldap_port=\"" . $_POST['ldap_port'] . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_port=\"" . $_POST['ldap_port'] . "\" where ldap_id=\"" . $ldap . "\"";
+
+	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails ldap_port query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails ldap_port query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails ldap_port query succeeded <br>";
+			$success_string .= "The sitedetails ldap_port query succeeded <br>";
 	
 	}
 	
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set bind_pwd=\"" . $_POST['bind_pwd'] . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_password=\"" . $_POST['bind_pwd'] . "\" where ldap_id=\"" . $ldap . "\"";
+
+	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails bind_pwd query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails bind_pwd query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails bind_pwd query succeeded <br>";
+			$success_string .= "The sitedetails bind_pwd query succeeded <br>";
 	
 	}
 	
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set basedn=\"" . $_POST['basedn'] . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_basedn=\"" . $_POST['basedn'] . "\" where ldap_id=\"" . $ldap . "\"";
+
+	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails basedn query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails basedn query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails basedn query succeeded <br>";
+			$success_string .= "The sitedetails basedn query succeeded <br>";
 	
 	}
 
 	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set bind_dn=\"" . $_POST['bind_dn'] . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
+
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "ldap set ldap_username=\"" . $_POST['bind_dn'] . "\" where ldap_id=\"" . $ldap . "\"";
+
+	$query_response = mysql_query($query);
 	
 	if(!$query_response){
 	
-			echo "The sitedetails bind_dn query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails bind_dn query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails bind_dn query succeeded <br>";
+			$success_string .= "The sitedetails bind_dn query succeeded <br>";
 	
 	}
 	
@@ -688,11 +720,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails flash_save_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails flash_save_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails flash_save_path query succeeded <br>";
+			$success_string .= "The sitedetails flash_save_path query succeeded <br>";
 	
 	}
 	
@@ -702,11 +734,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails flash_upload_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails flash_upload_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails flash_upload_path query succeeded <br>";
+			$success_string .= "The sitedetails flash_upload_path query succeeded <br>";
 	
 	}
 	
@@ -716,11 +748,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails flash_preview_check_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails flash_preview_check_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails flash_preview_check_path query succeeded <br>";
+			$success_string .= "The sitedetails flash_preview_check_path query succeeded <br>";
 	
 	}
 	
@@ -730,11 +762,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails flash_flv_skin query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails flash_flv_skin query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails flash_flv_skin query succeeded <br>";
+			$success_string .= "The sitedetails flash_flv_skin query succeeded <br>";
 	
 	}
 	
@@ -744,11 +776,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails site_email_account query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails site_email_account query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails site_email_account query succeeded <br>";
+			$success_string .= "The sitedetails site_email_account query succeeded <br>";
 	
 	}
 
@@ -758,11 +790,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails headers query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails headers query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails headers query succeeded <br>";
+			$success_string .= "The sitedetails headers query succeeded <br>";
 	
 	}
 	
@@ -772,11 +804,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails email_to_add_to_username query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails email_to_add_to_username query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails email_to_add_to_username query succeeded <br>";
+			$success_string .= "The sitedetails email_to_add_to_username query succeeded <br>";
 	
 	}
 	
@@ -786,11 +818,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails proxy1 query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails proxy1 query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails proxy1 query succeeded <br>";
+			$success_string .= "The sitedetails proxy1 query succeeded <br>";
 	
 	}
 	
@@ -800,11 +832,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails port1 query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails port1 query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails port1 query succeeded <br>";
+			$success_string .= "The sitedetails port1 query succeeded <br>";
 	
 	}
 	
@@ -814,11 +846,11 @@
 	
 	if(!$query_response){
 	
-			echo "The sitedetails feedback_list query " . $query . " has failed due to " . mysql_error() . "<br>";
+			$fail_string .= "The sitedetails feedback_list query " . $query . " has failed due to " . mysql_error() . "<br>";
 			
 	}else{
 	
-			echo "The sitedetails feedback_list query succeeded <br>";
+			$success_string .= "The sitedetails feedback_list query succeeded <br>";
 	
 	}
 
@@ -847,6 +879,22 @@
 <h2 style="margin-top:15px">
  	Install complete
 </h2>
+<?PHP
+	
+	if($fail_string!=""){
+
+		echo "<p><b?The following queries failed</b> - <br /> " . $fail_string . "</p>";
+		echo "<p>These failures may affect your site, please see if they can be rectified using the management tools or altering the database directly.</p>";
+
+	}
+
+	if($success_string!=""){
+
+		echo "<p>The following queries suceeded - <br /> " . $success_string . "</p>";
+
+	}
+
+?>
 <p>
 	Your site URL is  <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> 
 

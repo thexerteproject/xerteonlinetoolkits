@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * Update file, code that runs when an editor window closes and the user is given the option of synchronising the files
 *
@@ -51,7 +51,7 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 
 	fclose($data_handle);
 
-	echo "File updated";
+	echo "Your project has been updated";
 	
 }
 

@@ -41,7 +41,7 @@ Version 1.0
 									login area
 								</p>
 								<div>
-									<form method="post" enctype="application/x-www-form-urlencoded" action=""><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
+									<form method="post" enctype="application/x-www-form-urlencoded" action="index.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
 									
 									
 									<!-- 

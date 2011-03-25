@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * Example page, brings up the an example template
 	 *

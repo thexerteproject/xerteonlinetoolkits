@@ -1,4 +1,4 @@
-<?PHP // 15/07/2006 (2.6)
+<?PHP     // 15/07/2006 (2.6)
 // - Changed the algorithm to parse the ZIP file.. Now, the script will try to mount the compressed
 //   list, searching on the 'Central Dir' records. If it fails, the script will try to search by
 //   checking every signature. Thanks to Jayson Cruz for pointing it.

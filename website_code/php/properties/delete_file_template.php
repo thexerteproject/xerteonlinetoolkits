@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * delete file template, allows the site to delete files from the media folder
 	 *

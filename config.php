@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * Config page, sets up the site variable from the database
 *
@@ -14,6 +14,8 @@
  * @global object $xerte_toolkits_site
  */
 
+// Same as error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
 
 $xerte_toolkits_site;
 
@@ -26,9 +28,11 @@ if(!isset($xerte_toolkits_site)){
 	/** 
 	 * Access the database to get the variables
 	 */
+	 
+	
 
 	include "database.php";
-
+	
 	$mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
 
 	mysql_select_db($xerte_toolkits_site->database_name) or die($database_fail = true);
@@ -181,7 +185,23 @@ if(!isset($xerte_toolkits_site)){
 	*/
 
 	$xerte_toolkits_site->feedback_list = $row['feedback_list'];
+
+	/*require_once("session_handler.php");
+
+	$session_handle = new toolkits_session_handler();
+
+	session_set_save_handler( array(&$session_handle,'xerte_session_open'),
+			            array(&$session_handle,'xerte_session_close'),
+				     array(&$session_handle,'xerte_session_read'),
+				     array(&$session_handle,'xerte_session_write'),
+				     array(&$session_handle,'xerte_session_destroy'),
+				     array(&$session_handle,'xerte_session_clean'));*/
+
+	session_start();	
+		
+	$_SESSION['toolkits_sessionid'] = session_id();
 	
+
 }
 
 ?>

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * copy to new folder page, the sites moves some items from one folder to another
 	 *

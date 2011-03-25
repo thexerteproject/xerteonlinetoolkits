@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * folder properties template page, used by the site to display the default panel for the properties page
 *

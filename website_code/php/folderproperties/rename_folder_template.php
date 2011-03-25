@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * rename folder template page, used by the site to rename a folder
 *

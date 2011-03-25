@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * general_templates, shows blank templates to a user
 *

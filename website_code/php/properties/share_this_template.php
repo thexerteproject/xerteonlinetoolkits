@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * share this template, gives a new user rights to a template
 *

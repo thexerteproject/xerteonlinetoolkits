@@ -27,7 +27,7 @@
 	
 		if(strlen($search)!=0){
 	
-			$query_for_names = "select login_id, firstname, surname from " . $xerte_toolkits_site->database_table_prefix . "logindetails WHERE ((firstname like '" . $search . "%') or (surname like '" . $search . "%')) and login_id not in( SELECT user_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $tutorial_id . "\" ) ORDER BY firstname ASC";
+			$query_for_names = "select login_id, firstname, surname from " . $xerte_toolkits_site->database_table_prefix . "logindetails WHERE ((firstname like \"" . $search . "%\") or (surname like \"" . $search . "%\")) and login_id not in( SELECT user_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $tutorial_id . "\" ) ORDER BY firstname ASC";
 
 			$query_names_response = mysql_query($query_for_names);
 	
@@ -35,7 +35,7 @@
 	
 				while($row = mysql_fetch_array($query_names_response)){
 	
-					echo "<p>" . $row['firstname'] . " " . $row['surname'] . " - <a href=\"javascript:share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">click here to add this user</a></p>";
+					echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <a href=\"javascript:share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">click here to add this user</a></p>";
 	
 				}
 	

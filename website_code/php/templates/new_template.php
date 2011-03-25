@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * new_templates, allows the site to create a new user
 *

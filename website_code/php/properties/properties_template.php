@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * properties template, shows the basic page on the properties window
 *
@@ -51,23 +51,27 @@
 
 		echo "<p>This file was last modified on " . $row['date_modified'] . "</p>";
 
-		echo "<p>To allow other people to access this file, the link is</p>";
+		if(template_access_settings(mysql_real_escape_string($_POST['template_id']))=="Public"){
 
-		echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
-
-		// Get the template screen size
-
-		$query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $tutorial_id . "\"";
-
-		$query_name_response = mysql_query($query_for_template_name);
-
-		$row_name = mysql_fetch_array($query_name_response);
-
-		$temp_string = get_template_screen_size($row_name['template_name'], $row_name['template_framework']);
-
-		$temp_array = explode("~",$temp_string);
-
-		echo "<br><br><p>This code will allow you to embed your project into a web page</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src='"  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "' width='" . $temp_array[0] . "' height='" . $temp_array[1] . "' frameborder=\"0\"></iframe></textarea></form>";
+			echo "<p>To allow other people to access this file, the link is</p>";
+	
+			echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
+	
+			// Get the template screen size
+	
+			$query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $tutorial_id . "\"";
+	
+			$query_name_response = mysql_query($query_for_template_name);
+	
+			$row_name = mysql_fetch_array($query_name_response);
+	
+			$temp_string = get_template_screen_size($row_name['template_name'], $row_name['template_framework']);
+	
+			$temp_array = explode("~",$temp_string);
+	
+			echo "<br><br><p>This code will allow you to embed your project into a web page</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src='"  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "' width='" . $temp_array[0] . "' height='" . $temp_array[1] . "' frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></></iframe></textarea></form>";
+			
+		}
 
 	}else{
 

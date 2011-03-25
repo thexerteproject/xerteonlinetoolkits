@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * duplicate_template, allows the template to be duplicated
 *

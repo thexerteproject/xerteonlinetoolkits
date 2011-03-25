@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * template close, code that runs when an editor window is closed to remove the lock file
 *

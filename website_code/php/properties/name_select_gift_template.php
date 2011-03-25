@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * name select gift template, displays usernames so people can choose one to gift a template to
 *
@@ -35,7 +35,7 @@
 	
 				while($row = mysql_fetch_array($query_names_response)){
 	
-					echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " - <a href=\"javascript:gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">click here</a> to give a copy of this template to this user.</p>";
+					echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['login_id'] . ") - <a href=\"javascript:gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">click here</a> to give a copy of this template to this user.</p>";
 	
 				}
 	

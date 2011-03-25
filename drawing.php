@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * Drawing page, brings up the xerte drawing tool in another window
 	 *

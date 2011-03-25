@@ -86,7 +86,7 @@ function create_user_id(){
 
 	global $xerte_toolkits_site;
 
-	$query = "insert into " . $xerte_toolkits_site->database_table_prefix . "logindetails (username, lastlogin, firstname, surname) values ('" . $_SESSION['toolkits_logon_username'] . "','" . date('Y-m-d') . "','" . $_SESSION['toolkits_firstname'] . "','" . $_SESSION['toolkits_surname'] . "')";
+	$query = "insert into " . $xerte_toolkits_site->database_table_prefix . "logindetails (username, lastlogin, firstname, surname) values ('" . $_SESSION['toolkits_logon_username'] . "','" . date('Y-m-d') . "',\"" . $_SESSION['toolkits_firstname'] . "\",\"" . $_SESSION['toolkits_surname'] . "\")";
 
 	if(mysql_query($query)){
 
@@ -219,6 +219,18 @@ function update_user_logon_time(){
 
 	}
 
+	$query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "logindetails SET firstname = '" . $_SESSION['toolkits_firstname'] . "', surname = '" . $_SESSION['toolkits_surname'] . "' WHERE username = '" . $_SESSION['toolkits_logon_username'] . "'"; 
+			
+	if(mysql_query($query)){
+
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users username " . $_SESSION['toolkits_logon_username'], "Succeeded in updating usersname ");
+
+	}else{
+
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "MINOR", "Failed to update users username", "Failed to update users username");
+
+	}
+
 }
 
     /**
@@ -268,7 +280,7 @@ function get_user_root_folder(){
 function is_user_admin(){
 
 	global $xerte_toolkits_site;
-
+	
 	if($_SESSION['toolkits_logon_id']=="site_administrator"){
 
 		return true;

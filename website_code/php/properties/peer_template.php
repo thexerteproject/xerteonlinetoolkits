@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * peer template, allows the user to set up a peer review page for their template
 *

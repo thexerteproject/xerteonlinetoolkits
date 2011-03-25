@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * public templates template page, used displays the User created
 *
@@ -30,13 +30,13 @@
 
 	$query_public_response = mysql_query($query_for_public_templates);
 
-	echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
+	echo "<div style=\"float:left; clear:left; margin-left:20px; margin-top:10px; width:90%;\">";
 
-	echo "<div style=\"float:left; position:relative; width:50%; height:20px;\">Name</div>";
+	echo "<div style=\"float:left; width:50%; height:20px;\">Name</div>";
 
 	while($row_template_name = mysql_fetch_array($query_public_response)){
 
-		echo "<div style=\"float:left; position:relative; width:100%;\">" . $row_template_name['template_name'] . "</div>";
+		echo "<div style=\"float:left; width:100%;\">" . $row_template_name['template_name'] . "</div>";
 
 	}
 	

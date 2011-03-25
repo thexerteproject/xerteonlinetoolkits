@@ -72,6 +72,8 @@ function iframe_check(){
 
 			string = string.substr(0,string.length-4);
 
+			alert("Here i am");
+
 			alert(string);
 
 			window_reference.screen_refresh();

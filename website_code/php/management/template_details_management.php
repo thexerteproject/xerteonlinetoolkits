@@ -1,4 +1,4 @@
-<?PHP require("../../../config.php");
+<?PHP     require("../../../config.php");
 require("../../../session.php");
 
 require("../database_library.php");

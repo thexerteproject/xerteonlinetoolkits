@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * folder content page, used by the site to display a folder's contents
 *

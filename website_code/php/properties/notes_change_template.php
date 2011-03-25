@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * notes change template, updates a users notes on a template
 *
@@ -25,7 +25,7 @@
 				
 			echo "<p class=\"header\"><span>Project Notes:</span></p>";
 	
-			echo "<p><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $_POST['notes'] . "</textarea><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_bottom\" /></form></p><p>Notes saved</p>";
+			echo "<p><p>These notes are only visible to yourself<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $_POST['notes'] . "</textarea><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_bottom\" /></form></p><p>Notes saved</p>";
 	
 		}else{
 			

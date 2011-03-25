@@ -1,4 +1,6 @@
-<?PHP header("Content-Type: application/xml; charset=ISO-8859-1");  
+<?PHP    
+
+   header("Content-Type: application/xml; charset=ISO-8859-1");  
 
    require "config.php";
    
@@ -90,7 +92,7 @@
 
 		$row_folder = mysql_fetch_array($query_folder_response);
 
-		$query = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id,creator_id,template_name,folder,description,rss from " . $xerte_toolkits_site->database_table_prefix . "templatedetails ," . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatesyndication, " . $xerte_toolkits_site->database_table_prefix . "folderdetails where rss=\"true\" AND creator_id=\"" . $row_create['login_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and folder_id=\"" . $row_folder['folder_id'] . "\"";
+		$query = "select * from " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where folder = \"" . $row_folder['folder_id'] .  "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and rss = \"true\"";
 
 		//$query = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id,creator_id,template_name,folder,description from " . $xerte_toolkits_site->database_table_prefix . "templatedetails," . $xerte_toolkits_site->database_table_prefix . "templaterights," . $xerte_toolkits_site->database_table_prefix . "templatesyndication where " . $query_modifier . "=\"true\" AND creator_id=\"" . $row_create['login_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and folder_id=\"" . $row_folder['folder_id'] . "\"";
 

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * data page, allows other sites to consume the xml of a toolkit
 	 *
@@ -102,7 +102,7 @@
 				$row_username = mysql_fetch_array($query_for_username_response);
 		
 				$path = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
-		
+
 				echo str_replace("FileLocation + '", $xerte_toolkits_site->site_url . $path, file_get_contents($path . "data.xml"));	
 
 
@@ -111,9 +111,11 @@
 
 		}else{
 
-			/**
-		    *  Display nothing
+			/***  
+				Display nothing
 			*/
+
+			echo "XML Sharing not set up";
 
 			dont_show_template();
 

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * remove_templates, allows the site to remove a template
 *

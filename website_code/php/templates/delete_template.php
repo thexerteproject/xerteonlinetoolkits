@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * delete_template, allows the template to be deleted (placed in the recycle bin)
 *

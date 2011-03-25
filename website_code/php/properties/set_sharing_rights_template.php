@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * set sharing rights template, modifies rights to a template
 *

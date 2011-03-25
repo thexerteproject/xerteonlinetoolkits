@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * delete folder page, the site deletes a folder
 	 *

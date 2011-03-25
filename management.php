@@ -1,4 +1,6 @@
-<?PHP require("config.php");
+<?PHP     
+
+	require("config.php");
 
 	/**
 	 * 
@@ -10,23 +12,7 @@
 	 * @package
 	 */
 
-	/*
-	* Create a management session 
-	*/ 
-
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-		//$session_id = "management" . $_POST['login']. time();
-
-		//session_id($session_id);
-		//session_name($xerte_toolkits_site->site_session_name);
-		//session_start($xerte_toolkits_site->site_session_name);
-
-		session_start();
-
-	}
-
-
+	
 	require $xerte_toolkits_site->php_library_path . "login_library.php";
 
 	require $xerte_toolkits_site->php_library_path . "display_library.php";
@@ -37,9 +23,9 @@
 	
 	if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
 
-		$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+		$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
-		$buffer .= $form_string;
+		$buffer .= "<p>This is the management panel. Only site administrators can access this resource.</p>";
 
 		$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
 
@@ -59,7 +45,7 @@
 
 		if(($_POST["login"]=="")&&($_POST["password"]=="")){
 			
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
 			$buffer .= "<p>Please enter your username and password</p>";
 
@@ -73,7 +59,7 @@
 		
 		}else if($_POST["login"]==""){
 
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
 			$buffer .= "<p>Please enter your username</p>";
 
@@ -87,7 +73,7 @@
 	
 		}else if($_POST["password"]==""){
 	
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
 			$buffer .= "<p>Please enter your password</p>";
 
@@ -101,21 +87,19 @@
 		*/
 	
 		}else{
-
+		
 			if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&($_POST["password"]==$xerte_toolkits_site->admin_password)){
+			
+				$_SESSION['toolkits_logon_id'] = "site_administrator";	
 
 				require $xerte_toolkits_site->php_library_path . "database_library.php";
 
 				require $xerte_toolkits_site->php_library_path . "user_library.php";
 
-				$_SESSION['toolkits_sessionid'] = $session_id; 
+				$_SESSION['toolkits_logon_username'] = "adminuser";				
 
 				$mysql_id=database_connect("management.php database connect success","management.php database connect fail");			
-
-				$_SESSION['toolkits_logon_username'] = $_POST["login"];
-
-				$_SESSION['toolkits_logon_id'] = "site_administrator";
-
+				
 				/*
 				* Check the user is set as an admin in the usertype record in the logindetails table, and display the page
 				*/
@@ -136,8 +120,8 @@
 
 				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_top");			
 
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");					
-
+				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
+				
 
 			}else{
 			

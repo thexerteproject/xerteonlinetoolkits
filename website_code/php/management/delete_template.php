@@ -1,4 +1,4 @@
-<?PHP // Delete template code
+<?PHP     // Delete template code
 //
 // Version 1.0 University of Nottingham
 // 

@@ -1,6 +1,4 @@
-<?
-
-/**
+<?PHP     /**
 * 
 * module functions page, shared functions for this module
 *

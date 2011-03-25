@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * export, allows the creation of zip and scorm packages
 *
@@ -15,12 +15,16 @@ include "../database_library.php";
 include "../screen_size_library.php";
 include "../template_status.php";
 include "../user_library.php";
+include "../url_library.php";
 
 $folder_id_array = array();
 $folder_array = array();
 $file_array = array();
 $delete_file_array = array();
 $delete_folder_array = array();
+
+ini_set('max_execution_time', 300);
+ini_set('memory_limit','64M');
 
 if(is_numeric($_GET['template_id'])){
 
@@ -70,16 +74,34 @@ if(is_numeric($_GET['template_id'])){
 		* Make the zip
 		*/
 	
-		$zipfile = new zip_file("example_zipper_new" . date(U) . ".zip");
+		$zipfile = new zip_file("example_zipper_new" . time() . ".zip");
 		$zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 1, 'recurse' => 1, 'storepaths' => 1));
 	
 		/*
 		* Copy the core files over from the parent folder
 		*/
-	
+		
 		folder_loop($parent_template_path);
 	
 		copy($dir_path . "data.xml",$dir_path . "template.xml");
+		
+		if(isset($_GET['local'])){
+		
+		if($_GET['local']=="true"){
+		
+				$string = file_get_contents($dir_path . "/template.xml");	
+			
+				$string = str_replace($xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/", "", $string);
+			
+				$fh = fopen($dir_path . "/template.xml", 'w+');	
+			
+				fwrite($fh,$string);
+			
+				fclose($fh);
+				
+			}
+		
+		}
 	
 		copy_parent_files();
 	
@@ -140,17 +162,35 @@ if(is_numeric($_GET['template_id'])){
 		*/
 	
 		if($scorm=="true"){
+		
+			if($_GET['data']==true){
+			
+				$query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
+
+				$query_response_metadata = mysql_query($query);
 	
-			lmsmanifest_create($row['zipname']);
+				$metadata = mysql_fetch_array($query_response_metadata);
+				
+				$query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
+
+				$query_response_users = mysql_query($query);
+
+				lmsmanifest_create_rich($row, $metadata, $query_response_users);
+							
+			}else{	
+
+				lmsmanifest_create($row['zipname']);
+				
+			}
 	
 			scorm_html_page_create($row['template_name'],$row['template_framework']);
-	
+				
 		}else{
 	
 			basic_html_page_create($row['template_name'],$row['template_framework']);
 	
 		}
-	
+			
 	
 		/*
 		* Add the files to the zip file, create the archive, then send it to the user

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * folder rss page, used by the site to display a folder's rss settings
 *

@@ -55,22 +55,22 @@ body{
 
 .mainbody_left{
 
-	float:left;	
+	float:right;	
 	position:relative;
-	background-image:url(../images/BackgroundLogin.gif);
-	background-position:top left; 
-	background-repeat:no-repeat; 
-	width:385px; 
-	height:415px; 
-
+	
 }
 
 .mainbody_div{
 
-	float:right; 
+	background-position:top left; 
+	background-repeat:no-repeat; 
+	background-image:url(../images/BackgroundLogin.gif);
+	float:left; 
 	position:relative; 
-	width:250px; 
-	margin-right:20px;
+	width:362px; 
+	height:415px; 
+	padding-top:380px;
+
 
 }
 
@@ -78,7 +78,7 @@ body{
 	float:right; 
 	position:relative; 
 	margin:20px auto; 
-	height:450px;
+	height:500px;
 }
 
 .mainbody_div_2{
@@ -234,6 +234,41 @@ body{
 }
 
 .news_story a{
+
+	font-weight:normal;
+	color:#000;
+
+}
+
+.tutorials{
+
+	background-color:#f9f7f2; 
+	float:left; 
+	margin:0px 0 40px 0;
+	width:260px;
+	margin-right:20px;
+	height:475px;
+
+}
+
+.tutorials_title{
+
+	padding:10px 0 10px 10px;
+	font-weight:bold; 
+	color:#645f4f; 
+	margin:0px;
+	
+}
+
+.tutorials_story{
+
+	padding:0 0 10px 10px; 
+	margin:0px; 
+	color:#000000; 
+
+}
+
+.tutorials_story a{
 
 	font-weight:normal;
 	color:#000;
@@ -482,20 +517,38 @@ div#file_area{
 }
 
 .folder{
-	float:left; position:relative; background-color:#fff; width:100%; height:25px;
+	float:left;
+	position:relative;
+	width:100%; 
+	height:25px; 
+	margin-left:15px; 
+	z-index:0;	
 }
 
 .file{
-	position:relative; background-color:#fff; height:25px; width:100%;  float:left;
+	position:relative; 
+	height:25px; 
+	width:100%; 
+	float:left; 
+	margin-left:15px;
+	z-index:1;
 }
 
 .folder_content{
 
 	display:none;
+	margin-left:15px;
+	
+}
+
+div#folder_workspace, div#recyclebin{
+
+	margin:0px;
 
 }
 
 .workspace{
 
 	display:block;
+	
 }

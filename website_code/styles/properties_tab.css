@@ -239,6 +239,8 @@ div#menu_tabs{
 	border-top:1px solid #f4eee2;
 	border-left:1px solid #f4eee2;
 	border-bottom:1px solid #f4eee2;
+	cursor:hand;
+	cursor:pointer;
 }
 
 .tab p{

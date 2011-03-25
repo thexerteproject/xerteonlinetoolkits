@@ -1,4 +1,5 @@
-document.writeln('<div id="sco" style="width:' + rloWidth + 'px; height:' + rloHeight + 'px;">');
+document.writeln('<br>');
+document.writeln('<center><div id="sco" style="width:' + rloWidth + 'px; height:' + rloHeight + 'px;">');
 document.writeln('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" Codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" WIDTH="100%" HEIGHT="100%" id="MainPreloader" ALIGN="middle">');
 document.writeln('<param name="movie" value="MainPreloader.swf" />');
 document.writeln('<param name="quality" value="high" />');
@@ -10,4 +11,4 @@ document.writeln('<param name="seamlessTabbing" value="0" />');
 document.writeln('<param name="flashVars" value="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '" />');
 document.writeln('<embed src="MainPreloader.swf" allowScriptAccess="always" quality="high" scale="showAll" salign="T" bgcolor="#ffffff"  WIDTH="100%" HEIGHT="100%" NAME="MainPreloader" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" flashVars="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '"/>');
 document.writeln('</object>');
-document.writeln('</div>');
+document.writeln('</div></center>');

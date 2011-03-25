@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * workspace templates template page, used displays the User created
 *

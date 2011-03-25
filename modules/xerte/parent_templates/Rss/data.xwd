@@ -5,7 +5,7 @@
   <channel duplicate="false" icon="icPages">
 
     <newNodes>
-      <item><![CDATA[<item><title>Enter Title</title><link>Enter URL</link><description>Enter Description</description></item>]]></item>
+      <item><![CDATA[<item><title>Enter Title</title><link>Enter URL</link><description>Enter Description</description><pubDate>Mon, 01 Apr 1980 12:00:00 GMT</pubDate></item>]]></item>
     </newNodes>
 
   </channel>

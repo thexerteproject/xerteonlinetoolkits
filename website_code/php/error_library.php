@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * Function receive message
  	 * This function is used to handle how an error message is used

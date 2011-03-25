@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * peer change template, alters the peer review status of a template
 *

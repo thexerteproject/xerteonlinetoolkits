@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * workspace templates template page, used displays the User created
 *
@@ -32,11 +32,11 @@
 
 	echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
 
-	echo "<div style=\"float:left; position:relative; width:60%; height:20px;\">Name</div><div style=\"float:left; position:relative; width:30%; height:20px;\">XML Sharing</div>";
+	echo "<div style=\"float:left; width:60%; height:20px;\">Name</div><div style=\"float:left; width:30%; height:20px;\">XML Sharing</div>";
 
 	while($row_template_name = mysql_fetch_array($query_peer_response)){
 
-		echo "<div style=\"float:left; position:relative; width:60%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; position:relative; width:20%;\"> On </div>";
+		echo "<div style=\"float:left; width:60%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:20%;\"> On </div>";
 
 	}
 

@@ -8,6 +8,57 @@
 	 * @package
 	 */
 
+
+function is_ok_user(name_string){
+
+   var ValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- ";
+   var name_is_ok=true;
+   var Char;
+
+
+   for (i = 0; i < name_string.length; i++){
+      Char = name_string.charAt(i);
+      if (ValidChars.indexOf(Char) == -1){
+         name_is_ok = false;
+      }
+   }
+
+   if(name_string.indexOf("select")!=-1){
+
+      name_is_ok = false;
+
+   }else if(name_string.indexOf("update")!=-1){
+
+      name_is_ok = false;
+
+   }else if(name_string.indexOf("insert")!=-1){
+
+      name_is_ok = false;
+
+   }else if(name_string.indexOf("drop")!=-1){
+
+      name_is_ok = false;
+
+   }else if(name_string.indexOf("truncate")!=-1){
+
+      name_is_ok = false;
+
+   }else if(name_string.indexOf("delete")!=-1){
+
+      name_is_ok = false;
+
+   }
+
+   if(name_string.length==0){
+
+	name_is_ok = false;
+
+   }
+
+   return name_is_ok;
+
+}
+
 	 /**
 	 * 
 	 * Function is ok name

@@ -1,10 +1,12 @@
-<?PHP require("config.php");
+<?PHP 
+
+	require("config.php");
 
 	//$session_id = "GUESTUSER" . time();
 
 	//session_id($session_id);
 	//session_name($xerte_toolkits_site->site_session_name);
-	session_start();
+	//session_start();
 	
 	//$_SESSION['toolkits_sessionid'] = $session_id;
 
@@ -28,15 +30,16 @@
 
 	$_SESSION['toolkits_firstname'] = "Guest";
 				
-	$_SESSION['toolkits_surname'] = "User";
+	$_SESSION['toolkits_surname'] = "User 2";
 
 	include $xerte_toolkits_site->php_library_path . "database_library.php";
 
 	include $xerte_toolkits_site->php_library_path . "user_library.php";
 
+	$_SESSION['toolkits_logon_username'] = "guest2";
+
 	$mysql_id=database_connect("index.php database connect success","index.php database connect fail");			
 
-	$_SESSION['toolkits_logon_username'] = "guest";
 
 	/*
 	* Check to see if this is a users' first time on the site

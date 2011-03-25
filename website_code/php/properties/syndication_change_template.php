@@ -89,7 +89,15 @@ if(is_numeric($_POST['tutorial_id'])){
 
 			echo "</select></p>";
 
-			echo "<p class=\"share_status_paragraph\">Please choose a license for your project<br><select SelectedItem=\"" . $row_syndication['license_name'] . "\" name=\"type\" id=\"license_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
+			echo "<p class=\"share_status_paragraph\">Please choose a license for your project<br><select ";
+			
+			if(isset($row_syndication['license_name'])){
+			
+				echo " SelectedItem=\"" . $row_syndication['license_name'] . "\"";
+			 
+			}
+			  
+			echo " name=\"type\" id=\"license_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
 
 			$query_for_licenses = "select license_name from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses";
 

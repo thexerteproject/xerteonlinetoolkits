@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * Delete template page, used by the site to delete a xerte template
 *

@@ -5,8 +5,22 @@
 	$buffer = str_replace("DATABASE_USERNAME",$_POST['account'],$buffer);
 	$buffer = str_replace("DATABASE_PASSWORD",$_POST['password'],$buffer);
 	$file_handle = fopen("../database.php",'w');
-	fwrite($file_handle,$buffer,strlen($buffer));
-	fclose($file_handle);
+
+	if($file_handle){
+		if(fwrite($file_handle,$buffer,strlen($buffer))){
+			fclose($file_handle);
+		}else{
+			
+			echo "database.php could not be written to";
+			die();
+
+		}
+	}else{
+
+		echo "database.php could not be created";
+		die();		
+
+	}
 
 	?>
 
@@ -21,7 +35,7 @@ Use this page to set up Xerte Online Toolkits. The various settings have been gr
 
 		<?PHP echo "<h3>Site formatting settings - Customising the first login page</h3><p>Please see <a href=\"page1.gif\" target=\"new\">this screen shot</a> for guidance.";
 
-		echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea>";
+		echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
 
 		echo "<p>The site title is (This is the HTML title tag content) <textarea name=\"site_title\">Welcome to Xerte Online Toolkits</textarea></p>";
 

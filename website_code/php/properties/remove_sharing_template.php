@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * remove sharing template, removes some one from the list of users sharing the site
 *

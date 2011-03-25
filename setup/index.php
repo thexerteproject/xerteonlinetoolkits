@@ -19,5 +19,6 @@ Snoopy.class.php - written by Monte Ohrt and released as LGPL <br><br> Archive.p
 <p>
 	<a href="config_setup.php" style="border:0; text-decoration:none"><img src="next.gif" align="middle" style="margin-right:10px" />For a full install</a>
 </p>
+<p><b>Please note:</b> If you install locally and use XAMPP it may not run if you are using Skype. Please disable Skype if you intend to use XAMPP locally.</p>
 </body>
 </html>

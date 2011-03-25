@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * screen size template, gets the xml and returns the size for the display of the template
 *

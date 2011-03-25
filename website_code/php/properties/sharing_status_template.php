@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * sharing status template, shows who is sharing a template
 *
@@ -32,7 +32,7 @@ if(is_numeric($_POST['template_id'])){
 
 		if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-			echo "<div class=\"share_top\"><p class=\"header\"><span>To share this template with some one, please type their name here</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+			echo "<div class=\"share_top\"><p class=\"header\"><span>To share this template with some one, please type their name here. The user must have an account on the site to appear in this search.</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
 
 		}
 		
@@ -60,7 +60,7 @@ if(is_numeric($_POST['template_id'])){
 			
 						}else{
 			
-							echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> Editor";
+							echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> Editor";
 					
 						}
 				

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * preview page, brings up a preview page for the editor to see their changes
 	 *

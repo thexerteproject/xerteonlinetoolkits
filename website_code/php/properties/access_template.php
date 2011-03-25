@@ -54,11 +54,11 @@
 
 if(is_numeric($_POST['template_id'])){
 
-	if(is_user_creator($_POST['template_id'])||is_user_admin()){
+	if(has_rights_to_this_template($_POST['template_id'],$_SESSION['toolkits_logon_id'])||is_user_admin()){
 
 		$query_for_template_access = "select access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=" . mysql_real_escape_string($_POST['template_id']);
 
-		$query_access_response = mysql_db_query($xerte_toolkits_site->database_name, $query_for_template_access);
+		$query_access_response = mysql_query($query_for_template_access);
 
 		$row_access = mysql_fetch_array($query_access_response);
 
@@ -102,8 +102,12 @@ if(is_numeric($_POST['template_id'])){
 		echo " Other</p><p class=\"share_explain_paragraph\">Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.<form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\">";
 
 		$temp = explode("-", $row_access['access_to_whom']);
+		
+		if(isset($temp[1])){
 
-		echo $temp[1];
+			echo $temp[1];
+			
+		}
 
 		echo "</textarea></form></p>";
 

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * file exists page, used by xerte to chec if a file is there before previewing it
 *

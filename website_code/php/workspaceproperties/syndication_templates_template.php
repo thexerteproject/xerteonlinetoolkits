@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * workspace templates template page, used displays the User created
 *
@@ -32,11 +32,11 @@
 
 	echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
 
-	echo "<div style=\"float:left; position:relative; width:50%; height:20px;\">Name</div><div style=\"float:left; position:relative; width:40%; height:20px;\">Syndication</div>";
+	echo "<div style=\"float:left; width:50%; height:20px;\">Name</div><div style=\"float:left; width:40%; height:20px;\">Syndication</div>";
 
 	while($row_template_name = mysql_fetch_array($query_rss_response)){
 
-		echo "<div style=\"float:left; position:relative; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; position:relative; width:40%;\">";
+		echo "<div style=\"float:left; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:40%;\">";
 
 		if($row_template_name['syndication']){
 

@@ -994,7 +994,11 @@ function remove_this(){
 
 		}else{
 
-			var response = confirm("Are you sure you with to delete this item?");
+			data_string = drag_manager.selected_items[0].innerHTML;
+
+			name_string = data_string.split(">");
+
+			var response = confirm(name_string[1] + "\n\nAre you sure you with to delete?");
 
 		}
 

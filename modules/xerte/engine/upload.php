@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * upload page, used by xerte to upload a file
 *

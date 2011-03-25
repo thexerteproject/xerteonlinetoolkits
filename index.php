@@ -1,4 +1,6 @@
-<?PHP require("config.php");
+<?PHP     
+
+	require("config.php");
 
 	/**
 	 * 
@@ -16,11 +18,13 @@
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-		//$session_id = $_POST['login']. time();
+		$session_id = time();
 
 		//session_id($session_id);
 		//session_name($xerte_toolkits_site->site_session_name);
-		session_start();
+		//session_start($xerte_toolkits_site->site_session_name);
+
+		//session_start();
 
 	}
 
@@ -35,8 +39,6 @@
 	if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
 
 		$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
-
-		$buffer .= $form_string;
 
 		$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
 
@@ -102,14 +104,25 @@
 		* See if the submitted values are valid logins
 		*/
 		
-			if(valid_login($_POST["login"],$_POST["password"])){
+			if(($_POST["login"]!=$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])!=$xerte_toolkits_site->admin_password)){
+		
+				if(!function_exists("ldap_connect")){
+			
+					echo "<p>PHP's LDAP library needs to be installed to use LDAP authentication. If you read the install guide other options are available</p>";
+				
+					die();
+			
+				}
+				
+			}
+
+			if(valid_login($_POST["login"],stripslashes($_POST["password"]), $xerte_toolkits_site)){
 				
 				/*
 				* Give the session its own session id
 				*/		
 
 				$_SESSION['toolkits_sessionid'] = $session_id; 
-
 				
 				/*
 				* Get some user details back from LDAP
@@ -117,6 +130,8 @@
 
 				$entry = get_user_details($_POST["login"],$_POST["password"]);
 
+				$entry = $entry[1];
+				
 				$_SESSION['toolkits_firstname'] = $entry[0][givenname][0];
 				
 				$_SESSION['toolkits_surname'] = $entry[0][sn][0];
@@ -125,7 +140,7 @@
 
 				include $xerte_toolkits_site->php_library_path . "user_library.php";
 
-				$mysql_id=database_connect("index.php database connect success","index.php database connect fail");			
+				$mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
 
 				$_SESSION['toolkits_logon_username'] = $_POST["login"];
 
@@ -186,18 +201,32 @@
 				echo file_get_contents($xerte_toolkits_site->website_code_path . "management_bottom");
 
 			}else{
+
+				if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])==$xerte_toolkits_site->admin_password)){
+				
+					$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+
+					$buffer .= "<p>Site admins should log on on the manangement page</p>";
+
+					$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+
+					echo $buffer;	
+
+				}else{
 			
-				/*
-				* login has failed
-				*/
+					/*
+					* login has failed
+					*/
+	
+					$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
 
-				$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+					$buffer .= "<p>Sorry that password combination was not correct</p>";
 
-				$buffer .= "<p>Sorry that password combination was not correct</p>";
+					$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
 
-				$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+					echo $buffer;	
 
-				echo $buffer;	
+				}
 
 			}
 
@@ -205,6 +234,6 @@
 	
 	}
 
-?>	
+?>
 </body>
 </html>

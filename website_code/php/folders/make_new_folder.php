@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * new folder page, the sites makes a new folder
 	 *

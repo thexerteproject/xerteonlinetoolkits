@@ -1,4 +1,4 @@
-<?PHP include 'database_library.php';
+<?PHP     include 'database_library.php';
 include 'file_library.php';
 include 'user_library.php';
 include 'error_library.php';

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * function get maximum template number, finds the highest template number
 	 *
@@ -18,7 +18,7 @@ function get_maximum_template_number(){
 
 	$query_response = mysql_query($query);
 
-	if($query_reponse===false){
+	if($query_response===false){
 
 		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get the maximum template number", "Failed to get the maximum template number");
 

@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 	 * 
 	 * Function lmsmanifest_create
  	 * This function creates a scorm manifest
@@ -12,13 +12,73 @@ function lmsmanifest_create($name){
 
 	$scorm_top_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manifest xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\" xmlns:imsmd=\"http://www.imsglobal.org/xsd/imsmd_rootv1p2p1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\" identifier=\"MANIFEST-90878C16-EB60-D648-94ED-9651972B5F38\" xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd\"><metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion></metadata>";
 
-	$date = date(U);
+	$date = time();
 
+	$scorm_personalise_string = "";
 	$scorm_personalise_string .= "<organizations default=\"" . "XERTE-ORG-" . $date . "\">";
 	$scorm_personalise_string .= "<organization identifier=\"" . "XERTE-ORG-" . $date . "\" structure=\"hierarchical\">";
 	$scorm_personalise_string .= "<title>" . str_replace("_"," ",$name) . "</title>";
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
 	$scorm_personalise_string .= "<title>" . "My learning object title" . "</title>";
+
+	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
+
+	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
+
+	$buffer = $scorm_top_string . $scorm_personalise_string . $scorm_bottom_string;
+
+	fwrite($file_handle,$buffer,strlen($buffer));
+	fclose($file_handle);
+
+	$zipfile->add_files("imsmanifest.xml");
+	
+	array_push($delete_file_array,  $dir_path . "imsmanifest.xml");
+	
+}
+
+/**
+	 * 
+	 * Function lmsmanifest_create
+ 	 * This function creates a scorm manifest
+	 * @version 1.0
+	 * @author Patrick Lockley
+	 */
+
+function lmsmanifest_create_rich($row, $metadata, $users){
+
+	global $dir_path, $delete_file_array, $zipfile, $xerte_toolkits_site;
+
+	$scorm_top_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><manifest xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\" xmlns:imsmd=\"http://www.imsglobal.org/xsd/imsmd_rootv1p2p1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\" identifier=\"MANIFEST-90878C16-EB60-D648-94ED-9651972B5F38\" xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd\"><metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion>";
+	
+	$scorm_top_string .= "<imsmd:lom><imsmd:general><imsmd:identifier><imsmd:catalog>" . $xerte_toolkits_site->site_title . "</imsmd:catalog><imsmd:entry>A180_2</imsmd:entry></imsmd:identifier><imsmd:title><imsmd:string language=\"en-GB\">" . $row['zipname'] . "</imsmd:string></imsmd:title><imsmd:language>en-GB</imsmd:language><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['description'] . "</imsmd:string></imsmd:description>";
+	
+	$keyword = explode(",",$metadata['keywords']);
+	
+	while($word = array_pop($keyword)){
+	
+		$scorm_top_string .= "<imsmd:keyword><imsmd:string language=\"en-GB\">" . $word . "</imsmd:string></imsmd:keyword>";
+	
+	}
+	
+	while($user = mysql_fetch_array($users)){
+	
+		$scorm_top_string .= "</imsmd:general><imsmd:lifeCycle><imsmd:contribute><imsmd:role><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>author</imsmd:value></imsmd:role><imsmd:entity>" . $user['firstname'] . " " . $user['surname'] . "</imsmd:entity></imsmd:contribute></imsmd:lifeCycle>";
+	
+	}
+	
+	$scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", mysql_real_escape_string($_GET['template_id'])) . "</imsmd:location></imsmd:technical>";
+	
+	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['licenses'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['licenses'] . "</imsmd:string></imsmd:description></imsmd:rights>";
+	
+	$scorm_top_string .= "</imsmd:lom></metadata>";
+
+	$date = time();
+
+	$scorm_personalise_string = "";
+	$scorm_personalise_string .= "<organizations default=\"" . "XERTE-ORG-" . $date . "\">";
+	$scorm_personalise_string .= "<organization identifier=\"" . "XERTE-ORG-" . $date . "\" structure=\"hierarchical\">";
+	$scorm_personalise_string .= "<title>" . str_replace("_"," ",$row['zipname']) . "</title>";
+	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
 
 	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
 

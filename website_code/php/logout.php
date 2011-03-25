@@ -1,4 +1,6 @@
-<?PHP /**
+<?PHP     
+	
+	/**
 	 * 
 	 * logout page, user has logged out, wipe sessions
 	 *
@@ -9,10 +11,6 @@
 	 */
 		
 	require("../../config.php");
-	
-	session_name($xerte_toolkits_site->site_session_name);
-	
-	session_start($xerte_toolkits_site->site_session_name);
 
 	unset(session_id());
 

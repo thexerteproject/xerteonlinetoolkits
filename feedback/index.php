@@ -1,4 +1,4 @@
-<?PHP /**
+<?PHP     /**
 * 
 * feedback page, allows users to send feedback to site admins
 *
@@ -30,7 +30,7 @@
 	</div>
 	<div class="mainbody">
 		
-		<?PHP /**
+		<?PHP     /**
 		*	If something is posted, send this feedback
 		*/
 			

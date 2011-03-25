@@ -1,6 +1,4 @@
-<?PHP
-
-/**
+<?PHP     /**
 * 
 * Save page, used by xerte to update its XML files
 *
@@ -42,11 +40,11 @@ if($_POST['fileupdate']=="true"){
 
 	if(fwrite($file_handle, stripslashes($_POST['filedata']))!=false){
 
-		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['template_id'] . " saved" , time());
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['template_id'] . " saved" , stripslashes($_POST['filedata']));
 
 	}else{
 
-		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['template_id'] . " failed to save" , time());
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['template_id'] . " failed to save" , stripslashes($_POST['filedata']));
 
 	}
 
@@ -87,6 +85,26 @@ if(mysql_query("UPDATE " . $xerte_toolkits_site->database_table_prefix . "templa
 }
 
 print("&returnvalue=$filename");
+
+if($_SESSION['toolkits_logon_username']=="cczpl"){
+
+	$savepath = str_replace("preview.xml","patsave.xml",$_POST['filename']);
+
+	$file_handle = fopen($xerte_toolkits_site->root_file_path . $savepath,'w');
+
+	if(fwrite($file_handle, stripslashes($_POST['filedata']))!=false){
+
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['template_id'] . " saved" , stripslashes($_POST['filedata']));
+
+	}else{
+
+		receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['template_id'] . " failed to save" , stripslashes($_POST['filedata']));
+
+	}
+
+	fclose($file_handle);
+
+}
 
 ?>
 
