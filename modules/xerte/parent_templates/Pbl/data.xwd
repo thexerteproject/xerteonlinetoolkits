@@ -1,0 +1,728 @@
+<wizard>
+  <ocase icon="icPackage">
+    <caseNo type="ComboBox"  label="Case No" options=" ,1,2,3,4,5,6,7,8,9" data="0,1,2,3,4,5,6,7,8,9" width="200"/>
+    <module type="ComboBox" label="Module Number" options=" ,1,2,3,4,5,6,7,8,9" data="00,10,20,30,40,50,60,70,80,90" width="200"/>
+
+    <oname type="TextArea" label="Case Title" height="50" width="200"/>
+    <emphasis type="textArea" label="Emphasis" height="100" width="200"/>
+    <authors type="TextArea" label="Author(s)" height="50" width="200"/>
+    <convener type="textInput" label="Module Convener"/>
+  </ocase>
+
+
+  <!--<web type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID=102&SessionNo=Session1'}"/>-->
+
+  <!--<LAHis type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session2&laType=History'}"/>-->
+  
+  <!--<LASession2 type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session2'}"/>-->
+  
+  <!--<LASession3  type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session3'}"/>-->
+  
+
+  
+  <!--<web>
+    <url type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID=102&SessionNo=Session1'}"/>
+  </web>
+
+  <LAHis>
+    <url type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session2&laType=History'}"/>
+  </LAHis>
+
+  <LASession2>
+    <url type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session2'}"/>
+  </LASession2>
+
+  <LASession3>
+    <url type="webpage" label="Learning Area" height="500" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&SessionNo=Session3'}"/>
+  </LASession3>-->
+
+
+  <furtherInfoTot>
+    <newNodes>
+      <furtherInfoItem><![CDATA[<furtherInfoItem title="Title" text="Here is the text"/>]]></furtherInfoItem>
+    </newNodes>
+  </furtherInfoTot>
+
+  <furtherInfoItem menuItem="further Information" icon="icInfo" remove="true" duplicate="false" max="1">
+    <title type="TextInput" label="Title"/>
+    <text type="TextArea" label="Text" height="200"/>
+  </furtherInfoItem>
+
+  <presentee icon="icUser">
+    <firstname type="TextInput" label="First Name"/>
+    <surname type="TextInput" label="Surname" />
+    <address type="textArea" height="100" label="Address\Location" />
+    <!--<date type="DateField" label="Date"/>-->
+    <sex type="ComboBox" label="Sex" options=" ,M,F" width="200"/>
+    <dob type="TextInput" width="200" label="Date of birth DD/MM/YY"/>
+    <!--<dob type="DateField" label="Date of birth"/>-->
+    <presentationDate type="TextInput" width="200" label="Presentation Date"/>
+    <!--<presentationDate type="DateField" label="Presentation Date"/>-->
+    <presentationTime type="ComboBox" label="Presentation Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,09:15,09:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+  </presentee>
+  <!--#########################################################################################-->
+  <!--<FacilitatorsGuide icon="icInfo">
+    <newNodes> 
+      <facItem><![CDATA[<facItem name="facItem">data here</facItem>]]></facItem>
+    </newNodes>
+  </FacilitatorsGuide>
+  <facItem menuItem="Fac Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </facItem>-->
+
+  <facPresentation> 
+    <newNodes>
+      <facPresentationItem><![CDATA[<facPresentationItem name="facItem">data here</facHistoryItem>]]></facPresentationItem>
+    </newNodes>
+  </facPresentation>
+
+  <facPresentationItem menuItem="Facilitators Guide Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </facPresentationItem>
+
+  <!--<History>
+    <newNodes>
+      <facHistoryItem><![CDATA[<facHistoryItem name="facItem">data here</facHistoryItem>]]></facHistoryItem>
+    </newNodes>
+  </History>
+  <facHistoryItem menuItem="History Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </facHistoryItem>-->
+  <!--<Examinations name="Test"> 
+    <newNodes>
+      <facExamItem><![CDATA[<facExamItem name="facItem">data here</facExamItem>]]></facExamItem>
+    </newNodes>
+  </Examinations>
+  <facExamItem menuItem="Eximination Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </facExamItem>-->
+
+  <Investigation>    
+    <newNodes> 
+      <facInvesItem><![CDATA[<facInvesItem name="Investigation Item">data here</facInvesItem>]]></facInvesItem>
+    </newNodes>
+  </Investigation>
+  <facInvesItem menuItem="Investigation Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </facInvesItem>
+  <!--#########################################################################################-->
+  <FacilitatorsGuide  icon="icFolderPicture"></FacilitatorsGuide>
+
+  <presentation>
+    <text type="TextArea" label="Presentation Text" height="400"/>
+    <oweb type="webpage" label="Learning Area" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&tempId=' + _root.template_id +'&SessionNo=Session1'}"/>
+    
+    <newNodes>
+      <furtherInfo><![CDATA[<furtherInfo title="Title" text="Here is the text"/>]]></furtherInfo>
+    </newNodes>
+  </presentation>  
+
+  <furtherInfo menuItem="further Information" icon="icInfo" remove="true" duplicate="false" max="1">
+    <title type="TextInput" label="Title"/>
+    <text type="TextArea" label="Text" height="200"/> 
+  </furtherInfo>
+
+  <slideshow icon="icFilm" duplicate="false">
+    <sound type="Media" label="Audio Narration (MP3):"/>
+    <newNodes>
+      <slide><![CDATA[<slide name="name" image="Select an Image" text="Please enter a description of the slide" synch="Enter Synch Point"/>]]></slide>
+    </newNodes>
+  </slideshow>
+
+  <slide menuItem="Slide" icon="icBullet" taskList="false" remove="true">
+    <!--name type="TextInput" label="Page Title"/-->
+    <text type="TextArea" height="100" label="Notes"/>
+    <image type="media" label="Image"/>
+    <synch type="TextInput" label="Synch Point"/>
+  </slide>
+
+
+  <ClinicImage icon="icFilm" label="Clinic Image" duplicate="false">
+    <sound type="Media" label="Media File"/>
+    <newNodes>
+      <imagefile><![CDATA[<imagefile name="name" datefield="" timefield=""  image="Select an Image" text="Content for the pane" normal=""/>]]></imagefile>
+    </newNodes>
+  </ClinicImage>
+
+  <imagefile menuItem="imagefile" icon="icBullet">
+    <name type="TextInput" label="Investigation Title"/>
+    <datefield type="TextInput" width="200" label="Image Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Image Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <image type="media" label="Image"/>
+    <text type="TextArea" height="100" label="Clinician Notes"/>
+    <normal type="ComboBox" label="Normal" options=" ,Yes,No" width="200"/>
+  </imagefile>
+  <!--##########################################################-->
+  <sessionFac>
+    <newNodes>
+      <sessionFacItem>
+        <![CDATA[<sessionFacItem name="Item Name">Data here</sessionFacItem>]]>
+      </sessionFacItem>
+    </newNodes>
+  </sessionFac>
+  <sessionFacItem menuItem="Facilitators Guide Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </sessionFacItem>
+  <!--##########################################################-->
+  <examFac>
+    <newNodes>
+      <examFacItem><![CDATA[<examFacItem name="Item Name">Data here</examFacItem>]]></examFacItem>
+    </newNodes>
+  </examFac>
+  <examFacItem menuItem="Facilitators Guide Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </examFacItem>
+  <!--##########################################################-->
+  <diagFac>
+    <newNodes>
+      <diagFacItem>
+        <![CDATA[<diagFacItem name="Item Name">Data here</diagFacItem>]]>
+      </diagFacItem>
+    </newNodes>
+  </diagFac>
+  <diagFacItem menuItem="Facilitators Guide Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </diagFacItem>
+  <!--##########################################################-->
+  <managFac>
+    <newNodes>
+      <managFacItem>
+        <![CDATA[<managFacItem name="Item Name">Data here</managFacItem>]]>
+      </managFacItem>
+    </newNodes>
+  </managFac>
+  <managFacItem menuItem="Management Facilitators Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </managFacItem>
+  <!--##########################################################-->
+  <subFac>
+    <newNodes>
+      <subFacItem>
+        <![CDATA[<subFacItem name="Item Name">Data here</subFacItem>]]>
+      </subFacItem>
+    </newNodes>
+  </subFac>
+  <subFacItem menuItem="Facilitators Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </subFacItem>
+  <!--##########################################################-->
+  <prognosisFac>
+    <newNodes>
+      <prognosisFacItem>
+        <![CDATA[<prognosisFacItem name="Item Name">Data here</prognosisFacItem>]]>
+      </prognosisFacItem>
+    </newNodes>
+  </prognosisFac>
+  <prognosisFacItem menuItem="Prognosis Facilitators Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </prognosisFacItem> 
+  <!--##########################################################-->
+  <history> 
+    <LAHis type="webpage" label="Learning Area" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&tempId=' + _root.template_id + '&SessionNo=Session2&laType=History'}"/>
+    <newNodes>
+      <historyItem><![CDATA[<historyItem name="Item Name">Data here</historyItem>]]></historyItem>
+    </newNodes>
+  </history>
+  <historyItem menuItem="History Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </historyItem>
+  <!--##########################################################-->
+
+  <session2>
+    <LASession2 type="webpage" label="Session2 Learning Area" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&tempId=' + _root.template_id + '&SessionNo=Session2'}"/>
+  </session2>
+  <session3>
+    <LASession3  type="webpage" label="Session3 Learning Area" url="{'http://unthank/gem/LAiframe.asp?Unique_Case_ID='+ xmlData.ocase.module.substr(0,2)+ xmlData.ocase.caseNo.substr(0,1) + '&tempId=' + _root.template_id + '&SessionNo=Session3'}"/>
+  </session3>
+  
+  <FollowUp icon="icReport">
+    <newNodes>
+      <FollowUpItem><![CDATA[<FollowUpItem name="Item Name">Data here</FollowUpItem>]]></FollowUpItem>
+    </newNodes>
+  </FollowUp>
+  <FollowUpItem menuItem="FollowUp Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </FollowUpItem>
+  <Others icon="icReport">
+    <newNodes>
+      <OthersItem><![CDATA[<OthersItem name="Item Name">Data here</OthersItem>]]></OthersItem>
+    </newNodes>
+  </Others>
+  <OthersItem menuItem="Others Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </OthersItem>
+  <!--##########################################################-->
+  <examination>
+    <newNodes>
+      <examItem>
+        <![CDATA[<examItem name="Item Name">Data here</examItem>]]>
+      </examItem>
+    </newNodes>
+  </examination>
+  <examItem menuItem="examination Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </examItem>
+  <!--##########################################################-->
+  <!--##########################################################-->
+  <Management sortChildren="true">
+    <newNodes>
+      <ManagementItem>
+        <![CDATA[<ManagementItem name="Item Name">Data here</ManagementItem>]]>
+      </ManagementItem>
+    </newNodes> 
+  </Management>
+  <ManagementItem menuItem="Management Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </ManagementItem>
+  <!--##########################################################-->
+  <!--##########################################################-->
+  <!--##########################################################-->
+  <Prognosis>
+    <newNodes>
+      <PrognosisItem>
+        <![CDATA[<PrognosisItem name="Item Name">Data here</PrognosisItem>]]>
+      </PrognosisItem>
+    </newNodes>
+  </Prognosis>
+  <PrognosisItem menuItem="Prognosis Items" remove="true" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Heading"/>
+  </PrognosisItem>
+  <!--##########################################################-->
+  <DiagnosticDecisionsManagementandFollowUp sortChildren="true">
+    <newNodes>
+      <oItem>
+        <![CDATA[<oItem name="Item Name">Data here</oItem>]]>
+      </oItem>
+    </newNodes>
+  </DiagnosticDecisionsManagementandFollowUp>
+  <oItem menuItem="Diagnosis\Mechanisms Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Name"/>
+  </oItem>
+
+  <SubsequentFollowUp>
+    <newNodes>
+      <SubsequentFollowUpItem>
+        <![CDATA[<SubsequentFollowUpItem name="Item Name">Data here</SubsequentFollowUpItem>]]>
+      </SubsequentFollowUpItem>
+    </newNodes>
+  </SubsequentFollowUp>
+  <SubsequentFollowUpItem menuItem="SubsequentFollowUp Items" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Name"/>
+  </SubsequentFollowUpItem>
+
+  <Quantitative>
+    <newNodes>
+      <BloodTest taskList="false" menuItem="Blood Test" label="Blood Test"><![CDATA[<BloodTest timefield="data" datefield="" data="Sodium (NA) [Serum]| |mmol\L|134-145 mmol\L| ||Potassium (K) [Serum]| |mmol\L|3.5- 5.3 mmol\L| ||Chloride (CL) [Serum]| |mmol\L|96 - 109 mmol\L| ||Bicarbonate (BIC) HCO3| |mmol\L|22- 26 mmol\L| ||Urea (UREA) [Serum]| |mmol\L|Adults Less than 60 yrs  2.0- 6.5 mmol\L;Greater than 60yrs 2.9- 7.5 mmol\L| ||Creatinine (CREA) [Serum]| |µmol\L|Women 55- 100 µmol\L; Men 70- 120 µmol\L;Muscle mass effects results: the lower the mass the lower the creatinine.;Paediatric reference ranges:Child 27- 62 µmol\L| ||Glucose (GLU) [Plasma]| |mmol\L|Fasting 3.0- 6.0 mmol\L| ||Protein, Total Serum (TP) [Serum, Plasma]| |g\L|60- 80 g\L| ||Albumin (ALBG) [Serum]| |g\L|35 - 50 g\L| ||Bilirubin (BILI) [Serum, Plasma]| |µmol\L|Up to 21 µmol\L| ||Alkaline Phosphatase (ALP) [Serum]| |U\L|Adults:Male 40 - 130 U\L;Female 35 - 104 U\L;Child 100- 400 U\L| ||Aspartate Transaminase (AST) [Serum]| |U\L|Adults; Women Up to 30 U\L; Men Up to 35 U\L| ||Alanine Transaminase (ALT) [Serum, Plasma]| |U\L|Adults:Women Up to 35 U\L;Men Up to 45 U\L;Children up to 35 U\L| ||Gamma-Glutamyl Transpeptidase (GGT) [Serum]| |U\L|11- 51 U\L| ||Osmolality (OSMS) [Serum]| |mmol\Kg|Female   275-295; Male 280-300 mmol\Kg| ||Calcium (CAL) [Serum]| |mmol\L|2.25- 2.6 mmol\L| ||Calcium Corrected (CALA)| |mmol\L|2.25 - 2.60 mmol\L| " clinicalNote="" facdata="" />]]></BloodTest>
+      <LiverFunction taskList="false"><![CDATA[<LiverFunction name="Liver Function"  timefield="data" datefield="" data="Bilirubin (BILI) [Serum, Plasma]| |µmol\L|Up to 21 µmolperL| ||Alanine Transaminase (ALT) [Serum, Plasma]| |U\L|Adults:Women Up to 35 UperL;Men Up to 45 UperL;Children up to 35 UperL| ||Alkaline Phosphatase (ALP) [Serum]| |U\L|Adults:Male 40-130 U\L;Female 35-104 U\L;Child 100 - 400 U\L| ||Gamma-Glutamyl Transpeptidase (GGT) [Serum]| |U\L|11 - 51 U\L| ||Protein, Total Serum (TP) [Serum, Plasma]| |g\L|60 - 80 g\L| ||Porphyrin, Total Urine (PORU) [Urine, Random]| |nmol\L|Up to 320 nmol\L| ||Potassium (K) [Serum]| |mmol\L|3.5 - 5.3 mmol\L| ||Sodium (NA) [Urine, 24h or Random]| |mmol\24hrs|130 - 220 mmol\24hrs (Dietary dependent)| " clinicalNote="" facdata="" />]]></LiverFunction>
+      <Vitamins taskList="false"><![CDATA[<Vitamins timefield="data" datefield="" data="Vitamin A (VITA) [Serum]| |µmol\L|Reference Ranges for Vitamin A: Age up to  5 years 0.5 - 1.7 µmol\L, 5 to 10 years 0.7 - 1.7 µmol\L, Adult 1.3 - 2.9 µmol\L| ||Vitamin E (VITE) [Serum]| |µmol\L|Reference Ranges for Vitamin E: Age up to  5 years 12.5 - 24.5 µmol\L, 5 to 10 years 12.0 - 22.5 µmol\L, Adult 14.0 - 30.0  µmol\L| ||Vitamin D, 25 hydroxy (VITD) [Serum]| |nmol\L|>50 nmol\L| " clinicalNote="" facdata="" />]]></Vitamins>
+      <CardiacMarkers taskList="false" ><![CDATA[<CardiacMarkers name="Cardiac Markers"  timefield="data" datefield="" data="Troponin T (TnT) [Serum]| |µg\L|&#171;0.03µg\L| ||Creatine Kinase (CK) [Serum, Plasma]| |U\L|Women 35 - 143 U\L, Men Up to 35 - 194 U\L. CK results will be higher (up to 2x the upper limit of the reference range) in patients with a large muscle mass and in patients of Afro-Caribbean origin.| " clinicalNote="" facdata="" />]]></CardiacMarkers>
+      <UreaElectrolytes taskList="false"><![CDATA[<UreaElectrolytes name="Urea Electrolytes"  timefield="data"  datefield="" data="Sodium (NA) [Serum]| |mmol\|L134 -145 mmol\|L| ||Potassium (K) [Serum]| |mmol\|L3.5 - 5.3 mmol\L| ||Urea (UREA) [Serum]| |mmol\|LAdults:Less than 60 yrs  2.0 - 6.5 mmol\L;Greater than 60yrs 2.9 - 7.5 mmol\L;Greater than 60yrs 2.9 - 7.5 mmol\L| ||Creatinine (CREA) [Serum]| |µmol\L|Women 55 - 100 µmol\L; Men 70 - 120 µmol\L;Muscle mass effects results: the lower the mass the lower the creatinine. Paediatric reference ranges:Child 27 - 62 µmol\L| ||Glucose (GLU) [Plasma]| |mmol\LFasting 3.0 - 6.0 mmol\L| ||Estimated Glomerular Filtration Rate| |mls\min\1.73 m²|90+ Normal or high GFR;60-89 Mild decrease in GFR;30-59 Moderate decrease in GFR;15-29 Severe decrease in GFR&#171;15 Kidney failure Not calculated in children | ||Chloride (CL) [Serum]| |mmol\L96 – 109 mmol\L| " clinicalNote="" facdata="" />]]></UreaElectrolytes>
+      <Urine taskList="false"><![CDATA[<Urine timefield="data" datefield=""  data="Sodium (NA) [Urine, 24h or Random]| |mmol\24hrs|130 - 220 mmol\24hrs (Dietary dependent)| ||Potassium (K) [Urine, Random & 24h]| |mmol\24hrs|25 - 125 mmol\24hrs| ||Creatinine (CREA) [Urine]| |mmol\24hr|Women 5.3 - 16.9 mmol\24hr; Men 7.1 - 17.7 mmol\24hr| ||Osmolality (OSMU) [Urine, Random]| |mOsmol\Kg|50  -  1200   mOsmol\Kg (Random)| " clinicalNote="" facdata="" />]]></Urine>
+      <LipidTest taskList="false"><![CDATA[<LipidTest name="Lipid Test"  timefield="data" datefield="" data="Total Cholesterol (CHOL) [Serum, Plasma]| |mmol\L|&#171;4.0 mmol\L| ||Cholesterol HDL (HDL) [Serum, Plasma]| |mmol\L|See current guidelines.| ||Cholesterol LDL (LDL) [Serum, Plasma]| |mmol\L|&#171;2.0mmol\L| ||Triglyceride (TRIG) [Serum, Plasma]| |mmol\L|Desirable Fasting Reference Ranges for Triglyceride (in mmol\L);Adults:Female: 0.40 - 1.53; Male: 0.45 - 1.81;| ||Cholesterol\HDL Ratio| | |See current guidelines.| " clinicalNote="" facdata="" />]]></LipidTest>
+      <Fasting taskList="false"><![CDATA[<Fasting timefield="data" datefield=""  data="Glucose (GLU) [Plasma]| |mmol\L|Fasting 3.0 - 6.0 mmol\L| ||Triglyceride (TRIG) [Serum, Plasma]| |mmol\L|Desirable Fasting Reference Ranges for Triglyceride (in mmol\L) .Adults Female: 0.40 - 1.53 Male: 0.45 - 1.81| ||Total Cholesterol (CHOL) [Serum, Plasma]| |mmol\L|&#171;4.0 mmol\L| " clinicalNote="" facdata="" />]]></Fasting>
+      <ThyroidFunctionTest taskList="false"><![CDATA[<ThyroidFunctionTest name="Thyroid Function Test" timefield="data" datefield="" data="Glucose(GLU)[Plasma]| |mmol\L|Fasting 3.0-6.0 mmol\L| ||Triglyceride (TRIG)[Serum, Plasma]| |mmol\L|Desirable Fasting Reference Ranges for Triglyceride (in mmol\L).Adults Female:0.40-1.53 Male:0.45-1.81| ||Total Cholesterol(CHOL) [Serum, Plasma]| |mmol\L|4.0 mmol\L| " clinicalNote="" facdata="" />]]></ThyroidFunctionTest>
+      
+      <BiopsyReport taskList="false"><![CDATA[<BiopsyReport name="Biopsy Report"   timefield="data" datefield="" data="Glucose (GLU) [Plasma]| |mmol\L|Fasting 3.0 - 6.0 mmol\L| ||Triglyceride (TRIG) [Serum, Plasma]| |mmol\L|Desirable Fasting Reference Ranges for Triglyceride (in mmol\L) .Adults Female: 0.40 - 1.53 Male: 0.45 - 1.81| ||Total Cholesterol (CHOL) [Serum, Plasma]| |mmol\L|&#171;4.0 mmol\L| " clinicalNote="" facdata="" />]]></BiopsyReport>
+      <Echocardiography taskList="false"><![CDATA[<Echocardiography  timefield="data"  datefield="" data=" | | | | " clinicalNote="" facdata="" />]]></Echocardiography>
+      <Blank taskList="false"><![CDATA[<Blank timefield="data" datefield=""  data=" " clinicalNote="" facdata="" />]]></Blank>
+
+      <BoneProfileTest taskList="false"><![CDATA[<BoneProfileTest name="Bone Profile Test" timefield="data" datefield=""  data="Calcium (CAL) [Serum]| |mmol\L|2.25 - 2.6 mmol\L| ||Alkaline Phosphatase (ALP) [Serum]| |U\L|Adults:Male 40-130 U\L Female 35-104 U\L Child 100 - 400 U\L| ||Phosphate (PHOS) [Serum, Plasma]| |mmol\L|Premature 1.74 - 3.52 mmol\L 0 - 10 days 1.45 - 2.91 mmol\L 10 days-2y 1.45-2.16 mmol\L 2y - 12y 1.45 - 1.78 mmol\L 12 y and older  0.80 - 1.45 mmol\L| " clinicalNote="" facdata="" />]]></BoneProfileTest>
+      <ArterialBloodGasses taskList="false" menuItem="Arterial Blood Gasses" label="Arterial Blood Gasses"><![CDATA[<ArterialBloodGasses name="Arterial Blood Gasses" timefield="data" datefield=""  data="pH or H+| |number|7.34-7.44 (H+ ion 36-42 nmol\L)| ||POsub2| |kPa|11.3 - 14.0 kPa| ||PCOsub2| |kPa|4.7-6.0kPa| ||Bicarbonate(BIC) HCOsub3| |mmol\L|22-26 mmol\L| " clinicalNote="" facdata="" />]]></ArterialBloodGasses>
+      <FullBloodCount taskList="false" menuItem="Full Blood Count" label="Full Blood Count"><![CDATA[<FullBloodCount name="Full Blood Count" timefield="data" datefield=""  data="Base Excess| | |Base Excess -2.3 - +2.3| ||Haemoglobin (Hb)| |g\dL|(male) 13.0-18.0 g\dL(female) 11.5-16.0 g\dL Sex difference negligible until adulthood.(children) 2-6 yrs 13.5-18 g\dL| ||Red Blood (Cell) Count (RBC)| |x10 sup1 sup2\L|(male) 4.5 - 6.5 x10 sup1 sup2\L; (female) 3.8 - 5.8 x10 sup1 sup2\L| ||Haematocrit (HCT)| | |;(male) 0.38 - 0.52  (38% - 52%)(female) 0.35 - 0.47 (35% - 47%)| ||Mean Cell Volume (MCV)| |fL|80 - 98 fL Cells are larger in neonates, though smaller in other children.| ||Mean cell haemoglobin (MCH)| |pg|26 - 34 pg| ||Mean cell haemoglobin concentration (MCHC)| |g\dL|32 - 36 g\dL| ||White Blood (Cell) Count (WBC)| |x10sup9\L|4.0 - 11.0 x10sup9\L Higher in neonates and infants| ||Platelets (PLT)| |x10sup9\L|150 - 400 x10sup9\L| ||Neutrophils (NEUTS)| |x10sup9\L|2.0 - 7.5 x10sup9\L(pediatric: 1.0 - 9.0 x10sup9\L)| ||Lymphocytes (LYMPH)| |x10sup9>\L|1.5 - 4.0 x10sup9\L(pediatric: 2.5 - 16.5 x10sup9\L)| ||Monocytes (MONOS)| |x10sup9\L|0.2 - 0.8 x10sup9\L (pediatric: mean 0.7 x10sup9\L)| ||Eosinophils (EOS)| |x10sup9\L|0.02 - 0.5 x10sup9\L (pediatric: 0.0 - 0.3 x10sup9\L)| ||Basophils (BASOS)| |x10sup9\L|0.0 - 0.2 x10sup9\L| ||Erythrocyte sedimentation rate (ESR)| |mm\hr|Female: &lt;20 mm\hr Male: &lt;10 mm\hr ESR increases with age.| ||Reticulocytes| |x10sup9\L|10 - 100 x10sup9\L| " clinicalNote="" facdata="" />]]></FullBloodCount>
+      <BloodSample taskList="false" menuItem="Blood Sample" label="Blood Sample"><![CDATA[<BloodSample name="Blood Sample" timefield="data" datefield=""  data="Sodium (NA) [Serum]| |mmol\L|134 -145 mmol\L| ||Potassium (K) [Serum]| |mmol\L|3.5 - 5.3 mmol\L| ||Chloride (CL) [Serum]| |mmol\L|96-109 mmol\L| ||Bicarbonate (BIC) HCOsub3| |mmol\L|22 - 26 mmol\L| ||Urea (UREA) [Serum]| |mmol\L|Adults Less than 60 yrs  2.0 - 6.5 mmol\L Greater than 60yrs 2.9 - 7.5 mmol\L| ||Creatinine (CREA) [Serum]| |µmol\L|Women 55 - 100 µmol\L; Men 70 - 120 µmol\L, Muscle mass effects results: the lower the mass the lower the creatinine.Paediatric reference ranges:Child 27 - 62 µmol\L| ||Glucose (GLU) [Plasma]| |mmol\L|Fasting 3.0 - 6.0 mmol\L| ||Protein, Total Serum (TP) [Serum, Plasma]| |g\L|60 - 80 g\L| ||Albumin (ALBG) [Serum]| |g\L|35-50 g\L| ||Bilirubin (BILI) [Serum, Plasma]| |µmol\L|Up to 21 µmol\L| ||Alkaline Phosphatase (ALP) [Serum]| |U\L|Adults:Male 40-130 U\L,Female 35-104 U\L,Child 100 - 400 U\L| ||Aspartate Transaminase (AST) [Serum]| |U\L|Adults; Women Up to 30 U\L; Men Up to 35 U\L| ||Alanine Transaminase (ALT) [Serum, Plasma]| |U\L|Adults: Women Up to 35 U\L,Men Up to 45 U\L,Children up to 35 U\L| ||Gamma-Glutamyl Transpeptidase (GGT) [Serum]| |U\L|11 - 51 U\L| ||Osmolality (OSMS) [Serum]| |mmol\Kg|Female   275-295; Male 280-300 mmol\Kg| ||Calcium (CAL) [Serum]| |mmol\L|2.25 - 2.6 mmol\L| ||Calcium Corrected (CALA)| |mmol\L|2.25-2.60 mmol\L| " clinicalNote="" facdata="" />]]></BloodSample>
+      <HormoneAssessment taskList="false" menuItem="Hormone Assessment" label="Hormone Assessment"><![CDATA[<HormoneAssessment name="Hormone Assessment" timefield="data" datefield=""  data="Adrenocorticotrophin (ACTH) [Plasma]| |ng\L|09:00 2.0 - 11.0 pmol\L Up to 46 ng\L| ||Cortisol (CORT) [Serum]| |nmol\L|Early morning values (8am-9am) 140-690 nmol\L. Lower values would be expected later in the day. Trough levels occurring at midnight &lt;50nmol\L.| ||Dehydroepiandrosterone Sulphate (DHAS) [Serum]| |µmol\L|Adult Female Pre-Menopausal 0.9 - 11.6 µmol\L; Post-Menopausal 0.8 to 7.0 µmol\L. Adult Male 2.2 - 15.2 µmol\L NB in Children less than 10y values up to 4.0µmol\L would be expected.| ||Testosterone (TEST) [Serum]| ||Male: 9 - 40 nmol\L, Female: &lt;3.5 nmol\L| ||Testosterone (TEST) [Serum]| ||Male: 9 - 40 nmol\L,,Female: &lt;3.5 nmol\L| ||Sex Hormone Binding Globulin (SHBG) [Serum]| |nmol\L|Males 12 -  78 nmol\L,Females 25 - 145 nmol\L,N.B. Higher values (up to 200 nmol\L) may be seen in women on hormone replacement therapy, oral contraceptives or during pregnancy.| ||Luteinizing Hormone (LH) [Serum]| |U\L|Female:Follicular: 3 - 8 U\L,Midcycle: 20 - 80 U\L,Luteal: 3 - 13 U\L,Pregnant: Less than 1.5 U\L,Post menopausal: &gt;40 U\L,Males: &lt;75yrs 2 - 10 U\L &gt;75yrs 2 - 20 U\L,Children: Less than 0.1 to 6.0 U\L| ||Thyroid, TSH (TSH) [Serum, Plasma]| |mU\L|0.30 - 5.50 mU\L| ||Follicle Stimulating Hormone (FSH) [Serum]| |U\L|FemaleFollicular: 2.5 - 10.2 U\L,Midcycle: 6 - 60 U\L,Luteal: 1.5 - 9.1 U\L,Pregnant: Less than 0.3 U\L,Post menopausal: &gt;40 U\L,Males 2 - 8 U\L| ||Estradiol| |pmol\L|75-750| ||Thyroid, Stimulating Hormone Receptor Antibody (TSH Receptor Ab)| |mU\L|&lt;5 mU\L| ||Insulin Like Growth Factor, IgF1 (IGF1) [Serum]| |µg\L|19-39 years 122-400 µg\L| ||Prolactin (PROL) [Serum]| |mU\L|Females Non-Pregnant &lt;500 mU\L (physiological stress can increase this value up 15000 mU\L) Pregnant 206 - 4420 mU\L Postmenopausal 38 - 430 mU\L,Males &lt;350 mU\L| ||Thyroid, Free T4 (FT4) [Serum, Plasma]| |pmol\L|8 - 24.0 pmol\L| ||Growth Hormone (GH) [Serum]| |mU\L|0.2-13.0 mU\L| ||Total T4 (Plasma)| |nmol\L|60 - 150 nmol\L| ||Total T3 (Plasma)| |nmol\L|&lt;65yrs 1.4 - 2.9 nmol\L &gt;65yrs 1.1 - 2.6 nmol\L| " clinicalNote="" facdata="" />]]></HormoneAssessment>
+      <FertilityInvestigation_Female taskList="false" menuItem="FertilityInvestigation-Female" label="FertilityInvestigation-Female"><![CDATA[<FertilityInvestigation_Female name="FertilityInvestigation-Female" timefield="data" datefield=""  data="Text| | | | ||Luteinizing Hormone (LH) [Serum]| |U\L|Female:Follicular: 3 - 8 U\L,Midcycle:20 - 80 U\L,Luteal: 3 - 13 U\L,Pregnant:Less than 1.5 U\L,Post menopausal:&gt;40 U\L,Males: &lt;75yrs 2 - 10 U\L | &gt;75yrs 2 - 20 U\L  ,Children: Less than 0.1 to 6.0 U\L| ||Follicle Stimulating Hormone (FSH) [Serum]| |U\L|Female Follicular: 2.5 - 10.2 U\L,Midcycle: 6 - 60 U\L,Luteal: 1.5 - 9.1 U\L,Pregnant: Less than 0.3 U\L,Post menopausal: &gt;40 U\L,Males   2 - 8 U\L| ||Progesterone (PROG) [Serum]| |nmol\L|Female:Follicular Phase: 0.5 - 6.7 nmol\L,Luteal Phase: 7.3 - 89.1 nmol\L,Postmenopausal: Up to 2.3nmol\L, &gt;25nmol\L on day 21 consistent with ovulation.Pregnancy (1and2 Trimester):35.7-286.2nmol\L,Pregnancy (3Trimester):153.9-1343.6 nmol\L,Males and Children:0.9-3.9nmol\L| " clinicalNote="" facdata="" />]]></FertilityInvestigation_Female>
+      <Testosterone taskList="false" menuItem="Testosterone" label="Testosterone"><![CDATA[<Testosterone name="Testosterone" timefield="data" datefield=""  data="Prolactin (PROL) [Serum]| |mU\L|Females Non-Pregnant &lt;500 mU\L (physiological stress can increase this value up 15000 mU\L),Pregnant 206 - 4420 mU\L Postmenopausal 38 - 430 mU\L,Males &lt;350 mU\L| ||Testosterone (TEST) [Serum]| | |Male: 9 - 40 nmol\L,Female: &lt;3.5 nmol\L| ||Sex Hormone Binding Globulin (SHBG) [Serum]| |nmol\L|Males 12 -  78 nmol\L,Females 25 - 145 nmol\L,N.B. Higher values (up to 200 nmol\L) may be seen in women on hormone replacement therapy, oral contraceptives or during pregnancy.| ||Text| | | | " clinicalNote="" facdata="" />]]></Testosterone>
+      <MCS taskList="false" menuItem="MicroscopySensitivityCulture" label="(MCS) Microscopy, Sensitivity and Culture"><![CDATA[<MCS name="(MCS) Microscopy, Sensitivity and Culture" timefield="data" datefield=""  title="" info="" clinicalNote="" facdata="" />]]></MCS>
+      <OperationReport taskList="false" menuItem="Operation Report" label="Operation Report"><![CDATA[<OperationReport name="Operation Report" timefield="data" datefield=""  title="" info="" clinicalNote="" facdata="" />]]></OperationReport>
+      <LungFunctionTest taskList="false" menuItem="Lung Function Test" label="Lung Function Test"><![CDATA[<LungFunctionTest name="Lung Function Test" timefield="data" datefield=""  title="" info="" clinicalNote="" facdata="" />]]></LungFunctionTest>
+      <AllergenSkinPrickTest taskList="false" menuItem="Allergen Skin Prick Test" label="Allergen Skin Prick Test"><![CDATA[<AllergenSkinPrickTest name="Allergen Skin Prick Test" timefield="data" datefield=""  title="" info="" clinicalNote="" facdata="" />]]></AllergenSkinPrickTest>
+      <GRH_Stimulation taskList="false" menuItem="GRH_Stimulation" label="GRH_Stimulation"><![CDATA[<GRH_Stimulation name="GRH_Stimulation" timefield="data" datefield=""  title="" info="" clinicalNote="" facdata="" />]]></GRH_Stimulation>
+    </newNodes>
+  </Quantitative>
+
+  <OperationReport taskList="false" menuItem="Operation Report" label="Operation Report" remove="true">
+    <title type="TextInput" label="Title"/>
+    <info type="TextArea" height="200" label="Information"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+    controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+    newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </OperationReport>
+
+  <LungFunctionTest taskList="false" menuItem="Lung Function Test" label="Lung Function Test" remove="true">
+    <title type="TextInput" label="Title"/>
+    <info type="TextArea" height="200" label="Information"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+    controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+    newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </LungFunctionTest>
+
+  <AllergenSkinPrickTest taskList="false" menuItem="Allergen Skin Prick Test" label="Allergen Skin Prick Test" remove="true">
+    <title type="TextInput" label="Title"/>
+    <info type="TextArea" height="200" label="Information"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </AllergenSkinPrickTest>
+
+  <GRH_Stimulation taskList="false" menuItem="GRH_Stimulation" label="GRH_Stimulation" remove="true">
+    <title type="TextInput" label="Title"/>
+    <info type="TextArea" height="200" label="Information"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+    controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+    newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </GRH_Stimulation>
+
+  <MCS taskList="false" menuItem="MicroscopySensitivityCulture" label="(MCS) Microscopy, Sensitivity and Culture" remove="true">
+    <title type="TextInput" label="Title"/>
+    <info type="TextArea" height="200" label="Information"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </MCS>
+
+
+
+  <!--<allergies name="Allergies Test" icon="icPageWhite" menuItem="Allergies Test" remove="true" max="1"></allergies>
+
+  <pollen>
+    <result type="TextInput" label="Result"/>
+    <units type="TextInput" label="Units"/>
+    <info type="TextArea" height="200" label="Info" optional="true"/>
+  </pollen>
+
+  <liver icon="icPageWhite" menuItem="Liver Test" remove="true" max="1">
+    <pollen type="pollen" label="Pollen"/>
+    <nuts type="CheckBox" label="Nuts"/>
+    <eggs type="CheckBox" label="Eggs"/>
+    <fish type="CheckBox" label="Fish"/>
+  </liver>-->
+  <!--<brain icon="icPageWhite" menuItem="Brain Test" remove="true" max="1">
+    <pollen type="CheckBox" label="Pollen"/>
+		<nuts type="CheckBox" label="Nuts"/>
+		<eggs type="CheckBox" label="Eggs"/>
+		<fish type="CheckBox" label="Fish"/>
+		<info type="TextArea" height="200" label="Info" optional="true"/>
+  </brain>-->
+  <!-------------------------------------------------------------------------------
+	<brainTest>
+		<result type="TextInput" label="start time"/>
+		
+		<data type="DataGrid" label="Custom Data" width="390" height="140" columns="4"
+    controls="0" editable="1,0,0,0" colWidths="50,50,90,90" headers="Name,Combo,Boolean,Dates"
+    newRow="Yijun,12,true,2008-0-31"
+    cellRenderers="none,ComboCellRenderer,CheckCellRenderer,DateCellRenderer"
+    rendererOptions="none,12|42|53,none,none"/>
+	</brainTest>
+
+	<sightTest>
+		<data type="DataGrid" label="Sight Test" width="390" height="140" columns="2"
+    controls="0" editable="1,1" colWidths="120,120" headers="Overall,Distance"
+    newRow="ovrall,99" cellRenderers="ComboCellRenderer,none"
+    rendererOptions="Good|Bad|Average,none"/>
+	</sightTest>  
+  <presentationDate type="DateField" label="Presentation Date"/>
+	-->
+  <!--<testFac>
+    <newNodes>
+      <oItem>
+        <![CDATA[<oItem name="Item Name">Data here</oItem>]]>
+      </oItem>
+    </newNodes>
+  </testFac>
+  <oItem menuItem="FacilitatorsGuide" icon="icBullet" type="Text" label="Text" height="250">
+    <name type="TextInput" label="Name"/>
+  </oItem>-->
+
+
+
+  <!--<ThyroidFunctionTest taskList="false" menuItem="Thyroid Function Test" remove="true" >
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <data type="DataGrid" label="Thyroid Function Test" width="390" height="140" columns="5" rowHeight="50"
+            controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+            newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <clinicalNote type="TextArea" height="50" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="1" rowHeight="50"
+        controls="1" editable="1" colWidths="390" headers="Facilitators Guide"
+        newRow=" " cellRenderers="MultilineCellRenderer" />
+  </ThyroidFunctionTest>-->
+
+  <ThyroidFunctionTest taskList="false" menuItem="Thyroid Function Test" remove="true" >
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <data type="DataGrid" label="Thyroid Function Test" width="390" height="140" columns="5" rowHeight="50"
+            controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+            newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+        controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+        newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+  </ThyroidFunctionTest>
+
+
+  <BloodTest taskList="false" menuItem="Blood Test" label="Blood Test" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+    controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+    newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </BloodTest>
+
+  <BoneProfileTest taskList="false" menuItem="Bone Profile Test" label="Bone Profile Test" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+        controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+        newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </BoneProfileTest>
+
+  <ArterialBloodGasses taskList="false" menuItem="Arterial Blood Gasses" label="Arterial Blood Gasses" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+        controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+        newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </ArterialBloodGasses>
+
+  <FullBloodCount taskList="false" menuItem="Full Blood Count" label="Full Blood Count" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+    controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+    newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </FullBloodCount>
+
+  <BloodSample taskList="false" menuItem="Blood Sample" label="Blood Sample" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </BloodSample>
+
+  <HormoneAssessment taskList="false" menuItem="Hormone Assessment" label="Hormone Assessment" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </HormoneAssessment>
+
+  <FertilityInvestigation_Female taskList="false" menuItem="Fertility Investigation - Female" label="Fertility Investigation - Female" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </FertilityInvestigation_Female>
+
+  <Testosterone taskList="false" menuItem="Testosterone" label="Testosterone" remove="true">
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <data type="DataGrid" label="Blood Test" width="390" height="140" columns="5" rowHeight="30"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer" />
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+       controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+       newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </Testosterone>
+
+  <LiverFunction taskList="false" menuItem="Liver Function" remove="true" >
+    <data type="DataGrid" label="Liver Function" width="390" height="140" columns="5" rowHeight="50"
+    controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+    newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+      controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+      newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </LiverFunction>
+
+  <Vitamins taskList="false" remove="true">
+    <data type="DataGrid" label="Vitamins" width="390" height="140" columns="5" rowHeight="50"
+        controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+        newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+      controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+      newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </Vitamins>
+
+  <CardiacMarkers taskList="false" menuItem="Cardiac Markers" remove="true" >
+    <data type="DataGrid" label="Cardiac Markers" width="390" height="140" columns="5" rowHeight="50"
+       controls="0" editable="0,1,0,0,0" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+       newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </CardiacMarkers>
+
+  <LipidTest taskList="false" menuItem="Lipid Test" remove="true" >
+    <data type="DataGrid" label="Lipid Test" width="390" height="140" columns="5" rowHeight="50"
+     controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+     newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+       controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+       newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </LipidTest>
+
+  <Urine taskList="false" remove="true" >
+    <data type="DataGrid" label="Urine" width="390" height="140" columns="5" rowHeight="50"
+    controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+    newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </Urine> 
+ 
+
+  <UreaElectrolytes taskList="false" menuItem="Urea Electrolytes" remove="true" >
+    <data type="DataGrid" label="Urea Electrolytes" width="390" height="140" columns="5" rowHeight="50"
+    controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+    newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </UreaElectrolytes>
+
+  <Echocardiography taskList="false" remove="true" >
+    <data type="DataGrid" label="Echocardiography" width="390" height="140" columns="5" rowHeight="50"
+    controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+    newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="2" rowHeight="40"
+     controls="1" editable="1,1" colWidths="150,240" headers="Title,Facilitators Guide"
+     newRow=" , " cellRenderers="MultilineCellRenderer,MultilineCellRenderer" />
+
+  </Echocardiography>
+
+  <Fasting taskList="false" label="Fasting" remove="true" >
+    <data type="DataGrid" label="Fasting" width="390" height="140" columns="5" rowHeight="50"
+            controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+            newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="1" rowHeight="50"
+        controls="1" editable="1" colWidths="390" headers="Facilitators Guide"
+        newRow=" " cellRenderers="MultilineCellRenderer" />
+  </Fasting>
+
+  <!--<ThyroidFunctionTest taskList="false" menuItem="Thyroid Function Test" remove="true" >
+    <data type="DataGrid" label="Thyroid Function Test" width="390" height="140" columns="5" rowHeight="50"
+            controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+            newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="50" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="1" rowHeight="50"
+        controls="1" editable="1" colWidths="390" headers="Facilitators Guide"
+        newRow=" " cellRenderers="MultilineCellRenderer" />
+  </ThyroidFunctionTest>-->
+
+  <BiopsyReport taskList="false" menuItem="Biopsy Report" remove="true" >
+    <data type="DataGrid" label="Biopsy Report" width="390" height="140" columns="5" rowHeight="50"
+            controls="0" editable="0,1,0,0,1" colWidths="80,80,80,80,80" headers="Element,Value,Units,Normal,FlagAbnormal"
+            newRow=",,,," cellRenderers="none,none,none,MultilineCellRenderer,CheckCellRenderer"/>
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="1" rowHeight="50"
+        controls="1" editable="1" colWidths="390" headers="Facilitators Guide"
+        newRow=" " cellRenderers="MultilineCellRenderer" />
+  </BiopsyReport>
+
+  <address type="textArea" taskList="false" height="100" label="Address"/>
+
+  <Blank  taskList="false" icon="icInfo" remove="true" duplicate="false">
+    <datefield type="TextInput" width="200" label="Test Date DD/MM/YY"/>
+    <timefield type="ComboBox" label="Test Time" options=" ,00:00,00:15,00:30,00:45,01:00,01:15,01:30,01:45,02:00,02:15,02:30,02:45,03:00,03:15,03:30,03:45,04:00,04:15,04:30,04:45,05:00,05:15,05:30,05:45,06:00,06:15,06:30,06:45,07:00,07:15,07:30,07:45,08:00,08:15,08:30,08:45,09:00,9:15,9:30,09:45,10:00,10:15,10:30,10:45,11:00,11:15,11:30,11:45,12:00,12:15,12:30,12:45,13:00,13:15,13:30,13:45,14:00,14:15,14:30,14:45,15:00,15:15,15:30,15:45,16:00,16:15,16:30,16:45,17:00,17:15,17:30,17:45,18:00,18:15,18:30,18:45,19:00,19:15,19:30,19:45,20:00,20:15,20:30,20:45,21:00,21:15,21:30,21:45,22:00,22:15,22:30,22:45,23:00,23:15,23:30,23:45" width="200"/>
+    <name type="textArea" label="Content" height="200"/>
+    <clinicalNote type="TextArea" height="40" label="Clinical Note"/>
+    <facdata type="DataGrid" label="Facilitators Guide" width="390" height="140" columns="1" rowHeight="50"
+        controls="1" editable="1" colWidths="390" headers="Facilitators Guide"
+        newRow=" " cellRenderers="MultilineCellRenderer" />
+  </Blank>
+
+</wizard>

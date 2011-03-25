@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>{{site_title}}</title>
+
+<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+
+<!-- 
+
+University of Nottingham Xerte Online Toolkits
+
+HTML to use to set up the login page
+The {{}} pairs are replaced in the page formatting functions in display library
+
+Version 1.0
+
+-->
+
+</head>
+
+<body>
+
+	<div class="topbar">
+		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
+		<img src="{{organisational_logo}}" style="margin-right:10px; float:right" />
+	</div>
+	<div class="mainbody">
+		<div class="title">
+			<p>
+				{{welcome_message}}
+			</p>
+		</div>		
+		<div class="mainbody_holder">
+			<div class="mainbody_div_2">
+				<div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
+					<div class="top_right sign_in_TR m_b_d_2_child">
+						<div class="bottom_left sign_in_BL m_b_d_2_child">
+							<div class="bottom_right sign_in_BR m_b_d_2_child">
+								<p>
+									login area for site administration
+								</p>
+								<div>
+									<form method="post" enctype="application/x-www-form-urlencoded" action="management.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
+									
+									
+									<!-- 
+									
+										After this, the login form is handled by the php
+									
+									-->
