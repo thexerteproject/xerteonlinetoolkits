@@ -1,4 +1,6 @@
-<?PHP     /**
+<?PHP     
+
+/**
 * 
 * Config page, sets up the site variable from the database
 *
@@ -15,7 +17,10 @@
  */
 
 // Same as error_reporting(E_ALL);
-ini_set('error_reporting', E_ALL);
+
+// Error reporting fix - please set 
+
+// ini_set('error_reporting', 0);
 
 $xerte_toolkits_site;
 
@@ -28,8 +33,6 @@ if(!isset($xerte_toolkits_site)){
 	/** 
 	 * Access the database to get the variables
 	 */
-	 
-	
 
 	include "database.php";
 	

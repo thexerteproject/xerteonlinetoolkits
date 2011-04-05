@@ -1,4 +1,6 @@
-<?PHP echo file_get_contents("page_top");
+<?PHP 
+
+	echo file_get_contents("page_top");
 
 	$buffer = file_get_contents("database.txt");
 
@@ -55,7 +57,7 @@ Use this page to set up Xerte Online Toolkits. The various settings have been gr
 
 		echo "<p>The demonstration page (linked to from number 7 on the diagram) URL is <textarea name=\"demonstration_page\">modules/xerte/training/toolkits.htm</textarea></p>";	
 
-		echo "<p>The form string is (The code to handle the HTML format for the login box, this should only be changed by advanced users - number 8 on the diagram)<textarea name=\"form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Username <input type=\"text\" size=\"20\" maxlength=\"12\" name=\"login\" /></p><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";	
+		echo "<p>The form string is (The code to handle the HTML format for the login box, this should only be changed by advanced users - number 8 on the diagram)<br/><br/><textarea name=\"form_string\"><html><body><center><p><form method=\"post\" action=\"\"><p>Username <input type=\"text\" size=\"20\" maxlength=\"12\" name=\"login\" /></p><p>Password <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><input type=\"image\" src=\"website_code/images/Bttn_LoginOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_LoginOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_LoginClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_LoginOff.gif'\" /></p></textarea></p>";	
 
 		echo "<br><br><h3 style=\"clear:left\">Site formatting settings - Customising the logged in page</h3>";
 
@@ -101,7 +103,7 @@ Use this page to set up Xerte Online Toolkits. The various settings have been gr
 
 		echo "<p>The root file path is <textarea name=\"root_file_path\">" . substr(getcwd(),0,strlen(getcwd())-5) . "</textarea></p>";	
 
-		echo "<p>The import path (where imported files will be processed to check they are valid) is <textarea name=\"import_path\">" . substr(getcwd(),0,strlen(getcwd())-5) . "import/</textarea><br><br><b style=\"clear:left\">You may wish to move this folder to be outside the webroot</b></p>";	
+		echo "<p>The import path (where imported files will be processed to check they are valid) is <textarea name=\"import_path\">" . substr(getcwd(),0,strlen(getcwd())-5) . "import/</textarea><br><br><b style=\"clear:left\"><br><br>You may wish to move this folder to be outside the webroot</b></p>";	
 
 		echo "<br><br><h3 style=\"clear:left\">MySQL query string - The default string for many of the sites mysql queries</h3>";
 
@@ -117,7 +119,7 @@ Use this page to set up Xerte Online Toolkits. The various settings have been gr
 
 		echo "<p>The email error message is (Set to true to email errors)<textarea name=\"error_email_message\">false</textarea></p>";	
 
-		echo "<p>The maximum error size is (The maximum number of entries per error log)<textarea name=\"error_email_message\">10</textarea></p>";
+		echo "<p>The maximum error size is (The maximum number of entries per error log)<textarea name=\"max_error_size\">10</textarea></p>";
 
 		echo "<br><br><h3 style=\"clear:left\">LDAP handling - where files will be hosted on the server</h3>";
 

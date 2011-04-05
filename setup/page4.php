@@ -8,7 +8,7 @@
 
 	$magic_quotes = true;
 
-	if(get_magic_quotes_gpc===0){
+	if(get_magic_quotes_gpc()===0){
 
 		echo "magic quotes setting is false";
 	
@@ -500,7 +500,7 @@
 	
 	}
 	
-	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . $import_path . "\" where site_id=\"1\"";	
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . str_replace("\\\\","/",$import_path) . "\" where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
 	
@@ -516,7 +516,6 @@
 	
 	if(!$magic_quotes){
 
-
 		$root_path = addslashes($_POST['root_file_path']);
 	
 	}else{
@@ -525,8 +524,8 @@
 		$root_path = $_POST['root_file_path'];
 	
 	}
-	
-	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path='" . $root_path . "' where site_id=\"1\"";	
+		
+	$query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path='" . str_replace("\\\\","/",$root_path) . "' where site_id=\"1\"";	
 
 	$query_response = mysql_query($query);
 	

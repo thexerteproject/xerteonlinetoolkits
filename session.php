@@ -8,11 +8,11 @@
 * @package
 */
 
-require_once("config.php");
+//require_once("config.php");
 
 //session_name($xerte_toolkits_site->site_session_name);
 
-session_start();
+//session_start();
 
 /*if($_SESSION['toolkits_sessionid']!=session_id()){
 

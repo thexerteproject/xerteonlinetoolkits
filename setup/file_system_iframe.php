@@ -189,7 +189,7 @@
 		$work = false;
 		
 		?>
-			<p>The file /setup/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
+			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/setup/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
 		<?PHP
 
 	}
@@ -199,7 +199,7 @@
 		$work = false;
 
 		?>
-			<p>The file /setup/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
+			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/setup/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
 		<?PHP		
 
 	}
@@ -207,7 +207,7 @@
 	if($work){
 
 		?>
-			<p>The file /setup/database.txt has been successfully written to.
+			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/setup/database.txt has been successfully written to.
 		<?PHP
 
 

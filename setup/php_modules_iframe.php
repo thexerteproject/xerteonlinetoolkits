@@ -38,7 +38,7 @@
 
 	echo "Checking for sessions<br>";
 
-	if(session_start()){
+	if(function_exists("session_start")){
 
 		echo "Sessions exists<Br>";
 
