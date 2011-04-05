@@ -13,6 +13,7 @@
     <!--<glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>-->
     <controller optional="true" label="Custom Interface" type="media"/>
     <background optional="true" type="media" label="Background Image"/>
+    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
 
     <newNodes>
 
@@ -548,6 +549,8 @@
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
+    <noise type="TextArea" height="50" label="Distractors" optional="true"/>
+
   </gapFill>
 
 
@@ -1041,6 +1044,7 @@
     <text type="textArea" label="Instructions" height="300"/>
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <autoplay type="Checkbox" label="Autoplay" optional="true"/>
+    <toggle type="Checkbox" label="Toggle full screen" optional="true"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
