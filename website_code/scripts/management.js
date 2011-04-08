@@ -285,7 +285,7 @@ function update_template(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('template_id=' + active_section + '&desc=' + document.getElementById(active_section + "desc").value + '&display=' + document.getElementById(active_section + "display").value + '&example=' + document.getElementById(active_section + "example").value + '&access=' + document.getElementById(active_section + "access").value + '&active=' + document.getElementById(active_section + "active").value); 		
+		xmlHttp.send('template_id=' + active_section + '&desc=' + document.getElementById(active_section + "desc").value + '&display=' + document.getElementById(active_section + "display").value + '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value + '&example=' + document.getElementById(active_section + "example").value + '&access=' + document.getElementById(active_section + "access").value + '&active=' + document.getElementById(active_section + "active").value); 		
 
 	}
 

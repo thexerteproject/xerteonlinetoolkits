@@ -1,4 +1,6 @@
-<?PHP     require("../../../config.php");
+<?
+
+require("../../../config.php");
 require("../../../session.php");
 
 require("../database_library.php");
@@ -41,6 +43,7 @@ if(is_user_admin()){
 		echo "<p>The template has the following name for users<form><textarea id=\"" . $row['template_type_id'] . "display\">" . $row['display_name'] . "</textarea></form></p>";
 		echo "<p>The template has the following example (0 means no example)<form><textarea id=\"" . $row['template_type_id'] . "example\">" .$row['display_id'] . "</textarea></form></p>";
 		echo "<p>The following users can access this template (* means everyone)<form><textarea id=\"" . $row['template_type_id'] . "access\">" .$row['access_rights'] . "</textarea></form></p>";
+		echo "<p>The date uploaded for this template is (altering this affects the order they are displayed / most recent first ) - <form><textarea id=\"" . $row['template_type_id'] . "_date_uploaded\">" . $row['date_uploaded'] . "</textarea></form></p>";
 		echo "<p>This template is currently set as ";
 
 		echo "<select ";
