@@ -1,4 +1,6 @@
-<?PHP     /**
+<?PHP     
+
+/**
 * 
 * new_templates, allows the site to create a new user
 *
@@ -57,7 +59,7 @@
 
 			create_new_template(($maximum_template_id+1),$_POST['tutorialid']);
 
-			echo ($maximum_template_id+1);
+			echo trim(($maximum_template_id+1));
 			
 		}else{
 

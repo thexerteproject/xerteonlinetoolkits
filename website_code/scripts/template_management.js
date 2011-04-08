@@ -1184,7 +1184,7 @@ function tutorial_created(){
 			
 		if(xmlHttp.responseText!=""){
 
-			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText), "editwindow" + xmlHttp.responseText, "height=665, width=800" );
+			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
 
 			new_file = xmlHttp.responseText;
 		
