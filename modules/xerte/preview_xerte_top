@@ -17,6 +17,9 @@ function enableTTS(){
     VoiceObj = new ActiveXObject("Sapi.SpVoice");
   }
 }
+function openWindow(params){
+  window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+}
 </script>
 <SCRIPT LANGUAGE=JavaScript1.1>
 <!--
