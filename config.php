@@ -19,8 +19,7 @@
 // Same as error_reporting(E_ALL);
 
 // Error reporting fix - please set 
-
-// ini_set('error_reporting', 0);
+ini_set('error_reporting', 0);
 
 $xerte_toolkits_site;
 
