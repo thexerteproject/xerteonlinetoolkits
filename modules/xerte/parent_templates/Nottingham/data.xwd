@@ -15,6 +15,7 @@
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
 
+
     <newNodes>
 
       <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode>
@@ -47,6 +48,7 @@
 
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
 
+      <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
       <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
       <slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></slideshow>
       <accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav>
@@ -86,6 +88,19 @@
 
   </learningObject>
 
+
+  <!--NEW WINDOW--------------------------------------------------------------------->
+  <newWindow menu="Navigators" menuItem="New Window" icon="icApplication" remove="true" thumb="thumbs/newWindow.jpg" hint="Allows the user to launch a new window to a url">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="TextInput" label="URL"/>
+    <previewImage type="media" label="Preview Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+    <windowWidth type="NumericStepper" min="100" max="980" step="10" label="width" width="100"/>
+    <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
+
+  </newWindow>
 
 
   <!--BUTTON NAVIGATOR--------------------------------------------------------------------->
