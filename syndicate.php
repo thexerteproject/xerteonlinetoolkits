@@ -42,7 +42,7 @@ $query = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemp
 
 		}
 
-		echo "]]></dc:description><dc:format>text/html</dc:format><dc:language>en-gb</dc:language><dc:relation>";
+		echo "]]></dc:description><dc:format>text/html</dc:format><dc:language>en-gb</dc:language><dc:relation><![CDATA[";
 
 		if($row['export']=="true"){
 			
@@ -52,7 +52,7 @@ $query = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemp
 		}
 
 
-		echo "</dc:relation><dc:publisher>" . $xerte_toolkits_site->synd_publisher . "</dc:publisher><dc:rights>" . $row['license'] . "</dc:rights>";
+		echo "]]></dc:relation><dc:publisher>" . $xerte_toolkits_site->synd_publisher . "</dc:publisher><dc:rights>" . $row['license'] . "</dc:rights>";
 
 		$new_array = explode(",",$row['keywords']);
 
