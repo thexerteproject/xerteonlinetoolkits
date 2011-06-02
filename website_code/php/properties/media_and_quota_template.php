@@ -111,7 +111,8 @@ if(is_numeric($_POST['template_id'])){
 		/**
 		* Set the paths
 		*/
-	
+		$dir_path = str_replace("\\","/",$xerte_toolkits_site->users_file_area_full). $end_of_path .  "/media";
+
 		$dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
 	
 		$xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
