@@ -85,10 +85,9 @@ function media_folder_loop($folder_name){
 
 			}
 			$quota += filesize($full);
+			array_push($result_string,$result);
+			$result="";
 		}
-
-		array_push($result_string,$result);
-		$result="";
 			
 	}
 
@@ -113,7 +112,8 @@ if(is_numeric($_POST['template_id'])){
 		*/
 		$dir_path = str_replace("\\","/",$xerte_toolkits_site->users_file_area_full). $end_of_path .  "/media";
 
-		$dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
+#		$dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
+		$dir_path = str_replace("\\","/",$xerte_toolkits_site->users_file_area_full) . $end_of_path .  "/media";
 	
 		$xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 	
