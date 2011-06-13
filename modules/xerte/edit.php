@@ -26,6 +26,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 	require_once("config.php");
 
 	require_once($xerte_toolkits_site->php_library_path . "database_library.php");
+	require_once($xerte_toolkits_site->php_library_path . "display_library.php");
 
 	database_connect("Edit xerte connect success","Edit xerte connect fail");
 
@@ -75,11 +76,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 	if($version_control){
 
-		echo str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top"));
+		echo edit_xerte_page_format_top(str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top")));
 
 	}else{
 
-		echo str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top"));
+		echo edit_xerte_page_format_top(str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top")));
 
 	}
 

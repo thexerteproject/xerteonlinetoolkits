@@ -41,10 +41,10 @@ Folder popup is the div that appears when creating a new folder
 	</div>
 
 	<div class="topbar">
-		<div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+		<div style="width:50%; height:100%; float:right; position:relative; background-image:url({{organisational_logo}}); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
 			<p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">Log out</a></p>
 		</div>
-		<img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
 	</div>
 	
 	<!-- 

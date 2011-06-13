@@ -118,7 +118,7 @@
 
 				echo "var ajax_php_path = \"website_code/php/\";</script>";
 
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_top");			
+				echo admin_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "admin_top"));			
 
 				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
 				

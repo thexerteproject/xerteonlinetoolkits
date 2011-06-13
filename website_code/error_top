@@ -12,8 +12,8 @@
 
 <div style="margin:0 auto; width:800px">
 	<div class="edit_topbar" style="width:800px">
-		<img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
-		<img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
+		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
+		<img src="{{organisational_logo}}" style="margin-right:10px; float:right" />
 	</div>	
 	<div style="margin:0 auto">
 

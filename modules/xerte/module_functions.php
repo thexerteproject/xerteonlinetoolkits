@@ -21,7 +21,7 @@ function dont_show_template(){
 
 	require("config.php");	
 
-	echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry, the author of this piece has yet to make it available.</div></div></body></html>";
+	echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry, the author of this piece has yet to make it available.</div></div></body></html>";
 	die();
 
 }

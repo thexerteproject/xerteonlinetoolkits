@@ -471,6 +471,27 @@ function login_page_format_bottom($buffer){
 
 	/**
 	 * 
+	 * Function logged in page format top
+ 	 * This function is used as part of the display of Index.php
+ 	 * @param string $buffer = A HTML string to work on
+	 * @version 1.0
+	 * @author Patrick Lockley
+	 */
+
+function logged_in_page_format_top($buffer){
+
+	global $xerte_toolkits_site;
+
+	$buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
+	$buffer = str_replace("{{site_logo}}", $xerte_toolkits_site->site_logo , $buffer);
+	$buffer = str_replace("{{organisational_logo}}", $xerte_toolkits_site->organisational_logo , $buffer);
+	$buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
+
+	return $buffer;
+
+}
+	/**
+	 * 
 	 * Function login page format middle
  	 * This function is used to display the index.php HTML
  	 * @param string $buffer = A HTML string to work on
@@ -489,6 +510,62 @@ function logged_in_page_format_middle($buffer){
 
 }
 
+
+	/**
+	 * 
+	 * Function admin page format top
+ 	 * This function is used to display the index.php HTML
+ 	 * @param string $buffer = A HTML string to work on
+	 * @version 1.0
+	 * @author Patrick Lockley
+	 */
+
+function admin_page_format_top($buffer){
+
+	global $xerte_toolkits_site;
+
+	$buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
+	$buffer = str_replace("{{site_logo}}", $xerte_toolkits_site->site_logo , $buffer);
+	$buffer = str_replace("{{organisational_logo}}", $xerte_toolkits_site->organisational_logo , $buffer);
+	$buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
+
+	return $buffer;
+
+}
+
+	/**
+	 * 
+	 * Function edit xerte page format top
+ 	 * This function is used as part of the display of Index.php
+ 	 * @param string $buffer = A HTML string to work on
+	 * @version 1.0
+	 * @author Patrick Lockley
+	 */
+
+function edit_xerte_page_format_top($buffer){
+
+	global $xerte_toolkits_site;
+
+	$buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
+	$site_logo =  $xerte_toolkits_site->site_logo;
+	if (strrchr($site_logo, '/') != FALSE)
+	{
+	    $pos = strlen($site_logo) - strlen(strrchr($site_logo, '/')) + 1;
+            $site_logo = substr_replace($site_logo, 'edit_', $pos, 0);
+	}	
+	$buffer = str_replace("{{site_logo}}", $site_logo , $buffer);
+	$organisational_logo = $xerte_toolkits_site->organisational_logo;
+	if (strrchr($organisational_logo, '/') != FALSE)
+	{
+	    $pos = strlen($organisational_logo) - strlen(strrchr($organisational_logo, '/')) + 1;
+            $organisational_logo = substr_replace($organisational_logo, 'edit_', $pos, 0);
+	}	
+	$buffer = str_replace("{{organisational_logo}}", $organisational_logo , $buffer);
+	$buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
+
+	return $buffer;
+
+}
 
 	/**
 	 * 

@@ -183,7 +183,7 @@
 
 		if(get_maximum_template_number()<$safe_template_id){
 
-			echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry this resource is no longer available </div></div></body></html>";
+			echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource is no longer available </div></div></body></html>";
 			die();
 						
 		}
@@ -217,7 +217,7 @@
 
 		if($row_recycle['folder_name']=="recyclebin"){
 
-			echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry this resource is no longer available </div></div></body></html>";
+			echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource is no longer available </div></div></body></html>";
 			die();
 
 		}
@@ -395,7 +395,7 @@
 		* Was not numeric, so display error message
 		*/
 
-		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry this resource does not exist </div></div></body></html>";
+		echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource does not exist </div></div></body></html>";
 		die();
 						
 		
