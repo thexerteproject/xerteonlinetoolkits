@@ -49,6 +49,7 @@
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
 
       <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
+      <thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page"/>]]></thumbnailViewer>
       <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
       <slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></slideshow>
       <accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav>
@@ -101,6 +102,23 @@
     <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
 
   </newWindow>
+
+
+  <!--THUMBNAIL VIEWER--------------------------------------------------------------------->
+  <thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" icon="icPictures" remove="true" thumb="thumbs/thumb.jpg" hint="Presents a series of thumbnailed images for the user to browse.">
+    
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </thumbnailViewer>
 
 
   <!--BUTTON NAVIGATOR--------------------------------------------------------------------->
@@ -743,7 +761,7 @@
 
 
   <!--TEXT GRAPHICS SOUND PAGE------------------------------------------------------->
-  <textGraphics type="text" label="Page Text" height="300" menu="Media" menuItem="Graphics and Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and graphics. You can also add an optional sound to this page.">
+  <textGraphics type="text" label="Page Text" height="200" menu="Media" menuItem="Graphics and Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and graphics. You can also add an optional sound to this page.">
 
     <name type="TextInput" label="Page Title"/>
     <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
@@ -755,7 +773,8 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
-    
+     <transcriptbuttonlabel type="TextInput" label="Transcript Button Label" optional="true"/>
+     <transcript type="textArea" height="100" label="Transcript" optional="true"/>
     <imageMargin optional="true" type="NumericStepper" min="0" max="50" step="1" label="Image Margin"/>
     <hidePanel optional="true" type="checkBox" defaultvalue="false" label="Hide Panel"/>
     <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
@@ -1061,6 +1080,8 @@
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <autoplay type="Checkbox" label="Autoplay" optional="true"/>
     <toggle type="Checkbox" label="Toggle full screen" optional="true"/>
+
+    <videoSize type="TextInput" label="Video Size" optional="true"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
