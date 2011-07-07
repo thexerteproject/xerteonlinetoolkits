@@ -94,18 +94,20 @@
   <newWindow menu="Navigators" menuItem="New Window" icon="icApplication" remove="true" thumb="thumbs/newWindow.jpg" hint="Allows the user to launch a new window to a url">
 
     <name type="TextInput" label="Page Title"/>
-    <text type="TextArea" height="250" label="Text"/>
+    <text type="TextArea" height="150" label="Text"/>
     <url type="TextInput" label="URL"/>
     <previewImage type="media" label="Preview Image"/>
     <tip type="TextInput" label="Image Tooltip"/>
     <windowWidth type="NumericStepper" min="100" max="980" step="10" label="width" width="100"/>
     <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
 
+    <htm type="textArea" label="HTML" height="150" optional="true"/>
+
   </newWindow>
 
 
   <!--THUMBNAIL VIEWER--------------------------------------------------------------------->
-  <thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" icon="icPictures" remove="true" thumb="thumbs/thumb.jpg" hint="Presents a series of thumbnailed images for the user to browse.">
+  <thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" icon="icPictures" remove="true" thumb="thumbs/thumb.jpg" hint="Presents a series of thumbnail images for the user to browse.">
     
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="250" label="Text"/>
@@ -115,7 +117,7 @@
     <narration type="media" label="Narration" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></nestedPage>
     </newNodes>
 
   </thumbnailViewer>
@@ -272,17 +274,16 @@
 
 
   <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
-
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="250" label="Page Text"/>
     <align type="ComboBox" options="Top,Bottom" label="Align Text" width="100"/>
-
+<linktarget type="ComboBox" label="Link from image" options="None,Original image,Specified URL" width="200"/>
+      <link type="textInput" label="Specified URL"/>
     <url type="media" label="Image" optional="true"/>
     <tip type="textInput" label="Image Tooltip" optional="true"/>
     <synch type="NumericStepper" min="0" max="9999" step="1" label="Synch Point" width="100"/>
     <initObject type="TextInput" label="Init Object" optional="true"/>
     <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
-
   </nestedPage>
 
 
@@ -1141,6 +1142,6 @@
     <img type="media" label="Image" optional="true"></img>
     <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
   </sound>
-
+  
 
 </wizard>
