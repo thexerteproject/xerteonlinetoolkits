@@ -58,6 +58,7 @@
 
 
       <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
+ <jmol><![CDATA[<jmol name="New Window" text="Enter text for the page" xyz="Select an XYZ file" previewImage="Select a preview image" tip="Enter Tool Tip"/>]]></jmol>
       <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
@@ -88,6 +89,21 @@
     </newNodes>
 
   </learningObject>
+
+
+
+  <!--JMOL VIewer--------------------------------------------------------------------->
+  <jmol menu="Media" menuItem="JMOL Viewer" icon="icAtom" remove="true" thumb="thumbs/jmol.jpg" hint="Provides a viewer for JMOL files">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="150" label="Text"/>
+    <xyz type="Media" label="XYZ File"/>
+    <previewImage type="media" label="Preview Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+
+    <htm type="textArea" label="HTML" height="150" optional="true"/>
+
+  </jmol>
 
 
   <!--NEW WINDOW--------------------------------------------------------------------->
@@ -430,6 +446,8 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
+    <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 
     <newNodes>
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>

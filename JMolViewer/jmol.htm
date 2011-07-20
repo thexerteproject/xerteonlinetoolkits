@@ -1,0 +1,20 @@
+<head>
+  <title>JMol Example</title>
+  <script src="jmol/Jmol.js" type="text/javascript"></script> <!--  Use your own path here {#1} -->
+</head>
+
+
+
+<body  style="width:100%; height:100%; min-height:100%; background-color:'#87CEEB'">
+
+    <script type="text/javascript">
+
+	var str = document.location.search.substr(1,document.location.search.length);
+	var xyzFile = str.split('xyz=')[1];
+
+      	jmolInitialize("jmol", false);
+	jmolSetAppletColor('#87CEEB');
+      	jmolApplet([360, 360], "load " + xyzFile);
+
+    </script>
+</body>
