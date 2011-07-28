@@ -532,7 +532,7 @@ function get_user_details($username,$password){
 
 	mysql_select_db($xerte_toolkits_site->database_name);
 
-	$ldap_hosts = mysql_query("select * from ldap");	
+	$ldap_hosts = mysql_query("select * from " . $xerte_toolkits_site->database_table_prefix . "ldap"); 
 
 	while($host = mysql_fetch_array($ldap_hosts)){
 			
