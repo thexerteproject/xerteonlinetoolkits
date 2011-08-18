@@ -18,12 +18,31 @@ function enableTTS(){
   }
 }
 function openWindow(params){
-  window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+  window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
 }
 
-function createWindow(params){
-  win = window.open('','xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
-  win.document.write(params.html);
+function make_pop_up(height,width,x,y,bgColour,borderColour,innerHTML,src){
+	
+	var create_div = document.createElement("DIV");
+	create_div.style.height = height + "px";
+	create_div.style.width = width + "px";
+	create_div.style.position = "absolute";
+	create_div.style.top = x + "px";
+	create_div.style.left = y + "px";
+	create_div.style.background = bgColour;
+	create_div.innerHTML = innerHTML;	
+	create_div.style.border = "1px solid " + borderColour;
+	document.getElementById("popup_parent").appendChild(create_div);
+	if(src!=""){
+	
+		var iframe_create_div = document.createElement("IFRAME");	
+		iframe_create_div.src = src;
+		iframe_create_div.style.height = height + "px";
+		iframe_create_div.style.width = width + "px";	
+		create_div.appendChild(iframe_create_div);
+	
+	}
+	
 }
 
 </script>
@@ -59,9 +78,9 @@ if (! MM_FlashCanPlay ) {
 </head>
 
 <body style="margin:0; width:100%; height:100%; min-height:100%;">
-
+<a href="javascript:make_pop_up(100,100,50,50,'#000','#fff','','http://www.google.com')">FOOOOKING CLICK ME</a>
 <!--<div style="margin:0px auto;">-->
-
-<div style="min-height:100%; width:100%; height:100%;">
+<div id="popup_parent"></div>
+<div style="min-height:100%; width:100%; height:100%;z-index:-10">
 
 <script type="text/javascript" language="JavaScript">

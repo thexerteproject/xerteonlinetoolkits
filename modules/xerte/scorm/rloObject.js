@@ -1,9 +1,13 @@
-rloObject = function(w,h,rloFile){
+rloObject = function(w,h,rloFile,xmlPath,xmlFile,site,link_id){
+
   var rloWidth = w;
   var rloHeight = h;
   var rloFile = rloFile
   var rloID = rloFile.substr(0, rloFile.lastIndexOf('.')).replace(/[^a-zA-Z0-9]+/g,'');
   var scorm = false;
+  var templateData =xmlFile;
+  var templatePath = rloFile.substr(0, rloFile.lastIndexOf('/') + 1);
+
 
   if (navigator.appName && navigator.appName.indexOf("Microsoft") != -1 &&
     navigator.userAgent.indexOf("Windows") != -1 && navigator.userAgent.indexOf("Windows 3.1") == -1) {
@@ -21,17 +25,22 @@ rloObject = function(w,h,rloFile){
   }
 
   function getLocation(){
-    var loc = document.location.toString();
-    loc = loc.substr(0, loc.lastIndexOf('/') + 1);
+    var loc;
+    var searchStr;
+
+    searchStr = document.location.search.toString();
+    searchStr = searchStr.substr(1);
+
+    templateData = searchStr.split('&')[1].split('=')[1];
+    loc = templateData.substr(0, templateData.lastIndexOf('/') + 1);
+
     return loc;
   }
-  var FileLocation = getLocation();
+  var FileLocation = xmlPath;
 
-  function launchwin(winurl,winname,winfeatures){
-     //This launches a new window and then
-     //focuses it if window.focus() is supported.
-     newwin = window.open(winurl,winname,winfeatures);
-  }
+function resizeRLO(w,h){
+	
+}
 
   document.write('<script language = "JavaScript">');
   document.write('function ' + rloID + '_DoFSCommand(command, args){');
@@ -58,18 +67,20 @@ rloObject = function(w,h,rloFile){
   document.write('}');
   document.write('</script>  ');
 
-  document.writeln('<div id="rlo' + rloID + '" style="width:' + rloWidth + 'px; height:' + rloHeight + 'px; ">');
-  document.writeln('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"   Codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" WIDTH="100%" HEIGHT="100%" id="' + rloID + '" ALIGN="middle">');
+  document.writeln('<div id="rlo' + rloID + '"style="padding:0px; width:' + rloWidth + 'px; height:' + rloHeight + 'px;"');
+
+  document.writeln('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"   Codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" WIDTH="'+rloWidth+'" HEIGHT="'+rloHeight+'" id="' + rloID + '" ALIGN="middle">');
   document.writeln('<param name="movie" value="MainPreloader.swf" />');
   document.writeln('<param name="quality" value="high" />');
   document.writeln('<param name="scale" value="showAll" />');
   document.writeln('<param name="salign" value="T" />');
+  document.writeln('<param name="wmode" value="opaque" />');
   document.writeln('<param name="bgcolor" value="#ffffff" />');
   document.writeln('<param name="allowScriptAccess" value="always" />');
   document.writeln('<param name="seamlessTabbing" value="0" />');
-  document.writeln('<param name="flashVars" value="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '" />');
-  document.writeln('<embed src="MainPreloader.swf" allowScriptAccess="always" quality="high" scale="showAll" salign="T" bgcolor="#ffffff"  WIDTH="100%" HEIGHT="100%" NAME="' + rloID + '" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" flashVars="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '"/>');
+  document.writeln('<param name="flashVars" value="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '&templateData=' + templateData + '&templatePath=' + templatePath + '&site_url=' + site + '&linkID=' + link_id + '"/>');
+  document.writeln('<embed src="MainPreloader.swf" allowScriptAccess="always" wmode="opaque" quality="high" scale="showAll" salign="T" bgcolor="#ffffff"  WIDTH="100%" HEIGHT="100%" NAME="' + rloID + '" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" flashVars="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '&templateData=' + templateData + '&templatePath=' + templatePath + '&site_url=' + site + '&linkID=' + link_id + '"/>');
+
   document.writeln('</object>');
   document.writeln('</div>');
-
 }
