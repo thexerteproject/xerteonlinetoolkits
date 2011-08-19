@@ -21,28 +21,53 @@ function openWindow(params){
   window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
 }
 
-function make_pop_up(height,width,x,y,bgColour,borderColour,innerHTML,src){
+function makePopUp(params)
+{
+	//kill any existing popups
+	var popup = document.getElementById("popup");
+	var parent = document.getElementById("popup_parent");
 	
+	if (popup != null)
+	{
+		parent.removeChild(popup);
+	}
+
+	//make the div and style it...
 	var create_div = document.createElement("DIV");
-	create_div.style.height = height + "px";
-	create_div.style.width = width + "px";
-	create_div.style.position = "absolute";
-	create_div.style.top = x + "px";
-	create_div.style.left = y + "px";
-	create_div.style.background = bgColour;
-	create_div.innerHTML = innerHTML;	
-	create_div.style.border = "1px solid " + borderColour;
-	document.getElementById("popup_parent").appendChild(create_div);
-	if(src!=""){
 	
+	create_div.id = 'popup';
+	create_div.style.height = params.height + "px";
+	create_div.style.width = params.width + "px";
+	create_div.style.position = "absolute";
+	
+	create_div.style.top = params.x + "px";
+	create_div.style.left = params.y + "px";
+	create_div.style.background = params.bgColour;
+	create_div.style.border = "1px solid " + params.borderColour;
+
+	//if we make a div, set the innerHTML
+	if (params.type == 'div'){
+		create_div.innerHTML = params.src;			
+	}
+	else if (params.type == 'iframe')
+	{
 		var iframe_create_div = document.createElement("IFRAME");	
-		iframe_create_div.src = src;
-		iframe_create_div.style.height = height + "px";
-		iframe_create_div.style.width = width + "px";	
+		iframe_create_div.src = params.src;
+		iframe_create_div.style.height = params.height + "px";
+		iframe_create_div.style.width = params.width + "px";	
+		iframe_create_div.frameBorder='no';
 		create_div.appendChild(iframe_create_div);
 	
 	}
-	
+	//finally append the div
+	parent.appendChild(create_div);
+}
+function killPopUp()
+{
+	var popup = document.getElementById("popup");
+	var parent = document.getElementById("popup_parent");
+
+	parent.removeChild(popup);
 }
 
 </script>
