@@ -68,7 +68,7 @@ function show_preview_code($row, $row_username){
 	
 	}
 
-	echo "</script></div></body></html>";
+	echo "</script></div><div id=\"popup_parent\"></body></html>";
 
 }
 

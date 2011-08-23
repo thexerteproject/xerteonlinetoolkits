@@ -1,16 +1,18 @@
-﻿<wizard menus="Text,Media,Navigators,Charts,Interactivity,Misc">
+﻿<wizard menus="Text,Media,Navigators,Charts,Interactivity,Games,Misc">
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
+
+    <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
 
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
     <nfo optional="true" label="Help File" type="media"/>
-    <!--<glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>-->
+    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
@@ -18,6 +20,7 @@
 
     <newNodes>
 
+      <translation><![CDATA[<translation name="Enter the Title" instruction="Enter Instructions" showMedia="false"/>]]></translation>
       <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode>
       <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="tags" term="Enter Tags" results="20"/>]]></delicious>
       <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" align="Left">Enter Embed Code Here</youtube>]]></youtube>
@@ -27,14 +30,17 @@
       <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here">Enter text for the page here</flickr>]]></flickr>  
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
 
+      <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
+
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
       <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
 
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
       <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"/>]]></modelAnswer>
-
+      <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"/>]]></modify>
       <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here"/>]]></categories>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
+      <textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" showMedia="false"/>]]></textMatch>
       <timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here"/>]]></timeline>
       <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
       <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true">CDATA</customHotspots>]]></customHotspots>
@@ -48,6 +54,7 @@
 
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
 
+      <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
       <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
       <thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page"/>]]></thumbnailViewer>
       <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
@@ -58,7 +65,7 @@
 
 
       <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
- <jmol><![CDATA[<jmol name="New Window" text="Enter text for the page" xyz="Select an XYZ file" previewImage="Select a preview image" tip="Enter Tool Tip"/>]]></jmol>
+      <jmol><![CDATA[<jmol name="JMOL VIewer" text="Enter text for the page" xyz="Select an XYZ file"/>]]></jmol>
       <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
@@ -91,6 +98,67 @@
   </learningObject>
 
 
+  <!--EMBED A DIV--------------------------------------------------------------->
+  <embedDiv menu="Navigators" menuItem="Embed Content" icon="icPageWhiteCodeRed" remove="true" thumb="thumbs/embed.jpg" hint="Allows you to inlcude any web page, or to add any embed code to your project">
+    
+    <name type="TextInput" label="Page Title"/>
+    <src type="TextArea" label="Embed Code or URL" height="300"/>
+
+  </embedDiv>
+
+
+
+  <!--MODIFY INTERACTION--------------------------------------------------------------->
+  <modify menu="Interactivity" menuItem="Modify Exercise" icon="icModify" remove="true" thumb="thumbs/modify.jpg" hint="Presents a piece of text that the user must modify in some way, for example, by changing the tense.">
+    
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+    <text type="TextArea" label="Initial Text" height="100"/>
+    <prompt type="TextArea" label="Answer Prompt" height="100"/>
+    <answer type="TextArea" label="Model Answer" height="100"/>
+
+  </modify>
+
+
+
+  <!--MATCHING TEXTS------------------------------------------------------------>
+  <textMatch menu="Interactivity" menuItem="Matching Texts" icon="icConnect" remove="true" thumb="thumbs/textMatch.jpg" hint="An interaction for the user to match chunks of text">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="100" label="Instructions"/>
+
+    <newNodes>
+      <sentence><![CDATA[<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint"/>]]></sentence>
+    </newNodes>
+
+  </textMatch>
+
+  <sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+    <name type="TextInput" label="Name"/>
+    <p1 type="TextArea" height="50" label="Part 1"/>
+    <hint type="TextArea" height="50" label="Hint"/>
+    <p2 type="TextArea" height="50" label="Part 2"/>
+  </sentence>
+
+
+
+  <!--HANGMAN------------------------------------------------------------>
+  <hangman menu="Games" menuItem="Hangman" icon="icPageWhite" remove="true" thumb="thumbs/hangman.jpg" hint="A Hangman game. Create a list of words for the learner to work out.">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Instructions" height="100"/>
+    <words type="TextArea" label="Words" height="100"/>
+  </hangman>
+
+
+  <!--TRANSLATOR------------------------------------------------------------>
+  <translation menu="Misc" menuItem="Translation" icon="icGroup" remove="true" thumb="thumbs/translation.jpg" hint="A tool allowing users to translate text from language to another using machine translation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+
+  </translation>
+
+
 
   <!--JMOL VIewer--------------------------------------------------------------------->
   <jmol menu="Media" menuItem="JMOL Viewer" icon="icAtom" remove="true" thumb="thumbs/jmol.jpg" hint="Provides a viewer for JMOL files">
@@ -98,10 +166,6 @@
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="150" label="Text"/>
     <xyz type="Media" label="XYZ File"/>
-    <previewImage type="media" label="Preview Image"/>
-    <tip type="TextInput" label="Image Tooltip"/>
-
-    <htm type="textArea" label="HTML" height="150" optional="true"/>
 
   </jmol>
 

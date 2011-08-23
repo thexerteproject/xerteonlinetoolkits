@@ -22,7 +22,7 @@ function show_template($row_play){
 
 		echo "myRLO = new rloObject('" . $dimension[0] . "','" . $dimension[1] . "','modules/" . $row_play['template_framework'] . "/parent_templates/" . $row_play['template_name'] . "/" . $row_play['template_name'] . ".rlt','$string_for_flash', '$string_for_flash_xml', '$xerte_toolkits_site->site_url')";
 
-		echo "</script></div></div></body></html>";
+		echo "</script></div><div id=\"popup_parent\"></body></html>";
 
 }
 
