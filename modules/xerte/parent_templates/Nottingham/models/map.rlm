@@ -1,1 +1,53 @@
-	<PG name="map">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);align = pageIcon.templateData.map[0].align;ll = pageIcon.templateData.map[0].mapurl.split('ll=')[1].split('&')[0];z = pageIcon.templateData.map[0].mapurl.split('z=')[1].split('&')[0];mt = pageIcon.templateData.map[0].maptype;staticURL = 'http://maps.google.com/maps/api/staticmap?sensor=false&format=png&size=480x454&center=' + ll + '&zoom=' + z + '&maptype=' + mt; if (pageIcon.templateData.map[0].link == 'false'){  icon.parentNode.getChildByName('newWindow').removeNode();}if (pageIcon.templateData.map[0].narration != undefined){  narration = pageIcon.templateData.map[0].narration;  rootIcon.broadcast('showAudio');}debug(staticURL);]]></SCR>		<DIS scrolling="auto" name="text" x="align == 'left' ? 20 : 540" y="20" w="240" h="480" type="text"><![CDATA[{pageIcon.templateData.map[0].text}]]></DIS>		<DIS tabIndex="-1" id="panel" h="474" w="500" name="panel" x="align == 'left' ? 280 : 20" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<DIS id="map" toolTip="{pageIcon.templateData.map[0].tooltip}" name="map" x="panel._x + 10" y="panel._y + 10" type="ext" url="staticURL"><![CDATA[]]></DIS>		<SCR name="hand"><![CDATA[if (pageIcon.templateData.map[0].link == 'false'){  map.useHandCursor = false;} else {  map.useHandCursor = true;}]]></SCR>		<INT name="newWindow" perpetual="0">			<RES name="onRelease" type="event" eventName="onRelease" icon="map" erase="1" exit="0">				<SCR name="newWindow"><![CDATA[if (mdm == undefined){  newWindow(pageIcon.templateData.map[0].mapurl + '&amp;source=embed');} else {  mdm.System.exec(pageIcon.templateData.map[0].mapurl + '&amp;source=embed');}]]></SCR>			</RES>		</INT>	</PG>
+	<PG title="enter page title" name="map">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+align = pageIcon.templateData.map[0].align;
+
+
+ll = pageIcon.templateData.map[0].mapurl.split('ll=')[1].split('&')[0];
+z = pageIcon.templateData.map[0].mapurl.split('z=')[1].split('&')[0];
+mt = pageIcon.templateData.map[0].maptype;
+
+staticURL = 'http://maps.google.com/maps/api/staticmap?sensor=false&format=png&size=480x454&center=' + ll + '&zoom=' + z + '&maptype=' + mt; 
+if (pageIcon.templateData.map[0].link == 'false'){
+  icon.parentNode.getChildByName('newWindow').removeNode();
+}
+
+if (pageIcon.templateData.map[0].narration != undefined){
+  narration = pageIcon.templateData.map[0].narration;
+  rootIcon.broadcast('showAudio');
+}
+// debug(staticURL);]]></SCR>
+		<DIS scrolling="auto" name="text" x="align == 'left' ? 20 : 540" y="20" w="240" h="480" type="text"><![CDATA[{pageIcon.templateData.map[0].text}]]></DIS>
+		<DIS tabIndex="-1" id="panel" h="474" w="500" name="panel" x="align == 'left' ? 280 : 20" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<DIS id="map" toolTip="{pageIcon.templateData.map[0].tooltip}" name="map" x="panel._x + 10" y="panel._y + 10" type="ext" url="staticURL"><![CDATA[]]></DIS>
+		<SCR name="hand"><![CDATA[if (pageIcon.templateData.map[0].link == 'false'){
+  map.useHandCursor = false;
+} else {
+  map.useHandCursor = true;
+}
+
+
+]]></SCR>
+		<INT name="newWindow" perpetual="0">
+			<RES name="onRelease" type="event" eventName="onRelease" icon="map" erase="1" exit="0">
+				<SCR name="newWindow"><![CDATA[if (mdm == undefined){
+  newWindow(pageIcon.templateData.map[0].mapurl + '&amp;source=embed');
+} else {
+  mdm.System.exec(pageIcon.templateData.map[0].mapurl + '&amp;source=embed');
+}
+]]></SCR>
+			</RES>
+		</INT>
+	</PG>

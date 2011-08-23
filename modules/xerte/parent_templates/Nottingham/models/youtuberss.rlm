@@ -1,1 +1,201 @@
-	<PG name="youtuberss">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);align = pageIcon.templateData.rss[0].align;if (pageIcon.templateData.youtuberss[0].narration != undefined){  narration = pageIcon.templateData.youtuberss[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS tabIndex="-1" id="panel" h="474" w="760" name="panel" x="20" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<SCR name="getFeed"><![CDATA[baseURL = "http://gdata.youtube.com/feeds/api/videos?q=" + pageIcon.templateData.youtuberss[0].url + "&orderby=relevance&start-index=1&max-results=" + pageIcon.templateData.youtuberss[0].results + "&v=2&alt=rss&format=5";//if (templatePath.indexOf('modules/xerte') == -1){  feedURL = baseURL;//} else {  //feedURL = _level0.site_url + 'rss_proxy.php?rss=' + baseURL;//}debug(baseURL);req = new XML('<req/'>);panel.sendAndLoad(req, feedURL);d = new Date();ytID = 'yt' + d.getTime();icon.parentNode.getChildByName('youtube').attributes.id = ytID;]]></SCR>		<INT name="loadFeed" perpetual="0">			<RES name="onSendAndLoad" type="event" eventName="onSendAndLoad" icon="panel" erase="1" exit="1">				<SCR name="parseFeed"><![CDATA[arr = panel.serverXML.findNodesByName('item');t = "";for (i = 0; i < arr.length; i++){  tempItem = arr[i].toObject();  t += '<p><img src="' + tempItem["media:group"][0]["media:thumbnail"][0].url + '" width="60" height="45"/>';  t += '<font size="10" color="#0000FF"><b><a href="asfunction:_root.engine.hotText,' + tempItem.guid[0].split(':')[3] + '">' + tempItem.title + '</a></b></font><br><br><br><br>';  //t += '<font size="10" color="#333333">' + tempItem["media:group"][0]["media:description"][0] + '...</font><br></p>';  t+= '</a>';}]]></SCR>			</RES>		</INT>		<DIS textColour="#999999" textSize="10" id="status" name="status" x="panel._x + 72" y="panel._y + 272" w="240" h="10" type="text"><![CDATA[Player Loading...]]></DIS>		<DIS scrolling="auto" textColour="#333333" name="instruction" x="40" y="320" w="320" h="164" type="text"><![CDATA[{pageIcon.templateData.youtuberss[0].text}]]></DIS>		<DIS scrolling="auto" name="feedText" x="400" y="20" w="380" h="474" type="text"><![CDATA[{'<br>' + t}]]></DIS>		<COM id="coded" y="panel._y + 20" x="panel._x+ 20" name="youtube" url="templatePath + 'common/youtube.swf?' + yt" />		<SCR name="setup"><![CDATA[status.txt.selectable = false;status.lineStyle(0,0x999999,100);status.drawRect(0,0,240,18);//rootIcon.enableControls(false, 80);]]></SCR>		<INT name="controls" perpetual="0">			<RES name="onPlayerLoad" type="event" eventName="onPlayerLoad" icon="engine[ytID]" erase="1" exit="0">				<SCR name="handler"><![CDATA[btnToggle.setEnabled(true);//btnPlay.setEnabled(true);status.setText("Select a Video...");rootIcon.enableControls(true, 100);]]></SCR>			</RES>			<RES name="onPlayerStateChange" type="event" eventName="onPlayerStateChange" icon="engine[ytID]" erase="1" exit="0">				<SCR name="handler"><![CDATA[if (engine[ytID].state == 1){  //playing  btnStop.setEnabled(true);  btnPause.setEnabled(true);       btnPlay._visible = false;  btnPause._visible = true;} else if (engine[ytID].state == 2){  //paused  btnPlay.setEnabled(true);    btnPlay._visible = true;  btnPause._visible = false;  }]]></SCR>			</RES>			<RES name="onProgress" type="event" eventName="onProgress" icon="engine[ytID]" erase="1" exit="0">				<SCR name="handler"><![CDATA[engine[ytID].playerLoaded = true;status.setText(engine[ytID].statusStr);status.clear();status.lineStyle(0,0x999999,100);status.drawRect(0,0,240,18);status.lineStyle();status.beginFill(STYLES.fillColour,50);status.drawRect(0,0,engine[ytID].bytesPercent*2.4,18);status.lineStyle(0,0x999999,100);status.beginFill(STYLES.fillColour,100);status.drawRect(0,0,engine[ytID].percent*2.4,18);]]></SCR>			</RES>			<RES name="onRelease" type="event" eventName="onRelease" icon="status" erase="1" exit="0">				<SCR name="seek"><![CDATA[nt = Math.floor(status._xmouse / 240 * engine[ytID].duration);engine[ytID].seekTo(nt ,true);]]></SCR>			</RES>			<RES name="onHotText" type="event" eventName="onHotText" icon="rootIcon" erase="1" exit="0">				<SCR name="loadandPlay"><![CDATA[engine[ytID].loadVideoById(rootIcon.hotTextClicked);btnPlay.setEnabled(false);status.setText("Loading...");]]></SCR>			</RES>			<RES toolTip="Stop Video" enabled="0" rs="btnStop" swf="templatePath + 'common/stopMedia.swf'" name="stop" type="button" x="panel._x + 20" y="290" label="Stop" erase="1" exit="0">				<SCR name="stop"><![CDATA[engine[ytID].pauseVideo();engine[ytID].seekTo(0,true);//reset the status informationstatus.setText('0:00 / ' + engine[ytID].durationStr);status.clear();status.lineStyle(0,0x999999,100);status.drawRect(0,0,240,18);]]></SCR>			</RES>			<RES enabled="0" toolTip="Pause Video" rs="btnPause" swf="templatePath + 'common/pauseMedia.swf'" name="pause" type="button" x="panel._x + 45" y="290" label="Pause" erase="1" exit="0">				<SCR name="play"><![CDATA[engine[ytID].pauseVideo();]]></SCR>			</RES>			<RES enabled="0" toolTip="Play Video" rs="btnPlay" swf="templatePath + 'common/playMedia.swf'" name="play" type="button" x="panel._x + 45" y="290" label="Play" erase="1" exit="0">				<SCR name="play"><![CDATA[if (engine[ytID].playerLoaded != true){  engine[ytID].loadVideoById(vidID);  btnPlay.setEnabled(false);  btnToggle.setEnabled(true);  status.setText("Loading...");} else {  engine[ytID].playVideo();}]]></SCR>			</RES>			<RES toolTip="Toggle Fullscreen" enabled="0" rs="btnToggle" swf="templatePath + 'common/zoomMedia.swf'" name="toggle" type="button" x="panel._x + 318" y="290" label="Resize" erase="1" exit="0">				<SCR name="resize"><![CDATA[if (ytTog != true){  ytTog = true;  engine[ytID].setSize(800,515);  engine[ytID]._x = 0;  engine[ytID]._y = 0;    btnStop._x = 10;  btnStop._y = 484;  btnPlay._x = 35;  btnPlay._y = 484;  btnPause._x = 35;  btnPause._y = 484;  btnToggle._x = 60;  btnToggle._y = 484;  } else {  ytTog = false;  engine[ytID].setSize(320,240);  engine[ytID]._x = panel._x + 20;  engine[ytID]._y = panel._y + 20;        btnStop._x = panel._x + 20;  btnStop._y = 290;  btnPlay._x = panel._x + 45;  btnPlay._y = 290;  btnPause._x = panel._x + 45;  btnPause._y = 290;  btnToggle._x = panel._x + 318;  btnToggle._y = 290;}]]></SCR>			</RES>		</INT>	</PG>
+	<PG title="enter page title" name="youtuberss">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+align = pageIcon.templateData.rss[0].align;
+
+if (pageIcon.templateData.youtuberss[0].narration != undefined){
+  narration = pageIcon.templateData.youtuberss[0].narration;
+  rootIcon.broadcast('showAudio');
+}
+
+
+]]></SCR>
+		<DIS tabIndex="-1" id="panel" h="474" w="760" name="panel" x="20" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<SCR name="getFeed"><![CDATA[baseURL = "http://gdata.youtube.com/feeds/api/videos?q=" + pageIcon.templateData.youtuberss[0].url + "&orderby=relevance&start-index=1&max-results=" + pageIcon.templateData.youtuberss[0].results + "&v=2&alt=rss&format=5";
+//if (templatePath.indexOf('modules/xerte') == -1){
+  feedURL = baseURL;
+//} else {
+  //feedURL = _level0.site_url + 'rss_proxy.php?rss=' + baseURL;
+//}
+
+// debug(baseURL);
+
+req = new XML('<req/'>);
+panel.sendAndLoad(req, feedURL);
+
+d = new Date();
+ytID = 'yt' + d.getTime();
+icon.parentNode.getChildByName('youtube').attributes.id = ytID;
+
+
+
+
+
+]]></SCR>
+		<INT name="loadFeed" perpetual="0">
+			<RES name="onSendAndLoad" type="event" eventName="onSendAndLoad" icon="panel" erase="1" exit="1">
+				<SCR name="parseFeed"><![CDATA[arr = panel.serverXML.findNodesByName('item');
+
+t = "";
+for (i = 0; i < arr.length; i++){
+
+  tempItem = arr[i].toObject();
+  t += '<p><img src="' + tempItem["media:group"][0]["media:thumbnail"][0].url + '" width="60" height="45"/>';
+  t += '<font size="10" color="#0000FF"><b><a href="asfunction:_root.engine.hotText,' + tempItem.guid[0].split(':')[3] + '">' + tempItem.title + '</a></b></font><br><br><br><br>';
+  //t += '<font size="10" color="#333333">' + tempItem["media:group"][0]["media:description"][0] + '...</font><br></p>';
+  t+= '</a>';
+
+}
+
+]]></SCR>
+			</RES>
+		</INT>
+		<DIS textColour="#999999" textSize="10" id="status" name="status" x="panel._x + 72" y="panel._y + 272" w="240" h="10" type="text"><![CDATA[Player Loading...]]></DIS>
+		<DIS scrolling="auto" textColour="#333333" name="instruction" x="40" y="320" w="320" h="164" type="text"><![CDATA[{pageIcon.templateData.youtuberss[0].text}]]></DIS>
+		<DIS scrolling="auto" name="feedText" x="400" y="20" w="380" h="474" type="text"><![CDATA[{'<br>' + t}]]></DIS>
+		<COM id="coded" y="panel._y + 20" x="panel._x+ 20" name="youtube" url="templatePath + 'common/youtube.swf?' + yt" />
+		<SCR name="setup"><![CDATA[status.txt.selectable = false;
+status.lineStyle(0,0x999999,100);
+status.drawRect(0,0,240,18);
+
+//rootIcon.enableControls(false, 80);]]></SCR>
+		<INT name="controls" perpetual="0">
+			<RES name="onPlayerLoad" type="event" eventName="onPlayerLoad" icon="engine[ytID]" erase="1" exit="0">
+				<SCR name="handler"><![CDATA[btnToggle.setEnabled(true);
+//btnPlay.setEnabled(true);
+status.setText("Select a Video...");
+
+rootIcon.enableControls(true, 100);
+
+
+]]></SCR>
+			</RES>
+			<RES name="onPlayerStateChange" type="event" eventName="onPlayerStateChange" icon="engine[ytID]" erase="1" exit="0">
+				<SCR name="handler"><![CDATA[if (engine[ytID].state == 1){  //playing
+
+  btnStop.setEnabled(true);
+  btnPause.setEnabled(true);
+     
+  btnPlay._visible = false;
+  btnPause._visible = true;
+
+} else if (engine[ytID].state == 2){  //paused
+
+  btnPlay.setEnabled(true);  
+  btnPlay._visible = true;
+  btnPause._visible = false;
+  
+}
+
+]]></SCR>
+			</RES>
+			<RES name="onProgress" type="event" eventName="onProgress" icon="engine[ytID]" erase="1" exit="0">
+				<SCR name="handler"><![CDATA[engine[ytID].playerLoaded = true;
+status.setText(engine[ytID].statusStr);
+
+status.clear();
+status.lineStyle(0,0x999999,100);
+status.drawRect(0,0,240,18);
+
+status.lineStyle();
+status.beginFill(STYLES.fillColour,50);
+status.drawRect(0,0,engine[ytID].bytesPercent*2.4,18);
+
+status.lineStyle(0,0x999999,100);
+status.beginFill(STYLES.fillColour,100);
+status.drawRect(0,0,engine[ytID].percent*2.4,18);
+]]></SCR>
+			</RES>
+			<RES name="onRelease" type="event" eventName="onRelease" icon="status" erase="1" exit="0">
+				<SCR name="seek"><![CDATA[nt = Math.floor(status._xmouse / 240 * engine[ytID].duration);
+
+engine[ytID].seekTo(nt ,true);]]></SCR>
+			</RES>
+			<RES name="onHotText" type="event" eventName="onHotText" icon="rootIcon" erase="1" exit="0">
+				<SCR name="loadandPlay"><![CDATA[engine[ytID].loadVideoById(rootIcon.hotTextClicked);
+btnPlay.setEnabled(false);
+status.setText("Loading...");
+
+]]></SCR>
+			</RES>
+			<RES toolTip="Stop Video" enabled="0" rs="btnStop" swf="templatePath + 'common/stopMedia.swf'" name="stop" type="button" x="panel._x + 20" y="290" label="Stop" erase="1" exit="0">
+				<SCR name="stop"><![CDATA[engine[ytID].pauseVideo();
+engine[ytID].seekTo(0,true);
+
+//reset the status information
+status.setText('0:00 / ' + engine[ytID].durationStr);
+status.clear();
+status.lineStyle(0,0x999999,100);
+status.drawRect(0,0,240,18);
+
+
+]]></SCR>
+			</RES>
+			<RES enabled="0" toolTip="Pause Video" rs="btnPause" swf="templatePath + 'common/pauseMedia.swf'" name="pause" type="button" x="panel._x + 45" y="290" label="Pause" erase="1" exit="0">
+				<SCR name="play"><![CDATA[engine[ytID].pauseVideo();
+]]></SCR>
+			</RES>
+			<RES enabled="0" toolTip="Play Video" rs="btnPlay" swf="templatePath + 'common/playMedia.swf'" name="play" type="button" x="panel._x + 45" y="290" label="Play" erase="1" exit="0">
+				<SCR name="play"><![CDATA[if (engine[ytID].playerLoaded != true){
+  engine[ytID].loadVideoById(vidID);
+  btnPlay.setEnabled(false);
+  btnToggle.setEnabled(true);
+  status.setText("Loading...");
+} else {
+  engine[ytID].playVideo();
+}
+
+
+
+]]></SCR>
+			</RES>
+			<RES toolTip="Toggle Fullscreen" enabled="0" rs="btnToggle" swf="templatePath + 'common/zoomMedia.swf'" name="toggle" type="button" x="panel._x + 318" y="290" label="Resize" erase="1" exit="0">
+				<SCR name="resize"><![CDATA[if (ytTog != true){
+  ytTog = true;
+  engine[ytID].setSize(800,515);
+  engine[ytID]._x = 0;
+  engine[ytID]._y = 0;
+  
+  btnStop._x = 10;
+  btnStop._y = 484;
+  btnPlay._x = 35;
+  btnPlay._y = 484;
+  btnPause._x = 35;
+  btnPause._y = 484;
+  btnToggle._x = 60;
+  btnToggle._y = 484;
+  
+} else {
+  ytTog = false;
+  engine[ytID].setSize(320,240);
+  engine[ytID]._x = panel._x + 20;
+  engine[ytID]._y = panel._y + 20;
+      
+  btnStop._x = panel._x + 20;
+  btnStop._y = 290;
+  btnPlay._x = panel._x + 45;
+  btnPlay._y = 290;
+  btnPause._x = panel._x + 45;
+  btnPause._y = 290;
+  btnToggle._x = panel._x + 318;
+  btnToggle._y = 290;
+}
+
+
+
+
+]]></SCR>
+			</RES>
+		</INT>
+	</PG>
