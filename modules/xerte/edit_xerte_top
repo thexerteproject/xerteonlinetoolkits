@@ -45,8 +45,7 @@ function receive_picture(url){
 <div style="margin:0 auto; width:800px">
 	<div class="edit_topbar" style="width:800px">
 		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
-		<a style="color:#000; font-size:65%" href="javascript:window.moveTo(0,0);window.resizeTo(screen.width,screen.height);">Maximise Window Size</a>
-		<img src="{{organisational_logo}}" style="margin-right:10px; float:right" />
+<img src="{{organisational_logo}}" style="margin-right:10px; float:right" />
 	</div>	
 </div> 
 <center>
