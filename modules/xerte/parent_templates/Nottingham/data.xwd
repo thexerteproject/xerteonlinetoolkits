@@ -31,6 +31,7 @@
       <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here">Enter text for the page here</flickr>]]></flickr>  
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
 
+      <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
       <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
 
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
@@ -99,11 +100,40 @@
   </learningObject>
 
 
+  <!--MEMORY------------------------------------------------------------>
+  <memory menu="Games" menuItem="Memory Game" icon="icConnect" remove="true" thumb="thumbs/textMatch.jpg" hint="An interaction for the user to match chunks of text">
+
+    <name type="TextInput" label="Page Title"/>    
+
+    <newNodes>
+      <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
+    </newNodes>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </memory>
+
+  <matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
+
+    <name type="TextInput" label="Label"/>
+    <url type="Media" label="Image"/>
+
+  </matchItem>
+
+
   <!--EMBED A DIV--------------------------------------------------------------->
   <embedDiv menu="Navigators" menuItem="Embed Content" icon="icPageWhiteCodeRed" remove="true" thumb="thumbs/embed.jpg" hint="Allows you to inlcude any web page, or to add any embed code to your project">
     
     <name type="TextInput" label="Page Title"/>
     <src type="TextArea" label="Embed Code or URL" height="300"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
   </embedDiv>
 
@@ -118,6 +148,11 @@
     <prompt type="TextArea" label="Answer Prompt" height="100"/>
     <answer type="TextArea" label="Model Answer" height="100"/>
 
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
   </modify>
 
 
@@ -131,6 +166,11 @@
     <newNodes>
       <sentence><![CDATA[<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint"/>]]></sentence>
     </newNodes>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
   </textMatch>
 
@@ -148,6 +188,12 @@
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" label="Instructions" height="100"/>
     <words type="TextArea" label="Words" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
   </hangman>
 
 
@@ -156,6 +202,11 @@
 
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
   </translation>
 
@@ -167,6 +218,11 @@
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="150" label="Text"/>
     <xyz type="Media" label="XYZ File"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
   </jmol>
 
@@ -181,6 +237,11 @@
     <tip type="TextInput" label="Image Tooltip"/>
     <windowWidth type="NumericStepper" min="100" max="980" step="10" label="width" width="100"/>
     <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
 
     <htm type="textArea" label="HTML" height="150" optional="true"/>
 
