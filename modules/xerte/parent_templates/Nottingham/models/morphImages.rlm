@@ -1,153 +1,1 @@
-	<PG title="enter page title" name="morphImages">
-		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
-
-if (extXML == undefined){
-  // Page Wizard
-  pageIcon.templateData = pageIcon.extXML.toObject();
-  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
-} else {
-  // Toolkits
-  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
-  pageIcon.templateData = myXML.toObject();
-  rootIcon.setTitleText(templateData.learningObject[0].name);
-}
-
-if (pageIcon.templateData.morphImages[0].narration != undefined){
-  narration = pageIcon.templateData.morphImages[0].narration;
-  rootIcon.broadcast('showAudio');
-}
-state = 'out';]]></SCR>
-		<DIS tabIndex="-1" id="panel" name="panel" x="-300" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
-		<INT name="loadPanel" perpetual="0">
-			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">
-				<SCR name="setup"><![CDATA[//ok to move on
-hs = new Object();
-hs.x = Number(pageIcon.templateData.morphImages[0].hotspot[0].x);
-hs.y = Number(pageIcon.templateData.morphImages[0].hotspot[0].y);
-hs.w = Number(pageIcon.templateData.morphImages[0].hotspot[0].w);
-
-zoom = 'out';
-
-
-
-]]></SCR>
-			</RES>
-		</INT>
-		<DIS toolTip="{pageIcon.templateData.morphImages[0].tip1}" scrolling="auto" id="graphic" name="graphic" x="1200" y="30" type="ext" url="{pageIcon.templateData.morphImages[0].url}"><![CDATA[{pageIcon.templateData.morphImages[0].tip}
-]]></DIS>
-		<DIS id="mask1" name="mask1" x="graphic._x" y="graphic._y" type="ext" url=""><![CDATA[{pageIcon.templateData.morphImages[0].tip}
-]]></DIS>
-		<INT name="loadImage1" perpetual="0">
-			<RES name="onLoadGraphic1" type="event" eventName="onLoad" icon="graphic" erase="1" exit="1">
-				<SCR name="calculate"><![CDATA[maxWidth = 465;
-maxHeight = 465;
-
-graphic.constrain(maxWidth, maxHeight);
-
-//resize the panel to the graphic
-panel._width = graphic._width + 20;
-panel._height = graphic._height + 20;
-
-panel._x = 20;
-graphic._x = 30;
-textX = graphic._width + 60;
-textY = 20;
-textWidth = stageWidth - 80 - graphic._width;
-
-mask1._x = graphic._x;
-mask1._y = graphic._y;
-mask1.beginFill(0xFF0000,100);
-mask1.drawRect(0,0,graphic._width, graphic._height);
-graphic.setMask(mask1);
-
-//store for later
-graphic.initX = graphic._x;
-graphic.initY = graphic._y;
-graphic.initW = graphic._width;
-graphic.initH = graphic._height;
-
-
-
-]]></SCR>
-			</RES>
-		</INT>
-		<DIS toolTip="{pageIcon.templateData.morphImages[0].tip2}" scrolling="auto" id="graphic2" name="graphic2" x="1200" y="30" type="ext" url="{pageIcon.templateData.morphImages[0].url2}"><![CDATA[{pageIcon.templateData.morphImages[0].tip}
-]]></DIS>
-		<DIS id="mask2" name="mask2" x="graphic._x" y="graphic._y" type="ext" url=""><![CDATA[{pageIcon.templateData.morphImages[0].tip}
-]]></DIS>
-		<INT name="loadImage2" perpetual="0">
-			<RES name="onLoadGraphic2" type="event" eventName="onLoad" icon="graphic2" erase="1" exit="1">
-				<SCR name="calculate"><![CDATA[graphic2._x = graphic._x + hs.x;
-graphic2._y = graphic._y + hs.y;
-graphic2._width = hs.w;
-graphic2._height = graphic._height * (hs.w / graphic._width);
-graphic2._alpha = 0;
-
-mask2._x = graphic._x;
-mask2._y = graphic._y;
-mask2.beginFill(0xFF0000,100);
-mask2.drawRect(0,0,graphic._width, graphic._height);
-graphic2.setMask(mask2);
-
-s = Number(pageIcon.templateData.morphImages[0].zoomSpeed);
-p = graphic._width / hs.w;
-
-//store for later
-graphic2.initX = graphic2._x;
-graphic2.initY = graphic2._y;
-graphic2.initW = hs.w;
-graphic2.initH = graphic2._height;
-]]></SCR>
-			</RES>
-		</INT>
-		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="textX" y="textY" w="textWidth" type="text"><![CDATA[{pageIcon.templateData.morphImages[0].text}]]></DIS>
-		<INT name="interaction" perpetual="0">
-			<RES rs="btnAnim" swf="templatePath + 'common/button.swf'" name="animate&scale" type="button" x="textBlock._x" y="textBlock._y + textBlock._height + 20" label="{pageIcon.templateData.morphImages[0].buttonLabel}" erase="1" exit="0">
-				<SCR name="animate"><![CDATA[
-if (state == 'out'){
-
-  btnAnim.setEnabled(false);
-  
-  graphic2.tween('_x', graphic2._x, graphic._x, s);
-  graphic2.tween('_y', graphic2._y, graphic._y, s);
-  graphic2.tween('_width', graphic2._width, graphic._width, s);
-  graphic2.tween('_height', graphic2._height, graphic._height, s);
-  graphic2.tween('_alpha', 0, 100, s);
-    
-  graphic.tween('_x', graphic._x, graphic._x - (hs.x * p), s);
-  graphic.tween('_y', graphic._y, graphic._y - (hs.y * p), s);
-  graphic.tween('_width', graphic._width, graphic._width * p, s);
-  graphic.tween('_height', graphic._height, graphic._height * p, s);
-  graphic.tween('_alpha', 100,0, s);
-  
-  state = 'in';
-  
-} else {
-
-  btnAnim.setEnabled(false); 
-  
-  graphic2.tween('_x', graphic2._x, graphic2.initX, s);
-  graphic2.tween('_y', graphic2._y, graphic2.initY, s);
-  graphic2.tween('_width', graphic2._width, graphic2.initW, s);
-  graphic2.tween('_height', graphic2._height, graphic2.initH, s);  
-  graphic2.tween('_alpha', 100,0, s);
-    
-  graphic.tween('_x', graphic._x, graphic.initX, s);
-  graphic.tween('_y', graphic._y, graphic.initY, s);
-  graphic.tween('_width', graphic._width, graphic.initW, s);
-  graphic.tween('_height', graphic._height, graphic.initH, s);  
-  graphic.tween('_alpha', 0,100, s);
-  
-  state = 'out';
-}
-
-
-  
- 
-]]></SCR>
-			</RES>
-			<RES name="enableButton" type="event" eventName="onMotionFinished" icon="graphic" erase="1" exit="0">
-				<SCR name="enable"><![CDATA[btnAnim.setEnabled(true);]]></SCR>
-			</RES>
-		</INT>
-	</PG>
+	<PG title="enter page title" name="morphImages">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();if (extXML == undefined){  // Page Wizard  pageIcon.templateData = pageIcon.extXML.toObject();  pageIcon.templateData = pageIcon.templateData.pageWizard[0];} else {  // Toolkits  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);  pageIcon.templateData = myXML.toObject();  rootIcon.setTitleText(templateData.learningObject[0].name);}state = 'out';if (pageIcon.templateData.morphImages[0].narration != undefined){  narration = pageIcon.templateData.morphImages[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS tabIndex="-1" id="panel" name="panel" x="-300" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<INT name="loadPanel" perpetual="0">			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">				<SCR name="setup"><![CDATA[//ok to move onhs = new Object();hs.x = Number(pageIcon.templateData.morphImages[0].hotspot[0].x);hs.y = Number(pageIcon.templateData.morphImages[0].hotspot[0].y);hs.w = Number(pageIcon.templateData.morphImages[0].hotspot[0].w);zoom = 'out';]]></SCR>			</RES>		</INT>		<DIS toolTip="{pageIcon.templateData.morphImages[0].tip1}" scrolling="auto" id="graphic" name="graphic" x="1200" y="30" type="ext" url="{pageIcon.templateData.morphImages[0].url}"><![CDATA[{pageIcon.templateData.morphImages[0].tip}]]></DIS>		<DIS id="mask1" name="mask1" x="graphic._x" y="graphic._y" type="ext" url=""><![CDATA[{pageIcon.templateData.morphImages[0].tip}]]></DIS>		<INT name="loadImage1" perpetual="0">			<RES name="onLoadGraphic1" type="event" eventName="onLoad" icon="graphic" erase="1" exit="1">				<SCR name="calculate"><![CDATA[maxWidth = 465;maxHeight = 465;graphic.constrain(maxWidth, maxHeight);//resize the panel to the graphicpanel._width = graphic._width + 20;panel._height = graphic._height + 20;panel._x = 20;graphic._x = 30;textX = graphic._width + 60;textY = 20;textWidth = stageWidth - 80 - graphic._width;mask1._x = graphic._x;mask1._y = graphic._y;mask1.beginFill(0xFF0000,100);mask1.drawRect(0,0,graphic._width, graphic._height);graphic.setMask(mask1);//store for latergraphic.initX = graphic._x;graphic.initY = graphic._y;graphic.initW = graphic._width;graphic.initH = graphic._height;]]></SCR>			</RES>		</INT>		<DIS toolTip="{pageIcon.templateData.morphImages[0].tip2}" scrolling="auto" id="graphic2" name="graphic2" x="1200" y="30" type="ext" url="{pageIcon.templateData.morphImages[0].url2}"><![CDATA[{pageIcon.templateData.morphImages[0].tip}]]></DIS>		<DIS id="mask2" name="mask2" x="graphic._x" y="graphic._y" type="ext" url=""><![CDATA[{pageIcon.templateData.morphImages[0].tip}]]></DIS>		<INT name="loadImage2" perpetual="0">			<RES name="onLoadGraphic2" type="event" eventName="onLoad" icon="graphic2" erase="1" exit="1">				<SCR name="calculate"><![CDATA[graphic2._x = graphic._x + hs.x;graphic2._y = graphic._y + hs.y;graphic2._width = hs.w;graphic2._height = graphic._height * (hs.w / graphic._width);graphic2._alpha = 0;mask2._x = graphic._x;mask2._y = graphic._y;mask2.beginFill(0xFF0000,100);mask2.drawRect(0,0,graphic._width, graphic._height);graphic2.setMask(mask2);s = Number(pageIcon.templateData.morphImages[0].zoomSpeed);p = graphic._width / hs.w;//store for latergraphic2.initX = graphic2._x;graphic2.initY = graphic2._y;graphic2.initW = hs.w;graphic2.initH = graphic2._height;]]></SCR>			</RES>		</INT>		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="textX" y="textY" w="textWidth" type="text"><![CDATA[{pageIcon.templateData.morphImages[0].text}]]></DIS>		<INT name="interaction" perpetual="0">			<RES rs="btnAnim" swf="templatePath + 'common/button.swf'" name="animate&scale" type="button" x="textBlock._x" y="textBlock._y + textBlock._height + 20" label="{pageIcon.templateData.morphImages[0].buttonLabel != undefined ? pageIcon.templateData.morphImages[0].buttonLabel : 'Zoom' }" erase="1" exit="0">				<SCR name="animate"><![CDATA[if (state == 'out'){  btnAnim.setEnabled(false);    graphic2.tween('_x', graphic2._x, graphic._x, s);  graphic2.tween('_y', graphic2._y, graphic._y, s);  graphic2.tween('_width', graphic2._width, graphic._width, s);  graphic2.tween('_height', graphic2._height, graphic._height, s);  graphic2.tween('_alpha', 0, 100, s);      graphic.tween('_x', graphic._x, graphic._x - (hs.x * p), s);  graphic.tween('_y', graphic._y, graphic._y - (hs.y * p), s);  graphic.tween('_width', graphic._width, graphic._width * p, s);  graphic.tween('_height', graphic._height, graphic._height * p, s);  graphic.tween('_alpha', 100,0, s);    state = 'in';  } else {  btnAnim.setEnabled(false);     graphic2.tween('_x', graphic2._x, graphic2.initX, s);  graphic2.tween('_y', graphic2._y, graphic2.initY, s);  graphic2.tween('_width', graphic2._width, graphic2.initW, s);  graphic2.tween('_height', graphic2._height, graphic2.initH, s);    graphic2.tween('_alpha', 100,0, s);      graphic.tween('_x', graphic._x, graphic.initX, s);  graphic.tween('_y', graphic._y, graphic.initY, s);  graphic.tween('_width', graphic._width, graphic.initW, s);  graphic.tween('_height', graphic._height, graphic.initH, s);    graphic.tween('_alpha', 0,100, s);    state = 'out';}   ]]></SCR>			</RES>			<RES name="enableButton" type="event" eventName="onMotionFinished" icon="graphic" erase="1" exit="0">				<SCR name="enable"><![CDATA[btnAnim.setEnabled(true);]]></SCR>			</RES>		</INT>	</PG>
