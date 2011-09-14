@@ -2,9 +2,84 @@
   <title>JMol Example</title>
  	<script src="jmol/Jmol.js" type="text/javascript"></script><!-- Use your own path here -->
 	<script type="text/javascript">
+		var setUpInfo = "load ";
+		
 		var str = document.location.search.substr(1,document.location.search.length);
-		var modelFile = str.split('xyz=')[1];
-		//var modelFile = "jmol/models/DNEIBA_+H.mol2";
+		var modelFile = str.split(';')[0].split('xyz=')[1];
+		setUpInfo += modelFile + ";";
+		
+		var spin = str.split(';')[1].split('spin=')[1];
+		var spinDefault = "";
+		if (spin == "true") {
+			spinDefault = "checked";
+			setUpInfo += " spin on;";
+		}
+		
+		var controls = str.split(';')[2].split('controls=')[1];
+		
+		var bgColour = str.split(';')[3].split('bgColour=')[1];
+		var selectedColour = new Array("", "", "");
+		if (bgColour == "undefined" || bgColour == "" || bgColour == "White") {
+			selectedColour[0] = "selected";
+			bgColour = "White"
+		} else if (bgColour == "Black") { 
+			selectedColour[1] = "selected";
+		} else {
+			selectedColour[2] = "selected";
+			bgColour = "skyblue"
+		}
+		setUpInfo += " background " + bgColour + ";";
+		
+		var initLook = str.split(';')[4].split('initLook=')[1];
+		var appearance = new Array("", "", "", "", "", "");
+		if (initLook == "CPK") {
+			appearance[0] = "selected";
+			setUpInfo += " spacefill on; wireframe off; backbone on; cartoon off; color cpk;";
+		} else if (initLook == "Ball and Stick") {
+			appearance[1] = "selected";
+			setUpInfo += " spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk;";
+		} else if (initLook == "Sticks") {
+			appearance[2] = "selected";
+			setUpInfo += " spacefill off; wireframe 20%; backbone on; cartoon off; color cpk;";
+		} else if (initLook == "Wireframe") {
+			appearance[3] = "selected";
+			setUpInfo += " spacefill off; wireframe on; backbone on; cartoon off; color cpk;";
+		} else if (initLook == "Cartoon") {
+			appearance[4] = "selected";
+			setUpInfo += " spacefill off; wireframe off; backbone on; cartoon on; color cartoon structure;";
+		} else if (initLook == "Backbone") {
+			appearance[5] = "selected";
+			setUpInfo += " spacefill off; wireframe off; backbone 0.4; cartoon off; color structure;";
+		}
+		
+		var cartoonOpt = str.split(';')[5].split('cartoonOpt=')[1];
+		var backOpt = str.split(';')[6].split('backOpt=')[1];
+		var displayOptions = [["spacefill on; wireframe off; backbone on; cartoon off; color cpk", "CPK", appearance[0]],
+			["spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk", "Ball and Stick", appearance[1]],
+			["spacefill off; wireframe 20%; backbone on; cartoon off; color cpk", "Sticks", appearance[2]],
+			["spacefill off; wireframe on; backbone on; cartoon off; color cpk", "Wireframe", appearance[3]],
+			["spacefill off; wireframe off; backbone 0.4; cartoon off; color structure", "Backbone", appearance[5]],
+			["spacefill off; wireframe off; backbone on; cartoon on; color cartoon structure", "Cartoon", appearance[4]]];
+		if (cartoonOpt == "false" && backOpt == "false") {
+			displayOptions = [["spacefill on; wireframe off; backbone on; cartoon off; color cpk", "CPK", appearance[0]],
+				["spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk", "Ball and Stick", appearance[1]],
+				["spacefill off; wireframe 20%; backbone on; cartoon off; color cpk", "Sticks", appearance[2]],
+				["spacefill off; wireframe on; backbone on; cartoon off; color cpk", "Wireframe", appearance[3]]];
+		} else if (cartoonOpt == "false") {
+			displayOptions = [["spacefill on; wireframe off; backbone on; cartoon off; color cpk", "CPK", appearance[0]],
+				["spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk", "Ball and Stick", appearance[1]],
+				["spacefill off; wireframe 20%; backbone on; cartoon off; color cpk", "Sticks", appearance[2]],
+				["spacefill off; wireframe on; backbone on; cartoon off; color cpk", "Wireframe", appearance[3]],
+				["spacefill off; wireframe off; backbone 0.4; cartoon off; color structure", "Backbone", appearance[5]]];
+		} else if (backOpt == "false") {
+			displayOptions = [["spacefill on; wireframe off; backbone on; cartoon off; color cpk", "CPK", appearance[0]],
+				["spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk", "Ball and Stick", appearance[1]],
+				["spacefill off; wireframe 20%; backbone on; cartoon off; color cpk", "Sticks", appearance[2]],
+				["spacefill off; wireframe on; backbone on; cartoon off; color cpk", "Wireframe", appearance[3]],
+				["spacefill off; wireframe off; backbone on; cartoon on; color cartoon structure", "Cartoon", appearance[4]]];
+		}
+		
+		setUpInfo += " set antialiasDisplay true;";
 		
 	</script>
 	
@@ -15,8 +90,8 @@
 	}
 	
 	.holder {
-		width: 400px;
-		height: 454px;
+		width: 370px;
+		height: 389px;
 	}
 	
 	.header {
@@ -47,37 +122,30 @@
 	<form>
 	
 	<div class="holder">
-	
-		<!--<div class="header"><script type="text/javascript">document.write(modelTitle);</script></div>-->
 		
 		<div class="model">
 			<script type="text/javascript">
 			  jmolInitialize("jmol");
-			  jmolSetAppletColor("white");
-			  jmolApplet([375, 394], "load " + modelFile + "; set antialiasDisplay true;");
+			  jmolSetAppletColor(bgColour);
+			  jmolApplet([345, 309], setUpInfo);
 			  jmolSetButtonCssClass("style1");
 			  jmolSetCheckboxCssClass("style1");
 			  jmolSetMenuCssClass("style1");
 			</script>
 		</div>
 		
-		<div class="controls">		
-			<script type="text/javascript">
+		<script type="text/javascript">
+			if (controls == "true") {
+			  document.write('<div class="controls">');
+			
 			  jmolHtml("Display: ");
-			  jmolMenu([
-			  ["spacefill on; wireframe off; backbone on; cartoon off; color cpk", "CPK"],
-			  ["spacefill 25%; wireframe 35%; backbone on; cartoon off; color cpk", "Ball and Stick", "selected"],
-			  ["spacefill off; wireframe 20%; backbone on; cartoon off; color cpk", "Sticks"],
-			  ["spacefill off; wireframe on; backbone on; cartoon off; color cpk", "Wireframe"],
-			  ["spacefill off; wireframe off; backbone on; cartoon on; color cartoon structure", "Cartoon"],
-			  ["spacefill off; wireframe off; backbone 0.4; cartoon off; color structure", "Backbone"]
-			  ]);
+			  jmolMenu(displayOptions);
 			  jmolHtml(" &nbsp;&nbsp;&nbsp;&nbsp;");
 			  jmolHtml("Background: ");
 			  jmolMenu([
-			  ["background white", "white", "selected"],
-			  ["background black", "black"],
-			  ["background skyblue", "blue"]
+			  ["background white", "White", selectedColour[0]],
+			  ["background black", "Black", selectedColour[1]],
+			  ["background skyblue", "Blue", selectedColour[2]]
 			  ]);
 			  jmolBr();
 			  jmolBr();
@@ -89,11 +157,13 @@
 			  ]);
 			  jmolHtml(" &nbsp;&nbsp;&nbsp;&nbsp;");
 			  jmolHtml("Spin: ");
-			  jmolCheckbox("spin on", "spin off", "");
+			  jmolCheckbox("spin on", "spin off", "", spinDefault);
 			  jmolHtml(" &nbsp;&nbsp;&nbsp;&nbsp;");
-			  jmolButton("load " + modelFile + "; background white", "Reset model"); // ** when clicked drop downs need to change **
-			</script>
-		</div>
+			  jmolButton(setUpInfo, "Reset model");
+			  
+			  document.write('</div>');
+			  }
+		</script>
 		
 	</div>
 	

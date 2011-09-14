@@ -67,7 +67,7 @@
 
 
       <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
-      <jmol><![CDATA[<jmol name="JMOL VIewer" text="Enter text for the page" xyz="Select an XYZ file"/>]]></jmol>
+      <jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" initLook="Ball and Stick" controls="true"/>]]></jmol>
       <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
@@ -203,7 +203,6 @@
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
 
-
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
@@ -217,12 +216,20 @@
 
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="150" label="Text"/>
-    <xyz type="Media" label="XYZ File"/>
-
-
+    <xyz type="Media" label="Model File"/>
+    <initLook type="ComboBox" options="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" label="Initial Appearance" width="120"/>
+    <controls type="CheckBox" label="Show Control Bar"/>
+    
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+
+    <cartoonOpt type="CheckBox" label="Cartoon Option" defaultValue="true" optional="true"/>
+    <backOpt type="CheckBox" label="Backbone Option" defaultValue="true" optional="true"/>
+    <bgColour type="ComboBox" options="White,Black,Blue" label="Background Colour" width="120" optional="true"/>
+    <initSpin type="CheckBox" label="Spin" optional="true"/>
+    <xyz2 type="Media" label="2nd Model File" optional="true"/>
+    
 
   </jmol>
 

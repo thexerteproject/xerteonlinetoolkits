@@ -35,13 +35,13 @@ function makePopUp(params)
 	//make the div and style it...
 	var create_div = document.createElement("DIV");
 	
-	create_div.id = 'popup';
+	create_div.id = params.id;
 	create_div.style.height = params.height + "px";
 	create_div.style.width = params.width + "px";
 	create_div.style.position = "absolute";
 	
-	create_div.style.top = params.x + "px";
-	create_div.style.left = params.y + "px";
+	create_div.style.left = params.x + "px";
+	create_div.style.top = params.y + "px";
 	create_div.style.background = params.bgColour;
 	create_div.style.border = "1px solid " + params.borderColour;
 
@@ -64,10 +64,14 @@ function makePopUp(params)
 }
 function killPopUp()
 {
-	var popup = document.getElementById("popup");
 	var parent = document.getElementById("popup_parent");
-
-	parent.removeChild(popup);
+	if ( parent.hasChildNodes() )
+	{
+		while ( parent.childNodes.length >= 1 )
+		{
+			parent.removeChild( parent.firstChild );       
+		} 
+	}
 }
 
 </script>
