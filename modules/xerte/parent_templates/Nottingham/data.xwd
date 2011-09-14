@@ -6,11 +6,10 @@
     <navigation type="ComboBox" options="Linear,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
 
-    <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language"/>
+    <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language" optional="true"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
 
     <menuImage optional="true" type="media" label="Menu Page Image"/>
-    <language type="ComboBox" options="English,Chinese,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language" optional="true"/>
     <ic optional="true" type="media" label="Icon"/>
     <nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
@@ -202,6 +201,7 @@
 
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
+
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
@@ -670,7 +670,7 @@
 
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="100" label="Text"/>
-    <attempts type="ComboBox" width="100" options="1,2,3,4" label="Attempts before hint"/>
+    <attempts type="ComboBox" width="100" options="0,1,2,3,4" label="Attempts before hint"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
