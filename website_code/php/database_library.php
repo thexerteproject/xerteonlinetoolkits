@@ -48,11 +48,15 @@ function database_connect($success_string, $error_string){
      * database failing code
      */
 
+    $username = 'anonymous';
+    if(isset($_SESSION['toolkits_logon_username'])) {
+        $username = $_SESSION['toolkits_logon_username'];
+    }
     if($database_fail){
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "DATABASE FAILED AT " . $error_string, "MYSQL ERROR MESSAGE IS " . mysql_error());
+        receive_message($username, "ADMIN", "CRITICAL", "DATABASE FAILED AT " . $error_string, "MYSQL ERROR MESSAGE IS " . mysql_error());
         die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error() );
     }else{
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
+        receive_message($username, "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
     }
 
     /*
