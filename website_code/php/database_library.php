@@ -64,3 +64,51 @@ function database_connect($success_string, $error_string){
      */
     return $mysql_connect_id;
 }
+
+/**
+ * Poorman's prepared statement emulation. Does not cope with named parameters - only ?'s.
+ * @param string $sql - e.g. "SELECT * FROM users WHERE name = ? OR name = ?"
+ * @param array $params - e.g. array('bob', "david's");
+ * @return mysql resultset.
+ */
+function db_query($sql, $params = array()) {
+    $connection = database_connect('db_Query ok', 'db_query fail');
+
+    foreach($params as &$value) {
+        if(isset($value)) {
+            if(get_magic_quotes_gpc()) {
+                $value = stripslashes($value);
+            }
+            $value = "'" . mysql_real_escape_string($value) . "'";
+        }
+        else {
+            $value = 'NULL';
+        }
+    }
+
+    // following code taken from php.net/mysql_query - axiak at mit dot edu - 24th october 2006
+    $curpos = 0;
+    $curph = count($params) - 1;
+    // start at the end of the string and replace things backwards; this avoids us replacing a replacement
+    for($i = strlen($sql)-1; $i>0; $i--) {
+        if($sql[$i] !== '?') {
+            continue;
+        }
+        if($curph < 0) {
+            $sql = substr_replace($sql, 'NULL', $i, 1);
+        }
+        else {
+            $sql = substr_replace($sql, $params[$curph], $i, 1);
+        }
+        $curph--;
+    }
+    _debug("Running : $sql");
+    if(preg_match("/^select/", $sql)) {
+        return mysql_fetch_assoc(mysql_query($sql, $connection));
+    }
+    $res = mysql_query($sql, $connection);
+    if(!$res) {
+        _debug("Failed to execute : $sql \n ERORR : " . mysql_error());
+    }
+    return $res;
+}
