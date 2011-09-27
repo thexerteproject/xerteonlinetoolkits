@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $_SESSION['toolkits_surname'] = $entry[0]['sn'][0];
 
-            include $xerte_toolkits_site->php_library_path . "database_library.php";
+            require_once $xerte_toolkits_site->php_library_path . "database_library.php";
 
-            include $xerte_toolkits_site->php_library_path . "user_library.php";
+            require_once $xerte_toolkits_site->php_library_path . "user_library.php";
 
             $mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
 
