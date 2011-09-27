@@ -1,239 +1,148 @@
-<?PHP     
+<?php
 
-	require("config.php");
+require("config.php");
 
-	/**
-	 * 
-	 * Login page, self posts to become management page
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
+/**
+ * 
+ * Login page, self posts to become management page
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	/**
-	 *  Create the basic session
-	 */
+include $xerte_toolkits_site->php_library_path . "login_library.php";
 
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+include $xerte_toolkits_site->php_library_path . "display_library.php";
 
-		$session_id = time();
+// list of error messages to display to the end user
+$errors = array();
 
-		//session_id($session_id);
-		//session_name($xerte_toolkits_site->site_session_name);
-		//session_start($xerte_toolkits_site->site_session_name);
+/*
+ * Some data has been posted, interpret as attempt to login
+ */
 
-		//session_start();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	}
-
-	include $xerte_toolkits_site->php_library_path . "login_library.php";
+    // both empty?
+    if(empty($_POST['login']) && empty($_POST['password'])) { 
+        $errors[] = "<p>Please enter your username and password</p>";
+    }
+    elseif(empty($_POST["login"])) { // empty login
+        $errors[] = "<p>Please enter your username</p>";
+    }
+    elseif(empty($_POST["password"])) { // empty password
+        $errors[] = "<p>Please enter your password</p>";
+    } 
+    elseif(!empty($_POST["login"]) && !empty($_POST["password"])) {
+        // try and authenticate the user
+        if( ($_POST["login"] != $xerte_toolkits_site->admin_username) && (stripslashes($_POST["password"]) != $xerte_toolkits_site->admin_password) ) {
+            if(!function_exists("ldap_connect")){
+                $errors[] = "<p>PHP's LDAP library needs to be installed to use LDAP authentication. If you read the install guide other options are available</p>";
+            }
+        }
 
-	include $xerte_toolkits_site->php_library_path . "display_library.php";
+        if(valid_login($_POST["login"],$_POST["password"], $xerte_toolkits_site)){
 
-	/**
-	 *  Check to see if anything has been posted to distinguish between log in attempts
-	 */
-
-	if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
+            /*
+             * Get some user details back from LDAP
+             */
 
-		$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+            $entry = get_user_details($_POST["login"],$_POST["password"]);
 
-		$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
+            $entry = $entry[1];
 
-		echo $buffer;
+            $_SESSION['toolkits_firstname'] = $entry[0]['givenname'][0];
 
-	}
+            $_SESSION['toolkits_surname'] = $entry[0]['sn'][0];
 
-	/*
-	* Some data has bee posted, interpret as attempt to login
-	*/
+            include $xerte_toolkits_site->php_library_path . "database_library.php";
 
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-		/**
-		* Username and password left empty
-		*/
+            include $xerte_toolkits_site->php_library_path . "user_library.php";
 
-		if(($_POST["login"]=="")&&($_POST["password"]=="")){
-			
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+            $mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
 
-			$buffer .= "<p>Please enter your username and password</p>";
+            $_SESSION['toolkits_logon_username'] = $_POST["login"];
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+            /*
+             * Check to see if this is a users' first time on the site
+             */
 
-			echo $buffer;
+            if(check_if_first_time($_SESSION['toolkits_logon_username'])){
 
-		/*
-		* Username left empty
-		*/
-	
-		}else if($_POST["login"]==""){
+                /*
+                 *	create the user a new id			
+                 */
 
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+                $_SESSION['toolkits_logon_id'] = create_user_id();
 
-			$buffer .= "<p>Please enter your username</p>";
+                /*
+                 *   create a virtual root folder for this user
+                 */
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+                create_a_virtual_root_folder();			
 
-			echo $buffer;
-			
-		/*
-		* Password left empty
-		*/
-	
-		}else if($_POST["password"]==""){
-	
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+            }else{
 
-			$buffer .= "<p>Please enter your password</p>";
+                /*
+                 * User exists so update the user settings
+                 */
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
+                $_SESSION['toolkits_logon_id'] = get_user_id();
 
-			echo $buffer;
-	
-		/*
-		* Password and username provided, so try to authenticate
-		*/
-	
-		}else if(($_POST["login"]!="")&&($_POST["password"]!="")){
-		
-		/*
-		* See if the submitted values are valid logins
-		*/
-		
-			if(($_POST["login"]!=$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])!=$xerte_toolkits_site->admin_password)){
-		
-				if(!function_exists("ldap_connect")){
-			
-					echo "<p>PHP's LDAP library needs to be installed to use LDAP authentication. If you read the install guide other options are available</p>";
-				
-					die();
-			
-				}
-				
-			}
+                update_user_logon_time();
 
-			if(valid_login($_POST["login"],stripslashes($_POST["password"]), $xerte_toolkits_site)){
-				
-				/*
-				* Give the session its own session id
-				*/		
+            }
 
-				$_SESSION['toolkits_sessionid'] = $session_id; 
-				
-				/*
-				* Get some user details back from LDAP
-				*/
+            recycle_bin();		
 
-				$entry = get_user_details($_POST["login"],$_POST["password"]);
+            /*
+             * Output the main page, including the user's and blank templates
+             */
 
-				$entry = $entry[1];
-				
-				$_SESSION['toolkits_firstname'] = $entry[0][givenname][0];
-				
-				$_SESSION['toolkits_surname'] = $entry[0][sn][0];
+            echo file_get_contents($xerte_toolkits_site->website_code_path . "management_headers");
 
-				include $xerte_toolkits_site->php_library_path . "database_library.php";
+            echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
 
-				include $xerte_toolkits_site->php_library_path . "user_library.php";
+            echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
 
-				$mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
+            echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
 
-				$_SESSION['toolkits_logon_username'] = $_POST["login"];
+            echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
 
-				/*
-				* Check to see if this is a users' first time on the site
-				*/
+            echo logged_in_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "management_top"));
 
-				if(check_if_first_time($_SESSION['toolkits_logon_username'])){
+            list_users_projects("data_down");
 
-					/*
-					*	create the user a new id			
-					*/
+            echo logged_in_page_format_middle(file_get_contents($xerte_toolkits_site->website_code_path . "management_middle"));
 
-					$_SESSION['toolkits_logon_id'] = create_user_id();
+            list_blank_templates();
 
-					/*
-					*   create a virtual root folder for this user
-					*/
+            echo file_get_contents($xerte_toolkits_site->website_code_path . "management_bottom");
 
-					create_a_virtual_root_folder();			
+        }else{
 
-				}else{
-				
-					/*
-					* User exists so update the user settings
-					*/
+            if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])==$xerte_toolkits_site->admin_password)){
+                $errors[] = "<p>Site admins should log on on the <a href='management.php'>manangement</a> page</p>";
+            }else{
+                $errors[] = "<p>Sorry that password combination was not correct</p>";
+            }
 
-					$_SESSION['toolkits_logon_id'] = get_user_id();
+        }
 
-					update_user_logon_time();
-		
-				}
+    }
 
-				recycle_bin();		
+}
 
-				/*
-				* Output the main page, including the user's and blank templates
-				*/
-				
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "management_headers");
 
-				echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+foreach($errors as $error) {
+    $buffer .= $error;
+}
+$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
 
-				echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
-
-				echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
-
-				echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
-
-				echo logged_in_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "management_top"));
-			
-				list_users_projects("data_down");
-
-				echo logged_in_page_format_middle(file_get_contents($xerte_toolkits_site->website_code_path . "management_middle"));
-
-				list_blank_templates();
-
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "management_bottom");
-
-			}else{
-
-				if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])==$xerte_toolkits_site->admin_password)){
-				
-					$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
-
-					$buffer .= "<p>Site admins should log on on the manangement page</p>";
-
-					$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
-
-					echo $buffer;	
-
-				}else{
-			
-					/*
-					* login has failed
-					*/
-	
-					$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
-
-					$buffer .= "<p>Sorry that password combination was not correct</p>";
-
-					$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
-
-					echo $buffer;	
-
-				}
-
-			}
-
-		}
-	
-	}
-
+echo $buffer;
 ?>
 </body>
 </html>
