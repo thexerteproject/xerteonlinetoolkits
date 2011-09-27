@@ -1,0 +1,32 @@
+Some random notes for those trying to setup LDAP access :
+
+The 'ldap' table in the database will need to contain something like :
+
+mysql> select * from ldap;
++---------+----------------+-----------+-----------+------------------------------------+---------------+--------------------------------------+-------------+------------------+
+| ldap_id | ldap_knownname | ldap_host | ldap_port | ldap_username                      | ldap_password | ldap_basedn                          | ldap_filter | ldap_filter_attr |
++---------+----------------+-----------+-----------+------------------------------------+---------------+--------------------------------------+-------------+------------------+
+|       1 | elm            | localhost | 389       | cn=admin,dc=mydomain,dc=com        | letmein       | ou=xerte,dc=mydomain,dc=com          | uid         | uid              |
++---------+----------------+-----------+-----------+------------------------------------+---------------+--------------------------------------+-------------+------------------+
+1 row in set (0.00 sec)
+
+
+Where the LDAP server contains a number of records similar to the following, when you perform a 'slapcat' (with selective editing) :
+
+dn: cn=joebloggs,ou=xerte,dc=mydomain,dc=com
+givenName: joebloggs
+sn: Bloggs
+cn: joebloggs
+uid: joebloggs
+userPassword:: somesha1edpasswordstringgoeshere...
+uidNumber: 1001
+gidNumber: 1000
+homeDirectory: /home/users/joebloggs
+loginShell: /bin/sh
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+structuralObjectClass: inetOrgPerson
+
+
+Technically the search is ONLY matching on 'uid' - so what you put in the dn/cn is probably irrelevant... 
