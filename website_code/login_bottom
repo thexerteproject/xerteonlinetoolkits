@@ -34,19 +34,21 @@ Version 1.0
 						Tutorials
 					</p>
 					<p class="tutorials_story">
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/firstlo/creating_your_first_LO.pdf" target="new">Creating your first Learning Object</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/editing_managing_and_sharing_objects/editing_managing_and_sharing_objects_pt1.pdf" target="new">Working with Learning Objects Part 1</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/editing_managing_and_sharing_objects/editing_managing_and_sharing_objects_pt2.pdf" target="new">Working with Learning Objects Part 2</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/page_types_reference/page_types_reference.pdf" target="new">Page Types Reference</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/multiplechoice/multiple_choice_template.pdf" target="new">Multiple Choice</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/draganddrop/draganddrop.pdf" target="new">Drag and Drop</a><br />
 
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/hotspotimage/hotspotimage.pdf" target="new">Image Hotspots</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/categories/categories.pdf" target="new">Categories Page</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/timeline_matching_pairs/timeline_matching_pairs.pdf" target="new">Timeline / Matching Pairs</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/navigators/navigators.pdf" target="new">Navigators</a><br />
-						<a target="new" href="http://www.techdis.ac.uk/development/xerte/tutorials/editing_managing_and_sharing_objects/sharing_via_XPERT.pdf" target="new">Open Content and the Xpert Repository</a><br />				
-					</p>
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_FirstLOTut" target="new">Creating your first Learning Object</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_EditingPt1" target="new">Working with Learning Objects Part 1</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_EditingPt2" target="new">Working with Learning Objects Part 2</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_QuickRef" target="new">Page Types Reference</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_MultiChoice" target="new">Multiple Choice</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_DD" target="new">Drag and Drop</a><br />
+
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Hotspot" target="new">Image Hotspots</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Categories" target="new">Categories Page</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Timeline" target="new">Timeline / Matching Pairs</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Navigators" target="new">Navigators</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_XPERT" target="new">Open Content and the Xpert Repository</a><br />
+                    </p>
+
 					<p class="tutorials_title">
 						Xpert Repository
 					</p>
