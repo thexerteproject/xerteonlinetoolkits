@@ -1,4 +1,5 @@
-<?PHP     /**
+<?php
+/**
 * 
 * properties template, shows the basic page on the properties window
 *
@@ -51,7 +52,7 @@
 
 		echo "<p>This file was last modified on " . $row['date_modified'] . "</p>";
 
-		if(template_access_settings(mysql_real_escape_string($_POST['template_id']))=="Public"){
+		if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!="Private"){
 
 			echo "<p>To allow other people to access this file, the link is</p>";
 	
@@ -79,4 +80,3 @@
 
 	}
 
-?>
