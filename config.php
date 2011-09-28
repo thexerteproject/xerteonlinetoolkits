@@ -19,12 +19,21 @@
 // Same as error_reporting(E_ALL);
 global $xerte_toolkits_site;
 
-// Error reporting fix - please set 
-//ini_set('error_reporting', 0);
+// Change this to FALSE for production sites.
+global $development;
+$development = true;
+
+ini_set('error_reporting', 0);
+if($development) {
+    ini_set('error_reporting', E_ALL);
+}
 
 if(!function_exists('_debug')) {
     function _debug($string) {
-        file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+        global $development;
+        if(isset($development) && $development) {
+            file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+        }
     }
 }
 
