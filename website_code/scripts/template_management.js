@@ -304,15 +304,11 @@ function close_edit_window(path){
 function file_version_sync(){
 
 	if (xmlHttp.readyState==4){ 
-
-		if(xmlHttp.responseText!=""){
-
-			alert(xmlHttp.responseText);
-
+        response = xmlHttp.responseText.trim();
+		if(response!=""){
+            alert("Error on file sync " + response);
 		}
-
 	}
-
 }
 
 /**
@@ -420,9 +416,7 @@ function example_window(example_id){
 		}
 
 	}else{
-
 		alert("Sorry an example does not exist for this template");
-
 	}
 	
 }
@@ -791,10 +785,10 @@ var delete_feedback_string="";
 function delete_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
-			
-		if(xmlHttp.responseText.indexOf("Sorry")==0){
+        response = xmlHttp.responseText.trim();
 
-			alert(xmlHttp.responseText);
+		if(response.indexOf("Sorry")==0){
+			alert('Error while trying to delete template "' + response + '"');
 
 		}		
 
@@ -876,10 +870,10 @@ function duplicate_template(){
 function duplicate_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
+        response = xmlHttp.responseText.trim();
 
-		if(xmlHttp.responseText!=""){
-
-			alert(xmlHttp.responseText);
+		if(response!=""){
+			alert('Error while duplicating : "' + response + '"');
 
 		}
 
@@ -1181,8 +1175,9 @@ function tutorials_stateChanged(){
 function tutorial_created(){ 
 
 	if (xmlHttp.readyState==4){ 
-			
-		if(xmlHttp.responseText!=""){
+        response = xmlHttp.responseText.trim();
+
+		if(response!=""){
 
 			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
 
@@ -1196,7 +1191,6 @@ function tutorial_created(){
 
 							
 		}else{
-
 
 		}
 	}
@@ -1213,30 +1207,18 @@ function tutorial_created(){
 	 */
 		
 function create_tutorial(tutorial){ 
-
 	if(setup_ajax()!=false){
-    
 		var url="website_code/php/templates/new_template.php";
-
 		active_div=tutorial;
-
 		xmlHttp.open("post",url,true);
 		xmlHttp.onreadystatechange=tutorial_created;
-
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
 		if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
-
 			xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value);
-
 		}else{
-
 			alert("Sorry that is not a valid name. Please use only letters and numbers.");
-
 		}
-
 	}
-
 }
 
 /********** CHECK **************/
