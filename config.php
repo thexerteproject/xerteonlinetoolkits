@@ -20,14 +20,17 @@
 global $xerte_toolkits_site;
 
 // Error reporting fix - please set 
-ini_set('error_reporting', 0);
+//ini_set('error_reporting', 0);
 
-/** 
- * Has the site variable been created already, if not create it 
- */
+if(!function_exists('_debug')) {
+    function _debug($string) {
+        file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+    }
+}
 
 if(!isset($xerte_toolkits_site)){
 
+    session_start();	
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
@@ -41,18 +44,7 @@ if(!isset($xerte_toolkits_site)){
     require_once("database.php");
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
-    $mysql_connect_id = database_connect("config initialisation success", "config initialisation failed");
-
-    $mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
-
-    mysql_select_db($xerte_toolkits_site->database_name) or die($database_fail = true);
-
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "sitedetails";
-
-    $query_response = mysql_query($query);
-
-    $row = mysql_fetch_array($query_response);
-
+    $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
     /** 
      * Access the database to get the variables
      * @version 1.0
@@ -210,6 +202,6 @@ if(!isset($xerte_toolkits_site)){
                      array($session_handle,'xerte_session_clean'));
      */
 
-    session_start();	
     $_SESSION['toolkits_sessionid'] = session_id();
 }
+
