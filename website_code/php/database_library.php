@@ -115,11 +115,7 @@ function db_query($sql, $params = array()) {
         }
         return $rows;
     }
-    $res = mysql_query($sql, $connection);
-    if(!$res) {
-        _debug("Failed to execute : $sql \n ERORR : " . mysql_error());
-    }
-    return $res;
+    return $result;
 }
 
 function db_query_one($sql, $params = array()) {
