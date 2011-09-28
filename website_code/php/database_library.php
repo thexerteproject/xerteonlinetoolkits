@@ -103,12 +103,29 @@ function db_query($sql, $params = array()) {
         $curph--;
     }
     _debug("Running : $sql");
-    if(preg_match("/^select/", $sql)) {
-        return mysql_fetch_assoc(mysql_query($sql, $connection));
+    $result = mysql_query($sql, $connection);
+    if(!$result) {
+        _debug("Failed to execute query : $sql : " . mysql_error());
+        return false;
+    }
+    if(preg_match("/^select/i", $sql)) {
+        $rows = array();
+        while($row = mysql_fetch_assoc($result)) {
+            $rows[] = $row;
+        }
+        return $rows;
     }
     $res = mysql_query($sql, $connection);
     if(!$res) {
         _debug("Failed to execute : $sql \n ERORR : " . mysql_error());
     }
     return $res;
+}
+
+function db_query_one($sql, $params = array()) {
+    $results = db_query($sql, $params);
+
+    if(sizeof($results) > 0) {
+        return $results[0];
+    }
 }
