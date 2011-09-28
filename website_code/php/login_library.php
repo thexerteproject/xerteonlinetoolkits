@@ -269,71 +269,41 @@ function authenticate_to_host($host,$port,$bind_pwd,$bind_dn,$basedn,$ldap_filte
         $ds = @ldap_connect($host, (int)$port);
         if(!$ds) {
             _debug("issue connecting to ldap server? $host / $port : " . ldap_error($ds));
+            return array(false, null);
         }
         @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-        if ($ds) {
-            if ($bind_dn != '') {
-                $ldapbind = @ldap_bind($ds, $bind_dn, $bind_pwd);
-                $sr = @ldap_search($ds, $basedn, $ldap_filter_attr ."=". $eureka_username, array_values($ldap_search_attr));
+        if ($bind_dn != '') {
+            $ldapbind = @ldap_bind($ds, $bind_dn, $bind_pwd);
+            if(!$ldapbind) {
+                _debug("Failed to bind to ldap server- perhaps the dn($bind_dn) or password($bind_pwd) are incorrect?");
+                return array(false, null);
+            }
+            $sr = @ldap_search($ds, $basedn, $ldap_filter_attr ."=". $eureka_username, array_values($ldap_search_attr));
+            if(!$sr){
+                _debug("Failed to query ldap server" . ldap_error($ds));
+                return array(false, null);
+            }
+            _debug("Searched $basedn / $ldap_filter_attr = $eureka_username ");
 
-                if(!$sr){
-                    _debug("Failed to query ldap server" . ldap_error($ds));
+            $entry = ldap_get_entries($ds, $sr);
+            if(!$entry or !isset($entry[0])) {
+                _debug("No entries found" . print_r($entry, true));
+                $result_array = array(false, null);
+                return $result_array;
+            }else{
+                if(@ldap_bind($ds, $entry[0]['dn'], $password)) {
+                    _debug("Login ok " . print_r($entry, true)); 
                     /*
-                     * login has failed
+                     * valid login, so return true
                      */
 
-                    ldap_close($ds);
-
-                    $result_array = array(false, null);
-
+                    $result_array = array(true, $entry);
                     return $result_array;
-
                 }
-
-                $entry = ldap_get_entries($ds, $sr);
-                if(!$entry or !isset($entry[0])) {
-
-                    ldap_close($ds);
-
-                    $result_array = array(false, null);
-
-                    return $result_array;
-
-
-                }else{
-
-                    if(@ldap_bind($ds, $entry[0]['dn'], $password)) {
-
-                        /*
-                         * valid login, so return true
-                         */
-
-                        ldap_close($ds);			
-
-                        $result_array = array(true, $entry);
-
-                        return $result_array;
-
-                    }
-
-                }
-
             }
 
-        }else{
-
-            /*
-             * login failed (possibly for technical reasons with LDAP)
-             */
-
-
-            ldap_close($ds);
-
-            $result_array = array(false, null);
-
-            return $result_array;
-
         }
+
 
     }else{
 
