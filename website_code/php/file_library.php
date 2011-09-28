@@ -1,1 +1,3 @@
-<?PHP     ?>
+<?php
+/* seems to be empty */
+
