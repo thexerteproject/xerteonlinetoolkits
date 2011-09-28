@@ -192,7 +192,7 @@ function list_files_in_this_folder($folder_id, $sort_type){
 
 	while($row = mysql_fetch_array($query_response)){
 		
-		echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" style=\"padding-left:" . ($level*15) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
+		echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" style=\"padding-left:" . ($level*15) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
 
 	}
 
@@ -237,14 +237,15 @@ function list_users_projects($sort_type){
 	global $level, $xerte_toolkits_site;
 
 	$root_folder = get_user_root_folder();
-	
+
+
 	/*
 	* Create the workspace folder
 	*/
 
 	echo "<div class=\"folder\" id=\"folder_workspace\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img style=\"vertical-align:middle\"";
 
-	echo " src=\"website_code/images/folder_workspace.gif\""; 
+	echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/folder_workspace.gif\""; 
 
 	echo " />Workspace</p></div><div id=\"folderchild_workspace\" class=\"workspace\">";
 
@@ -274,11 +275,11 @@ function list_users_projects($sort_type){
 
 	if(mysql_num_rows($query_response_for_folder_content)==0){
 
-		 echo " src=\"website_code/images/rb_empty.gif\""; 
+		 echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/rb_empty.gif\""; 
 
 	}else{
 
-		 echo " src=\"website_code/images/rb_full.gif\""; 
+		 echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/rb_full.gif\""; 
 	}
 
 	echo " />Recycle Bin</p></div><div id=\"folderchild_recyclebin\" class=\"folder_content\">";
