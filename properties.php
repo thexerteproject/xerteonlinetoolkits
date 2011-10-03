@@ -1,6 +1,6 @@
-<?PHP
+<?php
 
-	include("config.php");
+require_once("config.php");
 	
 ?>
 
@@ -26,10 +26,10 @@ Version 1.0
 
 <script type="text/javascript" language="javascript">
 
-var site_url = <?PHP     require("config.php"); echo "\"" . $xerte_toolkits_site->site_url .  "\";\n"; ?>
-var properties_ajax_php_path = <?PHP     echo "\"website_code/php/properties/\";"; ?>
-var management_ajax_php_path = <?PHP     echo "\"website_code/php/management/\";"; ?>
-var ajax_php_path = <?PHP     echo "\"website_code/php/\";"; ?>
+var site_url = "<?php echo  $xerte_toolkits_site->site_url; ?>";
+var properties_ajax_php_path = "website_code/php/properties/";
+var management_ajax_php_path = "website_code/php/management/";
+var ajax_php_path = "website_code/php/";
 
 </script>
 
