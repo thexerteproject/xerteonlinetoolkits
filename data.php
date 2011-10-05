@@ -32,7 +32,6 @@ if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 $query_to_check_data = "select * from {$xerte_toolkits_site->database_table_prefix}additional_sharing where sharing_type=? AND template_id = ?";
 
 $query_for_data_response = db_query_one($query_to_check_data, array('xml', $_GET['template_id']));
-
 /**
  *  Check to see if for this ID a data value is set in additional sharing.
  */
@@ -97,13 +96,9 @@ if(!empty($query_for_data_response)) {
         $path = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
 
         echo str_replace("FileLocation + '", $xerte_toolkits_site->site_url . $path, file_get_contents($path . "data.xml"));	
-
-
     }
-
-
-}else{
-
+}
+else{
     /***  
       Display nothing
      */
@@ -113,4 +108,3 @@ if(!empty($query_for_data_response)) {
     dont_show_template();
 
 }
-
