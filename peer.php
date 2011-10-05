@@ -60,7 +60,7 @@ if(!empty($query_for_peer_response)) {
 
             $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
 
-            $row_play = db_query_oney($query_for_play_content);
+            $row_play = db_query_one($query_for_play_content);
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/peer.php";
 
