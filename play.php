@@ -209,7 +209,7 @@ $row_play = mysql_fetch_array($query_for_play_content_response);
 /*
  * Is the file in the recycle bin?
  */
-$row_recycle = db_query("SELECT folder_name FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_id = ?", array($row_play['folder']));
+$row_recycle = db_query_one("SELECT folder_name FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_id = ?", array($row_play['folder']));
 if($row_recycle['folder_name']=="recyclebin"){
     echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource is no longer available </div></div></body></html>";
     exit(0);
