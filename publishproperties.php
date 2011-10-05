@@ -1,3 +1,6 @@
+<?php 
+require_once("config.php");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -20,10 +23,10 @@ Version 1.0
 
 <script type="text/javascript" language="javascript">
 
-var site_url = <?PHP require("config.php"); echo "\"" . $xerte_toolkits_site->site_url .  "\";\n"; ?>
-var properties_ajax_php_path = <?PHP echo "\"website_code/php/properties/\";"; ?>
-var management_ajax_php_path = <?PHP echo "\"website_code/php/management/\";"; ?>
-var ajax_php_path = <?PHP echo "\"website_code/php/\";"; ?>
+var site_url = "<?php echo $xerte_toolkits_site->site_url;  ?>";
+var properties_ajax_php_path = "website_code/php/properties/";
+var management_ajax_php_path = "website_code/php/management/";
+var ajax_php_path = "website_code/php/";
 
 </script>
 
