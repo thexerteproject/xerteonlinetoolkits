@@ -224,13 +224,13 @@ function edit_window(admin){
 
 					}else{
 
-						alert("You cannot edit files in the recycle bin. Please remove the file from the recycle bin before editing.");
+						alert(RECYCLE_EDIT);
 
 					}
 
 			}else{
 
-				alert("You cannot edit a folder. To change a folder's properties please click 'Properties'");
+				alert(FOLDER_EDIT);
 
 			}
 
@@ -304,11 +304,15 @@ function close_edit_window(path){
 function file_version_sync(){
 
 	if (xmlHttp.readyState==4){ 
-        response = xmlHttp.responseText.trim();
-		if(response!=""){
-            alert("Error on file sync " + response);
+
+		if(xmlHttp.responseText!=""){
+
+			alert(xmlHttp.responseText);
+
 		}
+
 	}
+
 }
 
 /**
@@ -416,7 +420,9 @@ function example_window(example_id){
 		}
 
 	}else{
-		alert("Sorry an example does not exist for this template");
+
+		alert(NO_EXAMPLE);
+
 	}
 	
 }
@@ -452,7 +458,7 @@ function preview_window(admin){
 			
 				}else{
 
-					alert("Please select a project to preview.");
+					alert(PROJECT_SELECT);
 
 				}
 
@@ -596,7 +602,7 @@ function properties_window(admin){
 
 					}else{
 			
-						alert("You cannot set the properties on a file in the recycle bin, please remove this file before continuing");
+						alert(RECYCLE_PROPERTIES);
 
 					}
 
@@ -785,10 +791,10 @@ var delete_feedback_string="";
 function delete_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
-        response = xmlHttp.responseText.trim();
+			
+		if(xmlHttp.responseText.indexOf("Sorry")==0){
 
-		if(response.indexOf("Sorry")==0){
-			alert('Error while trying to delete template "' + response + '"');
+			alert(xmlHttp.responseText);
 
 		}		
 
@@ -837,23 +843,23 @@ function duplicate_template(){
 
 			}else{
 
-				alert("Please remove content from the recycle bin before duplicating it.");
+				alert(RECYCLE_DUPLICATE);
 
 			}
 
 		}else{
 
-			alert("Please select a project to duplicate");
+			alert(DUPLICATE_PROMPT);
 
 		}
 
 	}else if(drag_manager.selected_items.length==0){
 
-		alert("Please select a template you would like to duplicate");
+		alert(DUPLICATE_PROMPT_OTHER);
 
 	}else{
 
-		alert("Only 1 template can be duplicated at any time.");
+		alert(DUPLICATE_LIMIT);
 
 	}
 	
@@ -870,10 +876,10 @@ function duplicate_template(){
 function duplicate_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
-        response = xmlHttp.responseText.trim();
 
-		if(response!=""){
-			alert('Error while duplicating : "' + response + '"');
+		if(xmlHttp.responseText!=""){
+
+			alert(xmlHttp.responseText);
 
 		}
 
@@ -913,7 +919,7 @@ function publish_this(){
 	
 	}else{
 
-		alert("Only 1 template can be published at any time");
+		alert(PUBLISH_LIMIT);
 
 	}
 
@@ -931,7 +937,7 @@ function publish_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 
-		alert("Your file has been published");
+		alert(PUBLISH_SUCCESS);
 
 	}
 
@@ -953,7 +959,7 @@ function remove_this(){
 
 		if(document.getElementById("recyclebin").mainhighlight){
 
-			var response = confirm("Are you sure you want to empty the recycle bin?");
+			var response = confirm(DELETE_MULTIPLE_PROMPT);
 
 			if(response){
 
@@ -977,14 +983,14 @@ function remove_this(){
 		}
 
 		if(document.getElementById("folder_workspace").mainhighlight){
-			alert("You cannot delete the Workspace folder");
+			alert(WORKSPACE_DELETE);
 		}
 
 	}else{	
 
 		if(drag_manager.selected_items.length!=1){
 
-			var response = confirm("Are you sure you with to delete these item?");
+			var response = confirm(DELETE_PROMPT);
 
 		}else{
 
@@ -992,7 +998,7 @@ function remove_this(){
 
 			name_string = data_string.split(">");
 
-			var response = confirm(name_string[1] + "\n\nAre you sure you with to delete?");
+			var response = confirm(name_string[1] + "\n\n" + DELETE_MULTIPLE_PROMPT);
 
 		}
 
@@ -1006,7 +1012,7 @@ function remove_this(){
 
 					if(drag_manager.selected_items[x].parentNode.id=="folderchild_recyclebin"){
 
-						var answer = confirm("Are you sure you want to permenantly delete file - " + drag_manager.selected_items[x].innerHTML.substr(drag_manager.selected_items[x].innerHTML.indexOf(">")+1,drag_manager.selected_items[x].innerHTML.length));
+						var answer = confirm(DELETE_PERMENANT_PROMPT + " - " + drag_manager.selected_items[x].innerHTML.substr(drag_manager.selected_items[x].innerHTML.indexOf(">")+1,drag_manager.selected_items[x].innerHTML.length));
 
 						if(answer){
 
@@ -1027,7 +1033,7 @@ function remove_this(){
 
 					if(folder_children!=0){
 	
-						alert("Sorry you cannot delete a folder that has projects in it. Please empty the folder first");
+						alert(DELETE_FOLDER_NOT_EMPTY);
 			
 					}else{
 
@@ -1175,9 +1181,8 @@ function tutorials_stateChanged(){
 function tutorial_created(){ 
 
 	if (xmlHttp.readyState==4){ 
-        response = xmlHttp.responseText.trim();
-
-		if(response!=""){
+			
+		if(xmlHttp.responseText!=""){
 
 			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
 
@@ -1191,6 +1196,7 @@ function tutorial_created(){
 
 							
 		}else{
+
 
 		}
 	}
@@ -1207,18 +1213,30 @@ function tutorial_created(){
 	 */
 		
 function create_tutorial(tutorial){ 
+
 	if(setup_ajax()!=false){
+    
 		var url="website_code/php/templates/new_template.php";
+
 		active_div=tutorial;
+
 		xmlHttp.open("post",url,true);
 		xmlHttp.onreadystatechange=tutorial_created;
+
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
 		if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
+
 			xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value);
+
 		}else{
-			alert("Sorry that is not a valid name. Please use only letters and numbers.");
+
+			alert(NAME_FAIL);
+
 		}
+
 	}
+
 }
 
 /********** CHECK **************/

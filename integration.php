@@ -81,7 +81,7 @@
 
 	echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
 
-	echo logged_in_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "management_top"));
+	echo file_get_contents($xerte_toolkits_site->website_code_path . "management_top");
 			
 	list_users_projects("data_down");
 

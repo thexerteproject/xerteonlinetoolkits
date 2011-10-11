@@ -3,6 +3,8 @@
 require("../../../config.php");
 require("../../../session.php");
 
+require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/template_details_management.inc";
+
 require("../database_library.php");
 require("../user_library.php");
 
@@ -25,11 +27,11 @@ if(is_user_admin()){
 
 	if(mysql_query($query)){
 
-		echo "Template changes made";
+		echo TEMPLATE_CHANGE_SUCCESS;
 
 	}else{
 
-		echo "Template changes failed";
+		echo TEMPLATE_CHANGE_FAIL;
 
 	}
 			

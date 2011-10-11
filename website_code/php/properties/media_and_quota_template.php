@@ -11,6 +11,8 @@
 require("../../../config.php");
 require("../../../session.php");
 
+require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/media_and_quota_template.inc";
+
 
 include "../database_library.php";
 include "../template_status.php";
@@ -73,9 +75,12 @@ function media_folder_loop($folder_name){
 			*/
 			
 			if(in_use($f)){
-				$result = "<div class=\"filename found\" onclick=\"document.getElementById('linktext').value='" . $xerte_toolkits_site->site_url . str_replace($xerte_toolkits_site->root_file_path,"",$dir_path) . "/" . $f  . "';document.getElementById('download_link').value='" . $dir_path . "/" . $f  . "'" . "\">" . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">In use </span>";
+			
+				$result = "<div class=\"filename found\" onclick=\"document.getElementById('linktext').value='" . $xerte_toolkits_site->site_url . str_replace($xerte_toolkits_site->root_file_path,"",$dir_path) . "/" . $f  . "';document.getElementById('download_link').value='" . $dir_path . "/" . $f  . "'" . "\">" . $f . "</div><div class=\"filesize found\">" . substr((filesize($full)/1000000),0,4) . " MB</div><span class=\"fileinuse found foundtextcolor\">" . MEDIA_AND_QUOTA_USE . " </span>";
+			
 			}else{
-				$result = "<div class=\"filename notfound\" onclick=\"document.getElementById('linktext').value='" . $xerte_toolkits_site->site_url . str_replace($xerte_toolkits_site->root_file_path,"",$dir_path) . "/" . $f  . "';document.getElementById('download_link').innerHTML='<a target=\'_blank\' href=\'getfile.php?file=" . $end_of_path . "/media/" . $f  . "\'>Download this file</a>'\">" . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">Not in use <img alt=\"Click to delete\" title=\"Click to delete\"  onclick=\"javascript:delete_file('" . $dir_path . "/" . $f . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
+				
+				$result = "<div class=\"filename notfound\" onclick=\"document.getElementById('linktext').value='" . $xerte_toolkits_site->site_url . str_replace($xerte_toolkits_site->root_file_path,"",$dir_path) . "/" . $f  . "';document.getElementById('download_link').innerHTML='<a target=\'_blank\' href=\'getfile.php?file=" . $end_of_path . "/media/" . $f  . "\'>" . MEDIA_AND_QUOTA_DOWNLOAD . "</a>'\">" . $f . "</div><div class=\"filesize notfound\">" . substr((filesize($full)/1000000),0,4) . " MB</div><div class=\"fileinuse notfound notfoundtextcolor\">" . MEDIA_AND_QUOTA_NOT_IN_USE . " <img alt=\"Click to delete\" title=\"" . MEDIA_AND_QUOTA_DELETE . "\"  onclick=\"javascript:delete_file('" . $dir_path . "/" . $f . "')" . "\" \" align=\"absmiddle\" src=\"website_code/images/delete.gif\" /></div>";
 
 				/**
 				* add the files to the delete array that are not in use  so they can be listed for use in the delete function
@@ -85,9 +90,10 @@ function media_folder_loop($folder_name){
 
 			}
 			$quota += filesize($full);
-			array_push($result_string,$result);
-			$result="";
 		}
+
+		array_push($result_string,$result);
+		$result="";
 			
 	}
 
@@ -110,10 +116,8 @@ if(is_numeric($_POST['template_id'])){
 		/**
 		* Set the paths
 		*/
-		$dir_path = str_replace("\\","/",$xerte_toolkits_site->users_file_area_full). $end_of_path .  "/media";
-
-#		$dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
-		$dir_path = str_replace("\\","/",$xerte_toolkits_site->users_file_area_full) . $end_of_path .  "/media";
+	
+		$dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media";
 	
 		$xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 	
@@ -129,11 +133,11 @@ if(is_numeric($_POST['template_id'])){
 	
 		media_folder_loop($d);
 	
-		echo "<p class=\"header\"><span>This project is currently using " . substr(($quota/1000000),0,4) . " MB</span></p>";
+		echo "<p class=\"header\"><span>" . MEDIA_AND_QUOTA_USAGE . substr(($quota/1000000),0,4) . " MB</span></p>";
 
-		echo "<p>Import</p><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "/\" /><br><br><input type=\"submit\" name=\"submitBtn\" value=\"Upload\" onsubmit=\"javascript:iframe_check_initialise()\"/></form><p>Click on a file name and a link will appear below<br><textarea id=\"linktext\" style=\"width:90%;\" rows=\"3\"></textarea></p><p style=\"margin:0px; padding:0px; margin-left:10px;\" id=\"download_link\"></p>";
+		echo "<p>Import</p><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "/\" /><br><br><input type=\"submit\" name=\"submitBtn\" value=\"" . MEDIA_AND_QUOTA_UPLOAD . "\" onsubmit=\"javascript:iframe_check_initialise()\"/></form><p>Click on a file name and a link will appear below<br><textarea id=\"linktext\" style=\"width:90%;\" rows=\"3\"></textarea></p><p style=\"margin:0px; padding:0px; margin-left:10px;\" id=\"download_link\"></p>";
 	
-		echo "<div class=\"template_file_area\"><p>In use / Not in use refer to whether the file is used in the published version, not the working version</p>";
+		echo "<div class=\"template_file_area\"><p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";
 	
 		/**
 		* display the first string
@@ -145,25 +149,11 @@ if(is_numeric($_POST['template_id'])){
 	
 		}
 	
-		//echo "<div style=\"float:left; position:relative; width:80%\">";
-			
-		/**
-		* display the list of files that are not in use so they can be deleted.	
-		*/
-			
-		//while($y=array_pop($delete_string)){
-	
-		//	echo "<p><a href=\"javascript:delete_file('" . $dir_path . "/" . $y . "')" . "\">Click to delete the unused file " . $y . "</a></p>";
-	
-		//}
-	
-		//echo "</div>";
-	
 		echo "</div>";
 	
 	}else{
 	
-		echo "<p>Sorry you do not have rights to this template</p>";
+		echo "<p>" . MEDIA_AND_QUOTA_FAIL . "</p>";
 	
 	
 	}

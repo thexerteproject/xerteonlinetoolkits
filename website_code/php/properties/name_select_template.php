@@ -10,6 +10,7 @@
 
 	require("../../../config.php");
 	require("../../../session.php");
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/name_select_template.inc";
 
 	include "../database_library.php";
 
@@ -35,13 +36,13 @@
 	
 				while($row = mysql_fetch_array($query_names_response)){
 	
-					echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <a href=\"javascript:share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">click here to add this user</a></p>";
+					echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <a href=\"javascript:share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">" . NAME_SELECT_CLICK . "</a></p>";
 	
 				}
 	
 			}else{
 	
-					echo "<p>No one found with those details </p>";			
+					echo "<p>" . NAME_SELECT_DETAILS_FAIL . "</p>";			
 	
 			}
 	

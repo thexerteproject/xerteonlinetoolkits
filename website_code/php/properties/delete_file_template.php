@@ -1,4 +1,6 @@
-<?PHP     /**
+<?PHP     
+
+	/**
 	 * 
 	 * delete file template, allows the site to delete files from the media folder
 	 *
@@ -7,7 +9,7 @@
 	 * @copyright Copyright (c) 2008,2009 University of Nottingham
 	 * @package
 	 */
-	include "../../../config.php";
+
 	include "../error_library.php";
 
 	if(unlink($_POST['file'])){

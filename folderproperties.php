@@ -1,8 +1,15 @@
+<?PHP 
+
+	require("config.php");
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/folderproperties.inc";
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Folder properties</title>
+<title><?PHP echo FOLDERPROPERTIES_TITLE; ?></title>
 
 <!-- 
 
@@ -18,10 +25,14 @@ Version 1.0
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/properties_tab.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/properties_tab.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/folderproperties_tab.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/folderproperties_tab.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/ajax_management.js"></script>
 
 </head>
 
@@ -45,7 +56,7 @@ Start the page and once loaded set the default option
 				<div>
 					<span id="title">
 						<img src="website_code/images/Icon_Folder.gif" style="vertical-align:middle; padding-left:10px;" /> 
-						Folder Properties
+						<?PHP echo FOLDERPROPERTIES_DISPLAY_TITLE; ?>
 					</span>
 				</div>
 				<div id="data_area">
@@ -77,7 +88,7 @@ Start the page and once loaded set the default option
 							</div>
 							<div id="tab1" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('1');folderproperties_template()">
-									Properties
+									<?PHP echo FOLDERPROPERTIES_TAB_FOLDER; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -86,7 +97,7 @@ Start the page and once loaded set the default option
 							</div>
 							<div id="tab2" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('2'); folder_content_template()">
-									Contents of this folder
+									<?PHP echo FOLDERPROPERTIES_TAB_CONTENT; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -95,7 +106,7 @@ Start the page and once loaded set the default option
 							</div>
 							<div id="tab3" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('3'); folder_rss_template()">
-									RSS feed for this folder
+									<?PHP echo FOLDERPROPERTIES_TAB_RSS; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							

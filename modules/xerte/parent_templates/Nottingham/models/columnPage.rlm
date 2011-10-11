@@ -1,76 +1,1 @@
-	<PG title="enter page title" name="columnPage">
-		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
-
-if (extXML == undefined){
-  // Page Wizard
-  pageIcon.templateData = pageIcon.extXML.toObject();
-  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
-} else {
-  // Toolkits
-  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
-  pageIcon.templateData = myXML.toObject();
-  rootIcon.setTitleText(templateData.learningObject[0].name);
-}
-
-textSize = pageIcon.templateData.columnPage[0].size;
-
-colCount = pageIcon.templateData.columnPage[0].nestedPage.length;
-colWidth = 780 / colCount;
-
-if (icon.attributes.built != "true"){
-  icon.nextSibling.firstChild.duplicate(colCount - 1);
-  icon.attributes.built = "true";
-}
-
-if (pageIcon.templateData.columnPage[0].narration != undefined){
-  narration = pageIcon.templateData.columnPage[0].narration;
-  rootIcon.broadcast('showAudio');
-}
-
-]]></SCR>
-		<DEC id="columns" name="columns" repeat="all" branch="sequence" pause="0" erase="0" eraseOnExit="0">
-			<PG name="protoColumn">
-				<DIS id="colText" scrolling="auto" name="text" x="20 + (colWidth * icon.parentNode.index())" y="20" w="colWidth - 20" h="480" type="text"><![CDATA[{pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].text}]]></DIS>
-				<SCR name="deleteLoader"><![CDATA[col = icon.parentNode.clip();
-colText._visible = false;
-
-if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].url == undefined){
-  icon.nextSibling.removeNode();
-  icon.nextSibling.removeNode();
-  colText._visible = true;
-  col.fade('in',0.5,'None','easeNone',6);
-}
-
-if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){
-  icon.nextSibling.attributes.controls = '1';
-}
-
-if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip != undefined){
-  icon.nextSibling.attributes.toolTip = pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip;
-  icon.nextSibling.firstChild.nodeValue = '{"' + pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip + '"}';
-}
-
-]]></SCR>
-				<DIS id="graphic" name="graphic" x="20 + (colWidth * icon.parentNode.index())" y="colText._y + colText._height + 20" type="ext" url="{pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>
-				<INT name="loader" perpetual="0">
-					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="1">
-						<SCR name="resize"><![CDATA[graphic.constrain(colWidth - 20, 456 - colText._height);
-
-if (pageIcon.templateData.columnPage[0].nestedPage[columns.getPageIndex()].align == 'Top'){
-  colText._y = 20 + graphic._height + 20;
-  graphic._y = 20;
-}
-colText._visible = true;
-
-if (pageIcon.templateData.columnPage[0].nestedPage[columns.getPageIndex()].initObject != undefined){
-  obj = expression(pageIcon.templateData.accNav[0].nestedPage[icon.parentNode.index()].initObject, engine);
-  graphic.clip.init(obj);
-}
-
-colText.txt._height = 460 - graphic._height;
-colText.scrollBar.setSize(460 - graphic._height);]]></SCR>
-					</RES>
-				</INT>
-			</PG>
-		</DEC>
-	</PG>
+	<PG name="columnPage">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);textSize = pageIcon.templateData.columnPage[0].size;colCount = pageIcon.templateData.columnPage[0].nestedPage.length;colWidth = 780 / colCount;if (icon.attributes.built != "true"){  icon.nextSibling.firstChild.duplicate(colCount - 1);  icon.attributes.built = "true";}if (pageIcon.templateData.columnPage[0].narration != undefined){  narration = pageIcon.templateData.columnPage[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DEC id="columns" name="columns" repeat="all" branch="sequence" pause="0" erase="0" eraseOnExit="0">			<PG name="protoColumn">				<DIS id="colText" scrolling="auto" name="text" x="20 + (colWidth * icon.parentNode.index())" y="20" w="colWidth - 20" h="480" type="text"><![CDATA[{pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].text}]]></DIS>				<SCR name="deleteLoader"><![CDATA[col = icon.parentNode.clip();colText._visible = false;if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].url == undefined){  icon.nextSibling.removeNode();  icon.nextSibling.removeNode();  colText._visible = true;  col.fade('in',0.5,'None','easeNone',6);}if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){  icon.nextSibling.attributes.controls = '1';}if (pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip != undefined){  icon.nextSibling.attributes.toolTip = pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip;  icon.nextSibling.firstChild.nodeValue = '{"' + pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].tip + '"}';}]]></SCR>				<DIS id="graphic" name="graphic" x="20 + (colWidth * icon.parentNode.index())" y="colText._y + colText._height + 20" type="ext" url="{pageIcon.templateData.columnPage[0].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>				<INT name="loader" perpetual="0">					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="1">						<SCR name="resize"><![CDATA[graphic.constrain(colWidth - 20, 456 - colText._height);if (pageIcon.templateData.columnPage[0].nestedPage[columns.getPageIndex()].align == 'Top'){  colText._y = 20 + graphic._height + 20;  graphic._y = 20;}colText._visible = true;if (pageIcon.templateData.columnPage[0].nestedPage[columns.getPageIndex()].initObject != undefined){  obj = expression(pageIcon.templateData.accNav[0].nestedPage[icon.parentNode.index()].initObject, engine);  graphic.clip.init(obj);}colText.txt._height = 460 - graphic._height;colText.scrollBar.setSize(460 - graphic._height);]]></SCR>					</RES>				</INT>			</PG>		</DEC>	</PG>

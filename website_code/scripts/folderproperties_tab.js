@@ -212,7 +212,7 @@ function rename_folder(folder_id,form_tag){
 
 	}else{
 
-		alert("Sorry that is not a valid name. Please use only numbers and letters");
+		alert(NAME_FAIL_FOLDER_PROPERTIES);
 
 	}
 

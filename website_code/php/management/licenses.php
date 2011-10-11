@@ -1,36 +1,21 @@
-<?PHP     require("../../../config.php");
-require("../../../session.php");
+<?PHP     
 
-require("../database_library.php");
-require("../user_library.php");
-require("../error_library.php");
+	require("../../../config.php");
+	require("../../../session.php");
 
-if(is_user_admin()){
+	require("../database_library.php");
+	require("../user_library.php");
+	require("../error_library.php");
+	require("management_library.php");
 
-	$database_id = database_connect("templates list connected","template list failed");
-	
-	echo "<p>Add a new license</p>";
+	if(is_user_admin()){
 
-	echo "<p>The new license is <form><textarea cols=\"100\" rows=\"2\" id=\"newlicense\">Enter license name here</textarea></form></p>";
-       echo "<p><form action=\"javascript:new_license();\"><input type=\"submit\" label=\"Add\" /></form></p>"; 
+		licence_list();
+				
+	}else{
 
-	echo "<p>Manage existing licenses</p>";
-
-	$query="select * from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses";
-
-	$query_response = mysql_query($query);
-
-	while($row = mysql_fetch_array($query_response)){
-
-		echo "<p>" . $row['license_name'] . " - <a href=\"javascript:remove_licenses('" . $row['license_id'] .  "')\">Remove </a></p>";
+		management_fail();
 
 	}
-
-			
-}else{
-
-	echo "the feature is for administrators only";
-
-}
 
 ?>

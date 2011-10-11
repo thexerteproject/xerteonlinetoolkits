@@ -11,11 +11,12 @@
 	require("config.php");
 	require("session.php");
 
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/preview.inc";
+
 	require $xerte_toolkits_site->php_library_path  . "database_library.php";
 	require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
 	require $xerte_toolkits_site->php_library_path  . "template_status.php";
 	require $xerte_toolkits_site->php_library_path  . "user_library.php";
-    require $xerte_toolkits_site->php_library_path  . "display_library.php";
 	
 	/*
 	* Check the ID is numeric
@@ -83,7 +84,7 @@
 			* No rights, show error
 			*/
 
-			echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path  . "error_top")) . "Sorry you cannot access this resource</div></div></body></html>";
+			echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
 
 			die();
 
@@ -95,7 +96,7 @@
 		* No rights, show error
 		*/
 
-		echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path  . "error_top")) . "Sorry you cannot access this resource</div></div></body></html>";
+		echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
 
 		die();
 

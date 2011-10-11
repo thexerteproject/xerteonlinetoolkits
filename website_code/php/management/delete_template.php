@@ -6,6 +6,8 @@
 
 	require("../../../config.php");
 	require("../../../session.php");
+	
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/delete.inc";
 
 	include "../database_library.php";
 	include "../user_library.php";
@@ -29,8 +31,6 @@
 
 		$path2 = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/templates/" . $row_template_id['template_name'] . "/";
 
-		echo $path . "<br>" . $path2;
-
 		set_up_deletion($path);
 
 		set_up_deletion($path2);
@@ -41,16 +41,17 @@
 
 		if(mysql_query($query_to_delete_template)){	
 			
-			echo "succeed";
+			echo MANAGEMENT_DELETE_SUCCESS;
 
 		}else{
 
-			echo "Fail";
+			echo MANAGEMENT_DELETE_FAIL;
 	
 		}
 
 
 	}
+	
 	mysql_close($database_id);
 
 ?>

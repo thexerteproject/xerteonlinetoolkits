@@ -15,6 +15,8 @@
 
 	include "../database_library.php";
 	
+	include "properties_library.php";
+	
 	if(is_numeric($_POST['template_id'])){
 	
 		$database_id = database_connect("notes change template database connect success","notes change template database connect failed");
@@ -26,6 +28,8 @@
 			echo "<p class=\"header\"><span>Project Notes:</span></p>";
 	
 			echo "<p><p>These notes are only visible to yourself<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $_POST['notes'] . "</textarea><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_bottom\" /></form></p><p>Notes saved</p>";
+	
+			notes_display($_POST['notes'],true);
 	
 		}else{
 			

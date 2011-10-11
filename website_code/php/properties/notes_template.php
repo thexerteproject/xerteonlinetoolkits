@@ -15,6 +15,8 @@
 	include "../template_status.php";
 
 	include "../user_library.php";
+	
+	include "properties_library.php";
 
 	$database_connect_id = database_connect("notes template database connect success", "notes template database connect failed");
 	
@@ -28,13 +30,11 @@
 	
 			$row_notes = mysql_fetch_array($query_notes_response);
 	
-			echo "<p class=\"header\"><span>Project Notes:</span></p>";
-	
-			echo "<p>These notes are only visible to yourself<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $row_notes['notes'] . "</textarea><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_bottom\" /></form></p>";
-	
+			notes_display($row_notes['notes'],false);
+			
 		}else{
 	
-			echo "<p>Sorry only the creator of the file can set notes for the project</p>";	
+			notes_display_fail();
 	
 		}
 	

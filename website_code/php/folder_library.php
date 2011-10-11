@@ -5,6 +5,8 @@ include 'error_library.php';
 require_once('../../../config.php');
 require_once('../../../session.php');
 
+require_once($xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/folder_library.inc");
+
 	/**
 	 * 
 	 * Function make new folder
@@ -36,13 +38,13 @@ function make_new_folder($folder_id,$folder_name){
 
 		receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
-		echo "The folder has been created";
+		echo FOLDER_LIBRARY_CREATE;
 
 	}else{
 
 		receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
 
-		echo "Error creating folder";
+		echo FOLDER_LIBRARY_FAIL;
 
 	}
 

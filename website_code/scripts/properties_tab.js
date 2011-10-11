@@ -84,7 +84,7 @@ function screen_size_stateChanged(){
 			
 			temp = xmlHttp.responseText.toString().split("~");
 
-			document.getElementById('dynamic_area').innerHTML += "<p>This code will allow you to embed your project into a web page</p><form><textarea rows='10' cols='40'><iframe src='http://" + site_url + "play_" + window.name +"' width='" + temp[0] + "' height='" + temp[1] + "' frameborder=\"0\"></iframe></textarea></form>";
+			document.getElementById('dynamic_area').innerHTML += "<p>" + EMBED_CODE + "</p><form><textarea rows='10' cols='40'><iframe src='http://" + site_url + "play_" + window.name +"' width='" + temp[0] + "' height='" + temp[1] + "' frameborder=\"0\"></iframe></textarea></form>";
 
 
 		}
@@ -226,7 +226,7 @@ var after_sharing_deleted = false;
 
 function delete_sharing_template(template_id,user_id,who_deleted_flag){
 
-	var answer = confirm("Are you sure you wish to stop sharing this template?");
+	var answer = confirm(SHARING_CONFIRM);
 
 	if(answer){
 
@@ -496,7 +496,7 @@ function peer_change_template(){
 
 		}else{
 
-			alert("You must set a password");
+			alert(PASSWORD_REMINDER);
 
 		}
 
@@ -781,7 +781,7 @@ function change_notes(template_id, form_tag){
 
 	}else{
 
-		alert("Sorry they are not valid notes");
+		alert(NOTES_FAIL);
 
 	}
 
@@ -798,7 +798,7 @@ function change_notes(template_id, form_tag){
 
 function delete_file(file){
 
-	var answer = confirm("Are you sure you want to delete this file?");
+	var answer = confirm(DELETE_FILE_CONFIRM);
 
 	if(answer){
 
@@ -887,7 +887,7 @@ function rename_template(template_id,form_tag){
 
 	}else{
 
-		alert("This is not a valid name. Please use only letters and numbers");
+		alert(PROPERTIES_NAME_FAIL);
 
 	}
 
@@ -952,7 +952,7 @@ function access_change_template(template_id){
 
 	if(access_value=="Other"&&document.getElementById('url').value==""){
 
-		alert("Please enter a value for the site you wish to limit access to");
+		alert(ACCESS_RESTRICT);
 
 	}else{
 
@@ -1088,7 +1088,7 @@ function name_select_gift_template(){
 
 		}else{
 
-			document.getElementById('area2').innerHTML="<p>That is not a valid search term</p>";
+			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
 
 		}
 
@@ -1111,7 +1111,7 @@ function name_select_template(){
 		search_string = document.getElementById('share_form').childNodes[0].value;
 
 		if(search_string==""){
-			document.getElementById('area2').innerHTML="<p>Names will appear here</p>";
+			document.getElementById('area2').innerHTML="<p>" + NAMES_APPEAR + "</p>";
 		}
 
 		if(is_ok_user(search_string)){
@@ -1126,7 +1126,7 @@ function name_select_template(){
 
 		}else{
 
-			document.getElementById('area2').innerHTML="<p>That is not a valid search term</p>";
+			document.getElementById('area2').innerHTML="<p>" + SEARCH_FAIL + "</p>";
 
 		}
 
