@@ -7,7 +7,6 @@
 	require $xerte_toolkits_site->php_library_path . "database_library.php";
 	require $xerte_toolkits_site->php_library_path . "template_library.php";
 	require $xerte_toolkits_site->php_library_path . "template_status.php";
-    require $xerte_toolkits_site->php_library_path . "display_library.php";
 
 	$mysql_id=database_connect("Successful database connect for play queries","Failed database connect for play queries");
 
@@ -53,7 +52,7 @@
 		* Was not numeric, so display error message
 		*/
 
-		echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource does not exist </div></div></body></html>";
+		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry this resource does not exist </div></div></body></html>";
 		die();
 						
 		

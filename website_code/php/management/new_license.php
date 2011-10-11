@@ -25,29 +25,12 @@ if(is_user_admin()){
 
 	}
 
-	$database_id = database_connect("templates list connected","template list failed");
-	
-	echo "<p>Add a new license</p>";
-
-	echo "<p>The new license is <form><textarea cols=\"100\" rows=\"2\" id=\"newlicense\">Enter license name here</textarea></form></p>";
-       echo "<p><form action=\"javascript:new_license();\"><input type=\"submit\" label=\"Add\" /></form></p>"; 
-
-	echo "<p>Manage existing licenses</p>";
-
-	$query="select * from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses";
-
-	$query_response = mysql_query($query);
-
-	while($row = mysql_fetch_array($query_response)){
-
-		echo "<p>" . $row['license_name'] . " - <a href=\"javascript:remove_licenses('" . $row['license_id'] .  "')\">Remove </a></p>";
-
-	}
+	licence_list();
 
 			
 }else{
 
-	echo "the feature is for administrators only";
+	management_fail();
 
 }
 

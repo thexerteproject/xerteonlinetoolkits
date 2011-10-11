@@ -8,10 +8,10 @@
 * @package
 */
 
-	include "../display_library.php";
-	include "../database_library.php";
 	require("../../../config.php");
 	require("../../../session.php");
+	include "../display_library.php";
+	include "../database_library.php";	
 
 	$database_connect_id = database_connect("general templates database connect success","general templates database connect failed");
 

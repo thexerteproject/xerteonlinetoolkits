@@ -10,6 +10,8 @@
 	
 	require("../../../config.php");
 	require("../../../session.php");
+	
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/publish/publish_template.inc";
 
 	require "../database_library.php";
 	require "../screen_size_library.php";
@@ -69,7 +71,7 @@
 	
 	}else{
 	
-		echo "Sorry you are not an editor of this template and so cannot publish it";
+		echo PUBLISH_FAIL;
 	
 	}
 

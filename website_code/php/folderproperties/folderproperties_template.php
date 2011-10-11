@@ -10,6 +10,8 @@
 
 	require("../../../config.php");
 	require("../../../session.php");
+	
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/folderproperties/folderproperties_template.inc";
 
 	include "../database_library.php";
 	include "../url_library.php";
@@ -26,11 +28,11 @@
 
 		$row_template_name = mysql_fetch_array($query_name_response);
 
-		echo "<p class=\"header\"><span>Folder properties</span></p>";			
+		echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
 
-		echo "<p>This folder is called " . str_replace("_", " ", $row_template_name['folder_name']) . "</p>";
+		echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . str_replace("_", " ", $row_template_name['folder_name']) . "</p>";
 
-		echo "<p>Change the name of the project</p>";
+		echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 
 		echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."', 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['folder_name']) . "\" name=\"newfoldername\" /><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_side\" align=\"top\" style=\"padding-left:5px\" /></form>";
 		

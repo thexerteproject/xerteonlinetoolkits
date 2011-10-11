@@ -10,6 +10,9 @@
 
 require("../../../config.php");
 require("../../../session.php");
+
+require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/import.inc";
+
 include "../user_library.php";
 include "../template_library.php";
 include "../file_library.php";
@@ -73,7 +76,7 @@ function make_new_template($type,$zip_path){
 
 	}else{
 
-		$template_name = "Imported template";
+		$template_name = IMPORT_NAME_IF_EMPTY;
 
 	}
 
@@ -111,7 +114,7 @@ function make_new_template($type,$zip_path){
 
 			copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
 
-			echo "New template imported.****";
+			echo IMPORT_SUCCESS . "****";
 
 			/*
 			* Remove the files
@@ -192,7 +195,7 @@ function replace_existing_template($path_to_copy_from, $template_id){
 
 	rmdir($path_to_copy_from);
 
-	echo "Template successfully replaced.****";
+	echo IMPORT_SUCCESS_REPLACE . "****";
 
 }
 
@@ -335,7 +338,7 @@ if($_POST['replace']!=""){
 
 	if(!is_user_creator(mysql_real_escape_string($_POST['replace']))){
 
-		echo "Only the owner of this template can import over the top.****";
+		echo IMPORT_OWNER_FAIL . "****";
 		die();
 
 	}
@@ -442,7 +445,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
 		}else{
 
-			echo "File transfer has failed.****";
+			echo IMPORT_FTP_FAIL . ".****";
 
 		}
 
@@ -520,7 +523,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
 				receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Failed to get template type", "Failed to get template type");
 
-				echo "Sorry, we cannot get a template type for this template.****";
+				echo IMPORT_TYPE_FAIL . ".****";
 
 			}else{
 
@@ -564,7 +567,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
 					}else{
 
-						echo "No valid template equivalent found on this site. Please contact your system administrators.****";
+						echo IMPORT_NO_EQUIVALENT_FAIL . ".****";
 						delete_loop($xerte_toolkits_site->import_path . $this_dir);
 					
 						while($delete_file = array_pop($delete_file_array)){
@@ -632,7 +635,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 										
 				}else{
 
-					echo "No valid template equivalent found on this site. Please contact your system administrators.****";
+					echo IMPORT_ZIP_FAIL . ".****";
 					delete_loop($xerte_toolkits_site->import_path . $this_dir);
 						
 					while($delete_file = array_pop($delete_file_array)){
@@ -653,7 +656,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
 			}else{
 
-				echo "Only Xerte templates are currently imported.****";
+				echo IMPORT_XERTE_ONLY . ".****";
 				
 				delete_loop($xerte_toolkits_site->import_path . $this_dir);
 					
@@ -678,7 +681,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 				
 	}else{
 
-		echo "File transfer has failed.****";
+		echo IMPORT_FTP_FAIL . ".****";
 		delete_loop($xerte_toolkits_site->import_path . $this_dir);
 		while($delete_file = array_pop($delete_file_array)){
 
@@ -698,7 +701,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
 	echo $_FILES['filenameuploaded']['type'] . "<Br>";
 
-	echo "You can only import Zip Files.****";
+	echo IMPORT_ZIP_FAIL . ".****";
 
 }
 

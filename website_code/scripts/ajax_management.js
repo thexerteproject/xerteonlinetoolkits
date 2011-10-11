@@ -37,7 +37,7 @@ function setup_ajax(){
 					
 	   	}catch (e){
 				
-			alert("Your browser does not support AJAX!");
+			alert(AJAX_FAIL);
 			return false;
 		}      
 	   }    

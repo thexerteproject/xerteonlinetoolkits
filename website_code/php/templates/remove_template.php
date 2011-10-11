@@ -8,11 +8,15 @@
 * @package
 */
 
+	require("../../../config.php");
+	require("../../../session.php");
+
 	include "../database_library.php";
 	include "../user_library.php";
 	include "../template_status.php";
-	require("../../../config.php");
-	require("../../../session.php");
+	
+	
+	require_once($xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/templates/remove_template.inc");
 	
 	$database_id = database_connect("delete template database connect success","delete template database connect failed");
 
@@ -20,79 +24,83 @@
 	* get the folder id to delete
 	*/
 
-	if(!is_template_syndicated($template_id)){
+	if(is_numeric($_POST['template_id'])){
 	
 		$safe_template_id = mysql_real_escape_string($_POST['template_id']);
 
-		if(is_user_creator($safe_template_id)){
+		if(!is_template_syndicated($template_id)){
 
-			$query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
+			if(is_user_creator($safe_template_id)){
 
-			$query_for_folder_id_response = mysql_query($query_for_folder_id);
+				$query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
 
-			$row = mysql_fetch_array($query_for_folder_id_response);
-		
-			/*
-			* delete from the database 
-			*/
+				$query_for_folder_id_response = mysql_query($query_for_folder_id);
 
-			$query_to_delete_template = "delete from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
-
-			if(mysql_query($query_to_delete_template)){
-
+				$row = mysql_fetch_array($query_for_folder_id_response);
+			
 				/*
-				* work out the file path before we start deletion
+				* delete from the database 
 				*/
 
-				$query_to_get_template_type_id = " select template_type_id from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id = \"" . $safe_template_id . "\"";
+				$query_to_delete_template = "delete from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
 
-				$query_to_get_template_type_id_response = mysql_query($query_to_get_template_type_id);
+				if(mysql_query($query_to_delete_template)){
 
-				$row_template_id = mysql_fetch_array($query_to_get_template_type_id_response);
+					/*
+					* work out the file path before we start deletion
+					*/
 
-				$query_to_get_template_type_name = "select template_name, template_framework from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id =\"" . $row_template_id['template_type_id'] . "\"";
+					$query_to_get_template_type_id = " select template_type_id from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id = \"" . $safe_template_id . "\"";
 
-				$query_to_get_template_type_name_response = mysql_query($query_to_get_template_type_name);
+					$query_to_get_template_type_id_response = mysql_query($query_to_get_template_type_id);
 
-				$row_template_name = mysql_fetch_array($query_to_get_template_type_name_response);
+					$row_template_id = mysql_fetch_array($query_to_get_template_type_id_response);
 
-				$path = $xerte_toolkits_site->users_file_area_full . $safe_template_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_template_name['template_name'];
+					$query_to_get_template_type_name = "select template_name, template_framework from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id =\"" . $row_template_id['template_type_id'] . "\"";
 
-				/*
-				* delete from the file system
-				*/
+					$query_to_get_template_type_name_response = mysql_query($query_to_get_template_type_name);
 
-				include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_name['template_framework']  . "/delete_template.php";
+					$row_template_name = mysql_fetch_array($query_to_get_template_type_name_response);
 
-				delete_template($path . "/");
+					$path = $xerte_toolkits_site->users_file_area_full . $safe_template_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_template_name['template_name'];
 
-				$query_to_delete_template_attributes = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"" . $safe_template_id . "\"";
+					/*
+					* delete from the file system
+					*/
 
-				mysql_query($query_to_delete_template_attributes);
+					include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_name['template_framework']  . "/delete_template.php";
 
-				$query_to_delete_syndication = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=\"" . $safe_template_id . "\"";
+					delete_template($path . "/");
 
-				mysql_query($query_to_delete_syndication);
+					$query_to_delete_template_attributes = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"" . $safe_template_id . "\"";
 
-				$query_to_delete_xml_and_peer = "delete from " .$xerte_toolkits_site->database_table_prefix . "additional_sharing where template_id=\"" . $safe_template_id . "\"";
+					mysql_query($query_to_delete_template_attributes);
 
-				mysql_query($query_to_delete_xml_and_peer);
+					$query_to_delete_syndication = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=\"" . $safe_template_id . "\"";
+
+					mysql_query($query_to_delete_syndication);
+
+					$query_to_delete_xml_and_peer = "delete from " .$xerte_toolkits_site->database_table_prefix . "additional_sharing where template_id=\"" . $safe_template_id . "\"";
+
+					mysql_query($query_to_delete_xml_and_peer);
+
+				}else{
+
+
+				}
 
 			}else{
 
-
+				echo REMOVE_TEMPLATE_NOT_CREATOR;
+		
 			}
 
 		}else{
 
-			echo "Sorry you aren't the creator of this file and as such cannot delete it";
-	
+			echo REMOVE_TEMPLATE_SYNDICATED;
+
 		}
-
-	}else{
-
-	 	echo "Sorry, this file is syndicated and syndicated files cannot be deleted";
-
+		
 	}
 
 	mysql_close($database_id);

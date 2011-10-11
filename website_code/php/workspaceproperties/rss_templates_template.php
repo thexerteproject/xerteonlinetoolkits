@@ -11,18 +11,20 @@
 
 	require("../../../config.php");
 	require("../../../session.php");
+	
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/workspaceproperties/rss_templates_template.inc";
 
 	include "../database_library.php";
 
 	include "../display_library.php";
+	
+	include "workspace_library.php";
 
 	/**
 	* connect to the database
 	*/
 	
-	echo "<p class=\"header\"><span>My projects</span></p>";
-
-	echo "<div class=\"menu_holder\"><div class=\"menu_button\"><a href=\"javascript:workspace_templates_template()\">My projects</a></div><div class=\"menu_button\"><a href=\"javascript:shared_templates_template()\">Shared projects</a></div><div class=\"menu_button\"><a href=\"javascript:public_templates_template()\">Public projects</a></div><div class=\"menu_button\"><a href=\"javascript:usage_templates_template()\">Usage stats</a></div><div class=\"menu_button\"><a href=\"javascript:rss_templates_template()\">Projects in the RSS</div><div class=\"menu_button\"><a href=\"javascript:syndication_templates_template()\">Open Content projects</a></div><div class=\"menu_button\"><a href=\"javascript:peer_templates_template()\">Peer review</a></div><div class=\"menu_button\"><a href=\"javascript:xml_templates_template()\">XML sharing</a></div></div>";
+	workspace_templates_menu();
 
 	$database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
@@ -30,32 +32,32 @@
 
 	$query_rss_response = mysql_query($query_for_rss_templates);
 
-	echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
-
-	echo "<div style=\"float:left; position:relative; width:50%; height:20px;\">Name</div><div style=\"float:left; position:relative; width:25%; height:20px;\">RSS</div><div style=\"float:left; position:relative; width:25%; height:20px;\">Export</div>";
+	workspace_menu_create();
+	
+	echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_RSS . "</div><div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_EXPORT . "</div>";
 
 	while($row_template_name = mysql_fetch_array($query_rss_response)){
 
-		echo "<div style=\"float:left; position:relative; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; position:relative; width:25%;\">";
+		echo "<div style=\"float:left; position:relative; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; position:relative; width:15%;\">";
 
 		if($row_template_name['rss']){
 
-			echo " On ";
+			echo " " . RSS_WORKSPACE_ON . " ";
 
 		}else{
 			
-			echo " Off ";
+			echo " " . RSS_WORKSPACE_OFF . " ";
 
 		}
 
-		echo "</div><div style=\"float:left; position:relative; width:25%;\">";
+		echo "</div><div style=\"float:left; position:relative; width:15%;\">";
 		if($row_template_name['export']){
 
-			echo " On ";
+			echo " " . RSS_WORKSPACE_ON . " ";
 
 		}else{
 			
-			echo " Off ";
+			echo " " . RSS_WORKSPACE_OFF . " ";
 
 		}
 
@@ -63,8 +65,6 @@
 
 	}
 
-	echo "</div>";
-	
-	echo "</div>";
+	echo "</div></div>";
 		
 ?>

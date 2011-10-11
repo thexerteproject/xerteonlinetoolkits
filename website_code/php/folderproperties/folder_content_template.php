@@ -11,6 +11,8 @@
 
 	require("../../../config.php");
 	require("../../../session.php");
+	
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/folderproperties/folder_content_template.inc";
 
 	include "../database_library.php";
 
@@ -24,7 +26,7 @@
 	
 		$database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 		
-		echo "<p class=\"header\"><span>Folder contents</span></p>";			
+		echo "<p class=\"header\"><span>" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</span></p>";			
 
 		echo "<div class=\"mini_folder_content\">";
 

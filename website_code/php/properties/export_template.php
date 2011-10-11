@@ -10,6 +10,8 @@
 	
 	require("../../../config.php");
 	require("../../../session.php");
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/export_template.inc";
+
 
 	include "../database_library.php";
 
@@ -24,25 +26,29 @@
 	/*
 	* check user has some rights to this template
 	*/
-
-	if(is_user_creator(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
-
-		echo "<p class=\"header\"><span>Export</span></p>";	
-
-		echo "<p>There are two ways to export a project</p>";
 	
-		echo "<p>A zip file export will package (but not delete) your project into one zip file. If you then open this file, the contents can be used to deploy your project on any webpage.</p><p>Click on zip export to get your file - <a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>Zip export</a></p>";
+	if(is_numeric($_POST['template_id'])){
+
+		if(is_user_creator(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+
+			echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";	
+
+			echo "<p>" . EXPORT_DESCRIPTION . "</p>";
 		
-		echo "<p>As above, but with references to web based files altered - <a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export_local" , $_POST['template_id']) . "'>Zip (local) export</a></p>";
+			echo "<p>" . EXPORT_ZIP . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></p>";
+			
+			echo "<p>" . EXPORT_ZIP_LOCAL . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export_local" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LOCAL_LINK . "</a></p>";
+		
+			echo "<p>" . EXPORT_SCORM . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm" , $_POST['template_id']) . "'>" . EXPORT_SCORM_LINK . "</a></p>";
+			
+			echo "<p>" . EXPORT_SCORM_METADATA . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_METADATA_LINK . "</a></p>";
+
+		}else{
+
+			echo "<p>". EXPORT_FAIL. "</p>";
+
+		}
 	
-		echo "<p>A SCORM 1.2 file export will package (but not delete) your project into one zip file. This zip file can then be imported by most VLEs to become part of an online course. This file will be SCORM 1.2 compliant.</p><p>Click on Scorm export to get this package - <a href='" . $xerte_toolkits_site->site_url . url_return("scorm" , $_POST['template_id']) . "'>Scorm export</a></p>";
-		
-		echo "<p>As above, but with richer SCORM metadata - <a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>SCORM + metadata export</a></p>";
-
-	}else{
-
-		echo "<p>Sorry you do not have rights to this template</p>";
-
 	}
 
 ?>

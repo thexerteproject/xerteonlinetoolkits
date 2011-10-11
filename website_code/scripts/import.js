@@ -30,7 +30,7 @@ function iframe_check_upload(){
 
 			string = string.substr(0,string.length-4);
 
-			alert("Upload: " + string);
+			alert(string);
 
 			media_and_quota_template();
 
@@ -42,7 +42,7 @@ function iframe_check_upload(){
 
 			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
 
-			alert("PHP reports the following error - " + string);
+			alert(PHP_ERROR + " - " + string);
 
 		}
 
@@ -72,7 +72,7 @@ function iframe_check(){
 
 			string = string.substr(0,string.length-4);
 
-			alert("Upload check" + string);
+			alert(string);
 
 			window_reference.screen_refresh();
 
@@ -84,7 +84,7 @@ function iframe_check(){
 
 			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
 
-			alert("PHP reports the following error - " + string);
+			alert(PHP_ERROR + " - " + string);
 
 		}
 
@@ -175,19 +175,19 @@ function import_template_pop_up(id_to_replace){
 			document.getElementById(id_to_replace).open=true;
 			open_folders.push(document.getElementById(id_to_replace));
 
-			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>Import</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="folder" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="folder" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
 
 		}else{
 
 			document.getElementById("message_box").style.height = "220px";
 
-			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p style="color:#f00; font-weight:bold">You are about to replace an exisiting project with the one you are about to import</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="replace" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+			document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p style="color:#f00; font-weight:bold">" + IMPORT_PROMPT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><input type="hidden" name="replace" value="' + id_to_replace.substr(id_to_replace.indexOf("_")+1) + '" /><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()" /></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
 
 		}
 
 	}else{
 
-		document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>Import</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />New project name<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()"/></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
+		document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>" + IMPORT_TEXT + "</p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />" + NEW_PROJECT_NAME + "<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()"/></form><p><img src="website_code/images/Bttn_CloseOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CloseOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CloseClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CloseOff.gif\'" onclick="javascript:popup_close()" style="padding-right:5px" /><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
 		
 	}
 
@@ -217,7 +217,7 @@ function new_template_name(){
 
 		}else{
 
-			document.getElementById("name_wrong").innerHTML = "Sorry that is not a valid name";
+			document.getElementById("name_wrong").innerHTML = NAME_FAIL_IMPORT;
 
 		}
 
@@ -242,13 +242,13 @@ function import_template(){
 
 	if(drag_manager.selected_items.length>=2){
 
-		alert("Please select only the 1 template you'd like to update - or select no templates if you'd like to import a new version");
+		alert(ONE_TEMPLATE_ERROR);
 
 	}else if(drag_manager.selected_items.length==1){
 
 		if(drag_manager.selected_items[0].className=="file"){
 
-			alert("Sorry you cannot import over a template");
+			alert(IMPORT_OVER);
 
 			/*
 			var answer = confirm("By selection this option you will replace this template with a new version - are you sure?");
@@ -261,11 +261,9 @@ function import_template(){
 
 		}else{
 
-			var answer = confirm("By selection this option you will import a new template into this folder - are you sure?");
+			var answer = confirm(IMPORT_OVERWRITE_CONFIRM);
 
 			if(answer){
-
-				alert(drag_manager.selected_items[0].id);
 
 				import_template_pop_up(drag_manager.selected_items[0].id);
 
@@ -275,7 +273,7 @@ function import_template(){
 
 	}else if(drag_manager.selected_items.length==0){
 
-		var answer = confirm("You are about to import a new template - are you sure?");
+		var answer = confirm(IMPORT_CONFIRM);
 
 		if(answer){
 

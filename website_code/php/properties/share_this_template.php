@@ -10,6 +10,7 @@
 	
 	require("../../../config.php");
 	require("../../../session.php");
+	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/share_this_template.inc";
 
 	include "../database_library.php";
 
@@ -45,11 +46,11 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
 
 		$row = mysql_fetch_array($query_name_response);
 
-		echo "Template successfully shared with " . $row['firstname'] . " " . $row['surname'] . "<br>";
+		echo SHARING_THIS_FEEDBACK_SUCCESS  . " " . $row['firstname'] . " " . $row['surname'] . "<br>";
 
 	}else{
 
-		echo "Sharing failed <br>";			
+		echo SHARING_THIS_FEEDBACK_FAIL . " <br>";			
 
 	}
 
