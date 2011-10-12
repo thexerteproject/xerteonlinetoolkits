@@ -27,7 +27,7 @@ function show_template($row_play){
 
 		$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
 
-		$dimension = split("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
+		list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
 
 		?>
 		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en">
@@ -57,9 +57,11 @@ function show_template($row_play){
 		* slightly modified xerte preview code to allow for flash vars
 		*/
 
-		echo "myRLO = new rloObject('" . $dimension[0] . "','" . $dimension[1] . "','modules/" . $row_play['template_framework'] . "/parent_templates/" . $row_play['template_name'] . "/" . $row_play['template_name'] . ".rlt','$string_for_flash', '$string_for_flash_xml', '$xerte_toolkits_site->site_url')";
+		echo "myRLO = new rloObject('" . $x . "','" . $y . "','modules/" . $row_play['template_framework'] . "/parent_templates/" . $row_play['template_name'] . "/" . $row_play['template_name'] . ".rlt','$string_for_flash', '$string_for_flash_xml', '$xerte_toolkits_site->site_url')";
 
 		echo "</script>";
+		
+		echo "<a name=\"feedbackform\"><p style=\"width:250px; color:red;\"  id=\"feedback\"></p></a>";
 
 		echo "<br><form name=\"peer\" action=\"javascript:send_review('" . $row_play['username'] . "','" . $row_play['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">You have been asked to provide some feedback on this learning object. Please enter your feedback and click save when you have finished. This feedback is anonymous.</textarea><br/><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" /></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
 

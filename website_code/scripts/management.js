@@ -44,9 +44,10 @@ function management_alert_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 
-		if(xmlHttp.responseText!=""){
+		response = xmlHttp.responseText.trim();
+		if(response!=""){
 			
-			alert(xmlHttp.responseText);
+			alert("Error from server? '" + response + "'");
 
 		}
 	}

@@ -22,14 +22,15 @@ var xmlHttp;
 	 */
 
 function disableSelection(div){
-
-	if (typeof div.onselectstart!="undefined") //IE route
-		div.onselectstart=function(){return false}
-	else if (typeof div.style.MozUserSelect!="undefined") //Firefox route
-		div.style.MozUserSelect="none"
-	else //All other route (ie: Opera)
-		div.onmousedown=function(){return false}
-		div.style.cursor = "default"
+    if (typeof div.onselectstart!="undefined") //IE route
+        div.onselectstart=function(){return false}
+    else if (typeof div.style !="undefined" && typeof div.style.MozUserSelect!="undefined") //Firefox route
+        div.style.MozUserSelect="none"
+    else //All other route (ie: Opera)
+        div.onmousedown=function(){return false}
+    if (typeof div.style != "undefined") {
+        div.style.cursor = "default"
+    }
 }
 
 	 /**
@@ -78,9 +79,11 @@ function page_load_sort(tag){
 
 		disableSelection(document.getElementById(tag).childNodes[x]);
 
-		if(document.getElementById(tag).childNodes[x].id.indexOf("child_")!=-1){
-			page_load_sort(document.getElementById(tag).childNodes[x].id);
-		}
+		if(typeof(document.getElementById(tag).childNodes[x].id) != "undefined") {
+            if(document.getElementById(tag).childNodes[x].id.indexOf("child_")!=-1){
+                page_load_sort(document.getElementById(tag).childNodes[x].id);
+            }
+        }
 
 	}
 

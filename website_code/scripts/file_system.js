@@ -795,7 +795,7 @@ function single_click(div_name){
 		document.getElementById("folder_workspace").mainhighlight = false;
 	}
 
-	if(div_name.highlight==false){
+	if(div_name != null && div_name.highlight==false){
 			
 		/*
 		* if nothing is highlighted	
@@ -927,8 +927,7 @@ function single_click(div_name){
 
 			drag_manager.selected_items.splice(0,drag_manager.selected_items.length);
 
-			if(drag_manager.last_selected.id!=div_name.id){
-
+			if(drag_manager.last_selected != null && drag_manager.last_selected.id!=div_name.id){
 				highlight(div_name);
 				drag_manager.last_selected = div_name;
 				drag_manager.selected_items.push(div_name);
