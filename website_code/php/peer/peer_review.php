@@ -1,4 +1,6 @@
-<?PHP     /**
+<?PHP     
+
+	/**
 	 * 
 	 * peer view page, sends the email back to the 
 	 *
@@ -8,19 +10,19 @@
 	 * @package
 	 */
 	
-	require("../../../config.php");
+	require_once("../../../config.php");
 	
 	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/peer_review.inc";
 
 	include "../database_library.php";
 
-	$mysql_id = database_connect("peer review Database connect success","peer review database connect failed");
+	if(empty($_POST['template_id'])) {
+		die("invalid form submission");
+	}
 
-	$query_for_file_name = "select template_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
+	$query_for_file_name = "select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
 
-	$query_response = mysql_query($query_for_file_name);
-
-	$row_template_name = mysql_fetch_array($query_response);
+	$row_template_name = db_query_one($query_for_file_name, array($_POST['template_id']));
 
 	$headers = str_replace("*","\n",$xerte_toolkits_site->headers);
 

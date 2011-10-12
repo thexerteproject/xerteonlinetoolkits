@@ -132,7 +132,7 @@
 	 * 
 	 * Function check_security_type
 	 * This function checks database settings to see if non standard play security options have been met
-	 * @param string $secrity_setting = the value taken from security_setting in play_security_details 
+	 * @param string $security_setting = the value taken from security_setting in play_security_details 
 	 * @return bool True or False if two params match
 	 * @version 1.0
 	 * @author Patrick Lockley
@@ -169,212 +169,157 @@
 	require $xerte_toolkits_site->php_library_path . "database_library.php";
 	require $xerte_toolkits_site->php_library_path . "template_library.php";
 
-	$mysql_id=database_connect("Successful database connect for play queries","Failed database connect for play queries");
+	if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
+
+		/*
+		 * Was not numeric, so display error message
+		 */
+		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
+		exit(0);
+	}
+
+	$safe_template_id = (int) $_GET['template_id'];
 
 	/*
-	* Check the template ID is numeric
+	* Check to see whether it is less than the highest ID we have created
 	*/
 
-	$safe_template_id = mysql_real_escape_string($_GET['template_id']);
-	
-	if(is_numeric($safe_template_id)){
+	if(get_maximum_template_number()<$safe_template_id){
 
-		/*
-		* Check to see whether it is less than the highest ID we have created
-		*/
-
-		if(get_maximum_template_number()<$safe_template_id){
-
-			echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
-			die();
+		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
+		die();
 						
-		}
+	}
 
-		$query_for_security_content = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
+	/*
+	* Take the query from site variable and alter it to suit this request
+	*/
 
+	$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
+	$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
+
+	$query_for_play_content_response = mysql_query($query_for_play_content);
+
+	$row_play = mysql_fetch_array($query_for_play_content_response);
+
+	$query_to_find_out_if_in_recycle_bin = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id =\"" . $row_play['folder'] . "\"";
+
+	$query_for_recycle_bin_response = mysql_query($query_to_find_out_if_in_recycle_bin);
+
+	/*
+	* Is the file in the recycle bin?
+	*/
+
+	$row_recycle = db_query_one("SELECT folder_name FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_id = ?", array($row_play['folder']));
+	
+	if($row_recycle['folder_name']=="recyclebin"){
+
+		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
+		exit(0);
+
+	}
+
+	require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
+
+	/*
+	* Start to check the access_to_whom settings from templatedetails for this template
+	*/
+	
+	/*
+	* Private - so do nothing
+	*/
+
+	if($row_play['access_to_whom']=="Private"){
+
+		require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+		dont_show_template();
+
+	}else if($row_play['access_to_whom']=="Public"){
+	
 		/*
-		* Take the query from site variable and alter it to suit this request
+		* Public - Increment the number of users and show the template
 		*/
 
-		$query_for_security_content_response = mysql_query($query_for_security_content);
+		db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+		require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
-		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
+		show_template($row_play);
 
-		$query_for_play_content_response = mysql_query($query_for_play_content);
-
-		$row_play = mysql_fetch_array($query_for_play_content_response);
-
-		$query_to_find_out_if_in_recycle_bin = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id =\"" . $row_play['folder'] . "\"";
-
-		$query_for_recycle_bin_response = mysql_query($query_to_find_out_if_in_recycle_bin);
-
-		$row_recycle = mysql_fetch_array($query_for_recycle_bin_response);
-
+	}else if($row_play['access_to_whom']=="Password"){
+	
 		/*
-		* Is the file in the recycle bin?
+		* Password protected - Check if there has been a post
 		*/
 
-		if($row_recycle['folder_name']=="recyclebin"){
-
-			echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
-			die();
-
-		}
-
-		require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
-
-		/*
-		* Start to check the access_to_whom settings from templatedetails for this template
-		*/
-		
-		/*
-		* Private - so do nothing
-		*/
-
-		if($row_play['access_to_whom']=="Private"){
-
-			require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
-			dont_show_template();
-
-		}else if($row_play['access_to_whom']=="Public"){
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 			/*
-			* Public - Increment the number of users and show the template
+			* Check the password
 			*/
 
-			mysql_query("UPDATE " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=" . $safe_template_id);
+			$temp = password_username_check($_POST);
 
-			require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+			if($temp[0]=="true"){
 
-			show_template($row_play);
-
-		}else if($row_play['access_to_whom']=="Password"){
-		
 			/*
-			* Password protected - Check if there has been a post
+			* Update uses and display the template
 			*/
 
-			if($_SERVER['REQUEST_METHOD'] == 'POST') {
+				db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+
+				require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+				show_template($row_play);					
+
+			}else{
 			
-				/*
-				* Check the password
-				*/
+			/*
+			* Login failure
+			*/
 
-				$temp = password_username_check($_POST);
+				$buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
 
-				if($temp[0]=="true"){
+				echo $buffer;
 
-				/*
-				* Update uses and display the template
-				*/
+			}				
+	
 
-					mysql_query("UPDATE " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=" . $safe_template_id);
+		}else{
+		
+			/*
+			* There has been no postage so echo the site variable to display the login string
+			*/
 
-					require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+			echo $xerte_toolkits_site->form_string;
 
-					show_template($row_play);					
+		}
+	
+	}else if(substr($row_play['access_to_whom'],0,5)=="Other"){
 
-				}else{
+		/*
+		* The Other attribute has been set - so break the string down to obtain the host
+		*/
+
+		$test_string=substr($row_play['access_to_whom'],6,strlen($row_play['access_to_whom']));
+
+		/*
+		* Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
+		*/
+
+		if(strlen($_SERVER['HTTP_REFERER'])!=0){
+
+			if(strpos($_SERVER['HTTP_REFERER'],$test_string)==0){
+
+			    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 				
-				/*
-				* Login failure
-				*/
+				require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
-					$buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
-
-					echo $buffer;
-
-				}				
-		
+				show_template($row_play);					
 
 			}else{
-			
-				/*
-				* There has been no postage so echo the site variable to display the login string
-				*/
-
-				echo $xerte_toolkits_site->form_string;
-
-			}
-		
-		}else if(substr($row_play['access_to_whom'],0,5)=="Other"){
-
-			/*
-			* The Other attribute has been set - so break the string down to obtain the host
-			*/
-
-			$test_string=substr($row_play['access_to_whom'],6,strlen($row_play['access_to_whom']));
-
-			/*
-			* Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
-			*/
-
-			if(strlen($_SERVER['HTTP_REFERER'])!=0){
-
-				if(strpos($_SERVER['HTTP_REFERER'],$test_string)==0){
-
-					mysql_query("UPDATE " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=" . $safe_template_id);	
-					
-					require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-	
-					show_template($row_play);					
-
-				}else{
-	
-					require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
-					dont_show_template();
-	
-				}
-
-			}else{
-
-				dont_show_template();
-
-			}
-
-
-		}else if(mysql_num_rows($query_for_security_content_response)!=0){
-
-			/*
-			* A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
-			*/
-
-			$flag=false;
-
-			while($row_security = mysql_fetch_array($query_for_security_content_response)){
-
-				/*
-				* Check each setting to see if true
-				*/
-
-				if($row_play['access_to_whom']==$row_security['security_setting']){
-
-					if(check_security_type($row_security['security_data'])){
-
-						require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
-						show_template($row_play);		
-
-						$flag=true;							
-
-						break;
-
-					}else{
-
-						$flag==false;
-
-					}
-
-				}
-
-			}
-
-			if($flag==false){
 
 				require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
@@ -384,23 +329,63 @@
 
 		}else{
 
+			dont_show_template();
+
+		}
+
+
+	}else if (sizeof($query_for_security_content_response)>0) {
+
+		/*
+		* A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
+		*/
+
+		$flag=false;
+
+		foreach($query_for_security_content_response as $row_security) {
+
+			/*
+			* Check each setting to see if true
+			*/
+
+			if($row_play['access_to_whom']==$row_security['security_setting']){
+
+				if(check_security_type($row_security['security_data'])){
+
+					require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+					show_template($row_play);		
+
+					$flag=true;							
+
+					break;
+
+				}else{
+
+					$flag==false;
+
+				}
+
+			}
+
+		}
+
+		if($flag==false){
+
 			require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
 			dont_show_template();
 
 		}
 
-
 	}else{
-	
-		/*
-		* Was not numeric, so display error message
-		*/
 
-		echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
-		die();
-						
-		
+		require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+		dont_show_template();
+
 	}
+
+
 
 ?>

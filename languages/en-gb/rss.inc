@@ -14,6 +14,7 @@
 	define("RSS_LANGUAGE","en-gb");
 	define("RSS_DB_FAIL","Sorry, the system cannot connect to the database at present. The mysql error is ");
 	define("RSS_LO","'s Learning Objects");
+	define("RSS_PLURAL", "'s");
 	define("RSS_FEED_DESC","A feed containing all of"); 
 	define("RSS_FEED_PUBLIC","'s  public learning objects from the ");
 	define("RSS_USER_LO","'s Learning Objects ");

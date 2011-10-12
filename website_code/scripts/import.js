@@ -30,7 +30,7 @@ function iframe_check_upload(){
 
 			string = string.substr(0,string.length-4);
 
-			alert(string);
+			alert("Upload: " + string);
 
 			media_and_quota_template();
 
@@ -72,7 +72,7 @@ function iframe_check(){
 
 			string = string.substr(0,string.length-4);
 
-			alert(string);
+			alert("Upload check" + string);
 
 			window_reference.screen_refresh();
 

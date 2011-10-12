@@ -18,7 +18,7 @@ require('../template_status.php');
 
 if(is_numeric($_POST['template_id'])){
 
-	if($_POST['file_path']!=""){
+	if(!empty($_POST['file_path'])){
 
 		$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",stripcslashes($_POST['file_path'])));
 

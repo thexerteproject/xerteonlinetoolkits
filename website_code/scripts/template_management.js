@@ -305,10 +305,9 @@ function file_version_sync(){
 
 	if (xmlHttp.readyState==4){ 
 
-		if(xmlHttp.responseText!=""){
-
-			alert(xmlHttp.responseText);
-
+		response = xmlHttp.responseText.trim();
+		if(response!=""){
+            alert("Error on file sync " + response);
 		}
 
 	}
@@ -792,9 +791,10 @@ function delete_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 			
-		if(xmlHttp.responseText.indexOf("Sorry")==0){
+		response = xmlHttp.responseText.trim();
 
-			alert(xmlHttp.responseText);
+		if(response.indexOf("Sorry")==0){
+			alert('Error while trying to delete template "' + response + '"');
 
 		}		
 
@@ -877,9 +877,10 @@ function duplicate_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 
-		if(xmlHttp.responseText!=""){
+		response = xmlHttp.responseText.trim();
 
-			alert(xmlHttp.responseText);
+		if(response!=""){
+			alert('Error while duplicating : "' + response + '"');
 
 		}
 
@@ -1182,7 +1183,9 @@ function tutorial_created(){
 
 	if (xmlHttp.readyState==4){ 
 			
-		if(xmlHttp.responseText!=""){
+		response = xmlHttp.responseText.trim();
+
+		if(response!=""){
 
 			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
 

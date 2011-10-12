@@ -29,25 +29,25 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 	require_once($xerte_toolkits_site->php_library_path . "database_library.php");
 
-	database_connect("Edit xerte connect success","Edit xerte connect fail");
+	
+    $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
-	$query_for_username = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $row_edit['user_id'] . "\"";
-
-	$query_for_username_response = mysql_query($query_for_username);
-
-	$row_username = mysql_fetch_array($query_for_username_response);
+    if(empty($row_username)) {
+        die("Invalid user id ?");
+    }
 
 	/**
 	* create the preview xml used for editing
 	*/
 
-	if(!file_exists($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml")){
+	$preview = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
+    
+	$data    = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
 
-		copy($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml",$xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml");
-
-		chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml",0777);
-
-	}
+    if(!file_exists($preview) && file_exists($data)){
+        copy($data, $preview);
+        chmod($preview, 0777);
+    }
 
 	/**
 	* set up the strings used in the flash vars
@@ -58,12 +58,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 	$string_for_flash_media = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
 
 	$string_for_flash_xwd = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
-
-	$query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $_GET['template_id'] . "\"";
-
-	$query_name_response = mysql_query($query_for_template_name);
-
-	$row_name = mysql_fetch_array($query_name_response);
 
 	/**
 	* sort of the screen sies required for the preview window
@@ -153,20 +147,35 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 	*/
 
 	echo "so.addVariable(\"xmlvariable\", \"$string_for_flash_xml\");";
+	echo "\n";
 	echo "so.addVariable(\"rlovariable\", \"$string_for_flash_media\");";
+	echo "\n";
 	echo "so.addVariable(\"originalpathvariable\", \"$string_for_flash_xwd\");";
+	echo "\n";
 	echo "so.addVariable(\"template_id\", \"" . $row_edit['template_id'] . "\");";
+	echo "\n";
 	echo "so.addVariable(\"template_height\", \"" . $temp[1] . "\");";
+	echo "\n";
 	echo "so.addVariable(\"template_width\", \"" . $temp[0] . "\");";
+	echo "\n";
 	echo "so.addVariable(\"read_and_write\", \"" . $read_status . "\");";
+	echo "\n";
 	echo "so.addVariable(\"savepath\", \"" . $xerte_toolkits_site->flash_save_path . "\");";
+	echo "\n";
 	echo "so.addVariable(\"upload_path\", \"" . $xerte_toolkits_site->flash_upload_path . "\");";
+	echo "\n";
 	echo "so.addVariable(\"preview_path\", \"" . $xerte_toolkits_site->flash_preview_check_path . "\");";
+	echo "\n";
 	echo "so.addVariable(\"flv_skin\", \"" . $xerte_toolkits_site->flash_flv_skin . "\");";
+	echo "\n";
 	echo "so.addVariable(\"site_url\", \"" . $xerte_toolkits_site->site_url . "\");";
+	echo "\n";
 	echo "so.addVariable(\"apache\", \"" . $xerte_toolkits_site->apache . "\");";
+	echo "\n";
 	echo "so.write(\"flashcontent\");";
+	echo "\n";
 	echo "</script></body></html>";
+	echo "\n";
 
 }
 
