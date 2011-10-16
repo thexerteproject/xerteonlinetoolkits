@@ -1,31 +1,27 @@
-<?PHP header("Content-Type: application/xml; charset=UTF-8"); 
+<?php
+header("Content-Type: application/xml; charset=UTF-8"); 
 
-   require_once "config.php";
+require_once "config.php";
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/syndicate.inc";
+require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/syndicate.inc";
 
-   include $xerte_toolkits_site->php_library_path . "database_library.php";
-   include $xerte_toolkits_site->php_library_path . "url_library.php";
+include $xerte_toolkits_site->php_library_path . "database_library.php";
+include $xerte_toolkits_site->php_library_path . "url_library.php";
 
-   function normal_date($string){
-
-	$temp = explode("-", $string);
-
-	return $temp[2] . " " . $temp[1] . " " . $temp[0] . " 12:00:00 GMT";
-
-   }
-
-	$database_id = database_connect("syndication worked","syndication failed");
+function normal_date($string){
+    $temp = explode("-", $string);
+    return $temp[2] . " " . $temp[1] . " " . $temp[0] . " 12:00:00 GMT";
+}
 
 $query = "SELECT {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_name as origname, username, {$xerte_toolkits_site->database_table_prefix}logindetails.login_id, 
-                 {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id, keywords, creator_id, date_created, {$xerte_toolkits_site->database_table_prefix}templatedetails.template_name, 
-                    license, category, export, {$xerte_toolkits_site->database_table_prefix}templatesyndication.description, firstname, surname 
-         FROM {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication, {$xerte_toolkits_site->database_table_prefix}logindetails, 
-              {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails 
-         WHERE syndication='true'
-         AND login_id = creator_id 
-         AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id = {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id 
-         AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_type_id = {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_type_id";
+{$xerte_toolkits_site->database_table_prefix}templatedetails.template_id, keywords, creator_id, date_created, {$xerte_toolkits_site->database_table_prefix}templatedetails.template_name, 
+license, category, export, {$xerte_toolkits_site->database_table_prefix}templatesyndication.description, firstname, surname 
+FROM {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication, {$xerte_toolkits_site->database_table_prefix}logindetails, 
+{$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails 
+WHERE syndication='true'
+AND login_id = creator_id 
+AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id = {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id 
+AND {$xerte_toolkits_site->database_table_prefix}templatedetails.template_type_id = {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_type_id";
 
 $rows = db_query($query);
 
@@ -85,5 +81,3 @@ foreach($rows as $row) {
 }
 
 echo "</channel></rss>";
-
-?>
