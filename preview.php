@@ -1,106 +1,105 @@
-<?PHP     /**
-	 * 
-	 * preview page, brings up a preview page for the editor to see their changes
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
+<?php
+/**
+ * 
+ * preview page, brings up a preview page for the editor to see their changes
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	require("config.php");
-	require("session.php");
+require_once("config.php");
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/preview.inc";
+_load_language_file("/preview.inc");
 
-	require $xerte_toolkits_site->php_library_path  . "database_library.php";
-	require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
-	require $xerte_toolkits_site->php_library_path  . "template_status.php";
-	require $xerte_toolkits_site->php_library_path  . "user_library.php";
-	
-	/*
-	* Check the ID is numeric
-	*/
-	
-	if(is_numeric($_GET['template_id'])){
-	
-		$safe_template_id = mysql_real_escape_string($_GET['template_id']);
+require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
+require $xerte_toolkits_site->php_library_path  . "template_status.php";
+require $xerte_toolkits_site->php_library_path  . "user_library.php";
 
-		$mysql_id=database_connect("Preview database connect successful","Preview database connect failed");
-		
-		/*
-		* Standard query
-		*/
-		
-		$query_for_preview_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+/*
+ * Check the ID is numeric
+ */
 
-		$query_for_preview_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_preview_content_strip);	
+if(is_numeric($_GET['template_id'])){
 
-		$query_for_preview_content_response = mysql_query($query_for_preview_content);
+    $safe_template_id = mysql_real_escape_string($_GET['template_id']);
 
-		if(mysql_num_rows($query_for_preview_content_response)!=0){
+    $mysql_id=database_connect("Preview database connect successful","Preview database connect failed");
 
-			$row = mysql_fetch_array($query_for_preview_content_response);
+    /*
+     * Standard query
+     */
 
-			/*
-			* Check users has some rights to this template
-			*/
+    $query_for_preview_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-			if(has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
+    $query_for_preview_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_preview_content_strip);	
 
-				$query_for_username = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $row['user_id'] . "\"";
-	
-				$query_for_username_response = mysql_query($query_for_username);
-	
-				$row_username = mysql_fetch_array($query_for_username_response);
+    $query_for_preview_content_response = mysql_query($query_for_preview_content);
 
-				require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
+    if(mysql_num_rows($query_for_preview_content_response)!=0){
 
-				show_preview_code($row, $row_username);		
-				
-			/*
-			* User might be admin so show code then
-			*/	
+        $row = mysql_fetch_array($query_for_preview_content_response);
 
-			}else if(is_user_admin()){
+        /*
+         * Check users has some rights to this template
+         */
 
-				$mysql_id=database_connect("Preview database connect successful","Preview database connect failed");
+        if(has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
 
-				$query_for_username = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $row['user_id'] . "\"";
-	
-				$query_for_username_response = mysql_query($query_for_username);
-	
-				$row_username = mysql_fetch_array($query_for_username_response);
+            $query_for_username = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $row['user_id'] . "\"";
 
-				require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
+            $query_for_username_response = mysql_query($query_for_username);
 
-				show_preview_code($row, $row_username);	
+            $row_username = mysql_fetch_array($query_for_username_response);
 
-			}		
-	
-		}else{
+            require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
 
-			/*
-			* No rights, show error
-			*/
+            show_preview_code($row, $row_username);		
 
-			echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
+            /*
+             * User might be admin so show code then
+             */	
 
-			die();
+        }else if(is_user_admin()){
 
-		}
+            $mysql_id=database_connect("Preview database connect successful","Preview database connect failed");
 
-	}else{
+            $query_for_username = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $row['user_id'] . "\"";
 
-		/*
-		* No rights, show error
-		*/
+            $query_for_username_response = mysql_query($query_for_username);
 
-		echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
+            $row_username = mysql_fetch_array($query_for_username_response);
 
-		die();
+            require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
 
-	}
+            show_preview_code($row, $row_username);	
+
+        }		
+
+    }else{
+
+        /*
+         * No rights, show error
+         */
+
+        echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
+
+        die();
+
+    }
+
+}else{
+
+    /*
+     * No rights, show error
+     */
+
+    echo file_get_contents($xerte_toolkits_site->website_code_path  . "error_top") . PREVIEW_RESOURCE_FAIL . "</div></div></body></html>";
+
+    die();
+
+}
 
 
 ?>

@@ -1,41 +1,40 @@
-<?PHP     /**
-* 
-* properties template, shows the basic page on the properties window
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
-	
-	require("../../../config.php");
-	require("../../../session.php");
+<?php
+/**
+ * 
+ * properties template, shows the basic page on the properties window
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	include "../database_library.php";
-	include "../template_status.php";
-	include "../screen_size_library.php";
-	include "../url_library.php";
-	include "../user_library.php";
-	include "properties_library.php";
-	
-	if(is_numeric($_POST['template_id'])){
+require_once("../../../config.php");
 
-		$tutorial_id = mysql_real_escape_string($_POST['template_id']);
+include "../template_status.php";
+include "../screen_size_library.php";
+include "../url_library.php";
+include "../user_library.php";
+include "properties_library.php";
 
-		$database_id=database_connect("Properties template database connect success","Properties template database connect failed");
+if(is_numeric($_POST['template_id'])){
 
-		// User has to have some rights to do this
+    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
 
-		if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
-			properties_display($xerte_toolkits_site,$tutorial_id,false);
+    // User has to have some rights to do this
 
-		}else{
+    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-			properties_display_fail();
+        properties_display($xerte_toolkits_site,$tutorial_id,false);
 
-		}
-	
-	}
+    }else{
+
+        properties_display_fail();
+
+    }
+
+}
 
 ?>

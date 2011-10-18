@@ -9,7 +9,7 @@
 */
 
 	include "../config.php";
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/feedback/index.inc";
+	_load_language_file("/feedback/index.inc");
 
 ?>
 

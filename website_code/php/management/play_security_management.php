@@ -1,29 +1,21 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/play_security_management.inc";
+require_once("../../../config.php");
 
-	require("../database_library.php");
-	require("../user_library.php");
+_load_language_file("/website_code/php/management/play_security_management.inc");
 
-	if(is_user_admin()){
+require("../user_library.php");
 
-		$database_id = database_connect("play_security_management.php connected","play_security_management.php list failed");
+if(is_user_admin()){
 
-		$query="update " . $xerte_toolkits_site->database_table_prefix . "play_security_details set security_setting=\"" . $_POST['security'] . "\", security_data=\"" . $_POST['data'] . "\",  security_info =\"" . $_POST['info'] . "\" where security_id =\"" . $_POST['play_id'] . "\"";
+    $database_id = database_connect("play_security_management.php connected","play_security_management.php list failed");
 
-		if(mysql_query($query)){
+    $query="update {$xerte_toolkits_site->database_table_prefix}play_security_details set security_setting=?, security_data=?, security_info=? WHERE security_id=?";
+    $res = db_query($query, array($_POST['security'], $_POST['data'], $_POST['info'] , $_POST['play_id'] ));
 
-			echo MANAGEMENT_PLAY_SUCCESS;
-
-		}else{
-
-			echo MANAGEMENT_PLAY_FAIL;
-
-		}
-				
-	}
-
-?>
+    if($res) {
+        echo MANAGEMENT_PLAY_SUCCESS;
+    }else{
+        echo MANAGEMENT_PLAY_FAIL;
+    }
+}

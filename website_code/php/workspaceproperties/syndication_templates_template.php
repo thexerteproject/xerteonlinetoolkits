@@ -1,58 +1,56 @@
-<?PHP     /**
-* 
-* workspace templates template page, used displays the User created
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+<?php
+/**
+ * 
+ * workspace templates template page, used displays the User created
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/workspaceproperties/syndication_templates_template.inc";
+require_once("../../../config.php");
 
-	include "../database_library.php";
+_load_language_file("/website_code/php/workspaceproperties/syndication_templates_template.inc");
 
-	include "../display_library.php";
-	
-	include "workspace_library.php";
+include "../display_library.php";
 
-	/**
-	* connect to the database
-	*/
-	workspace_templates_menu();
+include "workspace_library.php";
 
-	$database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
+/**
+ * connect to the database
+ */
+workspace_templates_menu();
 
-	$query_for_rss_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where creator_id=\"" . $_SESSION['toolkits_logon_id'] . "\"     and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id  = " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id and (rss=\"true\" or export=\"true\")"; 
+$database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-	$query_rss_response = mysql_query($query_for_rss_templates);
-	
-	workspace_menu_create();
+$query_for_rss_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where creator_id=\"" . $_SESSION['toolkits_logon_id'] . "\"     and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id  = " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id and (rss=\"true\" or export=\"true\")"; 
 
-	echo "<div style=\"float:left; width:40%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
+$query_rss_response = mysql_query($query_for_rss_templates);
 
-	while($row_template_name = mysql_fetch_array($query_rss_response)){
+workspace_menu_create();
 
-		echo "<div style=\"float:left; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:40%;\">";
+echo "<div style=\"float:left; width:40%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
 
-		if($row_template_name['syndication']){
+while($row_template_name = mysql_fetch_array($query_rss_response)){
 
-			echo " " . SYNDICATION_TEMPLATE_ON . " ";
+    echo "<div style=\"float:left; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:40%;\">";
 
-		}else{
-			
-			echo " " . SYNDICATION_TEMPLATE_OFF . " ";
+    if($row_template_name['syndication']){
 
-		}
+        echo " " . SYNDICATION_TEMPLATE_ON . " ";
 
-		echo "</div>";
+    }else{
 
-	}
+        echo " " . SYNDICATION_TEMPLATE_OFF . " ";
 
-	echo "</div></div>";
-		
+    }
+
+    echo "</div>";
+
+}
+
+echo "</div></div>";
+
 ?>

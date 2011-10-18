@@ -1,39 +1,36 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
+require_once("../../../config.php");
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/users.inc";
+_load_language_file("/website_code/php/management/users.inc");
 
-	require("../database_library.php");
-	require("../user_library.php");
-	require("../error_library.php");
-	require("management_library.php");
+require("../user_library.php");
+require("management_library.php");
 
-	if(is_user_admin()){
+if(is_user_admin()){
 
-		$database_id = database_connect("templates list connected","template list failed");
-		
-		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
+    $database_id = database_connect("templates list connected","template list failed");
 
-		$query_response = mysql_query($query);
+    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
 
-		while($row = mysql_fetch_array($query_response)){
+    $query_response = mysql_query($query);
 
-			echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <a href=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</a></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
+    while($row = mysql_fetch_array($query_response)){
 
-			echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
-			echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";
-			echo "<p>" . USERS_KNOWN . "<form><textarea id=\"surname" . $row['login_id'] .  "\">" . $row['surname'] . "</textarea></form></p>";
-			echo "<p>" . USERS_USERNAME . "<form><textarea id=\"username" . $row['login_id'] .  "\">" . $row['username'] . "</textarea></form></p>";
-			echo "</div>";
+        echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <a href=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</a></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
-		}
-				
-	}else{
+        echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
+        echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";
+        echo "<p>" . USERS_KNOWN . "<form><textarea id=\"surname" . $row['login_id'] .  "\">" . $row['surname'] . "</textarea></form></p>";
+        echo "<p>" . USERS_USERNAME . "<form><textarea id=\"username" . $row['login_id'] .  "\">" . $row['username'] . "</textarea></form></p>";
+        echo "</div>";
 
-		management_fail();
+    }
 
-	}
+}else{
+
+    management_fail();
+
+}
 
 ?>

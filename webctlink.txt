@@ -18,11 +18,6 @@
 	 *  Create the basic session if required - i.e. your host may allow for some of this code to be commented out.
 	 */
 
-	//$session_id = $_GET['username'] . time();
-
-	//session_id($session_id);
-	//session_name($xerte_toolkits_site->site_session_name);
-	//session_start($xerte_toolkits_site->site_session_name);
 
 	session_start();
 

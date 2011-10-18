@@ -4,7 +4,7 @@
 	
 	require("config.php");
 	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/properties_library.inc";
+	_load_language_file("/website_code/php/properties/properties_library.inc");
 	
 	function xml_template_display($xerte_toolkits_site,$change){
 	

@@ -1,71 +1,70 @@
-<?PHP     /**
-			* 
-			* delete_template, allows the template to be deleted (placed in the recycle bin)
-			*
-			* @author Patrick Lockley
-			* @version 1.0
-			* @copyright Copyright (c) 2008,2009 University of Nottingham
-			* @package
-			*/
+<?php
+/**
+ * 
+ * delete_template, allows the template to be deleted (placed in the recycle bin)
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	include "../database_library.php";
-	include "../user_library.php";
-	include "../deletion_library.php";
-	include "../template_status.php";
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require_once($xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/templates/delete_template.inc");
-	
-	$database_id = database_connect("delete template database connect success","delete template database connect failed");
+require_once("../../../config.php");
+include "../user_library.php";
+include "../deletion_library.php";
+include "../template_status.php";
 
-	/*
-	* get the folder id to delete
-	*/
+_load_language_file("/website_code/php/templates/delete_template.inc");
 
-	if(is_numeric($_POST['template_id'])){
+$database_id = database_connect("delete template database connect success","delete template database connect failed");
 
-		$safe_template_id = mysql_real_escape_string($_POST['template_id']);
+/*
+ * get the folder id to delete
+ */
 
-		if(!is_template_syndicated($safe_template_id)){
+if(is_numeric($_POST['template_id'])){
 
-			if(is_user_creator($safe_template_id)){
+    $safe_template_id = mysql_real_escape_string($_POST['template_id']);
 
-				$query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
+    if(!is_template_syndicated($safe_template_id)){
 
-				$query_for_folder_id_response = mysql_query($query_for_folder_id);
+        if(is_user_creator($safe_template_id)){
 
-				$row = mysql_fetch_array($query_for_folder_id_response);
-			
-				// delete from the database 
+            $query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
 
-				$query_to_delete_template = "update " .$xerte_toolkits_site->database_table_prefix . "templaterights set folder=\"" . get_recycle_bin() . "\" where template_id=\"" . $safe_template_id . "\" and user_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
+            $query_for_folder_id_response = mysql_query($query_for_folder_id);
 
-				if(mysql_query($query_to_delete_template)){
+            $row = mysql_fetch_array($query_for_folder_id_response);
 
-					receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Moved file to users recycle bin", "Moved file to users recycle bin");
+            // delete from the database 
 
-				}else{
-				
-					receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to move file to the recycle bin", "Failed to move file to the recycle bin");	
+            $query_to_delete_template = "update " .$xerte_toolkits_site->database_table_prefix . "templaterights set folder=\"" . get_recycle_bin() . "\" where template_id=\"" . $safe_template_id . "\" and user_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
 
-				}
-			
+            if(mysql_query($query_to_delete_template)){
 
-			}else{
+                receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Moved file to users recycle bin", "Moved file to users recycle bin");
 
-				echo DELETE_TEMPLATE_NOT_CREATOR;
-		
-			}
+            }else{
 
-		}else{
+                receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to move file to the recycle bin", "Failed to move file to the recycle bin");	
 
-			echo DELETE_TEMPLATE_SYNDICATED;
-		
-		}
+            }
 
-		mysql_close($database_id);
-	
-	}
+
+        }else{
+
+            echo DELETE_TEMPLATE_NOT_CREATOR;
+
+        }
+
+    }else{
+
+        echo DELETE_TEMPLATE_SYNDICATED;
+
+    }
+
+    mysql_close($database_id);
+
+}
 
 ?>

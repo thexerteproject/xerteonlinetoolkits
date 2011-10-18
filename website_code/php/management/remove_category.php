@@ -1,25 +1,18 @@
-<?PHP     require("../../../config.php");
-require("../../../session.php");
+<?php
+require_once("../../../config.php");
 
-require("../database_library.php");
 require("../user_library.php");
-require("../error_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
 
-	$database_id = database_connect("templates list connected","template list failed");
 	
-	$query="delete from " . $xerte_toolkits_site->database_table_prefix . "syndicationcategories where category_id=\"" . $_POST['remove']  . "\"";
-
-	$query_response = mysql_query($query);
+    $query="delete from {$xerte_toolkits_site->database_table_prefix}syndicationcategories where category_id=?";
+    $res = db_query($query, array($_POST['remove'] ));
 
 	category_list();
 			
 }else{
-
 	management_fail();
 
 }
-
-?>

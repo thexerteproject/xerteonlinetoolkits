@@ -1,387 +1,385 @@
-<?PHP /**
-	 * 
-	 * Import template, imports a new blank template for the site
-	 *
-	 * @author Patrick Lockley, Tom Reijnders
-	 * @version 1.1
-	 * @copyright Copyright (c) 2008,2009,2011 University of Nottingham
-	 * @package
-	 */
+<?php 
+
+require_once("../../../config.php");
+/**
+ * 
+ * Import template, imports a new blank template for the site
+ *
+ * @author Patrick Lockley, Tom Reijnders
+ * @version 1.1
+ * @copyright Copyright (c) 2008,2009,2011 University of Nottingham
+ * @package
+ */
 
 $delete_folder_array = array();
 $delete_file_array = array();
 $copy_file_array = array();
 
-	/**
-	 * 
-	 * Function delete loop
- 	 * This function checks http security settings
-	 * @param string $path = the path we are deleting
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ * 
+ * Function delete loop
+ * This function checks http security settings
+ * @param string $path = the path we are deleting
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function delete_loop($path){
 
-	global $delete_folder_array, $delete_file_array;
+    global $delete_folder_array, $delete_file_array;
 
-	$d = opendir($path);
-	
-	while($f = readdir($d)){
+    $d = opendir($path);
 
-		if(is_dir($path . $f)){
-	
-			if(($f!=".")&&($f!="..")){
+    while($f = readdir($d)){
 
-				delete_loop($path . $f . "/");
+        if(is_dir($path . $f)){
 
-			}			
-	
-		}else{
+            if(($f!=".")&&($f!="..")){
 
-			array_push($delete_file_array, $path . "/" . $f);
+                delete_loop($path . $f . "/");
 
-		}
-		
-	}	
+            }			
 
-	closedir($d);
-	
+        }else{
+
+            array_push($delete_file_array, $path . "/" . $f);
+
+        }
+
+    }	
+
+    closedir($d);
+
 }
 
-	/**
-	 * 
-	 * Function copy loop
- 	 * This function checks http security settings
-	 * @param string path = the path we are copying
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ * 
+ * Function copy loop
+ * This function checks http security settings
+ * @param string path = the path we are copying
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function copy_loop($path){
 
-	global $copy_file_array;
+    global $copy_file_array;
 
-	$d = opendir($path);
-	
-	while($f = readdir($d)){
+    $d = opendir($path);
 
-		if(is_dir($path . $f)){
-	
-			if(($f!=".")&&($f!="..")){
+    while($f = readdir($d)){
 
-				copy_loop($path . $f);
+        if(is_dir($path . $f)){
 
-			}			
-	
-		}else{
+            if(($f!=".")&&($f!="..")){
 
-			array_push($copy_file_array,$f);
-			
-		}
-		
-	}	
+                copy_loop($path . $f);
 
-	closedir($d);
-	
+            }			
+
+        }else{
+
+            array_push($copy_file_array,$f);
+
+        }
+
+    }	
+
+    closedir($d);
+
 }
 
 /*
-*
-*/
+ *
+ */
 
 if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")){
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/import_template.inc";
+    _load_language_file("/website_code/php/import_template.inc");
 
-	require("../database_library.php");
+    $this_dir = rand() . "/";
 
-	$this_dir = rand() . "/";
+    $end_dir = $this_dir;
 
-	$end_dir = $this_dir;
+    mkdir($xerte_toolkits_site->import_path . $this_dir);
 
-	mkdir($xerte_toolkits_site->import_path . $this_dir);
+    chmod($xerte_toolkits_site->import_path . $this_dir,0777);
 
-	chmod($xerte_toolkits_site->import_path . $this_dir,0777);
+    $new_file_name = $xerte_toolkits_site->import_path . $_FILES['filenameuploaded']['name'];
 
-	$new_file_name = $xerte_toolkits_site->import_path . $_FILES['filenameuploaded']['name'];
+    if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
-	if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
+        require_once dirname(__FILE__)."/dUnzip2.inc.php";
 
-		require_once dirname(__FILE__)."/dUnzip2.inc.php";
+        $zip = new dUnzip2($new_file_name);
 
-		$zip = new dUnzip2($new_file_name);
+        $zip->debug = false;
 
-		$zip->debug = false;
+        $zip->getList();
 
-		$zip->getList();
+        $zip->unzipAll($xerte_toolkits_site->import_path . $this_dir);
 
-		$zip->unzipAll($xerte_toolkits_site->import_path . $this_dir);
+    }
 
-	}
-	
-	$zip->close();
-	
-	unlink($new_file_name);
+    $zip->close();
 
-	if($_POST['folder']!=""){
-	
-		/*
-		* We are replacing, so delete files
-		*/
+    unlink($new_file_name);
 
-		delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $_POST['folder'] . "/");
-		delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $_POST['folder'] . "/");
+    if($_POST['folder']!=""){
 
-		while($file_to_delete = array_pop($delete_file_array)){
+        /*
+         * We are replacing, so delete files
+         */
 
-			@unlink($file_to_delete);
+        delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $_POST['folder'] . "/");
+        delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $_POST['folder'] . "/");
 
-		}
+        while($file_to_delete = array_pop($delete_file_array)){
 
-	}else{
+            @unlink($file_to_delete);
 
-		$dir = opendir($xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4));
-	
-		if($dir===false){
+        }
 
-			delete_loop($xerte_toolkits_site->import_path . $this_dir);
+    }else{
 
-			while($file_to_delete = array_pop($delete_file_array)){
+        $dir = opendir($xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4));
 
-				@unlink($file_to_delete);
+        if($dir===false){
 
-			}
+            delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
-			rmdir($xerte_toolkits_site->import_path . $this_dir);
+            while($file_to_delete = array_pop($delete_file_array)){
 
-			echo IMPORT_TEMPLATE_ZIP_FAIL "****";
+                @unlink($file_to_delete);
 
-			die();
+            }
 
-		}
+            rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-		$rlt_not_found = false;
+            echo IMPORT_TEMPLATE_ZIP_FAIL "****";
 
-		while($filename = readdir($dir)){
+            die();
 
-			/*
-			* Get the variables from out of the RLT
-			*/
+        }
 
-			if($filename=="template.rlt"){
+        $rlt_not_found = false;
 
-				$string = file_get_contents($xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4) . "/" . $filename);
+        while($filename = readdir($dir)){
 
-				if((strpos($string, "targetFolder=")===false)||(strpos($string, "name=")===false)||(strpos($string, "description=")===false)){
+            /*
+             * Get the variables from out of the RLT
+             */
 
-					delete_loop($xerte_toolkits_site->import_path . $this_dir);
+            if($filename=="template.rlt"){
 
-					echo IMPORT_TEMPLATE_TEMPLATE_FAIL . "****";
+                $string = file_get_contents($xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4) . "/" . $filename);
 
-					while($file_to_delete = array_pop($delete_file_array)){
+                if((strpos($string, "targetFolder=")===false)||(strpos($string, "name=")===false)||(strpos($string, "description=")===false)){
 
-						@unlink($file_to_delete);
+                    delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
-					}
+                    echo IMPORT_TEMPLATE_TEMPLATE_FAIL . "****";
 
-					rmdir($xerte_toolkits_site->import_path . $this_dir);
+                    while($file_to_delete = array_pop($delete_file_array)){
 
-					die();
+                        @unlink($file_to_delete);
 
-				}else{
+                    }
 
-					$folder = substr(substr($string, strpos($string, "targetFolder=")+14),0,strpos(substr($string, strpos($string, "targetFolder=")+14),"\""));
+                    rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-					$name = substr(substr($string, strpos($string, "name=")+6),0,strpos(substr($string, strpos($string, "name=")+6),"\""));
+                    die();
 
-					$desc = substr(substr($string, strpos($string, "description=")+13),0,strpos(substr($string, strpos($string, "description=")+13),"\""));
+                }else{
 
-					$rlt_not_found = true;
+                    $folder = substr(substr($string, strpos($string, "targetFolder=")+14),0,strpos(substr($string, strpos($string, "targetFolder=")+14),"\""));
 
-				}
+                    $name = substr(substr($string, strpos($string, "name=")+6),0,strpos(substr($string, strpos($string, "name=")+6),"\""));
 
-			}		
+                    $desc = substr(substr($string, strpos($string, "description=")+13),0,strpos(substr($string, strpos($string, "description=")+13),"\""));
 
-		}
+                    $rlt_not_found = true;
 
-		if(!$rlt_not_found){
+                }
 
-			delete_loop($xerte_toolkits_site->import_path . $this_dir);
+            }		
 
-			while($file_to_delete = array_pop($delete_file_array)){
+        }
 
-				@unlink($file_to_delete);
+        if(!$rlt_not_found){
 
-			}
+            delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
-			rmdir($xerte_toolkits_site->import_path . $this_dir);
+            while($file_to_delete = array_pop($delete_file_array)){
 
-			echo IMPORT_TEMPLATE_RLT_FAIL . "****";
+                @unlink($file_to_delete);
 
-			die();
+            }
 
-		}
+            rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-	}
+            echo IMPORT_TEMPLATE_RLT_FAIL . "****";
 
-	if($_POST['folder']==""){
-	
-		/*
-		* Make all the new folders
-		*/
+            die();
 
-		$parent = fileperms($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/");
-		$templates = fileperms($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/");
+        }
 
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/",0777);
+    }
 
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/");
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/");
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/");
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/");
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/");
-		@mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/");
+    if($_POST['folder']==""){
 
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/",0777);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/",0777);
+        /*
+         * Make all the new folders
+         */
 
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/",$parent);
-		@chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/",$templates);
+        $parent = fileperms($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/");
+        $templates = fileperms($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/");
 
-		$this_dir .= substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4) . "/";
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/",0777);
 
-	}else{
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/");
 
-		$folder = mysql_real_escape_string($_POST['folder']);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/",0777);
 
-	}
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/",$parent);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/",$templates);
 
-	copy_loop($xerte_toolkits_site->import_path . $this_dir . "media");
+        $this_dir .= substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4) . "/";
 
-	while($file_to_copy = array_pop($copy_file_array)){
+    }else{
 
-		@rename($xerte_toolkits_site->import_path . $this_dir . "media/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/" . $file_to_copy);
+        $folder = mysql_real_escape_string($_POST['folder']);
 
-	}
+    }
 
-	/*
-	* Remove files
-	*/
+    copy_loop($xerte_toolkits_site->import_path . $this_dir . "media");
 
-	delete_loop($xerte_toolkits_site->import_path . $this_dir . "media");
+    while($file_to_copy = array_pop($copy_file_array)){
 
-	while($file_to_delete = array_pop($delete_file_array)){
+        @rename($xerte_toolkits_site->import_path . $this_dir . "media/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/" . $file_to_copy);
 
-		@unlink($file_to_delete);
+    }
 
-	}
+    /*
+     * Remove files
+     */
 
-	copy_loop($xerte_toolkits_site->import_path . $this_dir . "thumbs");
+    delete_loop($xerte_toolkits_site->import_path . $this_dir . "media");
 
-	while($file_to_copy = array_pop($copy_file_array)){
+    while($file_to_delete = array_pop($delete_file_array)){
 
-		@rename($xerte_toolkits_site->import_path . $this_dir . "thumbs/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/" . $file_to_copy);
+        @unlink($file_to_delete);
 
-	}
+    }
 
-	delete_loop($xerte_toolkits_site->import_path . $this_dir . "thumbs");
+    copy_loop($xerte_toolkits_site->import_path . $this_dir . "thumbs");
 
-	while($file_to_delete = array_pop($delete_file_array)){
+    while($file_to_copy = array_pop($copy_file_array)){
 
-		@unlink($file_to_delete);
+        @rename($xerte_toolkits_site->import_path . $this_dir . "thumbs/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/" . $file_to_copy);
 
-	}
+    }
 
-	copy_loop($xerte_toolkits_site->import_path . $this_dir . "common");
+    delete_loop($xerte_toolkits_site->import_path . $this_dir . "thumbs");
 
-	while($file_to_copy = array_pop($copy_file_array)){
+    while($file_to_delete = array_pop($delete_file_array)){
 
-		@rename($xerte_toolkits_site->import_path . $this_dir . "common/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/" . $file_to_copy);
+        @unlink($file_to_delete);
 
-	}	
+    }
 
-	delete_loop($xerte_toolkits_site->import_path . $this_dir . "common");
+    copy_loop($xerte_toolkits_site->import_path . $this_dir . "common");
 
-	while($file_to_delete = array_pop($delete_file_array)){
+    while($file_to_copy = array_pop($copy_file_array)){
 
-		@unlink($file_to_delete);
+        @rename($xerte_toolkits_site->import_path . $this_dir . "common/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/" . $file_to_copy);
 
-	}
+    }	
 
-	copy_loop($xerte_toolkits_site->import_path . $this_dir . "models");
+    delete_loop($xerte_toolkits_site->import_path . $this_dir . "common");
 
-	while($file_to_copy = array_pop($copy_file_array)){
+    while($file_to_delete = array_pop($delete_file_array)){
 
-		@rename($xerte_toolkits_site->import_path . $this_dir . "models/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/" . $file_to_copy);
+        @unlink($file_to_delete);
 
-	}	
+    }
 
-	delete_loop($xerte_toolkits_site->import_path . $this_dir . "models");
+    copy_loop($xerte_toolkits_site->import_path . $this_dir . "models");
 
-	while($file_to_delete = array_pop($delete_file_array)){
+    while($file_to_copy = array_pop($copy_file_array)){
 
-		@unlink($file_to_delete);
+        @rename($xerte_toolkits_site->import_path . $this_dir . "models/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/" . $file_to_copy);
 
-	}
+    }	
 
-	rename($xerte_toolkits_site->import_path . $this_dir . "template.rlt", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/" .  $folder . ".rlt");
+    delete_loop($xerte_toolkits_site->import_path . $this_dir . "models");
 
-	rename($xerte_toolkits_site->import_path . $this_dir . "template.xml", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/data.xml");
+    while($file_to_delete = array_pop($delete_file_array)){
 
-	rename($xerte_toolkits_site->import_path . $this_dir . "template.xwd", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/data.xwd");
+        @unlink($file_to_delete);
 
-	delete_loop($xerte_toolkits_site->import_path . $this_dir);
+    }
 
-	while($file_to_delete = array_pop($delete_file_array)){
+    rename($xerte_toolkits_site->import_path . $this_dir . "template.rlt", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/" .  $folder . ".rlt");
 
-		@unlink($file_to_delete);
+    rename($xerte_toolkits_site->import_path . $this_dir . "template.xml", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/data.xml");
 
-	}
+    rename($xerte_toolkits_site->import_path . $this_dir . "template.xwd", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/data.xwd");
 
-	rmdir($xerte_toolkits_site->import_path . $this_dir . "common");
-	rmdir($xerte_toolkits_site->import_path . $this_dir . "media");
-	rmdir($xerte_toolkits_site->import_path . $this_dir . "thumbs");
-	rmdir($xerte_toolkits_site->import_path . $this_dir . "models");
+    delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
-	if($_POST['folder']==""){
-	
-		/*
-		* No folder was posted, so add records to the database id.
-		*/
+    while($file_to_delete = array_pop($delete_file_array)){
 
-		$mysql_id = database_connect("Import_template.php database connect success", "Import_template.php database connect failure");
+        @unlink($file_to_delete);
 
-		$query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails (template_framework, template_name, description, date_uploaded, display_name, display_id, access_rights, active) values  ('xerte','" . $folder . "','" . $desc  ."','" . date('Y-m-d') . "','" . $name . "','0','','false')";
+    }
 
-		if(mysql_query($query)){
+    rmdir($xerte_toolkits_site->import_path . $this_dir . "common");
+    rmdir($xerte_toolkits_site->import_path . $this_dir . "media");
+    rmdir($xerte_toolkits_site->import_path . $this_dir . "thumbs");
+    rmdir($xerte_toolkits_site->import_path . $this_dir . "models");
 
-			receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
+    if($_POST['folder']==""){
 
-			echo IMPORT_TEMPLATE_FOLDER_CREATE . "****";
+        /*
+         * No folder was posted, so add records to the database id.
+         */
 
-			rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
+        $mysql_id = database_connect("Import_template.php database connect success", "Import_template.php database connect failure");
 
-		}else{
+        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails (template_framework, template_name, description, date_uploaded, display_name, display_id, access_rights, active) values  ('xerte','" . $folder . "','" . $desc  ."','" . date('Y-m-d') . "','" . $name . "','0','','false')";
 
-			receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
+        if(mysql_query($query)){
 
-			echo IMPORT_TEMPLATE_FOLDER_FAIL . "****";
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
-			rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
+            echo IMPORT_TEMPLATE_FOLDER_CREATE . "****";
 
-		}
+            rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
 
-		mysql_close($mysql_id);
+        }else{
 
-	}
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
+
+            echo IMPORT_TEMPLATE_FOLDER_FAIL . "****";
+
+            rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
+
+        }
+
+        mysql_close($mysql_id);
+
+    }
 
 }

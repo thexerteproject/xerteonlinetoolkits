@@ -1,42 +1,39 @@
-<?PHP     /**
-* 
-* xml template, shows the xml sharing status for this template
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+<?php
+/**
+ * 
+ * xml template, shows the xml sharing status for this template
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	require("../../../config.php");
+require_once("../../../config.php");
 
-	require("../../../session.php");
+include "../template_status.php";
 
-	include "../database_library.php";
+include "../url_library.php";
 
-	include "../template_status.php";
+include "../user_library.php";
 
-	include "../url_library.php";
+include "properties_library.php";
 
-	include "../user_library.php";
-	
-	include "properties_library.php";
+$database_id = database_connect("peer template database connect success","peer template change database connect failed");
 
-	$database_id = database_connect("peer template database connect success","peer template change database connect failed");
+if(is_numeric($_POST['template_id'])){
 
-	if(is_numeric($_POST['template_id'])){
+    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))||is_user_admin()){
 
-		if(is_user_creator(mysql_real_escape_string($_POST['template_id']))||is_user_admin()){
-		
-			xml_template_display($xerte_toolkits_site,false);
-			
-		}else{
+        xml_template_display($xerte_toolkits_site,false);
 
-			xml_template_display_fail();
-			
-		}
+    }else{
 
-		mysql_close($database_id);
+        xml_template_display_fail();
 
-	}
+    }
+
+    mysql_close($database_id);
+
+}
 ?>

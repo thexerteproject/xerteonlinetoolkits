@@ -1,57 +1,56 @@
-<?PHP     // Delete template code
+<?php
+// Delete template code
 //
 // Version 1.0 University of Nottingham
 // 
 // Delete this template from the database and from the file system
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/delete.inc";
+require_once("../../../config.php");
 
-	include "../database_library.php";
-	include "../user_library.php";
-	include "../deletion_library.php";
+_load_language_file("/website_code/php/management/delete.inc");
 
-	$database_id = database_connect("delete main template database connect success","delete main template database connect failed");
-	
-	if(is_user_admin()){
+include "../user_library.php";
+include "../deletion_library.php";
 
-		// work out the file path before we start deletion
+$database_id = database_connect("delete main template database connect success","delete main template database connect failed");
 
-		$query_to_get_template_type_id = " select template_type_id,template_framework,template_name from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id = \"" . $_POST['template_id'] . "\"";
+if(is_user_admin()){
 
-		echo $query_to_get_template_type_id . "<br>";
+    // work out the file path before we start deletion
 
-		$query_to_get_template_type_id_response = mysql_query($query_to_get_template_type_id);
+    $query_to_get_template_type_id = " select template_type_id,template_framework,template_name from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id = \"" . $_POST['template_id'] . "\"";
 
-		$row_template_id = mysql_fetch_array($query_to_get_template_type_id_response);
+    echo $query_to_get_template_type_id . "<br>";
 
-		$path = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/parent_templates/" . $row_template_id['template_name'] . "/";
+    $query_to_get_template_type_id_response = mysql_query($query_to_get_template_type_id);
 
-		$path2 = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/templates/" . $row_template_id['template_name'] . "/";
+    $row_template_id = mysql_fetch_array($query_to_get_template_type_id_response);
 
-		set_up_deletion($path);
+    $path = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/parent_templates/" . $row_template_id['template_name'] . "/";
 
-		set_up_deletion($path2);
+    $path2 = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/templates/" . $row_template_id['template_name'] . "/";
 
-		$query_to_delete_template = "delete from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id=\"" . $_POST['template_id'] . "\"";
+    set_up_deletion($path);
 
-		echo $query_to_delete_template . "<br>";
+    set_up_deletion($path2);
 
-		if(mysql_query($query_to_delete_template)){	
-			
-			echo MANAGEMENT_DELETE_SUCCESS;
+    $query_to_delete_template = "delete from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id=\"" . $_POST['template_id'] . "\"";
 
-		}else{
+    echo $query_to_delete_template . "<br>";
 
-			echo MANAGEMENT_DELETE_FAIL;
-	
-		}
+    if(mysql_query($query_to_delete_template)){	
+
+        echo MANAGEMENT_DELETE_SUCCESS;
+
+    }else{
+
+        echo MANAGEMENT_DELETE_FAIL;
+
+    }
 
 
-	}
-	
-	mysql_close($database_id);
+}
+
+mysql_close($database_id);
 
 ?>

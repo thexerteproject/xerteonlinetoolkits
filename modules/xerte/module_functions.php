@@ -21,7 +21,7 @@ function dont_show_template(){
 
 	require("config.php");
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/modules/xerte/module_functions.inc";
+	_load_language_file("/modules/xerte/module_functions.inc");
 	
 	?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">

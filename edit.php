@@ -1,4 +1,4 @@
-<?PHP     
+<?php
 /**
  * 
  * Edit page, brings up the xerte editor window
@@ -9,8 +9,7 @@
  * @package
  */
 
-require("config.php");
-require("session.php");
+require_once("config.php");
 
 require $xerte_toolkits_site->php_library_path . "database_library.php";
 require $xerte_toolkits_site->php_library_path . "screen_size_library.php";

@@ -1,40 +1,35 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
+require_once("../../../config.php");
 
-	require("../database_library.php");
-	require("../user_library.php");
-	require("management_library.php");
+require("../user_library.php");
+require("management_library.php");
 
-	if(is_user_admin()){
+if(is_user_admin()){
 
-		$mysql_id = database_connect("New_securty.php database connect success","New_security.php database connect failed");
+    $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}syndicationcategories (category_name) values  (?)";
+    $res = mysql_query($query, array($_POST['newcategory']));
 
-		$query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "syndicationcategories (category_name) values  ('" . $_POST['newcategory'] . "')";
+    if($res) {
 
-		if(mysql_query($query)){
+        // change these
 
-			// change these
+        //receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
-			//receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
+    }else{
 
-		}else{
+        // change these
 
-			// change these
-
-			//receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
+        //receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
 
 
-		}
+    }
 
-		category_list();
-				
-	}else{
+    category_list();
 
-		management_fail();
+}else{
 
-	}
+    management_fail();
 
-?>
+}
 

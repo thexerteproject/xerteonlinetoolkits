@@ -1,6 +1,6 @@
 <?PHP
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/workspaceproperties/workspace_library.inc";
+	_load_language_file("/website_code/php/workspaceproperties/workspace_library.inc");
 
 	function workspace_templates_menu(){
 	

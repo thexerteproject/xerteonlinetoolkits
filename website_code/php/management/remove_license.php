@@ -1,27 +1,19 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
+require_once("../../../config.php");
 
-	require("../database_library.php");
-	require("../user_library.php");
-	require("../error_library.php");
-	require("management_library.php");
+require("../user_library.php");
+require("management_library.php");
 
-	if(is_user_admin()){
+if(is_user_admin()){
 
-		$database_id = database_connect("templates list connected","template list failed");
-		
-		$query="delete from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses where license_id=\"" . $_POST['remove']  . "\"";
+    $database_id = database_connect("templates list connected","template list failed");
 
-		$query_response = mysql_query($query);
+    $query="delete from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses where license_id=?";
+    db_query($query, array($_POST['remove']));
 
-		licence_list();
-				
-	}else{
+    licence_list();
 
-		management_fail();
-
-	}
-
-?>
+}else{
+    management_fail();
+}

@@ -2,7 +2,7 @@
 
 	require("config.php");
 	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/management.inc";
+	_load_language_file("/management.inc");
 	
 	/**
 	 * 
@@ -162,7 +162,6 @@
 			
 				$_SESSION['toolkits_logon_id'] = "site_administrator";	
 
-				require $xerte_toolkits_site->php_library_path . "database_library.php";
 
 				require $xerte_toolkits_site->php_library_path . "user_library.php";
 
