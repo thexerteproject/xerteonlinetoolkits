@@ -21,7 +21,7 @@ function show_template($row_play){
 
 		require("config.php");
 
-		require_once($xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/modules/xerte/peer.inc");
+		_load_language_file("/modules/xerte/peer.inc");
 
 		$string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml";
 

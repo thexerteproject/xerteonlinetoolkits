@@ -50,7 +50,7 @@ function show_preview_code($row, $row_username){
 
 	$dimension = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/modules/xerte/preview.inc";
+	_load_language_file("/modules/xerte/preview.inc");
 	
 	?>
 	

@@ -12,7 +12,7 @@ require('../../../config.php');
 
 require('../../../session.php');
 
-require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/versioncontrol/update_file.inc";
+_load_language_file("/website_code/php/versioncontrol/update_file.inc");
 
 require('../template_status.php');
 

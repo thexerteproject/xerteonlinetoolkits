@@ -1,43 +1,41 @@
-<?PHP     
+<?php
 
-	/**
-	 * 
-	 * peer view page, sends the email back to the 
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
-	
-	require_once("../../../config.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/peer_review.inc";
+/**
+ * 
+ * peer view page, sends the email back to the 
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	include "../database_library.php";
+require_once("../../../config.php");
 
-	if(empty($_POST['template_id'])) {
-		die("invalid form submission");
-	}
+_load_language_file("/website_code/php/peer_review.inc");
 
-	$query_for_file_name = "select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
+if(empty($_POST['template_id'])) {
+    die("invalid form submission");
+}
 
-	$row_template_name = db_query_one($query_for_file_name, array($_POST['template_id']));
+$query_for_file_name = "select template_name from {$xerte_toolkits_site->database_table_prefix}templatedetails where template_id =?";
 
-	$headers = str_replace("*","\n",$xerte_toolkits_site->headers);
+$row_template_name = db_query_one($query_for_file_name, array($_POST['template_id']));
 
-	if(isset($_POST['user'])){
+$headers = str_replace("*","\n",$xerte_toolkits_site->headers);
 
-		if(mail( $_POST['user'] . "@" . $xerte_toolkits_site->email_to_add_to_username, PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br>" . $_POST['feedback'] . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE, $headers)){
+if(isset($_POST['user'])){
 
-			echo "<b>" . PEER_REVIEW_USER_FEEDBACK . "</b>";
+    if(mail( $_POST['user'] . "@" . $xerte_toolkits_site->email_to_add_to_username, PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br>" . $_POST['feedback'] . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE, $headers)){
 
-		}else{
+        echo "<b>" . PEER_REVIEW_USER_FEEDBACK . "</b>";
 
-			echo "<b>" . PEER_REVIEW_PROBLEM . ".</b>";
+    }else{
 
-		}
+        echo "<b>" . PEER_REVIEW_PROBLEM . ".</b>";
 
-	}
+    }
+
+}
 
 ?>

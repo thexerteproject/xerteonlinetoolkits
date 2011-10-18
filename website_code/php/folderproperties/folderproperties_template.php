@@ -1,42 +1,41 @@
-<?PHP     /**
-* 
-* folder properties template page, used by the site to display the default panel for the properties page
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+<?php
+/**
+ * 
+ * folder properties template page, used by the site to display the default panel for the properties page
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/folderproperties/folderproperties_template.inc";
+require_once("../../../config.php");
 
-	include "../database_library.php";
-	include "../url_library.php";
+_load_language_file("/website_code/php/folderproperties/folderproperties_template.inc");
 
-	//connect to the database
+include "../url_library.php";
 
-	if(is_numeric($_POST['folder_id'])){
+//connect to the database
 
-		$database_connect_id = database_connect("Folder name database connect success", "Folder name database connect failed");
+if(is_numeric($_POST['folder_id'])){
 
-		$query_for_folder_name = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id=\"" . mysql_real_escape_string($_POST['folder_id']) . "\"";
+    $database_connect_id = database_connect("Folder name database connect success", "Folder name database connect failed");
 
-		$query_name_response = mysql_query($query_for_folder_name);
+    $query_for_folder_name = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id=\"" . mysql_real_escape_string($_POST['folder_id']) . "\"";
 
-		$row_template_name = mysql_fetch_array($query_name_response);
+    $query_name_response = mysql_query($query_for_folder_name);
 
-		echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
+    $row_template_name = mysql_fetch_array($query_name_response);
 
-		echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . str_replace("_", " ", $row_template_name['folder_name']) . "</p>";
+    echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
 
-		echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
+    echo "<p>" . FOLDER_PROPERTIES_CALLED . " " . str_replace("_", " ", $row_template_name['folder_name']) . "</p>";
 
-		echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."', 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['folder_name']) . "\" name=\"newfoldername\" /><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_side\" align=\"top\" style=\"padding-left:5px\" /></form>";
-		
-	}
+    echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 
-	
+    echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."', 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['folder_name']) . "\" name=\"newfoldername\" /><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" class=\"form_image_side\" align=\"top\" style=\"padding-left:5px\" /></form>";
+
+}
+
+
 ?>

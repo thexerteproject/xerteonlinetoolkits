@@ -1,7 +1,7 @@
 <?PHP 
 
 	require("config.php");
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/folderproperties.inc";
+	_load_language_file("/folderproperties.inc");
 
 ?>
 

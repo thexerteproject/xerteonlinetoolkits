@@ -1,22 +1,20 @@
-<?PHP     
+<?php
 
 /**
-* 
-* template close, code that runs when an editor window is closed to remove the lock file
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+ * 
+ * template close, code that runs when an editor window is closed to remove the lock file
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-require('../../../config.php');
+require_once('../../../config.php');
 
-require('../../../session.php');
+_load_language_file("/website_code/php/versioncontrol/template_close.inc");
 
-require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/versioncontrol/template_close.inc";
-
-require('../template_status.php');require('../template_status.php');
+require('../template_status.php');
 
 $temp_array = explode("-",$_POST['file_path']);
 
@@ -25,8 +23,6 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
     /*
      *  Code to delete the lock file
      */
-
-    include('../database_library.php');
 
     $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/lockfile.txt");
 
@@ -74,6 +70,6 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
         }
     }
 }
-		
+
 
 ?>

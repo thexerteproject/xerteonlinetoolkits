@@ -1,21 +1,20 @@
-<?PHP     // Code to list a user's templates
-	//
-	// Version 1.0 University of Nottingham
-	// 
-	// Calls the function from the display library
+<?php
 
-	include "../display_library.php";
-	include "../database_library.php";
-	require("../../../config.php");
-	require("../../../session.php");
-	include "../user_library.php";
+//
+// Version 1.0 University of Nottingham
+// 
+// Calls the function from the display library
 
-	$database_connect_id = database_connect("your templates database connect success", "your templates database connect failed");
+require_once("../../../config.php");
+include "../display_library.php";
+include "../user_library.php";
 
-	$_SESSION['sort_type'] = mysql_real_escape_string($_POST['sort_type']);
+$database_connect_id = database_connect("your templates database connect success", "your templates database connect failed");
 
-	list_users_projects($_SESSION['sort_type']);
+$_SESSION['sort_type'] = mysql_real_escape_string($_POST['sort_type']);
 
-	mysql_close($database_connect_id);
+list_users_projects($_SESSION['sort_type']);
+
+mysql_close($database_connect_id);
 
 ?>

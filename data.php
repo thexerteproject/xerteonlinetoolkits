@@ -11,9 +11,8 @@
 
 require_once("config.php");
 
-require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/data.inc";
+_load_language_file('data.inc');
 
-require $xerte_toolkits_site->php_library_path  . "database_library.php";
 require $xerte_toolkits_site->php_library_path  . "template_status.php";
 require $xerte_toolkits_site->php_library_path  . "display_library.php";
 

@@ -1,33 +1,22 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/management/user_details_management.inc";
+require_once("../../../config.php");
 
-	require("../database_library.php");
-	require("../user_library.php");
+_load_language_file("/website_code/php/management/user_details_management.inc");
 
-	if(is_user_admin()){
+require("../user_library.php");
 
-		$database_id = database_connect("templates list connected","template list failed");
+if(is_user_admin()){
 
-		$query="update " . $xerte_toolkits_site->database_table_prefix . "logindetails set firstname=\"" . $_POST['firstname'] . "\", surname=\"" . $_POST['surname'] . "\",  username =\"" . $_POST['username'] . "\"";
+    $database_id = database_connect("templates list connected","template list failed");
 
-		$query .= " where login_id =\"" . $_POST['user_id'] . "\"";
+    $query="update {$xerte_toolkits_site->database_table_prefix}logindetails set firstname=?, surname=?, username=? WHERE login_id = ?";
+    $params = array($_POST['firstname'], $_POST['surname'], $_POST['username'], $_POST['user_id']);
 
-		echo $query;
-
-		if(mysql_query($query)){
-
-			echo USERS_UPDATE_SUCCESS;
-
-		}else{
-
-			echo USERS_UPDATE_FAIL;
-
-		}
-				
-	}
-
-?>
+    $res =db_querY($query, $params);
+    if($res) {
+        echo USERS_UPDATE_SUCCESS;
+    }else{
+        echo USERS_UPDATE_FAIL;
+    }
+}

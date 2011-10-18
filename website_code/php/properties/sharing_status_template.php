@@ -1,110 +1,109 @@
-<?PHP     /**
-* 
-* sharing status template, shows who is sharing a template
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
-	
-	require("../../../config.php");
-	require("../../../session.php");
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/properties/sharing_status_template.inc";
+<?php
+/**
+ * 
+ * sharing status template, shows who is sharing a template
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
+
+require_once("../../../config.php");
+_load_language_file("/website_code/php/properties/sharing_status_template.inc");
 
 
-	include "../database_library.php";
-	include "../template_status.php";
+include "../template_status.php";
 
-	include "../user_library.php";
-	
-	if(is_numeric($_POST['template_id'])){
+include "../user_library.php";
 
-		$database_id=database_connect("Sharing status template database connect success","Sharing status template database connect failed");
+if(is_numeric($_POST['template_id'])){
 
-		if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    $database_id=database_connect("Sharing status template database connect success","Sharing status template database connect failed");
 
-			$query_for_sharing_details = "select template_id, user_id, firstname, surname, role from " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "logindetails where " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id and template_id=\"" . mysql_real_escape_string($_POST['template_id']) . "\" and user_id !=\"" . $_SESSION['toolkits_logon_id'] . "\"";
+    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-			$query_sharing_response = mysql_query($query_for_sharing_details);
+        $query_for_sharing_details = "select template_id, user_id, firstname, surname, role from " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "logindetails where " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id and template_id=\"" . mysql_real_escape_string($_POST['template_id']) . "\" and user_id !=\"" . $_SESSION['toolkits_logon_id'] . "\"";
 
-			/*
-			* show a different view if you are the file creator
-			*/
+        $query_sharing_response = mysql_query($query_for_sharing_details);
 
-			if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
+        /*
+         * show a different view if you are the file creator
+         */
 
-				echo "<div class=\"share_top\"><p class=\"header\"><span>" . SHARING_INSTRUCTION . "</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . SHARING_NAMES . "</p></div><p id=\"area3\"></div>";	
+        if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-			}
-			
-			/*
-			* find out how many times it has been shares (analgous to number of rows for this template)
-			*/
+            echo "<div class=\"share_top\"><p class=\"header\"><span>" . SHARING_INSTRUCTION . "</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . SHARING_NAMES . "</p></div><p id=\"area3\"></div>";	
 
-			if(mysql_num_rows($query_sharing_response)!=0){
-		
-				echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
+        }
 
-				while($row = mysql_fetch_array($query_sharing_response)){
-		
-					echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['role'] . ")</span></p>"; 
+        /*
+         * find out how many times it has been shares (analgous to number of rows for this template)
+         */
 
-					if($row['role']!="creator"){
+        if(mysql_num_rows($query_sharing_response)!=0){
 
-						if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
+            echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
-							echo "<p class=\"share_files_paragraph\">";
+            while($row = mysql_fetch_array($query_sharing_response)){
 
-							if($row['role']=="editor"){
-			
-								echo "<img src=\"website_code/images/TickBoxOn.gif\" style=\"\" class=\"share_files_img\" /> " . SHARING_EDITOR;
-				
-							}else{
-				
-								echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_EDITOR;
-						
-							}
-					
-							if($row['role']=="read-only"){
-			
-								echo "<img src=\"website_code/images/TickBoxOn.gif\" class=\"share_files_img\" /> " . SHARING_READONLY;
-			
-							}else{
-				
-								echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_READONLY;
-							}
-			
-							echo "<img src=\"website_code/images/Bttn_RemoveOff.gif\" onmousedown=\"this.src='website_code/images/Bttn_RemoveClick.gif'\" onmouseover=\"this.src='website_code/images/Bttn_RemoveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_RemoveOff.gif'\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" class=\"share_files_img\" />";
+                echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['role'] . ")</span></p>"; 
 
-							echo "</p>";
+                if($row['role']!="creator"){
 
-							echo "<p class=\"share_border\"></p>";
+                    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-						}
+                        echo "<p class=\"share_files_paragraph\">";
 
-					}
+                        if($row['role']=="editor"){
 
-				}
+                            echo "<img src=\"website_code/images/TickBoxOn.gif\" style=\"\" class=\"share_files_img\" /> " . SHARING_EDITOR;
 
-				if(!is_user_creator(mysql_real_escape_string($_POST['template_id']))&&!is_user_admin()){
+                        }else{
 
-					echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
+                            echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_EDITOR;
 
-				}
+                        }
 
-			}else{
+                        if($row['role']=="read-only"){
 
-				echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
+                            echo "<img src=\"website_code/images/TickBoxOn.gif\" class=\"share_files_img\" /> " . SHARING_READONLY;
 
-			}	
+                        }else{
 
-		}else{
+                            echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_READONLY;
+                        }
 
-			echo "<p>" . SHARING_FAIL . "</p>";
+                        echo "<img src=\"website_code/images/Bttn_RemoveOff.gif\" onmousedown=\"this.src='website_code/images/Bttn_RemoveClick.gif'\" onmouseover=\"this.src='website_code/images/Bttn_RemoveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_RemoveOff.gif'\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" class=\"share_files_img\" />";
 
-		}
-		
-	}
+                        echo "</p>";
+
+                        echo "<p class=\"share_border\"></p>";
+
+                    }
+
+                }
+
+            }
+
+            if(!is_user_creator(mysql_real_escape_string($_POST['template_id']))&&!is_user_admin()){
+
+                echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
+
+            }
+
+        }else{
+
+            echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
+
+        }	
+
+    }else{
+
+        echo "<p>" . SHARING_FAIL . "</p>";
+
+    }
+
+}
 
 ?>

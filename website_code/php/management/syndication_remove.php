@@ -1,46 +1,41 @@
-<?PHP 
-    
-	require("../../../config.php");
-	require("../../../session.php");
+<?php
 
-	require("../database_library.php");
-	require("../user_library.php");
-	require("../error_library.php");
-	require("management_library.php");
+require_once("../../../config.php");
 
-	if(is_user_admin()){
+require("../user_library.php");
+require("management_library.php");
 
-		$database_id = database_connect("syndication change connected","syndication change failed");
+if(is_user_admin()){
 
-		if($_POST['rss']!=""){
+    $query = false;
 
-			$query="update " . $xerte_toolkits_site->database_table_prefix . "templatesyndication set rss=\"false\" where template_id =\"" . $_POST['template_id'] . "\"";
+    if($_POST['rss']!=""){
+       $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set rss='false' where template_id=?";
+       $params = array($_POST['template_id']);
+    }
 
-		}
+    if($_POST['export']!=""){
+        $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set export='false' where template_id =?";
+        $params = array($_POST['template_id']);
+    }
 
-		if($_POST['export']!=""){
+    if($_POST['synd']!=""){
+        $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set syndication='false' where template_id =?";
+        $params = array($_POST['template_id']);
+    }
+    if($query) {
+        db_query($query, $params);
+    }
 
-			$query="update " . $xerte_toolkits_site->database_table_prefix . "templatesyndication set export=\"false\" where template_id =\"" . $_POST['template_id'] . "\"";
-		}
+    $query="select * from {$xerte_toolkits_site->database_table_prefix}templatesyndication, {$xerte_toolkits_site->database_table_prefix}templatedetails 
+                where {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id = {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id and(rss=\"true\" or export=\"true\" or syndication=\"true\")";
 
-		if($_POST['synd']!=""){
+    $query_response = mysql_query($query);
 
-			$query="update " . $xerte_toolkits_site->database_table_prefix . "templatesyndication set syndication=\"false\" where template_id =\"" . $_POST['template_id'] . "\"";
+    syndication_list();
 
-		}
+}else{
 
-		$query_response = mysql_query($query);
+    management_fail();
 
-		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication," . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and(rss=\"true\" or export=\"true\" or syndication=\"true\")";
-
-		$query_response = mysql_query($query);
-
-		syndication_list();
-				
-	}else{
-
-		management_fail();
-
-	}
-
-?>
+}

@@ -1,58 +1,60 @@
-<?PHP     
+<?php
 
-	/**	
-	 * 
-	 * Database library, code for connecting to the database
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
-	 
-	 /**
-	 * 
-	 * Function database connect
- 	 * This function checks http security settings
-	 * @param string $success_string = Successful message for the error log
- 	 * @param string $error_string = Error message for the error log
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**	
+ * 
+ * Database library, code for connecting to the database
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
+
+/**
+ * 
+ * Function database connect
+ * This function checks http security settings
+ * @param string $success_string = Successful message for the error log
+ * @param string $error_string = Error message for the error log
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
 function database_connect($success_string, $error_string){
-	
-	include_once("error_library.php");
 
-	global $xerte_toolkits_site;
-	
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/database_library.inc";
-	
-	/*
-	* Try to connect
-	*/
+    require_once(dirname(__FILE__) . "/error_library.php");
 
-	$mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
+    global $xerte_toolkits_site;
 
-	/*
-	* Check for connection and error if failed
-	*/
+    _load_language_file('website_code/php/database_library.inc'); // _load_language_file("/website_code/php/database_library.inc");
 
-	if(!$mysql_connect_id){
+    /*
+     * Try to connect
+     */
 
-		 die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error() );
-		
-	}
-	
-	$database_fail = false;
+    $mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
 
-	mysql_select_db($xerte_toolkits_site->database_name) or ($database_fail = true);
-	
-	/*
-	* database failing code
-	*/
+    /*
+     * Check for connection and error if failed
+     */
 
-	$username = 'anonymous';
+    if(!$mysql_connect_id){
+        die("<h2>Xerte Online Toolkits</h2>
+             <p><strong>Sorry, the system cannot connect to the database at present</strong></p>
+             <p>This may be because the database server is offline, or this instance of Xerte has not been setup (see <a href='setup'>/setup</a>). </p>
+             <p>The mysql error is <strong>" . mysql_error() . "</strong></p>");
+
+    }
+
+    $database_fail = false;
+
+    mysql_select_db($xerte_toolkits_site->database_name) or ($database_fail = true);
+
+    /*
+     * database failing code
+     */
+
+    $username = 'anonymous';
     if(isset($_SESSION['toolkits_logon_username'])) {
         $username = $_SESSION['toolkits_logon_username'];
     }
@@ -62,13 +64,13 @@ function database_connect($success_string, $error_string){
     }else{
         receive_message($username, "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
     }
-	
-	/*
-	* if all worked returned the mysql ID
-	*/
 
-	return $mysql_connect_id;
-		
+    /*
+     * if all worked returned the mysql ID
+     */
+
+    return $mysql_connect_id;
+
 }
 
 /**

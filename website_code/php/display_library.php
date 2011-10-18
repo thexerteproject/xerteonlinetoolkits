@@ -1,6 +1,6 @@
 <?PHP    
 	
-	require_once($xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/display_library.inc");
+	_load_language_file("/website_code/php/display_library.inc");
 
  // level is a global variable used to stylise the folder nesting
 

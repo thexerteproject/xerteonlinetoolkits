@@ -1,23 +1,20 @@
-<?PHP     
+<?php
 
-	require("../../../config.php");
-	require("../../../session.php");
+require_once("../../../config.php");
 
-	require("../database_library.php");
-	require("../user_library.php");
-	require("../error_library.php");
-	require("management_library.php");
+require("../user_library.php");
+require("management_library.php");
 
-	if(is_user_admin()){
+if(is_user_admin()){
 
-		syndication_list();
+    syndication_list();
 
-				
-	}else{
 
-		management_fail();
+}else{
 
-	}
+    management_fail();
+
+}
 
 ?>
 

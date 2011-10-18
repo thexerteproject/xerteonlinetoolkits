@@ -2,7 +2,7 @@
 
 	include "../../../config.php";
 
-	require $xerte_toolkits_site->root_file_path . "languages/" . $_SESSION['toolkits_language'] . "/website_code/php/fileupload.inc";
+	_load_language_file("/website_code/php/fileupload.inc");
 
 	if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)){
 
