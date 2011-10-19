@@ -1,146 +1,146 @@
-<?PHP     
+<?php
 
-	require("config.php");
+require_once("config.php");
 
-	/**
-	 * 
-	 * Login page, self posts to become management page
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
+/**
+ * 
+ * Login page, self posts to become management page
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	
-	require $xerte_toolkits_site->php_library_path . "login_library.php";
 
-	require $xerte_toolkits_site->php_library_path . "display_library.php";
+require $xerte_toolkits_site->php_library_path . "login_library.php";
 
-	/*
-	* As with index.php, check for posts and similar
-	*/ 
-	
-	if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
+require $xerte_toolkits_site->php_library_path . "display_library.php";
 
-		$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
+/*
+ * As with index.php, check for posts and similar
+ */ 
 
-		$buffer .= "<p>This is the management panel. Only site administrators can access this resource.</p>";
+if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
 
-		$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
+    $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
-		echo $buffer;
+    $buffer .= "<p>This is the management panel. Only site administrators can access this resource.</p>";
 
-	}
+    $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
 
-	/*
-	* Some data has been posted, interpret as a log in attempt
-	*/
+    echo $buffer;
 
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-		/**
-		* Username and password left empty
-		*/
+}
 
-		if(($_POST["login"]=="")&&($_POST["password"]=="")){
-			
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
+/*
+ * Some data has been posted, interpret as a log in attempt
+ */
 
-			$buffer .= "<p>Please enter your username and password</p>";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+    /**
+     * Username and password left empty
+     */
 
-			echo $buffer;
+    if(($_POST["login"]=="")&&($_POST["password"]=="")){
 
-		/*
-		* Username left empty
-		*/
-		
-		}else if($_POST["login"]==""){
+        $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
+        $buffer .= "<p>Please enter your username and password</p>";
 
-			$buffer .= "<p>Please enter your username</p>";
+        $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+        echo $buffer;
 
-			echo $buffer;
-			
-		/*
-		* Password left empty
-		*/
-	
-		}else if($_POST["password"]==""){
-	
-			$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
+        /*
+         * Username left empty
+         */
 
-			$buffer .= "<p>Please enter your password</p>";
+    }else if($_POST["login"]==""){
 
-			$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
+        $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
-			echo $buffer;
-	
-		
-		/*
-		* Password and username provided, so try to authenticate
-		*/
-	
-		}else{
-		
-			if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&($_POST["password"]==$xerte_toolkits_site->admin_password)){
-			
-				$_SESSION['toolkits_logon_id'] = "site_administrator";	
+        $buffer .= "<p>Please enter your username</p>";
 
-				require $xerte_toolkits_site->php_library_path . "database_library.php";
+        $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
 
-				require $xerte_toolkits_site->php_library_path . "user_library.php";
+        echo $buffer;
 
-				$_SESSION['toolkits_logon_username'] = "adminuser";				
+        /*
+         * Password left empty
+         */
 
-				$mysql_id=database_connect("management.php database connect success","management.php database connect fail");			
-				
-				/*
-				* Check the user is set as an admin in the usertype record in the logindetails table, and display the page
-				*/
-			
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_headers");
+    }else if($_POST["password"]==""){
 
-				echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+        $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
 
-				echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
+        $buffer .= "<p>Please enter your password</p>";
 
-				echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
+        $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
 
-				echo "var properties_ajax_php_path = \"website_code/php/properties/\";";
+        echo $buffer;
 
-				echo "var management_ajax_php_path = \"website_code/php/management/\";";
 
-				echo "var ajax_php_path = \"website_code/php/\";</script>";
+        /*
+         * Password and username provided, so try to authenticate
+         */
 
-				echo admin_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "admin_top"));			
+    }else{
 
-				echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
-				
+        if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&($_POST["password"]==$xerte_toolkits_site->admin_password)){
 
-			}else{
-			
-				/*
-				* Wrong password message
-				*/
+            $_SESSION['toolkits_logon_id'] = "site_administrator";	
 
-				$buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+            require $xerte_toolkits_site->php_library_path . "database_library.php";
 
-				$buffer .= "<p>Sorry that password combination was not correct</p>";
+            require $xerte_toolkits_site->php_library_path . "user_library.php";
 
-				$buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
-				echo $buffer;	
+            $_SESSION['toolkits_logon_username'] = "adminuser";				
 
-			}
+            $mysql_id=database_connect("management.php database connect success","management.php database connect fail");			
 
-		}
-	
-	}
+            /*
+             * Check the user is set as an admin in the usertype record in the logindetails table, and display the page
+             */
+
+            echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_headers");
+
+            echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+
+            echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
+
+            echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
+
+            echo "var properties_ajax_php_path = \"website_code/php/properties/\";";
+
+            echo "var management_ajax_php_path = \"website_code/php/management/\";";
+
+            echo "var ajax_php_path = \"website_code/php/\";</script>";
+
+            echo admin_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "admin_top"));			
+
+            echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
+
+
+        }else{
+
+            /*
+             * Wrong password message
+             */
+
+            $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
+
+            $buffer .= "<p>Sorry that password combination was not correct</p>";
+
+            $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
+            echo $buffer;	
+
+        }
+
+    }
+
+}
 
 ?>	
 </body>
