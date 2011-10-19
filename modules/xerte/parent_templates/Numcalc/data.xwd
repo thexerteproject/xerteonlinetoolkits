@@ -1,0 +1,118 @@
+<wizard>
+
+  <problem icon="icFolderWrench">
+    <info><![CDATA[<b>Important</b>: Always remember to write questions, comments and such like in the form:<br><br>'What is the square root of ' + x + '?'<br><br>with text between single quotation marks and variable names connected to such text with plus signs. If you need a single quotation mark in the text <i>e.g.</i> to act as an apostrophe, write it as \' <i>i.e.</i> as a single quotation mark but preceded by a back-slash.<br><br><b>If your text isn't appearing, check your apostrophes first!</b>]]></info>
+    
+
+    <newNodes>
+      <finalScreen><![CDATA[<finalScreen name="Enter name (closing screen)">'Enter text'</finalScreen>]]></finalScreen>
+      <step><![CDATA[<step intermediateComment="Enter default comment" layout="2" finalComment="Enter final comment" attempts="3" forceBack="0" attemptsToHint="2" name="Enter name"/>]]></step>
+      <firstScreen><![CDATA[<firstScreen name="Enter name (opening screen)">'Enter text'</firstScreen>]]></firstScreen>
+      <variables><![CDATA[<variables name="Enter name" label="Some opening comment"/>]]></variables>
+    </newNodes>
+
+  </problem>
+
+
+  <step icon="icPageWhiteEdit" remove="true" menuItem="Step">
+    <info><![CDATA[Typically, each step consists of a prompt ("What is the cube of some number of other?"), one or more expressions and a few hints. One expression (though conceivably more) should be marked as correct; the others not marked as correct. When the user gives a number specified in an expression, that expression's comment will appear on the screen. Each hint is to be shown after some given number of failed attempts.]]></info>
+    <layout type="ComboBox" label="Screen layout" options="1,2" width="100"/>
+    <forceBack type="NumericStepper" label="Force back" min="0" max="99" step="1" width="100"/>
+    <finalComment type="TextArea" height="100" label="Final comment"/>  
+    <intermediateComment type="TextArea" height="100" label="Intermediate comment"/>  
+    <attempts type="TextInput" label="Max Attempts"/>  
+    <name type="TextInput" label="Name"></name>
+
+    <newNodes>
+      <hint><![CDATA[<hint name="Enter name" attemptsToHint="2" >Text of hint</hint>]]></hint>
+      <expression><![CDATA[<expression correct="true" name="Enter name" feedback="Enter Feedback here" internalOnly="Enter summary">Enter Expression</expression>]]></expression>
+      <prompt><![CDATA[<prompt result="Store result as">Enter question to the student</prompt>]]></prompt>
+    </newNodes>
+  </step>
+
+
+  <finalScreen type="text" label="Final comment" height="200" icon="icComment" max="1" remove="true" menuItem="Closing Screen">
+    <info><![CDATA[Use this for giving some conclusion, some lesson to be learnt from this type of calculation, the importance of this type of calculation, etc.]]></info>
+    <image type="media" label="Diagram" optional="true"/>
+    <name type="TextInput" label="Name"></name>
+  </finalScreen>
+
+
+  <firstScreen type="text" label="Initial comment" height="200" icon="icComment" max="1" remove="true" menuItem="Opening Screen">
+    <info><![CDATA[An introduction - what this type of calculation gives, what it needs, when it fails and so on and so on.]]></info>
+    <image type="media" label="Diagram" optional="true"/>
+    <name type="TextInput" label="Name"></name>
+  </firstScreen>
+
+
+  <variables icon="icFolder" max="1" remove="true" menuItem="Variables Folder">
+    <info><![CDATA[If you want variables in this program – and that is where it is most useful – you have to add a variables folder in which to store them.]]></info>
+    <newNodes>
+      <rangeVar><![CDATA[<rangeVar name="Enter variable name" min="Enter Min" max="Enter Max" step="Enter Step">]]></rangeVar>
+      <exprVar><![CDATA[<exprVar name="Enter variable name" expr="Enter Expression">]]></exprVar>
+      <listVar><![CDATA[<listVar name="Enter variable name" list="Enter List">]]></listVar>
+      <arrayVar><![CDATA[<arrayVar name="Enter variable name" list="Enter Items">]]></arrayVar>
+    </newNodes>
+    <name type="TextInput" label="Name"></name>
+  </variables>
+
+
+  <rangeVar icon="icTagBlue" remove="true" menuItem="Range Variable">
+    <info><![CDATA[This is a variable whose value is chosen randomly starting from Minimum Value and ending at Maximum Value in steps of increment.]]></info>
+    <name type="TextInput" label="Variable Name"/>   
+    <min type="TextInput" label="Minimum Value"/>
+    <max type="TextInput" label="Maximum Value"/>
+    <step type="TextInput" label="Increment"/>
+  </rangeVar>
+
+
+  <exprVar icon="icTagYellow" remove="true" menuItem="Expression Variable">
+    <info><![CDATA[This is a variable whose value is the combination of values (already defined) and constants.<br><br>The lookup function works in conjunction with arrays.<br><br>Example: Suppose you have two arrays names = ('Albert', 'Barry', 'Charles') and dob = (1945, 1978, 1921) then:<br>lookup('Albert',names,dob)<br>will put 1945 into the variable the name of which is in Variable Name.]]></info>
+    <name type="TextInput" label="Variable Name"/>    
+    <expr type="TextInput" label="Expression"/>
+    <roundingDP type="TextInput" label="Decimal places" optional="true"/>
+    <roundingSF type="TextInput" label="Significant figures" optional="true"/>
+  </exprVar>
+
+
+  <listVar icon="icTagOrange" remove="true" menuItem="List Variable">
+    <info><![CDATA[This is a variable whose value is chosen randomly from a list.]]></info>
+    <name type="TextInput" label="Variable Name"/>    
+    <list type="TextInput" label="List"/>
+  </listVar>
+
+
+  <arrayVar icon="icTagGreen" remove="true" menuItem="Array Variable">
+    <info><![CDATA[This lets you put an array into a variable. In the list box, enter <i>e.g.</i><br>alpha, beta, gamma.]]></info>
+    <name type="TextInput" label="Variable Name"/>    
+    <list type="TextInput" label="List"/>
+  </arrayVar>
+
+
+  <hint type="text" label ="Hint "icon="icInfo" remove="true" height="100" menuItem="Hint">
+    <info><![CDATA[Set up a hint with text, an optional picture and a number of attempts. The hint will be displayed after this number of failed attempts.]]></info>
+    <url type="media" label="Image" optional="true"/>
+    <name type="TextInput" label="Name"></name>
+    <attemptsToHint type="TextInput" label="Hint after …"/>  
+  </hint>
+
+
+  <expression type="text" label="Expression" height="30" icon="icTag" menuItem="Expression">
+    <info><![CDATA[Check for the value given by the expression. Indicate whether this is a correct expression or an incorrect one. What comment do you want to make to a user who gives this answer? What should appear in the summary?]]></info>
+    <name type="TextInput" label="Name"></name>
+    <correct type="checkBox" label="Correct"/>
+    <url type="media" label="Image" optional="true"/>
+    <proximity type="TextInput" label="To within ... (%)" optional="true"/>
+    <units type="TextInput" label="Units"/>
+    <feedback type="TextArea" label="Feedback" height="100"/>
+    <internalOnly type="TextArea" label="For summary" height="50"/>
+  </expression>
+
+
+  <prompt max="1" type="text" label="Prompt" height="200" icon="icComment" menuItem="Prompt">
+    <info><![CDATA[This is the question. The value of the user's entry can be stored as a variable.<br><i>Option:</i> A diagram may be added. ]]></info>
+    <result type="textInput" label="Store Result As"/>
+    <image type="media" label="Diagram" optional="true"/>
+  </prompt>
+
+</wizard>

@@ -1,0 +1,93 @@
+<language name="Nederlands">
+
+  <nextButton label="Volgende" description="Volgende Pagina Knop"/>
+  
+  <backButton label="Vorige" description="Vorige Pagina Knop"/>
+  
+  <tocButton label="Inhoud" description="Inhoudsopgave Knop"/>
+  
+  <helpButton label="Help" description="Help Knop "/>
+  
+  <pageHelp name="Pagina Help" description="Pagina Help" toClose="Druk op Spatie om help te sluiten"/>
+  
+  <continueButton label="Verder" description="Ga Verder Knop"/>
+  
+  <toc label="Inhoudsopgave" description="inhoudsopgave. Gebruik de pijltjes toetsen om een pagina te selecteren. Druk op Spatie om naar die Pagina te gaan.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="inhoudsopgave sluiten knop"/>
+	  <gotoPageButton label="Ga naar pagina" description="Ga naar Pagina Knop"/>
+  </toc>
+  
+  <textToSpeech label="null" description="Tekst naar Spraak"/>
+
+  <themes label="--Kleur Schemas--" description="Kleur Schema Opties">
+    <item>standaard</item>
+    <item>blauw</item>
+    <item>groen</item>
+    <item>rood</item>
+    <item>oranje</item>
+    <item>paars</item>
+    <item>grijs</item>
+    <item>hoog contrast 1</item>
+    <item>hoog contrast 2</item>
+  </themes>
+ 
+  <sizes label="--Scherm Grootte--" description="Scherm Grootte Opties">
+	<item>standaard</item>
+	<item>groot</item>
+	<item>groter</item>
+	<item>volledig scherm</item>
+	<item>vul venster</item>
+  </sizes>
+  
+  <fonts label="--Lettertype--" description="Lettertype Opties">
+	  <item>standaard</item>
+  </fonts>
+  
+  <textSizes label="--Tekst Grootte--" description="Tekst Grootte Opties">
+	  <item>standaard</item>
+	  <item>klein</item>
+	  <item>normaal</item>
+	  <item>groot</item>
+	  <item>groter</item>
+  </textSizes>
+  
+  <volumeControl label="Vol:" description="Volume Regelaar"/>
+  
+  <vocab>
+	  <page>Pagina</page>
+	  <of>van</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Stop Audio" description="Stop Audio Knop"/>
+	<playButton label="Speel Audio Af" description="Speel Audio Knop"/>
+	<pauseButton label="Pauseer Audio" description="Pauseer Audio Knop"/>
+	<rwndButton label="Audio Terug" description="Spoel Audio Terug Knop"/>
+	<ffwdButton label="Audio Vooruit" description="Spoel Audio Vooruit Knop"/>
+	<loader label="Bezig met laden: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Stop Video" description="Stop Video Knop"/>
+	<playButton label="Speel Video Af" description="Speel Video Knop"/>
+	<pauseButton label="Pauseer Video" description="Pauseer Video Knop"/>
+	<rwndButton label="Video Terug" description="Spoel Video Terug Knop"/>
+	<ffwdButton label="Video Vooruit" description="Spoel Video Vooruit Knop"/>
+	<loader label="Bezig met laden: "/>
+  </movieController>
+  
+  <interactions>
+	  <button name="Knop"/>
+	  <radioButton selected="geselecteerd. Gebruik de pijltjes toetsen om een optie te kiezen"/>
+	  <checkBox selected="geselecteerd" deselected="gedeselecteerd"/>
+	  <comboBox name="ComboBox" options="Opties." selected="Geselecteerd." selectedOptions="geselecteerd. Gebruik de pijltjes toetsen om een optie te kiezen" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Druk op Spatie om te selecteren." selected="Hot Spot Geselecteerd"/>
+	  <hotObject name="HotObject" toSelect="Druk op Spatie om te selecteren." selected="Hot Object Geselecteerd"/>
+	  <textEntry name="Tekst Veld" selected="Tekst veld geselecteerd"/>
+	  <targetArea name="Doel Gebied" description="Doel gebied voor " toSelect="Druk op spatie om het geselecteerde object hier los te laten"/>
+	  <draggableItem name="Sleepbaar object" selected="Object geselecteerd" toSelect="Druk op spatie om te selecteren" deSelected="Geen Object Geselecteerd." />
+	  
+  </interactions>
+
+</language>

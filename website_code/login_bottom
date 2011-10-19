@@ -1,0 +1,77 @@
+<!-- 
+
+University of Nottingham Xerte Online Toolkits
+
+HTML to use after the log in div on the log in page
+
+Version 1.0
+
+-->
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="border"></div>
+				<div class="news">
+					<p class="news_title">
+						Getting Started
+					</p>
+					<p class="news_story">
+						We've produced a short introduction to the Toolkits website.<br><br><a href="{{demonstration_page}}" target="new">Demonstration</a>
+					</p>
+				</div>
+				<div class="border"></div>
+				<div class="news">
+					{{news}}
+				</div>
+
+			</div>
+			<div class="mainbody_left">
+				<div class="tutorials">
+					<p class="tutorials_title">
+						Tutorials
+					</p>
+					<p class="tutorials_story">
+
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_FirstLOTut" target="new">Creating your first Learning Object</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_EditingPt1" target="new">Working with Learning Objects Part 1</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_EditingPt2" target="new">Working with Learning Objects Part 2</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_QuickRef" target="new">Page Types Reference</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_MultiChoice" target="new">Multiple Choice</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_DD" target="new">Drag and Drop</a><br />
+
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Hotspot" target="new">Image Hotspots</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Categories" target="new">Categories Page</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Timeline" target="new">Timeline / Matching Pairs</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/XerteTut_Navigators" target="new">Navigators</a><br />
+                       <a href="http://www.jisctechdis.ac.uk/techdis/resources/detail/goingdigital/Xerte_XPERT" target="new">Open Content and the Xpert Repository</a><br />
+                    </p>
+
+					<p class="tutorials_title">
+						Xpert Repository
+					</p>
+					<p class="tutorials_story">
+						The Xpert repository aims to make a critical mass of content available for re-use, re-purposing and adaptation. Xerte Online Toolkits makes it simple to add content to the Xpert repository so that it can easily be found by others who may want to re-use or re-purpose it.<br />
+<a target="new" href="http://www.nottingham.ac.uk/xpert/" target="new">The Xpert Repository</a>
+					</p>
+				</div>
+			</div>		
+			<div class="mainbody_div">	
+				<p class="intro">
+					{{site_text}}
+				</p>
+			</div>
+		</div>		
+	</div>
+	<div class="border">
+	</div>
+	<p class="copyright">
+	<img src="website_code/images/lt_logo.gif" /><br>
+	{{copyright}}
+	</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+<wizard>
+  <hotspots>
+    <name type="TextInput" label="Name:"/>
+    <author type="TextInput" label="Author:"/>
+    <affiliation type="TextInput" label="Affiliation:"/>
+  </hotspots>
+  <drawing duplicate="false" type="drawing" label="Edit Hotspots">
+    <name type="TextInput" label="Name:"/>
+    <showMe type="CheckBox" label="Show Me"/>
+    <clickExplore type="CheckBox" label="Click and Explore"/>
+    <dragDropLabel type="CheckBox" label="Labelling"/>
+    <tile type="ComboBox" label="Tile Labels" options="Horizontal,Vertical" width="100"/>
+    <quiz type="CheckBox" label="Multiple Choice Quiz"/>
+  </drawing>
+</wizard>

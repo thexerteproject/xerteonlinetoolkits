@@ -1,0 +1,87 @@
+	<PG title="enter page title" name="videoSynch">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+itemCount = pageIcon.templateData.videoSynch[0].nestedPage.length);
+
+if (pageIcon.templateData.videoSynch[0].narration != undefined){
+  narration = pageIcon.templateData.videoSynch[0].narration;
+  rootIcon.broadcast('showAudio');
+}
+]]></SCR>
+		<DIS h="474" w="760" tabIndex="-1" id="panel" name="panel" x="20" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<MOV id="flv" name="movie" x="40" y="40" url="{pageIcon.templateData.videoSynch[0].url}" controls="1" play="0"><![CDATA[]]></MOV>
+		<INT name="loadMovie" perpetual="0">
+			<RES name="onMovieReady" type="event" eventName="onMovieReady" icon="flv" erase="1" exit="1">
+				<SCR name="exit"><![CDATA[//move on]]></SCR>
+			</RES>
+		</INT>
+		<DIS textColour="#333333" scrolling="auto" id="textBlock" h="414 - flv._height" name="text" x="flv._x" y="flv._y + flv._height + 30" w="flv._width" type="text"><![CDATA[{pageIcon.templateData.videoSynch[0].text}]]></DIS>
+		<SCR name="setupEvents"><![CDATA[if (icon.attributes.built != 'true'){
+  icon.nextSibling.childNodes[0].duplicate(itemCount - 1);
+  icon.attributes.built = 'true';
+}
+nextY = 45;
+
+for (i = 0; i < itemCount; i++){
+  flv.addASCuePoint(Number(pageIcon.templateData.videoSynch[0].nestedPage[i].synch), 'cue'+i);
+  icon.nextSibling.childNodes[i].attributes.eventName = 'cue' + i;
+  if (pageIcon.templateData.videoSynch[0].erase == 'False'){
+    icon.nextSibling.childNodes[i].attributes.erase = 0;
+  }    
+}]]></SCR>
+		<INT id="vidInt" name="eventHandlers" perpetual="0">
+			<RES name="protoEvent" type="event" eventName="protoEvent" icon="flv" erase="1" exit="0">
+				<DIS textColour="#333333" id="txt" name="synchedText" x="flv._x + flv._width + 25" y="nextY " w="800 - flv._width - 110" h="10" type="text"><![CDATA[{pageIcon.templateData.videoSynch[0].nestedPage[icon.parentNode.index()].text}]]></DIS>
+				<SCR name="setup"><![CDATA[if (pageIcon.templateData.videoSynch[0].pause == 'True'){
+  flv.pause();
+}
+
+if (pageIcon.templateData.videoSynch[0].erase == 'False'){
+  nextY = txt._y + txt._height + 15;
+  h = txt._height + 10;
+  icon.parentNode.getChildByName('image').removeNode();
+  icon.parentNode.getChildByName('loadImage').removeNode();
+} else {
+  h = 434;
+ 
+  //is there an image
+  if (pageIcon.templateData.videoSynch[0].nestedPage[0].url == undefined){
+    icon.parentNode.getChildByName('image').removeNode();
+    icon.parentNode.getChildByName('loadImage').removeNode();
+  }
+}
+
+txt.beginFill(0xFFFFCC,100);
+txt.lineStyle(1,0x666666,100);
+txt.drawRect(-5,-5,txt._width + 10, h);
+
+
+]]></SCR>
+				<DIS id="img" name="image" x="txt._x" y="txt._y + txt.txt._height + 20" type="ext" url="{pageIcon.templateData.videoSynch[0].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>
+				<INT name="loadImage" perpetual="0">
+					<RES name="onLoad" type="event" eventName="onLoad" icon="img" erase="1" exit="0">
+						<SCR name="size"><![CDATA[img.constrain(txt._width - 10, 404 - txt.txt._height);]]></SCR>
+					</RES>
+				</INT>
+			</RES>
+			<RES name="onMovieStopped" type="event" eventName="onMovieStopped" icon="flv" erase="1" exit="0">
+				<SCR name="hide"><![CDATA[//hide others
+nextY = 45;
+for (i = 0; i < itemCount; i++){
+  vidInt.eraseResponse(i);
+}
+]]></SCR>
+			</RES>
+		</INT>
+	</PG>

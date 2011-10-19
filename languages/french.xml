@@ -1,0 +1,93 @@
+﻿<language name="Francaise">
+
+  <nextButton label="Suivante" description="Bouton page suivante"/>
+  
+  <backButton label="Précédente" description="bouton page précédente"/>
+  
+  <tocButton label="Contenus" description="Tableau de bouton de contenu"/>
+  
+  <helpButton label="Aide" description="bouton d'aide"/>
+  
+  <pageHelp name="la page d'aide" description="la page d'aide" toClose="Appuyez sur pour fermer l'espace Aide"/>
+  
+  <continueButton label="Continuer" description="le bouton Continuer"/>
+  
+  <toc label="Table des matières" description="Table des matières. utilisez les touches fléchées pour sélectionner une page. Espace presse d'aller à cette page.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="Fermer capables de bouton contenu"/>
+	  <gotoPageButton label="Aller à la page" description="aller au bouton de la page"/>
+  </toc>
+  
+  <textToSpeech label="null" description="texte à la parole"/>
+
+  <themes label="--schémas de couleurs--" description="options de couleurs">
+    <item>défaut</item>
+    <item>bleu</item>
+    <item>vert</item>
+    <item>rouge</item>
+    <item>orange</item>
+    <item>violet</item>
+    <item>grises</item>
+    <item>contraste élevé 1</item>
+    <item>contraste élevé 2</item>
+  </themes>
+ 
+  <sizes label="--le Size de la screen--" description="Screen Size Options">
+	<item>défaut</item>
+	<item>grande</item>
+	<item>plus</item>
+	<item>en plein écran</item>
+	<item>remplissez la fenêtre</item>
+  </sizes>
+  
+  <fonts label="--le FOnts--" description="Options de caractères">
+	  <item>défaut</item>
+  </fonts>
+  
+  <textSizes label="--Taille du texte--" description="Options taille du texte">
+	  <item>défaut</item>
+	  <item>petit</item>
+	  <item>moyennes</item>
+	  <item>grande</item>
+	  <item>plus</item>
+  </textSizes>
+  
+  <volumeControl label="Le Vol:" description="Contrôle du volume"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>de</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Stop Audio" description="Stop Audio Button"/>
+	<playButton label="Play Audio" description="Play Audio Button"/>
+	<pauseButton label="Pause Audio" description="Pause Audio Button"/>
+	<rwndButton label="Rewind Audio" description="Rewind Audio Button"/>
+	<ffwdButton label="Forward Audio" description="Forward Audio Button"/>
+	<loader label="Loading: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Reset Movie" description="Stop Movie Button"/>
+	<playButton label="Play Movie" description="Play Movie Button"/>
+	<pauseButton label="Pause Movie" description="Pause Movie Button"/>
+	<rwndButton label="Rewind Movie" description="Rewind Movie Button"/>
+	<ffwdButton label="Forward Movie" description="Forward Movie Button"/>
+	<loader label="Loading: "/>
+  </movieController>
+  
+  <interactions>
+	  <button name="Button"/>
+	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
+	  <checkBox selected="selected" deselected="dee selected"/>
+	  <comboBox name="ComboBox" options="Options." selected="selected." selectedOptions="selected. Use the arrow keys to select" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Press Space to select." selected="Hot Spot Selected"/>
+	  <hotObject name="HotObject" toSelect="Press Space to select." selected="Hot Object Selected"/>
+	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
+	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
+	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
+	  
+  </interactions>
+
+</language>
