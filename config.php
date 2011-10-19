@@ -21,7 +21,7 @@ global $xerte_toolkits_site;
 
 // Change this to FALSE for production sites.
 global $development;
-$development = true;
+$development = false;
 
 ini_set('error_reporting', 0);
 if($development) {
@@ -54,6 +54,10 @@ if(!isset($xerte_toolkits_site)){
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
+
+    if(!$row) {
+        die("Error talking to database; perhaps it is offline?");
+    }
     /** 
      * Access the database to get the variables
      * @version 1.0
