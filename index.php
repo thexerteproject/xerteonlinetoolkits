@@ -1,6 +1,6 @@
 <?php
 
-require_once("config.php");
+require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/index.inc");
 
@@ -206,9 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $entry = $entry[1];
 
-            $_SESSION['toolkits_firstname'] = $entry[0][givenname][0];
+            $_SESSION['toolkits_firstname'] = $entry[0]['givenname'][0];
 
-            $_SESSION['toolkits_surname'] = $entry[0][sn][0];
+            $_SESSION['toolkits_surname'] = $entry[0]['sn'][0];
 
             include $xerte_toolkits_site->php_library_path . "user_library.php";
 
