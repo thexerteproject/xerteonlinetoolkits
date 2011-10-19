@@ -5,7 +5,6 @@ require_once("../../../config.php");
 _load_language_file("/website_code/php/management/templates.inc");
 
 require("../user_library.php");
-require("../error_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
