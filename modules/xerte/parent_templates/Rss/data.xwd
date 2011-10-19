@@ -1,0 +1,23 @@
+<wizard>
+
+  <rss duplicate="false" icon="icRSS"/>
+
+  <channel duplicate="false" icon="icPages">
+
+    <newNodes>
+      <item><![CDATA[<item><title>Enter Title</title><link>Enter URL</link><description>Enter Description</description><pubDate>Mon, 01 Apr 1980 12:00:00 GMT</pubDate></item>]]></item>
+    </newNodes>
+
+  </channel>
+
+  <item icon="icTagBlue"/>
+
+  <title type="text" height="22" label="Title" icon="icBullet" duplicate="false"/>
+
+  <link type="text" height="22" label="Link" icon="icBullet" duplicate="false"/>
+
+  <description type="text" height="200" label="Description" icon="icBullet" duplicate="false"/>
+
+  <pubDate type="text" height="22" label="Published Date" icon="icBullet" duplicate="false"/>
+
+</wizard>

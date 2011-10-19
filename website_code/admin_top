@@ -1,0 +1,92 @@
+<script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/management.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
+<script type="text/javascript" language="javascript" src="website_code/scripts/logout.js"></script>
+
+</head>
+
+<body onload="javascript:site_list()">
+
+<iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none;"></iframe>
+
+<!-- 
+
+Folder popup is the div that appears when creating a new folder
+
+-->
+
+	<div class="folder_popup" id="message_box">	
+		<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
+		</div>
+		<div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
+		</div>
+		<div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;">
+		</div>
+		<div class="main_area_holder_1">
+			<div class="main_area_holder_2">
+				<div class="main_area" id="dynamic_section">
+					<p>What would you like to call your folder?</p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; padding:0px" /><input type="image" src="website_code/images/Bttn_NewFolderOff.gif" onmouseover="this.src='website_code/images/Bttn_NewFolderOn.gif'" onmousedown="this.src='website_code/images/Bttn_NewFolderClick.gif'" onmouseout="this.src='website_code/images/Bttn_NewFolderOff.gif'" style="vertical-align:middle" /></form><p><img src="website_code/images/Bttn_CancelOff.gif" onmouseover="this.src='website_code/images/Bttn_CancelOn.gif'" onmousedown="this.src='website_code/images/Bttn_CancelClick.gif'" onmouseout="this.src='website_code/images/Bttn_CancelOff.gif'" onclick="javascript:popup_close()" /></p>
+				</div>									
+			</div>
+		</div>
+		<div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
+		</div>
+		<div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
+		</div>
+		<div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;">
+		</div>
+	</div>
+
+	<div class="topbar">
+		<div style="width:50%; height:100%; float:right; position:relative; background-image:url({{organisational_logo}}); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+			<p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">Log out</a></p>
+		</div>
+		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
+	</div>
+	
+	<!-- 
+
+		Main part of the page
+		
+	-->
+	
+	<div class="pagecontainer">
+	
+		<div class="admin_mgt_area">
+			<div class="admin_mgt_area_top">
+				<div class="top_left sign_in_TL m_b_d_2_child">
+					<div class="top_right sign_in_TR m_b_d_2_child">
+					 	<p class="heading">			
+							Site Administration						
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="admin_mgt_area_middle">
+				<div class="admin_mgt_area_middle_button">
+				
+					<!-- 
+
+						admin area menu
+		
+					-->
+				
+					<div class="admin_mgt_area_middle_button_left">
+						<a href="javascript:site_list();">Site</a>				
+						<a href="javascript:templates_list();">Central templates</a>
+						<a href="javascript:users_list();">Users</a>
+						<a href="javascript:user_templates_list();">Users templates</a>
+						<a href="javascript:errors_list();">Errors</a>
+						<a href="javascript:play_security_list();">Play security</a>
+						<a href="javascript:categories_list();">Categories</a>
+						<a href="javascript:licenses_list();">Licenses</a>
+						<a href="javascript:feeds_list();">Feeds</a>
+					</div>
+					<div class="admin_mgt_area_middle_button_right">
+						<a href="javascript:save_changes()">Save</a>						
+					</div>					
+					<div id="admin_area">

@@ -1,0 +1,81 @@
+	<PG title="enter page title" name="delicious">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+align = pageIcon.templateData.delicious[0].align;
+
+if (pageIcon.templateData.delicious[0].narration != undefined){
+  narration = pageIcon.templateData.delicious[0].narration;
+  rootIcon.broadcast('showAudio');
+}
+
+
+]]></SCR>
+		<DIS tabIndex="-1" id="panel" h="474" w="500" name="panel" x="align == 'Left' ? 20 : 280" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<SCR name="getFeed"><![CDATA[count = pageIcon.templateData.delicious[0].results;
+if (pageIcon.templateData.delicious[0].search == 'popular'){
+  baseURL = "http://feeds.delicious.com/v2/rss/popular/" + pageIcon.templateData.delicious[0].term + '?count=' + count;
+} else if (pageIcon.templateData.delicious[0].search == 'user'){
+  baseURL = "http://feeds.delicious.com/v2/rss/" + pageIcon.templateData.delicious[0].term + '?count=' + count;
+} else { //recent - default
+  baseURL = "http://feeds.delicious.com/v2/rss/tag/" + pageIcon.templateData.delicious[0].term + '?count=' + count;
+}
+
+if (templatePath.indexOf('modules/xerte') == -1){
+  feedURL = baseURL;
+} else {
+  feedURL = _level0.site_url + 'rss_proxy.php?rss=' + baseURL;
+}
+req = new XML('<req/'>);
+panel.sendAndLoad(req, feedURL);
+]]></SCR>
+		<DIS scrolling="auto" name="instruction" x="align == 'Left' ? 540 : 20" y="20" w="240" h="480" type="text"><![CDATA[{pageIcon.templateData.delicious[0].text}]]></DIS>
+		<INT name="loadFeed" perpetual="0">
+			<RES name="onSendAndLoad" type="event" eventName="onSendAndLoad" icon="panel" erase="1" exit="1">
+				<SCR name="parseFeed"><![CDATA[//which format - support rss 1.0 and 2.0 and atom 1.0
+if (panel.serverXML.firstChild.nodeName.indexOf('rss') != -1 || panel.serverXML.firstChild.nodeName.indexOf('rdf') != -1){
+  
+  arr = panel.serverXML.findNodesByName('item');
+  
+  t = "<br>";
+  for (i = 0; i < arr.length; i++){
+    tempItem = arr[i].toObject();
+    t += '<font color="#0000FF"><b><a href="' + tempItem.link + '" target="_blank">' + tempItem.title + '</a></b></font><br>';
+    if (tempItem.description != undefined){
+      t += '<font color="#333333">' + tempItem.description + '</font><br><br>';
+    } else {
+      t += '<br>';
+    }
+  }
+
+} else if (panel.serverXML.firstChild.nodeName.indexOf('feed') != -1){
+  
+  arr = panel.serverXML.findNodesByName('entry');
+  
+  t = "<br>";
+  for (i = 0; i < arr.length; i++){
+    tempItem = arr[i].toObject();
+    t += '<font color="#0000FF"><b><a href="' + tempItem.link[0].href + '" target="_blank">' + tempItem.title + '</a></b></font><br>';
+    if (tempItem.summary != undefined){
+      t+= '<font color="#333333">' + tempItem.summary + '</font><br><br>';
+    } else {
+      t+= '<br>';
+    }
+  }
+}
+
+]]></SCR>
+			</RES>
+		</INT>
+		<DIS scrolling="auto" name="feedText" x="panel._x + 20" y="panel._y" w="480" h="474" type="text"><![CDATA[{'<br>' + t}]]></DIS>
+	</PG>
