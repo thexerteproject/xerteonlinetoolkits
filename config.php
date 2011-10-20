@@ -32,13 +32,13 @@ if(!function_exists('_debug')) {
     function _debug($string) {
         global $development;
         if(isset($development) && $development) {
-            file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+            // yes, we really don't want to report file write errors if this doesn't work.
+            @file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
         }
     }
 }
 
-if(!isset($xerte_toolkits_site)){
-
+if(!isset($xerte_toolkits_site)) {
     session_start();	
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
