@@ -1,4 +1,4 @@
-<?PHP     
+<?php
 
 /**
  * 
@@ -15,8 +15,6 @@ require_once("../../../config.php");
 include "../user_library.php";
 include "../template_library.php";
 include "../file_library.php";
-include "../database_library.php";
-include "../error_library.php";
 
 /*
  * get the root folder for this user
