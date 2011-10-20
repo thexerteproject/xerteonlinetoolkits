@@ -1,4 +1,5 @@
-<?PHP     require("module_functions.php");
+<?php
+require_once("module_functions.php");
 
 //Function show_template
 //
@@ -8,7 +9,6 @@
 
 function show_template($row_play){
 
-		require("config.php");
 
 		$string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml?time=" . time();
 
@@ -23,5 +23,3 @@ function show_template($row_play){
 		echo "</script></div><div id=\"popup_parent\"></body></html>";
 
 }
-
-?>

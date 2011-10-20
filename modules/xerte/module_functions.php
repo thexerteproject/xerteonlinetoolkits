@@ -1,4 +1,5 @@
 <?php
+require_once(dirname(__FILE__) . '/../../config.php');
 /**
  * 
  * module functions page, shared functions for this module
