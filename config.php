@@ -22,17 +22,23 @@ global $xerte_toolkits_site;
 // Change this to FALSE for production sites.
 global $development;
 $development = false;
-
+if(php_uname('n') == 'orange') {
+    $development = true;
+}
 ini_set('error_reporting', 0);
 if($development) {
     ini_set('error_reporting', E_ALL);
 }
 
 if(!function_exists('_debug')) {
-    function _debug($string) {
+    function _debug($string, $up = 0) {
         global $development;
         if(isset($development) && $development) {
             // yes, we really don't want to report file write errors if this doesn't work.
+            $backtrace = debug_backtrace();
+            if(isset($backtrace[$up]['file'])) {
+                $string = $backtrace[$up]['file'] . $backtrace[$up]['line'] . $string;
+            }
             @file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
         }
     }
