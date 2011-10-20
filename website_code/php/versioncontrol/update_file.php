@@ -9,7 +9,7 @@
 * @package
  */
 
-require('../../../config.php');
+require_once('../../../config.php');
 require('../template_status.php');
 
 if(!empty($_POST['file_path'])) { 

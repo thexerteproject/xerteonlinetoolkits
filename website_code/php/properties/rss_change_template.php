@@ -1,16 +1,15 @@
-<?PHP     /**
-* 
-* rss change template, allows a user to rename a template
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+<?php
+/**
+ * 
+ * rss change template, allows a user to rename a template
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
 require_once("../../../config.php");
-require_once("../../../session.php");
-require_once("../database_library.php");
 
 include "../template_status.php";
 
@@ -42,7 +41,7 @@ if(is_numeric($_POST['template_id'])){
         if(template_access_settings($_POST['template_id'])=="Public"){
 
             $query_for_name = "select firstname,surname from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?";
-           $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
+            $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
 
             echo "<p class=\"header\"><span>RSS feeds</span></p>";			
 

@@ -1,4 +1,4 @@
-<?PHP 
+<?php
 
 // RSS proxy
 //
@@ -7,7 +7,7 @@
 // Version 1.0 University of Nottingham
 
 include 'Snoopy.class.php';
-include 'config.php';
+require_once('config.php');
 
 $snoopy = new Snoopy;
 
@@ -22,6 +22,7 @@ $snoopy->proxy_port2=$xerte_toolkits_site->port2;
 $snoopy->proxy_port3=$xerte_toolkits_site->port3;
 $snoopy->proxy_port4=$xerte_toolkits_site->port4;
 
+/** XXX TODO SECURITY ? Someone can fetch any arbitrary remote URL using this script. Should re require users are logged in or something ? */
 $content = $snoopy->fetch($url);
 
 echo $snoopy->results;

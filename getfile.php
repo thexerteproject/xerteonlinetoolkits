@@ -1,62 +1,61 @@
 <?PHP
 
-	require("config.php");
-	
-	require $xerte_toolkits_site->php_library_path . "login_library.php";
-	require $xerte_toolkits_site->php_library_path . "user_library.php";
-	require $xerte_toolkits_site->php_library_path . "database_library.php";
-	require $xerte_toolkits_site->php_library_path . "template_library.php";
-	require $xerte_toolkits_site->php_library_path . "template_status.php";
-    require $xerte_toolkits_site->php_library_path . "display_library.php";
+require_once("config.php");
 
-	$mysql_id=database_connect("Successful database connect for play queries","Failed database connect for play queries");
+require $xerte_toolkits_site->php_library_path . "login_library.php";
+require $xerte_toolkits_site->php_library_path . "user_library.php";
+require $xerte_toolkits_site->php_library_path . "template_library.php";
+require $xerte_toolkits_site->php_library_path . "template_status.php";
+require $xerte_toolkits_site->php_library_path . "display_library.php";
 
-	/*
-	* Check the template ID is numeric
-	*/
+$mysql_id=database_connect("Successful database connect for play queries","Failed database connect for play queries");
 
-	$safe_file_path = mysql_real_escape_string($_GET['file']);
-	
-	$data_from_file_name = explode("-",$safe_file_path);
-	
-	if(is_numeric($data_from_file_name[0])){
+/*
+ * Check the template ID is numeric
+ */
 
-		if(has_rights_to_this_template($data_from_file_name[0],$_SESSION['toolkits_logon_id'])){	
+$safe_file_path = mysql_real_escape_string($_GET['file']);
 
-		/*
-		* Check if user is editor (could be read only)
-		*/
-	
-			if(is_user_an_editor($data_from_file_name[0],$_SESSION['toolkits_logon_id'])){
-			
-				if($data_from_file_name[1]==$_SESSION['toolkits_logon_username']){
-				
-					$file = $xerte_toolkits_site->users_file_area_full . $safe_file_path;
-					 				
-					header("Cache-Control: public");
-				   	header("Content-Description: File Transfer");
-					header("Content-Disposition: attachment; filename=$file");
-					header("Content-Transfer-Encoding: binary");
-    
-				     	readfile($file);
-				
-				}
-			
-			}
-			
-			
-		}
+$data_from_file_name = explode("-",$safe_file_path);
 
-	}else{
-	
-		/*
-		* Was not numeric, so display error message
-		*/
+if(is_numeric($data_from_file_name[0])){
 
-		echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource does not exist </div></div></body></html>";
-		die();
-						
-		
-	}
+    if(has_rights_to_this_template($data_from_file_name[0],$_SESSION['toolkits_logon_id'])){	
+
+        /*
+         * Check if user is editor (could be read only)
+         */
+
+        if(is_user_an_editor($data_from_file_name[0],$_SESSION['toolkits_logon_id'])){
+
+            if($data_from_file_name[1]==$_SESSION['toolkits_logon_username']){
+
+                $file = $xerte_toolkits_site->users_file_area_full . $safe_file_path;
+
+                header("Cache-Control: public");
+                header("Content-Description: File Transfer");
+                header("Content-Disposition: attachment; filename=$file");
+                header("Content-Transfer-Encoding: binary");
+
+                readfile($file);
+
+            }
+
+        }
+
+
+    }
+
+}else{
+
+    /*
+     * Was not numeric, so display error message
+     */
+
+    echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource does not exist </div></div></body></html>";
+    die();
+
+
+}
 
 ?>

@@ -1,185 +1,184 @@
-<?PHP     /**
-	 * 
-	 * gift this template, allows the site to give a template copy, or an actual template to some one else
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
-	 * @package
-	 */
+<?php
+require_once("../../../config.php");
+/**
+ * 
+ * gift this template, allows the site to give a template copy, or an actual template to some one else
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	/**
-	 * 
-	 * Function copy loop
- 	 * This function copies files from one folder to another (does not move - copies)
-	 * @param string $start_path - string to check against the database
- 	 * @param string $final_path - string to check against the database
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+/**
+ * 
+ * Function copy loop
+ * This function copies files from one folder to another (does not move - copies)
+ * @param string $start_path - string to check against the database
+ * @param string $final_path - string to check against the database
+ * @version 1.0
+ * @author Patrick Lockley
+ */
 
-	function copy_loop($start_path, $final_path){
+function copy_loop($start_path, $final_path){
 
-		global $xerte_toolkits_site;
+    global $xerte_toolkits_site;
 
-		$d = opendir($start_path);
-	
-		while($f = readdir($d)){
+    $d = opendir($start_path);
 
-			if(is_dir($start_path . $f)){
-	
-				if(($f!=".")&&($f!="..")){
+    while($f = readdir($d)){
 
-					copy_loop($start_path . $f . "/", $final_path . $f . "/");
+        if(is_dir($start_path . $f)){
 
-				}			
+            if(($f!=".")&&($f!="..")){
 
-			}else{
+                copy_loop($start_path . $f . "/", $final_path . $f . "/");
 
-				$data = file_get_contents($start_path . $f);
+            }			
 
-				$fh = fopen($final_path . $f, "w");
+        }else{
 
-				fwrite($fh,$data);
+            $data = file_get_contents($start_path . $f);
 
-				fclose($fh);
-				
-			}
-				
-		}	
+            $fh = fopen($final_path . $f, "w");
 
-		closedir($d);
-	
-	}
+            fwrite($fh,$data);
 
-	require("../../../config.php");
-	require("../../../session.php");
+            fclose($fh);
 
-	include "../database_library.php";
-	include "../template_library.php";
-	
-	/**
-	* Check id is numeric
-	*/
+        }
 
-	if(is_numeric($_POST['tutorial_id'])){
+    }	
 
-		$tutorial_id = mysql_real_escape_string($_POST['tutorial_id']);
+    closedir($d);
 
-		$user_id = mysql_real_escape_string($_POST['user_id']);
-		
-		/**
-		* Giving a copy, or giving it away
-		*/
+}
 
-		if($_POST['action']=="give"){
-		
-			/**
-			* Giving it away
-			*/
 
-			$database_id=database_connect("gift sharing database connect success","gift sharing database connect failed");
+include "../template_library.php";
 
-			$query_for_rename = "select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and template_id =\"" . $tutorial_id  . "\" and login_id = creator_id";
+/**
+ * Check id is numeric
+ */
 
-			$query_rename_response = mysql_query($query_for_rename);
+if(is_numeric($_POST['tutorial_id'])){
 
-			$row_rename = mysql_fetch_array($query_rename_response);
+    $tutorial_id = mysql_real_escape_string($_POST['tutorial_id']);
 
-			/**
-			* Update the database
-			*/
+    $user_id = mysql_real_escape_string($_POST['user_id']);
 
-			$query_to_gift = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails set creator_id = \"" . $user_id . "\" where template_id=\"" . $tutorial_id . "\"";
+    /**
+     * Giving a copy, or giving it away
+     */
 
-			mysql_query($query_to_gift);
+    if($_POST['action']=="give"){
 
-			$query_for_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id='" . $user_id . "' AND folder_name != 'recyclebin'";
+        /**
+         * Giving it away
+         */
 
-			$query_response = mysql_query($query_for_root_folder);
+        $database_id=database_connect("gift sharing database connect success","gift sharing database connect failed");
 
-			$row_folder = mysql_fetch_array($query_response);
+        $query_for_rename = "select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and template_id =\"" . $tutorial_id  . "\" and login_id = creator_id";
 
-			$query_to_gift = "update " . $xerte_toolkits_site->database_table_prefix . "templaterights set user_id = \"" . $user_id . "\", folder = \"" . $row_folder['folder_id'] . "\" where template_id=\"" . $tutorial_id . "\"";
+        $query_rename_response = mysql_query($query_for_rename);
 
-			mysql_query($query_to_gift);
+        $row_rename = mysql_fetch_array($query_rename_response);
 
-			$query_for_new_login = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id='" . $user_id . "'";
+        /**
+         * Update the database
+         */
 
-			$query_for_new_login_response = mysql_query($query_for_new_login);
+        $query_to_gift = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails set creator_id = \"" . $user_id . "\" where template_id=\"" . $tutorial_id . "\"";
 
-			$row_new_login = mysql_fetch_array($query_for_new_login_response);
+        mysql_query($query_to_gift);
 
-			$base_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
+        $query_for_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id='" . $user_id . "' AND folder_name != 'recyclebin'";
 
-			/**
-			* Rename the folder where the template is
-			*/
+        $query_response = mysql_query($query_for_root_folder);
 
-			rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
+        $row_folder = mysql_fetch_array($query_response);
 
-			echo "<p>Sorry you no longer have rights to this template</p>";
+        $query_to_gift = "update " . $xerte_toolkits_site->database_table_prefix . "templaterights set user_id = \"" . $user_id . "\", folder = \"" . $row_folder['folder_id'] . "\" where template_id=\"" . $tutorial_id . "\"";
 
-		}else{
-		
-			/**
-			* Giving away a duplicate
-			*/
+        mysql_query($query_to_gift);
 
-			$database_id=database_connect("Template sharing rights database connect success","Template sharing rights database connect failed");
+        $query_for_new_login = "select username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id='" . $user_id . "'";
 
-			$query_for_currentdetails = "select *," . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name AS actual_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id=\"" . $tutorial_id  . "\" and " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id";
-			
-			$query_currentdetails_response = mysql_query($query_for_currentdetails);
+        $query_for_new_login_response = mysql_query($query_for_new_login);
 
-			$row_currentdetails = mysql_fetch_array($query_currentdetails_response);
+        $row_new_login = mysql_fetch_array($query_for_new_login_response);
 
-			$new_template_id = get_maximum_template_number()+1;
+        $base_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
 
-			$query_for_currentdetails = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom) VALUES (" . $new_template_id . "," . $user_id . ",\"" .  $row_currentdetails['template_type_id'] . "\",\"" . $row_currentdetails['actual_name'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"0\",\"private\")";
+        /**
+         * Rename the folder where the template is
+         */
 
-			mysql_query($query_for_currentdetails);
+        rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
 
-			$query_for_currentrights = "select * from " . $xerte_toolkits_site->database_table_prefix . "templaterights where template_id =\"" . $tutorial_id  . "\"";
+        echo "<p>Sorry you no longer have rights to this template</p>";
 
-			$query_currentrights_response = mysql_query($query_for_currentrights);
+    }else{
 
-			$row_currentrights = mysql_fetch_array($query_currentrights_response);
+        /**
+         * Giving away a duplicate
+         */
 
-			$query_for_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id='" . $user_id . "' AND folder_name != 'recyclebin'";
+        $database_id=database_connect("Template sharing rights database connect success","Template sharing rights database connect failed");
 
-			$query_response = mysql_query($query_for_root_folder);
+        $query_for_currentdetails = "select *," . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name AS actual_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id=\"" . $tutorial_id  . "\" and " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id";
 
-			$row_folder = mysql_fetch_array($query_response);
+        $query_currentdetails_response = mysql_query($query_for_currentdetails);
 
-			$query_for_currentdetails = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templaterights (template_id, user_id, role,folder,notes) VALUES (" . $new_template_id . "," . $user_id . ",\"creator\",\"" . $row_folder['folder_id'] . "\",\" \")";
+        $row_currentdetails = mysql_fetch_array($query_currentdetails_response);
 
-			mysql_query($query_for_currentdetails);
+        $new_template_id = get_maximum_template_number()+1;
 
-			$query_for_new_login = "select firstname, surname, username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id='" . $user_id . "'";
+        $query_for_currentdetails = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom) VALUES (" . $new_template_id . "," . $user_id . ",\"" .  $row_currentdetails['template_type_id'] . "\",\"" . $row_currentdetails['actual_name'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"0\",\"private\")";
 
-			$query_for_new_login_response = mysql_query($query_for_new_login);
+        mysql_query($query_for_currentdetails);
 
-			$row_new_login = mysql_fetch_array($query_for_new_login_response);
+        $query_for_currentrights = "select * from " . $xerte_toolkits_site->database_table_prefix . "templaterights where template_id =\"" . $tutorial_id  . "\"";
 
-			$new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
+        $query_currentrights_response = mysql_query($query_for_currentrights);
 
-			mkdir($new_directory);
+        $row_currentrights = mysql_fetch_array($query_currentrights_response);
 
-			chmod($new_directory,0777);
+        $query_for_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id='" . $user_id . "' AND folder_name != 'recyclebin'";
 
-			mkdir($new_directory . "media/");
+        $query_response = mysql_query($query_for_root_folder);
 
-			chmod($new_directory . "media/" ,0777);
+        $row_folder = mysql_fetch_array($query_response);
 
-			$current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
+        $query_for_currentdetails = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templaterights (template_id, user_id, role,folder,notes) VALUES (" . $new_template_id . "," . $user_id . ",\"creator\",\"" . $row_folder['folder_id'] . "\",\" \")";
 
-			copy_loop($current_directory, $new_directory);
+        mysql_query($query_for_currentdetails);
 
-			echo "<div class=\"share_top\"><p class=\"header\"><span>Template successfully gifted to " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . ".<br><br>To give this project to someone, please type their name here</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+        $query_for_new_login = "select firstname, surname, username from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id='" . $user_id . "'";
 
-		}
+        $query_for_new_login_response = mysql_query($query_for_new_login);
 
-	}
+        $row_new_login = mysql_fetch_array($query_for_new_login_response);
+
+        $new_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $new_template_id . "-" . $row_new_login['username'] . "-" . $row_currentdetails['template_name'] . "/";
+
+        mkdir($new_directory);
+
+        chmod($new_directory,0777);
+
+        mkdir($new_directory . "media/");
+
+        chmod($new_directory . "media/" ,0777);
+
+        $current_directory = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $tutorial_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_currentdetails['template_name'] . "/";
+
+        copy_loop($current_directory, $new_directory);
+
+        echo "<div class=\"share_top\"><p class=\"header\"><span>Template successfully gifted to " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . ".<br><br>To give this project to someone, please type their name here</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+
+    }
+
+}
 
 ?>

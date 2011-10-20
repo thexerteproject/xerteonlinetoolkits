@@ -1,14 +1,15 @@
-<?PHP     /**
-* 
-* feedback page, allows users to send feedback to site admins
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
+<?php
+/**
+ * 
+ * feedback page, allows users to send feedback to site admins
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	include "../config.php";
+require_once("../config.php");
 
 ?>
 
@@ -24,37 +25,37 @@
 
 <body>
 
-	<div class="topbar">
-		<img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
-		<img src="../website_code/images/UofNLogo.jpg" style="margin-right:10px; float:right" />
-	</div>
-	<div class="mainbody">
-		
-		<?PHP     /**
-		*	If something is posted, send this feedback
-		*/
-			
-			if(isset($_POST['feedback'])){
+    <div class="topbar">
+        <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+        <img src="../website_code/images/UofNLogo.jpg" style="margin-right:10px; float:right" />
+    </div>
+    <div class="mainbody">
 
-				echo "<p>Thank you for your feedback</p></div></body></html>";
+<?PHP     /**
+*	If something is posted, send this feedback
+ */
 
-				mail($xerte_toolkits_site->feedback_list, "Xerte Online Feedback", "Name " . mysql_real_escape_string($_POST['name']) . "<br>Message<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
+if(isset($_POST['feedback'])){
 
-			}else{
-			
-		/**
-		*	Else display the page
-		*/
+    echo "<p>Thank you for your feedback</p></div></body></html>";
 
-				echo "<div class=\"title\"><p>Welcome to Xerte on-line Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below. Thank you, the IS Learning Team.</div><div style=\"width:50%; float:left; position:relative;\">";
+    mail($xerte_toolkits_site->feedback_list, "Xerte Online Feedback", "Name " . mysql_real_escape_string($_POST['name']) . "<br>Message<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
 
-				echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>Feedback<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"Send Feedback\"></form>";
+}else{
 
-				echo "</div></div></body></html>";
+    /**
+     *	Else display the page
+     */
 
-			}
+    echo "<div class=\"title\"><p>Welcome to Xerte on-line Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below. Thank you, the IS Learning Team.</div><div style=\"width:50%; float:left; position:relative;\">";
 
-		?>
-	</div>
+    echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>Feedback<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"Send Feedback\"></form>";
+
+    echo "</div></div></body></html>";
+
+}
+
+?>
+    </div>
 </body>
 </html>

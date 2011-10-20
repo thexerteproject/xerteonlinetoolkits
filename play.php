@@ -1,4 +1,4 @@
-<?PHP     
+<?php
 /**
  * 
  * Play page, displays the template to the end user
@@ -13,7 +13,6 @@ require_once("config.php");
 
 require $xerte_toolkits_site->php_library_path . "login_library.php";
 require $xerte_toolkits_site->php_library_path . "display_library.php";
-require $xerte_toolkits_site->php_library_path . "database_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 
 /**

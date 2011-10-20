@@ -92,8 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $_SESSION['toolkits_logon_id'] = "site_administrator";	
 
-            require $xerte_toolkits_site->php_library_path . "database_library.php";
-
             require $xerte_toolkits_site->php_library_path . "user_library.php";
 
             $_SESSION['toolkits_logon_username'] = "adminuser";				

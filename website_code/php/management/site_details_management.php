@@ -1,8 +1,6 @@
 <?php
-require("../../../config.php");
-require("../../../session.php");
+require_once("../../../config.php");
 
-require("../database_library.php");
 require("../user_library.php");
 
 if(is_user_admin()){

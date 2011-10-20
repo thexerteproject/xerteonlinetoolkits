@@ -9,7 +9,7 @@
  * @package
  */
 
-require('../../../config.php');
+require_once('../../../config.php');
 
 require('../template_status.php');
 
@@ -20,8 +20,6 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
     /*
      *  Code to delete the lock file
      */
-
-    include('../database_library.php');
 
     $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/lockfile.txt");
 

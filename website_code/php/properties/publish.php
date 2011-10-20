@@ -1,114 +1,113 @@
-<?PHP     /**
-* 
-* publish template, shows the publish options
-*
-* @author Patrick Lockley
-* @version 1.0
-* @copyright Copyright (c) 2008,2009 University of Nottingham
-* @package
-*/
-	
-	require("../../../config.php");
-	require("../../../session.php");
+<?php
+/**
+ * 
+ * publish template, shows the publish options
+ *
+ * @author Patrick Lockley
+ * @version 1.0
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
 
-	include "../database_library.php";
-	include "../template_status.php";
-	include "../screen_size_library.php";
-	include "../url_library.php";
-	include "../user_library.php";
+require_once("../../../config.php");
 
-	$tutorial_id = mysql_real_escape_string($_POST['template_id']);
+include "../template_status.php";
+include "../screen_size_library.php";
+include "../url_library.php";
+include "../user_library.php";
 
-	$database_id=database_connect("Properties template database connect success","Properties template database connect failed");
+$tutorial_id = mysql_real_escape_string($_POST['template_id']);
 
-	// User has to have some rights to do this
+$database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
-	if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+// User has to have some rights to do this
 
-		echo "<p class=\"header\"><span>Project</span></p>";
+if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-		$query_for_names = "select template_name, date_created, date_modified from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
+    echo "<p class=\"header\"><span>Project</span></p>";
 
-		$query_names_response = mysql_query($query_for_names);
+    $query_for_names = "select template_name, date_created, date_modified from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
 
-		$row = mysql_fetch_array($query_names_response);
+    $query_names_response = mysql_query($query_for_names);
 
-		echo "<p>This panel contains all the settings you need to publish your project.</p>";
+    $row = mysql_fetch_array($query_names_response);
 
-		$template_access = template_access_settings(mysql_real_escape_string($_POST['template_id']));
+    echo "<p>This panel contains all the settings you need to publish your project.</p>";
 
-		echo "<p><b>Access</b><br>If you have not published this project before, you must select the appropriate option in the 'Access' tab. This controls how your users can access your content. To set the access options, select the 'Access' tab and follow the instructions.</p>";
+    $template_access = template_access_settings(mysql_real_escape_string($_POST['template_id']));
 
-		if($template_access=="Private"){
+    echo "<p><b>Access</b><br>If you have not published this project before, you must select the appropriate option in the 'Access' tab. This controls how your users can access your content. To set the access options, select the 'Access' tab and follow the instructions.</p>";
 
-			echo "<p><img src=\"website_code/images/bullet_error.gif\" align=\"absmiddle\" /><b>Your project is currently private. Click on 'Access' to change this.</b></p>";
+    if($template_access=="Private"){
 
-		}else{
+        echo "<p><img src=\"website_code/images/bullet_error.gif\" align=\"absmiddle\" /><b>Your project is currently private. Click on 'Access' to change this.</b></p>";
 
-			echo "<p>Your project is currently set as " . $template_access . ".</p>";
+    }else{
 
-		}
+        echo "<p>Your project is currently set as " . $template_access . ".</p>";
 
-		echo "<p><b>RSS</b><br>RSS feeds provide a convenient way for your users to keep up to date with your content. If you'd like to add this project to your RSS feeds, select the 'RSS' tab and follow the instructions.</p>";
+    }
 
-		if(!is_template_rss(mysql_real_escape_string($_POST['template_id']))){
+    echo "<p><b>RSS</b><br>RSS feeds provide a convenient way for your users to keep up to date with your content. If you'd like to add this project to your RSS feeds, select the 'RSS' tab and follow the instructions.</p>";
 
-			echo "<p><b>Your project is not in any RSS feeds.</b></p>";
+    if(!is_template_rss(mysql_real_escape_string($_POST['template_id']))){
 
-		}else{
+        echo "<p><b>Your project is not in any RSS feeds.</b></p>";
 
-			echo "<p>Your project is available in the RSS Feeds.</p>";
+    }else{
 
-		}
+        echo "<p>Your project is available in the RSS Feeds.</p>";
 
-		echo "<p><b>Syndication</b><br>Syndicating your content makes it available to the widest possible audience by making it available for harvesting by open-access repositories of content. To syndicate your project, select the 'Syndication' tab and follow the instructions.</p>";
+    }
 
-		if(!is_template_syndicated(mysql_real_escape_string($_POST['template_id']))){
+    echo "<p><b>Syndication</b><br>Syndicating your content makes it available to the widest possible audience by making it available for harvesting by open-access repositories of content. To syndicate your project, select the 'Syndication' tab and follow the instructions.</p>";
 
-			echo "<p><b>Your project is not currently syndicated.</b></p>";
+    if(!is_template_syndicated(mysql_real_escape_string($_POST['template_id']))){
 
-		}else{
+        echo "<p><b>Your project is not currently syndicated.</b></p>";
 
-			echo "<p>Your project is currently syndicated.</p>";
+    }else{
 
-		}
-	
-		if($template_access=="Public"){
+        echo "<p>Your project is currently syndicated.</p>";
 
-			/**
-			* 
-			* This section using $_SESSION['webct'] is for people using the integration option for webct. If you integration option has the ability to post back a URL then you would modify this code to allow for your systems working methods.		
-			*
-			**/
+    }
 
-			if(isset($_SESSION['webct'])){
+    if($template_access=="Public"){
 
-				if($_SESSION['webct']=="true"){	
-	
-					$url = urlencode($xerte_toolkits_site->site_url . url_return("play",$tutorial_id));
-	
-					echo "<p>" . str_replace("~~~URL~~~", $url,str_replace("~~~NAME~~~", str_replace("_", " " ,$row['template_name']),$_SESSION['toolkits_webct_url'])) . "</p>";
-	
-				}else{
-	
-					echo "<p><img src=\"website_code/images/Bttn_PublishOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_PublishOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_PublishOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_PublishClick.gif'\" onclick=\"publish_project(window.name);\" /></p>";
-	
-					echo "<p>The web address for this resource is " . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "</p>";
-	
-				}
-			
-			}
+        /**
+         * 
+         * This section using $_SESSION['webct'] is for people using the integration option for webct. If you integration option has the ability to post back a URL then you would modify this code to allow for your systems working methods.		
+         *
+         **/
 
-		}else{
+        if(isset($_SESSION['webct'])){
 
-			echo "<p><img src=\"website_code/images/Bttn_PublishDis.gif\" /></p>";
+            if($_SESSION['webct']=="true"){	
 
-		}
+                $url = urlencode($xerte_toolkits_site->site_url . url_return("play",$tutorial_id));
 
-	}else{
+                echo "<p>" . str_replace("~~~URL~~~", $url,str_replace("~~~NAME~~~", str_replace("_", " " ,$row['template_name']),$_SESSION['toolkits_webct_url'])) . "</p>";
 
-		echo "<p>Sorry you do not have rights to this template</p>";
+            }else{
 
-	}
+                echo "<p><img src=\"website_code/images/Bttn_PublishOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_PublishOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_PublishOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_PublishClick.gif'\" onclick=\"publish_project(window.name);\" /></p>";
+
+                echo "<p>The web address for this resource is " . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "</p>";
+
+            }
+
+        }
+
+    }else{
+
+        echo "<p><img src=\"website_code/images/Bttn_PublishDis.gif\" /></p>";
+
+    }
+
+}else{
+
+    echo "<p>Sorry you do not have rights to this template</p>";
+
+}
 
 ?>
