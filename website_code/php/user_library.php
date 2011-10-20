@@ -12,20 +12,15 @@
  */
 
 function check_if_first_time($session_login_ldap){
-
     global $xerte_toolkits_site;
-
     $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
-    $response = db_query($query, array($session_login_ldap));
+    $response = db_query_one($query, array($session_login_ldap));
 
-    if(!empty($response)) {
-        if(sizeof($response) > 0) {
-            return true;
-        }
-        return false;
-    }else{
-        receive_message($session_login_ldap, "ADMIN", "CRITICAL", "Failed to check if the users first time", "Failed to check if the users first time");
+    if(empty($response)) {
+        _debug("first time user");
+        return true;
     }
+    return false;
 }
 
 /**
@@ -65,13 +60,12 @@ function get_user_id(){
  * @package
  */
 
-function create_user_id(){
+function create_user_id($username, $firstname, $surname){
 
     global $xerte_toolkits_site;
 
-    $query = "insert into " . $xerte_toolkits_site->database_table_prefix . "logindetails (username, lastlogin, firstname, surname) 
-        values (?,?,?,?)";
-    $res = db_query($query, array($_SESSION['toolkits_logon_username'], date('Y-m-d'), $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname'] ));
+    $query = "insert into {$xerte_toolkits_site->database_table_prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
+    $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
     if($res) {
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
@@ -91,22 +85,22 @@ function create_user_id(){
  * @package
  */
 
-function recycle_bin(){
+function recycle_bin() {
 
     global $xerte_toolkits_site;
-
-    $query = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_name=\"recyclebin\" and login_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
-
-    $query_response = mysql_query($query);
+    // see if there is a recycle bin around, if not create one.
+   
+    $query = "select folder_name from {$xerte_toolkits_site->database_table_prefix}folderdetails where folder_name=? AND login_id=?";
+    $response = db_query($query, array("recyclebin", $_SESSION['toolkits_logon_id']));
 
     $root_folder = get_user_root_folder();
 
-    if(mysql_num_rows($query_response)==0){
+    if(sizeof($response) == 0) {
+        $query = "insert into {$xerte_toolkits_site->database_table_prefix}folderdetails 
+            (login_id,folder_parent,folder_name) VALUES (?,?,?)";
+        $res = db_query($query, array( $_SESSION['toolkits_logon_id'] , 0, "recyclebin"));
 
-        $query = "insert into " . $xerte_toolkits_site->database_table_prefix . "folderdetails (login_id,folder_parent,folder_name) VALUES (\"" . $_SESSION['toolkits_logon_id'] . "\", \"0\", \"recyclebin\" )";
-
-        if(mysql_query($query)){
-
+        if($res) { 
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users recycle bin " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
 
         }else{
@@ -116,7 +110,6 @@ function recycle_bin(){
         }	
 
     }
-
 }
 
 /**
@@ -134,14 +127,10 @@ function get_recycle_bin(){
 
     global $xerte_toolkits_site;
 
-    $query = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_name=\"recyclebin\" AND login_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
-
-    $query_response = mysql_query($query);
-
-    $row = mysql_fetch_array($query_response);
+    $query = "select folder_id from {$xerte_toolkits_site->database_table_prefix}folderdetails where folder_name=? AND login_id = ?";
+    $row = db_query_one($query, array("recyclebin", $_SESSION['toolkits_logon_id'] ));
 
     return $row['folder_id'];
-
 }
 
 /**
