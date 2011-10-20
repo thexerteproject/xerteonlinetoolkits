@@ -5,9 +5,8 @@
 // 
 // Calls the function from the display library
 
-include "../display_library.php";
-include "../database_library.php";
 require_once("../../../config.php");
+include "../display_library.php";
 include "../user_library.php";
 
 $_SESSION['sort_type'] = "date_down";
