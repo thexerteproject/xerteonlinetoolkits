@@ -38,10 +38,9 @@ function update_access_time($row_edit){
 /*
  * Check the template ID is numeric
  */
-
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     _debug("Template id is not numeric. ->" . $_GET['template_id']);
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+    require $xerte_toolkits_site->root_file_path . "modules/xerte/edit.php";
     dont_show_template();
     exit(0);
 }
@@ -49,16 +48,16 @@ if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 /*
  * Find out if this user has rights to the template	
  */
-
 $safe_template_id = (int) $_GET['template_id'];
-
 $query_for_edit_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
 $query_for_edit_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_edit_content_strip);
 
-$query_for_edit_content_response = mysql_query($query_for_edit_content);
+$row_edit = db_query_one($query_for_edit_content);
 
-$row_edit = mysql_fetch_array($query_for_edit_content_response);
+if(empty($row_edit)) {
+    die("Cannot find that template; perhaps it has been deleted?");
+}
 
 if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])){	
 
@@ -239,7 +238,8 @@ if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])
 
     }
 
-}else if(is_user_admin()){
+}
+else if(is_user_admin()){
 
     /*
      * Is the current user an administrator - If so access here.
@@ -255,7 +255,7 @@ if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])
      * Wiki mode - check to see if template allows anonymous editing.
      */
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
+    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/data.xml";
 
     $buffer = file_get_contents($string_for_flash_xml);
 
@@ -278,4 +278,3 @@ if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])
     }
 
 }
-
