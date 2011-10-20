@@ -10,6 +10,11 @@
  * @package
  */
 
+// horrible includes.
+if(function_exists('database_connect')) {
+    return;
+}
+
 /**
  * 
  * Function database connect
