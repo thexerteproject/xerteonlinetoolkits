@@ -15,8 +15,6 @@ function get_maximum_template_number(){
 
     $row = db_query_one("SELECT max(template_id) as count FROM {$xerte_toolkits_site->database_table_prefix}templatedetails");
 
-    include_once "error_library.php";
-
     if($row == false) {
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get the maximum template number", "Failed to get the maximum template number");
     }
