@@ -19,23 +19,15 @@ require_once("config.php");
  * @package
  */
 
-/**
- *  Create the basic session
- */
-
-include $xerte_toolkits_site->php_library_path . "login_library.php";
-
 include $xerte_toolkits_site->php_library_path . "display_library.php";
 
+// fake our authentication tokens etc.
 $_SESSION['toolkits_firstname'] = "Guest";
-
 $_SESSION['toolkits_surname'] = "User 2";
 
 include $xerte_toolkits_site->php_library_path . "user_library.php";
 
 $_SESSION['toolkits_logon_username'] = "guest2";
-
-$mysql_id=database_connect("index.php database connect success","index.php database connect fail");			
 
 
 /*
@@ -48,7 +40,7 @@ if(check_if_first_time($_SESSION['toolkits_logon_username'])){
      *	create the user a new id			
      */
 
-    $_SESSION['toolkits_logon_id'] = create_user_id();
+    $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
 
     /*
      *   create a virtual root folder for this user
