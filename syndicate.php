@@ -1,8 +1,8 @@
 <?php
 header("Content-Type: application/xml; charset=UTF-8"); 
+
 require_once "config.php";
 
-include $xerte_toolkits_site->php_library_path . "database_library.php";
 include $xerte_toolkits_site->php_library_path . "url_library.php";
 
 function normal_date($string){

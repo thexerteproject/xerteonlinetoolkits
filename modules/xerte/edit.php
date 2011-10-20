@@ -24,7 +24,6 @@
 
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
 
-    require_once($xerte_toolkits_site->php_library_path . "database_library.php");
     require_once($xerte_toolkits_site->php_library_path . "display_library.php");
 
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));

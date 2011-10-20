@@ -1,9 +1,7 @@
-<?PHP     include 'database_library.php';
+<?php
+require_once('../../../config.php');
 include 'file_library.php';
 include 'user_library.php';
-include 'error_library.php';
-require_once('../../../config.php');
-require_once('../../../session.php');
 
 	/**
 	 * 

@@ -11,7 +11,6 @@
 
 require_once("../../../config.php");
 
-include "../database_library.php";
 
 if(empty($_POST['template_id'])) {
     die("invalid form submission");
