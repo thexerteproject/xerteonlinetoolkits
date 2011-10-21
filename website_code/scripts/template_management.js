@@ -1175,25 +1175,16 @@ function tutorials_stateChanged(){
 function tutorial_created(){ 
 
 	if (xmlHttp.readyState==4){ 
-        alert(xmlHttp.responseText);
-        response = xmlHttp.responseText.trim();
-
-		if(response!=""){
-
-			var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
-
-			new_file = xmlHttp.responseText;
-		
-			neweditorwindow.window_reference = self;
-
-			neweditorwindow.focus();		
-
-			update_your_projects();
-
-							
-		}else{
-
-		}
+        if( typeof xmlHttp.responseText == 'string' ) {
+            response = xmlHttp.responseText.trim();
+            if(response!=""){
+                var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
+                new_file = xmlHttp.responseText;
+                neweditorwindow.window_reference = self;
+                neweditorwindow.focus();		
+                update_your_projects();
+            }
+        }
 	}
 } 
 
