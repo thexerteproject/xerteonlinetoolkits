@@ -16,6 +16,8 @@ require $xerte_toolkits_site->php_library_path . "template_status.php";
 require $xerte_toolkits_site->php_library_path . "display_library.php";
 require $xerte_toolkits_site->php_library_path . "user_library.php";
 
+require_once dirname(__FILE__) . '/modules/xerte/module_functions.php';
+
 /**
  * 
  * Function update_access_time
