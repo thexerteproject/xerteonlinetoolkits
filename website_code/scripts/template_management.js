@@ -1176,8 +1176,8 @@ function tutorial_created(){
 
 	if (xmlHttp.readyState==4){ 
         if( typeof xmlHttp.responseText == 'string' ) {
-            response = String(response);
-            response = xmlHttp.responseText.trim();
+            response = String(xmlHttp.responseText);
+            response = response.trim();
             if(response!=""){
                 var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800" );
                 new_file = xmlHttp.responseText;
