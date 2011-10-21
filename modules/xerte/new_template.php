@@ -15,6 +15,7 @@ $temp_new_path="";
 // taken from php.net/manual/en/function.copy.php
 
 define('DS', DIRECTORY_SEPARATOR); // I always use this short form in my code.
+
 function copy_r( $path, $dest )
 {
     if(preg_match('/\.svn/', $path)) {
@@ -85,7 +86,10 @@ function create_new_template($folder_name_id,$parent_template_name){
     _debug("Creating new template : $folder_name_id, $parent_template_name");
     $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $parent_template_name;
     $path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $parent_template_name;
-
+    if(is_dir($path)) {
+        _debug("Trying to create new template at location - $path - it's already in use. Aborting");
+        die("Template directory already exists; will not overwrite/re-create.");
+    }
     if(mkdir($path)){
         _debug("Created $path ok");
         if(@chmod($path,0777)){
