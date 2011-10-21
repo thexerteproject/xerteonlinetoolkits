@@ -1,4 +1,3 @@
-//launcher file
 rloObject = function(w,h,rloFile){
   var rloWidth = w;
   var rloHeight = h;
