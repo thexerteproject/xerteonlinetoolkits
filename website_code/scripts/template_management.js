@@ -1175,7 +1175,7 @@ function tutorials_stateChanged(){
 function tutorial_created(){ 
 
 	if (xmlHttp.readyState==4){ 
-        alert(xmlHttp.responseText.len);
+        alert(xmlHttp.responseText);
         response = xmlHttp.responseText.trim();
 
 		if(response!=""){
