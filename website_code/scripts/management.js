@@ -2,6 +2,17 @@ var function_to_use = null;
 
 var management_ajax_php_path = "website_code/php/management/";
 
+
+
+
+if(typeof(String.prototype.trim) === "undefined")
+{
+    String.prototype.trim = function() 
+    {
+        return String(this).replace(/^\s+|\s+$/g, '');
+    };
+}
+
 // Function properties ajax send prepare
 //
 // Version 1.0 University of Nottingham
