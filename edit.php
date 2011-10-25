@@ -255,7 +255,7 @@ if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])
      * Wiki mode - check to see if template allows anonymous editing.
      */
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
+    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/data.xml";
 
     $buffer = file_get_contents($string_for_flash_xml);
 
