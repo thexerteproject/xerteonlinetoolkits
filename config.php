@@ -28,10 +28,19 @@ if($development) {
 }
 
 if(!function_exists('_debug')) {
-    function _debug($string) {
+    /**
+     * @param string $string - the message to write to the debug file.
+     * @param int $up - how far up the call stack we go to; this affects the line number/file name given in logging
+     */
+    function _debug($string, $up = 0) {
         global $development;
         if(isset($development) && $development) {
-            file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+            // yes, we really don't want to report file write errors if this doesn't work.
+            $backtrace = debug_backtrace();
+            if(isset($backtrace[$up]['file'])) {
+                $string = $backtrace[$up]['file'] . $backtrace[$up]['line'] . $string;
+            }
+            @file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
         }
     }
 }
