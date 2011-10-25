@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__) . "/error_library.php");
 /**	
  * 
  * Database library, code for connecting to the database
@@ -22,7 +23,6 @@
 
 function database_connect($success_string, $error_string){
 
-    require_once(dirname(__FILE__) . "/error_library.php");
 
     global $xerte_toolkits_site;
 
@@ -110,7 +110,7 @@ function db_query($sql, $params = array()) {
         }
         $curph--;
     }
-    _debug("Running : $sql");
+    _debug("Running : $sql",1);
     $result = mysql_query($sql, $connection);
     if(!$result) {
         _debug("Failed to execute query : $sql : " . mysql_error());
