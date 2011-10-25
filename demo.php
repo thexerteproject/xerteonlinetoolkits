@@ -28,7 +28,7 @@ if(check_if_first_time($_SESSION['toolkits_logon_username'])){
      *	create the user a new id			
      */
 
-    $_SESSION['toolkits_logon_id'] = create_user_id();
+    $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
 
     /*
      *   create a virtual root folder for this user

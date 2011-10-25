@@ -1,8 +1,13 @@
 <?php
 
-require_once("config.php");
+/** 
+ * This script is designed to replace 'index.php' and is idea for e.g. use with XAMMP. 
+ * When this script is in place, NO AUTHENTICATION is required to use Xerte. 
+ * All users will appear as 'Guest User 2'.
+ *
+ */
 
-session_start();
+require_once("config.php");
 
 /**
  * 
@@ -14,23 +19,15 @@ session_start();
  * @package
  */
 
-/**
- *  Create the basic session
- */
-
-include $xerte_toolkits_site->php_library_path . "login_library.php";
-
 include $xerte_toolkits_site->php_library_path . "display_library.php";
 
+// fake our authentication tokens etc.
 $_SESSION['toolkits_firstname'] = "Guest";
-
 $_SESSION['toolkits_surname'] = "User 2";
 
 include $xerte_toolkits_site->php_library_path . "user_library.php";
 
 $_SESSION['toolkits_logon_username'] = "guest2";
-
-$mysql_id=database_connect("index.php database connect success","index.php database connect fail");			
 
 
 /*
@@ -43,7 +40,7 @@ if(check_if_first_time($_SESSION['toolkits_logon_username'])){
      *	create the user a new id			
      */
 
-    $_SESSION['toolkits_logon_id'] = create_user_id();
+    $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
 
     /*
      *   create a virtual root folder for this user
@@ -79,7 +76,7 @@ echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
 
 echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
 
-echo file_get_contents($xerte_toolkits_site->website_code_path . "management_top");
+echo login_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "management_top"));
 
 list_users_projects("data_down");
 
