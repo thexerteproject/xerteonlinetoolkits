@@ -65,10 +65,11 @@ rloObject = function(w,h,rloFile){
   document.writeln('<param name="scale" value="showAll" />');
   document.writeln('<param name="salign" value="T" />');
   document.writeln('<param name="bgcolor" value="#ffffff" />');
+  document.writeln('<param name="wmode" value="opaque" />');
   document.writeln('<param name="allowScriptAccess" value="always" />');
   document.writeln('<param name="seamlessTabbing" value="0" />');
   document.writeln('<param name="flashVars" value="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '" />');
-  document.writeln('<embed src="MainPreloader.swf" allowScriptAccess="always" quality="high" scale="showAll" salign="T" bgcolor="#ffffff"  WIDTH="100%" HEIGHT="100%" NAME="' + rloID + '" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" flashVars="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '"/>');
+  document.writeln('<embed src="MainPreloader.swf" allowScriptAccess="always" quality="high" scale="showAll" salign="T" bgcolor="#ffffff" wmode="opaque"  WIDTH="100%" HEIGHT="100%" NAME="' + rloID + '" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer" flashVars="File=' + rloFile + '&FileLocation=' + FileLocation + '&scorm=' + scorm + '&browser=' + browser + '"/>');
   document.writeln('</object>');
   document.writeln('</div>');
 
