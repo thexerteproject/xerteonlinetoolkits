@@ -33,13 +33,13 @@ if(is_numeric($_POST['template_id'])){
 
         echo "<p>" . EXPORT_DESCRIPTION . "</p>";
 
-        echo "<p>" . EXPORT_ZIP . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></p>";
+        echo "<p>" . EXPORT_ZIP . "<a href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></p>";
 
-        echo "<p>" . EXPORT_ZIP_LOCAL . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("export_local" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LOCAL_LINK . "</a></p>";
+        echo "<p>" . EXPORT_ZIP_LOCAL . "<a href='" . $xerte_toolkits_site->site_url . url_return("export_local" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LOCAL_LINK . "</a></p>";
 
         echo "<p>" . EXPORT_SCORM . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm" , $_POST['template_id']) . "'>" . EXPORT_SCORM_LINK . "</a></p>";
 
-        echo "<p>" . EXPORT_SCORM_METADATA . "<a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_METADATA_LINK . "</a></p>";
+        echo "<p>" . EXPORT_SCORM_METADATA . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_METADATA_LINK . "</a></p>";
 
     }else{
 
@@ -48,7 +48,3 @@ if(is_numeric($_POST['template_id'])){
     }
 
 }
-
-?>
-
-
