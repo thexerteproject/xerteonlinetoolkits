@@ -9,7 +9,7 @@
  * @package
  */
 
-require_once('config.php');
+require_once(dirname(__FILE__) . '/config.php');
 
 
 echo file_get_contents("modules/xerte/drawing_xerte_top");

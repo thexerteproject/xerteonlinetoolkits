@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * 
  * database page, has the settings for database connection
@@ -12,26 +12,25 @@
 /*
  * Host where database is
  */
-$xerte_toolkits_site->database_host = "localhost";
+$xerte_toolkits_site->database_host = "mysqlserver";
 
 /*
  * Username for database
  */
-$xerte_toolkits_site->database_username ="root";
+$xerte_toolkits_site->database_username ="dg";
 
 /*
  * Password for database
  */
-$xerte_toolkits_site->database_password ="";
+$xerte_toolkits_site->database_password ="gingerdog";
 
 /*
  * Database name
  */
-$xerte_toolkits_site->database_name ="toolkits_data";
+$xerte_toolkits_site->database_name ="xertetoolkits";
 
 /*
  * Database table prefix
  */
 $xerte_toolkits_site->database_table_prefix ="";
-
-?>
+ 

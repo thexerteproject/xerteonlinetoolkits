@@ -26,8 +26,6 @@ $_SESSION['toolkits_firstname'] = "Guest";
 
 $_SESSION['toolkits_surname'] = "User 2";
 
-include $xerte_toolkits_site->php_library_path . "database_library.php";
-
 include $xerte_toolkits_site->php_library_path . "user_library.php";
 
 $_SESSION['toolkits_logon_username'] = "guest2";
