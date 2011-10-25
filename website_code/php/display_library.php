@@ -1,5 +1,5 @@
 <?php
-	
+require_once('../../config.php');	
 _load_language_file("/website_code/php/display_library.inc");
 
 // level is a global variable used to stylise the folder nesting

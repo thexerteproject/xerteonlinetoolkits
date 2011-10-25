@@ -15,28 +15,21 @@ function check_if_first_time($session_login_ldap){
 
     global $xerte_toolkits_site;
 
-    $query_for_users_first_time = "select login_id from " . $xerte_toolkits_site->database_table_prefix . "logindetails where username ='" . $session_login_ldap . "'";
+    $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
+    $response = db_query($query, array($session_login_ldap));
 
-    $query_response = mysql_query($query_for_users_first_time);
 
-    if($query_response!=FALSE){
-
-        if(mysql_num_rows($query_response)==0){
-
-            return true;
-
-        }else{
-
+    if(!empty($response)) {
+        if(sizeof($response) > 0){
             return false;
-
         }
+        return true;
 
-    }else{
-
+    }
+    else{
         receive_message($session_login_ldap, "ADMIN", "CRITICAL", "Failed to check if the users first time", "Failed to check if the users first time");
 
     }
-
 }
 
 /**
@@ -54,20 +47,12 @@ function get_user_id(){
 
     global $xerte_toolkits_site;
 
-    $query_for_user_id = "select login_id from " . $xerte_toolkits_site->database_table_prefix . "logindetails where username ='" . $_SESSION['toolkits_logon_username'] . "'";
+    $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
 
-    $query_response = mysql_query($query_for_user_id);
-
-    if($query_response!=FALSE){
-
-        $row = mysql_fetch_array($query_response);
-
+    if(!empty($row)) { 
         return $row['login_id'];	
-
     }else{
-
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users ID", "Failed to get users ID");
-
     }
 
 }
