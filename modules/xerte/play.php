@@ -8,6 +8,7 @@ require("module_functions.php");
 // Set up the preview window for a xerte piece
 
 function show_template($row_play){
+    global $xerte_toolkits_site;
 
     $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml?time=" . time();
 
