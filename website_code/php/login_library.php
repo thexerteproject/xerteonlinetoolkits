@@ -131,12 +131,9 @@ function get_user_ldap($host,$port,$bind_pwd,$bind_dn,$basedn,$ldap_filter,$ldap
 
         $ds = @ldap_connect($host, (int)$port);
 
-        @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-
         if ($ds) {
-
+            @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
             if ($bind_dn != '') {
-
                 $ldapbind = @ldap_bind($ds, $bind_dn, $bind_pwd);
 
                 $sr = @ldap_search($ds, $basedn, $ldap_filter_attr ."=". $eureka_username, array_values($ldap_search_attr));
