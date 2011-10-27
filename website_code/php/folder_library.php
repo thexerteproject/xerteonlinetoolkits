@@ -2,7 +2,6 @@
 require_once('../../../config.php');
 include 'file_library.php';
 include 'user_library.php';
-include 'error_library.php';
 
 _load_language_file("/website_code/php/folder_library.inc");
 
