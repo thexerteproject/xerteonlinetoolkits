@@ -16,10 +16,17 @@ function check_if_first_time($session_login_ldap){
     global $xerte_toolkits_site;
 
     $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
+		
     $response = db_query($query, array($session_login_ldap));
 
-
+	if(count($response)==0){
+		
+		return false;
+	
+	}
+	
     if(!empty($response)) {
+		
         if(sizeof($response) > 0){
             return false;
         }
@@ -27,6 +34,7 @@ function check_if_first_time($session_login_ldap){
 
     }
     else{
+		
         receive_message($session_login_ldap, "ADMIN", "CRITICAL", "Failed to check if the users first time", "Failed to check if the users first time");
 
     }
@@ -73,7 +81,7 @@ function create_user_id($username, $firstname, $surname){
     global $xerte_toolkits_site;
 
     $query = "insert into {$xerte_toolkits_site->database_table_prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
-    $res = db_query($query, array($username, date('Y-m-d', $firstname, $surname);
+    $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
     if($res){
 
@@ -86,7 +94,7 @@ function create_user_id($username, $firstname, $surname){
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users ID", "Failed to create users ID");
 
     }
-    return false
+    return false;
 }
 
 /**
