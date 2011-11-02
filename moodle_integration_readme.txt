@@ -1,5 +1,5 @@
 moodle patch for Xerte toolkits updated for use with 1.7+
-updated 1/11/11
+updated 2/11/11
 Author: Ron Mitchell
 Use at your own risk - no responsibility accepted etc etc
 
@@ -24,24 +24,21 @@ Please follow these steps carefully.
 Step 1. 
 Test your XOT installation before trying to use the moodle integration e.g. install toolkits and use demo.txt or switch.txt to make sure everything is working - creating, viewing, exporting an LO etc
 
-Step 2. Although there are minimal changes to the files included in this patch and no changes to the xerte toolkits database, as always you should still backup your original files and database first.
-Specifically backup or keep a copy of the following toolkits files:
-index.php
-config.php
-or simply rename these to backup_index.php and backup_config.php or something similar.
-
-Step 3. Edit moodle_integration.txt and moodle_config.txt and add the path to your moodle config file so that it points to the config.php in your moodle directory
+Step 2. 
+Edit the top of moodle_integration.txt and config.php and add the path to your moodle config file so that it points to the config.php in your moodle directory
 This needs to be the path from root rather than something like ../../moodle/config.php
 e.g. this might be something like the following: 
 require("/home/youraccountname/public_html/config.php");
 For a xampp/maxos install this should be something like: 
 require("/xampp/htdocs/moodle/config.php");
 
-Step 4 rename moodle_integration.txt to index.php and moodle_config.txt to config.php
+Step 3 rename moodle_integration.txt to moodle_integration.php
 
-Step 5. view http://yourmoodle/yourxot/index.php and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
+Step 4. view http://yourmoodle/yourxot/moodle_integration.php and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
 
-Step 6. If everything is working rename or remove demo.php or switch.php used in step 1
+Step 5. If everything is working rename or remove demo.php or switch.php used in step 1
+
+Step 6. If you are only using moodle for authentication you may wish to rename moodle_integration.php to index.php so that you can just use http://yourmoodle/yourxot/
 
 /////////////////////////////////////////////////////
 After installation/configuration
@@ -49,7 +46,7 @@ You can verify you have configured the moodle path correctly by visiting your to
 
 Notes: 
 
-index.php in this patch replaces the original ldap enabled index.php. To restore ldap access replace index.php with your original index.php
+moodle_integration.txt in this patch can be used in place of the ldap enabled index.php. To restore ldap access replace index.php with your original index.php
 
 /////////////////////////////////////////////////////
 
