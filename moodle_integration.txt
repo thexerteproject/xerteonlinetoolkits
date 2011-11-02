@@ -1,7 +1,7 @@
 <?php
 ////moodle integration (please view moodle_integration_readme.txt before use)
 //the following line sets a session variable so that the separate config file doesn't restart session_start and kill the moodle session
-//if demo.php or switch.php is used then this session isn't set so the installation works fine without moodle integration
+//if demo.php or switch.php is used then this session isn't set so the installation works fine without moodle integration 
 $_SESSION['integrate_with_moodle'] = true;
 
 //The require path below is the path to the moodle installation config file 
