@@ -1,5 +1,15 @@
 <?php
 
+//moodle integration (please view moodle_integration_readme.txt before use)
+//The require path below is the path to the moodle installation config file 
+//usually found in the root of the moodle installation
+//this needs to be the path from root rather than something like ../../moodle/config.php
+//e.g. this might be something like require("/home/yourdomain/public_html/config.php");
+//for a xampp/maxos install this should be something like require("/xampp/htdocs/moodle/config.php");
+//set and uncomment this path e.g. remove the // in front of require and change the path for your install
+//set this same path in moodle_integration.txt also
+//require("/xampp/htdocs/moodle/config.php");
+
 /**
  * 
  * Config page, sets up the site variable from the database
@@ -45,7 +55,10 @@ if(!function_exists('_debug')) {
 }
 
 if(!isset($xerte_toolkits_site)) {
-    session_start();	
+   if(empty($_SESSION)) {
+    session_start();
+    $_SESSION['xertetoolkits'] = true;
+}	
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
