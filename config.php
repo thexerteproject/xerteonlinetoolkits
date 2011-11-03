@@ -52,11 +52,11 @@ if(!function_exists('_debug')) {
 }
 
 if(!isset($xerte_toolkits_site)) {
-//check if using external authentication integration and if not start session as usual
-   if(empty($_SESSION)) {
-    session_start();
-    $_SESSION['xertetoolkits'] = true;
-}	
+    //check if using external authentication integration and if not start session as usual
+    if(empty($_SESSION)) {
+        session_start();
+        $_SESSION['xertetoolkits'] = true;
+    }	
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
@@ -71,7 +71,6 @@ if(!isset($xerte_toolkits_site)) {
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
-
     if(!$row) {
         die("Error talking to database; perhaps it is offline?");
     }
@@ -87,9 +86,7 @@ if(!isset($xerte_toolkits_site)) {
      */
 
     if($row['integration_config_path']!=""){
-
         require_once($row['integration_config_path']);
-
     }
 
     /** 
