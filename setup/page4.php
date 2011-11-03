@@ -1,16 +1,30 @@
 <?php
-require_once(dirname(__FILE__) . '/../config.php');
+global $xerte_toolkits_site;
+global $development;
+$xerte_toolkits_site = new StdClass();
 
+require_once(dirname(__FILE__) . "/../database.php");
+require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
+
+$success_string = '';
+$fail_string = '';
+$magic_quotes = get_magic_quotes_gpc();
+$development = true;
+
+function _debug($string) {
+    // pass, for now.
+}
+
+ini_set('error_reporting', E_ALL);
 
 echo file_get_contents("page_top");
-
 
 $res = db_query("DELETE FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 if(!$res) {
     die("Error running SQL query " . mysql_error());
 }
 
-$res = db_query("insert  into {$xerte_toolkits_site->database_table_prefix}sitedetails(site_id) VALUES (?)");
+$res = db_query("insert  into {$xerte_toolkits_site->database_table_prefix}sitedetails(site_id) VALUES (1)");
 if(!$res) {
     die("Error running SQL query " . mysql_error());
 }
@@ -33,10 +47,10 @@ foreach(array('site_url', 'apache', 'mimetypes', 'LDAP_preference', 'LDAP_filter
 
     $res = db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET $field = ? WHERE site_id = ?", array($_POST[$field], '1'));
     if(!$res) {
-        $fail_string .= "The sitedetails {$field} query has failed due to " . mysql_error() . "<br/>";
+        $fail_string .= "<div style='color: red;'>The sitedetails {$field} query has failed, with MySQL saying: " . mysql_error() . "</div><br/>";
     }
     else {
-        $success_string .= "The sitedetails {$field} query succeeded <br/>";
+        $success_string .= "The sitedetails {$field} query succeeded<br/>";
     }
 }
 
