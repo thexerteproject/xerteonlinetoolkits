@@ -67,7 +67,7 @@ if(!isset($xerte_toolkits_site)) {
         die("please run /setup");
     }
 
-    require_once("database.php");
+    require_once(dirname(__FILE__) . '/database.php');
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
