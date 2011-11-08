@@ -2,11 +2,8 @@
 
 //moodle integration (please view moodle_integration_readme.txt before use)
 //The require path below is the path to the moodle installation config file 
-//usually found in the root of the moodle installation
 //this needs to be the path from root rather than something like ../../moodle/config.php
 //e.g. this might be something like require("/home/yourdomain/public_html/config.php");
-//for a xampp/maxos install this should be something like require("/xampp/htdocs/moodle/config.php");
-//set and uncomment this path e.g. remove the // in front of require and change the path for your install
 //set this same path in moodle_integration.txt also
 //require("/xampp/htdocs/moodle/config.php");
 
@@ -55,10 +52,11 @@ if(!function_exists('_debug')) {
 }
 
 if(!isset($xerte_toolkits_site)) {
-   if(empty($_SESSION)) {
-    session_start();
-    $_SESSION['xertetoolkits'] = true;
-}	
+    //check if using external authentication integration and if not start session as usual
+    if(empty($_SESSION)) {
+        session_start();
+        $_SESSION['xertetoolkits'] = true;
+    }	
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
@@ -69,11 +67,10 @@ if(!isset($xerte_toolkits_site)) {
         die("please run /setup");
     }
 
-    require_once("database.php");
+    require_once(dirname(__FILE__) . '/database.php');
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
-
     if(!$row) {
         die("Error talking to database; perhaps it is offline?");
     }
@@ -89,9 +86,7 @@ if(!isset($xerte_toolkits_site)) {
      */
 
     if($row['integration_config_path']!=""){
-
         require_once($row['integration_config_path']);
-
     }
 
     /** 
