@@ -81,25 +81,24 @@
 		
 		setUpInfo += " set antialiasDisplay true;";
 		
+		var windowW = str.split(';')[7].split('width=')[1];
+		var windowH = str.split(';')[8].split('height=')[1];
+		
+		var modelW = windowW-4;
+		var modelH = windowH-4;
+		
+		if (controls == "true") {
+			modelH = windowH-80;
+		}
+		
+		document.write('<style>.holder {width: ' + windowW + 'px; height: ' + (windowH-11) + 'px;}</style>');
 	</script>
 	
 	<style type="text/css">
 	<!--
 	.style1 {
 		font-size: 11px;
-	}
-	
-	.holder {
-		width: 370px;
-		height: 389px;
-	}
-	
-	.header {
-		border: solid 2px white;
-		background-color: #E6E6E6;
-		font-size: 13px;
-		padding: 5px 10px 5px 10px;
-	}
+	}	
 	
 	.model {
 		border: solid 2px white;
@@ -107,7 +106,7 @@
 		text-align: center;
 	}
 	
-	.controls {
+	.controlBar {
 		border: solid 2px white;
 		background-color: #E6E6E6;
 		padding: 10px;
@@ -127,7 +126,7 @@
 			<script type="text/javascript">
 			  jmolInitialize("jmol");
 			  jmolSetAppletColor(bgColour);
-			  jmolApplet([345, 309], setUpInfo);
+			  jmolApplet([modelW, modelH], setUpInfo);
 			  jmolSetButtonCssClass("style1");
 			  jmolSetCheckboxCssClass("style1");
 			  jmolSetMenuCssClass("style1");
@@ -136,7 +135,7 @@
 		
 		<script type="text/javascript">
 			if (controls == "true") {
-			  document.write('<div class="controls">');
+			  document.write('<div class="controlBar">');
 			
 			  jmolHtml("Display: ");
 			  jmolMenu(displayOptions);

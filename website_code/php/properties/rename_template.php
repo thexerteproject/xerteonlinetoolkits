@@ -19,11 +19,10 @@ if(is_numeric($_POST['template_id'])){
 
     $tutorial_id = mysql_real_escape_string($_POST['template_id']);
 
-    $database_id = database_connect("Template rename database connect success","Template rename database connect failed");
+    $query = "update {$xerte_toolkits_site->database_table_prefix}templatedetails SET template_name = ? WHERE template_id = ?";
+    $res = db_query($query, array(str_replace(' ', '_', $_POST['template_name']), $_POST['template_id']));
 
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET template_name =\"" . str_replace(" ", "_", mysql_real_escape_string($_POST['template_name'])) . "\" WHERE template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
-
-    if(mysql_query($query)){
+    if($res) {
 
         $query_for_names = "select template_name, date_created, date_modified from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
 
@@ -67,8 +66,4 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
-    mysql_close($database_id);
-
 }
-
-?>
