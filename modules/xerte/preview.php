@@ -50,6 +50,8 @@ function show_preview_code($row, $row_username){
 
 	$dimension = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 	
+	require_once("config.php");
+	
 	_load_language_file("/modules/xerte/preview.inc");
 	
 	?>
