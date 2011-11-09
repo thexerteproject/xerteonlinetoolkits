@@ -22,9 +22,6 @@ global $xerte_toolkits_site;
 global $development;
 $development = false;
 
-if(php_uname('n') == 'orange') {
-    $development = true;
-}
 ini_set('error_reporting', 0);
 if($development) {
     ini_set('error_reporting', E_ALL);
