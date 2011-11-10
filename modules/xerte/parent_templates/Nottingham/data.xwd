@@ -1276,6 +1276,7 @@
     <newNodes>
       <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video"></movie>]]></movie>
       <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound"></sound>]]></sound>
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image"></image>]]></image>
     </newNodes>
 
   </perspectives>
@@ -1293,6 +1294,13 @@
     <img type="media" label="Image" optional="true"></img>
     <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
   </sound>
+
+  <image duplicate="true" menuItem="Image" remove="true" icon="icImage">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Image File"/>
+    <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
+  </image>
   
 
 </wizard>
