@@ -46,7 +46,7 @@ if(!function_exists('_debug')) {
 }
 if(!function_exists('_load_language_file')) {
     function _load_language_file($file_path) { 
-        if(isset($_SESSON['toolkits_language'])) {
+        if(isset($_SESSION['toolkits_language'])) {
             $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . $file_path;
         }
         else {
