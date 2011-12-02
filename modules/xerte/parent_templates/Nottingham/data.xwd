@@ -54,6 +54,7 @@
       <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" label="Check" feedback="Enter the Feedback" align="Left" panelWidth="Medium"/>]]></buttonQuestion>
 
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
+      <table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table>
 
       <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
       <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
@@ -97,6 +98,34 @@
     </newNodes>
 
   </learningObject>
+
+
+  <!--TABLE PAGE------------------------------------------------------->
+  <table menu="Charts" menuItem="Table" icon="icTable" remove="true" hint="A page for basic tables.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="300" width="380" label="Text"/>
+    <align type="ComboBox" label="Align Text" options="left,right,top" width="100"/>
+
+    <narration type="media" label="Narration" optional="true"/>
+
+  </table>
+
+  <tableData duplicate="false" menuItem="Table Data" remove="false">
+
+    <name type="TextInput" label="Table Name"/>
+    <data type="DataGrid" label="Table Data" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false" newRow="data,data" newCol="data"/>
+    <size type="ComboBox" label="Table Size" options="small,medium,large,full screen" width="120"/>
+    <borders type="ComboBox" label="Borders" options="none,full grid,simple,horizontal only,vertical only,outside border" data="none,full,simple,horizontal,vertical,outside" width="120"/>
+    <header type="ComboBox" label="Header/Footer Rows" options="none,header,footer,both" width="120"/>
+    <shadeHeader type="Checkbox" label="Shade Header/Footer"/>
+    <shade type="Checkbox" label="Shade Alternate Rows"/>
+
+    <caption type="TextInput" label="Footnote" optional="true"/>
+    <alt type="TextInput" label="Alternative Text" optional="true"/>
+    <url type="Media" label="CSV File" optional="true"/>
+
+  </tableData>
 
 
   <!--MEMORY------------------------------------------------------------>
