@@ -109,7 +109,7 @@ foreach($rows as $row) {
     echo "<item>
         <title>" . str_replace("_"," ",$row['template_name']) . "</title>
         <link><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></link>
-        <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . " was developed by " . $user . "]]></description>
+        <description><![CDATA[" . $row['description'] . str_replace("_"," ",$row['template_name']) . " was developed by " . $user . "]]></description>
         <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
         </item>\n";
