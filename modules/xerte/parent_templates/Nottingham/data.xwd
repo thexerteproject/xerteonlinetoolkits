@@ -27,7 +27,7 @@
       <youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"/>]]></youtuberss>
       <wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki>
       <rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left"/>]]></rss>
-      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here">Enter text for the page here</flickr>]]></flickr>  
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all" deriv="unrestricted">Enter text for the page here</flickr>]]></flickr>  
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
 
       <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
@@ -851,10 +851,12 @@
 
 
   <!--FLICKR SLIDESHOW----------------------------------------------------------------->
-  <flickr type="text" label="PageText" height="300" menu="Misc" menuItem="Flickr Slideshow" icon="icPicture" remove="true" thumb="thumbs/flickr.jpg" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service.">
+  <flickr type="text" label="PageText" height="150" menu="Misc" menuItem="Flickr Slideshow" icon="icPicture" remove="true" thumb="thumbs/flickr.jpg" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service.">
 
     <name type="TextInput" label="Page Title"/>
     <keywords type="TextInput" label="Keyword(s)"/>
+    <content type="comboBox" options="all use,non-commercial use" label="Content for" width="100"/>
+    <deriv type="comboBox" options="unrestricted,non-derivative,share alike" label="Reuse" width="100"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
