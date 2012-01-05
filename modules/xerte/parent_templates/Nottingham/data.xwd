@@ -101,7 +101,7 @@
 
 
   <!--TABLE PAGE------------------------------------------------------->
-  <table menu="Charts" menuItem="Table" icon="icTable" remove="true" hint="A page for basic tables.">
+  <table menu="Charts" menuItem="Table" icon="icTable" remove="true" thumb="thumbs/table.jpg" hint="A page for basic tables.">
 
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="300" width="380" label="Text"/>
