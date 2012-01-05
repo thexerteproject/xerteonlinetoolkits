@@ -105,7 +105,7 @@
 
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="300" width="380" label="Text"/>
-    <align type="ComboBox" label="Align Text" options="left,right,top" width="100"/>
+    <align type="ComboBox" label="Align Text" options="left,right,top,bottom" width="100"/>
 
     <narration type="media" label="Narration" optional="true"/>
 
