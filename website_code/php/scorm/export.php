@@ -24,21 +24,21 @@ $delete_file_array = array();
 $delete_folder_array = array();
 
 ini_set('max_execution_time', 300);
-ini_set('memory_limit','64M');
 
 if(is_numeric($_GET['template_id'])){
+    $_GET['template_id'] = (int) $_GET['template_id'];
 
     $proceed = false;
 
-    if(is_template_exportable(mysql_real_escape_string($_GET['template_id']))){
+    if(is_template_exportable($_GET['template_id'])){
 
         $proceed = true;	
 
     }else{
 
-        require("../../../session.php");
+        require_once("../../../session.php");
 
-        if(is_user_creator(mysql_real_escape_string($_GET['template_id']))||is_user_admin()){
+        if(is_user_creator($_GET['template_id'])||is_user_admin()){
 
             $proceed = true;	
 
@@ -236,5 +236,3 @@ if(is_numeric($_GET['template_id'])){
     }
 
 }
-
-?>
