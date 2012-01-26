@@ -62,6 +62,7 @@
       <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
       <slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></slideshow>
       <accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav>
+      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100" text="Enter text here"/>]]></tabNavExtra>
       <tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav>
       <columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage>
 
@@ -433,6 +434,43 @@
     </newNodes>
 
   </tabNav>
+
+
+  <!--TABBED NAVIGATOR PLUS------------------------------------------------------------------->
+  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" icon="icTab" remove="true" thumb="thumbs/tabNavExtra.jpg" hint="The tabbed navigator + allows you to create a list of topic links.  Each topic displays a series of tabbed pages to present related text and graphical content.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <tabWidth type="NumericStepper" min="20" max="250" step="1" label="Tab Width" width="100"/>
+
+    <rememberTab type="CheckBox" label="Stay on Current Tab" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="name" text="Content for the pane"/></nestedTab></topic>]]></topic>
+    </newNodes>
+
+  </tabNavExtra>
+
+  <topic menuItem="Topic" icon="icFolderPage">
+
+    <name type="TextInput" label="Topic Name"/>
+
+    <newNodes>
+      <nestedTab><![CDATA[<nestedTab name="Enter Tab Name"><nestedPage name="name" text="Content for the pane"/></nestedTab>]]></nestedTab>
+    </newNodes>
+
+  </topic>
+
+  <nestedTab menuItem="Tab">
+
+    <name type="TextInput" label="Panel Name"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane"/>]]></nestedPage>
+    </newNodes>
+
+  </nestedTab>
 
   
   <!--COLUMN PAGE-------------------------------------------------------------------------->
