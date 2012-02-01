@@ -700,6 +700,8 @@
     <interactivity type="ComboBox" options="Hotspots,Labels,Show Me,MCQ" label="Interactivity" width="100"/>
     <showShapes type="CheckBox" label="Show Shapes"/>
 
+    <info><![CDATA[You must add a label to each hotspot on your diagram.  Edit the diagram, select a hotspot, click the pencil icon on the info panel and enter text in the Label and Info fields.]]></info>
+
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
