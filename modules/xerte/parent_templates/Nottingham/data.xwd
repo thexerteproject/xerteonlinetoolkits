@@ -16,6 +16,7 @@
     <controller optional="true" label="Custom Interface" type="media"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
+    <stylesheet optional="true" type="Media" label="Stylesheet"/>
 
 
     <newNodes>
@@ -29,14 +30,16 @@
       <rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left"/>]]></rss>
       <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all" deriv="unrestricted">Enter text for the page here</flickr>]]></flickr>  
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
+      <mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction>
 
       <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
       <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
 
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
-      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
 
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
+      <modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title">Enter text for the page here</text>]]></modelAnswerResults> 
       <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"/>]]></modelAnswer>
       <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"/>]]></modify>
       <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here"/>]]></categories>
@@ -352,10 +355,19 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
-
+    <copypasteinfo optional="true" type="TextArea" height="50" label="Copy & paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Word or an email to save for future reference."/>
+<label optional="true" type="TextInput" label="Button Label"/>
     <image optional="true" type="media" label="Image"/>
   </modelAnswer>
 
+<!--Model Answer Results PAGE------------------------------------------------------->
+  <modelAnswerResults type="text" label="Page text/Instructions" height="280" menu="Interactivity" menuItem="Model Answer Results" icon="icPageWhiteText" remove="true" thumb="thumbs/modelanswerresults.jpg" hint="Add this page to display collated results from all the preceeding model answer pages which can then be copied to clipboard or just reviewed.">
+    <name type="TextInput" label="Page Title"/>
+    <narnavigate type="Checkbox" label="Next after Narration" optional="true"/>
+      <repeatnarautoplay type="Checkbox" label="Repeat Auto Narration" optional="true"/>
+          <narautoplay type="Checkbox" label="Autoplay Narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+  </modelAnswerResults>
 
   <!--SLIDESHOW------------------------------------------------------------------------------>
   <slideshow menu="Navigators" menuItem="Slideshow" icon="icPages" remove="true" thumb="thumbs/slideNav.jpg" hint="Presents a sequence of pages of related text and graphical content navigated with two arrow controls." sortChildren="true">
@@ -680,6 +692,7 @@
     <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
     <tip type="TextInput" label="Image Tooltip"/>
     <highlightColour type="ColourPicker" label="Highlight Colour"/>
+    <showHighlight type="CheckBox" label="Show Regions"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
@@ -1036,6 +1049,9 @@
     <url type="media" label="Video File"/>
     <reset type="Checkbox" label="Reset on Completion"/>
 
+    <startFrame type="textInput" label="Start Time" optional="true" defaultValue="0"/>
+    <endFrame type="textInput" label="End Time" optional="true" defaultValue="0"/>
+
     <movieSize type="textInput" label="Video Size" optional="true" defaultValue="320,240"/>
     <transcript type="textArea" height="150" label="Transcript" optional="true"/>
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
@@ -1196,6 +1212,7 @@
     <newNodes>
       <question><![CDATA[<question prompt="Here is a prompt" type="Single Answer"/>]]></question>
     </newNodes>
+
   </quiz>
 
   <question menuItem="Question" icon="icPageWhite" remove="true">
@@ -1219,6 +1236,31 @@
 
   </option>
 
+  <!--MAPSTRACTION----------------------------------------------------------------------->
+  <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API.">
+
+    <name type="TextInput" label="Page Title"/>
+    <provider type="ComboBox" label="Map Type" options="google,yahoo,openlayers,microsoft" width="100"/>
+    <lat type="TextInput" label="Latitude"/>
+    <lng type="TextInput" label="Longitude"/>
+    <zoom type="TextInput" label="Zoom"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <flickr type="TextInput" optional="true" label="Flickr Search"/>
+
+    <newNodes>
+      <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
+    </newNodes>
+
+  </mapstraction>
+
+  <overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
+    <name type="TextInput" label="Title"/>
+    <url type="TextInput" label="Overlay"/>
+  </overlay>
 
   <!--GOOGLE MAP----------------------------------------------------------------------->
 
