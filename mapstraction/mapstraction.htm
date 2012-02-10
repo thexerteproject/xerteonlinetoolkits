@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>Mapstraction API Sample</title>
+
+  <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA0QikcjEkCwMdwo0IyZVptBRCYvJwBphaFU0M3k_bOBq_8Ioa1BSBz-9v-L593CIfDB7uRRB2meH5Zg"></script>
+  <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=MapstractionDemo"></script>
+  <script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6"></script>
+  <script src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google, yahoo, microsoft, openlayers)"></script>
+  <script type="text/javascript">
+
+  function getQuerystring(key, defaultVal) {
+    if (defaultVal == null) {
+        defaultVal = "";
+    }
+    key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
+    var qs = regex.exec(window.location.href);
+    if (qs == null) {
+        return defaultVal;
+    }
+    else {
+        return qs[1];
+    }
+ }
+
+  var mapstraction;
+  function initialize() {
+
+      var provider = getQuerystring('provider');
+      var lat = Number(getQuerystring('lat'));
+      var lng = Number(getQuerystring('lng'));
+      var zoom = Number(getQuerystring('zoom'));
+      var overlays = getQuerystring('overlays').split('|');
+      var flickr = getQuerystring('flickr');
+
+      mapstraction = new mxn.Mapstraction('map_canvas', provider);
+
+      mapstraction.setCenterAndZoom(new mxn.LatLonPoint(lat,lng), zoom);
+
+      mapstraction.addControls({
+        pan: true, 
+        zoom: 'small',
+        map_type: true,
+        legend: true
+      });
+
+
+      if (overlays.length > 0){
+        for (var i = 0; i < overlays.length; i++){
+          mapstraction.addOverlay(unescape(overlays[i]));
+        } 
+      }
+
+      //flickr search
+      if (flickr != ''){
+        mapstraction.addOverlay('http://api.flickr.com/services/rest/?api_key=8f6f38d31f048a90c436583a6ac92e47&format=feed-georss&method=flickr.photos.search&has_geo=true&text=' + flickr + '&per_page=500&safe_search=1&license=1,2,3,4,5');
+      }
+  }
+  
+
+  </script>
+  <style type="text/css" media="screen">
+  .mapstraction {
+    height: 450px;
+    width: 740px;
+    z-index: 1;
+  }
+
+  </style>
+</head>
+
+<body onload="initialize()" style="font-family: Arial;border: 0 none;">
+  <body onload="initialize()" style="font-family: Arial;border: 0 none;">
+    <div id="map_canvas" style="width: 740px; height: 450px"></div>
+  </body>
+</body>
+</html>
