@@ -1,1 +1,68 @@
-	<PG name="textDrawing">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);if (pageIcon.templateData.textDrawing[0].narration != undefined){  narration = pageIcon.templateData.textDrawing[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS tabIndex="-1" id="panel" name="panel" x="-300" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<INT name="loadPanel" perpetual="0">			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">				<SCR name="calculate"><![CDATA[//ok to move on]]></SCR>			</RES>		</INT>		<DRW id="drw" name="drawing" x="panel._x + 10" y="panel._y + 10"><![CDATA[]]></DRW>		<SCR name="setProperties"><![CDATA[drw.setData(pageIcon.templateData.textDrawing[0]);drw.allowShapeEvents();panel._width = drw._width + 20;panel._height = drw._height + 20;textWidth = stageWidth - 60 - panel._width;if (pageIcon.templateData.textDrawing[0].align == 'left'){  panel._x = 780 - panel._width;  textX = 20;} else {  panel._x = 20;  textX = 40 + panel._width;}drw._x = panel._x + 10;drw._y = panel._y + 10;]]></SCR>		<DIS id="textBlock" scrolling="auto" name="text" x="textX" y="20" w="textWidth" h="480" type="text"><![CDATA[{pageIcon.templateData.textDrawing[0].desc}]]></DIS>		<SCR name="setupInteractivity"><![CDATA[if (pageIcon.templateData.textDrawing[0].interactivity == 'off'){  icon.nextSibling.removeNode();}]]></SCR>		<INT name="interactivity" perpetual="0">			<RES name="onShapeOver" type="event" eventName="onShapeOver" icon="drw" erase="1" exit="0">				<DIS textColour="#333333" textSize="10" id="nfo" name="info" x="pageIcon._xmouse + 10" y="pageIcon._ymouse - 10" w="150" h="10" type="text"><![CDATA[{'<b>' + drw.currentShape.label + '</b><br>' + drw.currentShape.info}]]></DIS>				<SCR name="showInfo"><![CDATA[if (drw.currentShape.label.length > 0){  nfo.beginFill(0xFFFF99,100);  nfo.lineStyle(0,0x666666,100);  nfo.drawRect(0,0,nfo._width,nfo._height);}]]></SCR>			</RES>			<RES name="onShapeOut" type="event" eventName="onShapeOut" icon="drw" erase="1" exit="0">				<SCR name="erase"><![CDATA[//erase]]></SCR>			</RES>		</INT>	</PG>
+	<PG title="enter page title" name="textDrawing">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+if (pageIcon.templateData.textDrawing[0].narration != undefined){
+  narration = pageIcon.templateData.textDrawing[0].narration;
+  rootIcon.broadcast('showAudio');
+}]]></SCR>
+		<DIS tabIndex="-1" id="panel" name="panel" x="-300" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<INT name="loadPanel" perpetual="0">
+			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">
+				<SCR name="calculate"><![CDATA[//ok to move on
+
+
+
+
+]]></SCR>
+			</RES>
+		</INT>
+		<DRW id="drw" name="drawing" x="panel._x + 10" y="panel._y + 10"><![CDATA[]]></DRW>
+		<SCR name="setProperties"><![CDATA[drw.setData(pageIcon.templateData.textDrawing[0]);
+
+drw.allowShapeEvents();
+
+panel._width = drw._width + 20;
+panel._height = drw._height + 20;
+textWidth = stageWidth - 60 - panel._width;
+
+if (pageIcon.templateData.textDrawing[0].align == 'left'){
+  panel._x = 780 - panel._width;
+  textX = 20;
+} else {
+  panel._x = 20;
+  textX = 40 + panel._width;
+}
+
+drw._x = panel._x + 10;
+drw._y = panel._y + 10;]]></SCR>
+		<DIS id="textBlock" scrolling="auto" name="text" x="textX" y="20" w="textWidth" h="480" type="text"><![CDATA[{pageIcon.templateData.textDrawing[0].desc}]]></DIS>
+		<SCR name="setupInteractivity"><![CDATA[if (pageIcon.templateData.textDrawing[0].interactivity == 'off'){
+  icon.nextSibling.removeNode();
+}]]></SCR>
+		<INT name="interactivity" perpetual="0">
+			<RES name="onShapeOver" type="event" eventName="onShapeOver" icon="drw" erase="1" exit="0">
+				<DIS textColour="#333333" textSize="10" id="nfo" name="info" x="pageIcon._xmouse + 10" y="pageIcon._ymouse - 10" w="150" h="10" type="text"><![CDATA[{'<b>' + drw.currentShape.label + '</b><br>' + drw.currentShape.info}]]></DIS>
+				<SCR name="showInfo"><![CDATA[if (drw.currentShape.label.length > 0){
+  nfo.beginFill(0xFFFF99,100);
+  nfo.lineStyle(0,0x666666,100);
+  nfo.drawRect(0,0,nfo._width,nfo._height);
+}
+
+]]></SCR>
+			</RES>
+			<RES name="onShapeOut" type="event" eventName="onShapeOut" icon="drw" erase="1" exit="0">
+				<SCR name="erase"><![CDATA[//erase]]></SCR>
+			</RES>
+		</INT>
+	</PG>

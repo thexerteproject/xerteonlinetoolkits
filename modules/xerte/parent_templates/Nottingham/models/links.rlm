@@ -1,1 +1,60 @@
-	<PG name="links">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);cols = Number(pageIcon.templateData.links[0].cols);cellH = Number(pageIcon.templateData.links[0].height);if (pageIcon.templateData.text[0].narration != undefined){  narration = pageIcon.templateData.text[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS id="maintext" scrolling="auto" name="text" x="20" y="20" w="550" h="475" type="text"><![CDATA[{pageIcon.templateData.links[0].text}]]></DIS>		<SCR name="makeLinks"><![CDATA[linkCount = pageIcon.templateData.links[0].link.length;if (icon.built != true){  //make the links  icon.nextSibling.firstChild.firstChild.duplicate(linkCount - 1);    for (i = 0; i < linkCount; i++){    icon.nextSibling.firstChild.childNodes[i].attributes.id = 'link' + i;  }    //make the hotobjects  icon.nextSibling.firstChild.lastChild.firstChild.duplicate(linkCount - 1);    for (i = 0; i < linkCount; i++){    icon.nextSibling.firstChild.lastChild.childNodes[i].attributes.rs = 'link' + i;  }  icon.built = true;}]]></SCR>		<DEC name="links" repeat="all" branch="sequence" pause="0" erase="1" eraseOnExit="0">			<PG name="links">				<DIS id="link0" name="protoLink" x="20 + Math.floor(icon.index() % cols) * (760 / cols)" y="maintext._y + maintext._height + 20 +Math.floor(icon.index() / cols) * cellH" w="(760 / cols) - 20" h="10" type="text"><![CDATA[{'<b>' + pageIcon.templateData.links[0].link[icon.index()].name + '</b><br>' + pageIcon.templateData.links[0].link[icon.index()].text + '<br><a href="' + pageIcon.templateData.links[0].link[icon.index()].url + '" target="_blank">' + pageIcon.templateData.links[0].link[icon.index()].url  + '</a>'}]]></DIS>				<INT name="mainInteraction" perpetual="0">					<RES name="protoHotObject" type="hotObject" rs="link0" click="1" cursor="1" erase="1" exit="0">						<SCR name="getURL"><![CDATA[getURL(pageIcon.templateData.links[0].link[icon.parentNode.index()].url);]]></SCR>					</RES>				</INT>			</PG>		</DEC>	</PG>
+	<PG title="enter page title" name="links">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (extXML == undefined){
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+}
+
+cols = Number(pageIcon.templateData.links[0].cols);
+cellH = Number(pageIcon.templateData.links[0].height);
+
+if (pageIcon.templateData.text[0].narration != undefined){
+  narration = pageIcon.templateData.text[0].narration;
+  rootIcon.broadcast('showAudio');
+}
+
+]]></SCR>
+		<DIS id="maintext" scrolling="auto" name="text" x="20" y="20" w="550" h="475" type="text"><![CDATA[{pageIcon.templateData.links[0].text}]]></DIS>
+		<SCR name="makeLinks"><![CDATA[linkCount = pageIcon.templateData.links[0].link.length;
+
+if (icon.built != true){
+
+  //make the links
+  icon.nextSibling.firstChild.firstChild.duplicate(linkCount - 1);
+  
+  for (i = 0; i < linkCount; i++){
+    icon.nextSibling.firstChild.childNodes[i].attributes.id = 'link' + i;
+  }
+  
+  //make the hotobjects
+  icon.nextSibling.firstChild.lastChild.firstChild.duplicate(linkCount - 1);
+  
+  for (i = 0; i < linkCount; i++){
+    icon.nextSibling.firstChild.lastChild.childNodes[i].attributes.rs = 'link' + i;
+  }
+  icon.built = true;
+}]]></SCR>
+		<DEC name="links" repeat="all" branch="sequence" pause="0" erase="1" eraseOnExit="0">
+			<PG name="links">
+				<DIS id="link0" name="protoLink" x="20 + Math.floor(icon.index() % cols) * (760 / cols)" y="maintext._y + maintext._height + 20 +Math.floor(icon.index() / cols) * cellH" w="(760 / cols) - 20" h="10" type="text"><![CDATA[{'<b>' + pageIcon.templateData.links[0].link[icon.index()].name + '</b><br>' + pageIcon.templateData.links[0].link[icon.index()].text + '<br><a href="' + pageIcon.templateData.links[0].link[icon.index()].url + '" target="_blank">' + pageIcon.templateData.links[0].link[icon.index()].url  + '</a>'}]]></DIS>
+				<SCR name="loadCSS"><![CDATA[// now the links have been created I can load the style sheet
+linkArray = icon.parentNode.findChildNodes('name','protoLink');
+  for (i = 0; i < linkCount; i++){
+    linkArray[i].clip().loadCSS(FileLocation + 'common/styles.css');
+  }
+]]></SCR>
+				<INT name="mainInteraction" perpetual="0">
+					<RES name="protoHotObject" type="hotObject" rs="link0" click="1" cursor="1" erase="1" exit="0">
+						<SCR name="getURL"><![CDATA[getURL(pageIcon.templateData.links[0].link[icon.parentNode.index()].url);]]></SCR>
+					</RES>
+				</INT>
+			</PG>
+		</DEC>
+	</PG>
