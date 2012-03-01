@@ -459,7 +459,7 @@ function file_drag_stop(ev,div){
 
 				if(drag_manager.selected_items[x].className=="folder"){
 
-					alert("Folders cannot be dragged into the recycle bin");
+					alert(FOLDER_RECYCLE_FAIL);
 					screen_refresh_no_ajax();
 					break;
 				}
@@ -503,7 +503,7 @@ function file_drag_stop(ev,div){
 				if(folder_child_test(moved_items[z],target)){
 
 					child_error_detect=false;
-					alert("That folder cannot be copied there, as the folder is one of its children");
+					alert(CHILD_FAIL);
 					screen_refresh();
 				
 				}
@@ -794,7 +794,9 @@ function single_click(div_name){
 		document.getElementById("folder_workspace").style.backgroundColor = "#ffffff";		
 		document.getElementById("folder_workspace").mainhighlight = false;
 	}
+
 	if(div_name != null && div_name.highlight==false){
+			
 		/*
 		* if nothing is highlighted	
 		*/
@@ -926,7 +928,6 @@ function single_click(div_name){
 			drag_manager.selected_items.splice(0,drag_manager.selected_items.length);
 
 			if(drag_manager.last_selected != null && drag_manager.last_selected.id!=div_name.id){
-
 				highlight(div_name);
 				drag_manager.last_selected = div_name;
 				drag_manager.selected_items.push(div_name);

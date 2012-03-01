@@ -16,11 +16,31 @@ function check_if_first_time($session_login_ldap){
     $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
     $response = db_query_one($query, array($session_login_ldap));
 
-    if(empty($response)) {
-        _debug("first time user");
+    global $xerte_toolkits_site;
+
+    $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
+		
+    $response = db_query($query, array($session_login_ldap));
+
+	if(count($response)==0){
+		
+		return false;
+	
+	}
+	
+    if(!empty($response)) {
+		
+        if(sizeof($response) > 0){
+            return false;
+        }
         return true;
+
     }
-    return false;
+    else{
+		
+        receive_message($session_login_ldap, "ADMIN", "CRITICAL", "Failed to check if the users first time", "Failed to check if the users first time");
+
+    }
 }
 
 /**
@@ -40,8 +60,7 @@ function get_user_id(){
 
     $row = db_query_one("SELECT login_id FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
 
-
-    if(!empty($row)) {
+    if(!empty($row)) { 
         return $row['login_id'];	
     }else{
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users ID", "Failed to get users ID");
@@ -67,12 +86,18 @@ function create_user_id($username, $firstname, $surname){
     $query = "insert into {$xerte_toolkits_site->database_table_prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
     $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
-    if($res) {
+    if($res){
+
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
+
         return get_user_id();
+
     }else{
+
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users ID", "Failed to create users ID");
+
     }
+    return false;
 }
 
 /**
@@ -88,19 +113,21 @@ function create_user_id($username, $firstname, $surname){
 function recycle_bin() {
 
     global $xerte_toolkits_site;
-    // see if there is a recycle bin around, if not create one.
-   
-    $query = "select folder_name from {$xerte_toolkits_site->database_table_prefix}folderdetails where folder_name=? AND login_id=?";
-    $response = db_query($query, array("recyclebin", $_SESSION['toolkits_logon_id']));
+
+    $query = "select folder_name from {$xerte_toolkits_site->database_table_prefix}folderdetails where 
+        folder_name = ? AND login_id = ?";
+    $res = db_query($query, array("recyclebin", $_SESSION['toolkits_logon_id']));
 
     $root_folder = get_user_root_folder();
 
-    if(sizeof($response) == 0) {
+    if(sizeof($res)==0){
+
         $query = "insert into {$xerte_toolkits_site->database_table_prefix}folderdetails 
             (login_id,folder_parent,folder_name) VALUES (?,?,?)";
-        $res = db_query($query, array( $_SESSION['toolkits_logon_id'] , 0, "recyclebin"));
+        $res = db_query($query, array($_SESSION['toolkits_logon_id'], "0", "recyclebin") );
 
-        if($res) { 
+        if($res) {
+
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users recycle bin " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
 
         }else{
@@ -110,6 +137,7 @@ function recycle_bin() {
         }	
 
     }
+
 }
 
 /**
@@ -127,10 +155,14 @@ function get_recycle_bin(){
 
     global $xerte_toolkits_site;
 
-    $query = "select folder_id from {$xerte_toolkits_site->database_table_prefix}folderdetails where folder_name=? AND login_id = ?";
-    $row = db_query_one($query, array("recyclebin", $_SESSION['toolkits_logon_id'] ));
+    $query = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_name=\"recyclebin\" AND login_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
+
+    $query_response = mysql_query($query);
+
+    $row = mysql_fetch_array($query_response);
 
     return $row['folder_id'];
+
 }
 
 /**
@@ -254,6 +286,7 @@ function is_user_admin(){
         return true;
 
     }
-    return false;
 
 }
+
+?>

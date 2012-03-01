@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * 
  * peer view page, sends the email back to the 
@@ -11,6 +12,7 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/peer_review.inc");
 
 if(empty($_POST['template_id'])) {
     die("invalid form submission");
@@ -23,9 +25,17 @@ $row_template_name = db_query_one($query_for_file_name, array($_POST['template_i
 $headers = str_replace("*","\n",$xerte_toolkits_site->headers);
 
 if(isset($_POST['user'])){
-    if(mail( $_POST['user'] . "@" . $xerte_toolkits_site->email_to_add_to_username, "Feedback on project - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", "Hello, <br><br> You've received feedback on your project.<br><br><br>" . $_POST['feedback'] . "<br><br><br>Thanks for using the site<br><br>The Xerte Project Team", $headers)){
-        echo "<b>Your feedback has been sent to the user</b>";
+
+    if(mail( $_POST['user'] . "@" . $xerte_toolkits_site->email_to_add_to_username, PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"", PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br>" . $_POST['feedback'] . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE, $headers)){
+
+        echo "<b>" . PEER_REVIEW_USER_FEEDBACK . "</b>";
+
     }else{
-        echo "<b>A problem has occured.</b>";
+
+        echo "<b>" . PEER_REVIEW_PROBLEM . ".</b>";
+
     }
+
 }
+
+?>

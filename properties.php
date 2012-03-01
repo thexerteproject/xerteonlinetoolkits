@@ -1,6 +1,7 @@
-<?php
+<?PHP
 
-require_once("config.php");
+	require_once("config.php");
+	_load_language_file("/properties.inc");
 	
 ?>
 
@@ -8,7 +9,7 @@ require_once("config.php");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Project properties</title>
+<title><?PHP echo PROPERTIES_TITLE; ?></title>
 
 <!-- 
 
@@ -35,10 +36,15 @@ var ajax_php_path = "website_code/php/";
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/import.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/properties_tab.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/properties_tab.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/screen_display.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
 
 </head>
 
@@ -71,7 +77,7 @@ Hidden Iframe to allow for ajax file uploads
 				<div>
 					<span id="title">
 						<img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
-						Project Properties
+						<?PHP echo PROPERTIES_DISPLAY_TITLE; ?>
 					</span>
 				</div>
 				<div id="data_area">
@@ -103,7 +109,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab1" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('1');properties_template()">
-									Project
+									<?PHP echo PROPERTIES_TAB_PROJECT; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -112,7 +118,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab2" class="tab"  style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('2'); notes_template()">
-									Notes
+									<?PHP echo PROPERTIES_TAB_NOTES; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -121,7 +127,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab3" class="tab"  style="width:146px;  height:38px;">
 								<p onclick="javascript:tab_highlight('3'); media_and_quota_template()">
-									Media and quota
+									<?PHP echo PROPERTIES_TAB_MEDIA; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -130,7 +136,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab4" class="tab"  style="width:146px;  height:38px;">
 								<p onclick="javascript:tab_highlight('4'); access_template()">
-									Access
+									<?PHP echo PROPERTIES_TAB_ACCESS; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -139,7 +145,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab5" class="tab"  style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('5'); sharing_status_template()">
-									Shared settings
+									<?PHP echo PROPERTIES_TAB_SHARED; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -148,7 +154,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab6" class="tab"  style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('6'); rss_template()">
-									RSS
+									<?PHP echo PROPERTIES_TAB_RSS; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -157,7 +163,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab7" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('7');syndication_template()">
-									Open Content
+									<?PHP echo PROPERTIES_TAB_OPEN; ?>
 								</p>									
 							</div>							
 							<div class="tab_spacer">							
@@ -166,7 +172,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab8" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('8');export_template()">
-									Export
+									<?PHP echo PROPERTIES_TAB_EXPORT; ?>
 								</p>									
 							</div>							
 							<div class="tab_spacer">							
@@ -175,7 +181,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab9" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('9');peer_template()">
-									Peer review
+									<?PHP echo PROPERTIES_TAB_PEER; ?>
 								</p>									
 							</div>				
 							<div class="tab_spacer">							
@@ -184,7 +190,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab10" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('10');gift_template()">
-									Give this project
+									<?PHP echo PROPERTIES_TAB_GIVE; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -193,7 +199,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab11" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('11');xml_template()">
-									XML sharing
+									<?PHP echo PROPERTIES_TAB_XML; ?>
 								</p>									
 							</div>						
 							<!-- 

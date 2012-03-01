@@ -11,6 +11,8 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/workspaceproperties/folder_rss_templates_template.inc");
+
 include "../url_library.php";
 include "../display_library.php";
 
@@ -24,13 +26,13 @@ $query_for_folder = "select * from " . $xerte_toolkits_site->database_table_pref
 
 $query_folder_response = mysql_query($query_for_folder);
 
-echo "<p class=\"header\"><span>My Feeds</span></p>";
+echo "<p class=\"header\"><span>" . FOLDER_RSS_TEMPLATE_MY . "</span></p>";
 
-echo "<p>My RSS feed is <br/><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "\" target=\"new\"> " . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "</a></p>";
+echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FEED . "<br/><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "\" target=\"new\"> " . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "</a></p>";
 
 if(mysql_num_rows($query_folder_response)!=0){
 
-    echo "<p>The RSS feeds for my folders are</p>";
+    echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED . "</p>";
 
     while($row_folder = mysql_fetch_array($query_folder_response)){
 

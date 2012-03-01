@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * 
  * remove sharing template, removes some one from the list of users sharing the site
@@ -20,8 +20,6 @@ if(is_numeric($_POST['template_id'])){
     $database_id=database_connect("Template sharing database connect failed","Template sharing database connect failed");
 
     $query_to_delete_share = "delete from " . $xerte_toolkits_site->database_table_prefix . "templaterights where template_id =\"" . $tutorial_id . "\" and user_id=\"" . $user_id . "\"";
-
-    echo "<br>" . $query_to_delete_share . "<br>";
 
     mysql_query($query_to_delete_share);
 

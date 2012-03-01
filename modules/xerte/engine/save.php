@@ -1,4 +1,4 @@
-<?php
+<?php  
 /**
  * 
  * Save page, used by xerte to update its XML files
@@ -10,8 +10,6 @@
  */
 
 require_once("../../../config.php");
-
-$mysql_id = database_connect("Save database connect successful","Save database connect failed");
 
 $savepath = str_replace("preview.xml","data.xml",$_POST['filename']);
 

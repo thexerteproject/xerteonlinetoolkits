@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * 
  * Play page, displays the template to the end user
@@ -8,12 +8,6 @@
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-
-require_once("config.php");
-
-require $xerte_toolkits_site->php_library_path . "login_library.php";
-require $xerte_toolkits_site->php_library_path . "display_library.php";
-require $xerte_toolkits_site->php_library_path . "template_library.php";
 
 /**
  * 
@@ -167,16 +161,24 @@ function check_security_type($security_setting){
 
 }
 
+require_once("config.php");
+
+_load_language_file("/play.inc");
+
+require $xerte_toolkits_site->php_library_path . "login_library.php";
+require $xerte_toolkits_site->php_library_path . "display_library.php";
+require $xerte_toolkits_site->php_library_path . "template_library.php";
+
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
+
     /*
      * Was not numeric, so display error message
      */
-    echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource does not exist </div></div></body></html>";
+    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
     exit(0);
 }
 
 $safe_template_id = (int) $_GET['template_id'];
-
 
 /*
  * Check to see whether it is less than the highest ID we have created
@@ -184,17 +186,14 @@ $safe_template_id = (int) $_GET['template_id'];
 
 if(get_maximum_template_number()<$safe_template_id){
 
-    echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource is no longer available </div></div></body></html>";
+    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
     die();
 
 }
 
-
-
 /*
  * Take the query from site variable and alter it to suit this request
  */
-
 
 $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
@@ -204,14 +203,21 @@ $query_for_play_content_response = mysql_query($query_for_play_content);
 
 $row_play = mysql_fetch_array($query_for_play_content_response);
 
+$query_to_find_out_if_in_recycle_bin = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id =\"" . $row_play['folder'] . "\"";
+
+$query_for_recycle_bin_response = mysql_query($query_to_find_out_if_in_recycle_bin);
 
 /*
  * Is the file in the recycle bin?
  */
+
 $row_recycle = db_query_one("SELECT folder_name FROM {$xerte_toolkits_site->database_table_prefix}folderdetails WHERE folder_id = ?", array($row_play['folder']));
+
 if($row_recycle['folder_name']=="recyclebin"){
-    echo edit_xerte_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "error_top")) . " Sorry this resource is no longer available </div></div></body></html>";
+
+    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
     exit(0);
+
 }
 
 require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
@@ -261,7 +267,7 @@ if($row_play['access_to_whom']=="Private"){
             /*
              * Update uses and display the template
              */
-        
+
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
@@ -274,7 +280,7 @@ if($row_play['access_to_whom']=="Private"){
              * Login failure
              */
 
-            $buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>Sorry login has failed.</p></center></body></html>";
+            $buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
 
             echo $buffer;
 
@@ -328,58 +334,58 @@ if($row_play['access_to_whom']=="Private"){
     }
 
 
-}
-else {
-    $query_for_security_content = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
-    $query_for_security_content_response = db_query($query_for_security_content);
-    if (sizeof($query_for_security_content_response)>0) {
+}else if (sizeof($query_for_security_content_response)>0) {
+
+    /*
+     * A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
+     */
+
+    $flag=false;
+
+    foreach($query_for_security_content_response as $row_security) {
 
         /*
-         * A setting from play_security_details might be in use, as such, check to see if it is, and then loop through checking if one is valid.
+         * Check each setting to see if true
          */
 
-        $flag=false;
-        foreach($query_for_security_content_response as $row_security) {
+        if($row_play['access_to_whom']==$row_security['security_setting']){
 
-            /*
-             * Check each setting to see if true
-             */
+            if(check_security_type($row_security['security_data'])){
 
-            if($row_play['access_to_whom']==$row_security['security_setting']){
+                require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
-                if(check_security_type($row_security['security_data'])){
+                show_template($row_play);		
 
-                    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+                $flag=true;							
 
-                    show_template($row_play);		
+                break;
 
-                    $flag=true;							
+            }else{
 
-                    break;
-
-                }else{
-
-                    $flag==false;
-
-                }
+                $flag==false;
 
             }
 
         }
 
-        if($flag==false){
-
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
-            dont_show_template();
-
-        }
     }
-    else{
+
+    if($flag==false){
 
         require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
         dont_show_template();
 
     }
+
+}else{
+
+    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+    dont_show_template();
+
 }
+
+
+
+?>

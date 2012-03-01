@@ -66,7 +66,7 @@ function logout(){
 
 	if(edit_window_open.length!=0){
 
-		var answer = confirm("You currently have " + edit_window_open.length + " editor window(s) open. If you continue you are likely to lose work. Please check you have saved your work and then close these windows down. Are you sure you wish to continue?");
+		var answer = confirm(OPEN_WINDOWS_START + edit_window_open.length + OPEN_WINDOWS_END);
 
 		if(answer){
 

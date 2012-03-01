@@ -1,8 +1,9 @@
-<?PHP     
+<?php
 
 require_once("../../../config.php");
 
 require("../user_library.php");
+require("management_library.php");
 
 if(is_user_admin()){
 
@@ -24,7 +25,7 @@ if(is_user_admin()){
 			
 }else{
 
-	echo "the feature is for administrators only";
+	management_fail();
 
 }
 

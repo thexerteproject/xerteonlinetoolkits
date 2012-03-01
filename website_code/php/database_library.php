@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__) . "/error_library.php");
 /**	
  * 
  * Database library, code for connecting to the database
@@ -27,9 +28,10 @@ if(function_exists('database_connect')) {
 
 function database_connect($success_string, $error_string){
 
-    include_once("error_library.php");
 
     global $xerte_toolkits_site;
+
+    _load_language_file('website_code/php/database_library.inc'); // _load_language_file("/website_code/php/database_library.inc");
 
     /*
      * Try to connect
@@ -42,7 +44,11 @@ function database_connect($success_string, $error_string){
      */
 
     if(!$mysql_connect_id){
-        die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error() );
+        die("<h2>Xerte Online Toolkits</h2>
+             <p><strong>Sorry, the system cannot connect to the database at present</strong></p>
+             <p>This may be because the database server is offline, or this instance of Xerte has not been setup (see <a href='setup'>/setup</a>). </p>
+             <p>The mysql error is <strong>" . mysql_error() . "</strong></p>");
+
     }
 
     $database_fail = false;
@@ -67,7 +73,9 @@ function database_connect($success_string, $error_string){
     /*
      * if all worked returned the mysql ID
      */
+
     return $mysql_connect_id;
+
 }
 
 /**
@@ -130,3 +138,5 @@ function db_query_one($sql, $params = array()) {
         return $results[0];
     }
 }
+
+?>

@@ -1,6 +1,8 @@
 <?php
 
-require_once("../../../config.php");
+require_once "../../../config.php";
+
+_load_language_file("/website_code/php/fileupload.inc");
 
 if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)){
 
@@ -8,23 +10,23 @@ if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)
 
         $php_check = file_get_contents($_FILES['filenameuploaded']['tmp_name']);
 
-        if(!strpos($php_check,"<?PHP     ")){
+        if(!strpos($php_check,"<?PHP")){
 
             $new_file_name = $_POST['mediapath'] . $_FILES['filenameuploaded']['name'];
 
             if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
-                echo "File successfully uploaded.****";
+                echo FILE_UPLOAD_SUCCESS . "****";
 
             }else{
 
-                echo "File upload failed.****";
+                echo FILE_UPLOAD_ZIP_FAIL . "****";
 
             }
 
         }else{
 
-            echo "File upload failed as that HTML contained PHP code.****";				
+            echo FILE_UPLOAD_HTML_FAIL . "****";				
 
         }
 
@@ -34,11 +36,11 @@ if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)
 
         if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
-            echo "File successfully uploaded.****";
+            echo FILE_UPLOAD_SUCCESS . "****";
 
         }else{
 
-            echo "File upload failed.****";
+            echo FILE_UPLOAD_ZIP_FAIL . "****";
 
         }
 
@@ -47,7 +49,7 @@ if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)
 
 }else{
 
-    echo "Invalid file type - " . $_FILES['filenameuploaded']['type'] . "****";
+    echo FILE_UPLOAD_MIME_FAIL . " - " . $_FILES['filenameuploaded']['type'] . "****";
 
 }
 

@@ -275,6 +275,6 @@ function folder_rss_templates_template(){
 
 function import_templates_template(){
 
-	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>Import</span></p><p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />New project name<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><input type="submit" name="submitBtn" value="Upload" onsubmit="javascript:iframe_check_initialise()"/></form></p>';
+	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form method="post" enctype="multipart/form-data" id="importpopup" name="importform" target="upload_iframe" action="website_code/php/import/import.php" onsubmit="javascript:iframe_check_initialise();"><input name="filenameuploaded" type="file" /><br /><br />New project name<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><p id="name_wrong"></p><input type="submit" name="submitBtn" value="' + WORKSPACE_UPLOAD + '" onsubmit="javascript:iframe_check_initialise()"/></form></p>';
 
 }

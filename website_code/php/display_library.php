@@ -1,4 +1,17 @@
-<?php 
+<?php
+
+if(file_exists('../../../config.php')){
+
+	require_once('../../../config.php');	
+		
+}else{
+
+	require_once('config.php');	
+	
+}
+
+_load_language_file("/website_code/php/display_library.inc");
+
 // level is a global variable used to stylise the folder nesting
 
 $level=-1;
@@ -239,7 +252,6 @@ function list_users_projects($sort_type){
 
     $root_folder = get_user_root_folder();
 
-
     /*
      * Create the workspace folder
      */
@@ -283,7 +295,7 @@ function list_users_projects($sort_type){
         echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/rb_full.gif\""; 
     }
 
-    echo " />Recycle Bin</p></div><div id=\"folderchild_recyclebin\" class=\"folder_content\">";
+    echo " />" . DISPLAY_RECYCLE . "</p></div><div id=\"folderchild_recyclebin\" class=\"folder_content\">";
 
     list_folder_contents($row['folder_id'],$sort_type);	
 
@@ -327,7 +339,7 @@ function list_blank_templates(){
 
         if($row['display_id']!=0){
 
-            echo "</p><a href=\"javascript:example_window('" . $row['display_id'] . "' )\">See example</a> | ";
+            echo "</p><a href=\"javascript:example_window('" . $row['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a> | ";
 
         }else{
 
@@ -335,9 +347,9 @@ function list_blank_templates(){
 
         }
 
-        echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">Create</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+        echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
-        echo "<span>Enter a name for this project</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
+        echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
     }
 
@@ -410,15 +422,27 @@ function list_specific_templates(){
 
             echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon\"></div><div class=\"template_desc\"><p class=\"template_name\">";
 
-            echo $row['display_name']; 
-
             echo "</p><p class=\"template_desc_p\">";
 
             echo $row['description'];
 
-            echo "</p><a href=\"javascript:example_window('" . $row['display_id'] . "' )\">See example</a> | <a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">Create</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+            /*
+             * If no example don't display the link
+             */
 
-            echo "<span>Enter a name for this project</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
+            if($row['display_id']!=0){
+
+                echo "</p><a href=\"javascript:example_window('" . $row['display_id'] . "' )\">" . DISPLAY_EXAMPLE . "</a> | ";
+
+            }else{
+
+                echo "<br>";
+
+            }
+
+            echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+
+            echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
         }
 
@@ -426,72 +450,6 @@ function list_specific_templates(){
 
 }
 
-/**
- * 
- * Function login page format top
- * This function is used as part of the display of Index.php
- * @param string $buffer = A HTML string to work on
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function login_page_format_top($buffer){
-
-    global $xerte_toolkits_site;
-
-    $buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
-    $buffer = str_replace("{{site_logo}}", $xerte_toolkits_site->site_logo , $buffer);
-    $buffer = str_replace("{{organisational_logo}}", $xerte_toolkits_site->organisational_logo , $buffer);
-    $buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
-
-    return $buffer;
-
-}
-
-/**
- * 
- * Function login page format top
- * This function is used to display the index.php HTML
- * @param string $buffer = A HTML string to work on
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function login_page_format_bottom($buffer){
-
-    global $xerte_toolkits_site;
-
-    $buffer = str_replace("{{demonstration_page}}", $xerte_toolkits_site->demonstration_page , $buffer);
-    $buffer = str_replace("{{site_text}}", $xerte_toolkits_site->site_text , $buffer);
-    $buffer = str_replace("{{news}}", $xerte_toolkits_site->news_text , $buffer);
-    $buffer = str_replace("{{copyright}}", $xerte_toolkits_site->copyright , $buffer);
-
-    return $buffer;
-
-}
-
-
-/**
- * 
- * Function logged in page format top
- * This function is used as part of the display of Index.php
- * @param string $buffer = A HTML string to work on
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function logged_in_page_format_top($buffer){
-
-    global $xerte_toolkits_site;
-
-    $buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
-    $buffer = str_replace("{{site_logo}}", $xerte_toolkits_site->site_logo , $buffer);
-    $buffer = str_replace("{{organisational_logo}}", $xerte_toolkits_site->organisational_logo , $buffer);
-    $buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
-
-    return $buffer;
-
-}
 /**
  * 
  * Function login page format middle
@@ -515,62 +473,6 @@ function logged_in_page_format_middle($buffer){
 
 /**
  * 
- * Function admin page format top
- * This function is used to display the index.php HTML
- * @param string $buffer = A HTML string to work on
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function admin_page_format_top($buffer){
-
-    global $xerte_toolkits_site;
-
-    $buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
-    $buffer = str_replace("{{site_logo}}", $xerte_toolkits_site->site_logo , $buffer);
-    $buffer = str_replace("{{organisational_logo}}", $xerte_toolkits_site->organisational_logo , $buffer);
-    $buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
-
-    return $buffer;
-
-}
-
-/**
- * 
- * Function edit xerte page format top
- * This function is used as part of the display of Index.php
- * @param string $buffer = A HTML string to work on
- * @version 1.0
- * @author Patrick Lockley
- */
-
-function edit_xerte_page_format_top($buffer){
-
-    global $xerte_toolkits_site;
-
-    $buffer = str_replace("{{site_title}}", $xerte_toolkits_site->site_title , $buffer);
-    $site_logo =  $xerte_toolkits_site->site_logo;
-    if (strrchr($site_logo, '/') != FALSE)
-    {
-        $pos = strlen($site_logo) - strlen(strrchr($site_logo, '/')) + 1;
-        $site_logo = substr_replace($site_logo, 'edit_', $pos, 0);
-    }	
-    $buffer = str_replace("{{site_logo}}", $site_logo , $buffer);
-    $organisational_logo = $xerte_toolkits_site->organisational_logo;
-    if (strrchr($organisational_logo, '/') != FALSE)
-    {
-        $pos = strlen($organisational_logo) - strlen(strrchr($organisational_logo, '/')) + 1;
-        $organisational_logo = substr_replace($organisational_logo, 'edit_', $pos, 0);
-    }	
-    $buffer = str_replace("{{organisational_logo}}", $organisational_logo , $buffer);
-    $buffer = str_replace("{{welcome_message}}", $xerte_toolkits_site->welcome_message , $buffer);
-
-    return $buffer;
-
-}
-
-/**
- * 
  * Function error show template
  * This function is used to display a respinse when the users accesses a resource they have no right to
  * @version 1.0
@@ -579,7 +481,7 @@ function edit_xerte_page_format_top($buffer){
 
 function error_show_template(){
 
-    echo "An error has occured and as such you cannot edit at present";
+    echo DISPLAY_ERROR;
 
 }
 
@@ -594,9 +496,9 @@ function error_show_template(){
 
 function output_locked_file_code($lock_file_creator){
 
-    echo "<p>This file is currently being edited by $lock_file_creator.</p><p> If you are sure this is not the case, then you can edit the file by clicking the button below. If you continue and there are two people editing at once, there is a risk the file will become corrupted.</p><p> Otherwise, please wait until the current editor closes the file and it will be made available to you when the current editor closes it down.</p>";
+    echo "<p>" . DISPLAY_EDITED . $lock_file_creator . "</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
 
-    echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"Delete Lockfile\" /></form>";
+    echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
 
 }
 

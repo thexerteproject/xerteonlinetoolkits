@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * 
  * duplicate page, allows the site to edit a xerte module
@@ -24,7 +24,9 @@
 
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
 
-    require_once($xerte_toolkits_site->php_library_path . "display_library.php");
+    require_once("config.php");
+
+    _load_language_file("/modules/xerte/edit.inc");
 
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
@@ -37,6 +39,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
 
     $preview = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
+
     $data    = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
 
     if(!file_exists($preview) && file_exists($data)){
@@ -49,9 +52,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
 
     $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
-    $string_for_flash_media = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
-    $string_for_flash_xwd = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
 
+    $string_for_flash_media = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
+
+    $string_for_flash_xwd = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
 
     /**
      * sort of the screen sies required for the preview window
@@ -63,21 +67,83 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      * set up the onunload function used in version control
      */
 
+?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <script src="modules/xerte/javascript/swfobject.js"></script>
+    <script src="website_code/scripts/opencloseedit.js"></script>
+    <script src="website_code/scripts/template_management.js"></script>
+    <script src="website_code/scripts/ajax_management.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title><?PHP echo XERTE_EDIT_TITLE; ?></title>
+    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" language="javascript">
+
+    function setunload(){
+
+        window.onbeforeunload = bunload;
+
+    }
+
+    function hideunload(){
+
+        window.onbeforeunload = null;
+    }
+
+    window.onbeforeunload = bunload;
+
+    function bunload(){
+
+        path = "<?PHP
+
     if($version_control){
 
-        echo edit_xerte_page_format_top(str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top")));
+        echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";
 
     }else{
 
-        echo edit_xerte_page_format_top(str_replace("$1", $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/",file_get_contents("modules/" . $row_edit['template_framework'] . "/edit_xerte_top")));
+        echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";
 
     }
+
+?>";
+
+window_reference.edit_window_close(path);	
+
+    }
+
+    function receive_picture(url){
+
+        alert(url);
+
+    }
+
+    </script>
+    </head>
+
+    <body>
+
+    <div style="margin:0 auto; width:800px">
+        <div class="edit_topbar" style="width:800px">
+            <img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
+            <a style="color:#000; font-size:65%" href="javascript:window.moveTo(0,0);window.resizeTo(screen.width,screen.height);"><?PHP echo XERTE_EDIT_MAXIMISE; ?></a>
+            <img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
+        </div>	
+    </div> 
+    <center>
+        <div id="flashcontent" style="margin:0 auto">
+              This text is replaced by the Flash movie.
+        </div>
+    </center>
+    <script type="text/javascript">
+    var so = new SWFObject("modules/xerte/engine/wizard.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
+    so.addParam("quality", "high");<?PHP
 
     /**
      * set up the flash vars the editor needs.
      */
 
-    echo "\n";
     echo "so.addVariable(\"xmlvariable\", \"$string_for_flash_xml\");";
     echo "\n";
     echo "so.addVariable(\"rlovariable\", \"$string_for_flash_media\");";
@@ -110,4 +176,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "\n";
 
 }
+
+
 ?>

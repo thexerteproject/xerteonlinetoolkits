@@ -9,7 +9,9 @@
  * @package
  */
 
-require_once("config.php");
+require_once(dirname(__FILE__) . "/config.php");
+
+_load_language_file('data.inc');
 
 require $xerte_toolkits_site->php_library_path  . "template_status.php";
 require $xerte_toolkits_site->php_library_path  . "display_library.php";
@@ -102,7 +104,7 @@ else{
       Display nothing
      */
 
-    echo "XML Sharing not set up";
+    echo DATA_XMLFAIL;
 
     dont_show_template();
 

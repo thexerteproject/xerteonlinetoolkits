@@ -1,6 +1,6 @@
 ﻿<languages>
 
-  <language name="English" file="english.xml"/>
+  <language name="English" file="en_gb.xml"/>
   <language name="Dutch" file="dutch.xml"/>
   <language name="French" file="french.xml"/>
   <language name="Italian" file="italian.xml"/>

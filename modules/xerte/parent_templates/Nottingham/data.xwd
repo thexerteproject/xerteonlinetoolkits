@@ -1,18 +1,16 @@
-﻿<wizard menus="Text,Media,Navigators,Charts,Interactivity,Games,Misc">
+﻿<wizard menus="Text,Media,Navigators,Charts,Interactivity,Misc">
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
     <name type="TextInput" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
-
-    <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language" optional="true"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
 
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
     <nfo optional="true" label="Help File" type="media"/>
-    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
+    <!--<glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>-->
     <controller optional="true" label="Custom Interface" type="media"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
@@ -21,7 +19,6 @@
 
     <newNodes>
 
-      <translation><![CDATA[<translation name="Enter the Title" instruction="Enter Instructions" showMedia="false"/>]]></translation>
       <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode>
       <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="tags" term="Enter Tags" results="20"/>]]></delicious>
       <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" align="Left">Enter Embed Code Here</youtube>]]></youtube>
@@ -32,19 +29,15 @@
       <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
       <mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction>
 
-      <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
-      <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
-
       <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
       <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
 
       <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
       <modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title">Enter text for the page here</text>]]></modelAnswerResults> 
       <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"/>]]></modelAnswer>
-      <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"/>]]></modify>
+
       <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here"/>]]></categories>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
-      <textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" showMedia="false"/>]]></textMatch>
       <timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here"/>]]></timeline>
       <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
       <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true">CDATA</customHotspots>]]></customHotspots>
@@ -59,9 +52,7 @@
       <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
       <table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table>
 
-      <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
       <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
-      <thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page"/>]]></thumbnailViewer>
       <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
       <slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></slideshow>
       <accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav>
@@ -71,7 +62,6 @@
 
 
       <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
-      <jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" initLook="Ball and Stick" controls="true"/>]]></jmol>
       <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
       <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
       <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
@@ -271,38 +261,14 @@
   <newWindow menu="Navigators" menuItem="New Window" icon="icApplication" remove="true" thumb="thumbs/newWindow.jpg" hint="Allows the user to launch a new window to a url">
 
     <name type="TextInput" label="Page Title"/>
-    <text type="TextArea" height="150" label="Text"/>
+    <text type="TextArea" height="250" label="Text"/>
     <url type="TextInput" label="URL"/>
     <previewImage type="media" label="Preview Image"/>
     <tip type="TextInput" label="Image Tooltip"/>
     <windowWidth type="NumericStepper" min="100" max="980" step="10" label="width" width="100"/>
     <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
 
-
-    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
-    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
-    <narration type="media" label="Narration" optional="true"/>
-
-    <htm type="textArea" label="HTML" height="150" optional="true"/>
-
   </newWindow>
-
-
-  <!--THUMBNAIL VIEWER--------------------------------------------------------------------->
-  <thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" icon="icPictures" remove="true" thumb="thumbs/thumb.jpg" hint="Presents a series of thumbnail images for the user to browse.">
-    
-    <name type="TextInput" label="Page Title"/>
-    <text type="TextArea" height="250" label="Text"/>
-
-    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
-    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
-    <narration type="media" label="Narration" optional="true"/>
-
-    <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></nestedPage>
-    </newNodes>
-
-  </thumbnailViewer>
 
 
   <!--BUTTON NAVIGATOR--------------------------------------------------------------------->
@@ -501,16 +467,17 @@
 
 
   <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
+
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" height="250" label="Page Text"/>
     <align type="ComboBox" options="Top,Bottom" label="Align Text" width="100"/>
-<linktarget type="ComboBox" label="Link from image" options="None,Original image,Specified URL" width="200"/>
-      <link type="textInput" label="Specified URL"/>
+
     <url type="media" label="Image" optional="true"/>
     <tip type="textInput" label="Image Tooltip" optional="true"/>
     <synch type="NumericStepper" min="0" max="9999" step="1" label="Synch Point" width="100"/>
     <initObject type="TextInput" label="Init Object" optional="true"/>
     <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
+
   </nestedPage>
 
 
@@ -658,8 +625,6 @@
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
 
-    <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
-
     <newNodes>
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
     </newNodes>
@@ -751,7 +716,7 @@
 
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="100" label="Text"/>
-    <attempts type="ComboBox" width="100" options="0,1,2,3,4" label="Attempts before hint"/>
+    <attempts type="ComboBox" width="100" options="1,2,3,4" label="Attempts before hint"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
@@ -996,7 +961,7 @@
 
 
   <!--TEXT GRAPHICS SOUND PAGE------------------------------------------------------->
-  <textGraphics type="text" label="Page Text" height="200" menu="Media" menuItem="Graphics and Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and graphics. You can also add an optional sound to this page.">
+  <textGraphics type="text" label="Page Text" height="300" menu="Media" menuItem="Graphics and Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and graphics. You can also add an optional sound to this page.">
 
     <name type="TextInput" label="Page Title"/>
     <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
@@ -1008,8 +973,7 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
-     <transcriptbuttonlabel type="TextInput" label="Transcript Button Label" optional="true"/>
-     <transcript type="textArea" height="100" label="Transcript" optional="true"/>
+    
     <imageMargin optional="true" type="NumericStepper" min="0" max="50" step="1" label="Image Margin"/>
     <hidePanel optional="true" type="checkBox" defaultvalue="false" label="Hide Panel"/>
     <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
@@ -1345,8 +1309,6 @@
     <autoplay type="Checkbox" label="Autoplay" optional="true"/>
     <toggle type="Checkbox" label="Toggle full screen" optional="true"/>
 
-    <videoSize type="TextInput" label="Video Size" optional="true"/>
-
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
@@ -1414,5 +1376,6 @@
     <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
   </image>
   
+
 
 </wizard>

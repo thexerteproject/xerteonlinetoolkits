@@ -23,5 +23,3 @@ http://www.nottingham.ac.uk/xerte/manual/installingToolkits.swf
 
 Server administrators should choose the 'full install' option and step
 through the wizard. When copying the files to a server, you can use the setup utility at http://yourserver.com/yourtololkitsfolder/setup
-
-See also : http://code.google.com/p/xerteonlinetoolkits/ 

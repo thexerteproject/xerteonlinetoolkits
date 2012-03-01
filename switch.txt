@@ -114,12 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if($authenticated){
 		
-            /*
-             * Give the session its own session id
-             */		
-
-            $_SESSION['toolkits_sessionid'] = $session_id; 
-
             include $xerte_toolkits_site->php_library_path . "user_library.php";
 
             $mysql_id=database_connect("index.php database connect success","index.php database connect fail");			

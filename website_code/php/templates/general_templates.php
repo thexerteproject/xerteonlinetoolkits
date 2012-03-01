@@ -12,7 +12,5 @@
 require_once("../../../config.php");
 include "../display_library.php";
 
-$database_connect_id = database_connect("general templates database connect success","general templates database connect failed");
-
 list_blank_templates();
 

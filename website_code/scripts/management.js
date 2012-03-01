@@ -54,7 +54,8 @@ function management_stateChanged(){
 function management_alert_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
-        response = xmlHttp.responseText.trim();
+
+		response = xmlHttp.responseText.trim();
 		if(response!=""){
 			
 			alert("Error from server? '" + response + "'");
@@ -334,7 +335,7 @@ function remove_security(){
 
 	if(setup_ajax()!=false){
 
-		var answer = confirm("Are you sure you want to remove this setting?");
+		var answer = confirm(REMOVE_PROMPT);
 
 		if(answer){
 
@@ -583,7 +584,7 @@ function change_owner_stateChanged(){
 
 		if(xmlHttp.responseText!=""){
 			
-			alert("User successfully changed");
+			alert(USER_CHANGED);
 			users_list();			
 
 		}

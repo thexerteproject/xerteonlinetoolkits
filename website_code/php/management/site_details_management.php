@@ -1,13 +1,16 @@
 <?php
+
 require_once("../../../config.php");
+
+_load_language_file("/website_code/php/management/site_details_management.inc");
 
 require("../user_library.php");
 
 if(is_user_admin()){
 
-	$database_id = database_connect("templates list connected","template list failed");
+    $database_id = database_connect("templates list connected","template list failed");
 
-	$copyright = str_replace("AAA","&copy;",$_POST['copyright']);
+    $copyright = str_replace("AAA","&copy;",$_POST['copyright']);
 
     $query="update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
         site_text=? ,news_text=? ,pod_one=? , pod_two= ? ,copyright=? ,demonstration_page=? ,form_string= ? ,peer_form_string=?,feedback_list=?,
@@ -30,10 +33,16 @@ if(is_user_admin()){
 
     $res2 = db_query($query, array($_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_dn'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['LDAP_filter'], $_POST['LDAP_preference']));
 
-    if($res && $res2) {
-		echo "Template changes made";
-	}else{
-		echo "Template changes failed";
-	}
-			
+    if(mysql_query($query)){
+
+        echo MANAGEMENT_SITE_CHANGES_SUCCESS;
+
+    }else{
+
+        echo MANAGEMENT_SITE_CHANGES_FAIL;
+
+    }
+
 }
+
+?>
