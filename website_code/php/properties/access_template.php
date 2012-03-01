@@ -13,6 +13,7 @@ require_once("../../../config.php");
 
 include "../template_status.php";
 include "../user_library.php";
+include "properties_library.php";
 
 /**
  * 
@@ -55,75 +56,15 @@ if(is_numeric($_POST['template_id'])){
 
     if(has_rights_to_this_template($_POST['template_id'],$_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-        $query_for_template_access = "select access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=" . mysql_real_escape_string($_POST['template_id']);
+        access_display($xerte_toolkits_site);
 
-        $query_access_response = mysql_query($query_for_template_access);
+    }else{
 
-        $row_access = mysql_fetch_array($query_access_response);
+        access_display_fail();
 
-        echo "<p class=\"header\"><span>This file is currently set as " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+    }
 
-        echo "<div id=\"security_list\">";
-
-        if(template_share_status("Public")){
-
-            echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\" />";
-
-        }else{
-
-            echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-        }	
-
-        echo " Public</p><p class=\"share_explain_paragraph\">The template will be visible to anyone on the internet</p>";
-
-        if(template_share_status("Password")){
-
-            echo "<p id=\"Password\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\"  onclick=\"javascript:access_tick_toggle(this)\" />";
-        }else{
-
-            echo "<p id=\"Password\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-        }
-
-        echo " Password protected</p><p class=\"share_explain_paragraph\">The template will be visible to people with University account</p>";
-
-
-        if(template_share_status("Other")){
-
-            echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-        }else{
-
-            echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-        }
-
-        echo " Other</p><p class=\"share_explain_paragraph\">Using this setting restricts access to your content. Your content will only be visible to people following links to your content from the site you provide. Enter the site URL below.<form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\">";
-
-        $temp = explode("-", $row_access['access_to_whom']);
-
-        if(isset($temp[1])){
-
-            echo $temp[1];
-
-        }
-
-        echo "</textarea></form></p>";
-
-        if(template_share_status("Private")){
-
-            echo "<p id=\"Private\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-        }else{
-
-            echo "<p id=\"Private\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-        }
-
-        echo " Private</p><p class=\"share_explain_paragraph\">This makes your template visible to editors only.</p>";
-
-        $query_for_security_content = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
-
-        $query_for_security_content_response = mysql_query($query_for_security_content);
+    mysql_close($database_connect_id);
 
         if(mysql_num_rows($query_for_security_content_response)!=0){
 

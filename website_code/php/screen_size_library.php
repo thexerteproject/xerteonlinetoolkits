@@ -37,4 +37,3 @@ function get_template_screen_size($filename, $type){
 
 }
 
-?>

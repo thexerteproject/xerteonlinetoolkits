@@ -1,5 +1,4 @@
 <?php
-
 //moodle integration (please view moodle_integration_readme.txt before use)
 //The require path below is the path to the moodle installation config file 
 //this needs to be the path from root rather than something like ../../moodle/config.php
@@ -29,15 +28,17 @@ global $xerte_toolkits_site;
 // Change this to FALSE for production sites.
 global $development;
 $development = false;
-if(php_uname('n') == 'orange') {
-    $development = true;
-}
+
 ini_set('error_reporting', 0);
 if($development) {
     ini_set('error_reporting', E_ALL);
 }
 
 if(!function_exists('_debug')) {
+    /**
+     * @param string $string - the message to write to the debug file.
+     * @param int $up - how far up the call stack we go to; this affects the line number/file name given in logging
+     */
     function _debug($string, $up = 0) {
         global $development;
         if(isset($development) && $development) {
@@ -50,13 +51,23 @@ if(!function_exists('_debug')) {
         }
     }
 }
+if(!function_exists('_load_language_file')) {
+    function _load_language_file($file_path) { 
+        if(isset($_SESSION['toolkits_language'])) {
+            $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . $file_path;
+        }
+        else {
+            // additional logic could use e.g. $_GET['language'] or $_COOKIE['language'] at this point... or something like Zend_Locale and HTTP accept headers...
+            // we'll just fall back to assuming en-gb if nothing else is specified here.
+            $file_path = dirname(__FILE__) . '/languages/en-gb/' . $file_path;
+        }
+        require_once($file_path);
+        return true;
+    }
+}
 
-if(!isset($xerte_toolkits_site)) {
-    //check if using external authentication integration and if not start session as usual
-    if(empty($_SESSION)) {
-        session_start();
-        $_SESSION['xertetoolkits'] = true;
-    }	
+if(!isset($xerte_toolkits_site)){
+
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
@@ -68,12 +79,14 @@ if(!isset($xerte_toolkits_site)) {
     }
 
     require_once(dirname(__FILE__) . '/database.php');
+    
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
+    if(!database_connect("","")) {
+        die("database.php isn't correctly configured; cannot connect to database; have you run /setup?");
+    }    
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
-    if(!$row) {
-        die("Error talking to database; perhaps it is offline?");
-    }
+
     /** 
      * Access the database to get the variables
      * @version 1.0
@@ -228,7 +241,10 @@ if(!isset($xerte_toolkits_site)) {
                      array($session_handle,'xerte_session_destroy'),
                      array($session_handle,'xerte_session_clean'));
      */
-
-    $_SESSION['toolkits_sessionid'] = session_id();
+	 
+    session_start();
+    // fall back to en-gb if nothing is chosen elsewhere.
+    if(!isset($_SESSION['toolkits_language'])) {
+        $_SESSION['toolkits_language'] = "en-gb";
+    }
 }
-

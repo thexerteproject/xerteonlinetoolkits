@@ -1,8 +1,9 @@
-<?PHP    
+<?php
 
 header("Content-Type: application/xml; charset=ISO-8859-1");  
 
 require_once "config.php";
+_load_language_file("/rss.inc");
 
 include $xerte_toolkits_site->php_library_path . "url_library.php";
 
@@ -12,11 +13,15 @@ function normal_date($string){
 }
 
 $query_modifier = "rss";
+
 $action_modifder = "play";
 
 if(isset($_GET['export'])){
+
     $query_modifier = "export";
+
     $action_modifder = "export";
+
 }
 
 if(!isset($_GET['username'])){
@@ -28,13 +33,15 @@ if(!isset($_GET['username'])){
     echo "<rss version=\"2.0\">
         <channel><title>{$xerte_toolkits_site->name}</title>
         <link>{$xerte_toolkits_site->site_url}</link>
-        <description>A feed containing all the public learning objects from {$xerte_toolkits_site->name}</description>
-        <language>en-gb</language>
+        <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
+        <language>" . RSS_LANGUAGE . "</language>
         <image><title>{$xerte_toolkits_site->name}</title>
         <url>{$xerte_toolkits_site->site_url}website_code/images/xerteLogo.jpg</url>
         <link>{$xerte_toolkits_site->site_url}</link></image>";
 
+
 }else{  
+
     $temp_array = explode("_",$_GET['username']);
 
     $query_created_by = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where (firstname=? AND surname = ?)";
@@ -44,20 +51,23 @@ if(!isset($_GET['username'])){
         header("HTTP/1.0 404 Not Found");
         exit(0);
     }else{
+
         $folder_string = 'public';
         if(isset($_GET['folder_name'])){
             $folder_string = " - " . _html_escape(str_replace("_", " ", $_GET['folder_name']));
         }
-            echo "<rss version=\"2.0\"><channel>
-                <title>" . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . "'s Learning Objects - {$xerte_toolkits_site->name}</title>
-                <link>{$xerte_toolkits_site->site_url}</link>
-                <description>A feed containing all of " . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . "'s {$folder_string} learning objects learning objects from the {$xerte_toolkits_site->name}</description>
-                <language>en-gb</language>
-                <image>
-                <title>{$xerte_toolkits_site->rss_title}</title>
-                <url>{$xerte_toolkits_site->site_url}website_code/images/xerteLogo.jpg</url>
-                <link>{$xerte_toolkits_site->site_url}</link></image>";
+
+        echo "<rss version=\"2.0\"><channel>
+            <title>" . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . RSS_LO . " - " . {$xerte_toolkits_site->name}</title>
+            <link>{$xerte_toolkits_site->site_url}</link>
+            <description>" . RSS_FEED_DESC . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . RSS_PLURAL . " {$folder_string} . " . RSS_FEED_PUBLIC . {$xerte_toolkits_site->name}</description>
+            <language>en-gb</language>
+            <image>
+            <title>{$xerte_toolkits_site->rss_title}</title>
+            <url>{$xerte_toolkits_site->site_url}website_code/images/xerteLogo.jpg</url>
+            <link>{$xerte_toolkits_site->site_url}</link></image>";
         $row_create = $rows[1];
+
     }
 }
 
@@ -109,7 +119,7 @@ foreach($rows as $row) {
     echo "<item>
         <title>" . str_replace("_"," ",$row['template_name']) . "</title>
         <link><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></link>
-        <description><![CDATA[" . $row['description'] . str_replace("_"," ",$row['template_name']) . " was developed by " . $user . "]]></description>
+        <description><![CDATA[" . $row['description'] . "<br><br>" . str_replace("_"," ",$row['template_name']) . RSS_DEVELOP . $user . "]]></description>
         <pubDate>" . date(DATE_RSS, strtotime($row['date_created'])) . "</pubDate>
         <guid><![CDATA[" . $xerte_toolkits_site->site_url . url_return($action, $row['template_id']) . "]]></guid>
         </item>\n";
@@ -122,3 +132,5 @@ echo "
 function _html_escape($string) {
     return htmlentities($string, ENT_QUOTES, null, false);
 }
+
+?>

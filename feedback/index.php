@@ -10,6 +10,7 @@
  */
 
 require_once("../config.php");
+	_load_language_file("/feedback/index.inc");
 
 ?>
 
@@ -17,7 +18,7 @@ require_once("../config.php");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Welcome to Xerte Web Toolkits</title>
+<title><?PHP echo FEEDBACK_TITLE; ?></title>
 
 <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
@@ -31,17 +32,15 @@ require_once("../config.php");
     </div>
     <div class="mainbody">
 
-<?PHP     /**
-*	If something is posted, send this feedback
- */
+				echo "<p>" . FEEDBACK_RESPONSE . "</p></div></body></html>";
 
-if(isset($_POST['feedback'])){
+				mail($xerte_toolkits_site->feedback_list, FEEDBACK_EMAIL_TITLE, FEEDBACK_GIVER . mysql_real_escape_string($_POST['name']) . "<br>" . FEEDBACK_MESSAGE_INTRO . "<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
 
     echo "<p>Thank you for your feedback</p></div></body></html>";
 
-    mail($xerte_toolkits_site->feedback_list, "Xerte Online Feedback", "Name " . mysql_real_escape_string($_POST['name']) . "<br>Message<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
+				echo "<div class=\"title\"><p>" . FEEDBACK_PAGE_TITLE . "</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">" . FEEDBACK_DESCRIPTION . "</div><div style=\"width:50%; float:left; position:relative;\">";
 
-}else{
+				echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>" . FEEDBACK_TEXTAREA . "<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"" . FEEDBACK_BUTTON . "\"></form>";
 
     /**
      *	Else display the page

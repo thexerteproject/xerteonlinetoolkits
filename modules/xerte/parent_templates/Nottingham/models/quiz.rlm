@@ -1,272 +1,1 @@
-	<PG title="Enter page title" name="quiz">
-		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
-
-if (extXML == undefined){
-  // Page Wizard
-  pageIcon.templateData = pageIcon.extXML.toObject();
-  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
-} else {
-  // Toolkits
-  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
-  pageIcon.templateData = myXML.toObject();
-  rootIcon.setTitleText(templateData.learningObject[0].name);
-}
-
-// establish page location issues that affect navigation calls
-// establish container 
-  myLocXML = String(icon.parentNode.parentNode);
-  myLocXML = myLocXML.substr(1,3);
-  if (myLocXML == "IFC"){
-    container = "Interface";
-  } else if (myLocXML == "FW ") {
-    container = "Framework";
-  }
-  else {
-// unspecified
-    container = "U";
-  }
-  
-// establish navigationOffset to cope with effect of an entryFrame
-firstC = String(icon.parentNode.parentNode.firstChild);
-firstC = firstC.substr(1,6);
-
-if (firstC == "FW_ENT") {
-    navigationOffset = 1; // use - navigationOffset
-} else {
-   navigationOffset = 0;
-}
-// end of code for identifying page location
-
-
-
-
-
-//make questions
-if (icon.attributes.built != 'true'){
-  icon.parentNode.getChildByName("questions").firstChild.duplicate(pageIcon.templateData.quiz[0].question.length - 1);
-  icon.attributes.built = 'true';
-}
-
-quizPageTracking = new Array();
-quizScoreTracking = new Array();
-align = pageIcon.templateData.quiz[0].align;
-
-//sequencing
-if (pageIcon.templateData.quiz[0].order == 'random'){
-  icon.parentNode.getChildByName("questions").attributes.branch = 'randomUnused';
-} else {
-  icon.parentNode.getChildByName("questions").attributes.branch = 'sequence';
-}
-
-
-//number of questions
-if (pageIcon.templateData.quiz[0].numQuestions == undefined || pageIcon.templateData.quiz[0].numQuestions.toLowerCase() == 'all'){
-  icon.parentNode.getChildByName("questions").attributes.repeat = 'all';
-  qCount = pageIcon.templateData.quiz[0].question.length;
-} else {
-  icon.parentNode.getChildByName("questions").attributes.repeat = pageIcon.templateData.quiz[0].numQuestions;
-  qCount = pageIcon.templateData.quiz[0].numQuestions;
-}
-
-panelWidth = pageIcon.templateData.quiz[0].panelWidth;
-if (panelWidth == "Small"){
-  panelW = 300;
-  textW = 440;
-} else if (panelWidth == "Medium"){
-  panelW = 450;
-  textW = 290;
-} else if (panelWidth == "Large"){
-  panelW = 600;
-  textW = 150;
-} else {
-  panelW = 760;
-  textW = 0;
-}
-//video?
-if (pageIcon.templateData.quiz[0].video != undefined){
-  panelW = 450;
-  textW = 290;
-}
-
-if (pageIcon.templateData.quiz[0].narration != undefined){
-  narration = pageIcon.templateData.quiz[0].narration;
-  rootIcon.broadcast('showAudio');
-}]]></SCR>
-		<DIS tabIndex="-1" id="panel" h="474" w="panelW" name="panel" x="align == 'left' ? 20 : 780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
-		<INT name="loadPanel" perpetual="0">
-			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">
-				<SCR name="calculate"><![CDATA[//ok to move on
-
-
-
-]]></SCR>
-			</RES>
-		</INT>
-		<DIS id="instr" name="intructions" x="align == 'left' ? panel._x + panel._width + 20 : 20" y="20" w="textW" h="10" type="text"><![CDATA[{pageIcon.templateData.quiz[0].instructions}]]></DIS>
-		<SCR name="movie"><![CDATA[if (pageIcon.templateData.quiz[0].video == undefined){
-  if (icon.built != true){
-    icon.nextSibling.removeNode();
-    icon.built = true;
-  }
-}]]></SCR>
-		<MOV w="290" name="[Untitled]" x="instr._x" y="instr._y + instr._height + 20" url="{pageIcon.templateData.quiz[0].video}" controls="1" play="0"><![CDATA[]]></MOV>
-		<DEC id="quiz" name="questions" repeat="all" branch="blaH" pause="0" erase="1" eraseOnExit="0">
-			<PG name="protoQuestion">
-				<SCR name="setup"><![CDATA[if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].image != undefined){
-  prptWidth = (panelW / 2) - 30;
-} else {
-  icon.parentNode.getChildByName("loader").removeNode();
-  prptWidth = panelW - 40;
-}]]></SCR>
-				<DIS textColour="#000000" id="prpt" name="Prompt" x="panel._x + 20" y="panel._y + 20" w="prptWidth" h="10" type="text"><![CDATA[{'<b>Question ' + quiz.repCount + ' of ' + qCount + '</b><br>' + pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].prompt}]]></DIS>
-				<DIS tabIndex="-1" id="image" name="image" x="prpt._x + prpt._width + 20" y="prpt._y" type="ext" url="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].image}"><![CDATA[]]></DIS>
-				<INT name="loader" perpetual="0">
-					<RES name="onLoad" type="event" eventName="onLoad" icon="image" erase="1" exit="1">
-						<SCR name="resize"><![CDATA[image.constrain(prptWidth, panel._height - 40);
-p = image._width / image._height;
-
-image._x = panel._x + panel._width - 20 - image._width;]]></SCR>
-					</RES>
-				</INT>
-				<SCR name="makeOptions"><![CDATA[ln = pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option.length;
-if (ln > 2 && icon.attributes.built != 'true'){
-  icon.nextSibling.childNodes[1].duplicate(ln - 2);
-  icon.attributes.built = 'true';
-}
-
-//multi answer?
-if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){
-  for (i = 0; i < ln; i++){
-    icon.nextSibling.childNodes[i].attributes.type="checkBox";
-  }
-}
-
-optionTracking = new Array();
-for (i = 0; i < ln; i++){
-  optionTracking[i] = 0;
-  if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[i].correct == 'true'){
-    icon.nextSibling.childNodes[i].attributes.correct = 1;
-  } else {
-    icon.nextSibling.childNodes[i].attributes.correct = 0;
-  }
-}]]></SCR>
-				<INT id="ques" name="protoInteraction" perpetual="0">
-					<RES w="prptWidth" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="prpt._y + prpt._height + 20" label="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[icon.index()].text}" group="grp" erase="1" exit="0">
-						<SCR name="judge"><![CDATA[//track the question
-if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){
-  for (i = 0; i < ln; i++){
-    optionTracking[i] = 0;
-  }
-  optionTracking[icon.parentNode.index()] = 1;
-} 
-
-if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){
-  if (icon.parentNode.clip().getValue() == true){
-    optionTracking[icon.parentNode.index()] = 1;
-  } else {
-    optionTracking[icon.parentNode.index()] = 0;
-  }
-} 
-btnSubmit.setEnabled(true);
-]]></SCR>
-					</RES>
-					<RES w="prptWidth" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="_ytile + 10" label="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[icon.index()].text}" group="grp" erase="1" exit="0">
-						<SCR name="judge"><![CDATA[//track the question
-if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){
-  for (i = 0; i < ln; i++){
-    optionTracking[i] = 0;
-  }
-  optionTracking[icon.parentNode.index()] = 1;
-} 
-
-if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){
-  if (icon.parentNode.clip().getValue() == true){
-    optionTracking[icon.parentNode.index()] = 1;
-  } else {
-    optionTracking[icon.parentNode.index()] = 0;
-  }
-} 
-btnSubmit.setEnabled(true);
-]]></SCR>
-					</RES>
-					<RES toolTip="Submit" swf="templatePath + 'common/button.swf'" enabled="false" rs="btnSubmit" name="submit" type="button" x="icon.previousSibling.clip()._x" y="_ytile + 10" label="Submit" erase="1" exit="0">
-						<SCR name="makeFeedback"><![CDATA[//single answer feedback
-fb = "";
-for (i = 0; i < ln; i++){
-  if (optionTracking[i] == 1){
-    fb += pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[i].feedback + '\r\r';
-  }
-}
-
-fb = '<b>Feedback</b><br>' + fb;
-if (pageIcon.templateData.quiz[0].judge == 'true'){  
-  if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){
-    if (ques.judge()){
-      fb+='Your answer is correct.';
-    } else {
-      fb += 'Your answer is incorrect.'; 
-    }
-  } else {  
-    if (ques.judge()){
-      fb+='You have selected all the correct answers.';
-    } else {
-      fb += 'You have not selected the correct combination of answers.'; 
-    }
-  }
-}
-//track the scorm score?
-if (ques.judge()){
-  quizScoreTracking[quiz.repCount - 1] = 1;
-} else {
-  quizScoreTracking[quiz.repCount - 1] = 0;
-}
-
-]]></SCR>
-						<DIS scrolling="auto" textColour="#000000" name="feedback" x="btnSubmit._x" y="btnSubmit._y + btnSubmit._height + 20" w="prptWidth" h="474 - (btnSubmit._y + btnSubmit._height) - 40" type="text"><![CDATA[{fb}]]></DIS>
-						<SCR name="enableNext"><![CDATA[btnNext.setEnabled(true);
-
-]]></SCR>
-					</RES>
-					<RES toolTip="Next Question" enabled="false" rs="btnNext" swf="templatePath + 'common/button.swf'" name="next" type="button" x="icon.previousSibling.clip()._x" y="455" label="Next" erase="1" exit="1">
-						<SCR name="next"><![CDATA[//move on]]></SCR>
-					</RES>
-				</INT>
-			</PG>
-		</DEC>
-		<SCR name="scorm"><![CDATA[score = Math.ceil(quizScoreTracking.sum() / quizScoreTracking.length * 100);
-if (pageIcon.templateData.quiz[0].scorm == 'Track Last Score'){
-  _level0.setValue('cmi.core.score.raw', String(score));
-}
-if (pageIcon.templateData.quiz[0].scorm == 'Track First Score'){
-  if (isNaN(_level0.getValue('cmi.core.score.raw'))){
-    _level0.setValue('cmi.core.score.raw', String(score));
-  }
-}
-
-fb = 'The quiz is complete. ' + pageIcon.templateData.quiz[0].feedback;
-
-if (pageIcon.templateData.quiz[0].judge == 'true'){
-  fb += '<br><br>You scored ' +  quizScoreTracking.sum() + ' / ' + quizScoreTracking.length + '.';
-}
-]]></SCR>
-		<DIS id="finalScore" name="finalScore" x="panel._x + 20" y="panel._y + 20" w="400" h="10" type="text"><![CDATA[{fb}]]></DIS>
-		<INT name="restart" perpetual="0">
-			<RES swf="templatePath + 'common/button.swf'" name="restart" type="button" x="finalScore._x" y="finalScore._y + finalScore._height + 20" label="Restart" erase="1" exit="0">
-				<SCR name="restart"><![CDATA[// A restart button should include the following code in its script icon
-// note navigationOffset is now subtracted
-if (container == "Framework"){
-    fwXML = icon.findParentByType('FW');
-    pageNum = fwXML.clip().currentPage;
-    fwXML.clip().gotoPage(pageNum);
-    }
-else
-{    
-   // use for projects
-   pageNum = rootIcon.getPageIndex() - navigationOffset;
-   rootIcon.gotoPage(pageNum);
-}
-
-/* end of coding of restart capability */]]></SCR>
-			</RES>
-		</INT>
-	</PG>
+	<PG name="quiz">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);pageIcon.templateData = myXML.toObject();rootIcon.setTitleText(templateData.learningObject[0].name);//make questionsif (icon.attributes.built != 'true'){  icon.parentNode.getChildByName("questions").firstChild.duplicate(pageIcon.templateData.quiz[0].question.length - 1);  icon.attributes.built = 'true';}quizPageTracking = new Array();quizScoreTracking = new Array();align = pageIcon.templateData.quiz[0].align;//sequencingif (pageIcon.templateData.quiz[0].order == 'random'){  icon.parentNode.getChildByName("questions").attributes.branch = 'randomUnused';} else {  icon.parentNode.getChildByName("questions").attributes.branch = 'sequence';}//number of questionsif (pageIcon.templateData.quiz[0].numQuestions == undefined || pageIcon.templateData.quiz[0].numQuestions.toLowerCase() == 'all'){  icon.parentNode.getChildByName("questions").attributes.repeat = 'all';  qCount = pageIcon.templateData.quiz[0].question.length;} else {  icon.parentNode.getChildByName("questions").attributes.repeat = pageIcon.templateData.quiz[0].numQuestions;  qCount = pageIcon.templateData.quiz[0].numQuestions;}panelWidth = pageIcon.templateData.quiz[0].panelWidth;if (panelWidth == "Small"){  panelW = 300;  textW = 440;} else if (panelWidth == "Medium"){  panelW = 450;  textW = 290;} else if (panelWidth == "Large"){  panelW = 600;  textW = 150;} else {  panelW = 760;  textW = 0;}//video?if (pageIcon.templateData.quiz[0].video != undefined){  panelW = 450;  textW = 290;}if (pageIcon.templateData.quiz[0].narration != undefined){  narration = pageIcon.templateData.quiz[0].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS tabIndex="-1" id="panel" h="474" w="panelW" name="panel" x="align == 'left' ? 20 : 780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<INT name="loadPanel" perpetual="0">			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">				<SCR name="calculate"><![CDATA[//ok to move on]]></SCR>			</RES>		</INT>		<DIS id="instr" name="intructions" x="align == 'left' ? panel._x + panel._width + 20 : 20" y="20" w="textW" h="10" type="text"><![CDATA[{pageIcon.templateData.quiz[0].instructions}]]></DIS>		<SCR name="movie"><![CDATA[if (pageIcon.templateData.quiz[0].video == undefined){  if (icon.built != true){    icon.nextSibling.removeNode();    icon.built = true;  }}]]></SCR>		<MOV w="290" name="[Untitled]" x="instr._x" y="instr._y + instr._height + 20" url="{pageIcon.templateData.quiz[0].video}" controls="1" play="0"><![CDATA[]]></MOV>		<DEC id="quiz" name="questions" repeat="all" branch="blaH" pause="0" erase="1" eraseOnExit="0">			<PG name="protoQuestion">				<SCR name="setup"><![CDATA[if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].image != undefined){  prptWidth = (panelW / 2) - 30;} else {  icon.parentNode.getChildByName("loader").removeNode();  prptWidth = panelW - 40;}]]></SCR>				<DIS textColour="#000000" id="prpt" name="Prompt" x="panel._x + 20" y="panel._y + 20" w="prptWidth" h="10" type="text"><![CDATA[{'<b>Question ' + quiz.repCount + ' of ' + qCount + '</b><br>' + pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].prompt}]]></DIS>				<DIS tabIndex="-1" id="image" name="image" x="prpt._x + prpt._width + 20" y="prpt._y" type="ext" url="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].image}"><![CDATA[]]></DIS>				<INT name="loader" perpetual="0">					<RES name="onLoad" type="event" eventName="onLoad" icon="image" erase="1" exit="1">						<SCR name="resize"><![CDATA[image.constrain(prptWidth, panel._height - 40);p = image._width / image._height;image._x = panel._x + panel._width - 20 - image._width;]]></SCR>					</RES>				</INT>				<SCR name="makeOptions"><![CDATA[ln = pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option.length;if (ln > 2 && icon.attributes.built != 'true'){  icon.nextSibling.childNodes[1].duplicate(ln - 2);  icon.attributes.built = 'true';}//multi answer?if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){  for (i = 0; i < ln; i++){    icon.nextSibling.childNodes[i].attributes.type="checkBox";  }}optionTracking = new Array();for (i = 0; i < ln; i++){  optionTracking[i] = 0;  if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[i].correct == 'true'){    icon.nextSibling.childNodes[i].attributes.correct = 1;  } else {    icon.nextSibling.childNodes[i].attributes.correct = 0;  }}]]></SCR>				<INT id="ques" name="protoInteraction" perpetual="0">					<RES w="prptWidth" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="prpt._y + prpt._height + 20" label="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[icon.index()].text}" group="grp" erase="1" exit="0">						<SCR name="judge"><![CDATA[//track the questionif (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){  for (i = 0; i < ln; i++){    optionTracking[i] = 0;  }  optionTracking[icon.parentNode.index()] = 1;} if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){  if (icon.parentNode.clip().getValue() == true){    optionTracking[icon.parentNode.index()] = 1;  } else {    optionTracking[icon.parentNode.index()] = 0;  }} btnSubmit.setEnabled(true);]]></SCR>					</RES>					<RES w="prptWidth" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="_ytile + 10" label="{pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[icon.index()].text}" group="grp" erase="1" exit="0">						<SCR name="judge"><![CDATA[//track the questionif (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){  for (i = 0; i < ln; i++){    optionTracking[i] = 0;  }  optionTracking[icon.parentNode.index()] = 1;} if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Multiple Answer'){  if (icon.parentNode.clip().getValue() == true){    optionTracking[icon.parentNode.index()] = 1;  } else {    optionTracking[icon.parentNode.index()] = 0;  }} btnSubmit.setEnabled(true);]]></SCR>					</RES>					<RES toolTip="Submit" swf="templatePath + 'common/button.swf'" enabled="false" rs="btnSubmit" name="submit" type="button" x="icon.previousSibling.clip()._x" y="_ytile + 10" label="Submit" erase="1" exit="0">						<SCR name="makeFeedback"><![CDATA[//single answer feedbackfb = "";for (i = 0; i < ln; i++){  if (optionTracking[i] == 1){    fb += pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].option[i].feedback + '\r\r';  }}fb = '<b>Feedback</b><br>' + fb;if (pageIcon.templateData.quiz[0].judge == 'true'){    if (pageIcon.templateData.quiz[0].question[quiz.getPageIndex()].type == 'Single Answer'){    if (ques.judge()){      fb+='Your answer is correct.';    } else {      fb += 'Your answer is incorrect.';     }  } else {      if (ques.judge()){      fb+='You have selected all the correct answers.';    } else {      fb += 'You have not selected the correct combination of answers.';     }  }}//track the scorm score?if (ques.judge()){  quizScoreTracking[quiz.repCount - 1] = 1;} else {  quizScoreTracking[quiz.repCount - 1] = 0;}]]></SCR>						<DIS scrolling="auto" textColour="#000000" name="feedback" x="btnSubmit._x" y="btnSubmit._y + btnSubmit._height + 20" w="prptWidth" h="474 - (btnSubmit._y + btnSubmit._height) - 40" type="text"><![CDATA[{fb}]]></DIS>						<SCR name="enableNext"><![CDATA[btnNext.setEnabled(true);]]></SCR>					</RES>					<RES toolTip="Next Question" enabled="false" rs="btnNext" swf="templatePath + 'common/button.swf'" name="next" type="button" x="icon.previousSibling.clip()._x" y="455" label="Next" erase="1" exit="1">						<SCR name="next"><![CDATA[//move on]]></SCR>					</RES>				</INT>			</PG>		</DEC>		<SCR name="scorm"><![CDATA[score = Math.ceil(quizScoreTracking.sum() / quizScoreTracking.length * 100);if (pageIcon.templateData.quiz[0].scorm == 'Track Last Score'){  _level0.setValue('cmi.core.score.raw', String(score));}if (pageIcon.templateData.quiz[0].scorm == 'Track First Score'){  if (isNaN(_level0.getValue('cmi.core.score.raw'))){    _level0.setValue('cmi.core.score.raw', String(score));  }}fb = 'The quiz is complete. ' + pageIcon.templateData.quiz[0].feedback;if (pageIcon.templateData.quiz[0].judge == 'true'){  fb += '<br><br>You scored ' +  quizScoreTracking.sum() + ' / ' + quizScoreTracking.length + '.';}]]></SCR>		<DIS id="finalScore" name="finalScore" x="panel._x + 20" y="panel._y + 20" w="400" h="10" type="text"><![CDATA[{fb}]]></DIS>		<INT name="restart" perpetual="0">			<RES swf="templatePath + 'common/button.swf'" name="restart" type="button" x="finalScore._x" y="finalScore._y + finalScore._height + 20" label="Restart" erase="1" exit="0">				<SCR name="restart"><![CDATA[rootIcon.gotoPage(rootIcon.getPageIndex() - 1);]]></SCR>			</RES>		</INT>	</PG>

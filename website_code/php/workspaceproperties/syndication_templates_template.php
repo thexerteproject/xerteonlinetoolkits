@@ -12,16 +12,16 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/workspaceproperties/syndication_templates_template.inc");
 
 include "../display_library.php";
+
+include "workspace_library.php";
 
 /**
  * connect to the database
  */
-
-echo "<p class=\"header\"><span>My projects</span></p>";
-
-echo "<div class=\"menu_holder\"><div class=\"menu_button\"><a href=\"javascript:workspace_templates_template()\">My projects</a></div><div class=\"menu_button\"><a href=\"javascript:shared_templates_template()\">Shared projects</a></div><div class=\"menu_button\"><a href=\"javascript:public_templates_template()\">Public projects</a></div><div class=\"menu_button\"><a href=\"javascript:usage_templates_template()\">Usage stats</a></div><div class=\"menu_button\"><a href=\"javascript:rss_templates_template()\">Projects in the RSS</div><div class=\"menu_button\"><a href=\"javascript:syndication_templates_template()\">Open Content projects</a></div><div class=\"menu_button\"><a href=\"javascript:peer_templates_template()\">Peer review</a></div><div class=\"menu_button\"><a href=\"javascript:xml_templates_template()\">XML sharing</a></div></div>";
+workspace_templates_menu();
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
@@ -29,9 +29,9 @@ $query_for_rss_templates = "select * from " . $xerte_toolkits_site->database_tab
 
 $query_rss_response = mysql_query($query_for_rss_templates);
 
-echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
+workspace_menu_create();
 
-echo "<div style=\"float:left; width:50%; height:20px;\">Name</div><div style=\"float:left; width:40%; height:20px;\">Syndication</div>";
+echo "<div style=\"float:left; width:40%; height:20px;\">" . SYNDICATION_TEMPLATE_TERM . "</div>";
 
 while($row_template_name = mysql_fetch_array($query_rss_response)){
 
@@ -39,11 +39,11 @@ while($row_template_name = mysql_fetch_array($query_rss_response)){
 
     if($row_template_name['syndication']){
 
-        echo " On ";
+        echo " " . SYNDICATION_TEMPLATE_ON . " ";
 
     }else{
 
-        echo " Off ";
+        echo " " . SYNDICATION_TEMPLATE_OFF . " ";
 
     }
 
@@ -51,8 +51,6 @@ while($row_template_name = mysql_fetch_array($query_rss_response)){
 
 }
 
-echo "</div>";
-
-echo "</div>";
+echo "</div></div>";
 
 ?>

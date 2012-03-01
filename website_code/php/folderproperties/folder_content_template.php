@@ -12,6 +12,9 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/folderproperties/folder_content_template.inc");
+
+
 include "../display_library.php";
 
 /**
@@ -22,7 +25,7 @@ if(is_numeric($_POST['folder_id'])){
 
     $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-    echo "<p class=\"header\"><span>Folder contents</span></p>";			
+    echo "<p class=\"header\"><span>" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</span></p>";			
 
     echo "<div class=\"mini_folder_content\">";
 

@@ -32,4 +32,5 @@ $xerte_toolkits_site->database_name ="toolkits_data";
 * Database table prefix
 */
 $xerte_toolkits_site->database_table_prefix ="";
+
 ?>

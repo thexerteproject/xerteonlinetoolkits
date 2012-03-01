@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * 
  * name select gift template, displays usernames so people can choose one to gift a template to
@@ -10,7 +10,7 @@
  */
 
 require_once("../../../config.php");
-
+_load_language_file("/website_code/php/properties/name_select_gift_template.inc");
 
 $search = mysql_real_escape_string($_POST['search_string']);
 
@@ -34,13 +34,13 @@ if(is_numeric($_POST['template_id'])){
 
             while($row = mysql_fetch_array($query_names_response)){
 
-                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['login_id'] . ") - <a href=\"javascript:gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">click here</a> to give a copy of this template to this user.</p>";
+                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['login_id'] . ") - <a href=\"javascript:gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">" . NAME_SELECT_GIFT_CLICK . "</a>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
 
             }
 
         }else{
 
-            echo "<p>No one found with those details </p>";			
+            echo "<p>" . NAME_SELECT_GIFT_FIND_FAIL . "</p>";			
 
         }
 

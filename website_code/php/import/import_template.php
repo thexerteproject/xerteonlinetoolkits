@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 require_once("../../../config.php");
 /**
  * 
@@ -94,7 +95,7 @@ function copy_loop($path){
 
 if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")){
 
-
+    _load_language_file("/website_code/php/import_template.inc");
 
     $this_dir = rand() . "/";
 
@@ -155,7 +156,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-            echo "Zip file not properly structured. ****";
+            echo IMPORT_TEMPLATE_ZIP_FAIL "****";
 
             die();
 
@@ -177,7 +178,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                     delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
-                    echo "Template not setup correctly to work on toolkits. ****";
+                    echo IMPORT_TEMPLATE_TEMPLATE_FAIL . "****";
 
                     while($file_to_delete = array_pop($delete_file_array)){
 
@@ -217,7 +218,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-            echo "No file called template.rlt found. ****";
+            echo IMPORT_TEMPLATE_RLT_FAIL . "****";
 
             die();
 
@@ -363,7 +364,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
-            echo "The folder has been created****";
+            echo IMPORT_TEMPLATE_FOLDER_CREATE . "****";
 
             rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
 
@@ -371,7 +372,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
 
-            echo "Error creating folder****";
+            echo IMPORT_TEMPLATE_FOLDER_FAIL . "****";
 
             rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
 

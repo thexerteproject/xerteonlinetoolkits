@@ -10,6 +10,7 @@
  */
 
 require_once("../../../config.php");
+_load_language_file("/website_code/php/properties/gift_template.inc");
 
 include "../template_status.php";
 
@@ -23,11 +24,11 @@ $database_id=database_connect("Sharing status template database connect success"
 
 if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-    echo "<div class=\"share_top\"><p class=\"header\"><span>To give this project to someone, please type their name here. The user must have an account on the site to appear in this search.</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+    echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_INSTRUCTIONS . "</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_NAMES . "</p></div><p id=\"area3\"></div>";	
 
 }else{
 
-    echo "<p>You have no rights to this template</p>";
+    echo "<p>" . GIFT_FAIL . "</p>";
 
 }
 

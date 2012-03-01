@@ -1,5 +1,5 @@
 <?php
-// Code to list a user's templates
+
 //
 // Version 1.0 University of Nottingham
 // 

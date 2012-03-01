@@ -19,15 +19,8 @@ require_once("config.php");
  *  Create the basic session if required - i.e. your host may allow for some of this code to be commented out.
  */
 
-$session_id = $_GET['username'] . time();
 
-session_id($session_id);
-session_name($xerte_toolkits_site->site_session_name);
-session_start($xerte_toolkits_site->site_session_name);
-
-//session_start();
-
-$_SESSION['toolkits_sessionid'] = $session_id; 
+session_start();
 
 include $xerte_toolkits_site->php_library_path . "login_library.php";
 
@@ -116,7 +109,7 @@ echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
 
 echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
 
-echo logged_in_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "integration_top"));
+echo file_get_contents($xerte_toolkits_site->website_code_path . "integration_top");
 
 list_users_projects("data_down");
 

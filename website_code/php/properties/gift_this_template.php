@@ -1,4 +1,5 @@
 <?php
+
 require_once("../../../config.php");
 /**
  * 
@@ -54,6 +55,7 @@ function copy_loop($start_path, $final_path){
 
 }
 
+_load_language_file("/website_code/php/properties/gift_this_template.inc");
 
 include "../template_library.php";
 
@@ -117,7 +119,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         rename($base_path . $tutorial_id . "-" . $row_rename['username'] . "-" . $row_rename['template_name'] . "/", $base_path . $tutorial_id . "-" . $row_new_login['username'] . "-" . $row_rename['template_name'] . "/");
 
-        echo "<p>Sorry you no longer have rights to this template</p>";
+        echo "<p>" . GIFT_RESPONSE_FAIL . "</p>";
 
     }else{
 
@@ -175,7 +177,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         copy_loop($current_directory, $new_directory);
 
-        echo "<div class=\"share_top\"><p class=\"header\"><span>Template successfully gifted to " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . ".<br><br>To give this project to someone, please type their name here</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . ".<br><br></span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";	
 
     }
 

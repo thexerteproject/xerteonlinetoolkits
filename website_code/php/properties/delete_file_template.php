@@ -1,14 +1,16 @@
-<?php
-/**
- * 
- * delete file template, allows the site to delete files from the media folder
- *
- * @author Patrick Lockley
- * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
- * @package
- */
-require_once("../../../config.php");
+<?PHP     
+
+	/**
+	 * 
+	 * delete file template, allows the site to delete files from the media folder
+	 *
+	 * @author Patrick Lockley
+	 * @version 1.0
+	 * @copyright Copyright (c) 2008,2009 University of Nottingham
+	 * @package
+	 */
+
+	include "../error_library.php";
 
 /** XXX/ TODO SECURITY HOLE - NEED TO CHECK $_POST['file'] IS VALID */
 if(unlink($_POST['file'])){

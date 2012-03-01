@@ -1,7 +1,9 @@
-<?php
+<?php 
 require_once('../../../config.php');
 include 'file_library.php';
 include 'user_library.php';
+
+_load_language_file("/website_code/php/folder_library.inc");
 
 /**
  * 
@@ -34,13 +36,13 @@ function make_new_folder($folder_id,$folder_name){
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
-        echo "The folder has been created";
+        echo FOLDER_LIBRARY_CREATE;
 
     }else{
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder creation failed for " . $_SESSION['toolkits_logon_username'], "Folder creation failed for " . $_SESSION['toolkits_logon_username']);
 
-        echo "Error creating folder";
+        echo FOLDER_LIBRARY_FAIL;
 
     }
 

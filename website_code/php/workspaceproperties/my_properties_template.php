@@ -12,6 +12,8 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/workspaceproperties/my_properties_template.inc");
+
 include "../display_library.php";
 
 /**
@@ -26,12 +28,12 @@ $query_user_response = mysql_query($query_for_user);
 
 $row_user = mysql_fetch_array($query_user_response);
 
-echo "<p class=\"header\"><span>My Details</span></p>";
+echo "<p class=\"header\"><span>" . MY_PROPERTIES_DETAILS . "</span></p>";
 
-echo "<p>My name on the system is " . $row_user['firstname'] . " " . $row_user['surname'] . "</p>";
+echo "<p>" . MY_PROPERTIES_NAME_DETAILS . " " . $row_user['firstname'] . " " . $row_user['surname'] . "</p>";
 
-echo "<p>My last login was on " . $row_user['lastlogin'] . "</p>";
+echo "<p>" . MY_PROPERTIES_LOGIN_DETAILS . " " . $row_user['lastlogin'] . "</p>";
 
-echo "<p>My username is " . $row_user['username'] . "</p>";
+echo "<p>" . MY_PROPERTIES_USERNAME_DETAILS . " " . $row_user['username'] . "</p>";
 
 ?>

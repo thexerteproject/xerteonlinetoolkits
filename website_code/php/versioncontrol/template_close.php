@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 
  * template close, code that runs when an editor window is closed to remove the lock file
@@ -10,6 +11,8 @@
  */
 
 require_once('../../../config.php');
+
+_load_language_file("/website_code/php/versioncontrol/template_close.inc");
 
 require('../template_status.php');
 
@@ -63,7 +66,10 @@ if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
         $preview_xml = file_get_contents($preview_file);
         $data_xml = file_get_contents($data_file);
         if($data_xml!=$preview_xml){
-            echo "Would you like to publish your changes?~*~" . $xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2];
+            echo TEMPLATE_CLOSE_QUESTION . "~*~" . $xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2];
         }
     }
 }
+
+
+?>

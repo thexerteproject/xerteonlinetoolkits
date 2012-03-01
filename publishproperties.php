@@ -1,11 +1,15 @@
-<?php 
-require_once("config.php");
+<?PHP 
+
+	require_once("config.php");
+	_load_language_file("/publishproperties.inc");
+
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Publishing your project</title>
+<title><?PHP echo PUBLISH_PROPERTIES_TITLE; ?></title>
 
 <!-- 
 
@@ -32,10 +36,14 @@ var ajax_php_path = "website_code/php/";
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/import.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/properties_tab.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/properties_tab.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
+<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
 
 </head>
 
@@ -68,7 +76,7 @@ Hidden Iframe to allow for ajax file uploads
 				<div>
 					<span id="title">
 						<img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
-						Publishing your project
+						<?PHP echo PUBLISH_PROPERTIES_DISPLAY_TITLE; ?>
 					</span>
 				</div>
 				<div id="data_area">
@@ -100,7 +108,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab1" class="tab" style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('1');publish_template()">
-									Project
+									<?PHP echo PUBLISH_PROPERTIES_TAB_PROJECT; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -109,7 +117,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab2" class="tab"  style="width:146px; height:38px;">
 								<p onclick="javascript:tab_highlight('2'); access_template()">
-									Access
+									<?PHP echo PUBLISH_PROPERTIES_TAB_ACCESS; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -118,7 +126,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab3" class="tab"  style="width:146px;  height:38px;">
 								<p onclick="javascript:tab_highlight('3'); rss_template()">
-									RSS
+									<?PHP echo PUBLISH_PROPERTIES_TAB_RSS; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							
@@ -127,7 +135,7 @@ Hidden Iframe to allow for ajax file uploads
 							</div>
 							<div id="tab4" class="tab"  style="width:146px;  height:38px;">
 								<p onclick="javascript:tab_highlight('4'); syndication_template()">
-									Open Content
+									<?PHP echo PUBLISH_PROPERTIES_TAB_OPEN; ?>
 								</p>									
 							</div>
 							<div class="tab_spacer">							

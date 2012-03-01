@@ -1,5 +1,4 @@
 <?php
-
 // Delete template code
 //
 // Version 1.0 University of Nottingham
@@ -7,6 +6,8 @@
 // Delete this template from the database and from the file system
 
 require_once("../../../config.php");
+
+_load_language_file("/website_code/php/management/delete.inc");
 
 include "../user_library.php";
 include "../deletion_library.php";
@@ -29,8 +30,6 @@ if(is_user_admin()){
 
     $path2 = $xerte_toolkits_site->root_file_path  . $xerte_toolkits_site->module_path . $row_template_id['template_framework'] . "/templates/" . $row_template_id['template_name'] . "/";
 
-    echo $path . "<br>" . $path2;
-
     set_up_deletion($path);
 
     set_up_deletion($path2);
@@ -41,16 +40,17 @@ if(is_user_admin()){
 
     if(mysql_query($query_to_delete_template)){	
 
-        echo "succeed";
+        echo MANAGEMENT_DELETE_SUCCESS;
 
     }else{
 
-        echo "Fail";
+        echo MANAGEMENT_DELETE_FAIL;
 
     }
 
 
 }
+
 mysql_close($database_id);
 
 ?>

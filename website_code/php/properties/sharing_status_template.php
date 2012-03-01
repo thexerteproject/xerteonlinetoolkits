@@ -10,6 +10,8 @@
  */
 
 require_once("../../../config.php");
+_load_language_file("/website_code/php/properties/sharing_status_template.inc");
+
 
 include "../template_status.php";
 
@@ -29,9 +31,9 @@ if(is_numeric($_POST['template_id'])){
          * show a different view if you are the file creator
          */
 
-        if(is_user_creator(mysql_real_escape_string($_POST['template_id'])) ||is_user_admin() ){
+        if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-            echo "<div class=\"share_top\"><p class=\"header\"><span>To share this template with some one, please type their name here. The user must have an account on the site to appear in this search.</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>Names will appear here</p></div><p id=\"area3\"></div>";	
+            echo "<div class=\"share_top\"><p class=\"header\"><span>" . SHARING_INSTRUCTION . "</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . SHARING_NAMES . "</p></div><p id=\"area3\"></div>";	
 
         }
 
@@ -41,7 +43,7 @@ if(is_numeric($_POST['template_id'])){
 
         if(mysql_num_rows($query_sharing_response)!=0){
 
-            echo "<p class=\"share_intro_p\"><span>This template is currently shared with : </span></p>";
+            echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
             while($row = mysql_fetch_array($query_sharing_response)){
 
@@ -55,21 +57,21 @@ if(is_numeric($_POST['template_id'])){
 
                         if($row['role']=="editor"){
 
-                            echo "<img src=\"website_code/images/TickBoxOn.gif\" style=\"\" class=\"share_files_img\" /> Editor";
+                            echo "<img src=\"website_code/images/TickBoxOn.gif\" style=\"\" class=\"share_files_img\" /> " . SHARING_EDITOR;
 
                         }else{
 
-                            echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> Editor";
+                            echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_EDITOR;
 
                         }
 
                         if($row['role']=="read-only"){
 
-                            echo "<img src=\"website_code/images/TickBoxOn.gif\" class=\"share_files_img\" /> Read only";				
+                            echo "<img src=\"website_code/images/TickBoxOn.gif\" class=\"share_files_img\" /> " . SHARING_READONLY;
 
                         }else{
 
-                            echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> Read only";
+                            echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_READONLY;
                         }
 
                         echo "<img src=\"website_code/images/Bttn_RemoveOff.gif\" onmousedown=\"this.src='website_code/images/Bttn_RemoveClick.gif'\" onmouseover=\"this.src='website_code/images/Bttn_RemoveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_RemoveOff.gif'\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" class=\"share_files_img\" />";
@@ -86,19 +88,19 @@ if(is_numeric($_POST['template_id'])){
 
             if(!is_user_creator(mysql_real_escape_string($_POST['template_id']))&&!is_user_admin()){
 
-                echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">Click to stop sharing this file</a></p>";
+                echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
 
             }
 
         }else{
 
-            echo "<p class=\"share_files_paragraph\"><span>This template is not shared</span</p>";
+            echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
 
         }	
 
     }else{
 
-        echo "<p>You have no rights to this template</p>";
+        echo "<p>" . SHARING_FAIL . "</p>";
 
     }
 

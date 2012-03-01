@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Xerte Online Toolkits Installer</title>
+
+<link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<style>
+
+a{
+color:#000;
+}
+
+a img{
+
+	border:0px;
+
+}
+
+textarea{
+
+	float:left;
+	width:90%;
+	position:relative;
+	clear:left;
+
+}
+
+p{
+
+	clear:left;
+
+}
+
+</style>
+</head>
+
+<body>
+
+	<div class="topbar">
+		<img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+		<img src="../website_code/images/UofNLogo.jpg" style="margin-right:10px; float:right" />
+	</div>
+
+	<div class="pagecontainer">

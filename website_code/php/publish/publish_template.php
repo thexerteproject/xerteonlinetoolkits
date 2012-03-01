@@ -11,6 +11,8 @@
 
 require_once("../../../config.php");
 
+_load_language_file("/website_code/php/publish/publish_template.inc");
+
 require "../screen_size_library.php";
 require "../template_status.php";
 require "../display_library.php";
@@ -68,7 +70,7 @@ if(is_numeric(mysql_real_escape_string($_POST['template_id']))){
 
 }else{
 
-    echo "Sorry you are not an editor of this template and so cannot publish it";
+    echo PUBLISH_FAIL;
 
 }
 
