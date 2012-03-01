@@ -8,7 +8,8 @@
   <script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=MapstractionDemo"></script>
   <script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6"></script>
   <script src="http://openlayers.org/api/OpenLayers.js"></script>
-  <script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google, yahoo, microsoft, openlayers)"></script>
+  <!--<script type="text/javascript" charset="utf-8" src="http://mapstraction.googlecode.com/svn/trunk/source/mxn.js?(google, yahoo, microsoft, openlayers)"></script>-->
+  <script type="text/javascript" charset="utf-8" src="mxn.js?(google, yahoo, microsoft, openlayers)"></script>
   <script type="text/javascript">
 
   function getQuerystring(key, defaultVal) {
@@ -47,11 +48,26 @@
         legend: true
       });
 
-
       if (overlays.length > 0){
         for (var i = 0; i < overlays.length; i++){
-          mapstraction.addOverlay(unescape(overlays[i]));
-        } 
+
+          if (overlays[i].indexOf('../') == 0){
+
+            var loc = window.location.pathname.split('mapstraction/mapstraction.htm');
+            loc = loc[0];
+            loc = window.location.host + loc;
+            loc = 'http://' + loc + overlays[i].substr(3);
+
+            mapstraction.addOverlay(loc);
+
+          }
+          else 
+          {
+            mapstraction.addOverlay(unescape(loc));
+          }
+
+        }
+ 
       }
 
       //flickr search
