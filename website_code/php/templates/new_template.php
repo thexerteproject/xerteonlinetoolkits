@@ -12,9 +12,9 @@
 
 require_once("../../../config.php");
 
-include "../user_library.php";
-include "../template_library.php";
-include "../file_library.php";
+require_once("../user_library.php");
+require_once("../template_library.php");
+require_once("../file_library.php");
 
 /*
  * get the root folder for this user

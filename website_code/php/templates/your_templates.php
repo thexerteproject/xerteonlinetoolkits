@@ -7,10 +7,10 @@
 
 require_once("../../../config.php");
 
-include "../display_library.php";
+require_once("../display_library.php");
 
-include "../display_library.php";
-include "../user_library.php";
+require_once("../display_library.php");
+require_once("../user_library.php");
 
 $_SESSION['sort_type'] = "date_down";
 

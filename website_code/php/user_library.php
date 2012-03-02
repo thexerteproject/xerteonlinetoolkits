@@ -211,7 +211,7 @@ function update_user_logon_time(){
 
     if(mysql_query($query)){
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time " . $_SESSION['toolkits_logon_username'], "Succeeded in updating users login time " .$_SESSION['toolkits_logon_id']);
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time " . $_SESSION['toolkits_logon_username'], "Succeeded in updating users login time " . $_SESSION['toolkits_logon_id']);
 
     }else{
 
