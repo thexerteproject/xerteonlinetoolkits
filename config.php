@@ -27,7 +27,7 @@ global $xerte_toolkits_site;
 
 // Change this to FALSE for production sites.
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 if($development) {
@@ -54,7 +54,7 @@ if(!function_exists('_debug')) {
 if(!function_exists('_load_language_file')) {
     function _load_language_file($file_path) { 
         if(isset($_SESSION['toolkits_language'])) {
-            $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . $file_path;
+            $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . "/" . $file_path;
         }
         else {
             // additional logic could use e.g. $_GET['language'] or $_COOKIE['language'] at this point... or something like Zend_Locale and HTTP accept headers...

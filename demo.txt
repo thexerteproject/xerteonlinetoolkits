@@ -16,6 +16,7 @@ _load_language_file("/index.inc");
 
 
 include $xerte_toolkits_site->php_library_path . "login_library.php";
+include $xerte_toolkits_site->php_library_path . "user_library.php";
 include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 	/*
@@ -24,12 +25,11 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 	$_SESSION['toolkits_firstname'] = "Guest";
 	$_SESSION['toolkits_surname'] = "User 2";
-
-if(check_if_first_time($_SESSION['toolkits_logon_username'])){
+	$_SESSION['toolkits_logon_username'] = "guest_user";
 
 	$mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
 
-	$_SESSION['toolkits_logon_username'] = "guestuser2";
+	$_SESSION['toolkits_logon_id'] = "guestuser2";
 
 	/*
 	 * Check to see if this is a users' first time on the site
@@ -47,7 +47,6 @@ if(check_if_first_time($_SESSION['toolkits_logon_username'])){
 		 *   create a virtual root folder for this user
 		 */
 
-}
 
 	}else{
 	
@@ -63,8 +62,6 @@ if(check_if_first_time($_SESSION['toolkits_logon_username'])){
 
 	}
 	
-echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
-
 	/*
 	 * Output the main page, including the user's and blank templates
 	 */
@@ -122,7 +119,7 @@ body_scroll handles the calculation of the documents actual height in IE.
 
 -->
 
-<body onload="javascript:sort_display_settings()"  onselectstart="return false;" onscroll="body_scroll()">
+<body onload="javascript:sort_display_settings()" onselectstart="return false;" onscroll="body_scroll()">
 
 <!-- 
 
