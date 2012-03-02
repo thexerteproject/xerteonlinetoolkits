@@ -7,11 +7,6 @@ _load_language_file("/rss.inc");
 
 include $xerte_toolkits_site->php_library_path . "url_library.php";
 
-function normal_date($string){
-    $temp = explode("-", $string);
-    return $temp[2] . "/" . $temp[1] . "/" . $temp[0];
-}
-
 $query_modifier = "rss";
 
 $action_modifder = "play";

@@ -7,10 +7,6 @@ _load_language_file("/syndicate.inc");
 
 include $xerte_toolkits_site->php_library_path . "url_library.php";
 
-function normal_date($string){
-    $temp = explode("-", $string);
-    return $temp[2] . " " . $temp[1] . " " . $temp[0] . " 12:00:00 GMT";
-}
 
 $query = "SELECT {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_name as origname, username, {$xerte_toolkits_site->database_table_prefix}logindetails.login_id, 
 {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id, keywords, creator_id, date_created, {$xerte_toolkits_site->database_table_prefix}templatedetails.template_name, 
