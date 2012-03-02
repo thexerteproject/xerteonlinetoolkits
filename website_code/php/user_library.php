@@ -267,7 +267,6 @@ function get_user_root_folder(){
 
 
 /**
- * 
  * Function is user admin
  * Is this user set as an administrator
  * @author Patrick Lockley
@@ -276,17 +275,9 @@ function get_user_root_folder(){
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-
 function is_user_admin(){
-
-    global $xerte_toolkits_site;
-
-    if($_SESSION['toolkits_logon_id']=="site_administrator"){
-
+    if(isset($_SESSION['toolkits_logon_id']) && $_SESSION['toolkits_logon_id']=="site_administrator"){
         return true;
-
     }
-
+    return false;
 }
-
-?>
