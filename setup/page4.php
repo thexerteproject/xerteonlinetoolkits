@@ -77,13 +77,9 @@ else {
 
 
 if(!$magic_quotes){
-
     $import_path = addslashes($_POST['import_path']);
-
 }else{
-
     $import_path = $_POST['import_path'];
-
 }
 
 $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . str_replace("\\\\","/",$import_path) . "\" where site_id=\"1\"";	
@@ -122,9 +118,9 @@ if($_POST['apache']=="true"){
     $file_handle = fopen(".htaccess",'w');
     fwrite($file_handle,$buffer,strlen($buffer));
     fclose($file_handle);
-    chmod(".htaccess",0744);
-    rename(".htaccess","../.htaccess");	
-    chmod("../.htaccess",0744);
+    if(chmod(".htaccess",0744) && rename(".htaccess","../.htaccess") && chmod("../.htaccess",0744)) {
+        $success_string .= "<p>.htaccess setup succeeded</p>";
+    }
 }
 
 ?>
