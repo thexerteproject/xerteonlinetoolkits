@@ -144,16 +144,25 @@ if($success_string!=""){
 }
 
 ?>
-<p>
-    Your site URL is  <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> 
+<p> Your site URL is  <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> </p>
 
+<h2>Security Warning</h2>
+<p><strong><u>If you have installed this on a public facing server, ensure you delete the following:<br/>
+<ul>
+    <li>/setup (this installer; it can be used to overwrite files on your webserver)</li>
+</ul>
+<p>You should also delete all of the following you are not planning to use:</p>
+<ul>
+    <li>demo.php (contains a hard coded username for demonstration purposes)</li>
+    <li>integration.php (contains a hard coded username)</li>
+    <li>webctlink,php (allows anyone to specify whatever username they wish)</li>
+</ul>
+</u>
+</strong>
 </p>
-<p>
-    If you have installed this on a public facing server, please look to remove the php file you are not planning to use. Index, demo, integration, webctlink and management.php all can access the site in some way. You should rename the files you do not plan to use.
-</p>
-<p>
-            Please see the Xerte site at <a href="http://www.nottingham.ac.uk/xerte" target="new">http://www.nottingham.ac.uk/xerte</a> and please consider joining the mailing list.
-        </p>
+
+<h2>Need more help?</h2>
+<p>Please see the Xerte site at <a href="http://www.nottingham.ac.uk/xerte" target="new">http://www.nottingham.ac.uk/xerte</a> and please consider joining the mailing list.</p>
 
 </body>
 </html>
