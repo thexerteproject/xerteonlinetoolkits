@@ -1,5 +1,17 @@
 
-
+DROP TABLE IF EXISTS `$additional_sharing`;
+DROP TABLE IF EXISTS `$folderdetails`;
+DROP TABLE IF EXISTS `$ldap`;
+DROP TABLE IF EXISTS `$logindetails` ;
+DROP TABLE IF EXISTS `$originaltemplatesdetails` ;
+DROP TABLE IF EXISTS `$play_security_details` ;
+DROP TABLE IF EXISTS `$sitedetails` ;
+DROP TABLE IF EXISTS `$syndicationcategories` ;
+DROP TABLE IF EXISTS `$syndicationlicenses` ;
+DROP TABLE IF EXISTS `$templatedetails` ;
+DROP TABLE IF EXISTS `$templaterights` ;
+DROP TABLE IF EXISTS `$templatesyndication` ;
+DROP TABLE IF EXISTS `$user_sessions` ;
 
 CREATE TABLE `$additional_sharing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
