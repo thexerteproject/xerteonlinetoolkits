@@ -10,7 +10,7 @@ Xerte Online Toolkits MySQL checks
 <ol>
 <li>A MYSQL Install (Xerte Online Toolkits was developed on ver 14.12 Distrib 5.05.51a for Win32. We haven't tested this with other versions, or on other database systems)</li>
 <li><b>The PHP "MySQL" Settings</b> - Please see <a href="http://uk3.php.net/manual/en/mysql.installation.php">PHP's own guide</a> for more details. Xampp installs should come with MySQL installed. Different versions of PHP however may or may not have MySQL installed by default. If on the PHP Info page you can find a section headed  "MySQL", then you should find it is installed.</li>
-/ol>	
+</ol>	
 </p>
 <p>
 You will need
