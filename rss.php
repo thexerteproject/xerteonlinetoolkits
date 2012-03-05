@@ -2,7 +2,7 @@
 
 header("Content-Type: application/xml; charset=ISO-8859-1");  
 
-require_once "config.php";
+require_once(dirname(__FILE__) . "/config.php");
 _load_language_file("/rss.inc");
 
 include $xerte_toolkits_site->php_library_path . "url_library.php";

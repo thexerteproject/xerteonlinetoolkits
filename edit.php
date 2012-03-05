@@ -9,7 +9,7 @@
  * @package
  */
 
-require_once("config.php");
+require_once(dirname(__FILE__) . "/config.php");
 
 require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
@@ -18,7 +18,6 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
 require_once(dirname(__FILE__) . '/modules/xerte/module_functions.php');
 
 /**
- * 
  * Function update_access_time
  * This function updates the time a template was last edited
  * @param array $row_edit = an array returned from a mysql query
@@ -26,11 +25,8 @@ require_once(dirname(__FILE__) . '/modules/xerte/module_functions.php');
  * @version 1.0
  * @author Patrick Lockley
  */
-
 function update_access_time($row_edit){
-
     global $xerte_toolkits_site;
-
     return db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
 
 }

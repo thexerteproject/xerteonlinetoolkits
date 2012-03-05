@@ -26,7 +26,7 @@
  *
  */
 // cannot not have this.
-require_once('config.php');
+require_once(dirname(__FILE__) . "/config.php");
 
 function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
