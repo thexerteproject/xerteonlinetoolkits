@@ -9,7 +9,7 @@
  * @package
  */
 
-require_once("config.php");
+require_once(dirname(__FILE__) . "/config.php");
 
 require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path  . "template_status.php";

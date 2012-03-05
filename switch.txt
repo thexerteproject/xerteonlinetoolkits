@@ -3,7 +3,7 @@
 // This file could be used instead of index.php to perform authentication. 
 // The list of usernames/passwords are hard coded below.  (search for 'sarah')
 
-require("config.php");
+require_once(dirname(__FILE__) . "/config.php");
 
 /**
  * 

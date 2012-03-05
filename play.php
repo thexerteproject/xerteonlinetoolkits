@@ -8,6 +8,14 @@
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
+require_once(dirname(__FILE__) . "/config.php");
+
+_load_language_file("/play.inc");
+
+require $xerte_toolkits_site->php_library_path . "login_library.php";
+require $xerte_toolkits_site->php_library_path . "display_library.php";
+require $xerte_toolkits_site->php_library_path . "template_library.php";
+
 
 /**
  * 
@@ -161,13 +169,6 @@ function check_security_type($security_setting){
 
 }
 
-require_once("config.php");
-
-_load_language_file("/play.inc");
-
-require $xerte_toolkits_site->php_library_path . "login_library.php";
-require $xerte_toolkits_site->php_library_path . "display_library.php";
-require $xerte_toolkits_site->php_library_path . "template_library.php";
 
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 

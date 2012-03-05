@@ -1,19 +1,19 @@
 <?php
 
-require_once("config.php");
+require_once(dirname(__FILE__) . "/config.php");
 
 require $xerte_toolkits_site->php_library_path . "login_library.php";
 require $xerte_toolkits_site->php_library_path . "user_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
 
-$mysql_id=database_connect("Successful database connect for play queries","Failed database connect for play queries");
-
 /*
  * Check the template ID is numeric
  */
 
-$safe_file_path = mysql_real_escape_string($_GET['file']);
+// for security, the file name should only contain alpha numeric chars or - _ .   
+// We definitely do not want a file path to contain a directory separator like ../ else this could be open to abuse.
+$safe_file_path = preg_replace('/[^a-z0-9\-_\.]/i', '', $_GET['file']);
 
 $data_from_file_name = explode("-",$safe_file_path);
 
@@ -53,8 +53,4 @@ if(is_numeric($data_from_file_name[0])){
 
     echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " Sorry this resource does not exist </div></div></body></html>";
     die();
-
-
 }
-
-?>
