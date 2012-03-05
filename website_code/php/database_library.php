@@ -25,13 +25,8 @@ if(function_exists('database_connect')) {
  * @version 1.0
  * @author Patrick Lockley
  */
-
 function database_connect($success_string, $error_string){
-
-
     global $xerte_toolkits_site;
-
-    _load_language_file('website_code/php/database_library.inc'); // _load_language_file("/website_code/php/database_library.inc");
 
     /*
      * Try to connect
@@ -85,7 +80,7 @@ function database_connect($success_string, $error_string){
  * @return mysql resultset.
  */
 function db_query($sql, $params = array()) {
-    $connection = database_connect('db_Query ok', 'db_query fail');
+    $connection = database_connect('db_query ok', 'db_query fail');
 
     foreach($params as &$value) {
         if(isset($value)) {
@@ -131,12 +126,17 @@ function db_query($sql, $params = array()) {
     return $result;
 }
 
+/**
+ * Convienance query for db_query - retrieve one row
+ * @param string $sql
+ * @param array $params (optional)
+ * @return array (db row) or null
+ */
 function db_query_one($sql, $params = array()) {
     $results = db_query($sql, $params);
 
     if(sizeof($results) > 0) {
         return $results[0];
     }
+    return null;
 }
-
-?>
