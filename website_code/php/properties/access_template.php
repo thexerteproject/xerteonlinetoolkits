@@ -9,7 +9,7 @@
  * @package
  */
 
-require_once("../../../config.php");
+require_once(dirname(__FILE__) . "/../../../config.php");
 
 include "../template_status.php";
 include "../user_library.php";
@@ -32,18 +32,12 @@ function template_share_status($string){
     if($row_access['access_to_whom']==$string){
         return true;
     }else{
-
         if(strcmp(substr($row_access['access_to_whom'],0,5),$string)==0){
-
             return true;
-
         }else{
-
             return false;
-
         }
     }
-
 }
 
 $database_connect_id = database_connect("Access template database connect success","Access template database connect failed");
@@ -66,38 +60,30 @@ if(is_numeric($_POST['template_id'])){
 
     mysql_close($database_connect_id);
 
-        if(mysql_num_rows($query_for_security_content_response)!=0){
+    if(mysql_num_rows($query_for_security_content_response)!=0){
 
-            while($row_security = mysql_fetch_array($query_for_security_content_response)){
+        while($row_security = mysql_fetch_array($query_for_security_content_response)){
 
-                if(template_share_status($row_security['security_setting'])){
+            if(template_share_status($row_security['security_setting'])){
 
-                    echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
+                echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
-                }else{
+            }else{
 
-                    echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-                }
-
-                echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";					
+                echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
             }
 
-        }		
+            echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";					
 
-        echo "</div>";	
+        }
 
-        echo "<p><img src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\" /> </p>";	
+    }		
 
-    }else{
+    echo "</div>";	
 
-        echo "<p>Sorry only the creator can set the access settings</p>";
+    echo "<p><img src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\" /> </p>";	
 
-    }
-
-    mysql_close($database_connect_id);
-
+}else{
+    echo "<p>Sorry only the creator can set the access settings</p>";
 }
-
-?>
