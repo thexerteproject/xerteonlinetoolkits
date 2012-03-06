@@ -4,93 +4,81 @@ require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/index.inc");
 
-/**
- * 
- * Login page, self posts to become management page
- *
- * @author Patrick Lockley
- * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
- * @package
- */
-
-
 include $xerte_toolkits_site->php_library_path . "login_library.php";
-include $xerte_toolkits_site->php_library_path . "user_library.php";
+
 include $xerte_toolkits_site->php_library_path . "display_library.php";
 
-	/*
-	 * Get some user details back from LDAP
-	 */
+$_SESSION['toolkits_firstname'] = "Guest";
 
-	$_SESSION['toolkits_firstname'] = "Guest";
-	$_SESSION['toolkits_surname'] = "User 2";
-	$_SESSION['toolkits_logon_username'] = "guest_user";
+$_SESSION['toolkits_surname'] = "User";
 
-	$mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
+include $xerte_toolkits_site->php_library_path . "user_library.php";
 
-	$_SESSION['toolkits_logon_id'] = "guestuser2";
+$_SESSION['toolkits_logon_username'] = "guest";
 
-	/*
-	 * Check to see if this is a users' first time on the site
-	 */
+$mysql_id=database_connect("index.php database connect success","index.php database connect fail");			
 
-	if(check_if_first_time($_SESSION['toolkits_logon_username'])===FALSE){
-	
-		/*
-		 *	create the user a new id			
-		 */
+/*
+ * Check to see if this is a users' first time on the site
+ */
 
-		$_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
+if(check_if_first_time($_SESSION['toolkits_logon_username'])){
 
-		/*
-		 *   create a virtual root folder for this user
-		 */
+    /*
+     *	create the user a new id			
+     */
 
+    $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
 
-	}else{
-	
-		/*
-		 * User exists so update the user settings
-		 */
+    /*
+     *   create a virtual root folder for this user
+     */
+
+    create_a_virtual_root_folder();			
+
+}else{
+
+    /*
+     * User exists so update the user settings
+     */
+
+    $_SESSION['toolkits_logon_id'] = get_user_id();
+
+    update_user_logon_time();
+
+}
+
+recycle_bin();	
 
 /*
  * Output the main page, including the user's and blank templates
  */
-
-		update_user_logon_time();
-
-	}
-	
-	/*
-	 * Output the main page, including the user's and blank templates
-	 */
 ?>
-		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
+                <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
 
-		<!-- 
+                <!-- 
 
-		University of Nottingham Xerte Online Toolkits
+                University of Nottingham Xerte Online Toolkits
 
-		HTML to use to set up the template management page
+                HTML to use to set up the template management page
 
-		Version 1.0
+                Version 1.0
 
-		-->
+                -->
 
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+                <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
 
-		<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-		<link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" /><?PHP
+                <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+                <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" /><?PHP
 
-	echo "
-		<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
-	var site_url = \"{$xerte_toolkits_site->site_url}\";
-	var site_apache = \"{$xerte_toolkits_site->apache}\";
-	var properties_ajax_php_path = \"website_code/php/properties/\";
-	var management_ajax_php_path = \"website_code/php/management/\";
-	var ajax_php_path = \"website_code/php/\";";
+echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+
+echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
+
+echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
+
+echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
 
 ?>
                 </script>
@@ -119,7 +107,7 @@ body_scroll handles the calculation of the documents actual height in IE.
 
 -->
 
-<body onload="javascript:sort_display_settings()" onselectstart="return false;" onscroll="body_scroll()">
+<body onload="javascript:sort_display_settings()"  onselectstart="return false;" onscroll="body_scroll()">
 
 <!-- 
 
@@ -199,95 +187,90 @@ Folder popup is the div that appears when creating a new folder
                     </div>
                     <div id="file_area" onscroll="scroll_check(event,this)" onmousemove="mousecoords(event)" onmouseup="file_drag_stop(event,this)"><?PHP
 
-            list_users_projects("data_down");
+list_users_projects("data_down");
 
 ?></div>
-</div>
-<!-- 
-
-        Everything from the end of the file system to the top of the blank templates area
-
-
--->
-
-            </div>			
-            <div class="file_mgt_area_bottom" style="height:30px;">		
-                <div class="bottom_left sign_in_BL m_b_d_2_child" style="height:30px;">
-                    <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:30px;">
-                        <form name="sorting" style="display:inline">
-                                <p style="padding:0px; margin:3px 0 0 5px">
-                                    <?PHP echo INDEX_SORT; ?>
-                                    <select name="type">
-                                        <option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
-                                        <option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
-                                        <option value="date_down"><?PHP echo INDEX_SORT_NEW; ?></option>
-                                        <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
-                                    </select>
-                                    <a href="javascript:selection_changed()">Sort</a>
-                                </p>
-                        </form>
                     </div>
-                </div>
-            </div>
-            <div class="border" style="margin-top:10px"></div>
-            <div class="help" style="width:48%">
-                <?PHP echo $xerte_toolkits_site->pod_one; ?>	
-            </div>
+                    <!-- 
 
-            <div class="help" style="width:48%; float:right;">
-                <?PHP echo $xerte_toolkits_site->pod_two; ?>	
-            </div>
-            </div>
+                            Everything from the end of the file system to the top of the blank templates area
 
-            <div class="new_template_area">
-                <div class="top_left sign_in_TL m_b_d_2_child new_template_mod">
-                    <div class="top_right sign_in_TR m_b_d_2_child">
-                        <p class="heading">	
-                            <?PHP echo INDEX_CREATE; ?>					</p>
-                        <p class="general">
-                            <?PHP echo INDEX_TEMPLATES; ?>					</p>
+
+                    -->
+
+                    </div>			
+                    <div class="file_mgt_area_bottom" style="height:30px;">		
+                        <div class="bottom_left sign_in_BL m_b_d_2_child" style="height:30px;">
+                            <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:30px;">
+                                <form name="sorting" style="display:inline">
+                                        <p style="padding:0px; margin:3px 0 0 5px">
+                                            <?PHP echo INDEX_SORT; ?>
+                                            <select name="type">
+                                                <option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
+                                                <option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
+                                                <option value="date_down"><?PHP echo INDEX_SORT_NEW; ?></option>
+                                                <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
+                                            </select>
+                                            <a href="javascript:selection_changed()">Sort</a>
+                                        </p>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="border" style="margin-top:10px"></div>
+                    <div class="help" style="width:48%">
+                        <?PHP echo $xerte_toolkits_site->pod_one; ?>	
+                    </div>
 
-            <div class="new_template_area_middle">
+                    <div class="help" style="width:48%; float:right;">
+                        <?PHP echo $xerte_toolkits_site->pod_two; ?>	
+                    </div>
+                    </div>
 
-                <!-- 
+                    <div class="new_template_area">
+                        <div class="top_left sign_in_TL m_b_d_2_child new_template_mod">
+                            <div class="top_right sign_in_TR m_b_d_2_child">
+                                <p class="heading">	
+                                    <?PHP echo INDEX_CREATE; ?>					</p>
+                                <p class="general">
+                                    <?PHP echo INDEX_TEMPLATES; ?>					</p>
+                            </div>
+                        </div>
 
-                        Top of the blank templates section
+                    <div class="new_template_area_middle">
 
-                -->
+                    <!-- 
+
+                            Top of the blank templates section
+
+                    -->
 
 
 
-                <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP			
+                    <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP			
 
-            list_blank_templates();
+list_blank_templates();
 
-?><!-- 
+?>
+                    <!-- 
 
                         End of the blank templates section, through to end of page
 
                     -->
-
                     </div>				
-                                </div>
-                                <div class="file_mgt_area_bottom" style="width:100%">	
-                                    <div class="bottom_left sign_in_BL m_b_d_2_child">
-                                        <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:10px;">					</div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="border">	</div>
-                        <p class="copyright">
-                            <img src="website_code/images/lt_logo.gif" /><br>
-                            <?PHP echo $xerte_toolkits_site->copyright; ?></p>	
-                        </div>
+                </div>
+                <div class="file_mgt_area_bottom" style="width:100%">	
+                    <div class="bottom_left sign_in_BL m_b_d_2_child">
+                        <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:10px;">					</div>
+                    </div>
+                </div>
+            </div>
+        <div class="border">	</div>
+        <p class="copyright">
+            <img src="website_code/images/lt_logo.gif" /><br>
+            <?PHP echo $xerte_toolkits_site->copyright; ?></p>	
+        </div>
 
 
-                    </body>
-                    </html>
-                    <!----><?PHP
-
-?>
-</body>
+    </body>
 </html>
