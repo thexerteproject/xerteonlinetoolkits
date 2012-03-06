@@ -1,46 +1,23 @@
 <?php
+
 /**
- * 
- * Function check if first time
- * Is this the users first time
+ * Is this the users first time in using XOT
  * @author Patrick Lockley
  * @version 1.0
- * @params number $session_login_ldap - the ldap login for this user
- * @return bool - Is this the users first time
+ * @params string user's username
+ * @return bool - Is this the users first time (have we ever come across this user before in XOT)
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-
-function check_if_first_time($session_login_ldap){
+function check_if_first_time($username){
     global $xerte_toolkits_site;
     $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
-    $response = db_query_one($query, array($session_login_ldap));
+    $response = db_query_one($query, array($username));
 
-    global $xerte_toolkits_site;
-
-    $query = "select login_id from {$xerte_toolkits_site->database_table_prefix}logindetails where username = ? ";
-		
-    $response = db_query($query, array($session_login_ldap));
-
-	if(count($response)==0){
-		
-		return false;
-	
+	if(empty($response)) {
+		return true;
 	}
-	
-    if(!empty($response)) {
-		
-        if(sizeof($response) > 0){
-            return false;
-        }
-        return true;
-
-    }
-    else{
-		
-        receive_message($session_login_ldap, "ADMIN", "CRITICAL", "Failed to check if the users first time", "Failed to check if the users first time");
-
-    }
+    return false;
 }
 
 /**
@@ -53,7 +30,6 @@ function check_if_first_time($session_login_ldap){
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-
 function get_user_id(){
 
     global $xerte_toolkits_site;
@@ -87,9 +63,7 @@ function create_user_id($username, $firstname, $surname){
     $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
     if($res){
-
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
-
         return get_user_id();
 
     }else{
