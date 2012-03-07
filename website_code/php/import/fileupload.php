@@ -2,7 +2,7 @@
 
 require_once "../../../config.php";
 
-_load_language_file("/website_code/php/fileupload.inc");
+_load_language_file("/website_code/php/import/fileupload.inc");
 
 if(in_array($_FILES['filenameuploaded']['type'],$xerte_toolkits_site->mimetypes)){
 

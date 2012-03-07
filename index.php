@@ -52,7 +52,7 @@ function show_page($extra,$xerte_toolkits_site){
                         <p>
                             <?PHP echo $xerte_toolkits_site->welcome_message; ?>
                         </p>
-                    </div>		
+                    </div>              
                     <div class="mainbody_holder">
                         <div class="mainbody_div_2">
                             <div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
@@ -108,15 +108,15 @@ function show_page($extra,$xerte_toolkits_site){
 
                         </div>
                         <div class="mainbody_left">
-                            <div class="tutorials">								
+                            <div class="tutorials">                                                             
                             </div>
-                        </div>		
-                        <div class="mainbody_div">	
+                        </div>          
+                        <div class="mainbody_div">      
                             <p class="intro">
                                 <?PHP echo $xerte_toolkits_site->site_text; ?>
                             </p>
                         </div>
-                    </div>		
+                    </div>              
                 </div>
                 <div class="border">
                 </div>
@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             include $xerte_toolkits_site->php_library_path . "user_library.php";
 
-            $mysql_id=database_connect("index.php database connect success","index.php database connect fail");	
+            $mysql_id=database_connect("index.php database connect success","index.php database connect fail"); 
 
             $_SESSION['toolkits_logon_username'] = $_POST["login"];
 
@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if(check_if_first_time($_SESSION['toolkits_logon_username'])){
 
                 /*
-                 *	create the user a new id			
+                 *      create the user a new id                        
                  */
 
                 $_SESSION['toolkits_logon_id'] = create_user_id($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                  *   create a virtual root folder for this user
                  */
 
-                create_a_virtual_root_folder();			
+                create_a_virtual_root_folder();                 
 
             }else{
 
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             }
 
-            recycle_bin();		
+            recycle_bin();              
 
             /*
              * Output the main page, including the user's and blank templates
@@ -313,7 +313,7 @@ Folder popup is the div that appears when creating a new folder
 
 -->
 
-    <div class="folder_popup" id="message_box">	
+    <div class="folder_popup" id="message_box"> 
         <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
         </div>
         <div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
@@ -324,7 +324,7 @@ Folder popup is the div that appears when creating a new folder
             <div class="main_area_holder_2">
                 <div class="main_area" id="dynamic_section">
                     <p><?PHP echo INDEX_FOLDER_PROMPT; ?></p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" />   <input type="image" src="website_code/images/Bttn_NewFolderOff.gif" onmouseover="this.src='website_code/images/Bttn_NewFolderOn.gif'" onmousedown="this.src='website_code/images/Bttn_NewFolderClick.gif'" onmouseout="this.src='website_code/images/Bttn_NewFolderOff.gif'" style="vertical-align:middle; margin-left:5px; border:1px solid #0f0;" /></form><p><img src="website_code/images/Bttn_CancelOff.gif" onmouseover="this.src='website_code/images/Bttn_CancelOn.gif'" onmousedown="this.src='website_code/images/Bttn_CancelClick.gif'" onmouseout="this.src='website_code/images/Bttn_CancelOff.gif'" onclick="javascript:popup_close()" /></p>
-                </div>									
+                </div>                                                                  
             </div>
         </div>
         <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
@@ -354,8 +354,8 @@ Folder popup is the div that appears when creating a new folder
             <div class="file_mgt_area_top">
                 <div class="top_left sign_in_TL m_b_d_2_child">
                     <div class="top_right sign_in_TR m_b_d_2_child">
-                        <p class="heading">			
-                            <?PHP echo INDEX_WORKSPACE_TITLE; ?>						
+                        <p class="heading">                     
+                            <?PHP echo INDEX_WORKSPACE_TITLE; ?>                                                
                         </p>
                     </div>
                 </div>
@@ -372,15 +372,15 @@ Folder popup is the div that appears when creating a new folder
 
                     <div class="file_mgt_area_middle_button_left">
                         <img src="website_code/images/Bttn_NewFolderOff.gif" onmousedown="this.src='website_code/images/Bttn_NewFolderClick.gif'" onmouseover="this.src='website_code/images/Bttn_NewFolderOn.gif'" onmouseout="this.src='website_code/images/Bttn_NewFolderOff.gif'" onclick="javascript:make_new_folder()" />
-                    </div>	
+                    </div>      
                     <div class="file_mgt_area_middle_button_left">
                         <img id="properties" src="website_code/images/Bttn_PropertiesDis.gif" />
                         <img id="edit" src="website_code/images/Bttn_EditDis.gif" />
-                        <img id="preview" src="website_code/images/Bttn_PreviewDis.gif" />							
-                    </div>	
-                    <div class="file_mgt_area_middle_button_right">				
-                        <img id="delete" src="website_code/images/Bttn_DeleteDis.gif" />	
-                        <img id="duplicate" src="website_code/images/Bttn_DuplicateDis.gif" />	
+                        <img id="preview" src="website_code/images/Bttn_PreviewDis.gif" />                                                      
+                    </div>      
+                    <div class="file_mgt_area_middle_button_right">                             
+                        <img id="delete" src="website_code/images/Bttn_DeleteDis.gif" />        
+                        <img id="duplicate" src="website_code/images/Bttn_DuplicateDis.gif" />  
                         <img id="publish" src="website_code/images/Bttn_PublishDis.gif" />
                     </div>
                     <div id="file_area" onscroll="scroll_check(event,this)" onmousemove="mousecoords(event)" onmouseup="file_drag_stop(event,this)"><?PHP
@@ -396,8 +396,8 @@ Folder popup is the div that appears when creating a new folder
 
 -->
 
-            </div>			
-            <div class="file_mgt_area_bottom" style="height:30px;">		
+            </div>                      
+            <div class="file_mgt_area_bottom" style="height:30px;">             
                 <div class="bottom_left sign_in_BL m_b_d_2_child" style="height:30px;">
                     <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:30px;">
                         <form name="sorting" style="display:inline">
@@ -417,21 +417,21 @@ Folder popup is the div that appears when creating a new folder
             </div>
             <div class="border" style="margin-top:10px"></div>
             <div class="help" style="width:48%">
-                <?PHP echo $xerte_toolkits_site->pod_one; ?>	
+                <?PHP echo $xerte_toolkits_site->pod_one; ?>    
             </div>
 
             <div class="help" style="width:48%; float:right;">
-                <?PHP echo $xerte_toolkits_site->pod_two; ?>	
+                <?PHP echo $xerte_toolkits_site->pod_two; ?>    
             </div>
             </div>
 
             <div class="new_template_area">
                 <div class="top_left sign_in_TL m_b_d_2_child new_template_mod">
                     <div class="top_right sign_in_TR m_b_d_2_child">
-                        <p class="heading">	
-                            <?PHP echo INDEX_CREATE; ?>					</p>
+                        <p class="heading">     
+                            <?PHP echo INDEX_CREATE; ?>                                 </p>
                         <p class="general">
-                            <?PHP echo INDEX_TEMPLATES; ?>					</p>
+                            <?PHP echo INDEX_TEMPLATES; ?>                                      </p>
                     </div>
                 </div>
 
@@ -445,7 +445,7 @@ Folder popup is the div that appears when creating a new folder
 
 
 
-                <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP			
+                <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP                   
 
             list_blank_templates();
 
@@ -455,18 +455,18 @@ Folder popup is the div that appears when creating a new folder
 
                     -->
 
-                    </div>				
+                    </div>                              
                                 </div>
-                                <div class="file_mgt_area_bottom" style="width:100%">	
+                                <div class="file_mgt_area_bottom" style="width:100%">   
                                     <div class="bottom_left sign_in_BL m_b_d_2_child">
-                                        <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:10px;">					</div>
+                                        <div class="bottom_right sign_in_BR m_b_d_2_child" style="height:10px;">                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        <div class="border">	</div>
+                        <div class="border">    </div>
                         <p class="copyright">
                             <img src="website_code/images/lt_logo.gif" /><br>
-                            <?PHP echo $xerte_toolkits_site->copyright; ?></p>	
+                            <?PHP echo $xerte_toolkits_site->copyright; ?></p>  
                         </div>
 
 
@@ -476,7 +476,7 @@ Folder popup is the div that appears when creating a new folder
 
         }else{
 
-            if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])==$xerte_toolkits_site->admin_password)){				
+            if(($_POST["login"]==$xerte_toolkits_site->admin_username)&&(stripslashes($_POST["password"])==$xerte_toolkits_site->admin_password)){                              
 
                 show_page("<p>" . INDEX_SITE_ADMIN . "</p>",$xerte_toolkits_site);
 
