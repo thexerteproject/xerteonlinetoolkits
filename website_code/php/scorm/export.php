@@ -157,156 +157,26 @@ if(is_numeric($_GET['template_id'])){
          */
 
         if($scorm=="true"){
+		
+			if(isset($_GET['data'])){
 
-            if($_GET['data']==true){
+				if($_GET['data']==true){
 
-                $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
+					$query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
 
-                $query_response_metadata = mysql_query($query);
+					$query_response_metadata = mysql_query($query);
 
-                $metadata = mysql_fetch_array($query_response_metadata);
+					$metadata = mysql_fetch_array($query_response_metadata);
 
-                $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
+					$query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
 
-                $query_response_users = mysql_query($query);
+					$query_response_users = mysql_query($query);
+					
+					lmsmanifest_create_rich($row, $metadata, $query_response_users);
 
-                lmsmanifest_create_rich($row, $metadata, $query_response_users);
-
-            }else{	
-
-                lmsmanifest_create($row['zipname']);
-
-            }
-
-            scorm_html_page_create($row['template_name'],$row['template_framework']);
-
-        }else{
-
-            basic_html_page_create($row['template_name'],$row['template_framework']);
-
-        }
-
-
-        /*
-         * Add the files to the zip file, create the archive, then send it to the user
-         */
-
-        xerte_zip_files();
-
-        $zipfile->create_archive();
-
-        $zipfile->download_file($row['zipname']);
-
-
-        /*
-         * remove the files
-         */
-
-        clean_up_files();
-
-        unlink($dir_path . "template.xml");
-
-    }
-
-}
-
-        copy_parent_files();
-
-        /*
-         * If scorm copy the scorn files as well
-         */
-
-        $scorm=mysql_real_escape_string($_GET['scorm']);
-
-        if($scorm=="true"){
-
-            folder_loop($scorm_path);
-
-            copy_scorm_files();
-
-        }else{
-
-            copy($scorm_path . "rloObject.js", $dir_path . "rloObject.js");
-
-            array_push($delete_file_array,  $dir_path . "rloObject.js");	
-
-            copy($scorm_path . "MainPreloader.swf", $dir_path . "MainPreloader.swf");
-
-            array_push($delete_file_array,  $dir_path . "MainPreloader.swf");	
-
-            copy($scorm_path . "resources.swf", $dir_path . "resources.swf");
-
-            array_push($delete_file_array,  $dir_path . "resources.swf");	
-
-        }
-
-        copy($xerte_toolkits_site->root_file_path . "XMLEngine.swf", $dir_path . "XMLEngine.swf");
-
-        array_push($delete_file_array,  $dir_path . "XMLEngine.swf");
-
-
-
-        /*
-         * Language support
-         */
-
-        mkdir($dir_path . 'languages');
-        chmod($dir_path . 'languages', 0777);
-        array_push($delete_folder_array, $dir_path . 'languages');
-
-
-        copy($xerte_toolkits_site->root_file_path . "languages/language-config.xml", $dir_path . "languages/language-config.xml");
-
-        array_push($delete_file_array,  $dir_path . "languages/language-config.xml");
-
-        copy($xerte_toolkits_site->root_file_path . "languages/english.xml", $dir_path . "languages/english.xml");
-
-        array_push($delete_file_array,  $dir_path . "languages/english.xml");
-
-
-
-
-        if($scorm=="true"){
-
-            copy($dir_path . $row['template_name'] . ".rlt", $dir_path . "learningobject.rlo");
-
-            unlink($dir_path . $row['template_name'] . ".rlt");
-
-            array_push($delete_file_array,  $dir_path . "learningobject.rlo");
-
-        }else{
-
-            copy($dir_path . $row['template_name'] . ".rlt", $dir_path . "learningobject.rlt");
-
-            unlink($dir_path . $row['template_name'] . ".rlt");
-
-            array_push($delete_file_array,  $dir_path . "learningobject.rlt");
-
-        }
-
-        folder_loop($dir_path);
-
-        /*
-         * Create scorm manifests of a basic HTML page
-         */
-
-        if($scorm=="true"){
-
-            if($_GET['data']==true){
-
-                $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
-
-                $query_response_metadata = mysql_query($query);
-
-                $metadata = mysql_fetch_array($query_response_metadata);
-
-                $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
-
-                $query_response_users = mysql_query($query);
-
-                lmsmanifest_create_rich($row, $metadata, $query_response_users);
-
-            }else{	
+				}
+			
+			}else{	
 
                 lmsmanifest_create($row['zipname']);
 

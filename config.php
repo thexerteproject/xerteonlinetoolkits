@@ -54,14 +54,19 @@ if(!function_exists('_debug')) {
 if(!function_exists('_load_language_file')) {
     function _load_language_file($file_path) { 
         if(isset($_SESSION['toolkits_language'])) {
-            $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . "/" . $file_path;
+            $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . $file_path;
         }
         else {
             // additional logic could use e.g. $_GET['language'] or $_COOKIE['language'] at this point... or something like Zend_Locale and HTTP accept headers...
             // we'll just fall back to assuming en-gb if nothing else is specified here.
             $file_path = dirname(__FILE__) . '/languages/en-gb/' . $file_path;
         }
-        require_once($file_path);
+		if(file_exists($file_path)){
+		
+			require_once($file_path);
+			
+		}
+
         return true;
     }
 }

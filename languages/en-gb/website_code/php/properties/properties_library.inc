@@ -134,8 +134,6 @@
 	
 	define("PROPERTIES_LIBRARY_RSS_INCLUDE", "Include this project in the RSS Feeds"); 
 	
-	define("PROPERTIES_LIBRARY_RSS_EXPORT", "You can also include a description for your project in the RSS Feed as well");
-
 	define("PROPERTIES_LIBRARY_RSS_DESCRIPTION", "You can also include a description for your project in the RSS Feed as well");
 	
 	define("PROPERTIES_LIBRARY_RSS_SITE", "You can include this content in the site's RSS feeds. People who subscribe to the feeds will see new content as it as added to the feeds. There are several feeds available");

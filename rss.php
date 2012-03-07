@@ -52,16 +52,16 @@ if(!isset($_GET['username'])){
             $folder_string = " - " . _html_escape(str_replace("_", " ", $_GET['folder_name']));
         }
 
-        echo "<rss version=\"2.0\"><channel>
-            <title>" . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . RSS_LO . " - " . {$xerte_toolkits_site->name}</title>
-            <link>{$xerte_toolkits_site->site_url}</link>
-            <description>" . RSS_FEED_DESC . _html_escape($temp_array[0]) . " " . _html_escape($temp_array[1]) . RSS_PLURAL . " {$folder_string} . " . RSS_FEED_PUBLIC . {$xerte_toolkits_site->name}</description>
-            <language>en-gb</language>
-            <image>
-            <title>{$xerte_toolkits_site->rss_title}</title>
-            <url>{$xerte_toolkits_site->site_url}website_code/images/xerteLogo.jpg</url>
-            <link>{$xerte_toolkits_site->site_url}</link></image>";
-        $row_create = $rows[1];
+        echo "<rss version=\"2.0\">
+        <channel><title>{$xerte_toolkits_site->name}</title>
+        <link>{$xerte_toolkits_site->site_url}</link>
+        <description>" . RSS_DESCRIPTION . " " . $xerte_toolkits_site->name . "</description>
+        <language>" . RSS_LANGUAGE . "</language>
+        <image><title>{$xerte_toolkits_site->name}</title>
+        <url>{$xerte_toolkits_site->site_url}website_code/images/xerteLogo.jpg</url>
+        <link>{$xerte_toolkits_site->site_url}</link></image>";
+
+		$row_create = $rows[0];
 
     }
 }

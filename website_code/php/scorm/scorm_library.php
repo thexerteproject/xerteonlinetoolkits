@@ -68,7 +68,7 @@ function lmsmanifest_create_rich($row, $metadata, $users){
 	
 	$scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", mysql_real_escape_string($_GET['template_id'])) . "</imsmd:location></imsmd:technical>";
 	
-	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['licenses'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['licenses'] . "</imsmd:string></imsmd:description></imsmd:rights>";
+	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['license'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['license'] . "</imsmd:string></imsmd:description></imsmd:rights>";
 	
 	$scorm_top_string .= "</imsmd:lom></metadata>";
 

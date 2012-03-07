@@ -35,11 +35,5 @@ if(is_numeric($_POST['template_id'])){
 
     mysql_close($database_id);
 
-        echo "<p>Sorry, only creators of templates can set up XML sharing</p>";
-
-    }
-
-    mysql_close($database_id);
-
 }
 ?>
