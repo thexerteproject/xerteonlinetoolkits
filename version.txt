@@ -1,5 +1,6 @@
 --------------------------
 -                        -
-Xerte Online Toolkits v1.8
+Xerte Online Toolkits v1.8 (trunk)
+- $Id$             -
 -                        -
 ---------Spring 2012------
