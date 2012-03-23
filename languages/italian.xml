@@ -7,6 +7,7 @@
   </tocButton>
   <helpButton label="Help" description="Help Button. ">
   </helpButton>
+  <mediaButton label="Media" description="Show Media Button. "/>
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help">
   </pageHelp>
   <continueButton label="Continue" description="Continue Button">

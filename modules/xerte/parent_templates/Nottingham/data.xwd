@@ -9,6 +9,9 @@
     <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language" optional="true"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
 
+    <mediaImage optional="true" type="media" label="Media Image"/>
+    <mediaTranscript optional="true" type="media" label="Media Transcript"/>
+    <media optional="true" type="media" label="Media File"/>
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
     <nfo optional="true" label="Help File" type="media"/>

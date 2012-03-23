@@ -1,4 +1,4 @@
-<language name="Saesneg">
+﻿<language name="Saesneg">
   <nextButton label="Next" description="Next Page Button">
   </nextButton>
   <backButton label="Back" description="Previous Page Button">
@@ -6,6 +6,7 @@
   <tocButton label="Contents" description="Table of Contents Button">
   </tocButton>
   <helpButton label="Help" description="Help Button. ">
+  <mediaButton label="Media" description="Show Media Button. "/>
   </helpButton>
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help">
   </pageHelp>

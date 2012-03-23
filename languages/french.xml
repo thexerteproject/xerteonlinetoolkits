@@ -7,6 +7,8 @@
   <tocButton label="Contenus" description="Tableau de bouton de contenu"/>
   
   <helpButton label="Aide" description="bouton d'aide"/>
+
+  <mediaButton label="Media" description="Show Media Button. "/>
   
   <pageHelp name="la page d'aide" description="la page d'aide" toClose="Appuyez sur pour fermer l'espace Aide"/>
   

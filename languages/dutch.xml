@@ -7,6 +7,8 @@
   <tocButton label="Inhoud" description="Inhoudsopgave Knop"/>
   
   <helpButton label="Help" description="Help Knop "/>
+
+  <mediaButton label="Media" description="Show Media Button. "/>
   
   <pageHelp name="Pagina Help" description="Pagina Help" toClose="Druk op Spatie om help te sluiten"/>
   
