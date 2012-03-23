@@ -77,7 +77,12 @@ function show_preview_code($row, $row_username){
 	}
 	
 	function openWindow(params){
-	  window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+		if (params.type == "media") {
+			var src = params.url + '?media=../' + params.media + ',transcript=../' + params.transcript + ',img=../' + params.img;
+			window.open(src,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+		} else {
+			window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+		}
 	}
 
 	var popupInfo = new Array();
@@ -248,10 +253,6 @@ function show_preview_code($row, $row_username){
 				document.getElementById(id).style.top = calcPopupSize("y", i) + "px";
 			}
 		}
-	}
-
-	function mediaWindow(url, width, height) {
-	  window.open(url,'media_window','height=' + height + ',width=' +width);
 	}
 	
 	</script>
