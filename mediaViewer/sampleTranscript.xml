@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<tt xmlns="http://www.w3.org/ns/ttml" xml:lang="en">
+
+<tt>
   <head>
     <caption timing="previous" position="below"/>
     <styling textColour="0x000000" textAlign="left" highlight="false" highlightColour="0xFFFF00"/>
