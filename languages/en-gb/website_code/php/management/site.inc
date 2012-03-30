@@ -93,8 +93,6 @@
 
 	define("MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT", "The error log message is (Set to true to log errors)");
 
-	define("MANAGEMENT_SITE_ERROR_EMAIL", "The email error message is (Set to true to email errors)");
-
 	define("MANAGEMENT_SITE_ERROR_MAX", "The maximum error size is (The maximum number of entries per error log)");
 
 	define("MANAGEMENT_SITE_LDAP", "LDAP settings ");
