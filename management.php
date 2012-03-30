@@ -108,36 +108,19 @@ function mgt_page($xerte_toolkits_site, $extra){
 
 require $xerte_toolkits_site->php_library_path . "login_library.php";
 
-require $xerte_toolkits_site->php_library_path . "login_library.php";
-
 /*
  * As with index.php, check for posts and similar
  */ 
 
-
-if((!isset($_POST["login"]))&&(!isset($_POST["password"]))){
-
-    mgt_page($xerte_toolkits_site, MANAGEMENT_USERNAME_AND_PASSWORD_EMPTY);		
-
-    $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
-
-    echo $buffer;
-
-}
-
-if(($_POST["login"]=="")&&($_POST["password"]=="")){
+if(empty($_POST["login"])&&empty($_POST["password"])){
 
     mgt_page($xerte_toolkits_site, MANAGEMENT_USERNAME_AND_PASSWORD_EMPTY);
-
-    $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "mgt_top"));
-
-    mgt_page($xerte_toolkits_site, MANAGEMENT_USERNAME_EMPTY);
 
     /*
      * Password left empty
      */
 
-}else if($_POST["password"]==""){
+}else if(empty($_POST["password"])){
 
     mgt_page($xerte_toolkits_site, MANAGEMENT_PASSWORD_EMPTY);
 
@@ -152,51 +135,32 @@ if(($_POST["login"]=="")&&($_POST["password"]=="")){
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";	
 
-
-        echo $buffer;
-
-        /*
-         * Password left empty
-         */
-
         $mysql_id=database_connect("management.php database connect success","management.php database connect fail");			
-
-        /*
-         * Check the user is set as an admin in the usertype record in the logindetails table, and display the page
-         */
-
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
-
-                <!-- 
-
-                University of Nottingham Xerte Online Toolkits
-
-                HTML to use to set up the template management page
-
-                Version 1.0
-
-                -->
-
-                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-                <title>Welcome to Xerte Web Toolkits</title>
-
-                <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
-                <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" /><?PHP
-
-        echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
-
-        $buffer .= "<p>Please enter your password</p>";
-
-        $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));
-
-        echo $buffer;
-
 
         /*
          * Password and username provided, so try to authenticate
          */
 
 ?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+            <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+
+            <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+			<link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+
+            <!-- 
+
+            University of Nottingham Xerte Online Toolkits
+
+            HTML to use to set up the login page
+            The {{}} pairs are replaced in the page formatting functions in display library
+
+            Version 1.0
+
+            -->
                 <script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
                 <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
@@ -307,22 +271,8 @@ Folder popup is the div that appears when creating a new folder
         echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
 
 
-    }else{
-
-        /*
-         * Wrong password message
-         */
-
-        $buffer = login_page_format_top(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_top"));
-
-        $buffer .= "<p>Sorry that password combination was not correct</p>";
-
-        $buffer .= login_page_format_bottom(file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->website_code_path . "login_bottom"));	
-        echo $buffer;	
-
     }
 
-}
 
 }
 

@@ -106,8 +106,6 @@ if(is_user_admin()){
 
     echo "<div class=\"template\" id=\"errordetails\"><p>" . MANAGEMENT_SITE_ERROR_HANDLING . "<a href=\"javascript:templates_display('errordetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"errordetails_child\">";
 
-    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"email_error_list\">" . $row['email_error_list'] . "</textarea></form></p>";	
-
     echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT . "<form><textarea id=\"error_log_message\">" . $row['error_log_message'] . "</textarea></form></p>";	
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_message\">" . $row['error_email_message'] . "</textarea></form></p>";	
