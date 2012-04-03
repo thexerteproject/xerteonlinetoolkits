@@ -1,10 +1,10 @@
 ﻿<languages>
 
-  <language name="English" file="en_gb.xml"/>
-  <language name="Dutch" file="dutch.xml"/>
-  <language name="French" file="french.xml"/>
-  <language name="Italian" file="italian.xml"/>
-  <language name="Spanish" file="spanish.xml"/>
-  <language name="Welsh" file="welsh.xml"/>
+  <language name="English" file="en-gb.xml"/>
+  <language name="Dutch" file="nl-NL.xml"/>
+  <language name="French" file="fr-FR.xml"/>
+  <language name="Italian" file="it-IT.xml"/>
+  <language name="Spanish" file="es-ES.xml"/>
+  <language name="Welsh" file="cy-GB.xml"/>
 
 </languages>
