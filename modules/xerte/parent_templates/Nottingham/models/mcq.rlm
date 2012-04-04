@@ -1,123 +1,1 @@
-	<PG title="enter page title" name="mcq">
-		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
-
-if (extXML == undefined){
-  // Page Wizard
-  pageIcon.templateData = pageIcon.extXML.toObject();
-  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
-} else {
-  // Toolkits
-  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
-  pageIcon.templateData = myXML.toObject();
-  rootIcon.setTitleText(templateData.learningObject[0].name);
-}
-
-align = pageIcon.templateData.mcq[0].align;
-
-panelWidth = pageIcon.templateData.mcq[0].panelWidth;
-if (panelWidth == "Small"){
-  panelW = 300;
-  textW = 440;
-} else if (panelWidth == "Medium"){
-  panelW = 450;
-  textW = 290;
-} else if (panelWidth == "Large"){
-  panelW = 600;
-  textW = 140;
-} else {
-  panelW = 760;
-  textW = 0;
-}
-
-if (pageIcon.templateData.mcq[0].narration != undefined){
-  narration = pageIcon.templateData.mcq[0].narration;
-  rootIcon.broadcast('showAudio');
-}
-
-]]></SCR>
-		<DIS w="panelW" h="474" tabIndex="-1" id="panel" name="panel" x="align == 'Left' ? 20 : textW + 40" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
-		<DIS scrolling="auto" name="instruction" x="align == 'Left' ? panel._x + panelW + 20 : 20" y="panel._y" w="textW" h="474" type="text"><![CDATA[{pageIcon.templateData.mcq[0].instruction}]]></DIS>
-		<DIS textColour="#000000" id="prpt" name="question" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.mcq[0].prompt}
-
-]]></DIS>
-		<SCR name="makeOptions"><![CDATA[ln = pageIcon.templateData.mcq[0].option.length;
-optionTracking = new Array();
-
-if (icon.attributes.built != "true"){
-  icon.nextSibling.childNodes[1].duplicate(pageIcon.templateData.mcq[0].option.length - 2);
-  icon.attributes.built = "true";
-}
-
-//multi answer?
-if (pageIcon.templateData.mcq[0].type == 'Multiple Answer'){
-  for (i = 0; i < pageIcon.templateData.mcq[0].option.length; i++){
-    icon.nextSibling.childNodes[i].attributes.type="checkBox";
-  }
-}
-
-for (i = 0; i < ln; i++){
-  optionTracking[i] = 0;
-  if (pageIcon.templateData.mcq[0].option[i].correct == 'true'){
-    icon.nextSibling.childNodes[i].attributes.correct = 1;
-  } else {
-    icon.nextSibling.childNodes[i].attributes.correct = 0;
-  }
-}]]></SCR>
-		<INT id="ques" name="buttonInteraction" perpetual="0">
-			<RES w="panelW - 60" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="prpt._y + prpt._height + 30" label="{pageIcon.templateData.mcq[0].option[icon.index()].text}" group="grp" erase="1" exit="0">
-				<SCR name="trackAnswers"><![CDATA[//track the question
-if (pageIcon.templateData.mcq[0].type == 'Single Answer'){
-  for (i = 0; i < ln; i++){
-    optionTracking[i] = 0;
-  }
-  optionTracking[icon.parentNode.index()] = 1;
-} 
-
-if (pageIcon.templateData.mcq[0].type == 'Multiple Answer'){
-  if (icon.parentNode.clip().getValue() == true){
-    optionTracking[icon.parentNode.index()] = 1;
-  } else {
-    optionTracking[icon.parentNode.index()] = 0;
-  }
-} 
-btnSubmit.setEnabled(true);
-
-fb = pageIcon.templateData.mcq[0].option[icon.parentNode.index()].feedback;]]></SCR>
-			</RES>
-			<RES w="panelW - 60" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="_ytile + 10" label="{pageIcon.templateData.mcq[0].option[icon.index()].text}" group="grp" erase="1" exit="0">
-				<SCR name="trackAnswers"><![CDATA[//track the question
-if (pageIcon.templateData.mcq[0].type == 'Single Answer'){
-  for (i = 0; i < ln; i++){
-    optionTracking[i] = 0;
-  }
-  optionTracking[icon.parentNode.index()] = 1;
-} 
-
-if (pageIcon.templateData.mcq[0].type == 'Multiple Answer'){
-  if (icon.parentNode.clip().getValue() == true){
-    optionTracking[icon.parentNode.index()] = 1;
-  } else {
-    optionTracking[icon.parentNode.index()] = 0;
-  }
-} 
-btnSubmit.setEnabled(true);
-
-fb = pageIcon.templateData.mcq[0].option[icon.parentNode.index()].feedback;]]></SCR>
-			</RES>
-			<RES enabled="0" rs="btnSubmit" swf="templatePath + 'common/button.swf'" name="button" type="button" x="prpt._x" y="_ytile + 10" label="Check" erase="1" exit="0">
-				<SCR name="makeFeedback"><![CDATA[//single answer feedback
-fb = "";
-for (i = 0; i < ln; i++){
-  if (optionTracking[i] == 1){
-    fb += pageIcon.templateData.mcq[0].option[i].feedback + '\r\r';
-  }
-}
-if (pageIcon.templateData.mcq[0].feedback != undefined){
-  fb += pageIcon.templateData.mcq[0].feedback;
-}
-fb = '<b>Feedback</b><br>' + fb;
-]]></SCR>
-				<DIS scrolling="auto" textColour="#000000" name="feedback" x="btnSubmit._x" y="btnSubmit._y + 40" w="panelW - 40" h="474 - (btnSubmit._y + btnSubmit._height) - 10" type="text"><![CDATA[{fb}]]></DIS>
-			</RES>
-		</INT>
-	</PG>
+	<PG title="Multiple Choice" name="mcq">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();if (rootIcon.projMode == "dev"){   // Page Wizard  pageIcon.templateData = pageIcon.extXML.toObject();  pageIcon.templateData = pageIcon.templateData.pageWizard[0];} else {  // Toolkits  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);  pageIcon.templateData = myXML.toObject();}  rootIcon.setTitleText(templateData.learningObject[0].name);  // handle multiple page data definitions in a project if (rootIcon.projectPageIndex == undefined){     rootIcon.projectPageIndex = 0;}// check if this page has a definition for the current project index and default to 0 if notif (pageIcon.templateData.mcq[rootIcon.projectPageIndex].name == undefined){  projPI = 0;} else {  projPI = rootIcon.projectPageIndex; } // set up text stringsif (pageIcon.templateData.mcq[projPI].checkBtnTxt != undefined){  checkBtnTxt = pageIcon.templateData.mcq[projPI].checkBtnTxt;} else {  checkBtnTxt = "Check";}if (pageIcon.templateData.mcq[projPI].checkBtnTip != undefined){  checkBtnTip = pageIcon.templateData.mcq[projPI].checkBtnTip;} else {  checkBtnTip = "Check Answer";}if (pageIcon.templateData.mcq[projPI].checkBtnWidth != undefined){  checkBtnWidth = pageIcon.templateData.mcq[projPI].checkBtnWidth;} else {  checkBtnWidth = "100";}if (pageIcon.templateData.mcq[projPI].feedbackLabel != undefined){  feedbackLabel = pageIcon.templateData.mcq[projPI].feedbackLabel;} else {  feedbackLabel = "Feedback";}align = pageIcon.templateData.mcq[projPI].align;panelWidth = pageIcon.templateData.mcq[projPI].panelWidth;if (panelWidth == "Small"){  panelW = 300;  textW = 440;} else if (panelWidth == "Medium"){  panelW = 450;  textW = 290;} else if (panelWidth == "Large"){  panelW = 600;  textW = 140;} else {  panelW = 760;  textW = 0;}if (pageIcon.templateData.mcq[projPI].narration != undefined){  narration = pageIcon.templateData.mcq[projPI].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS w="panelW" h="474" tabIndex="-1" id="panel" name="panel" x="align == 'Left' ? 20 : textW + 40" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<DIS scrolling="auto" name="instruction" x="align == 'Left' ? panel._x + panelW + 20 : 20" y="panel._y" w="textW" h="474" type="text"><![CDATA[{pageIcon.templateData.mcq[projPI].instruction}]]></DIS>		<DIS textColour="#000000" id="prpt" name="question" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.mcq[projPI].prompt}]]></DIS>		<SCR name="makeOptions"><![CDATA[ln = pageIcon.templateData.mcq[projPI].option.length;optionTracking = new Array();if (icon.attributes.built != "true"){  icon.nextSibling.childNodes[1].duplicate(pageIcon.templateData.mcq[projPI].option.length - 2);  icon.attributes.built = "true";}//multi answer?if (pageIcon.templateData.mcq[projPI].type == 'Multiple Answer'){  for (i = 0; i < pageIcon.templateData.mcq[projPI].option.length; i++){    icon.nextSibling.childNodes[i].attributes.type="checkBox";  }}for (i = 0; i < ln; i++){  optionTracking[i] = 0;  if (pageIcon.templateData.mcq[projPI].option[i].correct == 'true'){    icon.nextSibling.childNodes[i].attributes.correct = 1;  } else {    icon.nextSibling.childNodes[i].attributes.correct = 0;  }}]]></SCR>		<INT id="ques" name="buttonInteraction" perpetual="0">			<RES w="panelW - 60" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="prpt._y + prpt._height + 30" label="{pageIcon.templateData.mcq[projPI].option[icon.index()].text}" group="grp" erase="1" exit="0">				<SCR name="trackAnswers"><![CDATA[//track the questionif (pageIcon.templateData.mcq[projPI].type == 'Single Answer'){  for (i = 0; i < ln; i++){    optionTracking[i] = 0;  }  optionTracking[icon.parentNode.index()] = 1;} if (pageIcon.templateData.mcq[projPI].type == 'Multiple Answer'){  if (icon.parentNode.clip().getValue() == true){    optionTracking[icon.parentNode.index()] = 1;  } else {    optionTracking[icon.parentNode.index()] = 0;  }} btnSubmit.setEnabled(true);fb = pageIcon.templateData.mcq[projPI].option[icon.parentNode.index()].feedback;]]></SCR>			</RES>			<RES w="panelW - 60" textColour="#000000" name="protoOption" type="radio" x="prpt._x" y="_ytile + 10" label="{pageIcon.templateData.mcq[projPI].option[icon.index()].text}" group="grp" erase="1" exit="0">				<SCR name="trackAnswers"><![CDATA[//track the questionif (pageIcon.templateData.mcq[projPI].type == 'Single Answer'){  for (i = 0; i < ln; i++){    optionTracking[i] = 0;  }  optionTracking[icon.parentNode.index()] = 1;} if (pageIcon.templateData.mcq[projPI].type == 'Multiple Answer'){  if (icon.parentNode.clip().getValue() == true){    optionTracking[icon.parentNode.index()] = 1;  } else {    optionTracking[icon.parentNode.index()] = 0;  }} btnSubmit.setEnabled(true);fb = pageIcon.templateData.mcq[projPI].option[icon.parentNode.index()].feedback;]]></SCR>			</RES>			<RES toolTip="{checkBtnTip}" enabled="0" rs="btnSubmit" swf="templatePath + 'common/button.swf'" name="button" type="button" x="prpt._x" y="_ytile + 10" label="{checkBtnTxt}" erase="1" exit="0">				<SCR name="makeFeedback"><![CDATA[//single answer feedbackfb = "";for (i = 0; i < ln; i++){  if (optionTracking[i] == 1){    fb += pageIcon.templateData.mcq[projPI].option[i].feedback + '\r\r';  }}if (pageIcon.templateData.mcq[projPI].feedback != undefined){  fb += pageIcon.templateData.mcq[projPI].feedback;}fb = '<b>' + feedbackLabel + '</b><br>' + fb;]]></SCR>				<DIS scrolling="auto" textColour="#000000" name="feedback" x="btnSubmit._x" y="btnSubmit._y + 40" w="panelW - 40" h="474 - (btnSubmit._y + btnSubmit._height) - 10" type="text"><![CDATA[{fb}]]></DIS>			</RES>		</INT>	</PG>

@@ -1,105 +1,1 @@
-	<PG title="enter page title" name="transcriptReader">
-		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
-
-if (extXML == undefined){
-  // Page Wizard
-  pageIcon.templateData = pageIcon.extXML.toObject();
-  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
-} else {
-  // Toolkits
-  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
-  pageIcon.templateData = myXML.toObject();
-  rootIcon.setTitleText(templateData.learningObject[0].name);
-}
-
-itemCount = pageIcon.templateData.transcriptReader[0].nestedPage.length);
-
-panelWidth = pageIcon.templateData.transcriptReader[0].panelWidth;
-if (panelWidth == "Small"){
-  panelW = 300;
-  textW = 440;
-} else if (panelWidth == "Medium"){
-  panelW = 450;
-  textW = 290;
-} else if (panelWidth == "Large"){
-  panelW = 600;
-  textW = 150;
-} else {
-  panelW = 760;
-  textW = 0;
-}
-
-if (pageIcon.templateData.transcriptReader[0].narration != undefined){
-  narration = pageIcon.templateData.transcriptReader[0].narration;
-  rootIcon.broadcast('showAudio');
-}
-]]></SCR>
-		<SCR isFunc="1" name="nextChunk"><![CDATA[for (i = 0; i < chunks.length; i++){
-  chunks[i].clear();
-}
-chunks[args[0]].beginFill(0xFFFF00,100);
-chunks[args[0]].drawRect(0,0,chunks[args[0]]._width, chunks[args[0]]._height);
-
-if (chunks[chunks.length - 1]._y + chunks[chunks.length - 1]._height > panel._y + 434){  
-  d = chunks[args[0]]._y- 40;
-  for (i = 0; i < chunks.length; i++){
-    chunks[i].animate(chunks[i]._x, chunks[i]._y - d, 7, 'linearTween');
-  }
-}]]></SCR>
-		<DIS h="474" w="panelW" tabIndex="-1" id="panel" name="panel" x="780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
-		<INT name="loadPanel" perpetual="0">
-			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">
-				<SCR name="calculate"><![CDATA[//drawMask
-
-
-
-
-
-]]></SCR>
-			</RES>
-		</INT>
-		<SCR name="setup"><![CDATA[nextY = 40;
-if (icon.attributes.built != 'true'){
-  icon.nextSibling.childNodes[0].duplicate(itemCount - 1);
-  icon.attributes.built = 'true';
-}
-chunks = new Array();]]></SCR>
-		<DEC id="chunkPages" name="chunks" repeat="all" branch="sequence" pause="0" erase="0" eraseOnExit="0">
-			<PG name="protoChunk">
-				<DIS textColour="#333333" id="chunk" name="chunkText" x="panel._x + 20" y="nextY" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.transcriptReader[0].nestedPage[icon.parentNode.index()].text}]]></DIS>
-				<SCR name="nextY"><![CDATA[nextY = chunk._y + chunk._height + 10;
-chunks.push(chunk);]]></SCR>
-			</PG>
-		</DEC>
-		<DIS id="mask" name="mask" x="panel._x + 20;" y="panel._y + 20" w="400" h="10" type="text"><![CDATA[]]></DIS>
-		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.transcriptReader[0].text}]]></DIS>
-		<SCR name="makePages"><![CDATA[if (icon.attributes.built != 'true'){
-  icon.nextSibling.childNodes[0].duplicate(itemCount - 1);
-  icon.attributes.built = 'true';
-}
-icon.nextSibling.attributes.controls = panel._x + ',' + (panel._y + panel._height - 20) + ',' + panel._width;
-
-//make the synch points...
-for (i = 0; i < itemCount; i++){
-  icon.nextSibling.childNodes[i].attributes.synchPoint = pageIcon.templateData.transcriptReader[0].nestedPage[i].synch * 1000;
-}
-mask.beginFill(0xFF0000,50);
-mask.drawRect(0,0,panelW - 40, 432);
-chunkPages.setMask(mask);
-]]></SCR>
-		<SND eraseChildren="1" id="snd" controls="0,0,400" name="sound" type="ext" url="{pageIcon.templateData.transcriptReader[0].sound}" play="0" loop="0" wait="0">
-			<PG synchPoint="2000" name="nextChunk">
-				<SCR name="nextChunk"><![CDATA[nextChunk(icon.parentNode.index());
-]]></SCR>
-			</PG>
-		</SND>
-		<INT name="eventHandlers" perpetual="0">
-			<RES name="onSoundComplete" type="event" eventName="onSoundComplete" icon="snd" erase="1" exit="0">
-				<SCR name="reset"><![CDATA[d = 40 - chunks[0]._y;
-for (i = 0; i < chunks.length; i++){
-  chunks[i].clear();
-  chunks[i].animate(chunks[i]._x, chunks[i]._y + d, 3, 'linearTween');
-}]]></SCR>
-			</RES>
-		</INT>
-	</PG>
+	<PG title="Transcription Reader" name="transcriptReader">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();if (rootIcon.projMode == "dev"){   // Page Wizard  pageIcon.templateData = pageIcon.extXML.toObject();  pageIcon.templateData = pageIcon.templateData.pageWizard[0];} else {  // Toolkits  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);  pageIcon.templateData = myXML.toObject();}  rootIcon.setTitleText(templateData.learningObject[0].name);  // handle multiple page data definitions in a project if (rootIcon.projectPageIndex == undefined){     rootIcon.projectPageIndex = 0;}// check if this page has a definition for the current project index and default to 0 if notif (pageIcon.templateData.transcriptReader[rootIcon.projectPageIndex].name == undefined){  projPI = 0;} else {  projPI = rootIcon.projectPageIndex; }  itemCount = pageIcon.templateData.transcriptReader[projPI].nestedPage.length);panelWidth = pageIcon.templateData.transcriptReader[projPI].panelWidth;if (panelWidth == "Small"){  panelW = 300;  textW = 440;} else if (panelWidth == "Medium"){  panelW = 450;  textW = 290;} else if (panelWidth == "Large"){  panelW = 600;  textW = 150;} else {  panelW = 760;  textW = 0;}if (pageIcon.templateData.transcriptReader[projPI].narration != undefined){  narration = pageIcon.templateData.transcriptReader[projPI].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<SCR isFunc="1" name="nextChunk"><![CDATA[for (i = 0; i < chunks.length; i++){  chunks[i].clear();}chunks[args[0]].beginFill(0xFFFF00,100);chunks[args[0]].drawRect(0,0,chunks[args[0]]._width, chunks[args[0]]._height);if (chunks[chunks.length - 1]._y + chunks[chunks.length - 1]._height > panel._y + 434){    d = chunks[args[0]]._y- 40;  for (i = 0; i < chunks.length; i++){    chunks[i].animate(chunks[i]._x, chunks[i]._y - d, 7, 'linearTween');  }}]]></SCR>		<DIS h="474" w="panelW" tabIndex="-1" id="panel" name="panel" x="780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<INT name="loadPanel" perpetual="0">			<RES name="onLoad" type="event" eventName="onLoad" icon="panel" erase="1" exit="1">				<SCR name="calculate"><![CDATA[//drawMask]]></SCR>			</RES>		</INT>		<SCR name="setup"><![CDATA[nextY = 40;if (icon.attributes.built != 'true'){  icon.nextSibling.childNodes[0].duplicate(itemCount - 1);  icon.attributes.built = 'true';}chunks = new Array();]]></SCR>		<DEC id="chunkPages" name="chunks" repeat="all" branch="sequence" pause="0" erase="0" eraseOnExit="0">			<PG name="protoChunk">				<DIS textColour="#333333" id="chunk" name="chunkText" x="panel._x + 20" y="nextY" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.transcriptReader[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>				<SCR name="nextY"><![CDATA[nextY = chunk._y + chunk._height + 10;chunks.push(chunk);]]></SCR>			</PG>		</DEC>		<DIS id="mask" name="mask" x="panel._x + 20;" y="panel._y + 20" w="400" h="10" type="text"><![CDATA[]]></DIS>		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.transcriptReader[projPI].text}]]></DIS>		<SCR name="makePages"><![CDATA[if (icon.attributes.built != 'true'){  icon.nextSibling.childNodes[0].duplicate(itemCount - 1);  icon.attributes.built = 'true';}icon.nextSibling.attributes.controls = panel._x + ',' + (panel._y + panel._height - 20) + ',' + panel._width;//make the synch points...for (i = 0; i < itemCount; i++){  icon.nextSibling.childNodes[i].attributes.synchPoint = pageIcon.templateData.transcriptReader[projPI].nestedPage[i].synch * 1000;}mask.beginFill(0xFF0000,50);mask.drawRect(0,0,panelW - 40, 432);chunkPages.setMask(mask);]]></SCR>		<SND eraseChildren="1" id="snd" controls="0,0,400" name="sound" type="ext" url="{pageIcon.templateData.transcriptReader[projPI].sound}" play="0" loop="0" wait="0">			<PG synchPoint="2000" name="nextChunk">				<SCR name="nextChunk"><![CDATA[nextChunk(icon.parentNode.index());]]></SCR>			</PG>		</SND>		<INT name="eventHandlers" perpetual="0">			<RES name="onSoundComplete" type="event" eventName="onSoundComplete" icon="snd" erase="1" exit="0">				<SCR name="reset"><![CDATA[d = 40 - chunks[0]._y;for (i = 0; i < chunks.length; i++){  chunks[i].clear();  chunks[i].animate(chunks[i]._x, chunks[i]._y + d, 3, 'linearTween');}]]></SCR>			</RES>		</INT>	</PG>
