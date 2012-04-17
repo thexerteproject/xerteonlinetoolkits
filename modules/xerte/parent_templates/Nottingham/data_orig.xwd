@@ -1,0 +1,1440 @@
+﻿<wizard menus="Text,Media,Navigators,Charts,Interactivity,Games,Misc">
+
+  <learningObject  icon="icPackage" remove="false" duplicate="false">
+
+    <name type="TextInput" label="Learning Object Title"/>
+    <navigation type="ComboBox" options="Linear,Menu,Menu with Page Controls" label="Navigation" width="170"/>
+    <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
+
+    <language type="ComboBox" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" width="120" label="Language" optional="true"/>
+    <displayMode type="ComboBox" options="default,full screen,fill window" label="Display Mode" width="100"/>
+
+    <mediaImage optional="true" type="media" label="Media Image"/>
+    <mediaTranscript optional="true" type="media" label="Media Transcript"/>
+    <media optional="true" type="media" label="Media File"/>
+    <menuImage optional="true" type="media" label="Menu Page Image"/>
+    <ic optional="true" type="media" label="Icon"/>
+    <nfo optional="true" label="Help File" type="media"/>
+    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
+    <controller optional="true" label="Custom Interface" type="media"/>
+    <background optional="true" type="media" label="Background Image"/>
+    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
+    <stylesheet optional="true" type="Media" label="Stylesheet"/>
+
+
+    <newNodes>
+
+      <translation><![CDATA[<translation name="Enter the Title" instruction="Enter Instructions" showMedia="false"/>]]></translation>
+      <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode>
+      <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="tags" term="Enter Tags" results="20"/>]]></delicious>
+      <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" align="Left">Enter Embed Code Here</youtube>]]></youtube>
+      <youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"/>]]></youtuberss>
+      <wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki>
+      <rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left"/>]]></rss>
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all" deriv="unrestricted">Enter text for the page here</flickr>]]></flickr>  
+      <map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map>
+      <geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons>
+      <mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction>
+
+      <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
+      <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"/>]]></hangman>
+
+      <quiz><![CDATA[<quiz name="Enter Quiz Title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"/>]]></quiz>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
+
+      <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2"/>]]></dialog>
+      <modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title">Enter text for the page here</text>]]></modelAnswerResults> 
+      <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"/>]]></modelAnswer>
+      <modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"/>]]></modify>
+      <categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here"/>]]></categories>
+      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
+      <textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" showMedia="false"/>]]></textMatch>
+      <timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here"/>]]></timeline>
+      <annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram>
+      <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true">CDATA</customHotspots>]]></customHotspots>
+      <hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" tip="Enter a tooltip for the image"/>]]></hotspotImage>
+      <buttonSequence><![CDATA[<buttonSequence name="Enter page Title" text="Enter Text for the page" intro="Enter Introduction here" align="Left" panelWidth="Medium"/>]]></buttonSequence>
+      <mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"/>]]></mcq>
+
+      <list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list>
+
+      <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" label="Check" feedback="Enter the Feedback" align="Left" panelWidth="Medium"/>]]></buttonQuestion>
+
+      <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart>
+      <table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table>
+
+      <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
+      <newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow>
+      <thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page"/>]]></thumbnailViewer>
+      <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
+      <slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></slideshow>
+      <accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav>
+      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra>
+      <tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav>
+      <columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage>
+
+      <links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links>
+      <jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol>
+      <perspectives><![CDATA[<perspectives name="Enter Page Title" />]]></perspectives>
+      <xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel>
+      <raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity>
+      <captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate>
+      <jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing>
+      <iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring>
+      <flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper>
+      <textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF>
+      <videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch>
+      
+      <morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter tooltip for image 1" url2="Select Image" tip2="Enter tooltip for image 2" buttonLabel="Zoom" zoomSpeed="3"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages>
+      
+      <imageViewer><![CDATA[<imageViewer name="Enter Page Title" align="Left" url="Select an Image">Enter text for the page here</imageViewer>]]></imageViewer>    
+      <transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader>
+      <audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow>
+      <textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Tooltip" reset="true">Enter text for the page here</textVideo>]]></textVideo>
+      <textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip">Enter text for the page here</bleedingImage>]]></bleedingImage>
+      <textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip">Enter text for the page here</textGraphics>]]></textGraphics>    
+
+      <summary><![CDATA[<summary name="Enter Page Title" summary="Summarise the key points" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary>  
+      <text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text> 
+      <orient><![CDATA[<orient name="Enter Page Title" goals="Outline the goals for this content" audience="Describe the target audience" prereq="State any pre-requisite knowledge or experience" howto="Describe how the user can best use the resource"/>]]></orient>  
+
+      <bullets><![CDATA[<bullets name="Enter Page Title">Enter text for the page here</bullets>]]></bullets> 
+      <title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title> 
+
+    </newNodes>
+
+  </learningObject>
+
+
+  <!--TABLE PAGE------------------------------------------------------->
+  <table menu="Charts" menuItem="Table" icon="icTable" remove="true" thumb="thumbs/table.jpg" hint="A page for basic tables.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="300" width="380" label="Text"/>
+    <align type="ComboBox" label="Align Text" options="left,right,top,bottom" width="100"/>
+
+    <narration type="media" label="Narration" optional="true"/>
+
+  </table>
+
+  <tableData duplicate="false" menuItem="Table Data" remove="false">
+
+    <name type="TextInput" label="Table Name"/>
+    <data type="DataGrid" label="Table Data" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false" newRow="data,data" newCol="data"/>
+    <size type="ComboBox" label="Table Size" options="small,medium,large,full screen" width="120"/>
+    <borders type="ComboBox" label="Borders" options="none,full grid,simple,horizontal only,vertical only,outside border" data="none,full,simple,horizontal,vertical,outside" width="120"/>
+    <header type="ComboBox" label="Header/Footer Rows" options="none,header,footer,both" width="120"/>
+    <shadeHeader type="Checkbox" label="Shade Header/Footer"/>
+    <shade type="Checkbox" label="Shade Alternate Rows"/>
+
+    <caption type="TextInput" label="Footnote" optional="true"/>
+    <alt type="TextInput" label="Alternative Text" optional="true"/>
+    <url type="Media" label="CSV File" optional="true"/>
+
+  </tableData>
+
+
+  <!--MEMORY------------------------------------------------------------>
+  <memory menu="Games" menuItem="Memory Game" icon="icConnect" remove="true" thumb="thumbs/textMatch.jpg" hint="An interaction for the user to match chunks of text">
+
+    <name type="TextInput" label="Page Title"/>    
+
+    <newNodes>
+      <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
+    </newNodes>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </memory>
+
+  <matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
+
+    <name type="TextInput" label="Label"/>
+    <url type="Media" label="Image"/>
+
+  </matchItem>
+
+
+  <!--EMBED A DIV--------------------------------------------------------------->
+  <embedDiv menu="Navigators" menuItem="Embed Content" icon="icPageWhiteCodeRed" remove="true" thumb="thumbs/embed.jpg" hint="Allows you to inlcude any web page, or to add any embed code to your project">
+    
+    <name type="TextInput" label="Page Title"/>
+    <src type="TextArea" label="Embed Code or URL" height="300"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </embedDiv>
+
+
+
+  <!--MODIFY INTERACTION--------------------------------------------------------------->
+  <modify menu="Interactivity" menuItem="Modify Exercise" icon="icModify" remove="true" thumb="thumbs/modify.jpg" hint="Presents a piece of text that the user must modify in some way, for example, by changing the tense.">
+    
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+    <text type="TextArea" label="Initial Text" height="100"/>
+    <prompt type="TextArea" label="Answer Prompt" height="100"/>
+    <answer type="TextArea" label="Model Answer" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </modify>
+
+
+
+  <!--MATCHING TEXTS------------------------------------------------------------>
+  <textMatch menu="Interactivity" menuItem="Matching Texts" icon="icConnect" remove="true" thumb="thumbs/textMatch.jpg" hint="An interaction for the user to match chunks of text">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="100" label="Instructions"/>
+
+    <newNodes>
+      <sentence><![CDATA[<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint"/>]]></sentence>
+    </newNodes>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </textMatch>
+
+  <sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+    <name type="TextInput" label="Name"/>
+    <p1 type="TextArea" height="50" label="Part 1"/>
+    <hint type="TextArea" height="50" label="Hint"/>
+    <p2 type="TextArea" height="50" label="Part 2"/>
+  </sentence>
+
+
+
+  <!--HANGMAN------------------------------------------------------------>
+  <hangman menu="Games" menuItem="Hangman" icon="icPageWhite" remove="true" thumb="thumbs/hangman.jpg" hint="A Hangman game. Create a list of words for the learner to work out.">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Instructions" height="100"/>
+    <words type="TextArea" label="Words" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </hangman>
+
+
+  <!--TRANSLATOR------------------------------------------------------------>
+  <translation menu="Misc" menuItem="Translation" icon="icGroup" remove="true" thumb="thumbs/translation.jpg" hint="A tool allowing users to translate text from language to another using machine translation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </translation>
+
+
+
+  <!--JMOL VIewer--------------------------------------------------------------------->
+  <jmol menu="Media" menuItem="JMOL Viewer" icon="icAtom" remove="true" thumb="thumbs/jmol.jpg" hint="Provides a viewer for JMOL files">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="150" label="Text"/>
+    <xyz type="Media" label="Model File"/>
+    <size type="ComboBox" options="Small,Medium,Large" label="Model Size" width="100"/>
+    <initLook type="ComboBox" options="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" label="Initial Appearance" width="120"/>
+    <colour type="ComboBox" options="Default,Element,Amino Acid,Chain,Secondary Structure" label="Initial Colour" width="150"/>
+    <controls type="CheckBox" label="Show Control Bar"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+    <cartoonOpt type="CheckBox" label="Cartoon Option" defaultValue="true" optional="true"/>
+    <backOpt type="CheckBox" label="Backbone Option" defaultValue="true" optional="true"/>
+    <colourOpt type="CheckBox" label="Control Bar - Colour" optional="true"/>
+    <labelOpt type="CheckBox" label="Control Bar - Label" optional="true"/>
+    <surfaceOpt type="CheckBox" label="Control Bar - Surface" optional="true"/>
+    <scriptOpt type="CheckBox" label="Control Bar - Script" optional="true"/>
+    <initScript type="TextInput" label="Initial Jmol Script" optional="true"/>
+    <bgColour type="ComboBox" options="White,Black,Blue" label="Background Colour" width="120" optional="true"/>
+    <initSpin type="CheckBox" label="Spin" optional="true"/>
+    <xyz2 type="Media" label="2nd Model File" optional="true"/>
+    
+  </jmol>
+
+
+  <!--NEW WINDOW--------------------------------------------------------------------->
+  <newWindow menu="Navigators" menuItem="New Window" icon="icApplication" remove="true" thumb="thumbs/newWindow.jpg" hint="Allows the user to launch a new window to a url">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="150" label="Text"/>
+    <url type="TextInput" label="URL"/>
+    <previewImage type="media" label="Preview Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+    <windowWidth type="NumericStepper" min="100" max="980" step="10" label="width" width="100"/>
+    <windowHeight type="NumericStepper" min="100" max="720" step="10" label="Height" width="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <htm type="textArea" label="HTML" height="150" optional="true"/>
+
+  </newWindow>
+
+
+  <!--THUMBNAIL VIEWER--------------------------------------------------------------------->
+  <thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" icon="icPictures" remove="true" thumb="thumbs/thumb.jpg" hint="Presents a series of thumbnail images for the user to browse.">
+    
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></nestedPage>
+    </newNodes>
+
+  </thumbnailViewer>
+
+
+  <!--BUTTON NAVIGATOR--------------------------------------------------------------------->
+  <buttonNav menu="Navigators" menuItem="Button Navigator" icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" hint="Presents a series of pages of related text and graphical content controlled using a navigation bar.">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    <buttonWidth type="NumericStepper" min="20" max="250" step="10" label="Button Width" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </buttonNav>
+
+
+  <!--MORPH IMAGES-------------------------------------------------------------------------->
+  <morphImages menu="Media" menuItem="Morph Images" icon="icZoomIn" remove="true" thumb="thumbs/morphImages.jpg" hint="Allows one image to morph into another">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="media" label="Image One"/>
+    <tip1 type="TextInput" label="Tooltip 1"/>
+    <url2 type="media" label="Image Two"/>
+    <tip2 type="TextInput" label="Tooltip 2"/>
+    <buttonLabel type="TextInput" label="Button Label"/>
+    <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </morphImages>
+
+  <!--MODEL ANSWER INTERACTION--------------------------------------------------------------->
+  <modelAnswer menu="Interactivity" menuItem="Model Answer" icon="icComment" remove="true" thumb="thumbs/model.jpg" hint="A text entry interation, with feedback">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="100" label="Text"/>
+    <prompt type="TextArea" height="100" label="Text"/>
+    
+    <feedback type="TextArea" height="100" label="Feedback"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    <copypasteinfo optional="true" type="TextArea" height="50" label="Copy & paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Word or an email to save for future reference."/>
+<label optional="true" type="TextInput" label="Button Label"/>
+    <image optional="true" type="media" label="Image"/>
+  </modelAnswer>
+
+<!--Model Answer Results PAGE------------------------------------------------------->
+  <modelAnswerResults type="text" label="Page text/Instructions" height="280" menu="Interactivity" menuItem="Model Answer Results" icon="icPageWhiteText" remove="true" thumb="thumbs/modelanswerresults.jpg" hint="Add this page to display collated results from all the preceeding model answer pages which can then be copied to clipboard or just reviewed.">
+    <name type="TextInput" label="Page Title"/>
+     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+          <playNarration type="Checkbox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+  </modelAnswerResults>
+
+  <!--SLIDESHOW------------------------------------------------------------------------------>
+  <slideshow menu="Navigators" menuItem="Slideshow" icon="icPages" remove="true" thumb="thumbs/slideNav.jpg" hint="Presents a sequence of pages of related text and graphical content navigated with two arrow controls." sortChildren="true">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </slideshow>
+
+
+  <!--LINKS PAGE------------------------------------------------------------------------------>
+  <links menu="Navigators" meunItem="Hyperlinks" icon="icWorld" remove="true" thumb="thumbs/links.jpg" hint="The links apge page allows you to easily assemble a page of keyboard accessible links">
+    
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="100" label="Page Title"/>
+    <cols type="NumericStepper" min="1" max="5" step="1" label="Number of Columns"/>
+    <height type="ComboBox" options="Small,Medium,Large" data="55,80,105" step="1" label="Link Height" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL"/>]]></link>
+    </newNodes>
+
+  </links>
+
+  <link icon="icTagGreen">
+    <name type="TextInput" label="Link Title"/>
+    <text type="TextArea" height="100" label="Link Description"/>
+    <url type="TextInput" label="URL"/>
+    <image type="media" label="Image" optional="true"/>
+  </link>
+  
+
+  <!--ACCORDION NAVIGATOR------------------------------------------------------------------->
+  <accNav menu="Navigators" menuItem="Accordion Navigator" icon="icAccordion" remove="true" thumb="thumbs/accNav.jpg" hint="The accordion navigator allows you to create a group of panes to present related text and graphical content.">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </accNav>
+
+
+  <!--TABBED NAVIGATOR------------------------------------------------------------------->
+  <tabNav menu="Navigators" menuItem="Tabbed Navigator" icon="icTab" remove="true" thumb="thumbs/tabNav.jpg" hint="The tabbed navigator allows you to create a series of tabbed pages to present related text and graphical content.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    <tabWidth type="NumericStepper" min="20" max="250" step="10" label="Tab Width" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </tabNav>
+
+
+  <!--TABBED NAVIGATOR PLUS------------------------------------------------------------------->
+  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" icon="icTab" remove="true" thumb="thumbs/tabNavExtra.jpg" hint="The tabbed navigator + allows you to create a list of topic links.  Each topic displays a series of tabbed pages to present related text and graphical content.">
+
+    <name type="TextInput" label="Page Title"/>
+    <tabWidth type="NumericStepper" min="20" max="250" step="1" label="Tab Width" width="100"/>
+
+    <rememberTab type="CheckBox" label="Stay on Current Tab" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="name" text="Content for the pane"/></nestedTab></topic>]]></topic>
+    </newNodes>
+
+  </tabNavExtra>
+
+  <topic menuItem="Topic" icon="icFolderPage">
+
+    <name type="TextInput" label="Topic Name"/>
+
+    <newNodes>
+      <nestedTab><![CDATA[<nestedTab name="Enter Tab Name"><nestedPage name="name" text="Content for the pane"/></nestedTab>]]></nestedTab>
+    </newNodes>
+
+  </topic>
+
+  <nestedTab menuItem="Tab">
+
+    <name type="TextInput" label="Panel Name"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane"/>]]></nestedPage>
+    </newNodes>
+
+  </nestedTab>
+
+  
+  <!--COLUMN PAGE-------------------------------------------------------------------------->
+  <columnPage menu="Navigators" menuItem="Column Page" icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" hint="Presents a page with a series of columns of text and optional images.">
+
+    <name type="TextInput" label="Page Title"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+    </newNodes>
+
+  </columnPage>
+
+
+  <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Page Text"/>
+    <align type="ComboBox" options="Top,Bottom" label="Align Text" width="100"/>
+<linktarget type="ComboBox" label="Link from image" options="None,Original image,Specified URL" width="200"/>
+      <link type="textInput" label="Specified URL"/>
+    <url type="media" label="Image" optional="true"/>
+    <tip type="textInput" label="Image Tooltip" optional="true"/>
+    <synch type="NumericStepper" min="0" max="9999" step="1" label="Synch Point" width="100"/>
+    <initObject type="TextInput" label="Init Object" optional="true"/>
+    <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
+  </nestedPage>
+
+
+  <!--IMAGE VIEWER-------------------------------------------------------------------->
+  <imageViewer type="text" height="250" label="Page Text" menu="Media" menuItem="Image Viewer" icon="icImage" remove="true" thumb="thumbs/imageViewer.jpg" hint="Allows a user to zoom in and out of a large image and select regions. Useful way of presenting large images in a small screen space.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
+    <url type="media" label="Image"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </imageViewer>
+
+
+  <!--TRANSCRIPT READER----------------------------------------------------------------->
+  <transcriptReader menu="Media" menuItem="Transcript Reader" icon="icTranscript" remove="true" thumb="thumbs/transcriptReader.jpg" hint="">
+
+    <name type="TextInput" label="Page Title"/>
+    <sound type="Media" label="SoundFile"/>
+    <text type="TextArea" label="Page Text" height="200"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+    </newNodes>
+
+  </transcriptReader>
+
+
+  <!--SYNCHED VIDEO----------------------------------------------------------------->
+  <videoSynch menu="Media" menuItem="Synched Video" icon="icPageWhiteOffice" remove="true" thumb="thumbs/videoSynch.jpg" hint="Synchronise passages of text to a movie.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="Media" label="Movie"/>
+    <text type="TextArea" label="Page Text" height="200"/>
+    <pause type="ComboBox" label="Pause on Synchpoints" options="True,False" width="100"/>
+    <erase type="ComboBox" label="Erase" options="True,False" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+    </newNodes>
+
+  </videoSynch>
+
+
+  <!--ISPRING PAGE --------------------------------------------------------------------->
+  <iSpring menu="Media" menuItem="iSpring Movie" icon="icISpring" remove="true" thumb="thumbs/ispring.jpg" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="Media" label="ISpring Movie"/>
+    <version type="ComboBox" options="Free,Pro" label="Version" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </iSpring>
+
+
+  <!--AUDIO SLIDESHOW----------------------------------------------------------------->
+  <audioSlideshow menu="Media" menuItem="Audio Slideshow" icon="icSound" remove="true" thumb="thumbs/audioSlideshow.jpg" hint="Sequence a series of images against an audio soundtrack">
+
+    <name type="TextInput" label="Page Title"/>
+    <sound type="Media" label="SoundFile"/>
+    <text type="TextArea" label="Page Text" height="200"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+    </newNodes>
+
+  </audioSlideshow>
+
+
+  <!--BUTTON QUESTION PAGE------------------------------------------------------------>
+  <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" icon="icComment" remove="true" thumb="thumbs/stimulus.jpg" hint="Poses a stimulating question to the learner, with feedback available through a button.">
+
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" height="50" label="Instruction"/>
+    <prompt type="TextArea" height="150" label="Question"/>
+    <label type="TextInput" label="Button Label"/>
+    <feedback type="TextArea" height="150" label="Feedback"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </buttonQuestion>
+
+
+  <!--BUTTON SEQUENCE PAGE-------------------------------------------------------------->
+  <buttonSequence menu="Interactivity" menuItem="Button Sequence" icon="icButtons" remove="true" thumb="thumbs/buttonSequence.jpg" hint="Presents a sequence of button interactions with text">
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="200" label="Text"/>
+    <intro type="TextArea" height="100" label="Introduction"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <button><![CDATA[<button name="name" text="Feedback"/>]]></button>
+    </newNodes>
+
+  </buttonSequence>
+
+
+  <button menuItem="Button" icon="icBulletBlue" remove="true">
+    <name type="TextInput" label="Button Label"/>
+    <text type="TextArea" height="250" label="Feedback"/>
+  </button>
+
+
+  
+  <!--MCQ PAGE-------------------------------------------------------------------------->
+  <mcq menu="Interactivity" menuItem="Multiple Choice Question" icon="icComments" remove="true" thumb="thumbs/mcq.jpg" hint="Poses an multiple answer question with multiple options. Create simple true - false questions, or more complex questions with multiple correct answers.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+    <prompt type="TextArea" label="Prompt" height="100"/>
+    <type type="ComboBox" options="Single Answer,Multiple Answer" width="120" label="Question Type"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
+
+    <newNodes>
+      <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
+    </newNodes>
+
+  </mcq>
+
+  <!--INTERACTIVE LIST----------------------------------------------------------------->
+  <list menu="Interactivity" menuItem="Interactive List" icon="icList" remove="true" thumb="thumbs/list.jpg" hint="Presents an interactive list.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Page Text" height="200"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the list item"/>]]></nestedPage>
+    </newNodes>
+
+  </list>
+
+  
+  <!--DRAG DROP LABEL INTERACTION------------------------------------------------------>
+  <dragDropLabel menu="Interactivity" menuItem = "Drag and Drop Labelling" icon="icTagBlue" remove="true" thumb="thumbs/labelling.jpg" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="media" label="Image"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+    <highlightColour type="ColourPicker" label="Highlight Colour"/>
+    <showHighlight type="CheckBox" label="Show Regions"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
+
+  </dragDropLabel>
+
+  <!--CUSTOM HOSTPOTS--------------------------------------------------------------------->
+  <customHotspots type="drawing" label="Edit Diagram" icon="icCustomHotspot" menuItem="Interactive Diagram" menu="Interactivity" remove="true" thumb="" hint="A more complex hotspot based-diagram">
+    <name type="TextInput" label="Name"/>
+    <text type="TextArea" height="200" label="Page Text"/>
+    <highlightColour type="ColourPicker" label="Highlight Colour"/>
+    <lineWidth type="NumericStepper" min="0" max="5" step="1" label="Highlight Width"/>
+    <interactivity type="ComboBox" options="Hotspots,Labels,Show Me,MCQ" label="Interactivity" width="100"/>
+    <showShapes type="CheckBox" label="Show Shapes"/>
+
+    <info><![CDATA[You must add a label to each hotspot on your diagram.  Edit the diagram, select a hotspot, click the pencil icon on the info panel and enter text in the Label and Info fields.]]></info>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </customHotspots>
+
+
+  <!--ANNOTATED DIAGRAM-------------------------------------------------------->
+  <annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" hint="An interaction for exploring labelled diagrams.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="media" label="Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+    <colour type="ColourPicker" label="Highlight Colour"/>
+    <shape type="ComboBox" options="None,Oval,Rectangle,Arrow" width="120" label="Shape"/>
+    <align type="COmboBox" label="Align" options="Left,Top" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+
+    <newNodes>
+      <hotspotGroup><![CDATA[<hotspotGroup name="name" text="Description for the hotspot"/>]]></hotspotGroup>
+      <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
+
+  </annotatedDiagram>
+
+
+  <!--DIALOG INTERACTION------------------------------------------------------------------->
+  <dialog menu="Interactivity" menuItem="Dialog" icon="icSCript" remove="true" thumb="thumbs/dialog.jpg" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="100" label="Text"/>
+    <attempts type="ComboBox" width="100" options="0,1,2,3,4" label="Attempts before hint"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <dialogStep><![CDATA[<dialogStep name="question" question="Write your question here." answer="Enter Answer" hint="Enter a hint"/>]]></dialogStep>
+    </newNodes>
+
+  </dialog>
+
+
+  <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
+
+    <question type="TextArea" height="100" label="Question"/> 
+    <answer type="TextInput" label="Answer"/> 
+    <commentary type="TextArea" height="100" label="Commentary"/> 
+    <hint type="TextInput" label="Hint"/> 
+
+  </dialogStep>
+
+
+  <!--TIMELINE INTERACTION-------------------------------------------------------->
+  <timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" icon="icTime" remove="true" thumb="thumbs/timeline.jpg" hint="An interaction for creating an interactive timeline.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="250" label="Text"/>
+    <interactivity type="ComboBox" options="Timeline,Matching Pairs" width="120" label="Interactivity"/>
+    <feedback type="TextArea" height="100" label="Feedback"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <timelinedate><![CDATA[<timelinedate name="Enter Item" text="Enter description"/>]]></timelinedate>
+    </newNodes>
+
+  </timeline>
+
+  <timelinedate menuItem="Item" icon="icPageWhite" remove="true" max="12">
+
+    <name type="TextInput" label="Target"/>    
+    <text type="TextArea" height="100" label="Label"/>
+
+  </timelinedate>
+
+
+
+  <!--GAP FILL INTERACTION-------------------------------------------------------->
+  <gapFill menu="Interactivity" menuItem="Gap Fill" icon="icTextEntry" remove="true" thumb="thumbs/gapFill.jpg" hint="An interaction for creating a drag and drop gap-fill exercise.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="100" label="Introductory Text"/>
+    <passage type="TextArea" height="150" label="Gap Fill Text"/>
+    <interactivity type="ComboBox" label="Interactivity" options="Drag Drop,Fill in Blank" width="100"/>
+    <feedback type="TextArea" height="50" label="Feedback"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="100"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <noise type="TextArea" height="50" label="Distractors" optional="true"/>
+
+  </gapFill>
+
+
+  <!--CATEGORIES INTERACTION-------------------------------------------------------->
+  <categories menu="Interactivity" menuItem="Categories" icon="icLayers" remove="true" thumb="thumbs/categories.jpg" hint="An interaction allowing the user to sort items into a number of categories.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="200" label="Text"/>
+    <feedback type="TextArea" height="100" label="Feedback"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <category><![CDATA[<category name="category name"/>]]></category>
+    </newNodes>
+
+  </categories>
+
+
+  <category menuItem="Category" icon="icGroup" remove="true">
+
+    <name type="TextInput" label="Category"/>    
+
+    <newNodes>
+      <item><![CDATA[<item name="item"/>]]></item>
+    </newNodes>
+
+
+  </category>
+
+
+  <item menuItem="Item" icon="icBullet">
+    <name type="TextInput" label="Item text"/> 
+  </item>
+
+
+  <!--HOTSPOT IMAGE INTERACTION----------------------------------------------------->
+  <hotspotImage menu="Interactivity" menuItem="Hotspot Image" icon="icPicture" remove="true" thumb="thumbs/hotspotImage.jpg" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied.">
+
+    <name type="TextInput" label="Page Title"/>    
+    <text type="TextArea" height="250" label="Text"/>
+    <url type="media" label="Image"/>
+    <interactivity type="ComboBox" label="Interactivity" options="Show Me,Click Explore" width="100"/>
+    <highlight type="CheckBox" label="Highlight Hotspots"/>
+    <hicol type="ColourPicker" label="Highlight Colour"/> 
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
+
+  </hotspotImage>
+
+  
+  <!--HOTSPOT GROUP-------------------------------------------------------------------->
+  <hotspotGroup menuItem="Hotspot Group" icon="icGroup" remove="true">
+
+    <name type="TextInput" label="Group Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+
+    <newNodes>
+      <hotspot><![CDATA[<hotspot name="name" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
+
+  </hotspotGroup>
+
+
+
+  <!--HOTSPOT-------------------------------------------------------------------------->
+  <hotspot type="hotSpot" label="Edit Hotspot" menuItem="HotSpot" icon="icLayers" remove="true">
+
+    <name type="TextInput" label="Hotspot Title"/>
+    <text type="TextArea" height="250" label="Text"/>
+
+  </hotspot>
+
+
+
+  <!--FLICKR SLIDESHOW----------------------------------------------------------------->
+  <flickr type="text" label="PageText" height="150" menu="Misc" menuItem="Flickr Slideshow" icon="icPicture" remove="true" thumb="thumbs/flickr.jpg" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service.">
+
+    <name type="TextInput" label="Page Title"/>
+    <keywords type="TextInput" label="Keyword(s)"/>
+    <content type="comboBox" options="all use,non-commercial use" label="Content for" width="100"/>
+    <deriv type="comboBox" options="unrestricted,non-derivative,share alike" label="Reuse" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </flickr>
+
+
+  <!--TITLE PAGE------------------------------------------------------->
+  <title type="text" height="22" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying a title">
+
+    <name type="TextInput" label="Page Title"/>
+    <size type="ComboBox" label="Text Size" options="20,24,30,36,40,48,70" width="100"/> 
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <bgImage type="media" label="Background Image" optional="true"/>
+    <bgImageAlpha type="NumericStepper" min="10" max="100" step="10" label="Background Alpha" optional="true"/>
+    <titleVAlign label="Title Vertical Align" type="ComboBox" width="120" options="Top,Middle,Bottom" data="20,200,400" optional="true"/>
+    <titleHAlign label="Title Horizontal Align" type="ComboBox" width="120" options="Left,Centre,Right" data="left,center,right" optional="true"/>
+    <titleTextColour label="Title Text Colour" type="ColourPicker" optional="true"/>
+
+
+  </title>
+
+
+  <!--BULLETS PAGE------------------------------------------------------->
+  <bullets type="text" label="Page Text" height="380" menu="Text" menuItem="Bullets" icon="icBullets" remove="true" thumb="thumbs/bullets.jpg" hint="A page of animated bullet points.">
+
+    <name type="TextInput" label="Page Title"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+  </bullets>
+
+
+  <!--TEXT PAGE------------------------------------------------------->
+  <text type="text" label="Page Text" height="380" menu="Text" menuItem="Plain Text" icon="icPageWhiteText" remove="true" thumb="thumbs/plaintext.jpg" hint="A plain and simple text page.">
+
+    <name type="TextInput" label="Page Title"/>
+
+    <textWidth type="comboBox" label="Text Width" options="Small,Medium,Large,Full" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
+    
+    <subSuper type="CheckBox" label="Superscript Support" optional= "true" default="false"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+  </text>
+
+
+  <!--SUMMARY PAGE-------------------------------------------------->
+  <summary menu="Text" menuItem="Summary" icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg" hint="A page for summarising key points and suggesting next steps">
+
+    <name type="TextInput" label="Page Title"/>
+    <summary type="TextArea" height="100" label="Summary"/>
+    <nextsteps type="TextArea" height="100" label="Next Steps"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </summary>
+
+
+  <!--ORIENTATION PAGE-------------------------------------------------->
+  <orient menu="Text" menuItem="Orientation" icon="icPageWhiteInfo" remove="true" thumb="thumbs/orient.jpg" hint="A page for orienting users before they begin working with the content">
+
+    <name type="TextInput" label="Page Title"/>
+    <goals type="TextArea" height="100" label="Goals"/>
+    <audience type="TextArea" height="100" label="Target Audience"/>
+    <prereq type="TextArea" height="100" label="Pre-requisites"/>
+    <howto type="TextArea" height="100" label="How To Use"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </orient>
+
+
+  <!--TEXT GRAPHICS SOUND PAGE------------------------------------------------------->
+  <textGraphics type="text" label="Page Text" height="200" menu="Media" menuItem="Graphics and Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/textGraphics.jpg" hint="A page for presenting text and graphics. You can also add an optional sound to this page.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
+    <imagesize type="ComboBox" label="Image Size" options="auto,actual size,full screen" width="100"/>
+    <url type="media" label="Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+     <transcriptbuttonlabel type="TextInput" label="Transcript Button Label" optional="true"/>
+     <transcript type="textArea" height="100" label="Transcript" optional="true"/>
+    <imageMargin optional="true" type="NumericStepper" min="0" max="50" step="1" label="Image Margin"/>
+    <hidePanel optional="true" type="checkBox" defaultvalue="false" label="Hide Panel"/>
+    <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
+
+    <sound optional="true" type="media" label="Sound"/>
+
+  </textGraphics>
+
+   <!--Bleeding Image Page------------------------------------------------------------------------------------------->
+  <bleedingImage type="text" label="Page Text" height="200" menu="Media" menuItem="Advanced Image" icon="icPageWhiteImage2" remove="true" thumb="thumbs/bleedingImage.jpg" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right,Top,Bottom" width="100"/>
+    <imagesize type="ComboBox" label="Image Size" options="auto,full screen" width="100"/>
+    <url type="media" label="Image"/>
+    <tip type="TextInput" label="Image Tooltip"/>
+
+     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <linktarget type="textInput"  label="Link target e.g _blank" optional="true" width="70"/>
+    <link type="textInput" label="Link and icon" optional="true"/>
+    <sound optional="true" type="media" label="Sound"/>
+    <magnifier optional="true" type="checkBox" defaultvalue="false" label="Magnifier"/>
+    <addmargin type="Checkbox" defaultvalue="false" label="Image Margin" optional="true"/>
+    <size type="ComboBox" label="Text Size" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>
+    
+  </bleedingImage>
+
+
+  <!--TEXT VIDEO------------------------------------------------------------------------>
+  <textVideo menu="Media" type="text" label="Page Text" height="180" menuItem="Video" icon="icPageWhiteFilm" remove="true" thumb="thumbs/textVideo.jpg" hint="A page for integrating FLV video files with your presentation">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <url type="media" label="Video File"/>
+    <reset type="Checkbox" label="Reset on Completion"/>
+
+    <startFrame type="textInput" label="Start Time" optional="true" defaultValue="0"/>
+    <endFrame type="textInput" label="End Time" optional="true" defaultValue="0"/>
+
+    <movieSize type="textInput" label="Video Size" optional="true" defaultValue="320,240"/>
+    <transcript type="textArea" height="150" label="Transcript" optional="true"/>
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </textVideo>
+
+
+
+  <!--CHARTS-------------------------------------------------------------------------------->
+
+  <chart menu="Charts" menuItem="Basic Chart" icon="icChart" remove="true" thumb="thumbs/charts.jpg" hint="A page for basic charts. You may choose from line, bar, stacked bar or pie charts, and add several series of data to the chart">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="TextArea" label="Page Text" height="300"/>
+    <chartTitle type="TextInput" label="Chart Title"/>
+    <chartType type="ComboBox" label="Chart Type" options="line,bar,stacked bar,pie" width="120"/>
+    <align type="ComboBox" label="Align Text" options="left,right" width="100"/>
+
+    <newNodes>
+      <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>
+    </newNodes>
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </chart>
+
+  <series remove="true">
+    <name type="TextInput" label="Series Name"/>
+    <data type="DataGrid" label="Chart Data" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" headers="X,Y" newRow="label,data" rendererOptions="none,none"/>
+    <colour type="colourPicker" label="Colour"/>
+  </series>
+
+
+  <!--TEXT DRAWING PAGE-------------------------------------------------------------------->
+  <textDrawing type="drawing" label="Edit Drawing" menu="Media" menuItem="Drawing" icon="icPageWhiteEdit" remove="true" thumb="thumbs/textDrawing.jpg" hint="Use the drawing tools to include your own diagrams, annotated images and custom graphic content in your presentation.">
+    
+    <name type="TextInput" label="Page Title"/>
+    <desc type="textArea" height="300" label="Page Text"/>
+    <align type="comboBox" options="left,right" label="Alignment" width="100"/>
+    <interactivity type="ComboBox" label="Interactivity" options="off,on" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </textDrawing>
+
+
+  <!--TEXT SWF-------------------------------------------------------------------------->
+  <textSWF menu="Media" type="text" label="Page Text" height="300" menuItem="Flash Animation" icon="icPageWhiteFlash" remove="true" thumb="thumbs/textSWF.jpg" hint="A page for integrating Flash animations and movies with your presentation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <url type="media" label="SWF File"/>
+    
+    <tip type="TextInput" label="Image Tooltip"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <movieSize type="textInput" label="Movie Size" optional="true"/>
+    <controls type="ComboBox" label="Interactivity" optional="true" options="Control Bar,Native SWF" defaultValue="Control Bar" width="100"/>
+    <initObject type="TextArea" height="60" label="Init Object" optional="true"/>
+
+  </textSWF>
+
+
+  <!--CAPTIVATE-------------------------------------------------------------------------->
+  <captivate menu="Media" menuItem="Captivate Movie" icon="icPageWhiteC" remove="true" thumb="thumbs/captivate.jpg" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="media" label="Captivate SWF File"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </captivate>
+
+  <!--RAPTIVITY-------------------------------------------------------------------------->
+  <raptivity menu="Media" menuItem="Raptivity SWF" icon="icRaptivity" remove="true" thumb="thumbs/raptivity.jpg" hint="A page for incorporating Raptivity swfs.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="media" label="Raptivity SWF File"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </raptivity>
+
+
+  <!--JING-------------------------------------------------------------------------->
+  <jing menu="Media" menuItem="Jing Movie" icon="icLightbulb" remove="true" thumb="thumbs/jing.jpg" hint="A page for incorporating Jing movies. Jing provides a convenient  - and free - way of displaying screen captures in your presentation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="media" label="Jing SWF File"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </jing>
+
+
+  <!--FLASH PAPER-------------------------------------------------------------------------->
+  <flashPaper menu="Media" menuItem="Flash Paper" icon="icPageWhite" remove="true" thumb="thumbs/flashPaper.jpg" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="media" label="Flash Paper SWF File"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </flashPaper>
+
+
+  <!--XERTE CONTENT------------------------------------------------------------------------>
+  <xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity.">
+
+    <name type="TextInput" label="Page Title"/>
+    <modelFile type="media" label="Xerte Model"/>
+
+    <initObject type="TextInput" label="InitObject" optional="true"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </xerteModel>
+
+
+  <!--QUIZ------------------------------------------------------------------------------->
+  <quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
+    <name type="textInput" label="Quiz Title"/>
+    <order type="comboBox" options="sequence,random" label="Question Order" width="120"/>
+    <numQuestions type="TextInput" label="Number of Questions" width="120"/>
+    <align type="comboBox" options="left,right" label="Alignment" width="120"/>
+    <panelWidth type="ComboBox" label="Panel Width" options="Small,Medium,Large,Full" width="120"/>
+    <instructions type="textArea" label="Instructions" height="120"/>
+    <judge type="CheckBox" label="Judge Questions"/>
+    <feedback type="textArea" label="Feedback" height="120"/>
+
+
+    <video type="media" label="Video" optional="true"/>
+    <scorm type="combobox" label="Scorm Tracking" options="Track First Score,Track Last Score" defaultValue="Track First Score" optional="true" width="150"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+
+    <newNodes>
+      <question><![CDATA[<question prompt="Here is a prompt" type="Single Answer"/>]]></question>
+    </newNodes>
+
+  </quiz>
+
+  <question menuItem="Question" icon="icPageWhite" remove="true">
+
+    <prompt type="TextArea" label="Prompt" height="100"/>
+    <type type="ComboBox" options="Single Answer,Multiple Answer" width="120" label="Question Type"/>
+
+    <image type="Media" optional="true" label="Image"/>
+
+    <newNodes>
+      <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
+    </newNodes>
+
+  </question>
+
+  <option menuItem="Option" icon="icBullet">
+
+    <text type="TextArea" label="Option" height="100"/>
+    <feedback type="TextArea" label="Feedback" height="100"/>
+    <correct type="ComboBox" options="true,false" width="100" label="Correct"/>
+
+  </option>
+
+
+  <!--GEOCOMMONS----------------------------------------------------------------------->
+  <geocommons icon="icGeoComm" menu="Misc" menuItem="GeoCommons Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Embed GeoCommons Maps">
+
+    <name type="TextInput" label="Page Title"/>
+    <src type="TextInput" label="IFrame code"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </geocommons>
+
+
+  <!--MAPSTRACTION----------------------------------------------------------------------->
+  <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API.">
+
+    <name type="TextInput" label="Page Title"/>
+    <provider type="ComboBox" label="Map Type" options="google,yahoo,openlayers,microsoft" width="100"/>
+    <lat type="TextInput" label="Latitude"/>
+    <lng type="TextInput" label="Longitude"/>
+    <zoom type="TextInput" label="Zoom"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <flickr type="TextInput" optional="true" label="Flickr Search"/>
+
+    <newNodes>
+      <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
+    </newNodes>
+
+  </mapstraction>
+
+  <overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
+    <name type="TextInput" label="Title"/>
+    <url type="Media" label="Overlay"/>
+  </overlay>
+
+  <!--GOOGLE MAP----------------------------------------------------------------------->
+
+  <map icon="icMap" menu="Misc" menuItem="Google Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map.">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <align type="ComboBox" label="Align Text" options="left,right" width="100"/>
+    <mapurl type="textInput" label="Map Link"/>
+    <maptype type="ComboBox" label="Map Type" options="roadmap,satellite,terrain,hybrid" width="100"/>
+    <tooltip type="TextInput" label="Map Tooltip"/>
+    <link type="checkbox" label="Link to Map"/>
+    
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </map>
+
+  
+  <rss menuItem="RSS Feed" menu="Misc" remove="true" thumb="thumbs/rss.jpg" hint="Include RSS feeds in your presentation. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <url type="textInput" label="Feed URL"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </rss>
+
+
+  <wiki menuItem="Wikipedia Article" menu="Misc" remove="true" thumb="thumbs/wiki.jpg" hint="Include Wikipedia articles in your presentation." icon="icGreenFeed">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <url type="textInput" label="Article URL"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </wiki>
+
+
+  <youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include Youtube videos in your piece. Enter a search term to display videos matching the term fom YouTube." icon="icYoutube">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="200"/>
+    <url type="textInput" label="Search Term"/>
+    <results type="NumericStepper" min="5" max="50" step="1" label="Number of Results"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </youtuberss>
+
+  <delicious menuItem="Delicious Bookmarks" menu="Misc" remove="true" thumb="thumbs/delicious.jpg" hint="Include Delicious bookmarks in your presentation." icon="icDelicious">
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <term type="textInput" label="Search Term"/>
+    <search type="ComboBox" label="Search in" options="recent,popular,user" width="100"/>
+    <results type="NumericStepper" min="5" max="100" step="1" label="Number of Results"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </delicious>
+
+
+  <youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+    <autoplay type="Checkbox" label="Autoplay" optional="true"/>
+    <toggle type="Checkbox" label="Toggle full screen" optional="true"/>
+
+    <videoSize type="TextInput" label="Video Size" optional="true"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </youtube>
+
+  <!--QRcode PAGE------------------------------------------------------->
+  <QRcode type="text" label="Page Text" height="200" menu="Misc" menuItem="QR Code" icon="icQRCode" remove="true" thumb="thumbs/QRcode.jpg" hint="A page for generating and presenting QR codes. You can also add an optional sound to this page.">
+
+    <name type="TextInput" label="Page Title"/>
+    <url type="TextInput" label="Type or Paste a URL"/>
+    <tip type="TextInput" label="QR code Tooltip"/>
+
+    <sound optional="true" type="media" label="Sound"/>
+<align type="ComboBox" label="Align Text" options="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    
+  </QRcode>
+
+
+  <!--KML LAYER-------------------------------------------------------------------------->
+  <kml menuItem="KML Layer" icon="icPageWhite" remove="true">
+    <name type="textInput" label="Layer Name"/>
+    <colour type="ColourPicker" label="Legend Colour"/>
+    <url type="media" label="KML File"/>
+  </kml>
+
+
+  <!--MULTIPLE PERSPECTIVES PAGE------------------------------------------------------->
+  <perspectives menu="Media" menuItem="Multiple Perspectives" icon="icUser" remove="true" thumb="thumbs/perspectives.jpg" hint="A page for multiple video and sound clips to be viewed and compared.">
+    <name type="Textinput" label="Page Title"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+    <newNodes>
+      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video"></movie>]]></movie>
+      <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound"></sound>]]></sound>
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image"></image>]]></image>
+    </newNodes>
+
+  </perspectives>
+
+  <movie duplicate="true" menuItem="Video" remove="true" icon="icPageWhiteFilm">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Video File"/>
+  </movie>
+
+  <sound duplicate="true" menuItem="Sound" remove="true" icon="icSound">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Sound File"/>
+    <img type="media" label="Image" optional="true"></img>
+    <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
+  </sound>
+
+  <image duplicate="true" menuItem="Image" remove="true" icon="icImage">
+    <name type="TextInput" label="Title"/>
+    <txt type="TextArea" height="300" label="Text"/>
+    <src type="media" label="Image File"/>
+    <tooltip type="TextInput" height="300" label="Tooltip" optional="true"/>
+  </image>
+  
+
+</wizard>

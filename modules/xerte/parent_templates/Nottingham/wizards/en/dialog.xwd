@@ -1,0 +1,41 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."/>]]></dialog>
+    </newNodes>
+  </pageWizard>
+
+  <!-- DIALOG INTERACTION================================= -->
+  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icSCript" thumb="thumbs/dialog.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>    
+    <text  label="Text" type="TextArea" height="100"/>
+    <attempts label="Attempts before hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
+    <tryTxt label="Try Again Text" type="TextInput"/> 
+    <correctTxt label="Correct Text" type="TextInput"/> 
+    <moveOnTxt label="Move On Text" type="TextInput"/> 	
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+    <newNodes>
+      <dialogStep><![CDATA[<dialogStep name="question" question="Write your question here." answer="Enter Answer" hint="Enter a hint"/>]]></dialogStep>
+    </newNodes>
+
+  </dialog>
+
+
+  <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
+
+    <question label="Question" type="TextArea" height="100"/> 
+    <answer label="Answer" type="TextInput"/> 
+    <commentary label="Commentary" type="TextArea" height="100"/> 
+    <hint label="Hint" type="TextInput"/> 
+
+  </dialogStep>
+
+
+
+</wizard>

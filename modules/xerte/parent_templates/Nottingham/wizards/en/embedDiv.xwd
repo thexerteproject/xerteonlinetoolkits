@@ -1,0 +1,23 @@
+<wizard menus="Navigators">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
+    </newNodes>
+  </pageWizard>
+
+  <!-- EMBED A DIV=============================================== -->
+  <embedDiv menu="Navigators" menuItem="Embed Content" hint="Allows you to include any web page, or to add any embed code to your project" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+    
+    <name type="TextInput" label="Page Title"/>
+    <src label="Embed Code or URL" type="TextArea" height="300"/>
+
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </embedDiv>
+
+
+</wizard>

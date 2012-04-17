@@ -1,0 +1,31 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" loadingTxt="Loading..." imageTxt1="Image" imageTxt2="of" imageTxt3="" msgOrder="n" >Enter text for the page here</flickr>]]></flickr>  
+    </newNodes>
+  </pageWizard>
+
+  <!-- FLICKR SLIDESHOW=============================== -->
+  <flickr menu="Misc" menuItem="Flickr Slideshow" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service." label="PageText" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>
+    <keywords label="Keyword(s)" type="TextInput"/>
+    <content label="Content for" options="all use,non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="100"/>
+    <deriv label="Reuse" options="unrestricted,non-derivative,share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="100"/>
+	<nextTipTxt label="Next Button Tooltip" type="TextInput"/>	
+	<priorTipTxt label="Prior Button Tooltip" type="TextInput"/>	
+	<loadingTxt label="Loading Message" type="TextInput"/>
+	<imageTxt1 label="IMAGE n of m images" type="TextInput"/>
+	<imageTxt2 label="image n OF m images" type="TextInput"/>
+	<imageTxt3 label="image n of m IMAGES" type="TextInput"/>
+    <msgOrder label="Number precedes Count" options="Yes,No" type="ComboBox" data="n,c"  defaultValue = "n" width="200"/>	
+	
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </flickr>
+
+
+</wizard>

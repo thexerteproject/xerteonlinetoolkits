@@ -1,0 +1,26 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill>
+    </newNodes>
+  </pageWizard>
+
+  <!-- GAP FILL INTERACTION=============================== -->
+  <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating a drag and drop gap-fill exercise." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>    
+    <text label="Introductory Text" type="TextArea" height="100"/>
+    <passage label="Gap Fill Text" type="TextArea" height="150"/>
+    <interactivity label="Interactivity" options="Drag Drop,Fill in Blank" type="ComboBox" data="Drag Drop,Fill in Blank" defaultValue="Drag Drop" width="100"/>
+    <feedback label="Feedback" type="TextArea" height="50"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	
+    <noise label="Distractors" type="TextArea" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>    
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </gapFill>
+
+</wizard>

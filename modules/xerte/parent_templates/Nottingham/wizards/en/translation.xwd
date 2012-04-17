@@ -1,0 +1,22 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <translation><![CDATA[<translation name="Enter the Title" instruction="Enter Instructions" showMedia="false"/>]]></translation>
+    </newNodes>
+  </pageWizard>
+
+  <!-- TRANSLATOR============================ -->
+  <translation menu="Misc" menuItem="Translation" icon="icGroup" remove="true" thumb="thumbs/translation.jpg" hint="A tool allowing users to translate text from language to another using machine translation.">
+
+    <name type="TextInput" label="Page Title"/>
+    <instruction type="TextArea" label="Instruction" height="100"/>
+
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </translation>
+
+
+</wizard>
