@@ -1,0 +1,20 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>  
+      <geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons>
+	</newNodes>
+  </pageWizard>
+  
+    <!-- GEOCOMMONS ================================ -->
+  <geocommons  menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>
+    <src label="IFrame code" type="TextInput"/>
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true" />
+
+  </geocommons>
+</wizard>  

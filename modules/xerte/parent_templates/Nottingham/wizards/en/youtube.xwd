@@ -1,0 +1,35 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" align="Left"
+	  stopBtnTip="Stop Video" pauseBtnTip="Pause Video" playBtnTip="Play Video" toggleBtnTip="Toggle Full Screen" 
+	  playMessage="Press Play" playerMessage="Player Loading..." loadingMessage="Loading...">Enter Embed Code Here</youtube>]]></youtube>
+    </newNodes>
+  </pageWizard>
+
+  <youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+    <align type="ComboBox" label="Align Text" options="Left,Right" width="100"/>
+
+    <stopBtnTip label="Stop Button Tip" type="TextInput" divider="true" language="true"/>	
+    <pauseBtnTip label="Pause Button Tip" type="TextInput" language="true"/>
+    <playBtnTip label="Play Button Tip" type="TextInput" language="true"/>
+    <toggleBtnTip label="Toggle Button Tip" type="TextInput" language="true"/>	
+    <playMessage label="Play Message" type="TextInput" language="true"/>
+    <playerMessage label="Player Message" type="TextInput" language="true"/>
+    <loadingMessage label="Loading Message" type="TextInput" language="true"/>
+	
+    <autoplay type="Checkbox" label="Autoplay" optional="true"/>
+	<toggle type="Checkbox" label="Toggle full screen" optional="true"/>
+    <videoSize type="TextInput" label="Video Size" optional="true"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+
+  </youtube>
+
+
+</wizard>

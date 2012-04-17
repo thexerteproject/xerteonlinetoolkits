@@ -1,0 +1,33 @@
+<wizard menus="Media">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Tooltip" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage>
+    </newNodes>  
+  </pageWizard>
+
+  <!-- Bleeding Image Page=========================================================== -->
+  <bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput" />
+    <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox"  width="100"/>
+    <imagesize label="Image Size" options="auto,full screen" data="auto,full screen" defaultValue="auto" type="ComboBox"  width="100"/>
+    <url label="Image" type="media" />
+    <tip label="Image Tooltip" type="TextInput" />
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false"  optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false"  optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+	
+    <linktarget label="Link target e.g _blank" type="textInput" width="70"  optional="true" />
+    <link label="Link and icon" type="textInput"  optional="true"/>
+	<linkIntro label="Link intro text" type="textInput"  optional="true"/>	
+    <sound label="Sound" type="media" optional="true"/>
+    <magnifier label="Magnifier"  type="checkBox" defaultValue="false" optional="true"/>
+    <addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>
+    <size label="Text Size" type="ComboBox"  options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>
+    
+  </bleedingImage>
+  
+  
+</wizard>

@@ -1,0 +1,34 @@
+<wizard menus="Games">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <memory><![CDATA[<memory name="Enter Page Title"/>]]></memory>
+    </newNodes>
+  </pageWizard>
+
+  <!-- MEMORY============================== -->
+  <memory menu="Games" menuItem="Memory Game" hint="An interaction for the user to match chunks of text" icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>    
+
+    <newNodes>
+      <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
+    </newNodes>
+
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </memory>
+
+  <matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
+
+    <name label="Label" type="TextInput"/>
+    <url label="Image" type="Media"/>
+
+  </matchItem>
+
+
+
+</wizard>

@@ -1,0 +1,39 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel>
+    </newNodes>
+  </pageWizard>
+
+  <!-- DRAG DROP LABEL INTERACTION==================== -->
+  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>
+    <text  label="Text" type="TextArea" height="250"/>
+    <url label="Image" type="media"/>
+    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <tip label="Image Tooltip" type="TextInput"/>
+    <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
+    <showHighlight label="Show Regions" type="CheckBox" defaultValue="true"/>
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+    <newNodes>
+      <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
+
+  </dragDropLabel>
+
+  <!-- HOTSPOT============================== -->
+  <hotspot menuItem="HotSpot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
+
+    <name label="Hotspot Title" type="TextInput"/>
+    <text label="Text" type="TextArea" height="250"/>
+
+  </hotspot>  
+
+
+</wizard>
