@@ -111,6 +111,9 @@ function db_query($sql, $params = array()) {
         $curph--;
     }
     _debug("Running : $sql",1);
+	
+	//echo $sql . "<br />";
+	
     $result = mysql_query($sql, $connection);
     if(!$result) {
         _debug("Failed to execute query : $sql : " . mysql_error());

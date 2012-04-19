@@ -108,7 +108,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT . "<form><textarea id=\"error_log_message\">" . $row['error_log_message'] . "</textarea></form></p>";	
 
-    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_message\">" . $row['error_email_message'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL . "<form><textarea id=\"error_email_list\">" . $row['email_error_list'] . "</textarea></form></p>";	
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_MAX . "<form><textarea id=\"error_email_message\">" . $row['max_error_size'] . "</textarea></form></p>";
 

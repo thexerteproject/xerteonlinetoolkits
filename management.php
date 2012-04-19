@@ -22,6 +22,17 @@ function mgt_page($xerte_toolkits_site, $extra){
             <head>
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
             <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+			<?PHP
+
+				echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+
+				echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
+
+				echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
+
+				echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
+
+			?>
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
@@ -150,6 +161,17 @@ if(empty($_POST["login"])&&empty($_POST["password"])){
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 			<link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+			<?PHP
+
+				echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
+
+				echo "var site_url = \"" . $xerte_toolkits_site->site_url .  "\";\n";
+
+				echo "var site_apache = \"" . $xerte_toolkits_site->apache .  "\";\n";
+
+				echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
+
+			?></script>
 
             <!-- 
 

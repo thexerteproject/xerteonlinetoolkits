@@ -41,5 +41,11 @@
 	var DELETE_FOLDER_NOT_EMPTY = "Sorry you cannot delete a folder that has projects in it. Please empty the folder first";
 
 	var NAME_FAIL = "Sorry that is not a valid name. Please use only letters and numbers.";
+	
+	var FILE_SYNC_FAIL = "Error synchronising ";
+	
+	var ERROR_DELETE = 'Error while trying to delete template';
+	
+	var ERROR_DUPLICATE = 'Error while duplicating ';
 
 

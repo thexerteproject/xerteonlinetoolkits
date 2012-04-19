@@ -11,7 +11,7 @@
 	 */
 	 
 
-	define("USERS_UPDATE_SUCCESS", "User update");
+	define("USERS_UPDATE_SUCCESS", "User update success");
 
 	define("USERS_UPDATE_FAIL", "User update failed");
 	
