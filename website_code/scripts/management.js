@@ -58,7 +58,7 @@ function management_alert_stateChanged(){
 		response = xmlHttp.responseText.trim();
 		if(response!=""){
 			
-			alert("Error from server? '" + response + "'");
+			alert(response);
 
 		}
 	}
@@ -297,7 +297,13 @@ function update_template(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('template_id=' + active_section + '&desc=' + document.getElementById(active_section + "desc").value + '&display=' + document.getElementById(active_section + "display").value + '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value + '&example=' + document.getElementById(active_section + "example").value + '&access=' + document.getElementById(active_section + "access").value + '&active=' + document.getElementById(active_section + "active").value); 		
+		xmlHttp.send('template_id=' + active_section + 
+					 '&desc=' + document.getElementById(active_section + "desc").value + 
+					 '&display=' + document.getElementById(active_section + "display").value + 
+					 '&date_uploaded=' + document.getElementById(active_section + "_date_uploaded").value + 
+					 '&example=' + document.getElementById(active_section + "example").value + 
+					 '&access=' + document.getElementById(active_section + "access").value + 
+					 '&active=' + document.getElementById(active_section + "active").value); 		
 
 	}
 
@@ -319,7 +325,10 @@ function update_play_security(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('play_id=' + active_section + '&security=' + document.getElementById(active_section + "security").value + '&data=' + document.getElementById(active_section + "data").value + '&info=' + document.getElementById(active_section + "info").value); 		
+		xmlHttp.send('play_id=' + active_section + 
+					 '&security=' + document.getElementById(active_section + "security").value + 
+					 '&data=' + document.getElementById(active_section + "data").value + 
+					 '&info=' + document.getElementById(active_section + "info").value); 		
 
 	}
 
@@ -372,7 +381,57 @@ function update_site(){
 
 		copyright = copyright.split("©").join("AAA");
 
-		xmlHttp.send('site_url=' + document.getElementById("site_url").value + '&apache=' + document.getElementById("apache").value + '&site_title=' + document.getElementById("site_title").value + '&site_name=' + document.getElementById("site_name").value + '&site_logo=' + document.getElementById("site_logo").value + '&organisational_logo=' + document.getElementById("organisational_logo").value + '&welcome_message=' + document.getElementById("welcome_message").value + '&site_text=' + document.getElementById("site_text").value + '&news_text=' + document.getElementById("news_text").value + '&pod_one=' + document.getElementById("pod_one").value + '&pod_two=' + document.getElementById("pod_two").value + '&copyright=' + document.getElementById("copyright").value + '&demonstration_page=' + document.getElementById("demonstration_page").value + '&form_string=' + document.getElementById("form_string").value + '&peer_form_string=' + document.getElementById("peer_form_string").value + '&feedback_list=' + document.getElementById("feedback_list").value + '&rss_title=' + document.getElementById("rss_title").value + '&module_path=' + document.getElementById("module_path").value + '&website_code_path=' + document.getElementById("website_code_path").value + '&users_file_area_short=' + document.getElementById("users_file_area_short").value + '&php_library_path=' + document.getElementById("php_library_path").value + '&root_file_path=' + document.getElementById("root_file_path").value + '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value + '&email_error_list=' + document.getElementById("email_error_list").value + '&error_log_message=' + document.getElementById("error_log_message").value + '&error_email_message=' + document.getElementById("error_email_message").value + '&ldap_host=' + document.getElementById("ldap_host").value	+ '&ldap_port=' + document.getElementById("ldap_port").value + '&bind_pwd=' + document.getElementById("bind_pwd").value + '&base_dn=' + document.getElementById("base_dn").value + '&bind_dn=' + document.getElementById("bind_dn").value + '&flash_save_path=' + document.getElementById("flash_save_path").value + '&flash_upload_path=' + document.getElementById("flash_upload_path").value + '&flash_preview_check_path=' + document.getElementById("flash_preview_check_path").value + '&flash_flv_skin=' + document.getElementById("flash_flv_skin").value + '&site_email_account=' + document.getElementById("site_email_account").value + '&headers=' + document.getElementById("headers").value + '&email_to_add_to_username=' + document.getElementById("email_to_add_to_username").value + '&proxy1=' + document.getElementById("proxy1").value + '&port1=' + document.getElementById("port1").value + '&site_session_name=' + document.getElementById("site_session_name").value + '&synd_publisher=' + document.getElementById("synd_publisher").value + '&synd_rights=' + document.getElementById("synd_rights").value + '&synd_license=' + document.getElementById("synd_license").value + '&import_path=' + document.getElementById("import_path").value + '&mimetypes=' + document.getElementById("mimetypes").value + '&LDAP_preference=' + document.getElementById("LDAP_preference").value + '&LDAP_filter=' + document.getElementById("LDAP_filter").value + '&integration_config_path=' + document.getElementById("integration_config_path").value + '&admin_username=' + document.getElementById("admin_username").value + '&admin_password=' + document.getElementById("admin_password").value);
+		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
+					 '&apache=' + document.getElementById("apache").value + 
+					 '&site_title=' + document.getElementById("site_title").value + 
+					 '&site_name=' + document.getElementById("site_name").value + 
+					 '&site_logo=' + document.getElementById("site_logo").value + 
+					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
+					 '&welcome_message=' + document.getElementById("welcome_message").value + 
+					 '&site_text=' + document.getElementById("site_text").value + 
+					 '&news_text=' + document.getElementById("news_text").value + 
+					 '&pod_one=' + document.getElementById("pod_one").value + 
+					 '&pod_two=' + document.getElementById("pod_two").value + 
+					 '&copyright=' + document.getElementById("copyright").value + 
+					 '&demonstration_page=' + document.getElementById("demonstration_page").value + 
+					 '&form_string=' + document.getElementById("form_string").value + 
+					 '&peer_form_string=' + document.getElementById("peer_form_string").value + 
+					 '&feedback_list=' + document.getElementById("feedback_list").value + 
+					 '&rss_title=' + document.getElementById("rss_title").value + 
+					 '&module_path=' + document.getElementById("module_path").value + 
+					 '&website_code_path=' + document.getElementById("website_code_path").value + 
+					 '&users_file_area_short=' + document.getElementById("users_file_area_short").value + 
+					 '&php_library_path=' + document.getElementById("php_library_path").value + 
+					 '&root_file_path=' + document.getElementById("root_file_path").value + 
+					 '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value + 
+					 '&email_error_list=' + document.getElementById("error_email_list").value + 
+					 '&error_log_message=' + document.getElementById("error_log_message").value + 
+					 '&error_email_message=' + document.getElementById("error_email_message").value + 
+					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
+					 '&ldap_port=' + document.getElementById("ldap_port").value + 
+					 '&bind_pwd=' + document.getElementById("bind_pwd").value + 
+					 '&base_dn=' + document.getElementById("base_dn").value + 
+					 '&bind_dn=' + document.getElementById("bind_dn").value + 
+					 '&flash_save_path=' + document.getElementById("flash_save_path").value + 
+					 '&flash_upload_path=' + document.getElementById("flash_upload_path").value + 
+					 '&flash_preview_check_path=' + document.getElementById("flash_preview_check_path").value + 
+					 '&flash_flv_skin=' + document.getElementById("flash_flv_skin").value + 
+					 '&site_email_account=' + document.getElementById("site_email_account").value + 
+					 '&headers=' + document.getElementById("headers").value + 
+					 '&email_to_add_to_username=' + document.getElementById("email_to_add_to_username").value + 
+					 '&proxy1=' + document.getElementById("proxy1").value + 
+					 '&port1=' + document.getElementById("port1").value + 
+					 '&site_session_name=' + document.getElementById("site_session_name").value + 
+					 '&synd_publisher=' + document.getElementById("synd_publisher").value + 
+					 '&synd_rights=' + document.getElementById("synd_rights").value + 
+					 '&synd_license=' + document.getElementById("synd_license").value + 
+					 '&import_path=' + document.getElementById("import_path").value + 
+					 '&mimetypes=' + document.getElementById("mimetypes").value + 
+					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
+					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
+					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
+					 '&admin_username=' + document.getElementById("admin_username").value + 
+					 '&admin_password=' + document.getElementById("admin_password").value);
 
 	}
 
@@ -394,7 +453,10 @@ function user_template(){
 		xmlHttp.onreadystatechange=management_alert_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('user_id=' + active_section + '&firstname=' + document.getElementById("firstname" + active_section).value + '&surname=' + document.getElementById("surname"+active_section).value + '&username=' + document.getElementById("username"+active_section).value ); 		
+		xmlHttp.send('user_id=' + active_section + 
+					 '&firstname=' + document.getElementById("firstname" + active_section).value + 
+					 '&surname=' + document.getElementById("surname"+active_section).value + 
+					 '&username=' + document.getElementById("username"+active_section).value ); 		
 
 	}
 
@@ -438,7 +500,9 @@ function new_security(){
 		xmlHttp.onreadystatechange=management_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('newsecurity=' + document.getElementById("newsecurity").value + '&newdata=' + document.getElementById("newdata").value + '&newdesc=' + document.getElementById("newdesc").value); 		
+		xmlHttp.send('newsecurity=' + document.getElementById("newsecurity").value + 
+					 '&newdata=' + document.getElementById("newdata").value + 
+					 '&newdesc=' + document.getElementById("newdesc").value); 		
 
 	}
 
