@@ -30,29 +30,31 @@ require_once("../config.php");
         <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
         <img src="../website_code/images/UofNLogo.jpg" style="margin-right:10px; float:right" />
     </div>
-    <div class="mainbody">
+    <div class="mainbody"><?PHP
+	
+	if(isset($_POST['name'])){
 
-				echo "<p>" . FEEDBACK_RESPONSE . "</p></div></body></html>";
+		echo "<p>" . FEEDBACK_RESPONSE . "</p></div></body></html>";
 
-				mail($xerte_toolkits_site->feedback_list, FEEDBACK_EMAIL_TITLE, FEEDBACK_GIVER . mysql_real_escape_string($_POST['name']) . "<br>" . FEEDBACK_MESSAGE_INTRO . "<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
+		mail($xerte_toolkits_site->feedback_list, FEEDBACK_EMAIL_TITLE, FEEDBACK_GIVER . mysql_real_escape_string($_POST['name']) . "<br>" . FEEDBACK_MESSAGE_INTRO . "<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
 
-    echo "<p>Thank you for your feedback</p></div></body></html>";
+		echo "<div class=\"title\"><p>" . FEEDBACK_PAGE_TITLE . "</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">" . FEEDBACK_DESCRIPTION . "</div><div style=\"width:50%; float:left; position:relative;\">";
 
-				echo "<div class=\"title\"><p>" . FEEDBACK_PAGE_TITLE . "</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">" . FEEDBACK_DESCRIPTION . "</div><div style=\"width:50%; float:left; position:relative;\">";
-
-				echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>" . FEEDBACK_TEXTAREA . "<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"" . FEEDBACK_BUTTON . "\"></form>";
+		echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>" . FEEDBACK_TEXTAREA . "<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"" . FEEDBACK_BUTTON . "\"></form>";
+		
+	}else{
 
     /**
      *	Else display the page
      */
 
-    echo "<div class=\"title\"><p>Welcome to Xerte on-line Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below. Thank you, the IS Learning Team.</div><div style=\"width:50%; float:left; position:relative;\">";
+		echo "<div class=\"title\"><p>Welcome to Xerte on-line Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below. Thank you, the IS Learning Team.</div><div style=\"width:50%; float:left; position:relative;\">";
 
-    echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>Feedback<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"Send Feedback\"></form>";
+		echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>Feedback<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"Send Feedback\"></form>";
 
-    echo "</div></div></body></html>";
-
-}
+		echo "</div></div></body></html>";
+		
+	}
 
 ?>
     </div>
