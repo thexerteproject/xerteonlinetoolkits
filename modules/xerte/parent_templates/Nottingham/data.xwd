@@ -62,7 +62,7 @@
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
 	  >Enter text for the page here</imageViewer>]]></imageViewer><indexChanger><![CDATA[<indexChanger name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
-	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm your selection" confirmBtnWidth="100" />]]></indexChanger><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" mode="test" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00" />]]></inventory><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" initLook="Ball and Stick" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
+	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm your selection" confirmBtnWidth="100" />]]></indexChanger><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" mode="test" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00" />]]></inventory><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" checkBtnTxt="Check" checkBtnTip="Check Answer" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Enter Page Title"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was" responseHeaderTxt="Your response was:"
@@ -681,18 +681,10 @@
       <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
-  </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="Allows you to include any web page, or to add any embed code to your project" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
-    
-    <name type="TextInput" label="Page Title"/>
-    <src label="Embed Code or URL" type="TextArea" height="300"/>
+  </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="Allows you to include any web page, or to add any embed code to your project" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">    
+    <name type="TextInput" label="Page Title"/>    <src label="Embed Code or URL" type="TextArea" height="300"/>
 
-
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
-
-  </embedDiv><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>    <narration label="Narration" type="media" optional="true"/>    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/> </embedDiv><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
     <url label="Flash Paper SWF File" type="media"/>
@@ -915,25 +907,8 @@
     <narration label="Narration" type="media" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true">
-
-    <name label="Page Title" type="TextInput"/>
-    <text label="Text" type="TextArea" height="150"/>
-    <xyz label="Model File" type="Media"/>
-    <initLook label="Initial Appearance" options="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" type="ComboBox" data="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" defaultData="Ball and Stick" width="120"/>
-    <controls label="Show Control Bar" type="CheckBox" defaultValue="true"/>
-    
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
-
-    <cartoonOpt label="Cartoon Option" type="CheckBox" defaultValue="true" optional="true"/>
-    <backOpt label="Backbone Option" type="CheckBox" defaultValue="true" optional="true"/>
-    <bgColour label="Background Colour" type="ComboBox" options="White,Black,Blue" width="120" optional="true"/>
-    <initSpin label="Spin" type="CheckBox" optional="true"/>
-    <xyz2 label="2nd Model File" type="Media" optional="true"/>
-    
+  </jing><jmol menu="Media" menuItem="JMOL Viewer" hint="Provides a viewer for JMOL files" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true">    <name label="Page Title" type="TextInput"/>    <text label="Text" type="TextArea" height="150"/>    <xyz label="Model File" type="Media"/>    <size label="Model Size" type="ComboBox" options="Small,Medium,Large" width="100"/>    <initLook label="Initial Appearance" options="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" type="ComboBox" data="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" defaultData="Ball and Stick" width="120"/>    <colour label="Initial Colour" type="ComboBox" options="Default,Element,Amino Acid,Chain,Secondary Structure" width="150"/>    <controls label="Show Control Bar" type="CheckBox" defaultValue="true"/>    
+<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>    <narration label="Narration" type="media" optional="true"/>    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>    <cartoonOpt label="Cartoon Option" type="CheckBox" defaultValue="true" optional="true"/>    <backOpt label="Backbone Option" type="CheckBox" defaultValue="true" optional="true"/>    <colourOpt label="Control Bar - Colour" type="CheckBox" optional="true"/>    <labelOpt label="Control Bar - Label" type="CheckBox" optional="true"/>    <surfaceOpt label="Control Bar - Surface" type="CheckBox" optional="true"/>    <scriptOpt label="Control Bar - Script" type="CheckBox" optional="true"/>    <initScript label="Initial Jmol Script" type="TextInput" optional="true"/>    <bgColour label="Background Colour" type="ComboBox" options="White,Black,Blue" width="120" optional="true"/>    <initSpin label="Spin" type="CheckBox" optional="true"/>    <xyz2 label="2nd Model File" type="Media" optional="true"/>    
 
   </jmol><links menu="Navigators" menuItem="Hyperlinks" hint="The links page allows you to easily assemble a page of keyboard accessible links" icon="icWorld" remove="true" thumb="thumbs/links.jpg">
     
