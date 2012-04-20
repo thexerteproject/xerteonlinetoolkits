@@ -16,47 +16,51 @@ _load_language_file("/website_code/php/versioncontrol/update_file.inc");
 
 require('../template_status.php');
 
-if(is_numeric($_POST['template_id'])){
+if(isset($_POST['template_id'])){
 
-	if(!empty($_POST['file_path'])){
+	if(is_numeric($_POST['template_id'])){
 
-		$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",stripcslashes($_POST['file_path'])));
+		if(!empty($_POST['file_path'])){
 
-	}else{
+			$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",stripcslashes($_POST['file_path'])));
 
-		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+		}else{
 
-		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", mysql_real_escape_string($_POST['template_id']), $query_for_play_content_strip);
+			$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-		$query_for_play_content_response = mysql_query($query_for_play_content);
+			$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", mysql_real_escape_string($_POST['template_id']), $query_for_play_content_strip);
 
-		$row_play = mysql_fetch_array($query_for_play_content_response);
+			$query_for_play_content_response = mysql_query($query_for_play_content);
 
-		$temp_array = array();
+			$row_play = mysql_fetch_array($query_for_play_content_response);
 
-		array_push($temp_array, mysql_real_escape_string($_POST['template_id']));
+			$temp_array = array();
 
-		array_push($temp_array, $row_play['username']);
+			array_push($temp_array, mysql_real_escape_string($_POST['template_id']));
 
-		array_push($temp_array, $row_play['template_name']);
+			array_push($temp_array, $row_play['username']);
 
-	}
-		/*
-		* Code to sync files
-		*/
+			array_push($temp_array, $row_play['template_name']);
 
-	if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
+		}
+			/*
+			* Code to sync files
+			*/
 
-		$preview_xml = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/preview.xml");
+		if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
 
-		$data_handle = fopen($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/data.xml","w");
+			$preview_xml = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/preview.xml");
 
-		fwrite($data_handle,$preview_xml);
+			$data_handle = fopen($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/data.xml","w");
 
-		fclose($data_handle);
+			fwrite($data_handle,$preview_xml);
 
-		echo UPDATE_SUCCESS;
-		
+			fclose($data_handle);
+
+			echo UPDATE_SUCCESS;
+			
+		}
+
 	}
 
 }

@@ -95,21 +95,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     function bunload(){
 
-        path = "<?PHP
+        path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
 
-    if($version_control){
+		template = "<?PHP  echo $row_edit['template_id']; ?>";
 
-        echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";
-
-    }else{
-
-        echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";
-
-    }
-
-?>";
-
-window_reference.edit_window_close(path);	
+window_reference.edit_window_close(path,template);	
 
     }
 
