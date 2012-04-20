@@ -21,6 +21,7 @@ require $xerte_toolkits_site->php_library_path  . "user_library.php";
  * Check the ID is numeric
  */
 if(isset($_SESSION['toolkits_logon_id'])) {
+
     if(is_numeric($_GET['template_id'])) {
 
         $safe_template_id = (int) $_GET['template_id'];
@@ -34,11 +35,12 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 
         $query_for_preview_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_preview_content_strip);	
 
+		$row = db_query_one($query_for_preview_content);
+
         // get their username from the db which matches their login_id from the $_SESSION
-        $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?", array($_SESSION['toolkits_logon_id']));
-
-        $row = db_query_one($query_for_preview_content);
-
+        $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?", array($row['user_id']));
+		
+        
         // is there a matching template?
         if(!empty($row)) {
             // if they're an admin or have rights to see the template, then show it.
@@ -47,8 +49,17 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                 show_preview_code($row, $row_username);		
                 exit(0);
             }
+			
         }
-    }
-}
+		
+    }else{
+	
+		echo PREVIEW_RESOURCE_FAIL;
+			
+	}
+	
+}else{
 
-echo PREVIEW_RESOURCE_FAIL;
+	echo PREVIEW_RESOURCE_FAIL;
+	
+}
