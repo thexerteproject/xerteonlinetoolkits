@@ -1,0 +1,65 @@
+<language name="English" code="en-gb">
+	<btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
+	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
+	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
+	<browseImportFile title="Select file to import...">
+		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Import</buttontext>
+	</browseImportFile>
+	<kblanguage title="Character Pad" tooltip="Character Pad" description="Keyboard Layout Languages">
+		<item>French</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="New " />
+	<helpLink tooltip="Click for Help"/>
+	<btnInsert label="Insert" tooltip="Insert"/>
+	<btnAddChild tooltip="add some children"/>
+	<btnDuplicate label="Copy" tooltip="Clone"/>
+	<btnDelete label="Delete" tooltip="Delete"/>
+	<btnMoveUp tooltip="Move Up"/>
+	<btnMoveDown tooltip="Move Down"/>
+	<btnNext tooltip="Next Item"/>
+	<btnPreview label="Play" tooltip="Preview"/>
+	<btnSave tooltip="Save File"/>
+	<btnPrev tooltip="Previous Item"/>
+	<icDelete tooltip="Delete" prompt="Delete the item?"/>
+	<addProp label="Add" />
+	<optionalProp label="Optional Properties:"/>
+	<chkShowLanguage label="Show Language Otions" />
+	<chkShowAdvanced label="Show Advanced Options" />
+	<compMedia tooltip="Import Media"/>
+	<compPreview tooltip="Preview"/>
+	<filemenu title="File">
+		<menuNew>New Project...</menuNew>
+		<menuOpen>Open...</menuOpen>
+		<menuSave>Save</menuSave>
+		<menuExit>Exit</menuExit>
+	</filemenu>
+	<menuOpen title="Please select a Project">
+		<dialogText>Select a file</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Learning Templates|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="View">
+		<menuPreview>Preview</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publish">
+		<menuPublish>Publish</menuPublish>
+		<menuPackage>Package</menuPackage>
+	</publishmenu>
+	<menuPackage title="Save SCORM 1.2 Package">
+		<dialogText>Select a file</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip Files|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Help">
+		<menuHelp>Help</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Help file comming soon.</prompt>
+	</menuHelp>
+</language>

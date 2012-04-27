@@ -1,13 +1,13 @@
 <?php
 //moodle integration (please view moodle_integration_readme.txt before use)
-//The require path below is the path to the moodle installation config file 
+//The require path below is the path to the moodle installation config file
 //this needs to be the path from root rather than something like ../../moodle/config.php
 //e.g. this might be something like require("/home/yourdomain/public_html/config.php");
 //set this same path in moodle_integration.txt also
 //require("/xampp/htdocs/moodle/config.php");
 
 /**
- * 
+ *
  * Config page, sets up the site variable from the database
  *
  * @author Patrick Lockley
@@ -16,7 +16,7 @@
  * @package
  */
 
-/** 
+/**
  * $xerte_toolkits_site variable
  * Variable used to hold database settings
  * @global object $xerte_toolkits_site
@@ -52,19 +52,19 @@ if(!function_exists('_debug')) {
     }
 }
 if(!function_exists('_load_language_file')) {
-    function _load_language_file($file_path) { 
+    function _load_language_file($file_path) {
         if(isset($_SESSION['toolkits_language'])) {
             $file_path = dirname(__FILE__) . '/languages/' . $_SESSION['toolkits_language'] . $file_path;
         }
         else {
             // additional logic could use e.g. $_GET['language'] or $_COOKIE['language'] at this point... or something like Zend_Locale and HTTP accept headers...
-            // we'll just fall back to assuming en-gb if nothing else is specified here.
-            $file_path = dirname(__FILE__) . '/languages/en-gb/' . $file_path;
+            // we'll just fall back to assuming en-GB if nothing else is specified here.
+            $file_path = dirname(__FILE__) . '/languages/en-GB/' . $file_path;
         }
 		if(file_exists($file_path)){
-		
+
 			require_once($file_path);
-			
+
 		}
 
         return true;
@@ -76,7 +76,7 @@ if(!isset($xerte_toolkits_site)){
     // create new generic object to hold all our config stuff in....
     $xerte_toolkits_site = new StdClass();
 
-    /** 
+    /**
      * Access the database to get the variables
      */
     if(!is_file(dirname(__FILE__) . '/database.php')) {
@@ -84,15 +84,15 @@ if(!isset($xerte_toolkits_site)){
     }
 
     require_once(dirname(__FILE__) . '/database.php');
-    
+
     require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
     if(!database_connect("","")) {
         die("database.php isn't correctly configured; cannot connect to database; have you run /setup?");
-    }    
+    }
 
     $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
-    /** 
+    /**
      * Access the database to get the variables
      * @version 1.0
      * @author Patrick Lockley
@@ -107,7 +107,7 @@ if(!isset($xerte_toolkits_site)){
         require_once($row['integration_config_path']);
     }
 
-    /** 
+    /**
      * Site variables
      */
 
@@ -118,13 +118,13 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->admin_password = $row['admin_password'];
     $xerte_toolkits_site->mimetypes = explode(",",$row['mimetypes']);
 
-    /** 
+    /**
      * Site session variables
      */
 
     $xerte_toolkits_site->site_session_name = $row['site_session_name'];
 
-    /** 
+    /**
      * Configure the look and feel for index.php page
      */
 
@@ -141,7 +141,7 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->pod_two = base64_decode($row['pod_two']);
     $xerte_toolkits_site->copyright = utf8_decode($row['copyright']);
 
-    /** 
+    /**
      * Configure the RSS Feed title
      */
 
@@ -150,19 +150,19 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->synd_rights = $row['synd_rights'];
     $xerte_toolkits_site->synd_license = $row['synd_license'];
 
-    /** 
+    /**
      * Set up the string for the password protected play page
      */
 
     $xerte_toolkits_site->form_string = base64_decode($row['form_string']);
 
-    /** 
+    /**
      * Set up the string for the peer review page
      */
 
     $xerte_toolkits_site->peer_form_string = base64_decode($row['peer_form_string']);
 
-    /** 
+    /**
      * Site paths
      */
 
@@ -175,13 +175,13 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->users_file_area_full = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
     $xerte_toolkits_site->import_path = $row['import_path'];
 
-    /** 
+    /**
      * SQL query string used by play,edit and preview pages
      */
 
     $xerte_toolkits_site->play_edit_preview_query = base64_decode($row['play_edit_preview_query']);
 
-    /** 
+    /**
      * Error handling settings
      */
 
@@ -191,7 +191,7 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->error_email_message= $row['error_email_message'];
     $xerte_toolkits_site->max_error_size= $row['max_error_size'];
 
-    /** 
+    /**
      * LDAP Settings
      */
 
@@ -203,7 +203,7 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->LDAP_preference = $row['LDAP_preference'];
     $xerte_toolkits_site->LDAP_filter = $row['LDAP_filter'];
 
-    /** 
+    /**
      * Xerte settings
      */
 
@@ -212,7 +212,7 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->flash_preview_check_path = $row['flash_preview_check_path'];
     $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
 
-    /** 
+    /**
      * Email settings
      */
 
@@ -220,14 +220,14 @@ if(!isset($xerte_toolkits_site)){
     $xerte_toolkits_site->headers = $row['headers'];
     $xerte_toolkits_site->email_to_add_to_username = $row['email_to_add_to_username'];
 
-    /** 
+    /**
      * RSS Proxy settings
      */
 
     $xerte_toolkits_site->proxy1 = $row['proxy1'];
     $xerte_toolkits_site->port1 = $row['port1'];
 
-    /** 
+    /**
      * Set up the feedback list from the feedback page
      */
 
@@ -238,7 +238,7 @@ if(!isset($xerte_toolkits_site)){
 
     $session_handle = new toolkits_session_handler();
 
-    session_set_save_handler( 
+    session_set_save_handler(
                      array($session_handle,'xerte_session_open'),
                      array($session_handle,'xerte_session_close'),
                      array($session_handle,'xerte_session_read'),
@@ -246,10 +246,10 @@ if(!isset($xerte_toolkits_site)){
                      array($session_handle,'xerte_session_destroy'),
                      array($session_handle,'xerte_session_clean'));
      */
-	 
+
     session_start();
-    // fall back to en-gb if nothing is chosen elsewhere.
+    // fall back to en-GB if nothing is chosen elsewhere.
     if(!isset($_SESSION['toolkits_language'])) {
-        $_SESSION['toolkits_language'] = "en-gb";
+        $_SESSION['toolkits_language'] = "en-GB";
     }
 }

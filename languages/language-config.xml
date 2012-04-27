@@ -1,10 +1,9 @@
-﻿<languages>
+<languages>
 
-  <language name="English" file="en-gb.xml"/>
-  <language name="Dutch" file="nl-NL.xml"/>
-  <language name="French" file="fr-FR.xml"/>
-  <language name="Italian" file="it-IT.xml"/>
-  <language name="Spanish" file="es-ES.xml"/>
-  <language name="Welsh" file="cy-GB.xml"/>
+  <language name="English (en-GB)" code="en-GB" file="engine_en-GB.xml" wizardfile="wizard_en-GB.xml" editorfile="editor_en-GB.xml" />
+  <language name="English (en-US)" code="en-US" file="engine_en-US.xml" wizardfile="wizard_en-US.xml" editorfile="editor_en-GB.xml" />
+  <language name="Nederlands (nl-NL)" code="nl-NL" file="engine_nl-NL.xml" wizardfile="wizard_nl-NL.xml" editorfile="editor_en-GB.xml" />
+  <language name="Francais (fr-FR)" code="fr-FR" file = "engine_fr-FR.xml" wizardfile="wizard_fr-FR.xml" editorfile="editor_en-GB.xml" />
+  <language name="Español (en-ES)" code="es-ES" file = "engine_es-ES.xml" wizardfile="wizard_es-ES.xml" editorfile="editor_es-ES.xml" />
 
 </languages>
