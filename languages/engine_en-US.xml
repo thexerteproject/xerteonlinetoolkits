@@ -1,4 +1,4 @@
-﻿<language name="English">
+<language name="English" code="en-us">
 
   <nextButton label="Next" description="Next Page Button"/>
   
@@ -7,8 +7,6 @@
   <tocButton label="Contents" description="Table of Contents Button"/>
   
   <helpButton label="Help" description="Help Button. "/>
-
-  <mediaButton label="Media" description="Show Media Button. "/>
   
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
@@ -22,7 +20,7 @@
   
   <textToSpeech label="null" description="Text to Speech"/>
 
-  <themes label="--Colour Schemes--" description="Colour Scheme Options">
+  <themes label="--Color Schemes--" description="Color Scheme Options">
     <item>default</item>
     <item>blue</item>
     <item>green</item>

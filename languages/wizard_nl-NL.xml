@@ -1,0 +1,65 @@
+<language name="Nederlands" code="nl-nl">
+	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
+	<btnPublishXot label="Publiceer" description="Publiceer Knop"/>
+	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
+	<browseImportFile title="Selecteer bestand om te importeren...">
+		<dialogFilter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluidsbestanden|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importeer</buttontext>
+	</browseImportFile>
+	<kblanguage title="Toetsenbord" tooltip="Toetsenbord" description="Toetsenbord taal ">
+		<item>Frans</item>
+		<item>Duits</item>
+		<item>Italiaans</item>
+		<item>Pools</item>
+		<item>Portugees</item>
+		<item>Spaans</item>
+	</kblanguage>
+	<newLink label="Nieuw(e) " />
+	<helpLink tooltip="Klik voor Help"/>
+	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
+	<btnAddChild tooltip="voeg kinderen toe"/>
+	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
+	<btnDelete label="Verwijder" tooltip="Verwijderen"/>
+	<btnMoveUp tooltip="Verplaats naar boven"/>
+	<btnMoveDown tooltip="Verplaats naar beneden"/>
+	<btnNext tooltip="Volgende item"/>
+	<btnPreview label="Toon" tooltip="Voorvertoning"/>
+	<btnSave tooltip="Sla bestand op"/>
+	<btnPrev tooltip="Vorige item"/>
+	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
+	<addProp label="Voeg in" />
+	<optionalProp label="Extra eigenschappen:"/>
+	<chkShowLanguage label="Toon Taal Opties" />
+	<chkShowAdvanced label="Toon Geavanceerde Opties" />
+	<compMedia tooltip="Importeer Media"/>
+	<compPreview tooltip="Voorvertoning"/>
+	<filemenu title="Bestand">
+		<menuNew>Nieuw Project...</menuNew>
+		<menuOpen>Open...</menuOpen>
+		<menuSave>Opslaan</menuSave>
+		<menuExit>Afsluiten</menuExit>
+	</filemenu>
+	<menuOpen title="Selecteer een Project">
+		<dialogText>Selecteer een bestand</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Sjablonen|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Beeld">
+		<menuPreview>Voorvertoning</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publiceer">
+		<menuPublish>Publiceer</menuPublish>
+		<menuPackage>Verpakken</menuPackage>
+	</publishmenu>
+	<menuPackage title="Opslaan als SCORM 1.2 Pakket">
+		<dialogText>Selecteer een bestand</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip Bestanden|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Help">
+		<menuHelp>Help</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Help bestand komt er aan.</prompt>
+	</menuHelp>
+</language>
