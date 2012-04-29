@@ -62,29 +62,17 @@ if(!empty($query_for_peer_response)) {
             $row_play = db_query_one($query_for_play_content);
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/peer.php";
-
             show_template($row_play);					
-
         }else{
-
             $buffer = $xerte_toolkits_site->peer_form_string . $temp[1] . "<p>" . PEER_LOGON_FAIL . ".</p></center></body></html>";
-
             echo $buffer;
-
         }		
-
     }else{
-
         /**
          *  Nothing posted so output the password string
          */
-
         echo $xerte_toolkits_site->peer_form_string;
-
     }
-
 }else{
-
     dont_show_template();
-
 }
