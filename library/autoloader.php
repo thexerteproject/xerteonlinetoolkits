@@ -3,6 +3,10 @@
 // Some ZF stuff has explicit require_once's in it... meh.
 ini_set('include_path', ini_get('include_path') . ':' . dirname(__FILE__) );
 
+// For Ron -
+var_dump(ini_get('include_path'));
+die('xx');
+
 function _xerte_autoloader($class) {
     
     $class = str_replace("_", DIRECTORY_SEPARATOR , $class);
@@ -16,8 +20,6 @@ function _xerte_autoloader($class) {
 
     // hmm, pass onto someone else?
     return false;
-
-    
 }
 
 spl_autoload_register("_xerte_autoloader");
