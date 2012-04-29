@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/error_library.php");
-/**	
+/** 	
  * 
  * Database library, code for connecting to the database
  *
@@ -10,9 +10,8 @@ require_once(dirname(__FILE__) . "/error_library.php");
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-
 // horrible includes.
-if(function_exists('database_connect')) {
+if (function_exists('database_connect')) {
     return;
 }
 
@@ -25,7 +24,8 @@ if(function_exists('database_connect')) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function database_connect($success_string, $error_string){
+function database_connect($success_string, $error_string)
+{
     global $xerte_toolkits_site;
 
     /*
@@ -38,12 +38,11 @@ function database_connect($success_string, $error_string){
      * Check for connection and error if failed
      */
 
-    if(!$mysql_connect_id){
+    if (!$mysql_connect_id) {
         die("<h2>Xerte Online Toolkits</h2>
              <p><strong>Sorry, the system cannot connect to the database at present</strong></p>
              <p>This may be because the database server is offline, or this instance of Xerte has not been setup (see <a href='setup'>/setup</a>). </p>
              <p>The mysql error is <strong>" . mysql_error() . "</strong></p>");
-
     }
 
     $database_fail = false;
@@ -55,13 +54,13 @@ function database_connect($success_string, $error_string){
      */
 
     $username = 'anonymous';
-    if(isset($_SESSION['toolkits_logon_username'])) {
+    if (isset($_SESSION['toolkits_logon_username'])) {
         $username = $_SESSION['toolkits_logon_username'];
     }
-    if($database_fail){
+    if ($database_fail) {
         receive_message($username, "ADMIN", "CRITICAL", "DATABASE FAILED AT " . $error_string, "MYSQL ERROR MESSAGE IS " . mysql_error());
-        die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error() );
-    }else{
+        die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error());
+    } else {
         receive_message($username, "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
     }
 
@@ -70,7 +69,6 @@ function database_connect($success_string, $error_string){
      */
 
     return $mysql_connect_id;
-
 }
 
 /**
@@ -79,49 +77,49 @@ function database_connect($success_string, $error_string){
  * @param array $params - e.g. array('bob', "david's");
  * @return mysql resultset.
  */
-function db_query($sql, $params = array()) {
+function db_query($sql, $params = array())
+{
     $connection = database_connect('db_query ok', 'db_query fail');
 
-    foreach($params as &$value) {
-        if(isset($value)) {
-            if(get_magic_quotes_gpc()) {
+    foreach ($params as $key => $value) {
+        if (isset($value)) {
+            if (get_magic_quotes_gpc()) {
                 $value = stripslashes($value);
             }
             $value = "'" . mysql_real_escape_string($value) . "'";
-        }
-        else {
+        } else {
             $value = 'NULL';
         }
+        // overwrite the $params data with the santised stuff.
+        $params[$key] = $value;
     }
 
     // following code taken from php.net/mysql_query - axiak at mit dot edu - 24th october 2006
     $curpos = 0;
     $curph = count($params) - 1;
     // start at the end of the string and replace things backwards; this avoids us replacing a replacement
-    for($i = strlen($sql)-1; $i>0; $i--) {
-        if($sql[$i] !== '?') {
+    for ($i = strlen($sql) - 1; $i > 0; $i--) {
+        if ($sql[$i] !== '?') {
             continue;
         }
-        if($curph < 0) {
+        if ($curph < 0) {
             $sql = substr_replace($sql, 'NULL', $i, 1);
-        }
-        else {
+        } else {
             $sql = substr_replace($sql, $params[$curph], $i, 1);
         }
         $curph--;
     }
-    _debug("Running : $sql",1);
-	
-	//echo $sql . "<br />";
-	
+    _debug("Running : $sql", 1);
+
+
     $result = mysql_query($sql, $connection);
-    if(!$result) {
+    if (!$result) {
         _debug("Failed to execute query : $sql : " . mysql_error());
         return false;
     }
-    if(preg_match("/^select/i", $sql)) {
+    if (preg_match("/^select/i", $sql)) {
         $rows = array();
-        while($row = mysql_fetch_assoc($result)) {
+        while ($row = mysql_fetch_assoc($result)) {
             $rows[] = $row;
         }
         return $rows;
@@ -135,10 +133,11 @@ function db_query($sql, $params = array()) {
  * @param array $params (optional)
  * @return array (db row) or null
  */
-function db_query_one($sql, $params = array()) {
+function db_query_one($sql, $params = array())
+{
     $results = db_query($sql, $params);
 
-    if(sizeof($results) > 0) {
+    if (sizeof($results) > 0) {
         return $results[0];
     }
     return null;
