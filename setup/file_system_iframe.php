@@ -1,215 +1,176 @@
 <html>
-	<head>
-		<style>
-			html{
-				font-family:arial;
-			}
-		</style>
-	</head>
-	<body>
+    <head>
+        <style>
+            html{
+                font-family:arial;
+            }
+        </style>
+    </head>
+    <body>
 
-<?php
+        <?php
+        $file = str_replace("setup", "", getcwd());
 
-	$file = str_replace("setup","",getcwd());
+        echo "Checking for write permissions to the root folder - $file <br>";
 
-	echo "Checking for write permissions to the root folder - $file <br>";
+        if ($file != "") {
 
-	if($file!=""){
+            if (function_exists("is_writable")) {
 
-		if(function_exists("is_writable")){
+                if (is_writable($file)) {
 
-			if(is_writable($file)){
+                    echo "1. Root folder - Writable according to file permissions<Br>";
+                } else {
 
-				echo "1. Root folder - Writable according to file permissions<Br>";
+                    $file_handle = fopen($file . "test.txt", "w+");
 
-			}else{
+                    if (!$file_handle) {
 
-				$file_handle = fopen($file .  "test.txt","w+");
+                        echo "3. Root folder - Fail on file creation in the directory<br>";
+                    } else {
 
-				if(!$file_handle){
+                        echo "4. Root folder - Success on file writing after is_writable<br>";
+                    }
 
-					echo "3. Root folder - Fail on file creation in the directory<br>";
+                    $file_handle = fwrite($file_handle, "tree");
 
-				}else{
+                    if (!$file_handle) {
 
-					echo "4. Root folder - Success on file writing after is_writable<br>";					
+                        echo "3. Root folder - Fail on file writing to the directory<br>";
+                    } else {
 
-				}
+                        echo "4. Root folder - Success on file writing after is_writable<br>";
+                    }
 
-				$file_handle = fwrite($file_handle,"tree");
+                    fclose($file_handle);
 
-				if(!$file_handle){
+                    unlink($file . "test.txt");
+                }
+            } else {
 
-					echo "3. Root folder - Fail on file writing to the directory<br>";
+                $file_handle = fopen($file . "test.txt", "w+");
 
-				}else{
+                if (!$file_handle) {
 
-					echo "4. Root folder - Success on file writing after is_writable<br>";					
+                    echo "3. Root folder - Fail on file creation in the directory<br>";
+                } else {
 
-				}
+                    echo "4. Root folder - Success on file writing after is_writable<br>";
+                }
 
-				fclose($file_handle);
+                $file_handle = fwrite($file_handle, "tree");
 
-				unlink($file .  "test.txt");
+                if (!$file_handle) {
 
-			}
+                    echo "3. Root folder - Fail on file writing to the directory<br>";
+                } else {
 
-		}else{
+                    echo "4. Root folder - Success on file writing after is_writable<br>";
+                }
 
-			$file_handle = fopen($file .  "test.txt","w+");
+                fclose($file_handle);
 
-			if(!$file_handle){
+                unlink($file . "test.txt");
+            }
+        }
 
-				echo "3. Root folder - Fail on file creation in the directory<br>";
+        echo "<br><br>";
 
-			}else{
+        $file = getcwd();
 
-				echo "4. Root folder - Success on file writing after is_writable<br>";					
+        echo "Checking for write permissions to the setup folder - $file <br>";
 
-			}
+        if ($file != "") {
 
-			$file_handle = fwrite($file_handle,"tree");
+            if (function_exists("is_writable")) {
 
-			if(!$file_handle){
+                if (is_writable($file)) {
 
-				echo "3. Root folder - Fail on file writing to the directory<br>";
+                    echo "1. Setup folder - Writable according to file permissions<Br>";
+                } else {
 
-			}else{
+                    $file_handle = fopen($file . "test.txt", "w+");
 
-				echo "4. Root folder - Success on file writing after is_writable<br>";					
+                    if (!$file_handle) {
 
-			}
+                        echo "3. Root folder - Fail on file creation in the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+                    } else {
 
-			fclose($file_handle);
+                        echo "4. Root folder - Success on file writing after is_writable<br>";
+                    }
 
-			unlink($file .  "test.txt");
+                    $file_handle = fwrite($file_handle, "tree");
 
+                    if (!$file_handle) {
 
-		}
+                        echo "3. Root folder - Fail on file writing to the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+                    } else {
 
-	}
-			
-	echo "<br><br>";
+                        echo "4. Root folder - Success on file writing after is_writable<br>";
+                    }
 
-	$file = getcwd();
+                    fclose($file_handle);
 
-	echo "Checking for write permissions to the setup folder - $file <br>";
+                    unlink($file . "test.txt");
+                }
+            } else {
 
-	if($file!=""){
+                $file_handle = fopen($file . "test.txt", "w+");
 
-		if(function_exists("is_writable")){
+                if (!$file_handle) {
 
-			if(is_writable($file)){
+                    echo "3. Root folder - Fail on file creation in the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+                } else {
 
-				echo "1. Setup folder - Writable according to file permissions<Br>";
+                    echo "4. Root folder - Success on file writing after is_writable<br>";
+                }
 
-			}else{
+                $file_handle = fwrite($file_handle, "tree");
 
-				$file_handle = fopen($file .  "test.txt","w+");
+                if (!$file_handle) {
 
-				if(!$file_handle){
+                    echo "3. Root folder - Fail on file writing to the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+                } else {
 
-					echo "3. Root folder - Fail on file creation in the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+                    echo "4. Root folder - Success on file writing after is_writable<br>";
+                }
 
-				}else{
+                fclose($file_handle);
 
-					echo "4. Root folder - Success on file writing after is_writable<br>";					
+                unlink($file . "test.txt");
+            }
+        }
 
-				}
-	
-				$file_handle = fwrite($file_handle,"tree");
-	
-				if(!$file_handle){
+        echo "<br><br>";
 
-					echo "3. Root folder - Fail on file writing to the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
+        echo "Checking for write permissions to the database config file - $file/database.txt <br>";
 
-				}else{
+        $file_handle = fopen("database.txt", 'a+');
 
-					echo "4. Root folder - Success on file writing after is_writable<br>";					
+        $work = true;
 
-				}
+        if (!$file_handle) {
 
-				fclose($file_handle);
+            $work = false;
+            ?>
+            <p>The file <?PHP echo str_replace("\\", "/", getcwd()); ?>/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
+            <?PHP
+        }
 
-				unlink($file .  "test.txt");
+        if (!fwrite($file_handle, " ")) {
 
+            $work = false;
+            ?>
+            <p>The file <?PHP echo str_replace("\\", "/", getcwd()); ?>/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
+            <?PHP
+        }
 
-			}
-
-		}else{
-
-			$file_handle = fopen($file .  "test.txt","w+");
-
-			if(!$file_handle){
-
-				echo "3. Root folder - Fail on file creation in the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
-
-			}else{
-
-				echo "4. Root folder - Success on file writing after is_writable<br>";					
-
-			}
-
-			$file_handle = fwrite($file_handle,"tree");
-
-			if(!$file_handle){
-
-				echo "3. Root folder - Fail on file writing to the directory<br><p style=\"color:#f00\">Please set this folder to be writable</p>";
-
-			}else{
-
-				echo "4. Root folder - Success on file writing after is_writable<br>";					
-
-			}
-
-			fclose($file_handle);
-
-			unlink($file .  "test.txt");
-
-
-		}
-
-	}
-
-	echo "<br><br>";
-	
-	echo "Checking for write permissions to the database config file - $file/database.txt <br>";
-
-	$file_handle = fopen("database.txt",'a+');
-
-	$work = true;
-
-	if(!$file_handle){
-
-		$work = false;
-		
-		?>
-			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
-		<?PHP
-
-	}
-	
-	if(!fwrite($file_handle," ")){
-
-		$work = false;
-
-		?>
-			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
-		<?PHP		
-
-	}
-
-	if($work){
-
-		?>
-			<p>The file <?PHP echo str_replace("\\","/",getcwd()); ?>/database.txt has been successfully written to.
-		<?PHP
-
-
-	}
-
-
-?>
-<form action="file_system_iframe.php">
-<input type="submit" value="Try again" />
-</form>
+        if ($work) {
+            ?>
+            <p>The file <?PHP echo str_replace("\\", "/", getcwd()); ?>/database.txt has been successfully written to.
+            <?PHP
+        }
+        ?>
+        <form action="file_system_iframe.php">
+            <input type="submit" value="Try again" />
+        </form>
