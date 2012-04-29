@@ -552,3 +552,13 @@ div#folder_workspace, div#recyclebin{
 	display:block;
 	
 }
+
+.error {
+    color: red;
+    display: inline;
+}
+
+.ok {
+    color: blue;
+    display: inline;
+}
