@@ -12,7 +12,7 @@
 /*
  * Host where database is
  */
-$xerte_toolkits_site->database_host = "mysqlserver";
+$xerte_toolkits_site->database_host = "DATABASE_HOST";
 
 /*
  * Username for database
@@ -27,10 +27,10 @@ $xerte_toolkits_site->database_password ="DATABASE_PASSWORD";
 /*
  * Database name
  */
-$xerte_toolkits_site->database_name ="xertetoolkits";
+$xerte_toolkits_site->database_name ="DATABASE_NAME";
 
 /*
  * Database table prefix
  */
-$xerte_toolkits_site->database_table_prefix ="";
+$xerte_toolkits_site->database_table_prefix ="DATABASE_PREFIX";
    
