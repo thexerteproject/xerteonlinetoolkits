@@ -18,6 +18,9 @@ class Xerte_Authentication_Static extends Xerte_Authentication_Abstract
         'sarah' => array("username" => "sarah", "password" => "sarahpassword", "firstname" => "Sarah", "surname" => "smith"),
     );
 
+    public function getUsername() {
+        return $this->_record['username'];
+    }
     public function getFirstname()
     {
         return $this->_record['firstname'];
