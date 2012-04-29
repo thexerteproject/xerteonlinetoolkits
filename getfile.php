@@ -2,7 +2,6 @@
 
 require_once(dirname(__FILE__) . "/config.php");
 
-require $xerte_toolkits_site->php_library_path . "login_library.php";
 require $xerte_toolkits_site->php_library_path . "user_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
