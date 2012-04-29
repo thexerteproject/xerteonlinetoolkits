@@ -144,5 +144,7 @@ if (!isset($xerte_toolkits_site)) {
     if(isset($_SESSION['integrate_with_moodle']) && $_SESSION['integrate_with_moodle'] == true) {
         // skip session_start()
     }
-    session_start();
+    else {
+        session_start();
+    }
 }
