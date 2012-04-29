@@ -13,7 +13,6 @@ require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/peer.inc");
 
-require $xerte_toolkits_site->php_library_path . "login_library.php";
 require $xerte_toolkits_site->php_library_path . "display_library.php";
 
 /**
@@ -89,7 +88,3 @@ if(!empty($query_for_peer_response)) {
     dont_show_template();
 
 }
-
-
-
-?>
