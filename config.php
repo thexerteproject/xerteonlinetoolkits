@@ -64,7 +64,7 @@ if (!isset($xerte_toolkits_site)) {
      * @copyright 2008,2009 University of Nottingham
      */
     /**
-     * Include any script that is used for configuration
+     * Include any script that is used for configuration - for moodle this might be e.g. '/xampp/htdocs/moodle/config.php'.
      */
     if ($row['integration_config_path'] != "") {
         require_once($row['integration_config_path']);
@@ -141,8 +141,8 @@ if (!isset($xerte_toolkits_site)) {
     //$xerte_toolkits_site->authentication_method = 'Static';
     //$xerte_toolkits_site->authentication_method = "Moodle";
 
-    if(isset($_SESSION['integrate_with_moodle']) && $_SESSION['integrate_with_moodle'] == true) {
-        // skip session_start()
+    if($xerte_toolkits_site->authentication_method == "Moodle") {
+        // skip session_start() as we'll probably stomp on Moodle's session if we do. 
     }
     else {
         session_start();

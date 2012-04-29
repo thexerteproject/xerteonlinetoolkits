@@ -18,6 +18,12 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
 
     private $_record = array();
 
+    public function getUsername() {
+        if(isset($this->_record['username'])) {
+            return $this->_record['username'];
+        }
+        return null;
+    }
     public function getFirstname()
     {
         if (isset($this->_record['fn'])) {
@@ -144,7 +150,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                          * valid login, so return true
                          */
 
-                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0]);
+                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $eureka_username);
                         return true;
                     }
                 }
@@ -168,6 +174,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                         $entry = @ldap_get_entries($ldapConnection, $ldapSearchResult);
                         if (!empty($entry)) {
                             $this->_record = $entry;
+                            $this->_record['username'] = $eureka_username;
                             return true;
                         }
                     }

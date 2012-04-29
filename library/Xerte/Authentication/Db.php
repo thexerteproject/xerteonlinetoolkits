@@ -21,7 +21,15 @@ class Xerte_Authetication_Db extends Xerte_Authentication_Abstract
         }
         return null;
     }
+    public function getUsername()
+    {
+        if (isset($this->_record['username'])) {
+            return $this->_record['username'];
+        }
+        return null;
+    }
 
+    
     public function getSurname()
     {
         if (isset($this->_record['surname'])) {

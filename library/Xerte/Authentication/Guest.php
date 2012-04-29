@@ -10,6 +10,10 @@ class Xerte_Authentication_Guest extends Xerte_Authentication_Abstract
     private $_record = array();
 
 
+    public function getUsername() {
+        return 'guest';
+    }
+    
     public function getFirstname()
     {
         return "Guest";
@@ -28,6 +32,9 @@ class Xerte_Authentication_Guest extends Xerte_Authentication_Abstract
     public function login($username, $password)
     {
        return true;
+    }
+    public function needsLogin() {
+        return false;
     }
 
 }

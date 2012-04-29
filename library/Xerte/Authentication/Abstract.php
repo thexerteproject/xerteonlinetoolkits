@@ -53,9 +53,23 @@ abstract class Xerte_Authentication_Abstract
     }
 
     /**
+     *@return string $username provided by the end user or the auth mechanism (e.g. Moodle session contents etc) 
+     */
+    abstract public function getUsername();
+    /**
      * Perform some sort of check to ensure stuff is configured correctly.... e.g. for LDAP make sure the user has the 'ldap_connect' function available etc
      * If any errors are found; retrieve via getErrors();
      * @return boolean true
      */
     abstract public function check();
+    
+    /**
+     *Change this to return FALSE in one of the other authenticators, and the end user shouldn't be shown the login box/dialogue - presumably
+     * because there's some sort of single sign on in place which we can test immediately without them needing to fill in a login box.
+     * 
+     * @return boolean true if they need to login.
+     */
+    public function needsLogin() {
+        return true;
+    }
 }
