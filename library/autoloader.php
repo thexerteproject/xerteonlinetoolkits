@@ -1,7 +1,7 @@
 <?php
 
 // Some ZF stuff has explicit require_once's in it... meh.
-ini_set('include_path', ini_get('include_path') . ':' . dirname(__FILE__) );
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . dirname(__FILE__) );
 
 
 function _xerte_autoloader($class) {
