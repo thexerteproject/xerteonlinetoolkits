@@ -4,8 +4,9 @@ echo file_get_contents("page_top");
 
 ?>
 <h2 style="margin-top:15px">
-Xerte Online Toolkits php modules checks
+Xerte Online Toolkits PHP modules checks
 </h2>
+
 <p>
 Use your <a href="phpinfo.php" target="_blank">PHP info page</a> to find the 'Loaded Configuration File' (look on the first part of the php info page for the text 'Loaded Configuration File' - the use this path to find the file. Make a copy of it before you start. You can edit this file in notepad, or any text editor. People following the XAMPP path should find that they do not need to make any of these changes to make their system work.
 <ol>
