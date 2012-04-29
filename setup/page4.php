@@ -153,8 +153,6 @@ if($success_string!=""){
 </ul>
 <p>You should also delete all of the following you are not planning to use:</p>
 <ul>
-    <li>demo.php (contains a hard coded username for demonstration purposes)</li>
-    <li>integration.php (contains a hard coded username)</li>
     <li>webctlink,php (allows anyone to specify whatever username they wish)</li>
 </ul>
 </u>

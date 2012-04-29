@@ -22,8 +22,6 @@ require_once(dirname(__FILE__) . "/config.php");
 
 session_start();
 
-include $xerte_toolkits_site->php_library_path . "login_library.php";
-
 include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 //$_SESSION['toolkits_surname'] = "INSERTFIRSTNAMEHERE";

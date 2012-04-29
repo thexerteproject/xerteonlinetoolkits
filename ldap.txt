@@ -1,3 +1,15 @@
+
+1. To enable LDAP authentication, edit config.php and change $xerte_toolkits_site->authentication_method to be 'Ldap' (see the bottom of the file).
+
+2. Read the below 
+
+3. Read what's in library/Xerte/Authentication/Ldap.php
+
+4. Fight with LDAP (e.g. phpldapadmin )
+
+5. Ensure your Xerte database looks something like the below.
+
+
 Some random notes for those trying to setup LDAP access :
 
 The 'ldap' table in the database will need to contain something like :
