@@ -140,8 +140,9 @@ if (!isset($xerte_toolkits_site)) {
     //$xerte_toolkits_site->authentication_method = 'Db';
     //$xerte_toolkits_site->authentication_method = 'Static';
     //$xerte_toolkits_site->authentication_method = "Moodle";
-    
-    if($xerte_toolkits_site->authentication_method !== 'Moodle') {
-        session_start();
+
+    if(isset($_SESSION['integrate_with_moodle']) && $_SESSION['integrate_with_moodle'] == true) {
+        // skip session_start()
     }
+    session_start();
 }
