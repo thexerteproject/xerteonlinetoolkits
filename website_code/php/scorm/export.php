@@ -149,9 +149,9 @@ if(is_numeric($_GET['template_id'])){
 	array_push($delete_file_array,  $dir_path . "languages/language-config.xml");
 
 	
-	copy($xerte_toolkits_site->root_file_path . "languages/engine_en-GB.xml", $dir_path . "languages/engine_en-GB.xml");
+	copy($xerte_toolkits_site->root_file_path . "languages/engine_" . $_SESSION['default_language'] . ".xml", $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
 	
-	array_push($delete_file_array,  $dir_path . "languages/engine_en-GB.xml");
+	array_push($delete_file_array,  $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
 
 
 
