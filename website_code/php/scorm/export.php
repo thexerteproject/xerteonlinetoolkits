@@ -132,6 +132,30 @@ if(is_numeric($_GET['template_id'])){
 
         array_push($delete_file_array,  $dir_path . "XMLEngine.swf");
 
+
+
+
+	/*
+	* Language support
+	*/
+
+	mkdir($dir_path . 'languages');
+	chmod($dir_path . 'languages', 0777);
+	array_push($delete_folder_array, $dir_path . 'languages');
+
+
+	copy($xerte_toolkits_site->root_file_path . "languages/language-config.xml", $dir_path . "languages/language-config.xml");
+	
+	array_push($delete_file_array,  $dir_path . "languages/language-config.xml");
+
+	
+	copy($xerte_toolkits_site->root_file_path . "languages/engine_en-GB.xml", $dir_path . "languages/engine_en-GB.xml");
+	
+	array_push($delete_file_array,  $dir_path . "languages/engine_en-GB.xml");
+
+
+
+
         if($scorm=="true"){
 
             copy($dir_path . $row['template_name'] . ".rlt", $dir_path . "learningobject.rlo");
