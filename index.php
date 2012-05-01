@@ -431,7 +431,7 @@ echo "
                             End of the blank templates section, through to end of page
     
                         -->
-
+<?PHP echo "&nbsp;&nbsp;&nbsp;Logged in as " .$_SESSION['toolkits_firstname'] ." " .$_SESSION['toolkits_surname'];?>
                     </div>                              
                 </div>
                 <div class="file_mgt_area_bottom" style="width:100%">   
