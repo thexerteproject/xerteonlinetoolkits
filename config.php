@@ -1,11 +1,6 @@
 <?php
 
 //moodle integration (please view moodle_integration_readme.txt before use)
-//The require path below is the path to the moodle installation config file
-//this needs to be the path from root rather than something like ../../moodle/config.php
-//e.g. this might be something like require("/home/yourdomain/public_html/config.php");
-//set this same path in moodle_integration.txt also
-//require("/xampp/htdocs/moodle/config.php");
 
 /**
  *
