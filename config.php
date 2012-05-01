@@ -26,7 +26,7 @@ global $xerte_toolkits_site;
 
 // Change this to FALSE for production sites.
 global $development;
-$development = true;
+$development = false;
 
 ini_set('error_reporting', 0);
 if ($development) {
