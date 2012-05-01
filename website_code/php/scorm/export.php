@@ -135,24 +135,24 @@ if(is_numeric($_GET['template_id'])){
 
 
 
-	/*
-	* Language support
-	*/
+		/*
+		* Language support
+		*/
 
-	mkdir($dir_path . 'languages');
-	chmod($dir_path . 'languages', 0777);
-	array_push($delete_folder_array, $dir_path . 'languages');
+		mkdir($dir_path . 'languages');
+		chmod($dir_path . 'languages', 0777);
+		
+		array_push($delete_folder_array, $dir_path . 'languages');
 
 
-	copy($xerte_toolkits_site->root_file_path . "languages/language-config.xml", $dir_path . "languages/language-config.xml");
-	
-	array_push($delete_file_array,  $dir_path . "languages/language-config.xml");
+		copy($xerte_toolkits_site->root_file_path . "languages/language-config.xml", $dir_path . "languages/language-config.xml");
+		
+		array_push($delete_file_array,  $dir_path . "languages/language-config.xml");
 
-	
-	copy($xerte_toolkits_site->root_file_path . "languages/engine_" . $_SESSION['default_language'] . ".xml", $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
-	
-	array_push($delete_file_array,  $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
-
+		
+		copy($xerte_toolkits_site->root_file_path . "languages/engine_" . $_SESSION['default_language'] . ".xml", $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
+		
+		array_push($delete_file_array,  $dir_path . "languages/engine_" . $_SESSION['default_language'] . ".xml");
 
 
 
