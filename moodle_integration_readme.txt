@@ -1,9 +1,9 @@
-moodle patch for Xerte toolkits updated for use with 1.7+
-updated 2/11/11
-Author: Ron Mitchell
-Use at your own risk - no responsibility accepted etc etc
+moodle authentication integration for Xerte toolkits updated for use with 1.8+
+updated May 2012
 
-This patch has been tested with the latest versions of XOT and enables authentication integration with the moodle installation on the same server. Specifically it enables integration with the moodle authentication system allowing seamless login from moodle to toolkits. This is achieved by using the moodle session data so at the moment this will not work if moodle and toolkits are installed on separate servers. 
+This method of authentication integration has been tested with XOT 1.8 and enables authentication integration with the moodle installation on the same server. Specifically it enables integration with the moodle authentication system allowing seamless login from moodle to toolkits. This is achieved by using the moodle session data so at the moment this will not work if moodle and toolkits are installed on separate servers. 
+
+Note: this latest integration will only work with XOT 1.8 and above and is not backwards compatible with previous XOT versions. It should however work with any version of Moodle e.g. 1.9x as well as 2.x.
 
 /////////////////////////////////////////////////////
 How this works
@@ -18,35 +18,31 @@ If the toolkits installation is installed as a subdirectory of the moodle direct
 If the toolkits installation is installed in a separate directory to the moodle directory the user will not be automatically directed back to toolkits but can follow a link to toolkits from the moodle installation or revisit the toolkits url with the same browser to be automatically logged in.
 
 /////////////////////////////////////////////////////
-Installation
+Installation/Configuration
 Please follow these steps carefully.
 
 Step 1. 
-Test your XOT installation before trying to use the moodle integration e.g. install toolkits and use demo.txt or switch.txt to make sure everything is working - creating, viewing, exporting an LO etc
+Test your XOT installation before trying to use the moodle integration e.g. install toolkits and use the guest authentication to make sure everything is working - creating, viewing, exporting an LO etc
+
+Note: the different authentication options are enabled/disabled at the bottom of config.php e.g. uncomment //$xerte_toolkits_site->authentication_method = 'Guest'; to test with guest authentication.
 
 Step 2. 
-Edit the top of moodle_integration.txt and config.php and add the path to your moodle config file so that it points to the config.php in your moodle directory
-This needs to be the path from root rather than something like ../../moodle/config.php
+Either by using the management page or by editing sitedetails in the database add the path to your moodle installation to the integration config path field
 e.g. this might be something like the following: 
 require("/home/youraccountname/public_html/config.php");
 For a xampp/maxos install this should be something like: 
 require("/xampp/htdocs/moodle/config.php");
 
-Step 3 rename moodle_integration.txt to moodle_integration.php
+Step 3 comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
 
-Step 4. view http://yourmoodle/yourxot/moodle_integration.php and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
+Step 4. view http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
 
-Step 5. If everything is working rename or remove demo.php or switch.php used in step 1
+Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented our code at the bottom of config.php
 
-Step 6. If you are only using moodle for authentication you may wish to rename moodle_integration.php to index.php so that you can just use http://yourmoodle/yourxot/
 
 /////////////////////////////////////////////////////
 After installation/configuration
 You can verify you have configured the moodle path correctly by visiting your toolkits installation which should redirect you to login to moodle. (see the 'how this works' info above)
-
-Notes: 
-
-moodle_integration.txt in this patch can be used in place of the ldap enabled index.php. To restore ldap access replace index.php with your original index.php
 
 /////////////////////////////////////////////////////
 
