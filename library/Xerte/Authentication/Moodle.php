@@ -1,5 +1,8 @@
 <?php
 
+/* Moodle User object */
+global $USER;
+
 /**
  * Always returns true; ideal for demonstration so someone can just click the 'login' button.
  *  
