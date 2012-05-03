@@ -9,7 +9,7 @@
  * 
  * @see Xerte_Authentication_Abstract
  */
-class Xerte_Authetication_Db extends Xerte_Authentication_Abstract
+class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 {
 
     private $_record = array();
@@ -50,17 +50,17 @@ class Xerte_Authetication_Db extends Xerte_Authentication_Abstract
             $this->addError("Does the user table exist?");
             return false;
         }
+	return true;
     }
 
     public function login($username, $password)
     {
-        $password = $this->_hashAndSalt($username, $password);
-        $row = db_query_one("SELECT * FROM user WHERE username = ? AND password = ?", array($username, $password));
+        $spassword = $this->_hashAndSalt($username, $password);
+        $row = db_query_one("SELECT * FROM user WHERE username = ? AND password = ?", array($username, $spassword));
         if (!empty($row)) {
             $this->_record = $row;
             return true;
         }
-
         return false;
     }
 
