@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * export template, allows the site to display the html for the export panel
  *
  * @author Patrick Lockley
@@ -29,7 +29,7 @@ if(is_numeric($_POST['template_id'])){
 
     if(is_user_creator(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-        echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";	
+        echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";
 
         echo "<p>" . EXPORT_DESCRIPTION . "</p>";
 
@@ -40,6 +40,8 @@ if(is_numeric($_POST['template_id'])){
         echo "<p>" . EXPORT_SCORM . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm" , $_POST['template_id']) . "'>" . EXPORT_SCORM_LINK . "</a></p>";
 
         echo "<p>" . EXPORT_SCORM_METADATA . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_METADATA_LINK . "</a></p>";
+
+        echo "<p>" . EXPORT_SCORM_2004 . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "'>" . EXPORT_SCORM_2004_LINK . "</a></p>";
 
     }else{
 

@@ -1,5 +1,5 @@
 <?PHP     /**
-	 * 
+	 *
 	 * Function url return
 	 * This function is used to format strings depending on whether a HTACCESS File is being used
 	 * @author Patrick Lockley
@@ -82,7 +82,7 @@
 
 						}
 						break;
-						
+
 			case "export_local":	if($xerte_toolkits_site->apache=="true"){
 
 							return $string . "_local_" . $template_number;
@@ -104,7 +104,7 @@
 
 					}
 					break;
-					
+
 			case "scorm_rich":	if($xerte_toolkits_site->apache=="true"){
 
 						return $string . "_rich_" . $template_number;
@@ -114,7 +114,18 @@
 						return $xerte_toolkits_site->php_library_path . "scorm/export.php?data=rich&scorm=true&template_id=" . $template_number;
 
 					}
-					break;		
+					break;
+
+			case "scorm2004":	if($xerte_toolkits_site->apache=="true"){
+
+						return $string . "_" . $template_number;
+
+					}else{
+
+						return $xerte_toolkits_site->php_library_path . "scorm/export.php?scorm=2004&template_id=" . $template_number;
+
+					}
+					break;
 
 			case "drawing":	if($xerte_toolkits_site->apache=="true"){
 
@@ -160,7 +171,7 @@
 					}
 					break;
 
-			case "RSS_user":	
+			case "RSS_user":
 
 						if($xerte_toolkits_site->apache=="true"){
 
@@ -209,7 +220,7 @@
 			default : break;
 
 
-		}	
+		}
 
 	}
 
