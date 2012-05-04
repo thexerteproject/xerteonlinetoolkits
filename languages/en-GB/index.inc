@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * index.php english language file
  *
  * @author Patrick Lockley
@@ -22,13 +22,13 @@ define("INDEX_SITE_ADMIN", "Site admins should log on on the manangement page");
 
 define("INDEX_LOGON_FAIL", "Sorry that password combination was not correct");
 
-define("INDEX_LOGIN", 'login area');
+define("INDEX_LOGIN", "login area");
 
-define("INDEX_USERNAME", 'Username');
+define("INDEX_USERNAME", "Username");
 
-define("INDEX_PASSWORD", 'Password');
+define("INDEX_PASSWORD", "Password");
 
-define("INDEX_HELP_TITLE", 'Getting Started');
+define("INDEX_HELP_TITLE", "Getting Started");
 
 define("INDEX_HELP_INTRODUCTION", "We've produced a short introduction to the Toolkits website.");
 
@@ -42,7 +42,7 @@ define("INDEX_WORKSPACE_TITLE","My Projects");
 
 define("INDEX_CREATE","Create a new project");
 
-define("INDEX_TEMPLATES","Here are the templates currently available.");	
+define("INDEX_TEMPLATES","Here are the templates currently available.");
 
 define("INDEX_SORT","Sort your files");
 
