@@ -316,23 +316,26 @@ function copy_scorm_files(){
 	 * @author Patrick Lockley
 	 */
 
-function xerte_zip_files(){
+function xerte_zip_files($fullArchive=false){
 	global $file_array, $zipfile, $dir_path;
+  _debug("Zipping up: " . $fullArchive);
 	while($file = array_pop($file_array)){
-		if(($file!="data.xwd")||($file!="data.xml")){
+		if(($file!="data.xwd")||($file!="data.xml")||$file!="preview.xml"){
       /* Check if this is a media file */
-      if (strpos($file, "/media/") !== false)
+      if (!$fullArchive && strpos($file, "/media/") !== false)
       {
         /* only add file if used */
  			  $string = str_replace($dir_path, "", $file);
         if (strpos(file_get_contents($dir_path . "template.xml"), $string) !== false)
         {
+          _debug("  add " . $string);
 	  		  $zipfile->add_files($string);
         }
       }
       else
       {
 			  $string = str_replace($dir_path, "", $file);
+        _debug("  add " . $string);
 			  $zipfile->add_files($string);
       }
 		}

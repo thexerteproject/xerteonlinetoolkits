@@ -24,6 +24,7 @@ $folder_array = array();
 $file_array = array();
 $delete_file_array = array();
 $delete_folder_array = array();
+$fullArchive = false;
 
 ini_set('max_execution_time', 300);
 
@@ -39,6 +40,13 @@ if(is_numeric($_GET['template_id'])){
     }
 
     if($proceed){
+        if (isset($_GET['full'])){
+            if($_GET['full']=="true"){
+                $fullArchive = true;
+            }
+
+        }
+        _debug("Full archive: " . $fullArchive);
         $mysql_id=database_connect("Scorm export database connect success","Scorm export database connect failed");
 
         /*
@@ -66,8 +74,25 @@ if(is_numeric($_GET['template_id'])){
         /*
          * Copy the core files over from the parent folder
          */
-        folder_loop($parent_template_path);
         copy($dir_path . "data.xml",$dir_path . "template.xml");
+        $xml = new XerteXMLInspector();
+        $xml->loadTemplateXML($dir_path . 'template.xml');
+        if ($fullArchive){
+          _debug("Full archive");
+          folder_loop($parent_template_path);
+        }
+        else /* Only copy used models and the common folder */
+        {
+          _debug("Deployment archive");
+          $models = $xml->getUsedModels();
+          foreach($models as $model)
+          {
+            _debug("copy model " . $parent_template_path . "models/" . $model . ".rlm");
+            array_push($file_array, $parent_template_path . "models/" . $model . ".rlm");
+          }
+          array_push($file_array, $parent_template_path . $row['template_name'] . ".rlt");
+          folder_loop($parent_template_path . "common/");
+        }
         if(isset($_GET['local'])){
             if($_GET['local']=="true"){
                 $string = file_get_contents($dir_path . "/template.xml");
@@ -83,7 +108,7 @@ if(is_numeric($_GET['template_id'])){
 		     * Language support
 		     */
 
-        folder_loop($xerte_toolkits_site->root_file_path . 'languages', false, '.xml');
+        folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
         copy_extra_files();
 
         /*
@@ -104,7 +129,7 @@ if(is_numeric($_GET['template_id'])){
         array_push($delete_file_array,  $dir_path . "XMLEngine.swf");
 
         /*
-         * If scorm copy the scorn files as well
+         * If scorm copy the scorm files as well
          */
         $scorm=mysql_real_escape_string($_GET['scorm']);
         if($scorm=="true"){
@@ -124,10 +149,38 @@ if(is_numeric($_GET['template_id'])){
             unlink($dir_path . $row['template_name'] . ".rlt");
             array_push($delete_file_array,  $dir_path . "learningobject.rlt");
         }
+        /*
+         * if used copy extra folders
+         */
+        /*
+         *  jmol
+         */
+        if ($xml->modelUsed("jmol"))
+        {
+            folder_loop($xerte_toolkits_site->root_file_path . "JMolViewer/");
+            copy_extra_files();
+        }
+        /*
+         * mapstraction
+         */
+        if ($xml->modelUsed("mapstraction"))
+        {
+            folder_loop($xerte_toolkits_site->root_file_path . "mapstraction/");
+            copy_extra_files();
+        }
+        /*
+         * mediaViewer
+         */
+        if ($xml->mediaIsUsed())
+        {
+           folder_loop($xerte_toolkits_site->root_file_path . "mediaViewer/");
+           copy_extra_files();
+        }
+
         folder_loop($dir_path);
 
         /*
-         * Create scorm manifests of a basic HTML page
+         * Create scorm manifests or a basic HTML page
          */
 
         if($scorm=="true"){
@@ -159,32 +212,11 @@ if(is_numeric($_GET['template_id'])){
             basic_html_page_create($row['template_name'],$row['template_framework']);
         }
 
-        /*
-         * if used copy extra folders
-         */
-        $xml = new XerteXMLInspector();
-        $xml->loadTemplateXML($dir_path . 'template.xml');
-        /*
-         *  jmol
-         */
-        if ($xml->modelUsed("jmol"))
-        {
-            folder_loop($xerte_toolkits_site->root_file_path . "JMolViewer");
-            copy_extra_files();
-        }
-        /*
-         * mapstraction
-         */
-        if ($xml->modelUsed("mapstraction"))
-        {
-            folder_loop($xerte_toolkits_site->root_file_path . "mapstraction");
-            copy_extra_files();
-        }
 
         /*
          * Add the files to the zip file, create the archive, then send it to the user
          */
-        xerte_zip_files();
+        xerte_zip_files($fullArchive);
         $zipfile->create_archive();
         $zipfile->download_file($row['zipname']);
 
