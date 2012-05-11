@@ -136,7 +136,7 @@ if(is_numeric($_GET['template_id'])){
             folder_loop($scorm_path);
             copy_scorm_files();
         }else if ($scorm=="2004") {
-            forlder_loop($scorm2004_path);
+            folder_loop($scorm2004_path);
             copy_scorm2004_files();
         }
 
