@@ -32,15 +32,10 @@ if(is_numeric($_POST['template_id'])){
         echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";
 
         echo "<p>" . EXPORT_DESCRIPTION . "</p>";
-        echo "<ol type='1' start='1'>";
-        echo "<li>" . "<a href='" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "'>" . EXPORT_ZIP_FULL_LINK . "</a></li><br></br>";
-        echo "<li>" . "<a href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></li><br></br>";
-        echo "<li>" . "<a href='" . $xerte_toolkits_site->site_url . url_return("export_local" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LOCAL_LINK . "</a></li>";
-        echo "</ol>";
-        echo "<p>" . SCORM_DESCRIPTION . "</p>";
-        echo "<ol type='1' start='4'>";
-        echo "<li>" . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_METADATA_LINK . "</a></li><br></br>";
-        echo "<li>" . "<a href='" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "'>" . EXPORT_SCORM_2004_LINK . "</a></li>";
+        echo "<ol type='1'>";
+        echo "<li>" . EXPORT_ZIP . "<ul><li><a href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></li></li><br />";
+        echo "<li>" . EXPORT_SCORM . "<ol type='a'><li><a href='" . $xerte_toolkits_site->site_url . url_return("export_scorm" , $_POST['template_id']) . "'>" . EXPORT_SCORM_12_LINK . "</a></li><br/><li><a href='" . $xerte_toolkits_site->site_url . url_return("export_scorm_2004" , $_POST['template_id']) . "'>" . EXPORT_SCORM_2004_LINK . "</a></li><br /></ol></li>";
+        echo "<li>" . EXPORT_ZIP_ARCHIVE . "<ul><li><a href='" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "'>" . EXPORT_ZIP_ARCHIVE_LINK . "</a></li><br /></li>";
         echo "</ol>";
 
     }else{
