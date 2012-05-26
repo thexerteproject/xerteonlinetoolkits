@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * media and quota template, specifies which files in the media folder are in use so they can be deleted
  *
  * @author Patrick Lockley
@@ -23,7 +23,7 @@ $temp_new_path="";
 $quota=0;
 
 /**
- * 
+ *
  * Function in use
  * This function copies files from one folder to another (does not move - copies)
  * @param string $file_name - the file name we are checking for
@@ -49,7 +49,7 @@ $result_string = array();
 $delete_string = array();
 
 /**
- * 
+ *
  * Function media folder loop
  * This function copies files from one folder to another (does not move - copies)
  * @param string $folder_name - path to the media folder to loop through
@@ -85,14 +85,14 @@ function media_folder_loop($folder_name){
                  * add the files to the delete array that are not in use  so they can be listed for use in the delete function
                  */
 
-                array_push($delete_string,$f);			
+                array_push($delete_string,$f);
 
             }
             $quota += filesize($full);
-        }
 
-        array_push($result_string,$result);
-        $result="";
+            array_push($result_string,$result);
+            $result="";
+        }
 
     }
 
