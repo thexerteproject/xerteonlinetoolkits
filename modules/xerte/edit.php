@@ -1,6 +1,6 @@
-<?php 
+<?php
 /**
- * 
+ *
  * duplicate page, allows the site to edit a xerte module
  *
  * @author Patrick Lockley
@@ -11,7 +11,7 @@
 
 
 /**
- * 
+ *
  * Function create folder loop
  * This function outputs the xerte editor code
  * @param array $row_edit - the mysql query for this folder
@@ -99,7 +99,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 		template = "<?PHP  echo $row_edit['template_id']; ?>";
 
-window_reference.edit_window_close(path,template);	
+window_reference.edit_window_close(path,template);
 
     }
 
@@ -119,8 +119,8 @@ window_reference.edit_window_close(path,template);
             <img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
             <a style="color:#000; font-size:65%" href="javascript:window.moveTo(0,0);window.resizeTo(screen.width,screen.height);"><?PHP echo XERTE_EDIT_MAXIMISE; ?></a>
             <img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
-        </div>	
-    </div> 
+        </div>
+    </div>
     <center>
         <div id="flashcontent" style="margin:0 auto">
               This text is replaced by the Flash movie.
@@ -137,6 +137,8 @@ window_reference.edit_window_close(path,template);
     echo "so.addVariable(\"xmlvariable\", \"$string_for_flash_xml\");";
     echo "\n";
     echo "so.addVariable(\"rlovariable\", \"$string_for_flash_media\");";
+    echo "\n";
+    echo "so.addVariable(\"languagecodevariable\", \"" . $_SESSION['default_language'] . "\");";
     echo "\n";
     echo "so.addVariable(\"originalpathvariable\", \"$string_for_flash_xwd\");";
     echo "\n";

@@ -1,6 +1,6 @@
 <language name="Nederlands" code="nl-nl">
 	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
-	<btnPublishXot label="Publiceer" description="Publiceer Knop"/>
+	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
 		<dialogFilter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluidsbestanden|*.mp3|Video|*.flv</dialogFilter>
@@ -24,7 +24,6 @@
 	<btnMoveDown tooltip="Verplaats naar beneden"/>
 	<btnNext tooltip="Volgende item"/>
 	<btnPreview label="Toon" tooltip="Voorvertoning"/>
-	<btnSave tooltip="Sla bestand op"/>
 	<btnPrev tooltip="Vorige item"/>
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
 	<addProp label="Voeg in" />

@@ -24,7 +24,6 @@
 	<btnMoveDown tooltip="Move Down"/>
 	<btnNext tooltip="Next Item"/>
 	<btnPreview label="Play" tooltip="Preview"/>
-	<btnSave tooltip="Save File"/>
 	<btnPrev tooltip="Previous Item"/>
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
 	<addProp label="Add" />
