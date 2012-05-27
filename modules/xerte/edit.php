@@ -138,7 +138,7 @@ window_reference.edit_window_close(path,template);
     echo "\n";
     echo "so.addVariable(\"rlovariable\", \"$string_for_flash_media\");";
     echo "\n";
-    echo "so.addVariable(\"languagecodevariable\", \"" . $_SESSION['default_language'] . "\");";
+    echo "so.addVariable(\"languagecodevariable\", \"" . $_SESSION['toolkits_language'] . "\");";
     echo "\n";
     echo "so.addVariable(\"originalpathvariable\", \"$string_for_flash_xwd\");";
     echo "\n";

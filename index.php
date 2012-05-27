@@ -48,10 +48,10 @@ function login_form($messages, $xerte_toolkits_site)
                     <select name='language' id="language-selector">
                         <?php
                         /* I've just specified a random list of possible languages; "Nonsense" is minimal and just there so you can see the login page switch around */
-                        $languages = array('en-GB' => 'English', 'en-XX' => 'Nonsense', 'fr-FR' => 'French', 'es-ES' => 'Spanish', 'it-IT' => 'Italian', 'ca-ES' => "Catalan");
+                        $languages = array('en-GB' => 'English', 'nl-NL' => 'Nederlands', 'en-XX' => 'Nonsense', 'fr-FR' => 'French', 'es-ES' => 'Spanish', 'it-IT' => 'Italian', 'ca-ES' => "Catalan");
                         foreach ($languages as $key => $value) {
                             $selected = '';
-                            if (isset($_SESSION['default_language']) && $_SESSION['default_language'] == $key) {
+                            if (isset($_SESSION['toolkits_language']) && $_SESSION['toolkits_language'] == $key) {
                                 $selected = " selected=selected ";
                             }
                             echo "<option value='{$key}' $selected>{$value}</option>\n";
@@ -262,20 +262,15 @@ echo "
 ?>
         </script>
         <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/ajax_management.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/folders.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/folders.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/logout.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/logout.js"></script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
-        <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/import.js"></script>
-
+<?php
+_include_javascript_file("website_code/scripts/file_system.js");
+_include_javascript_file("website_code/scripts/screen_display.js");
+_include_javascript_file("website_code/scripts/ajax_management.js");
+_include_javascript_file("website_code/scripts/folders.js");
+_include_javascript_file("website_code/scripts/template_management.js");
+_include_javascript_file("website_code/scripts/logout.js");
+_include_javascript_file("website_code/scripts/import.js");
+?>
     </head>
 
     <!-- 
