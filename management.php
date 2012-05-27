@@ -169,19 +169,15 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 Version 1.0
 
                 -->
-                <script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/ajax_management.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/management.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/management.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/import.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
-                <script type="text/javascript" language="javascript" src="website_code/scripts/logout.js"></script>
-                <script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/logout.js"></script>
+		<?php
+                _include_javascript_file("website_code/scripts/file_system.js");
+                _include_javascript_file("website_code/scripts/screen_display.js");
+                _include_javascript_file("website_code/scripts/ajax_management.js");
+                _include_javascript_file("website_code/scripts/management.js");
+                _include_javascript_file("website_code/scripts/import.js");
+                _include_javascript_file("website_code/scripts/template_management.js");
+                _include_javascript_file("website_code/scripts/logout.js");
+                ?>
 
             </head>
 

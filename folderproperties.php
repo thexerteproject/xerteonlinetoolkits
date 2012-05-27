@@ -24,15 +24,13 @@ Version 1.0
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/properties_tab.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/properties_tab.js"></script>
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/folderproperties_tab.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/folderproperties_tab.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/ajax_management.js"></script>
+<?php
+_include_javascript_file("website_code/scripts/template_management.js");
+_include_javascript_file("website_code/scripts/properties_tab.js");
+_include_javascript_file("website_code/scripts/folderproperties_tab.js");
+_include_javascript_file("website_code/scripts/ajax_management.js");
+?>
 
 </head>
 

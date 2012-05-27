@@ -35,16 +35,13 @@ var ajax_php_path = "website_code/php/";
 </script>
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/import.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/import.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/template_management.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/template_management.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/properties_tab.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/properties_tab.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/screen_display.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/screen_display.js"></script>
-<script type="text/javascript" language="javascript" src="website_code/scripts/file_system.js"></script>
-<script type="text/javascript" language="javascript" src="languages/<?PHP echo $_SESSION['toolkits_language']; ?>/website_code/scripts/file_system.js"></script>
+<?php
+_include_javascript_file("website_code/scripts/import.js");
+_include_javascript_file("website_code/scripts/template_management.js");
+_include_javascript_file("website_code/scripts/properties_tab.js");
+_include_javascript_file("website_code/scripts/screen_display.js");
+_include_javascript_file("website_code/scripts/file_system.js");
+?>
 
 </head>
 
