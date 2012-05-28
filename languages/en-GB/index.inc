@@ -56,4 +56,6 @@ define("INDEX_SORT_OLD","Age (Old to New)");
 
 define("INDEX_LOG_OUT","Log out");
 
+define("INDEX_LOGGED_IN_AS","Logged in as");
+
 ?>
