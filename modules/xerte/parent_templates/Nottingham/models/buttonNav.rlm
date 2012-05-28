@@ -1,1 +1,203 @@
-	<PG title="enter page title" name="buttonNav">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();if (rootIcon.projMode == "dev"){   // Page Wizard  pageIcon.templateData = pageIcon.extXML.toObject();  pageIcon.templateData = pageIcon.templateData.pageWizard[0];} else {  // Toolkits  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);  pageIcon.templateData = myXML.toObject();}  rootIcon.setTitleText(templateData.learningObject[0].name);  // handle multiple page data definitions in a project if (rootIcon.projectPageIndex == undefined){     rootIcon.projectPageIndex = 0;}// check if this page has a definition for the current project index and default to 0 if notif (pageIcon.templateData.buttonNav[rootIcon.projectPageIndex].name == undefined){  projPI = 0;} else {  projPI = rootIcon.projectPageIndex; }  itemCount = pageIcon.templateData.buttonNav[projPI].nestedPage.length);panelWidth = pageIcon.templateData.buttonNav[projPI].panelWidth;if (panelWidth == "Small"){  panelW = 300;  textW = 440;} else if (panelWidth == "Medium"){  panelW = 450;  textW = 290;} else if (panelWidth == "Large"){  panelW = 600;  textW = 150;} else {  panelW = 760;  textW = 0;}if (pageIcon.templateData.buttonNav[projPI].buttonWidth == undefined){  butW = 100;} else {  butW = Number(pageIcon.templateData.buttonNav[projPI].buttonWidth);}if (pageIcon.templateData.buttonNav[projPI].narration != undefined){  narration = pageIcon.templateData.buttonNav[projPI].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<DIS initObject="{_alpha: subPageAccess == true ? 20 : 100}" h="473" w="panelW" tabIndex="-1" id="panel" name="panel" x="780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].text}]]></DIS>		<SCR name="makeButtons"><![CDATA[if (icon.attributes.built != 'true'){  //if there are only two, delete the middle button  if (itemCount == 2){    icon.nextSibling.childNodes[1].removeNode()  }  if (itemCount > 3){    icon.nextSibling.childNodes[1].duplicate(itemCount - 3);  }  icon.attributes.built = 'true';}icon.nextSibling.firstChild.attributes.rs = 'btn1';icon.nextSibling.lastChild.previousSibling.attributes.rs = 'initButton';]]></SCR>		<INT id="tabs" name="tabInteraction" perpetual="0">			<RES w="butW" swf="templatePath + 'common/toggleButtonLeft.swf'" name="protoLeft" type="button" x="panel._x + (panelW / 2) - ((butW / 2) *itemCount)" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();btn.setChecked(true,true);if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){  icon.nextSibling.nextSibling.attributes.tabIndex = -1;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){  icon.nextSibling.nextSibling.attributes.controls = '1';}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';}if (subPageAccess == true){  icon.nextSibling.attributes.textColour = STYLES.defaultColour;} else {  icon.nextSibling.attributes.textColour = '#333333';}]]></SCR>				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>				<INT name="loadGraphic&Resize" perpetual="0">					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;graphic.constrain(panelW - 40, space);if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){  desc._y = 40 + graphic._height + 20;  graphic._y = 40;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);  graphic.clip.init(obj);}graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>					</RES>				</INT>			</RES>			<RES w="butW" swf="templatePath + 'common/toggleButton.swf'" name="protoCentreButton" type="button" x="icon.previousSibling.clip()._x + butW" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();btn.setChecked(true,true);if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){  icon.nextSibling.nextSibling.attributes.tabIndex = -1;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){  icon.nextSibling.nextSibling.attributes.controls = '1';}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';}if (subPageAccess == true){  icon.nextSibling.attributes.textColour = STYLES.defaultColour;} else {  icon.nextSibling.attributes.textColour = '#333333';}]]></SCR>				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="360" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>				<INT name="loadGraphic&Resize" perpetual="0">					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;graphic.constrain(panelW - 40, space);if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){  desc._y = 40 + graphic._height + 20;  graphic._y = 40;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);  graphic.clip.init(obj);}graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>					</RES>				</INT>			</RES>			<RES w="butW" swf="templatePath + 'common/toggleButtonRight.swf'" name="protoRight" type="button" x="icon.previousSibling.clip()._x + butW" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();btn.setChecked(true,true);if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){  icon.nextSibling.nextSibling.attributes.tabIndex = -1;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){  icon.nextSibling.nextSibling.attributes.controls = '1';}if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';}if (subPageAccess == true){  icon.nextSibling.attributes.textColour = STYLES.defaultColour;} else {  icon.nextSibling.attributes.textColour = '#333333';}]]></SCR>				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="360" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>				<INT name="loadGraphic&Resize" perpetual="0">					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;graphic.constrain(panelW - 40, space);if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){  desc._y = 40 + graphic._height + 20;  graphic._y = 40;}if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);  graphic.clip.init(obj);}graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>					</RES>				</INT>			</RES>			<RES name="initialise" type="event" eventName="onLoad" icon="initButton" erase="1" exit="0">				<SCR name="[Untitled]"><![CDATA[tabs.beginFill(0xFFFFFF,100);tabs.drawRect(panel._x + (panelW / 2) - ((butW / 2) *itemCount) + 2,462,itemCount * butW - 4,20);]]></SCR>				<INT name="wait" perpetual="0">					<RES name="initButton" type="timeLimit" secs="0" reset="0" erase="1" exit="0">						<SCR name="activatePaneOne"><![CDATA[btn1.swfFile.onRelease();]]></SCR>					</RES>				</INT>			</RES>		</INT>	</PG>
+	<PG title="enter page title" name="buttonNav">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+
+if (rootIcon.projMode == "dev"){ 
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+
+}
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+  
+// handle multiple page data definitions in a project 
+if (rootIcon.projectPageIndex == undefined){  
+   rootIcon.projectPageIndex = 0;
+}
+// check if this page has a definition for the current project index and default to 0 if not
+if (pageIcon.templateData.buttonNav[rootIcon.projectPageIndex].name == undefined){
+  projPI = 0;
+} else {
+  projPI = rootIcon.projectPageIndex; 
+}  
+
+itemCount = pageIcon.templateData.buttonNav[projPI].nestedPage.length);
+
+panelWidth = pageIcon.templateData.buttonNav[projPI].panelWidth;
+if (panelWidth == "Small"){
+  panelW = 300;
+  textW = 440;
+} else if (panelWidth == "Medium"){
+  panelW = 450;
+  textW = 290;
+} else if (panelWidth == "Large"){
+  panelW = 600;
+  textW = 150;
+} else {
+  panelW = 760;
+  textW = 0;
+}
+
+if (pageIcon.templateData.buttonNav[projPI].buttonWidth == undefined){
+  butW = 100;
+} else {
+  butW = Number(pageIcon.templateData.buttonNav[projPI].buttonWidth);
+}
+
+if (pageIcon.templateData.buttonNav[projPI].narration != undefined){
+  narration = pageIcon.templateData.buttonNav[projPI].narration;
+  rootIcon.broadcast('showAudio');
+}
+]]></SCR>
+		<DIS initObject="{_alpha: subPageAccess == true ? 20 : 100}" h="473" w="panelW" tabIndex="-1" id="panel" name="panel" x="780 - panelW" y="20" type="ext" url="templatePath + 'common/whitePanel.swf'"><![CDATA[]]></DIS>
+		<DIS scrolling="auto" id="textBlock" h="480" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].text}]]></DIS>
+		<SCR name="makeButtons"><![CDATA[if (icon.attributes.built != 'true'){
+  //if there are only two, delete the middle button
+  if (itemCount == 2){
+    icon.nextSibling.childNodes[1].removeNode()
+  }
+
+  if (itemCount > 3){
+    icon.nextSibling.childNodes[1].duplicate(itemCount - 3);
+  }
+
+  icon.attributes.built = 'true';
+}
+icon.nextSibling.firstChild.attributes.rs = 'btn1';
+icon.nextSibling.lastChild.previousSibling.attributes.rs = 'initButton';]]></SCR>
+		<INT id="tabs" name="tabInteraction" perpetual="0">
+			<RES w="butW" swf="templatePath + 'common/toggleButtonLeft.swf'" name="protoLeft" type="button" x="panel._x + (panelW / 2) - ((butW / 2) *itemCount)" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">
+				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();
+btn.setChecked(true,true);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){
+  icon.nextSibling.nextSibling.attributes.tabIndex = -1;
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){
+  icon.nextSibling.nextSibling.attributes.controls = '1';
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){
+  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;
+  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';
+}
+
+if (subPageAccess == true){
+  icon.nextSibling.attributes.textColour = STYLES.defaultColour;
+} else {
+  icon.nextSibling.attributes.textColour = '#333333';
+}]]></SCR>
+				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>
+				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>
+				<INT name="loadGraphic&Resize" perpetual="0">
+					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">
+						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;
+graphic.constrain(panelW - 40, space);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){
+  desc._y = 40 + graphic._height + 20;
+  graphic._y = 40;
+}
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){
+  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);
+  graphic.clip.init(obj);
+}
+graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>
+					</RES>
+				</INT>
+			</RES>
+			<RES w="butW" swf="templatePath + 'common/toggleButton.swf'" name="protoCentreButton" type="button" x="icon.previousSibling.clip()._x + butW" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">
+				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();
+btn.setChecked(true,true);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){
+  icon.nextSibling.nextSibling.attributes.tabIndex = -1;
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){
+  icon.nextSibling.nextSibling.attributes.controls = '1';
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){
+  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;
+  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';
+}
+
+if (subPageAccess == true){
+  icon.nextSibling.attributes.textColour = STYLES.defaultColour;
+} else {
+  icon.nextSibling.attributes.textColour = '#333333';
+}]]></SCR>
+				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>
+				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>
+				<INT name="loadGraphic&Resize" perpetual="0">
+					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">
+						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;
+graphic.constrain(panelW - 40, space);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){
+  desc._y = 40 + graphic._height + 20;
+  graphic._y = 40;
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){
+  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);
+  graphic.clip.init(obj);
+}
+
+graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>
+					</RES>
+				</INT>
+			</RES>
+			<RES w="butW" swf="templatePath + 'common/toggleButtonRight.swf'" name="protoRight" type="button" x="icon.previousSibling.clip()._x + butW" y="460" label="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.index()].name}" erase="1" exit="0">
+				<SCR name="checkTab"><![CDATA[btn = icon.parentNode.getMovieClip();
+btn.setChecked(true,true);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index() - 1].url == undefined){
+  icon.nextSibling.nextSibling.attributes.tabIndex = -1;
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].controls == 'Control Bar'){
+  icon.nextSibling.nextSibling.attributes.controls = '1';
+}
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip != undefined){
+  icon.nextSibling.nextSibling.attributes.toolTip = pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip;
+  icon.nextSibling.nextSibling.firstChild.nodeValue = '{' + pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].tip + '}';
+}
+
+if (subPageAccess == true){
+  icon.nextSibling.attributes.textColour = STYLES.defaultColour;
+} else {
+  icon.nextSibling.attributes.textColour = '#333333';
+}
+]]></SCR>
+				<DIS textColour="#333333" id="desc" name="description" x="panel._x + 20" y="panel._y + 20" w="panelW - 40" h="10" type="text"><![CDATA[{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].text}]]></DIS>
+				<DIS id="graphic" name="graphic" x="420" y="desc._y + desc._height + 20" type="ext" url="{pageIcon.templateData.buttonNav[projPI].nestedPage[icon.parentNode.index()].url}"><![CDATA[]]></DIS>
+				<INT name="loadGraphic&Resize" perpetual="0">
+					<RES name="onLoad" type="event" eventName="onLoad" icon="graphic" erase="1" exit="0">
+						<SCR name="resize&Position"><![CDATA[space = 385 - desc._height;
+graphic.constrain(panelW - 40, space);
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].align == 'Bottom'){
+  desc._y = 40 + graphic._height + 20;
+  graphic._y = 40;
+}
+
+if (pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject != undefined){
+  obj = expression(pageIcon.templateData.buttonNav[projPI].nestedPage[tabs.getPageIndex()].initObject, engine);
+  graphic.clip.init(obj);
+}
+graphic._x = panel._x + panel._width / 2 - graphic._width / 2;]]></SCR>
+					</RES>
+				</INT>
+			</RES>
+			<RES name="initialise" type="event" eventName="onLoad" icon="initButton" erase="1" exit="0">
+				<SCR name="[Untitled]"><![CDATA[tabs.beginFill(0xFFFFFF,100);
+tabs.drawRect(panel._x + (panelW / 2) - ((butW / 2) *itemCount) + 2,462,itemCount * butW - 4,20);]]></SCR>
+				<INT name="wait" perpetual="0">
+					<RES name="initButton" type="timeLimit" secs="0" reset="0" erase="1" exit="0">
+						<SCR name="activatePaneOne"><![CDATA[btn1.swfFile.onRelease();]]></SCR>
+					</RES>
+				</INT>
+			</RES>
+		</INT>
+	</PG>
