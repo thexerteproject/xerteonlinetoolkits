@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
 
   <learningObject icon="icPackage" remove="false" duplicate="false">
 
@@ -1259,7 +1259,9 @@
     <narration label="Narration" type="media" optional="true"/>
 
 	<newNodes>
-		<gameSetup><![CDATA[<gameSetup name="Score Configuration" score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min" score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min" score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min" score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" />]]></gameSetup>
+		<gameSetup><![CDATA[<gameSetup name="Score Configuration" score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min" score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score1WinEndID="" score1LoseEndID=""
+		score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min" score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
+		score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min" score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID="" score3LoseEndID="" />]]></gameSetup>
 		<scenarioActions><![CDATA[<scenarioActions name="List of scenario actions" />]]></scenarioActions>
 		<propList><![CDATA[<propList name="List of props in scenario" />]]></propList>
 	</newNodes>
@@ -1277,7 +1279,9 @@
     <score1Win label="Score to Win" options="Max,Min,None" type="ComboBox" defaultValue="max" data="max,min,none" width="100"/>
 	<score1Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
     <score1WinMessage label="Score 1 Win Message" type="TextArea" height="60"/>	
-    <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>		
+    <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>
+	<score1WinEndID label="Score 1 Win go to ID" type="TextInput" width="200"/>	
+	<score1LoseEndID label="Score 1 Lose go to ID" type="TextInput" width="200"/>	
 	
     <score2Use label="Display Score 2" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
 	<score2Label label="Score 2 Label" type="TextInput" width="200"/>	
@@ -1290,6 +1294,8 @@
 	<score2Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score2WinMessage label="Score 2 Win Message" type="TextArea" height="60"/>	
     <score2LoseMessage label="Score 2 Lose Message" type="TextArea" height="60"/>		
+	<score2WinEndID label="Score 2 Win go to ID" type="TextInput" width="200"/>	
+	<score2LoseEndID label="Score 2 Lose go to ID" type="TextInput" width="200"/>
 	
     <score3Use label="Display Score 3" type="ComboBox" options="Yes,No" defaultValue="0" data="1,0" width="100"/>
 	<score3Label label="Score 3 Label" type="TextInput" width="200"/>	
@@ -1302,6 +1308,8 @@
 	<score3Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score3WinMessage label="Score 3 Win Message" type="TextArea" height="60"/>	
     <score3LoseMessage label="Score 3 Lose Message" type="TextArea" height="60"/>
+	<score3WinEndID label="Score 3 Win go to ID" type="TextInput" width="200"/>	
+	<score3LoseEndID label="Score 3 Lose go to ID" type="TextInput" width="200"/>
 	
     <winEffect label="Win Sound File" type="media" optional="true"/>
     <loseEffect label="Lose Sound File" type="media" optional="true"/>		
