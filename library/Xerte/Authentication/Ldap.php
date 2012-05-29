@@ -101,11 +101,11 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
      * @param string $basedn - where in the LDAP tree we look for user accounts
      * @param string $ldap_filter - we filter records on this
      * @param string $ldap_filter_attr
-     * @param string $eureka_username - username provided by end user
+     * @param string $xot_username - username provided by end user
      * @param string $password - password provided by end user
-     * @return boolean 
+     * @return boolean true on success
      */
-    private function _authenticate_to_host($host, $port, $bind_pwd, $bind_dn, $basedn, $ldap_filter, $ldap_filter_attr, $eureka_username, $password)
+    private function _authenticate_to_host($host, $port, $bind_pwd, $bind_dn, $basedn, $ldap_filter, $ldap_filter_attr, $xot_username, $password)
     {
 
         if ($bind_pwd != "") {
@@ -116,7 +116,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
 
             $ds = @ldap_connect($host, (int) $port);
             if (!$ds) {
-                $this->addError("Issue connecting to ldap server (#1)");
+                $this->addError("Issue connecting to ldap server (#1) : Connecting");
                 _debug("issue connecting to ldap server? $host / $port : " . ldap_error($ds));
                 return false;
             }
@@ -125,23 +125,23 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             if ($bind_dn != '') {
                 $ldapbind = @ldap_bind($ds, $bind_dn, $bind_pwd);
                 if (!$ldapbind) {
-                    $this->addError("Issue connecting to ldap server (#2)");
+                    $this->addError("Issue connecting to ldap server (#2) : Binding");
                     _debug("Failed to bind to ldap server- perhaps the dn($bind_dn) or password($bind_pwd) are incorrect?");
                     return false;
                 }
-                $sr = @ldap_search($ds, $basedn, $ldap_filter_attr . "=". $eureka_username, array_values($ldap_search_attr));
+                $sr = @ldap_search($ds, $basedn, $ldap_filter_attr . "=". $xot_username, array_values($ldap_search_attr));
                 if (!$sr) {
-                    $this->addError("Issue connecting to ldap server (#3)");
+                    $this->addError("Issue connecting to ldap server (#3) : Searching ");
                     _debug("Failed to query ldap server" . ldap_error($ds));
                     return false;
                 }
-                _debug("Searched $basedn / $ldap_filter_attr $eureka_username ");
+                _debug("Searched $basedn / $ldap_filter_attr $xot_username ");
 
                 $entry = ldap_get_entries($ds, $sr);
                 //var_dump($entry);
                 if (!$entry or !isset($entry[0])) {
                     _debug("No entries found" . print_r($entry, true));
-                    $this->addError("Issue connecting to ldap server (#4)");
+                    $this->addError("Issue connecting to ldap server (#4) : No entries found ");
                     return false;
                 } else {
                     if (@ldap_bind($ds, $entry[0]['dn'], $password)) {
@@ -150,14 +150,14 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                          * valid login, so return true
                          */
 
-                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $eureka_username);
+                        $this->_record = array('firstname' => $entry[0]['givenname'][0], 'surname' => $entry[0]['sn'][0], 'username' => $xot_username);
                         return true;
                     }
                 }
             }
         } else {
 
-            $filter = $ldap_filter . $eureka_username;
+            $filter = $ldap_filter . $xot_username;
             $ldapConnection = ldap_connect($host, (int) $port);
             $ldapSearchResult = ldap_search($ldapConnection, $basedn, $filter);
 
@@ -174,7 +174,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
                         $entry = @ldap_get_entries($ldapConnection, $ldapSearchResult);
                         if (!empty($entry)) {
                             $this->_record = $entry;
-                            $this->_record['username'] = $eureka_username;
+                            $this->_record['username'] = $xot_username;
                             return true;
                         }
                     }
