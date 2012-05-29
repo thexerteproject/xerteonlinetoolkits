@@ -1,4 +1,4 @@
-<language name="Nederlands" code="nl-nl">
+<language name="Nederlands" code="nl-NL">
 	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
 	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
@@ -26,7 +26,7 @@
 	<btnPreview label="Toon" tooltip="Voorvertoning"/>
 	<btnPrev tooltip="Vorige item"/>
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
-	<addProp label="Voeg in" />
+	<addProp label="Voeg in" tooltip="Attribuut toevoegen"/>
 	<optionalProp label="Extra eigenschappen:"/>
 	<chkShowLanguage label="Toon Taal Opties" />
 	<chkShowAdvanced label="Toon Geavanceerde Opties" />
