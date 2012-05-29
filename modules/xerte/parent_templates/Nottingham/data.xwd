@@ -39,7 +39,7 @@
 	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm Selection" confirmBtnWidth="100" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" 
 	  notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection" />]]></cTabNav><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" buttonWidth="120"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Name" pageID="Unique ID for this page" text="Enter text for the page here" textWidth="narrow" url="Select an image" tip="Enter a tooltip for the image" hidePanel="false" highlight="false" hicol="0xFFFF00" align="Left" pageNav="none"
 	  reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection" continueBtnTxt="Close" continueBtnWidth="100"/>]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" pageID="Unique ID for this page" pageNav="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" />]]></connectorMenu><connectorPlainText><![CDATA[<connectorPlainText name="Enter Page Title" pageID="Unique ID for this page"
-	  pageNav="none" exitNav="all" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" 
+	  pageNav="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" 
 	  notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection"
 	  >Right click on a word then select Hyperlink, type or paste into the url box the following "asfunction:_level0.engine.fnTextCon,pageID" but replacing pageID with the page ID of your destination page.</connectorPlainText>]]></connectorPlainText><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
@@ -285,7 +285,7 @@
     <name label="Button Label" type="TextInput"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100"/>	
     <text label="Feedback" type="TextArea" height="250"/>
-  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it" thumb="thumbs/connectorMCQ.jpg" remove="true">
+  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it" thumb="thumbs/connectorMCQ.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
     <pageID label="Page ID" type="TextInput"/>
@@ -318,7 +318,7 @@
     <text label="Option" type="TextArea" height="100"/>
 	<destination label="Go to Page ID" type="TextArea" height="25"/>
     <exitNav label="Navigation on Exit" options="Back and Next Only,All navigation buttons" type="ComboBox" data="restrict,all" defaultValue="all" width="200"/>	
-  </cOption><cRedirector menu="Connectors" menuItem="Redirector Connector" hint="This page redirects the project flow to a specified page, use it at the end of a sequence of none connector pages to return to the main flow of the learning object." thumb="thumbs/connectorRedirector.jpg" remove="true">
+  </cOption><cRedirector menu="Connectors" menuItem="Redirector Connector" icon="icConRedirector" hint="This page redirects the project flow to a specified page, use it at the end of a sequence of none connector pages to return to the main flow of the learning object." thumb="thumbs/connectorRedirector.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <pageID label="Page ID" type="TextInput"/>
     <destination label="Destination Page ID" type="TextInput"/>
@@ -343,7 +343,7 @@
     <tip label="Image Tooltip" type="TextInput" optional="true"/>		
     <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
 
-  </cRedirector><cTabNav menu="Connectors" menuItem="Tabbed Navigator Connector" hint="The page allows you to create a series of tabbed pages to present related text and graphical content, with options that link to other pages in your project." thumb="thumbs/connectorTabNav.jpg" remove="true">
+  </cRedirector><cTabNav menu="Connectors" menuItem="Tabbed Navigator Connector" icon="icConTabbedNav" hint="The page allows you to create a series of tabbed pages to present related text and graphical content, with options that link to other pages in your project." thumb="thumbs/connectorTabNav.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <pageID label="Page ID" type="TextInput"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -464,7 +464,7 @@
       <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions and associate a destination page with each region." icon="icPageWhiteText" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+  </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions and associate a destination page with each region." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput"/>	
     <text label="Text" type="TextArea" height="200"/>
@@ -515,7 +515,7 @@
     <relNav label="Relative Connection" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true"/>
     <hotspotPopUp label="Text Pop-up" type="TextArea" height="200" optional="true"/>	
 
-  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="" thumb="thumbs/connectorMenu.jpg" remove="true">
+  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
 	<pageID label="Page ID" type="TextInput" width="200"/>
@@ -539,7 +539,7 @@
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
 
-  </connectorMenu><connectorPlainText menu="Connectors" menuItem="Plain Text Connector" hint="A simple text page in which links can be made to other pages in the project." thumb="thumbs/connectorPlainText.jpg" type="text" label="Page Text1" height="250" remove="true">
+  </connectorMenu><connectorPlainText menu="Connectors" menuItem="Plain Text Connector" icon="icConPlainText" hint="A simple text page in which links can be made to other pages in the project." thumb="thumbs/connectorPlainText.jpg" type="text" label="Page Text1" height="250" remove="true">
     <name label="Page Title" type="TextInput"/>
     <pageID label="Page ID" type="TextInput"/>
     <pageNav label="This Page Navigation" options="No Navigation Buttons,All Navigation Buttons" type="ComboBox" data="none,all" defaultValue="none" width="200"/>
@@ -794,7 +794,7 @@
     <narration label="Narration" type="media" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </imageViewer><inventory menu="Interactivity" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions." thumb="thumbs/inventory.jpg" remove="true">
+  </imageViewer><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions." thumb="thumbs/inventory.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
@@ -950,7 +950,8 @@
     <narration type="media" label="Narration" optional="true"/>
 
     <flickr type="TextInput" optional="true" label="Flickr Search"/>
-
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+	
     <newNodes>
       <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
     </newNodes>
@@ -1258,7 +1259,9 @@
     <narration label="Narration" type="media" optional="true"/>
 
 	<newNodes>
-		<gameSetup><![CDATA[<gameSetup name="Score Configuration" score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min" score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min" score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min" score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" />]]></gameSetup>
+		<gameSetup><![CDATA[<gameSetup name="Score Configuration" score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min" score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score1WinEndID="" score1LoseEndID=""
+		score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min" score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
+		score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min" score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID="" score3LoseEndID="" />]]></gameSetup>
 		<scenarioActions><![CDATA[<scenarioActions name="List of scenario actions" />]]></scenarioActions>
 		<propList><![CDATA[<propList name="List of props in scenario" />]]></propList>
 	</newNodes>
@@ -1276,7 +1279,9 @@
     <score1Win label="Score to Win" options="Max,Min,None" type="ComboBox" defaultValue="max" data="max,min,none" width="100"/>
 	<score1Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
     <score1WinMessage label="Score 1 Win Message" type="TextArea" height="60"/>	
-    <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>		
+    <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>
+	<score1WinEndID label="Score 1 Win go to ID" type="TextInput" width="200"/>	
+	<score1LoseEndID label="Score 1 Lose go to ID" type="TextInput" width="200"/>	
 	
     <score2Use label="Display Score 2" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
 	<score2Label label="Score 2 Label" type="TextInput" width="200"/>	
@@ -1289,6 +1294,8 @@
 	<score2Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score2WinMessage label="Score 2 Win Message" type="TextArea" height="60"/>	
     <score2LoseMessage label="Score 2 Lose Message" type="TextArea" height="60"/>		
+	<score2WinEndID label="Score 2 Win go to ID" type="TextInput" width="200"/>	
+	<score2LoseEndID label="Score 2 Lose go to ID" type="TextInput" width="200"/>
 	
     <score3Use label="Display Score 3" type="ComboBox" options="Yes,No" defaultValue="0" data="1,0" width="100"/>
 	<score3Label label="Score 3 Label" type="TextInput" width="200"/>	
@@ -1301,6 +1308,8 @@
 	<score3Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score3WinMessage label="Score 3 Win Message" type="TextArea" height="60"/>	
     <score3LoseMessage label="Score 3 Lose Message" type="TextArea" height="60"/>
+	<score3WinEndID label="Score 3 Win go to ID" type="TextInput" width="200"/>	
+	<score3LoseEndID label="Score 3 Lose go to ID" type="TextInput" width="200"/>
 	
     <winEffect label="Win Sound File" type="media" optional="true"/>
     <loseEffect label="Lose Sound File" type="media" optional="true"/>		
@@ -1309,7 +1318,7 @@
 	<name label="Props in this scenario" type="TextInput" width="200"/>	
 
 	<newNodes>  
-  	  <prop><![CDATA[<prop name="Prop Name" title="Prop title" description="Prop description" state="visible" />]]></prop>
+  	  <prop><![CDATA[<prop name="Prop ID" title="Prop title" description="Prop description" state="visible" />]]></prop>
 	</newNodes>  
   </propList><prop menuItem="Prop" remove="true">
    	<name label="Prop unique ID" type="TextInput" width="200"/>
@@ -1342,12 +1351,12 @@
   </userAction><actionCondition menuItem="Action Condition" remove="true">
    	<name label="Condition Name" type="TextInput" width="200"/>
 
-	<propName label="Prop Name" type="TextInput" width="200" optional="true"/>
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true"/>
     <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
     <propLoc label="Prop Location" options="On Stage,Carried,Off Stage,Not On Stage,Not Carried,In Scene" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true"/>
 
-	<scenarioID label="scenario Name" type="TextInput" width="200" optional="true"/>
-    <scenarioState label="scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+	<scenarioID label="Scenario Page ID" type="TextInput" width="200" optional="true"/>
+    <scenarioState label="Scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
     <scoreNumber label="Score or Counter" options="One,Two,Three,Items Carried" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
 	<scoreVal label="Score / Counter Value" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true"/>
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
@@ -1361,7 +1370,7 @@
 	<score1Inc label="Change Score 1" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/>	
 	<score2Inc label="Change Score 2" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/>	
 	<score3Inc label="Change Score 3" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/> 
-	<propName label="Prop Name" type="TextInput" width="200" optional="true"/>
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true"/>
     <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
     <propAction label="Prop Action" options="Carry,Drop,Send to Specified Location,Destroy" type="ComboBox" defaultValue="carry" data="carry,drop,specified,destroy" width="200" optional="true"/>
 	<specifiedLoc label="Prop Destination Page ID" type="TextInput" width="200" optional="true"/>
@@ -1377,12 +1386,12 @@
   </actionOutcome><outcomeCondition menuItem="Outcome Condition" remove="true">
    	<name label="Condition Name" type="TextInput" width="200"/>
 
-	<propName label="Prop Name" type="TextInput" width="200" optional="true"/>
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true"/>
     <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
     <propLoc label="Prop Location" options="On Stage,Carried,Off Stage,Not On Stage,Not Carried,In Scene" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true"/>
 
-	<scenarioID label="scenario Name" type="TextInput" width="200" optional="true"/>
-    <scenarioState label="scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+	<scenarioID label="Scenario Page ID" type="TextInput" width="200" optional="true"/>
+    <scenarioState label="Scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
     <scoreNumber label="Score or Counter" options="One,Two,Three,Items Carried" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
 	<scoreVal label="Score / Counter Value" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true"/>
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
@@ -1444,7 +1453,8 @@
 
     <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
-
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+	
     <newNodes>
       <topic><![CDATA[<topic name="Enter Topic Name"><nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab></topic>]]></topic>
     </newNodes>
@@ -1713,7 +1723,8 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
-
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+	
   </xerteModel><youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">&gt;
 
     <name type="TextInput" label="Page Title"/>
@@ -1735,6 +1746,7 @@
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
     <narration type="media" label="Narration" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>	
 
   </youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include Youtube videos in your piece. Enter a search term to display videos matching the term fom YouTube." icon="icYoutube">
 
