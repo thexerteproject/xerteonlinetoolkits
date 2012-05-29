@@ -1,4 +1,4 @@
-<language name="English" code="en-gb">
+<language name="English" code="en-GB">
 	<btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
@@ -26,9 +26,9 @@
 	<btnPreview label="Play" tooltip="Preview"/>
 	<btnPrev tooltip="Previous Item"/>
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
-	<addProp label="Add" />
+	<addProp label="Add" tooltip="add"/>
 	<optionalProp label="Optional Properties:"/>
-	<chkShowLanguage label="Show Language Otions" />
+	<chkShowLanguage label="Show Language Options" />
 	<chkShowAdvanced label="Show Advanced Options" />
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview"/>
