@@ -19,14 +19,14 @@ function _debug($string, $up = 0)
 
 /**
  * Try loading a language file. This will lead to the definition of multiple constants.
- * 
+ *
  *  We try and choose the language based on:
- *  
+ *
  * 1. If the user has $_GET['language'] set, then try to use the value of this and persist it in $_SESSION['toolkits_language']
  * 2. If the user does not have $_GET['lanauge'] but does have $_SESSION['toolkits_language'] then use this
  * 3. If none of the above, then check what their browser offers through $_SERVER['HTTP_ACCEPT_LANGUAGE'] and try and use the best one.
  * 4. If we can't find a language to match the user, then fall back to en_GB (language pack languages/en-GB)
- * 
+ *
  * @param string $file_path
  * @return boolean true on success; else false.
  */
@@ -59,7 +59,7 @@ function _load_language_file($file_path)
             $language_name = "en-GB";
         }
         $language = $language_name;
-
+        $_SESSION['toolkits_language'] = $language;
     }
 
 
@@ -70,7 +70,7 @@ function _load_language_file($file_path)
     {
         if (file_exists($real_file_path)) {
             require_once($real_file_path);
-        } 
+        }
         else
         {
             // stuff will break at this point.
@@ -120,6 +120,7 @@ function _include_javascript_file($file_path)
             $language_name = "en-GB";
         }
         $language = $language_name;
+        $_SESSION['toolkits_language'] = $language;
     }
 
 
@@ -143,7 +144,7 @@ function _include_javascript_file($file_path)
     {
 	if(file_exists($real_file_path)) {
             echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $real_file_path . "\"></script>";
-        } 
+        }
         else
         {
             // stuff will break at this point.
