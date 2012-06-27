@@ -7,6 +7,8 @@
   <tocButton label="Contents" description="Table of Contents Button"/>
   
   <helpButton label="Help" description="Help Button. "/>
+
+  <mediaButton label="Media" description="Media Button. "/>
   
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
