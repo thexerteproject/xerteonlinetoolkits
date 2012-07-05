@@ -1,1 +1,97 @@
-	<PG title="JMol" name="JMol">		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();if (rootIcon.projMode == "dev"){   // Page Wizard  pageIcon.templateData = pageIcon.extXML.toObject();  pageIcon.templateData = pageIcon.templateData.pageWizard[0];} else {  // Toolkits  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);  pageIcon.templateData = myXML.toObject();}  rootIcon.setTitleText(templateData.learningObject[0].name);  // handle multiple page data definitions in a project if (rootIcon.projectPageIndex == undefined){     rootIcon.projectPageIndex = 0;}// check if this page has a definition for the current project index and default to 0 if notif (pageIcon.templateData.jmol[rootIcon.projectPageIndex].name == undefined){  projPI = 0;} else {  projPI = rootIcon.projectPageIndex; }  if (pageIcon.templateData.jmol[projPI].narration != undefined){  narration = pageIcon.templateData.jmol[projPI].narration;  rootIcon.broadcast('showAudio');}]]></SCR>		<SCR name="JMol"><![CDATA[xmlData = pageIcon.templateData.jmol[projPI];controls = xmlData.controls;scriptOpt = xmlData.scriptOpt;// calcW/H are % values of jmol window size compared to whole window (so it can scale)calcW = 46.25;calcH = 65;if (xmlData.size == "Small" && pageIcon.templateData.jmol[projPI].xyz2 == undefined) {  numXYZ = 1;  textW = 540;  textH = 474;  calcW = 25;  calcH = 34;  controls = false; // no space for control bar when model is small  scriptOpt = false;} else if (xmlData.size == "Large" && pageIcon.templateData.jmol[projPI].xyz2 == undefined) {  numXYZ = 1;  textW = 760;  textH = 80;  calcW = 95;} else { // if there's a 2nd jmol file it defaults to medium size  if (pageIcon.templateData.jmol[projPI].xyz2 != undefined) {    xmlData.size = "Medium";    numXYZ = 2;    textW = 760;    textH = 80;  } else {     numXYZ = 1;     textW = 340;     textH = 474;  }}for (i=0; i<numXYZ; i++) {  params = new Object();  params.id = "popup"+i;  params.screenSize = rootIcon.sizes.getValue();  params.calcW = calcW;  params.calcH = calcH;  if (xmlData.size == "Large") {    params.calcX = 2.5;    params.calcY = 28;  } else {    params.calcX = 100 - (2.5 * (i + 1)) - (params.calcW * (i + 1));    params.calcY = 14 * numXYZ;  }  params.width = Stage.width;  params.height = Stage.height;  params.type = 'jmol';    if (i == 0) {    myFile = pageIcon.templateData.jmol[projPI].xyz;  } else {    myFile = pageIcon.templateData.jmol[projPI].xyz2;  }  params.src = 'JMolViewer/jmol.htm?xyz=../' + expression(myFile, engine) + ',spin=' + xmlData.initSpin + ',controls=' + controls + ',bgColour=' + xmlData.bgColour + ',initLook=' + xmlData.initLook + ',cartoonOpt=' + xmlData.cartoonOpt + ',backOpt=' + xmlData.backOpt + ',initColour=' + xmlData.colour + ',initScript=' + xmlData.initScript + ',scriptOpt=' + scriptOpt + ',surfaceOpt=' + xmlData.surfaceOpt + ',labelOpt=' + xmlData.labelOpt + ',colourOpt=' + xmlData.colourOpt;  params.bgColour = '#FFFFFF';  params.borderColour = '#FFFFFF';    callJS('makePopUp', params);  popupActive = true;}]]></SCR>		<DIS scrolling="auto" h="textH" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.jmol[projPI].text}]]></DIS>	</PG>
+	<PG title="JMol" name="JMol">
+		<SCR name="getPageID"><![CDATA[pageIcon = icon.parentNode.clip();
+if (rootIcon.projMode == "dev"){ 
+  // Page Wizard
+  pageIcon.templateData = pageIcon.extXML.toObject();
+  pageIcon.templateData = pageIcon.templateData.pageWizard[0];
+} else {
+  // Toolkits
+  myXML = new XML(extXML.firstChild.childNodes[rootIcon.getPageIndex() - pgOffset]);
+  pageIcon.templateData = myXML.toObject();
+
+}
+  rootIcon.setTitleText(templateData.learningObject[0].name);
+  
+// handle multiple page data definitions in a project 
+if (rootIcon.projectPageIndex == undefined){  
+   rootIcon.projectPageIndex = 0;
+}
+// check if this page has a definition for the current project index and default to 0 if not
+if (pageIcon.templateData.jmol[rootIcon.projectPageIndex].name == undefined){
+  projPI = 0;
+} else {
+  projPI = rootIcon.projectPageIndex; 
+}  
+
+if (pageIcon.templateData.jmol[projPI].narration != undefined){
+  narration = pageIcon.templateData.jmol[projPI].narration;
+  rootIcon.broadcast('showAudio');
+}
+
+
+]]></SCR>
+		<SCR name="JMol"><![CDATA[xmlData = pageIcon.templateData.jmol[projPI];
+controls = xmlData.controls;
+scriptOpt = xmlData.scriptOpt;
+
+// calcW/H are % values of jmol window size compared to whole window (so it can scale)
+calcW = 46.25;
+calcH = 65;
+
+if (xmlData.size == "Small" && pageIcon.templateData.jmol[projPI].xyz2 == undefined) {
+  numXYZ = 1;
+  textW = 540;
+  textH = 474;
+  calcW = 25;
+  calcH = 34;
+  controls = false; // no space for control bar when model is small
+  scriptOpt = false;
+} else if (xmlData.size == "Large" && pageIcon.templateData.jmol[projPI].xyz2 == undefined) {
+  numXYZ = 1;
+  textW = 760;
+  textH = 80;
+  calcW = 95;
+} else { // if there's a 2nd jmol file it defaults to medium size
+  if (pageIcon.templateData.jmol[projPI].xyz2 != undefined) {
+    xmlData.size = "Medium";
+    numXYZ = 2;
+    textW = 760;
+    textH = 80;
+  } else {
+     numXYZ = 1;
+     textW = 340;
+     textH = 474;
+  }
+}
+
+for (i=0; i<numXYZ; i++) {
+  params = new Object();
+  params.id = "popup"+i;
+  params.screenSize = rootIcon.sizes.getValue();
+  params.calcW = calcW;
+  params.calcH = calcH;
+  if (xmlData.size == "Large") {
+    params.calcX = 2.5;
+    params.calcY = 28;
+  } else {
+    params.calcX = 100 - (2.5 * (i + 1)) - (params.calcW * (i + 1));
+    params.calcY = 14 * numXYZ;
+  }
+  params.width = Stage.width;
+  params.height = Stage.height;
+  params.type = 'jmol';
+  
+  if (i == 0) {
+    myFile = pageIcon.templateData.jmol[projPI].xyz;
+  } else {
+    myFile = pageIcon.templateData.jmol[projPI].xyz2;
+  }
+  params.src = 'JMolViewer/jmol.htm?xyz=../' + expression(myFile, engine) + ',spin=' + xmlData.initSpin + ',controls=' + controls + ',bgColour=' + xmlData.bgColour + ',initLook=' + xmlData.initLook + ',cartoonOpt=' + xmlData.cartoonOpt + ',backOpt=' + xmlData.backOpt + ',initColour=' + xmlData.colour + ',initScript=' + xmlData.initScript + ',scriptOpt=' + scriptOpt + ',surfaceOpt=' + xmlData.surfaceOpt + ',labelOpt=' + xmlData.labelOpt + ',colourOpt=' + xmlData.colourOpt;
+  params.bgColour = '#FFFFFF';
+  params.borderColour = '#FFFFFF';
+  
+  callJS('makePopUp', params);
+  popupActive = true;
+}]]></SCR>
+		<DIS scrolling="auto" h="textH" name="text" x="20" y="20" w="textW" type="text"><![CDATA[{pageIcon.templateData.jmol[projPI].text}]]></DIS>
+	</PG>
