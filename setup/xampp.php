@@ -109,12 +109,12 @@ fclose($file_handle);
 if(!is_writeable('../index.php')) {
     echo "Check your file permissions, index.php file is not writeable by the web server; you will want to replace index.php with demo.txt";
 }
-if(is_file('../index.php') && is_writeable('../index.php')) {
+/*if(is_file('../index.php') && is_writeable('../index.php')) {
     @copy("../index.php","../index.txt");
     if(copy("../demo.txt","../index.php")) {
         echo "<p>Login requirement removed; using demo.txt as index.php page (index.php -&gt; index.txt && demo.txt -&gt index.php).</p>";
     }
-}
+}*/
 
 // update DB so it should work on Windows and OSX installs - rather than being hard coded to WAMP installs...
 $site_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname(dirname($_SERVER['REQUEST_URI']));
