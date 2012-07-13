@@ -11,7 +11,7 @@ class Xerte_Authentication_Guest extends Xerte_Authentication_Abstract
 
 
     public function getUsername() {
-        return 'guest';
+        return 'guest2';
     }
     
     public function getFirstname()
