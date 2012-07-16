@@ -18,6 +18,8 @@
 
 	var RECYCLE_PROPERTIES = "You cannot set the properties on a file in the recycle bin, please remove this file before continuing";
 
+	var DELETE_ERROR = "Error while trying to delete template";
+
 	var RECYCLE_DUPLICATE = "Please remove content from the recycle bin before duplicating it.";
 
 	var DUPLICATE_PROMPT = "Please select a project to duplicate";
@@ -25,6 +27,8 @@
 	var DUPLICATE_PROMPT_OTHER = "Please select a template you would like to duplicate";
 
 	var DUPLICATE_LIMIT = "Only 1 template can be duplicated at any time.";
+
+	var DUPLICATE_ERROR = "Error while duplicating : ";
 
 	var PUBLISH_LIMIT = "Only 1 template can be published at any time";
 
@@ -34,7 +38,7 @@
 
 	var DELETE_MULTIPLE_PROMPT = "Are you sure you with to delete these items?";
 
-	var DELETE_PROMPT = "Are you sure you with to delete?";
+	var DELETE_PROMPT = "Are you sure you wish to delete?";
 
 	var DELETE_PERMENANT_PROMPT = "Are you sure you want to permenantly delete file";
 
@@ -47,5 +51,7 @@
 	var ERROR_DELETE = 'Error while trying to delete template';
 	
 	var ERROR_DUPLICATE = 'Error while duplicating ';
+	
+	var RECYCLE_EMPTY = "Are you sure you want to empty the recycle bin?";
 
 
