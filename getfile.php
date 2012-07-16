@@ -28,8 +28,8 @@ if(is_numeric($data_from_file_name[0])){
 
             if($data_from_file_name[1]==$_SESSION['toolkits_logon_username']){
 
-                $file = $xerte_toolkits_site->users_file_area_full . $safe_file_path;
-
+                $file = $xerte_toolkits_site->users_file_area_full . str_replace("media","/media/",$safe_file_path);
+				
                 header("Cache-Control: public");
                 header("Content-Description: File Transfer");
                 header("Content-Disposition: attachment; filename=$file");
