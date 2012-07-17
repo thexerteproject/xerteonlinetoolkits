@@ -117,7 +117,6 @@ window_reference.edit_window_close(path,template);
     <div style="margin:0 auto; width:800px">
         <div class="edit_topbar" style="width:800px">
             <img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
-            <a style="color:#000; font-size:65%" href="javascript:window.moveTo(0,0);window.resizeTo(screen.width,screen.height);"><?PHP echo XERTE_EDIT_MAXIMISE; ?></a>
             <img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
         </div>
     </div>
