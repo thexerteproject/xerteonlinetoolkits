@@ -148,7 +148,7 @@ function list_folders_in_this_folder($folder_id, $sort_type){
          * Use level to nest the folders
          */
 
-        echo "<div class=\"folder\" style=\"padding-left:" . ($level*15) . "px\" id=\"folder_" . $row['folder_id'] .  "\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" ondblclick=\"folder_open_close(this)\" onmouseup=\"file_drag_stop(event,this)\"><p><img style=\"vertical-align:middle\"";
+        echo "<div class=\"folder\" style=\"padding-left:" . ($level*10) . "px\" id=\"folder_" . $row['folder_id'] .  "\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" ondblclick=\"folder_open_close(this)\" onmouseup=\"file_drag_stop(event,this)\"><p><img style=\"vertical-align:middle\"";
 
         if(mysql_num_rows($query_response_for_folder_content)==0){
 
