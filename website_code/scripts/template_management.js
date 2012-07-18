@@ -1000,7 +1000,7 @@ function remove_this(){
 
             name_string = data_string.split(">");
 			
-			if(name_string.length==3){
+			if(name_string.length==4){
 			
 				var response = confirm(name_string[2].split("<").shift() + "\n\n" + DELETE_PROMPT);
 				
