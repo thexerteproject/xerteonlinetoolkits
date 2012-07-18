@@ -6,10 +6,9 @@
 		// ***** SET UP Jmol PARAMETERS & CONTROL BAR *****
 		
 		// file location
-		var str = document.location.search.substr(1,document.location.search.length);
+		var str = document.location.search.substr(1,document.location.search.length).replace(/%20/g," ");
 		var modelFile = str.split(',')[0].split('xyz=')[1];
 		var setUpInfo = "load " + modelFile + ";";
-		
 		
 		// control bar?
 		var controls = str.split(',')[2].split('controls=')[1];
@@ -109,7 +108,6 @@
 					for (j=0; j<combo.options.length; j++) {
 						if (combo.options[j].text == valueArray[i]) {
 							combo.selectedIndex = j;
-							
 							break;
 						}
 					}
