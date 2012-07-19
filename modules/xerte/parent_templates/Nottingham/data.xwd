@@ -94,7 +94,7 @@
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
 	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Back" nextBtnTip="Forward" videoTip="Video Clip" soundTip="Sound Clip"/>]]></perspectives><QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode><quiz><![CDATA[<quiz name="Enter page title" order="random" numQuestions="All" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" feedback="Provide feedback here"  
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
-	  singleRight="Your answer is correct !" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
+	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
 	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
