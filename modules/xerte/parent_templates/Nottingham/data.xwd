@@ -62,9 +62,9 @@
 	  betweenScore="out of" afterScore="in the quiz" 
 	  onCompletion="You can retake the quiz at any time"   
 	  restart="Restart"  
-	  >CDATA</customHotspots>]]></customHotspots><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="recent" term="Enter Tags" results="20"/>]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" loadingTxt="Loading..." imageTxt1="Image" imageTxt2="of" imageTxt3="" msgOrder="n" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
+	  >CDATA</customHotspots>]]></customHotspots><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="recent" term="Enter Tags" results="20"/>]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a tooltip for the image"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" loadingTxt="Loading..." imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
-	  beforeQuesCount="Exercise" nQValue="n" betweenQuesCount="of" afterQuesCount=""
+	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" tip="Enter a tooltip for the image"
   	  nextTxt="Next"
 	  priorTxt="Previous"
@@ -77,7 +77,7 @@
 	  toggleScreenTip="Toggle Full Screen"
 	  >Enter text for the page here</imageViewer>]]></imageViewer><indexChanger><![CDATA[<indexChanger name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm your selection" confirmBtnWidth="100" />]]></indexChanger><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
-	  beforeQuesCount="Question" nQValue="n" betweenQuesCount="of" afterQuesCount="" feedbackLabel="Feedback" 
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  testModeText="Class : Weight of above options (turn Author Support off to hide this)"
 	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
 	  nextBtnText="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
@@ -113,7 +113,7 @@
 	   score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
 	   score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
 	   score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID=""
-	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" beforeSlideStat="Slide" nSValue="n" betweenSlideStat="of" afterSlideStat=""/>]]></slideshow><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left" loadingPrompt="Loading table data..."><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip">Enter text for the page here</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" correctMessage="Correct answers are shown" submitBtnTxt="Submit" submitBtnTip="Submit" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Tooltip" reset="true" transcriptTabTxt="Transcript" transcriptTabTip="Transcript" transcriptTabWidth="90">Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" checkBtnTip="Check Answers" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"/>]]></youtuberss></newNodes>
+	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" beforeSlideStat="Slide" nSValue="n" betweenSlideStat="of" afterSlideStat=""/>]]></slideshow><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left" loadingPrompt="Loading table data..."><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" correctMessage="Correct answers are shown" submitBtnTxt="Submit" submitBtnTip="Submit" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Tooltip" reset="true" transcriptTabTxt="Transcript" transcriptTabTip="Transcript" transcriptTabWidth="90">Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" checkBtnTip="Check Answers" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model"/>]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"/>]]></youtuberss></newNodes>
 
   </learningObject>
 
@@ -689,11 +689,8 @@
 	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	
 	<loadingTxt label="Loading Message" type="TextInput" language="true"/>
-	<imageTxt1 label="IMAGE n of m images" type="TextInput" language="true"/>
-	<imageTxt2 label="image n OF m images" type="TextInput" language="true"/>
-	<imageTxt3 label="image n of m IMAGES" type="TextInput" language="true"/>
-    <msgOrder label="Number before Count" options="Yes,No" type="ComboBox" data="n,c" defaultValue="n" width="200" language="true"/>	
-	
+    <imageTxt label="Image {i} of {n} images" type="textInput" language="true"/>	
+
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
@@ -732,10 +729,7 @@
 	<nextBtnTxt label="Next Button Label" type="textInput" divider="true" language="true"/>
     <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
-    <beforeQuesCount label="WORD n of m words" type="textInput" language="true"/>
-    <nQValue label="Number before Count" options="Yes,No" type="ComboBox" defaultValue="n" data="n,c" width="200" language="true"/>	
-    <betweenQuesCount label="word n OF m words" type="textInput" language="true"/> 
-    <afterQuesCount label="word n of m WORDS" type="textInput" language="true"/> 
+    <quesCount label="{i} of {n} words" type="textInput" language="true"/>	
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -818,10 +812,7 @@
     <chartType label="Chart Type" options="bar,pie,line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120"/>	
     <chartColour label="Colour" type="colourPicker"/>	
 
-    <beforeQuesCount label="QUESTION n of m questions" type="textInput" divider="true" language="true"/>
-    <nQValue label="Number precedes Count" options="Yes,No" type="ComboBox" defaultValue="n" data="n,c" width="200" language="true"/>	
-    <betweenQuesCount label="question n OF m questions" type="textInput" language="true"/> 
-    <afterQuesCount label="question n of m QUESTIONS" type="textInput" language="true"/> 
+    <quesCount label="{i} of {n} questions" type="textInput" divider="true" language="true"/>	
     <feedbackLabel label="Feedback Label" type="textInput" language="true"/> 
     <testModeText label="Test mode text" type="textInput" language="true"/>
     <submitBtnText label="Submit Button Label" type="textInput" language="true"/>
@@ -1578,14 +1569,14 @@
     <imagesize label="Image Size" options="auto,actual size,full screen" type="ComboBox" data="auto,actual size,full screen" defaultValue="auto" width="100"/>
     <url label="Image" type="media"/>
     <tip label="Image Tooltip" type="TextInput"/>
-
+	
+	<transcriptbuttonlabel label="Transcript Button Label" type="textInput" divider="true" language="true"/>
     
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-    <transcriptbuttonlabel label="Transcript Button Label" type="TextInput" optional="true"/>
     <transcript label="Transcript" type="textArea" height="100" optional="true"/>    
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>
