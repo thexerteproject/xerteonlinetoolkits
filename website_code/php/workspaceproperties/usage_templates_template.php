@@ -36,7 +36,7 @@ echo "<div style=\"float:left; width:15%; height:20px;\">" . USAGE_TEMPLATE_STAT
 
 while($row_template_name = mysql_fetch_array($query_shared_response)){
 
-    echo "<div style=\"float:left; width:80%;\">" . $row_template_name['template_name'] . "</div>";
+    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row['template_name']). "</div>";
     echo "<div style=\"float:left; width:15%;\">" . $row_template_name['number_of_uses'] . "</div>";
 
 }

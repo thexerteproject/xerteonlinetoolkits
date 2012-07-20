@@ -72,7 +72,7 @@ function iframe_check(){
 
 			string = string.substr(0,string.length-4);
 
-			alert("Upload check" + string);
+			alert(string);
 
 			window_reference.screen_refresh();
 

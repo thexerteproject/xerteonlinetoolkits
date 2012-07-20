@@ -36,7 +36,7 @@ echo "<div style=\"float:left; width:40%; height:20px;\">" . SHARED_TEMPLATE_CRE
 
 while($row_template_name = mysql_fetch_array($query_shared_response)){
 
-    echo "<div style=\"float:left; width:40%; overflow:hidden; padding-right:10px\">" . $row_template_name['template_name'] . "</div>";
+    echo "<div style=\"float:left; width:40%; overflow:hidden; padding-right:10px\">" . str_replace("_","",$row['template_name']) . "</div>";
     echo "<div style=\"float:left; width:40%; overflow:hidden;\">" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</div>";
 
 }
