@@ -11,7 +11,7 @@
 
 function is_ok_user(name_string){
 
-   var ValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- ";
+   var ValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'- \r\n";
    var name_is_ok=true;
    var Char;
 
