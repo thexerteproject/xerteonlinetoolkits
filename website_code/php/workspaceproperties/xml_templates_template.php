@@ -36,7 +36,7 @@ echo "<div style=\"float:left; width:30%; height:20px;\">" . XML_TEMPLATE_NAME .
 
 while($row_template_name = mysql_fetch_array($query_peer_response)){
 
-    echo "<div style=\"float:left; width:60%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:20%;\"> On </div>";
+    echo "<div style=\"float:left; width:60%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; width:20%;\"> On </div>";
 
 }
 

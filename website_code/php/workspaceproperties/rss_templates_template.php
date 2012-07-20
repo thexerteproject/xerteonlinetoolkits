@@ -37,7 +37,7 @@ echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . 
 
 while($row_template_name = mysql_fetch_array($query_rss_response)){
 
-    echo "<div style=\"float:left; position:relative; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; position:relative; width:15%;\">";
+    echo "<div style=\"float:left; position:relative; width:50%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; position:relative; width:15%;\">";
 
     if($row_template_name['rss']){
 

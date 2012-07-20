@@ -35,7 +35,7 @@ echo "<div style=\"float:left; width:40%; height:20px;\">" . SYNDICATION_TEMPLAT
 
 while($row_template_name = mysql_fetch_array($query_rss_response)){
 
-    echo "<div style=\"float:left; width:50%;\">" . $row_template_name['template_name'] . "</div><div style=\"float:left; width:40%;\">";
+    echo "<div style=\"float:left; width:50%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; width:40%;\">";
 
     if($row_template_name['syndication']){
 
