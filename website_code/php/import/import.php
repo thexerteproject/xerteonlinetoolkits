@@ -11,7 +11,7 @@
 
 require_once("../../../config.php");
 
-_load_language_file("/website_code/php/import.inc");
+_load_language_file("/website_code/php/import/import.inc");
 
 include "../user_library.php";
 include "../template_library.php";
