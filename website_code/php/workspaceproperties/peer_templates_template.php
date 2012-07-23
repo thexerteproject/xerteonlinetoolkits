@@ -30,7 +30,7 @@ $query_for_peer_templates = "select * from " . $xerte_toolkits_site->database_ta
 
 $query_peer_response = mysql_query($query_for_peer_templates);
 
-workspace_menu_create();
+workspace_menu_create(60);
 
 echo "<div style=\"float:left; width:30%; height:20px;\">" . PEER_REVIEW_NAME . "</div>";
 

@@ -33,7 +33,7 @@ workspace_menu_create();
 
 while($row_template_name = mysql_fetch_array($query_public_response)){
 
-    echo "<div style=\"float:left; width:100%;\">" . str_replace("_","",$row['template_name']) . "</div>";
+    echo "<div style=\"float:left; width:100%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
 
 }
 

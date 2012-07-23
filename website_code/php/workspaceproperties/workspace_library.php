@@ -17,11 +17,11 @@
 
 	}
 	
-	function workspace_menu_create(){
+	function workspace_menu_create($size){
 	
 		echo "<div style=\"clear:left; margin-left:20px; margin-top:10px; width:90%; float:left;\">";
 
-		echo "<div style=\"float:left; width:60%; height:20px;\">" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</div>";
+		echo "<div style=\"float:left; width:" . $size . "%; height:20px;\">" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</div>";
 	
 	}
 
