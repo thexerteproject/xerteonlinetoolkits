@@ -85,8 +85,7 @@ if(is_numeric($_POST['template_id'])){
 
                     echo "<p><img src=\"website_code/images/Bttn_PublishOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_PublishOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_PublishOff.gif'\" onmousedown=\"this.src='website_code/images/Bttn_PublishClick.gif'\" onclick=\"publish_project(window.name);\" /></p>";
 
-                    echo "<p>" . PUBLISH_WEB_ADDRESS . " <a href=" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . " target=_blank>". $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) ."</a></p>";
-
+                    echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "'>" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "</a></p>";
 
             }
 
