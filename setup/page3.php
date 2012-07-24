@@ -55,7 +55,7 @@ echo "<p>The form string is (The code to handle the HTML format for the login bo
 
 echo "<br><br><h3 style=\"clear:left\">Site formatting settings - Customising the logged in page</h3>";
 
-echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">How to</p><p class=\"demo\"><a href=\"javascript:alert('Sorry. This is not yet available')\">30 Second Demo</a><br />A very short captivate file showing a simple project being started, built and published for the web.</p><p class=\"demo\"><a href=\"javascript:alert('Sorry. This is not yet available')\">Learning Object Demo</a><br />A very simple demo of a learning object.</p></textarea></p>";	
+echo "<p>The content of pod one is (The first pod underneath the file area on the logged in page)<textarea name=\"pod_one\"><p class=\"news_title\">Resources</p><p class=\"demo\"><a href=\"http://www.xerte.org.uk\">Community Resources</a><br />The Xerte user community website.</p><p class=\"demo\"><a href=\"http://www.nottingham.ac.uk/toolkits/play_560\">Learning Object Demo</a><br />A comprehensive demo of all the page templates.</p></textarea></p>";	
 
 echo "<p>The content of pod two is (The second pod underneath the file area on the logged in page)<textarea name=\"pod_two\"><p class=\"news_title\">Want to share some thoughts?</p><p class=\"general\">If you have any questions, requests for help, ideas for new projects or problems to report, then please get in touch.</p><p class=\"general\">Please use our <a href=\"feedback/\" style=\"color:#000\">Feedback Form</a></p></textarea></p>";
 
