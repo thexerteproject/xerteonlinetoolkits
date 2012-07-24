@@ -134,6 +134,7 @@ function make_new_template($type,$zip_path){
 
 
         }else{
+	
 
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_template_rights);
 
@@ -185,6 +186,10 @@ function replace_existing_template($path_to_copy_from, $template_id){
     array_splice($delete_folder_array,0);
 
     delete_loop($path_to_copy_from);
+	
+	echo "HELLO****";
+	
+	die();
 
     while($delete_folder = array_pop($delete_folder_array)){
 
@@ -362,7 +367,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
-        require_once dirname(__FILE__)."/dUnzip2.inc.php";
+        require_once dirname(__FILE__) . "/dUnzip2.inc.php";
 
         $zip = new dUnzip2($new_file_name);
 
@@ -382,6 +387,12 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             foreach($x as $y){
 
+				if(count(explode("/",$y))==3){
+				
+					die(IMPORT_ZIP_FOLDER_LEVEL . "****");
+				
+				}
+
                 if(!(strpos($y,"media/")===false)){
 
                     $string = $zip->unzip($y, false, 0777);
@@ -392,7 +403,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                 }
 
-                if(!(strpos($y,".rlt")===false)){
+                if((strpos($y,".rlt")!==false)){
 
                     $string = $zip->unzip($y, false, 0777);
 
@@ -422,6 +433,8 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
          * Look for an xml file linked to the RLO
          */
 
+		echo $template_data_equivalent . "<br />"; 
+
         if($template_data_equivalent!=null){
 
             foreach($zip->compressedList as $x){
@@ -436,7 +449,15 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                         array_push($file_data,$temp_array);
 
-                    }
+                    }else if($y==="preview.xml"){
+					
+						$preview_xml = $zip->unzip($y, false, 0777);
+
+                        $temp_array = array("preview.xml",$preview_xml,null);
+
+                        array_push($file_data,$temp_array);	
+					
+					}
 
                 }
 
@@ -622,7 +643,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                     unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
 
-                    $preview_xml = file_get_contents($xerte_toolkits_site->import_path . $this_dir . "data.xml");
+                    $preview_xml = file_get_contents(str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml");
 
                     $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
 

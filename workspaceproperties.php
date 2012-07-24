@@ -52,7 +52,7 @@ Hidden Iframe to allow for ajax file uploads
 
 -->
 
-<iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none"></iframe>
+<iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
 
 
 <div class="properties_main">

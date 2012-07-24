@@ -27,6 +27,8 @@
 	define("IMPORT_ZIP_FAIL","You can only import Zip Files");
 	
 	define("IMPORT_XERTE_ONLY","Only Xerte templates are currently imported");
+	
+	define("IMPORT_ZIP_FOLDER_LEVEL","The files in your zip folder need to be in the main folder, not within another folder in the zip.");
 
 
 ?>
