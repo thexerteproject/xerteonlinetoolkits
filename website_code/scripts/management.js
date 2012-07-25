@@ -651,6 +651,10 @@ function change_owner_stateChanged(){
 			alert(USER_CHANGED);
 			users_list();			
 
+		}else{
+		
+			alert("ERROR " + xmlHttp.responseText);
+		
 		}
 	}
 
