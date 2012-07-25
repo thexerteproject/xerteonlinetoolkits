@@ -19,13 +19,10 @@ if(is_user_admin()){
 
     $query="update " . $xerte_toolkits_site->database_table_prefix . "templatedetails set creator_id=\"" . $_POST['new_user'] . "\" where template_id =\"" . $_POST['template_id'] . "\"";
 
-    if(mysql_query($query)){
+    if(!mysql_query($query)){
 
-        //echo "Update successful";
-
-    }else{
-
-        //echo "Update failed";
+        echo mysql_error();
+		die();
 
     }
 	
@@ -41,15 +38,16 @@ if(is_user_admin()){
 
     $row_folder = mysql_fetch_array($query_for_username_response);
 
-    $query="update " . $xerte_toolkits_site->database_table_prefix . "templaterights set user_id=\"" . $_POST['new_user'] . "\", folder_id=\"" . $row_folder['folder_id'] . "\" where template_id =\"" . $_POST['template_id'] . "\" and role=\"creator\"";
+    $query="update " . $xerte_toolkits_site->database_table_prefix . "templaterights set user_id=\"" . $_POST['new_user'] . "\", folder=\"" . $row_folder['folder_id'] . "\" where template_id =\"" . $_POST['template_id'] . "\" and role=\"creator\"";
 
     if(mysql_query($query)){
 
-        //echo "Update 2 successful";
+        echo "Update successful";
 
     }else{
 
-        //echo "Update 2 failed";
+        echo mysql_error();
+		die();
 
     }
 
