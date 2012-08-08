@@ -192,6 +192,7 @@ if ($row_play['access_to_whom'] == "Private") {
     require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     dont_show_template();
+	
 } else if ($row_play['access_to_whom'] == "Public") {
 
     /*
@@ -203,6 +204,7 @@ if ($row_play['access_to_whom'] == "Private") {
     require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     show_template($row_play);
+	
 } else if ($row_play['access_to_whom'] == "Password") {
 
     /*
@@ -227,6 +229,7 @@ if ($row_play['access_to_whom'] == "Private") {
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             show_template($row_play);
+			
         } else {
 
             /*
@@ -266,6 +269,7 @@ if ($row_play['access_to_whom'] == "Private") {
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             show_template($row_play);
+			
         } else {
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
@@ -301,6 +305,7 @@ if ($row_play['access_to_whom'] == "Private") {
                 $flag = true;
 
                 break;
+				
             } else {
 
                 $flag == false;
