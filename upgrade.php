@@ -181,7 +181,7 @@ function upgrade_2() {
 
     $site_details = db_query_one("SELECT * FROM {$sdtable}");
     if(empty($site_details['ldap_host']) || empty($site_details['basedn'])) {
-        var_dump($site_details);
+        //var_dump($site_details);
         return "No ldap information here to use for migrating";
     }
     // some empty records may be already here?
