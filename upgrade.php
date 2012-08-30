@@ -28,6 +28,7 @@
 // cannot not have this.
 require_once(dirname(__FILE__) . "/config.php");
 
+
 function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
     $table = $xerte_toolkits_site->database_table_prefix . $table;
@@ -62,6 +63,7 @@ function table_by_key($name) {
     return $name;
 }
 
+$_GET['debug'] = true;
 function printdebug($text) {
     if (!empty($_GET['debug'])) {
         print "<p style='color:#999'>$text</p>";
@@ -69,8 +71,7 @@ function printdebug($text) {
 }
 
 $config_table = table_by_key('config');
-$mysql = "
-    CREATE TABLE IF NOT EXISTS $config_table (
+$mysql = "CREATE TABLE IF NOT EXISTS $config_table (
       id int(11) NOT NULL AUTO_INCREMENT,
       name varchar(20) NOT NULL,
       value varchar(20) NOT NULL,
@@ -85,11 +86,13 @@ $sql = "SELECT * FROM $config_table WHERE name = 'version'";
 $r = db_query_one($sql);
 if(!empty($r)) {
     $version = $r['value'];
+    echo "Starting from $version\n";
 } else {
     db_query("INSERT INTO $config_table (name, value) VALUES ('version', '0')");
     $version = 0;
 }
 
+echo "Updates are being applied to {$xerte_toolkits_site->database_name} \n";
 _do_upgrade($version);
 
 
@@ -107,13 +110,13 @@ function _do_upgrade($current_version) {
 
     while(function_exists('upgrade_' . $target_version)) {
         $function = "upgrade_" . $target_version;
-        echo "<p>Updating to version $target_version \n";
+        echo " Updating to version $target_version \n";
         $ok = $function();
         if(!$ok) {
             echo "Oh dear. Something probably went wrong; exiting after trying $function\n</p>";
             return;
         }
-        echo " - ok</p>";
+        echo "<p> $ok </p>";
         $target_version += 1;
     }
     echo "<p><b>Upgrade complete</b></p>\n";
@@ -153,3 +156,62 @@ function _update_query($sql) {
  *   return _update_query("UPDATE logindetails SET foo = bar WHERE x = y");
  * }
  */
+
+/** Add ldap table into the schema if it's not there already */
+function upgrade_1() {
+    $table = table_by_key('ldap');
+    return db_query("CREATE TABLE IF NOT EXISTS `$table` (
+        `ldap_id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `ldap_knownname` text NOT NULL,
+        `ldap_host` text NOT NULL,
+        `ldap_port` text NOT NULL,
+        `ldap_username` text,
+        `ldap_password` text,
+        `ldap_basedn` text,
+        `ldap_filter` text,
+        `ldap_filter_attr` text,
+        PRIMARY KEY (`ldap_id`)
+    ) ");
+}
+
+function upgrade_2() {
+
+    $sdtable = table_by_key('sitedetails');
+    $ldaptable = table_by_key('ldap');
+
+    $site_details = db_query_one("SELECT * FROM {$sdtable}");
+    if(empty($site_details['ldap_host']) || empty($site_details['basedn'])) {
+        var_dump($site_details);
+        return "No ldap information here to use for migrating";
+    }
+    // some empty records may be already here?
+    db_query("DELETE FROM {$ldaptable} WHERE ldap_host = ?", array(''));
+
+    $rows = db_query("SELECT * FROM {$ldaptable} WHERE ldap_host = ?", array($site_details['ldap_host']));
+    if(sizeof($rows) > 0) {
+        echo "LDAP migration appears to have already taken place!";
+        return true;
+    }
+
+    if(!empty($site_details['ldap_host']) && !empty($site_details['basedn'])) {
+        $ldap_details = array('ldap_knownname' => $site_details['ldap_host'],
+                              'ldap_host' => $site_details['ldap_host'],
+                              'ldap_port' => $site_details['ldap_port'],
+                              'ldap_username' => $site_details['bind_dn'],
+                              'ldap_password' => $site_details['bind_pwd'],
+                              'ldap_basedn' => $site_details['basedn'],
+                              'ldap_filter' => $site_details['LDAP_filter'],
+                              'ldap_filter_attr' => $site_details['LDAP_preference']);
+
+        $fields = array_keys($ldap_details);
+        $qmarks = '';
+        $comma = '';
+        foreach($fields as $field) {
+            $qmarks .= $comma . '?';
+            $comma = ',';
+        }
+        _debug("Running SQL to copy sitedetails stuff into the ldap table - " . print_r($ldap_details, true));
+        $ok = db_query_one("INSERT INTO {$ldaptable} ($fields) VALUES($qmarks)", array_values($ldap_details));
+        return "Migrated LDAP settings from sitedetails to ldap - ok ? " . ( $ok ? 'true' : 'false' );
+    }
+}
