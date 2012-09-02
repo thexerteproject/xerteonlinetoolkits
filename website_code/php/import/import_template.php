@@ -97,6 +97,8 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     _load_language_file("/website_code/php/import_template.inc");
 
+    _debug("Trying to import template " . $_FILES['filenameuploaded']['name']);
+
     $this_dir = rand() . "/";
 
     $end_dir = $this_dir;
@@ -107,6 +109,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     $new_file_name = $xerte_toolkits_site->import_path . $_FILES['filenameuploaded']['name'];
 
+    _debug("  1. Moving " . $_FILES['filenameuploaded']['tmp_name'] . " to " . new_file_name);
     if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
         require_once dirname(__FILE__)."/dUnzip2.inc.php";
@@ -118,6 +121,8 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         $zip->getList();
 
         $zip->unzipAll($xerte_toolkits_site->import_path . $this_dir);
+
+	_debug("  2. Unzip...");
 
     }
 
@@ -131,6 +136,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
          * We are replacing, so delete files
          */
 
+	_debug("  3. Replacing...");
         delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $_POST['folder'] . "/");
         delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $_POST['folder'] . "/");
 
@@ -141,10 +147,12 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         }
 
     }else{
+	_debug("  3. Installing in " . $xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4));
 
         $dir = opendir($xerte_toolkits_site->import_path . $this_dir . substr($_FILES['filenameuploaded']['name'],0,strlen($_FILES['filenameuploaded']['name'])-4));
 
         if($dir===false){
+            _debug("     Failed....");
 
             delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
@@ -156,14 +164,15 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-            echo IMPORT_TEMPLATE_ZIP_FAIL "****";
+            echo IMPORT_TEMPLATE_ZIP_FAIL . "****";
 
             die();
 
         }
 
-        $rlt_not_found = false;
+        $rlt_not_found = true;
 
+	_debug("  4. Searching template.rlt");
         while($filename = readdir($dir)){
 
             /*
@@ -198,7 +207,8 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
                     $desc = substr(substr($string, strpos($string, "description=")+13),0,strpos(substr($string, strpos($string, "description=")+13),"\""));
 
-                    $rlt_not_found = true;
+                    $rlt_not_found = false;
+		    _debug("  5. Installing to " . $folder . " with name " . $name);
 
                 }
 
@@ -206,8 +216,9 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         }
 
-        if(!$rlt_not_found){
+        if($rlt_not_found){
 
+            _debug("     Failed....");
             delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
             while($file_to_delete = array_pop($delete_file_array)){
@@ -242,6 +253,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/");
         @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/");
         @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/");
+        @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/wizards/");
         @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/");
         @mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/");
 
@@ -249,6 +261,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/common/",0777);
         @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/thumbs/",0777);
         @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/models/",0777);
+        @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/wizards/",0777);
         @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/",0777);
         @chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/media/",0777);
 
@@ -331,6 +344,22 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     }
 
+    copy_loop($xerte_toolkits_site->import_path . $this_dir . "wizards");
+
+    while($file_to_copy = array_pop($copy_file_array)){
+
+        @rename($xerte_toolkits_site->import_path . $this_dir . "wizards/" . $file_to_copy, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/wizards/" . $file_to_copy);
+
+    }	
+
+    delete_loop($xerte_toolkits_site->import_path . $this_dir . "wizards");
+
+    while($file_to_delete = array_pop($delete_file_array)){
+
+        @unlink($file_to_delete);
+
+    }
+
     rename($xerte_toolkits_site->import_path . $this_dir . "template.rlt", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/" . $folder . "/" .  $folder . ".rlt");
 
     rename($xerte_toolkits_site->import_path . $this_dir . "template.xml", $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/templates/" . $folder . "/data.xml");
@@ -349,6 +378,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
     rmdir($xerte_toolkits_site->import_path . $this_dir . "media");
     rmdir($xerte_toolkits_site->import_path . $this_dir . "thumbs");
     rmdir($xerte_toolkits_site->import_path . $this_dir . "models");
+    rmdir($xerte_toolkits_site->import_path . $this_dir . "wizards");
 
     if($_POST['folder']==""){
 
