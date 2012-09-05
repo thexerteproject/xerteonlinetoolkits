@@ -28,7 +28,6 @@
 // cannot not have this.
 require_once(dirname(__FILE__) . "/config.php");
 
-_debug(print_r($xerte_toolkits_site, true));
 
 function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
