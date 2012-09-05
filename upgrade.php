@@ -28,6 +28,7 @@
 // cannot not have this.
 require_once(dirname(__FILE__) . "/config.php");
 
+_debug(print_r($xerte_toolkits_site, true));
 
 function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
@@ -181,7 +182,7 @@ function upgrade_2() {
 
     $site_details = db_query_one("SELECT * FROM {$sdtable}");
     if(empty($site_details['ldap_host']) || empty($site_details['basedn'])) {
-        //var_dump($site_details);
+        _debug("No ldap information to use; can't migrate"); 
         return "No ldap information here to use for migrating";
     }
     // some empty records may be already here?
@@ -206,12 +207,14 @@ function upgrade_2() {
         $fields = array_keys($ldap_details);
         $qmarks = '';
         $comma = '';
+        $fields_sql = '';
         foreach($fields as $field) {
             $qmarks .= $comma . '?';
+            $fields_sql .= $comma . $field;
             $comma = ',';
         }
         _debug("Running SQL to copy sitedetails stuff into the ldap table - " . print_r($ldap_details, true));
-        $ok = db_query_one("INSERT INTO {$ldaptable} ($fields) VALUES($qmarks)", array_values($ldap_details));
+        $ok = db_query_one("INSERT INTO {$ldaptable} ($fields_sql) VALUES($qmarks)", array_values($ldap_details));
         return "Migrated LDAP settings from sitedetails to ldap - ok ? " . ( $ok ? 'true' : 'false' );
     }
 }
