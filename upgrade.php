@@ -131,9 +131,10 @@ function _do_upgrade($current_version) {
 /** 
  * Wrap around db_query - so we can print out the SQL etc if necessary.
  * @param string $sql
+ * @param array parameters for the SQL - if prepared statement. See db_query.
  */
-function _update_query($sql) {
-    $result = db_query($sql);
+function _upgrade_db_query($sql, $params = array()) {
+    $result = db_query($sql, $params);
     if(!empty($_GET['debug'])) {
         echo "<p>DEBUG Query: $sql, output " . print_r($result) . "</p>";
     }
@@ -153,14 +154,14 @@ function _update_query($sql) {
  * 
  * function upgrade_2() {
  *   // perhaps we need to run a query which reforms some data... do it like so :
- *   return _update_query("UPDATE logindetails SET foo = bar WHERE x = y");
+ *   return _upgrade_db_query("UPDATE logindetails SET foo = bar WHERE x = y");
  * }
  */
 
 /** Add ldap table into the schema if it's not there already */
 function upgrade_1() {
     $table = table_by_key('ldap');
-    return db_query("CREATE TABLE IF NOT EXISTS `$table` (
+    return _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
         `ldap_id` bigint(20) NOT NULL AUTO_INCREMENT,
         `ldap_knownname` text NOT NULL,
         `ldap_host` text NOT NULL,
@@ -185,9 +186,9 @@ function upgrade_2() {
         return "No ldap information here to use for migrating";
     }
     // some empty records may be already here?
-    db_query("DELETE FROM {$ldaptable} WHERE ldap_host = ?", array(''));
+    _upgrade_db_query("DELETE FROM {$ldaptable} WHERE ldap_host = ?", array(''));
 
-    $rows = db_query("SELECT * FROM {$ldaptable} WHERE ldap_host = ?", array($site_details['ldap_host']));
+    $rows = _upgrade_db_query("SELECT * FROM {$ldaptable} WHERE ldap_host = ?", array($site_details['ldap_host']));
     if(sizeof($rows) > 0) {
         echo "LDAP migration appears to have already taken place!";
         return true;
@@ -213,7 +214,7 @@ function upgrade_2() {
             $comma = ',';
         }
         _debug("Running SQL to copy sitedetails stuff into the ldap table - " . print_r($ldap_details, true));
-        $ok = db_query_one("INSERT INTO {$ldaptable} ($fields_sql) VALUES($qmarks)", array_values($ldap_details));
+        $ok = _upgrade_db_query("INSERT INTO {$ldaptable} ($fields_sql) VALUES($qmarks)", array_values($ldap_details));
         return "Migrated LDAP settings from sitedetails to ldap - ok ? " . ( $ok ? 'true' : 'false' );
     }
 }
