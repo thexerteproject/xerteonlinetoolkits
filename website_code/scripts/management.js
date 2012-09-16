@@ -2,9 +2,6 @@ var function_to_use = null;
 
 var management_ajax_php_path = "website_code/php/management/";
 
-
-
-
 if(typeof(String.prototype.trim) === "undefined")
 {
     String.prototype.trim = function() 
@@ -239,6 +236,25 @@ function users_list(){
 	}
 }
 
+// Function template_sync
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// remove a share, and check who did it
+
+function template_sync(){
+
+	if(setup_ajax()!=false){
+
+		var url="sync.php";
+
+		management_ajax_send_prepare(url)
+
+		xmlHttp.send('no_id=1'); 
+
+	}
+}
+
 // Function site list
 //
 // Version 1.0 University of Nottingham
@@ -290,7 +306,7 @@ function templates_list(){
 function update_template(){
 
 	if(setup_ajax()!=false){
-
+	
 		var url="template_details_management.php";
 
 		xmlHttp.open("post",management_ajax_php_path + url,true);

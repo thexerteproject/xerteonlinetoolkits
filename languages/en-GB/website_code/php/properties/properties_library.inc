@@ -146,7 +146,7 @@
 
 	define("PROPERTIES_LIBRARY_RSS_FOLDER", "As you organise content in folders, each folder has it's own RSS feed. This provides a convenient way to include only some of your content in a feed. See the folder properties for more details, and the link to that folder's feed");
 
-	define("PROPERTIES_LIBRARY_RSS_EXPORT", "Include content in the export feed (allows other users to download your project and make changes to it)");
+	define("PROPERTIES_LIBRARY_RSS_EXPORT", "Including content in the export feed allows other users to download your project and make changes to it themselves");
 
 	define("PROPERTIES_LIBRARY_RSS_SAVED", "Your changes have been saved");
 	

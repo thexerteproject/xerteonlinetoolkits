@@ -80,8 +80,9 @@ function database_connect($success_string, $error_string)
 function db_query($sql, $params = array())
 {
     $connection = database_connect('db_query ok', 'db_query fail');
-
+	
     foreach ($params as $key => $value) {
+	
         if (isset($value)) {
             if (get_magic_quotes_gpc()) {
                 $value = stripslashes($value);
@@ -108,9 +109,9 @@ function db_query($sql, $params = array())
             $sql = substr_replace($sql, $params[$curph], $i, 1);
         }
         $curph--;
+		
     }
     _debug("Running : $sql", 1);
-
 
     $result = mysql_query($sql, $connection);
     if (!$result) {

@@ -39,8 +39,6 @@ function make_new_template($type,$zip_path){
 
     global $xerte_toolkits_site, $delete_folder_array, $folder_id;
 
-    _debug("3. Creating new template (type=" . $type . ", path=" . $zip_path);
-
     $database_connect_id = database_connect("new_template(import) database connect success","new_template(import) database connect fail");
 
     /*
@@ -164,7 +162,6 @@ function make_new_template($type,$zip_path){
  */
 
 function replace_existing_template($path_to_copy_from, $template_id){
-    _debug("3. Replacing existing template " . $template_id . " (from " . $path_to_copy_from . ")");
 
     global $xerte_toolkits_site, $delete_file_array, $delete_folder_array;
 
@@ -360,8 +357,6 @@ $folder_id = "";
 
 if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")){
 
-    _debug("Trying to import " . $_FILES['filenameuploaded']['name']);
- 
     $this_dir = rand() . "/";
 
     mkdir($xerte_toolkits_site->import_path . $this_dir);
@@ -507,7 +502,6 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
                 fclose($fp);
 
                 $template_check = $file_to_create[1];
-		_debug(" - Found rlt " . $file_to_create[0]);
 
                 chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],0777);
 
@@ -535,14 +529,11 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         $folder = explode('"',substr($template_check,strpos($template_check,"targetFolder"),strpos($template_check,"version")-strpos($template_check,"targetFolder")));
 
-	_debug("1. Importing RLO: Folder = " . $folder[1]);
-
         $start_point = strpos($template_check,"version");
 
         $version = explode('"',substr($template_check,$start_point,strpos($template_check," ",$start_point)-$start_point));
 
         if($_POST['replace']){
-	    _debug("2. Replace");
 
             $query = "select template_framework from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id =\"" . mysql_real_escape_string($_POST['replace']) . "\"";
 
@@ -620,7 +611,6 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
             }
 
         }else{
-	    _debug("2. New ...");
 
             if($_POST['folder']!=""){
 
@@ -652,17 +642,14 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
                      */
 
                     unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
-                    $previewfile = str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml";
-		    if (file_exists($previewfile))
-                    {
-                         $preview_xml = file_get_contents($previewfile);
 
-                         $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
+                    $preview_xml = file_get_contents(str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml");
 
-                         fwrite($fh, $preview_xml);
+                    $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
 
-                         fclose($fh);
-                    }
+                    fwrite($fh, $preview_xml);
+
+                    fclose($fh);
 
                     make_new_template($folder[1], $xerte_toolkits_site->import_path . $this_dir);
 

@@ -87,6 +87,7 @@ if(is_numeric($_POST['template_id'])){
 
                     echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "'>" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($_POST['template_id'])) . "</a></p>";
 
+
             }
 
         }else{
