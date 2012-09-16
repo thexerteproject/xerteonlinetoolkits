@@ -349,7 +349,7 @@ function list_blank_templates(){
 
         echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
-        echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" size=\"40\" length=\"40\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
+        echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
     }
 
@@ -421,8 +421,6 @@ function list_specific_templates(){
         if(access_check($row['access_rights'])){
 
             echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon\"></div><div class=\"template_desc\"><p class=\"template_name\">";
-
-            echo $row['display_name'];
 
             echo "</p><p class=\"template_desc_p\">";
 

@@ -16,6 +16,8 @@
 
 	define("TEMPLATE_VIEW", "View");
 
+	define("TEMPLATE_UPDATE", "Update template list");
+	
 	define("TEMPLATE_MANAGE", "Manage Existing templates");
 
 	define("TEMPLATE_TYPE", "This template is of type");
