@@ -182,7 +182,7 @@ function list_files_in_this_folder($folder_id, $sort_type){
 
     global $level, $xerte_toolkits_site;
 
-    $query = "select template_name, template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") ";
+    $query = "select templatedetails.template_name as template_name, template_id, template_framework, originaltemplatesdetails.template_name as name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails,originaltemplatesdetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") and templatedetails.template_type_id = originaltemplatesdetails.template_type_id";
 
     if($sort_type=="alpha_down"){
 
@@ -206,7 +206,7 @@ function list_files_in_this_folder($folder_id, $sort_type){
 
     while($row = mysql_fetch_array($query_response)){
 
-        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
+        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
 
     }
 

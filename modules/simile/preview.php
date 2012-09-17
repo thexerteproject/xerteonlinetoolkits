@@ -37,21 +37,7 @@ function show_preview_code($row, $row_username){
 	}
 
 
-	if(isset($_POST)){
-	
-		?>
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title><?PHP echo SIMILE_EDIT_TITLE; ?></title>
-		<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-		<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
-    </head>
-
-    <body>
-		<p><a href="edit.php?template_id=<?PHP echo $row['template_id']; ?>">Return to editor</a></p>
-		<?PHP
+	if(isset($_POST['save_path'])){
 	
 		$data = array();
 		
@@ -167,15 +153,35 @@ function show_preview_code($row, $row_username){
 			$counter++;
 		
 		}
-					
-		if(isset($_POST)){
-			
-			file_put_contents($_POST['save_path'] . "/preview.inc", serialize($data));
 		
-			display_timeline($data);
 	
-		}	
+	}
 	
+	?>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title><?PHP echo SIMILE_EDIT_TITLE; ?></title>
+		<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+		<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
+    </head>
+
+    <body>
+	<?PHP
+					
+	if(isset($_POST['save_path'])){
+			
+		?><p><a href="edit.php?template_id=<?PHP echo $row['template_id']; ?>">Return to editor</a></p><?PHP
+			
+		file_put_contents($_POST['save_path'] . "/preview.inc", serialize($data));
+		
+		display_timeline($data);
+	
+	}else{
+		
+		display_timeline(unserialize(file_get_contents($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.inc")));
+
 	}
 	
 }
