@@ -45,9 +45,11 @@ if(is_numeric($_GET['template_id'])){
         $query_response = mysql_query($query);
         $row = mysql_fetch_array($query_response);
 		
-		require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/module_functions.php");
-
-		export_template($row, $fullArchive); 
+		if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php")){
+		
+			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php");
+		
+		}
 		
     }
 }
