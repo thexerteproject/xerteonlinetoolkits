@@ -11,22 +11,10 @@
 	 */
 
 	define("EXPORT_TITLE","Export");
-
-	define("EXPORT_DESCRIPTION","There are several ways to export a project. An exported project is packaged, but not deleted, into a zip file for you to share with another user, to deploy on the web, or to import into a SCORM compliant LMS or VLE. You can choose whether to export all of the project's files, or just those files used by the project.");
-
-  define("EXPORT_ZIP_ARCHIVE", "Archive export. Complete backup including offline editing and round-tripping back to toolkits or sharing with other Xerte users: ");
-  define("EXPORT_ZIP_ARCHIVE_LINK","Get Archive Zip.");
-
-  define("EXPORT_ZIP", "Export for deployment. Contains only the files required for importing into a vle without SCORM tracking, sharing via CD or USB etc or importing into another XOT install: ");
-	define("EXPORT_ZIP_LINK","Get Deployment Zip.");
-
-	define("EXPORT_SCORM", "Export for SCORM deployment: self contained, SCORM 1.2 or SCORM 2004 enables tracking of Quiz scores e.g. into Moodle gradebook: ");
-
-	define("EXPORT_SCORM_12_LINK","Get SCORM 1.2 package");
-
-	define("EXPORT_SCORM_2004_LINK","Get SCORM 2004 3rd Ed package");
-
+	
 	define("EXPORT_FAIL","Sorry you do not have rights to this template");
+	
+	define("EXPORT_NOT_AVAILABLE","Sorry, no export function available for this template");
 
 ?>
 

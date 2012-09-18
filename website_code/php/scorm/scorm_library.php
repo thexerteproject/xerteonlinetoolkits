@@ -337,7 +337,7 @@ function xerte_zip_files($fullArchive=false, $dir_path){
         /* only add file if used */
  			  $string = str_replace($dir_path, "", $file);			  
 			  
-        if (strpos(file_get_contents($dir_path . "template.xml"), $string) !== false)
+        if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false)
         {
 		
           _debug("  add " . $string);
