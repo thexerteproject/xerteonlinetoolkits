@@ -29,6 +29,9 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
         if (isset($this->_record['fn'])) {
             return $this->_record['fn'];
         }
+      if (isset($this->_record['firstname'])) {
+        return $this->_record['firstname'];
+      }
         return null;
     }
 
@@ -37,6 +40,9 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
         if (isset($this->_record['sn'])) {
             return $this->_record['sn'];
         }
+      if (isset($this->_record['surname'])) {
+        return $this->_record['surname'];
+      }
         return null;
     }
 
