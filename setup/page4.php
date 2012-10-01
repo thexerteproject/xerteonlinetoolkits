@@ -17,6 +17,7 @@ function _debug($string) {
 
 ini_set('error_reporting', E_ALL);
 
+
 echo file_get_contents("page_top");
 
 $res = db_query("DELETE FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");

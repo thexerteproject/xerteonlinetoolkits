@@ -1,9 +1,12 @@
 <?php
+
+
+
 require_once("../../../config.php");
 
 _load_language_file("/website_code/php/management/site.inc");
 
-require("../user_library.php");
+require_once("../user_library.php");
 
 if(is_user_admin()){
 
@@ -163,6 +166,75 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_PROXY_EXPLAINED . "</p>";
 
     echo "</div>";
+
+  echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <a href=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
+
+
+  echo "<div class=\"template\" id=\"ltikeys\"><p>" . MANAGEMENT_SITE_LTI_KEYS . " <a href=\"javascript:templates_display('ltikeys')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"ltikeys_child\">";
+
+
+    echo "<div id=\"ltikeys\">";
+
+
+if(!isset($mysqli)) {
+
+  $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
+  if ($mysqli->error) {
+    try {
+      throw new Exception("0MySQL error $mysqli->error <br> Query:<br> $query", $mysqli->errno);
+    }
+    catch (Exception $e) {
+      echo "Error No: " . $e->getCode() . " - " . $e->getMessage() . "<br />";
+      echo nl2br($e->getTraceAsString());
+    }
+  }
+}
+if(!isset($lti)) {
+  require_once('../../../LTI/ims-lti/UoN_LTI.php');
+  $lti = new UoN_LTI($mysqli);
+}
+
+
+
+  $dataret=$lti->get_lti_keys();
+
+  $dataret['NEW']=array('lti_keys_id'=>'NEW', 'lti_keys_key'=>'', 'lti_keys_secret'=>'', 'lti_keys_name'=>LTI_KEYS_NEW, 'lti_keys_context_id'=>'', 'lti_keys_deleted'=>'', 'lti_keys_updated_on'=>'');
+
+  foreach($dataret as $lti_key_id=>$row) {
+//array('lti_keys_id'=>$lti_keys_id, 'lti_keys_key'=>$lti_keys_key, 'lti_keys_secret'=>$lti_keys_secret, 'lti_keys_name'=>$lti_keys_name, 'lti_keys_context_id'=>$lti_keys_context_id, 'lti_keys_deleted'=>$lti_keys_deleted, 'lti_keys_updated_on'=>$lti_keys_updated_on);
+
+    $click=LTI_TOGGLE;
+    $click2="&nbsp;&nbsp;<a href=\"javascript:delete_LTI_key('" . $row['lti_keys_id'] . "')\">" . LTI_KEYS_DELETE . "</a>";
+    if($row['lti_keys_id']=='NEW') {
+      $click=LTI_KEYS_ADD;
+      $click2='';
+    }
+
+    echo "<div class=\"template\" id=\"" . $row['lti_keys_id'] . "\" savevalue=\"" . $row['lti_keys_id'] .  "\"><p>" . $row['lti_keys_name'] . " <a href=\"javascript:templates_display('" . $row['lti_keys_id'] . "')\">" . $click . "</a>$click2</p></div><div class=\"template_details\" id=\"" . $row['lti_keys_id']  . "_child\">";
+
+    echo "<p>" . LTI_KEYS_NAME . "<form><textarea id=\"lti_keys_name" . $row['lti_keys_id'] .  "\">" . $row['lti_keys_name'] . "</textarea></form></p>";
+    echo "<p>" . LTI_KEYS_KEY . "<form><textarea id=\"lti_keys_key" . $row['lti_keys_id'] .  "\">" . $row['lti_keys_key'] . "</textarea></form></p>";
+    echo "<p>" . LTI_KEYS_SECRET . "<form><textarea id=\"lti_keys_secret" . $row['lti_keys_id'] .  "\">" . $row['lti_keys_secret'] . "</textarea></form></p>";
+    echo "<p>" . LTI_KEYS_CONTEXT_ID . "<form><textarea id=\"lti_keys_context_id" . $row['lti_keys_id'] .  "\">" . $row['lti_keys_context_id'] . "</textarea></form></p>";
+
+    if($row['lti_keys_id']=='NEW') {
+      echo "<div><p><form action=\"javascript:new_LTI_key();\"><input type=\"submit\" name=\"new-lti\" value=\"". LTI_KEYS_ADD_SUBMIT ."\"></form></p></div>";
+    } else {
+      echo "<div style=\"width:300px;\">";
+      echo "<div style=\"float:left;width:100px;\"><p><form action=\"javascript:edit_LTI_key(" . $row['lti_keys_id'] . ");\"><input type=\"submit\" name=\"edit-lti\" value=\"". LTI_KEYS_EDIT_SUBMIT ."\"></form></p></div>";
+    //  echo "<div style=\"float:right;width:100px;\"><p><form><input type=\"submit\" name=\"delete-lti\" value=\"". LTI_KEYS_DELETE_SUBMIT ."\"></form></p></div>";
+      echo "</div>";
+
+    }
+
+    echo "</div>";
+
+  }
+
+  echo "</div>";
+  echo "</div>";
+  echo "</div>";
+
 
 }else{
 

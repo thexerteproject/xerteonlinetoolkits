@@ -136,5 +136,26 @@
 	define("MANAGEMENT_SITE_PROXY_PORT", "The site's proxy port is ");
 
 	define("MANAGEMENT_SITE_PROXY_EXPLAINED", "By directly editing the rss proxy.php file (in the root folder), you can add up to 4 proxys and ports should you wish.");
-	
+
+  define("MANAGEMENT_SITE_LTI","LTI settings");
+
+define("LTI_TOGGLE","View");
+
+define("LTI_KEYS_NAME","LTI Key Descriptive Name");
+define("LTI_KEYS_KEY","The LTI Key");
+define("LTI_KEYS_SECRET","The LTI Keys Secret");
+define("LTI_KEYS_CONTEXT_ID","An overide for the LTI Context");
+define("LTI_KEYS_DELETED","When was this delete");
+define("LTI_KEYS_UPDATED_ON","When was this last updated");
+
+define("MANAGEMENT_SITE_LTI_KEYS","LTI Keys");
+
+define("LTI_KEYS_NEW",'New');
+define("LTI_KEYS_DELETE",'Delete');
+define("LTI_KEYS_ADD",'Add New LTI Key');
+define("LTI_KEYS_ADD_SUBMIT",'Add New LTI Key');
+define("LTI_KEYS_EDIT_SUBMIT",'Edit LTI Key');
+define("LTI_KEYS_DELETE_SUBMIT",'Delete LTI Key');
+
+
 ?>
