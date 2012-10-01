@@ -13,6 +13,12 @@ DROP TABLE IF EXISTS `$templaterights` ;
 DROP TABLE IF EXISTS `$templatesyndication` ;
 DROP TABLE IF EXISTS `$user_sessions` ;
 
+DROP TABLE IF EXISTS `$lti_context` ;
+DROP TABLE IF EXISTS `$lti_keys` ;
+DROP TABLE IF EXISTS `$lti_resource` ;
+DROP TABLE IF EXISTS `$lti_user` ;
+
+
 CREATE TABLE `$additional_sharing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `template_id` int(11) DEFAULT NULL,
@@ -189,3 +195,40 @@ CREATE TABLE `$user_sessions` (
   PRIMARY KEY (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `$lti_context` (
+  `lti_context_key` varchar(255) NOT NULL,
+  `c_internal_id` varchar(255) NOT NULL,
+  `updated_on` datetime NOT NULL,
+  PRIMARY KEY (`lti_context_key`),
+  KEY `c_internal_id` (`c_internal_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `$lti_keys` (
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `oauth_consumer_key` char(255) NOT NULL,
+  `secret` char(255) DEFAULT NULL,
+  `name` char(255) DEFAULT NULL,
+  `context_id` char(255) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `oauth_consumer_key` (`oauth_consumer_key`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `$lti_resource` (
+  `lti_resource_key` varchar(255) NOT NULL,
+  `internal_id` varchar(255) DEFAULT NULL,
+  `internal_type` varchar(255) NOT NULL,
+  `updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`lti_resource_key`),
+  KEY `destination2` (`internal_type`),
+  KEY `destination` (`internal_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `$lti_user` (
+  `lti_user_key` varchar(255) NOT NULL DEFAULT '',
+  `lti_user_equ` varchar(255) NOT NULL,
+  `updated_on` datetime NOT NULL,
+  PRIMARY KEY (`lti_user_key`),
+  KEY `lti_user_equ` (`lti_user_equ`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

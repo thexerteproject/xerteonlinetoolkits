@@ -1,0 +1,32 @@
+LTI Documentation
+=================
+
+Very quick & brief documentation.
+
+Setup
+-----
+
+
+The destination URL is
+
+<XOTurl>/LTI/
+
+replace <XOTurl> with the full url to Xerte Online Toolkit.
+
+You then need to add an LTI key from the management interface from LTI Settings under site menu.  The secret and the key is then entered into the LTI Consumer along with the destination URL.  Context is currently not handled by this as there doesnt seem any logic for it wit XOT.
+
+On launching a link
+-------------------
+
+On first login (& every 15 weeks) it will require authenticating with xerte authentication, this then associates the LTI user ID and the xerte username together.
+
+if staff it will show existing projects and let you select one for the link to associate with (once set it cannot be changed/deleted [ you would need to delete the link from the LTI Consumer]).  From then on the project linked is launched 
+
+if student then launches to project, if not setup display quick error message.
+
+
+
+
+
+
+

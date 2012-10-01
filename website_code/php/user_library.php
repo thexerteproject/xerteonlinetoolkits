@@ -21,6 +21,31 @@ function check_if_first_time($username){
 }
 
 /**
+ *
+ * Function get user id
+ * get the user's database ID
+ * @author Patrick Lockley
+ * @version 1.0
+ * @return number - The user's database id
+ * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * @package
+ */
+function get_user_info(){
+
+  global $xerte_toolkits_site;
+
+  $row = db_query_one("SELECT firstname,surname,login_id,username,lastlogin FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
+
+  if(!empty($row)) {
+    return (array($row['firstname'],$row['surname'],$row['username'],$row['login_id'],$row['lastlogin']));
+  }else{
+    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users Details", "Failed to get users Details");
+  }
+
+}
+
+
+/**
  * 
  * Function get user id
  * get the user's database ID

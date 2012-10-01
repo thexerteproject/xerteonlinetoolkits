@@ -379,7 +379,7 @@ function update_site(){
 
 		copyright = document.getElementById("copyright").value;
 
-		copyright = copyright.split("©").join("AAA");
+		copyright = copyright.split("ï¿½").join("AAA");
 
 		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
 					 '&apache=' + document.getElementById("apache").value + 
@@ -484,6 +484,90 @@ function play_security_list(template){
 
 }
 
+// Function new LTI Key
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// add a new LTI Key
+
+function new_LTI_key(){
+
+    if(setup_ajax()!=false){
+
+        var url="new_ltikey.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('lti_keys_name=' + document.getElementById("lti_keys_nameNEW").value +
+            '&lti_keys_key=' + document.getElementById("lti_keys_keyNEW").value +
+            '&lti_keys_secret=' + document.getElementById("lti_keys_secretNEW").value +
+            '&lti_keys_context_id=' + document.getElementById("lti_keys_context_idNEW").value);
+
+    }
+
+
+}
+
+// Function edit LTI Key
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// edit an LTI Key
+
+function edit_LTI_key(editltikey){
+
+    if(setup_ajax()!=false){
+
+        var url="edit_ltikey.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('lti_keys_name=' + document.getElementById("lti_keys_name" + editltikey).value +
+            '&lti_keys_key=' + document.getElementById("lti_keys_key" + editltikey).value +
+            '&lti_keys_secret=' + document.getElementById("lti_keys_secret" + editltikey).value +
+            '&lti_keys_id=' + editltikey +
+            '&lti_keys_context_id=' + document.getElementById("lti_keys_context_id" + editltikey).value);
+
+    }
+
+
+}
+
+// Function delete LTI Key
+//
+// Version 1.0 University of Nottingham
+// (pl)
+// delete an LTI Key
+
+function delete_LTI_key(ltikey){
+
+
+
+    if(setup_ajax()!=false){
+        if (confirm("Are you sure you want to delete")) {
+
+
+        var url="delete_ltikey.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('lti_keys_id=' + ltikey);
+            //document.getElementById("lti_keys_nameNEW").value +
+            //'&lti_keys_key=' + document.getElementById("lti_keys_keyNEW").value +
+            //'&lti_keys_secret=' + document.getElementById("lti_keys_secretNEW").value +
+            //'&lti_keys_context_id=' + document.getElementById("lti_keys_context_idNEW").value);
+
+    }
+    }
+
+}
+
 // Function new security
 //
 // Version 1.0 University of Nottingham
@@ -500,9 +584,9 @@ function new_security(){
 		xmlHttp.onreadystatechange=management_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('newsecurity=' + document.getElementById("newsecurity").value + 
-					 '&newdata=' + document.getElementById("newdata").value + 
-					 '&newdesc=' + document.getElementById("newdesc").value); 		
+		xmlHttp.send('newsecurity=' + document.getElementById("newsecurity").value +
+					 '&newdata=' + document.getElementById("newdata").value +
+					 '&newdesc=' + document.getElementById("newdesc").value);
 
 	}
 

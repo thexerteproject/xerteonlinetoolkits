@@ -97,7 +97,9 @@ _do_upgrade($version);
 
 
 function _do_upgrade($current_version) {
-    $target_version = $current_version + 1;
+    $target_version = $current_version + 0; // changed this to add 0 not 1 as this looks like it causes issues as when done an upgrade you had to add an extra 1 to the upgrade_function
+  if($target_version ==0 ) $target_version=1; // fixed this for when the variable didnt exist;
+
 
     echo "<p>Current database version - $current_version</p>";
     if(!function_exists('upgrade_' . $target_version)) {    
@@ -217,4 +219,63 @@ function upgrade_2() {
         $ok = _upgrade_db_query("INSERT INTO {$ldaptable} ($fields_sql) VALUES($qmarks)", array_values($ldap_details));
         return "Migrated LDAP settings from sitedetails to ldap - ok ? " . ( $ok ? 'true' : 'false' );
     }
+}
+
+/*
+ function upgrade_3() {
+// DO NOTHING but it seems if you ran the previous 2 steps then it wont run #3 but try to run #4
+  _debug('Dummy upgrade required if not already done upgrade step 2');
+}
+*/
+
+function upgrade_3() {
+  _debug("Creating new lti tables");
+
+  $table = table_by_key('lti_context');
+  $error1 = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+  `lti_context_key` varchar(255) NOT NULL,
+  `c_internal_id` varchar(255) NOT NULL,
+  `updated_on` datetime NOT NULL,
+  PRIMARY KEY (`lti_context_key`),
+  KEY `c_internal_id` (`c_internal_id`) ) ");
+
+  $table = table_by_key('lti_keys');
+  $error2 = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `oauth_consumer_key` char(255) NOT NULL,
+  `secret` char(255) DEFAULT NULL,
+  `name` char(255) DEFAULT NULL,
+  `context_id` char(255) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `oauth_consumer_key` (`oauth_consumer_key`) ) ");
+
+  $table = table_by_key('lti_resource');
+  $error3 = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+  `lti_resource_key` varchar(255) NOT NULL,
+  `internal_id` varchar(255) DEFAULT NULL,
+  `internal_type` varchar(255) NOT NULL,
+  `updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`lti_resource_key`),
+  KEY `destination2` (`internal_type`),
+  KEY `destination` (`internal_id`) ) ");
+  $table = table_by_key('lti_user');
+  $error4 = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+  `lti_user_key` varchar(255) NOT NULL DEFAULT '',
+  `lti_user_equ` varchar(255) NOT NULL,
+  `updated_on` datetime NOT NULL,
+  PRIMARY KEY (`lti_user_key`),
+  KEY `lti_user_equ` (`lti_user_equ`) ) ");
+
+$error_returned=true;
+  if (($error1 === false) or ($error2 === false) or ($error3 === false) or ($error4 === false)) {
+    $error_returned=false;
+   // echo "creating lti tables FAILED";
+  }
+
+
+
+        return "Creating lti tables - ok ? " . ( $error_returned ? 'true' : 'false' );
+
 }
