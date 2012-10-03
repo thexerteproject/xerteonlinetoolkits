@@ -33,7 +33,8 @@ if student then launches to project, if not setup display quick error message.
 Using Moodle
 ------------
 
-The easiest way to use this is to set up an external tool under the site administrator.  Give the tool a sensible name eg Xerte Online Toolkits.  The base URL should be the url to the toolkits with /LTI/ appended, enter the consumer key & shared key that you will enter into Xerte.  Under the custom Parameters box there is a tick box with just a help icon next to it (which when help is clicked it starts "Show tool type when creating tool instances tick this box as the lti extension provides a specific landing page than then redirects to where its been configured.
+The easiest way to use this is to set up an external tool under the site administrator.  Give the tool a sensible name eg Xerte Online Toolkits.  The base URL should be the url to the toolkits with /LTI/ appended, enter the consumer key & shared key that you will enter into Xerte.  Under the custom Parameters box there is a tick box with just a help icon next to it (which when help is clicked it starts "Show tool type when creating tool instances tick this box as the lti extension provides a specific landing page than then redirects to where its been configured.  On adding a new external tool to a page this allows you to select it from a drop down menu.
+
 
 
 
