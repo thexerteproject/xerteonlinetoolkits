@@ -128,8 +128,8 @@ END;
             <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
                 <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">
 END;
-           //     echo INDEX_LOG_OUT;
-                print <<<END
+  //     echo INDEX_LOG_OUT;
+  print <<<END
                 </a></p>
             </div>
             <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
@@ -171,8 +171,7 @@ $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->
 if ($mysqli->error) {
   try {
     throw new Exception("0MySQL error $mysqli->error <br> Query:<br> $query", $mysqli->errno);
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     echo "Error No: " . $e->getCode() . " - " . $e->getMessage() . "<br />";
     echo nl2br($e->getTraceAsString());
   }
@@ -205,62 +204,60 @@ if (!$lti->valid) {
 $returned = $lti->lookup_lti_user();
 
 
-  if ($returned === false) {
+if ($returned === false) {
 //user hasnt authenticated before need authentication
 
 
-
-
-      // post so check login
-      $returnedproc = login_processing(false);
-    list($success, $errors) = $returnedproc;
-    if ($success && empty($errors)) {
-      auth();
-      login_processing2();
-      //sucessfull authentication
-    } else {
-      html_headers();
-      login_prompt($errors, '../');
-      exit();
-    }
-
-
+  // post so check login
+  $returnedproc = login_processing(false);
+  list($success, $errors) = $returnedproc;
+  if ($success && empty($errors)) {
+    auth();
+    login_processing2();
+    //sucessfull authentication
   } else {
-    $time1 = strtotime($returned[1]);
-    $time2 = time();
-    $timediff = $time2 - $time1;
-    $needreauth = false;
-    // reauthenticate after 15 weeks ( 60 seconds * 60 mins = 1 hour * 24 hours = 1 day * 7 days = 1 week * 15 = 15 weeks )
-    if ($timediff > (60 * 60 * 24 * 7 * 15)) {
-      //if ($timediff > (60 * 60 * 1)) {
-      $needreauth = true;
-    }
-
-    //if needreauth then do authentication again else  $returned[0] has the user in it do appropriate things
-
-    if ($needreauth) {
-      auth(true);
-    }
-    require_once '../' . $xerte_toolkits_site->php_library_path . '/user_library.php';
-    $data = get_user_info();
-
-    login_processing2($data[0], $data[1], $data[2]);
-    update_user_logon_time();
+    html_headers();
+    login_prompt($errors, '../');
+    exit();
   }
+
+
+} else {
+  $time1 = strtotime($returned[1]);
+  $time2 = time();
+  $timediff = $time2 - $time1;
+  $needreauth = false;
+  // reauthenticate after 15 weeks ( 60 seconds * 60 mins = 1 hour * 24 hours = 1 day * 7 days = 1 week * 15 = 15 weeks )
+  if ($timediff > (60 * 60 * 24 * 7 * 15)) {
+    //if ($timediff > (60 * 60 * 1)) {
+    $needreauth = true;
+  }
+
+  //if needreauth then do authentication again else  $returned[0] has the user in it do appropriate things
+
+  if ($needreauth) {
+    auth(true);
+  }
+  require_once '../' . $xerte_toolkits_site->php_library_path . '/user_library.php';
+  $data = get_user_info();
+
+  login_processing2($data[0], $data[1], $data[2]);
+  update_user_logon_time();
+}
 
 // if xerteID set then store the associated data
 
-  if (isset($_REQUEST['xerteID'])) {
-    $retlookup = $_SESSION['postlookup'][$_REQUEST['xerteID']];
-    unset($_SESSION['postlookup']);
-    if ($retlookup > 0) {
-      //$info = $lti->getResourceKey(1);
-      $lti->add_lti_resource($retlookup, 'xerte');
-    }
+if (isset($_REQUEST['xerteID'])) {
+  $retlookup = $_SESSION['postlookup'][$_REQUEST['xerteID']];
+  unset($_SESSION['postlookup']);
+  if ($retlookup > 0) {
+    //$info = $lti->getResourceKey(1);
+    $lti->add_lti_resource($retlookup, 'xerte');
   }
+}
 
 
-  $returned = $lti->lookup_lti_resource();
+$returned = $lti->lookup_lti_resource();
 
 if (!$lti->isInstructor()) {
   //student
@@ -272,11 +269,11 @@ if (!$lti->isInstructor()) {
   }
   //display a redirect to appropriate page
 
-  $returned=$lti->lookup_lti_resource();
-  $template_id=$returned[0];
-  $loc=$xerte_toolkits_site->site_url . url_return("play", $template_id);
+  $returned = $lti->lookup_lti_resource();
+  $template_id = $returned[0];
+  $loc = $xerte_toolkits_site->site_url . url_return("play", $template_id);
 
-  header("location: ". $loc);
+  header("location: " . $loc);
   echo "Please click <a href=\"$loc\">here</a> to continue";
   exit();
 
@@ -285,22 +282,21 @@ if (!$lti->isInstructor()) {
   //staff
   if ($returned !== false) {
 
-      //link exists
-      //
-      // do same as student
+    //link exists
+    //
+    // do same as student
 
-      //display a redirect to appropriate page
+    //display a redirect to appropriate page
 
-        $returned=$lti->lookup_lti_resource();
-      $template_id=$returned[0];
-      $loc=$xerte_toolkits_site->site_url . url_return("play", $template_id);
+    $returned = $lti->lookup_lti_resource();
+    $template_id = $returned[0];
+    $loc = $xerte_toolkits_site->site_url . url_return("play", $template_id);
 
-      header("location: ". $loc);
-      echo "Please click <a href=\"$loc\">here</a> to continue";
-      exit();
+    header("location: " . $loc);
+    echo "Please click <a href=\"$loc\">here</a> to continue";
+    exit();
 
-    }
-  else {
+  } else {
 
 
     // display xerte object so a new one can be selected
@@ -334,30 +330,23 @@ if (!$lti->isInstructor()) {
 END;
 
 
-
-
-
-
-
-    require_once '../' .  $xerte_toolkits_site->php_library_path . "display_library.php";
+    require_once '../' . $xerte_toolkits_site->php_library_path . "display_library.php";
 
     echo "<form method=\"post\">";
 
     //echo "<div class=\"folder\" id=\"folder_workspace\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\">";
 
 
-
-   //echo "</div>\r\n<div id=\"folderchild_workspace\" class=\"workspace\">";
+    //echo "</div>\r\n<div id=\"folderchild_workspace\" class=\"workspace\">";
 
 
     $level = 1;
-    $item=1;
+    $item = 1;
 
 
+    $item = list_folder_contents_event_free(get_user_root_folder(), '../', $item, 'radio');
 
-    $item=list_folder_contents_event_free(get_user_root_folder(),'../',$item,'radio');
-
-print <<<END
+    print <<<END
 </div></div>
 			</div>
 			<div class="demoHeader"></div>
