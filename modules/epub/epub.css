@@ -1,0 +1,36 @@
+div#pagemenu{
+
+	float:left;
+	position:relative;
+	width:20%;
+	padding:6px;
+	background:#eee;
+
+}
+
+div#pageholder{
+
+	float:left;
+	position:relative;
+	width:70%;
+	padding:20px;
+	background:#eee;
+	margin-left:10px;
+
+}
+
+div#newpage{
+	margin:10px 0px;
+
+}
+
+input#submit{
+	padding:10px;
+	margin:10px;
+}
+
+a.edit{
+	cursor:pointer;
+	cursor:hand;
+	text-decoration:underline;
+}

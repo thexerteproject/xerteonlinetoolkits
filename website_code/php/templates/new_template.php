@@ -31,7 +31,7 @@ $new_template_id = $maximum_template_id + 1;
 
 $root_folder = get_user_root_folder();
 
-$row_template_type = db_query_one("select template_type_id, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
+$row_template_type = db_query_one("select template_type_id, template_name, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
 
 /*
  * create the new template record in the database
@@ -52,6 +52,7 @@ if($ok) {
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
         create_new_template($new_template_id, $_POST['tutorialid']);
         echo trim($new_template_id);
+		echo "," . $xerte_toolkits_site->learning_objects->{$row_template_type['template_framework'] . "_" . $row_template_type['template_name']}->editor_size;
     }else{
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create new template record for the database", $query_for_template_rights);
         echo("FAILED-" . $_SESSION['toolkits_most_recent_error']);

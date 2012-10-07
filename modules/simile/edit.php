@@ -12,6 +12,7 @@
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
 
     require_once("config.php");
+    require_once("website_code/php/url_library.php");
 
     _load_language_file("/modules/simile/edit.inc");
 
@@ -58,7 +59,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <body>
 	<div style="float:left; position:relative; clear:both; width:100%;">
-	<form method="POST" action="preview.php?template_id=<?PHP echo $row_edit['template_id']; ?>">
+	<form method="POST" action="<?PHP echo url_return("preview",$row_edit['template_id']); ?>">
 	<input type="hidden" name="save_path" value="<?PHP echo $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name']; ?>" />
 	<?PHP
 		
