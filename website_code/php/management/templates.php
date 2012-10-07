@@ -15,8 +15,6 @@ if(is_user_admin()){
 
     $query_response = mysql_query($query);
 
-    echo "<p style=\"margin:5px\">" . TEMPLATE_UPLOAD . "<br><form style=\"margin:5px\" method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"submit\" name=\"submitBtn\" value=\"" . TEMPLATE_UPLOAD_BUTTON . "\" onsubmit=\"javascript:iframe_check_initialise()\" /></form></p>";
-
     echo "<p style=\"margin:20px 0 0 5px\"><a onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</a></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
