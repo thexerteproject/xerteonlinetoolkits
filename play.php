@@ -223,10 +223,36 @@ if ($row_play['access_to_whom'] == "Private") {
       require_once $xerte_toolkits_site->php_library_path . "login_library.php";
   _load_language_file("/website_code/php/display_library.inc");
 
+  if (!isset($mysqli)) {
+    $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
+    if ($mysqli->error) {
+      try {
+        throw new Exception("0MySQL error $mysqli->error <br> Query:<br> $query", $mysqli->errno);
+      } catch (Exception $e) {
+        echo "Error No: " . $e->getCode() . " - " . $e->getMessage() . "<br />";
+        echo nl2br($e->getTraceAsString());
+      }
+    }
+  }
+  if (!isset($lti)) {
+    require_once('LTI/ims-lti/UoN_LTI.php');
+    if (strlen($xerte_toolkits_site->database_table_prefix) > 0) {
+      $lti = new UoN_LTI($mysqli, array('table_prefix' => $xerte_toolkits_site->database_table_prefix));
+    } else {
+      $lti = new UoN_LTI($mysqli);
+    }
+    $lti->init_lti();
+  }
 
+
+if($lti->valid) {
+  $success=true;
+  unset($errors);
+} else {
   $returnedproc = login_processing(false);
-
   list($success, $errors) = $returnedproc;
+}
+
   if ($success && empty($errors)) {
     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
