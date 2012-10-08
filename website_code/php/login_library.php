@@ -9,6 +9,136 @@
  * @package
  */
 
+_load_language_file("/index.inc");
+
+function html_headers() {
+  global $xerte_toolkits_site;
+
+  print <<<END
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+        <!--
+
+    University of Nottingham Xerte Online Toolkits
+
+        HTML to use to set up the template management page
+
+        Version 1.0
+
+    -->
+
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>$xerte_toolkits_site->site_title</title>
+
+        <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+        <link href="../website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
+END;
+  _include_javascript_file("../website_code/scripts/file_system.js");
+  _include_javascript_file("../website_code/scripts/screen_display.js");
+  _include_javascript_file("../website_code/scripts/ajax_management.js");
+  _include_javascript_file("../website_code/scripts/folders.js");
+  _include_javascript_file("../website_code/scripts/template_management.js");
+  _include_javascript_file("../website_code/scripts/import.js");
+  _include_javascript_file("../website_code/scripts/logout.js");
+
+  print <<<END
+  	<style type="text/css">
+	body
+	{
+	font-family:verdana;
+	font-size:12px;
+	}
+
+	#playitcontainer
+	{
+	wisdth:900px;
+	background-color:#e5eecc;
+	border:1px solid #98bf21;
+	margin:auto;
+	display:none;
+	}
+
+	#enlargecssprop
+	{
+	font-weight:bold;
+	font-size:14px;
+	color:#000000;
+	}
+
+	#demoDIV
+	{
+	margin-left:10px;
+	margin-top:3px;
+	background-color:#ffffff;
+	border:1px solid #c3c3c3;
+	height:280px;
+	width:430px;
+	overflow:visible;
+	}
+
+
+
+	#styleDIV
+	{
+	font-family:courier new;
+	margin-left:10px;
+
+
+	width:424px;
+	padding:3px;
+
+	}
+
+	div.demoHeader
+	{
+	font-size:14px;
+	margin-top:5px;
+	margin-left:5px;
+	margin-bottom:2px;
+	color:#617f10;
+	}
+
+	div.playitFooter
+	{
+	font-size:13px;
+	color:#617f10;
+	padding:10px;
+	}
+
+	#footer
+	{
+	margin:15px;
+	}
+
+
+	</style>
+        </head>
+        <body>
+
+        <div class="topbar">
+            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">
+END;
+  //     echo INDEX_LOG_OUT;
+  print <<<END
+                </a></p>
+            </div>
+            <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+        </div>
+
+        <!--
+
+            Main part of the page
+
+        -->
+               <div class="pagecontainer">
+    	<div style="display: block;" id="playitcontainer">
+END;
+}
+
+
+
 function login_prompt($messages, $extra_path = '') {
   ?>
 
@@ -21,7 +151,7 @@ function login_prompt($messages, $extra_path = '') {
                             </p>
                             <div>
 
-                                <form method="post" enctype="application/x-www-form-urlencoded" action="index.php"><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
+                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
                                 <script>   document.getElementById("login_box").focus();      </script>
                               <?php
                               if (!empty($messages)) {
@@ -157,7 +287,7 @@ function login_processing($exit = true) {
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
   if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    if ($authmech->needsLogin()) {
+    if ($authmech->needsLogin() && $exit) {
       login_form($errors, $xerte_toolkits_site);
       exit(0);
     }

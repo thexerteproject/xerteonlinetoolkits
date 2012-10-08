@@ -9,12 +9,19 @@
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
+
+
+
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/play.inc");
 
 require $xerte_toolkits_site->php_library_path . "display_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
+
+
+//error_reporting(E_ALL);
+//ini_set(display_errors,"ON");
 
 /**
  * 
@@ -211,18 +218,36 @@ if ($row_play['access_to_whom'] == "Private") {
      * Password protected - Check if there has been a post
      */
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+   // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+      require_once $xerte_toolkits_site->php_library_path . "login_library.php";
+  _load_language_file("/website_code/php/display_library.inc");
+
+
+  $returnedproc = login_processing(false);
+
+  list($success, $errors) = $returnedproc;
+  if ($success && empty($errors)) {
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+
+    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+    show_template($row_play);
+    //sucessfull authentication
+  } else {
+    html_headers();
+    login_prompt($errors);
+  }
         /*
          * Check the password
          */
 
-        $auth = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-        if ($auth->check() && isset($_POST['username']) && isset($_POST['password']) && $auth->login($_POST['username'], $_POST['password'])) {
+/*        $auth = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+        if ($auth->check() && isset($_POST['login']) && isset($_POST['password']) && $auth->login($_POST['login'], $_POST['password'])) {
 
             /*
              * Update uses and display the template
-             */
+             *-/
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
@@ -234,7 +259,7 @@ if ($row_play['access_to_whom'] == "Private") {
 
             /*
              * Login failure
-             */
+             *-/
 
             $buffer = $xerte_toolkits_site->form_string . $temp[1] . "<p>" . PLAY_LOGON_FAIL . ".</p></center></body></html>";
 
@@ -244,10 +269,10 @@ if ($row_play['access_to_whom'] == "Private") {
 
         /*
          * There has been no postage so echo the site variable to display the login string
-         */
+         *-/
 
-        echo $xerte_toolkits_site->form_string;
-    }
+        echo $xerte_toolkits_site->form_string;*/
+  //  }
 } else if (substr($row_play['access_to_whom'], 0, 5) == "Other") {
 
     /*

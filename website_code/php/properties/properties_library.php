@@ -83,7 +83,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id']))=="Public"){
+    if(template_access_settings(mysql_real_escape_string($_POST['template_id']))=="Public" || template_access_settings(mysql_real_escape_string($_POST['template_id']))=='Password'){
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
 
