@@ -4,9 +4,8 @@
  * User: cczsa1
  * Date: 25/07/12
  * Time: 09:59
- * Version 1.1 (2012-09-28)
+ *  * Version 1.2 (2012-10-04)
  * To change this template use File | Settings | File Templates.
- * Copyright The University Of Nottingham
  */
 
 require_once 'lti_util.php';
@@ -51,6 +50,11 @@ class UoN_LTI extends BLTI {
     // give up or try to retrieve the context from session
     if (!is_lti_request()) {
       if ($usesession === false) return;
+
+      if(session_status()==PHP_SESSION_NONE) {
+        session_start();
+      }
+
       if (strlen(session_id()) > 0) {
         if (isset($_SESSION['_lti_row'])) $row = $_SESSION['_lti_row'];
         if (isset($row)) $this->row = $row;
@@ -186,6 +190,7 @@ class UoN_LTI extends BLTI {
         continue;
       }
     }
+    $newinfo['oauth_consumer_secret']=$secret;
 
     $this->info = $newinfo;
     if ($usesession == true and strlen(session_id()) > 0) {
@@ -239,11 +244,12 @@ class UoN_LTI extends BLTI {
         $dataret[$lti_keys_id]=array('lti_keys_id'=>$lti_keys_id, 'lti_keys_key'=>$lti_keys_key, 'lti_keys_secret'=>$lti_keys_secret, 'lti_keys_name'=>$lti_keys_name, 'lti_keys_context_id'=>$lti_keys_context_id, 'lti_keys_deleted'=>$lti_keys_deleted, 'lti_keys_updated_on'=>$lti_keys_updated_on);
       }
 
-return $dataret;
+      return $dataret;
     }
 
 
   }
+
 
 
   /**
@@ -541,4 +547,21 @@ return $dataret;
   }
 
 
+  function get_consumer_secret() {
+    if (isset($this->info['oauth_consumer_secret'])) {
+      return $this->info['oauth_consumer_secret'];
+    }
+    return false;
+  }
+
+  function send_grade($grade) {
+
+    $oauth_consumer_key = $this->getConsumerKey();
+    $oauth_consumer_secret = $this->get_consumer_secret();
+    $endpoint = $this->getOutcomeService();
+    $sourcedid = $this->getOutcomeSourceDID();
+
+    $response = replaceResultRequest($grade, $sourcedid, $endpoint, $oauth_consumer_key, $oauth_consumer_secret);
+    return $response;
+  }
 }
