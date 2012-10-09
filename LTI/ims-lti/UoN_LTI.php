@@ -50,11 +50,6 @@ class UoN_LTI extends BLTI {
     // give up or try to retrieve the context from session
     if (!is_lti_request()) {
       if ($usesession === false) return;
-
-      if(session_status()==PHP_SESSION_NONE) {
-        session_start();
-      }
-
       if (strlen(session_id()) > 0) {
         if (isset($_SESSION['_lti_row'])) $row = $_SESSION['_lti_row'];
         if (isset($row)) $this->row = $row;
@@ -365,11 +360,11 @@ class UoN_LTI extends BLTI {
       if ($rows < 1) {
         return false;
       }
-      $stmt->bind_result($rogo_id, $updated);
+      $stmt->bind_result($users_id, $updated);
       $stmt->fetch();
       $stmt->close();
     }
-    return (array($rogo_id, $updated));
+    return (array($users_id, $updated));
   }
 
   /**
