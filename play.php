@@ -241,7 +241,11 @@ if ($row_play['access_to_whom'] == "Private") {
     } else {
       $lti = new UoN_LTI($mysqli);
     }
+    if(session_id()=='') {
+      session_start();
+    }
     $lti->init_lti();
+
   }
 
 

@@ -16,6 +16,10 @@ require_once '../' . $xerte_toolkits_site->php_library_path . "display_library.p
 require_once '../' . $xerte_toolkits_site->php_library_path . "url_library.php";
 
 
+//error_reporting(E_ALL);
+//ini_set(display_errors,"ON");
+
+
 $mysql_id = database_connect("LTI database connect success", "LTI database connect fail");
 
 
@@ -99,7 +103,7 @@ if ($returned === false) {
 
 
 } else {
-if(isset($_SESSION['toolkits_logon_username'])) {
+if(!isset($_SESSION['toolkits_logon_username'])) {
   $_SESSION['toolkits_logon_username']=$returned[0];
 }
   $time1 = strtotime($returned[1]);
