@@ -99,6 +99,9 @@ if ($returned === false) {
 
 
 } else {
+if(isset($_SESSION['toolkits_logon_username'])) {
+  $_SESSION['toolkits_logon_username']=$returned[0];
+}
   $time1 = strtotime($returned[1]);
   $time2 = time();
   $timediff = $time2 - $time1;
