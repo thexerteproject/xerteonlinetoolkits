@@ -58,6 +58,9 @@ if (strlen($xerte_toolkits_site->database_table_prefix) > 0) {
 
 require_once '../' . $xerte_toolkits_site->php_library_path . "login_library.php";
 
+if(session_id()=='') {
+  session_start();
+}
 $lti->init_lti();
 
 $errors = array();
@@ -129,6 +132,8 @@ if (isset($_REQUEST['xerteID'])) {
   }
 }
 
+
+// check resource status
 
 $returned = $lti->lookup_lti_resource();
 
