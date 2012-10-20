@@ -8,7 +8,7 @@
  */
 
 
-require_once(__DIR__ . "/../config.php");
+require_once(dirname(__FILE__) . "/../config.php");
 
 _load_language_file("/index.inc");
 

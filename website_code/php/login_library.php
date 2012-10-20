@@ -353,7 +353,7 @@ function login_processing2($firstname = false, $surname = false, $username = fal
   $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
   $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
 
-  require_once __DIR__ . '/user_library.php';
+  require_once dirname(__FILE__) . '/user_library.php';
 
   /*
   * Check to see if this is a users' first time on the site
