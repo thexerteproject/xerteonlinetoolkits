@@ -3,8 +3,8 @@ if (file_exists('../../../config.php')) {
 
   require_once('../../../config.php');
 
-} elseif (file_exists(__DIR__ . '/../../config.php')) {
-  require_once(__DIR__ . '/../../config.php');
+} elseif (file_exists(dirname(__FILE__) . '/../../config.php')) {
+  require_once(dirname(__FILE__) . '/../../config.php');
 } else {
 
   require_once('config.php');
