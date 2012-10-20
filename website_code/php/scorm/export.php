@@ -68,9 +68,10 @@ if(is_numeric($_GET['template_id'])){
         /*
          * Make the zip
          */
-        $zipfile = new zip_file("example_zipper_new" . time() . ".zip");
-        $zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 1, 'recurse' => 1, 'storepaths' => 1));
-
+        $zipfile = new zip_file($dir_path  . $row['zipname'] . ".zip");
+        $zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 0, 'overwrite'=> 1, 'recurse' => 1, 'storepaths' => 1));
+        array_push($delete_file_array,  $dir_path  . $row['zipname'] . ".zip");
+        _debug("Temp file: " . $dir_path  . $row['zipname'] . ".zip");
         /*
          * Copy the core files over from the parent folder
          */

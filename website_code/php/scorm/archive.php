@@ -291,11 +291,11 @@ class archive
 
 	function download_file($name)
 	{
-		if ($this->options['inmemory'] == 0)
-		{
-			$this->error[] = "Can only use download_file() if archive is in memory. Redirect to file otherwise, it is faster.";
-			return;
-		}
+		//if ($this->options['inmemory'] == 0)
+		//{
+		//	$this->error[] = "Can only use download_file() if archive is in memory. Redirect to file otherwise, it is faster.";
+		//	return;
+		//}
 		switch ($this->options['type'])
 		{
 		case "zip":
@@ -310,13 +310,29 @@ class archive
 		case "tar":
 			header("Content-Type: application/x-tar");
 		}
-		header("Content-Length: " . strlen($this->archive));
-	       header("Pragma: public");
+		header("Pragma: public");
 		header('Content-disposition: attachment; filename="' . $name . '.zip"');
 		//header("Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0");
 		//header("Expires: Sat, 01 Jan 2000 12:00:00 GMT");
 		header("Content-Transfer-Encoding: binary");
-		print($this->archive);
+        if ($this->options['inmemory'] == 1)
+		{
+		    header("Content-Length: " . strlen($this->archive));
+	        print($this->archive);
+        }
+        else
+        {
+            $pwd = @getcwd();
+			@chdir($this->options['basedir']);
+            $fp = @fopen($this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : ""), "rb");
+            header("Content-Length: " . @filesize($this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : "")));
+
+            _debug("Opening file " .  $this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : "") . ": " . $fp);
+            $res = fpassthru($fp);
+            _debug("Written " . $res . " bytes");
+            @fclose($fp);
+			@chdir($pwd);
+        }
 	}
 }
 
@@ -348,10 +364,10 @@ class tar_file extends archive
 					continue;
 				}
 			}
-			$block = pack("a100a8a8a8a12a12a8a1a100a6a2a32a32a8a8a155a12", $current['name2'], sprintf("%07o", 
-				$current['stat'][2]), sprintf("%07o", $current['stat'][4]), sprintf("%07o", $current['stat'][5]), 
-				sprintf("%011o", $current['type'] == 2 ? 0 : $current['stat'][7]), sprintf("%011o", $current['stat'][9]), 
-				"        ", $current['type'], $current['type'] == 2 ? @readlink($current['name']) : "", "ustar ", " ", 
+			$block = pack("a100a8a8a8a12a12a8a1a100a6a2a32a32a8a8a155a12", $current['name2'], sprintf("%07o",
+				$current['stat'][2]), sprintf("%07o", $current['stat'][4]), sprintf("%07o", $current['stat'][5]),
+				sprintf("%011o", $current['type'] == 2 ? 0 : $current['stat'][7]), sprintf("%011o", $current['stat'][9]),
+				"        ", $current['type'], $current['type'] == 2 ? @readlink($current['name']) : "", "ustar ", " ",
 				"Unknown", "Unknown", "", "", !empty ($path) ? $path : "", "");
 
 			$checksum = 0;
