@@ -152,23 +152,14 @@ function has_template_multiple_editors($template_id){
  */
 
 function has_rights_to_this_template($template_id, $user_id){
-
     global $xerte_toolkits_site;
+    $query = "select * from {$xerte_toolkits_site->database_table_prefix}templaterights where user_id=? AND template_id = ?";
+    $result = db_query_one($query, array($user_id, $template_id));
 
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id=\"" .  $user_id  . "\" and template_id=\"" . $template_id . "\"";
-
-    $query_response = mysql_query($query);	
-
-    if(mysql_num_rows($query_response)!=0){
-
+    if(!empty($result)) {
         return true;
-
-    }else{
-
-        return false;
-
     }
-
+    return false;
 }
 
 /**
