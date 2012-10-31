@@ -40,7 +40,7 @@
 
 	var googleFeedURL = document.location.protocol + "//ajax.googleapis.com/ajax/services/feed/load";
 
-	var errorTimer = setTimeout(function() { alert("error");
+	var errorTimer = setTimeout(function() {
 		$("#loadingSpinner").hide();
 		$resultsTable
 			.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
@@ -107,9 +107,9 @@
 		font-weight:	bold;
 	}
 
-	#loadingSpinner img {
-		margin-right: 20px;
+	#loadingSpinner div {
 		vertical-align: middle;
+		display: inline;
 	}
 
 </style>
@@ -120,7 +120,7 @@
 		<div class="panel inline">
 			<div id="headerHolder"></div>
 			<div id="resultsHolder"></div>
-			<div id="loadingSpinner"><img src="media/spinner.gif" alt="Fetching results" /><p>Fetching results...</p></div>
+			<div id="loadingSpinner"><div class="spinner"></div><p>Fetching results...</p></div>
 		</div>
 	</div>
 
