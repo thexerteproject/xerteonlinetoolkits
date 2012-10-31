@@ -201,6 +201,8 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -44px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev {	background-position: -88px 0px; }
 
+.spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
+
 #x_footerBlock .ui-button-icon-only .ui-icon, #x_footerBlock .ui-button-text-icon-primary .ui-icon, #x_footerBlock .ui-button-text-icon-secondary .ui-icon, #x_footerBlock .ui-button-text-icons .ui-icon, #x_footerBlock .ui-button-icons-only .ui-icon {
 	position:	absolute;
 	top:		0;
