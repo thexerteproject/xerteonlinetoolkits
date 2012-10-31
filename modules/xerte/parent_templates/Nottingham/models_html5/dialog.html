@@ -1,0 +1,225 @@
+<script type="text/javascript">
+	
+	// ** TO DO - ADD NEXT & SUBMIT AS LANGUAGE OPTIONS IN WIZARD **
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var dialog = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			// reset questions
+			$("#pageContents").data("currentQ", 0);
+			$("#submitBtn")
+				.button({label:	"Submit"}) // ****
+				.data({
+					"attempt":	0,
+					"state":	0
+				})
+				.show();
+		
+			$("#pageContents img").addClass("hidden");
+			$("#pageContents input")
+				.prop("readonly", false)
+				.val("");
+			$("#pageContents .question:first input").focus();
+			$("#pageContents .question:not(:first)").hide();
+			$("#feedback").html("");
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+		}
+	}
+	
+	$("#textHolder").html(x_currentPageXML.getAttribute("text"));
+	
+	// if language attributes aren't in xml will have to use english fall back
+	var tryTxt = x_currentPageXML.getAttribute("tryTxt");
+	if (tryTxt == undefined) {
+		tryTxt = "Try again.";
+	}
+	var correctTxt = x_currentPageXML.getAttribute("correctTxt");
+	if (correctTxt == undefined) {
+		correctTxt = "The correct answer is shown.";
+	}
+	var moveOnTxt = x_currentPageXML.getAttribute("moveOnTxt");
+	if (moveOnTxt == undefined) {
+		moveOnTxt = "Press enter to move on.";
+	}
+	$("#pageContents").data({
+		"currentQ"	:0,
+		"tryTxt"	:tryTxt,
+		"correctTxt":correctTxt,
+		"moveOnTxt"	:moveOnTxt
+	});
+	
+	var $question = $("#pageContents .question:first");
+	$question.find("img")
+		.attr({
+			"src": x_templateLocation + "common_html5/tick.png",
+			"alt":	x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick")
+		})
+		.addClass("hidden");
+		
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisQ;
+			if (i != 0) {
+				$thisQ = $question.clone().appendTo($question.parent());
+				$thisQ.hide();
+			} else {
+				$thisQ = $question;
+			}
+			
+			$thisQ.find("div")
+				.html(x_addLineBreaks(this.getAttribute("question")));
+		});
+	
+	$("#submitBtn")
+		.button({
+			label:	"Submit" // ****
+			})
+		.data({
+			"attempt":	0,
+			"state":	0
+			})
+		.click(function() {
+			var $this = $(this);
+			var $pageContents = $("#pageContents");
+			var $feedback = $("#feedback");
+			if ($this.data("state") == 0) { // mark answer
+				var qNo = $pageContents.data("currentQ");
+				var $thisInput = $("#pageContents .question:eq(" + qNo + ") input");
+				if ($thisInput.val().toLowerCase() == $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase()) { // correct
+					$thisInput.prop("readonly", true);
+					$thisInput.parent().find("img").removeClass("hidden");
+					$feedback.html("");
+					$this.focus();
+					if (qNo + 1 != $(x_currentPageXML).children().length) {
+						$this
+							.button({label:	"Next"}) // ****
+							.data("state", 1);
+					} else {
+						$this.hide();
+					}
+				} else { // incorrect
+					$this.data("attempt", $this.data("attempt") + 1);
+					var currentAttempt = $this.data("attempt");
+					var allowedAttempts = x_currentPageXML.getAttribute("attempts");
+					if (allowedAttempts == undefined) {
+						allowedAttempts = 0;
+					}
+					if (currentAttempt == allowedAttempts) { // show hint
+						$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
+						$thisInput.focus();
+					} else if (currentAttempt > allowedAttempts) { // show correct answer
+						$feedback.html($pageContents.data("correctTxt"));
+						$this.focus();
+						$thisInput
+							.val($(x_currentPageXML).children()[qNo].getAttribute("answer"))
+							.prop("readonly", true);
+						if (qNo + 1 != $(x_currentPageXML).children().length) {
+							$this
+								.button({label:	"Next"}) // ****
+								.data("state", 1);
+							$feedback.html($feedback.html() + "</br>" + $pageContents.data("moveOnTxt"));
+						} else {
+							$this.hide();
+						}
+					} else { // another attempt allowed
+						$feedback.html($pageContents.data("tryTxt"));
+						$thisInput.focus();
+					}
+				}
+			} else { // move to next question
+				$feedback.html("");
+				$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+				$this
+					.data({
+						"attempt":	0,
+						"state":	0
+						})
+					.button({label:	"Submit"});
+				var qNo = $pageContents.data("currentQ");
+				$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
+				$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+				$pageContents.data("currentQ", qNo + 1);
+			}
+		});
+	
+	$("#pageContents input").keypress(function(e) {
+        if ((e.keyCode ? e.keyCode : e.which) == 13) { // return key
+			$("#submitBtn").trigger("click");
+		}
+    });
+	
+	if (x_currentPage != 0) {
+		dialog.sizeChanged();
+	}
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#pageContents .question {
+		padding-bottom:	10px;
+		width:	100%;
+	}
+	
+	#pageContents .question div {
+		margin-top:	2px;
+		width:		50%;
+		display:	inline-block;
+	}
+	
+	#pageContents .question input {
+		width:	40%;
+		float:	right;
+	}
+	
+	#pageContents .question img {
+		float:			right;
+		padding-left:	5px;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen small">
+		
+		<div id="textHolder" class="left"></div>
+		
+		<div id="infoHolder" class="right">
+			<div class="panel">
+				<div id="questionGroup">
+					<div class="question">
+						<div></div>
+						<img></img>
+						<input/>
+					</div>
+					
+				</div>
+				<button id="submitBtn"></button>
+				<p id="feedback"></p>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>

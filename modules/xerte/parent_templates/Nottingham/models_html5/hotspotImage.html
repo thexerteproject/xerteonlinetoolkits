@@ -1,0 +1,216 @@
+<script type="text/javascript">
+	
+	// ** DOESN'T WORK ON MOBILES **
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var hotspotImage = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$(".selected").removeClass("selected");
+			$("#infoHolder").html("");
+			$("#nextHS").button("enable");
+			$("#prevHS").button("disable");
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.imgLoaded = function() {
+			// position text correctly
+			var padding = parseInt($("#image").parent().css("padding-left"));
+			var marginW = $img.width() + (padding * 4);
+			if (x_currentPageXML.getAttribute("align") == "Left") {
+				$("#textContents").css("margin-right", marginW + "px");
+			} else {
+				$("#textContents").css("margin-left", marginW + "px");
+			}
+			
+			// create hotspots - taking scale of image into account
+			var scale = $img.width() / $img.data("origSize")[0];
+			
+			$(x_currentPageXML).children()
+				.each(function(){
+					var _this = this;
+					
+					var $hotspot = $('<a class="hotspot" href="#" />');
+					$hotspot
+						.attr("title", this.getAttribute("name"))
+						.css({
+							width	:Math.round(this.getAttribute("w") * scale) + "px",
+							height	:Math.round(this.getAttribute("h") * scale) + "px",
+							left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
+							top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
+							})
+						.click(function() {
+							$("#infoHolder").html("<h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+							$(".selected").removeClass("selected");
+							var $this = $(this);
+							$this.addClass("selected");
+							if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
+								var nextHS = $("#nextHS");
+								var prevHS = $("#prevHS");
+								if ($this.index() - 1 == $("#pageContents .hotspot").length) {
+									nextHS.button("disable");
+									prevHS.button("enable");
+								} else if ($this.index() == 2) {
+									nextHS.button("enable");
+									prevHS.button("disable");
+								} else {
+									nextHS.button("enable");
+									prevHS.button("enable");
+								}
+							}
+							});
+					
+					$imageHolder.append($hotspot);
+				});
+			
+			var highlightColour = "yellow";
+			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+			}
+			$("#pageContents .hotspot").css("border-color", highlightColour);
+			if (x_currentPageXML.getAttribute("highlight") == "true") {
+				$("#pageContents .hotspot").addClass("highlight");
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+		
+		this.selectHs = function(type) {
+			var currentSelection = $("#pageContents .selected");
+			var i = currentSelection.index();
+			if (i != -1) {
+				i -= 2;
+			}
+			currentSelection.removeClass("selected");
+			
+			if (type == "next") {
+				$("#pageContents .hotspot:eq(" + (i + 1)  + ")").trigger("click");
+			} else {
+				$("#pageContents .hotspot:eq(" + (i - 1) + ")").trigger("click");
+			}
+		}
+	}
+	
+	var $imageHolder = $("#imageHolder");
+	if (x_currentPageXML.getAttribute("align") == "Left") {
+		$("#pageContents").prepend($("#textContents"));
+		$imageHolder.css("right", "10px");
+	}
+	$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+	
+	var imgMaxW = 400,	imgMaxH = 450;
+	if (x_browserInfo.mobile == true) {
+		imgMaxW = 250; // mobile
+		imgMaxH = 250;
+	}
+	var $img = $("#image");
+	$img
+		.attr({
+			"src"	:eval(x_currentPageXML.getAttribute("url")),
+			"alt"	:x_currentPageXML.getAttribute("tip")
+		});
+	var padding = parseInt($imageHolder.css("padding-left"));
+	
+	if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
+		// if language attributes aren't in xml will have to use english fall back
+		var nextTxt = x_currentPageXML.getAttribute("nextTxt");
+		if (nextTxt == undefined) {
+			nextTxt = "Next";
+		}
+		var priorTxt = x_currentPageXML.getAttribute("priorTxt");
+		if (priorTxt == undefined) {
+			priorTxt = "Previous";
+		}
+		
+		$("#nextHS")
+			.button({
+				icons: {
+					primary: "ui-icon-carat-1-e"
+				},
+				label	:nextTxt,
+				text	:false
+			})
+			.click(function() {
+				hotspotImage.selectHs("next");
+			});
+		
+		$("#prevHS")
+			.button({
+				icons: {
+					primary: "ui-icon-carat-1-w"
+				},
+				label		:priorTxt,
+				text		:false,
+				disabled	:true
+			})
+			.click(function() {
+				hotspotImage.selectHs("prev");
+			});
+	} else { // click explore
+		$("#pageContents button").remove();
+	}
+	
+</script>
+
+<style>
+	
+	#imageHolder {
+		position: absolute;
+		margin:	0;
+	}
+	
+	#textContents {
+		position: 	absolute;
+		top:		0;
+		left:		0;
+	}
+	
+	#textContents div {
+		padding:	10px;
+	}
+	
+	#pageContents .hotspot {
+		background:	url("../common_html5/transparent.png");
+		position:	absolute;
+		cursor:		pointer;
+	}
+	
+	#pageContents .highlight {
+		border:		1px solid;
+	}
+	
+	#pageContents .selected {
+		border:		2px solid;
+	}
+	
+	#btns {
+		padding:	3px;
+		position:	absolute;
+		bottom:		10px;
+		right:		10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="imageHolder" class="panel inline">
+		<img id="image" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); hotspotImage.imgLoaded();" />
+		<div id="btns">
+			<button id="prevHS"></button>
+			<button id="nextHS"></button>
+		</div>
+	</div>
+	
+	<div id="textContents">
+		<div id="mainText"></div>
+		<div id="infoHolder"></div>
+	</div>
+	
+</div>

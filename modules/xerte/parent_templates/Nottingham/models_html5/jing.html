@@ -1,0 +1,34 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var jing = new function() {		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			$("#pageSWF").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3);
+		}
+	}
+	
+	var swfHeight = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
+	if (x_currentPage == 0) {
+		swfHeight = 500;
+	}
+	swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", "100%", swfHeight, "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
+	
+	$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+	$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+	
+	// call this function in every model once everything's loaded
+	x_pageLoaded();
+	
+</script>
+
+<div id="pageSWF">
+	<h3></h3>
+	<p><a href="http://www.adobe.com/go/getflashplayer"><img id="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p>
+</div>

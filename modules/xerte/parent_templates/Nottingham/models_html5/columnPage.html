@@ -1,0 +1,123 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var columnPage = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $columnHolder = $("#columnHolder");
+				$columnHolder.height($x_pageHolder.height() - $columnHolder.position().top - parseInt($x_pageDiv.css("padding-top")) * 2);
+			}
+		}
+	}
+	
+	if (x_currentPageXML.getAttribute("header") != undefined && x_currentPageXML.getAttribute("header") != "") {
+		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("header")));
+	} else {
+		$("#textHolder").remove();
+	}
+	
+	var $column = $("#columnHolder .column");
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisColumn;
+			if (i != 0) {
+				$thisColumn = $column.clone().appendTo($column.parent());
+			} else {
+				$thisColumn = $column;
+			}
+			
+			var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+			if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
+				var newString = '<div class="paneImg"><img src="' + eval(this.getAttribute("url")) + '" ';
+				if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+					newString += 'alt="' + this.getAttribute("tip") + '" ';
+				}
+				newString += ' /></div>';
+				if (this.getAttribute("align") == "Top") {
+					infoString += newString;
+				} else {
+					infoString = newString + infoString;
+				}
+			}
+			
+			$thisColumn.html(infoString);
+		});
+	
+	if (x_browserInfo.mobile == false) {
+		var numColumns = $(x_currentPageXML).children().length;
+		var spacerWidth = (numColumns - 1) * 2; // 2% gap between columns
+		var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
+		var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+		$("#columnHolder .column")
+			.addClass("x_floatLeft")
+			.css({
+				width			:columnWidth + "%",
+				"padding-left"	:"2%"
+			});
+		$("#columnHolder .column:first").css("padding-left", edgeWidth + "%");
+		$("#columnHolder .column:last").css("padding-right", edgeWidth + "%");
+	} else {
+		$("#columnHolder").addClass("mobile");
+	}
+	
+	if (x_currentPage != 0) {
+		
+		columnPage.sizeChanged();
+	}
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+	#textHolder {
+		padding-bottom:	10px;
+	}
+	
+	#pageContents .column {
+		padding:	0px;
+		height:		100%;
+		overflow:	auto;
+		overflow-x: hidden;
+	}
+	
+	#pageContents .paneImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#pageContents .paneImg img {
+		max-width:	100%;
+		max-height:	100%;
+	}
+	
+	#columnHolder.mobile:first-child {
+		margin-top:	0px;
+		border-top:	0px;
+	}
+	
+	#columnHolder.mobile .column {
+		margin-top:	10px;
+		border-top:	1px solid gray;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="textHolder">
+	</div>
+	
+	<div id="columnHolder">
+		<div class="column"></div>
+	</div>
+	
+</div>

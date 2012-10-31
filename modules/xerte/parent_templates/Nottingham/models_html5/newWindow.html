@@ -1,0 +1,71 @@
+<script type="text/javascript">
+	
+	// ** html optional attribute to be added **
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var newWindow = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+	}
+	
+	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
+	
+	var imgMaxW = 500; // desktop / tablet
+	var imgMaxH = 400;
+	if (x_browserInfo.mobile == true) {
+		imgMaxW = 250; // mobile
+		imgMaxH = 250;
+	}
+	
+	$("#pageImg").attr({
+		"src":	eval(x_currentPageXML.getAttribute("previewImage")),
+		"alt":	x_currentPageXML.getAttribute("tip")
+		});
+	
+	$("#pageContents .newWindowLink").bind("click", function() {
+		if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
+			var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+			popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
+			popupWindow.focus();
+		} else {
+			var src = x_currentPageXML.getAttribute("url");
+			if (x_currentPageXML.getAttribute("html") != "" && x_currentPageXML.getAttribute("url") != undefined) {
+				// ** need to display html info instead of url ** is url the correct attribute name? **
+			}
+			window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+		}
+	});
+	
+</script>
+
+<style type="text/css">
+	
+	#pageImg {
+		cursor:	pointer;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="mobileAlign">
+		<div id="imgHolder" class="panel inline x_floatRight">
+			<a class="newWindowLink">
+				<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH); x_pageLoaded();" />
+			</a>
+		</div>
+	</div>
+	
+	<div id="textHolder">
+	
+	</div>
+	
+</div>

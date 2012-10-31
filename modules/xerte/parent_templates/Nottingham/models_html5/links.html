@@ -1,0 +1,99 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var links = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(firstLoad) {
+			var numCols = x_currentPageXML.getAttribute("cols");
+			if (numCols < 1) {
+				numCols = 3;
+			}
+			var offset = 0;
+			if ($x_pageHolder.get(0).scrollHeight > $x_pageHolder.height() && x_browserInfo.mobile != true) {
+				offset += 25;
+			}
+			var colWidth;
+			if (x_browserInfo.mobile == false) {
+				// ** do this with % ? **
+				colWidth = Math.round(($x_pageHolder.width() - 40 - offset - (numCols * 22) - ((numCols - 1) * 20)) / numCols);
+				//$x_pageHolder width - $x_pageHolder padding - scrollBar width - padding in whiteBorder divs - margin between whiteBorder divs / number of columns
+			} else {
+				colWidth = $x_pageHolder.width() - 40 - 22;
+			}
+			$(".linkBlock").width(colWidth);
+			
+			if (firstLoad == true) {
+				// call this function in every model once everything's loaded
+				x_pageLoaded();
+			}
+		}
+	}
+	
+	var $linkHolder = $("#linkHolder");
+	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+	var numCols = x_currentPageXML.getAttribute("cols");
+	if (numCols < 1) {
+		numCols = 3;
+	}
+	
+	var $linkBlock = $(".linkBlock:first");
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisLink;
+			if (i != 0) {
+				$thisLink = $linkBlock.clone().appendTo($linkHolder);
+			} else {
+				$thisLink = $linkHolder;
+			}
+			$thisLink.find("h3").html(this.getAttribute("name"));
+			$thisLink.find("p").html(this.getAttribute("text"));
+			$thisLink.find("a")
+				.html(this.getAttribute("url"))
+				.attr({
+					"href"		:this.getAttribute("url"),
+					"target"	:"_blank"
+					});
+			if (i % numCols == 0) {
+				$thisLink.addClass("clear");
+			}
+		});
+	
+	links.sizeChanged(true); // set initial linkBlock width
+	
+</script>
+
+<style type="text/css">
+	
+	#linkHolder {
+		width:		100%;
+		margin-top:	20px;
+	}
+	
+	.panel.linkBlock {
+		margin:		0 10px 20px;
+		float:		left;
+	}
+	
+	.clear {
+		clear:	both;
+	}
+	
+</style>
+
+<div id="textHolder">
+	
+</div>
+
+<div id="linkHolder">
+	<div class="panel linkBlock">
+		<h3></h3>
+		<p></p>
+		<a></a>
+	</div>
+</div>

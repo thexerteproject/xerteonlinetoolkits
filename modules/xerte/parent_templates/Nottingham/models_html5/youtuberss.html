@@ -1,0 +1,116 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var youtuberss = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+
+		}
+
+		this.listVideos = function(data) {
+			clearTimeout(errorTimer);
+			$("#loadingSpinner").hide();
+			var tableString = "";
+			if (data.data.totalItems == 0) {
+				tableString = '<tr><td>No results returned!!</td></tr>';  // ** Need to take this from the language file
+			} else {
+				$.each(data.data.items, function (index, item) {
+					tableString += '<tr><td><img src="' + item.thumbnail.sqDefault + '" width="60" /></td><td><a target="_blank" href="' + item.player.default + '">' + item.title + '</a></td></tr>';
+				});
+			}
+			$resultsTable
+				.html(tableString)
+				.find("tr:even").addClass("shaded");
+		}
+	}
+
+	var $pageContents = $("#pageContents");
+	var $textHolder = $("#textHolder");
+	var $panel = $("#pageContents .panel");
+	var $resultsTable = $pageContents.find("#resultsTable");
+
+	var searchTerm = x_currentPageXML.getAttribute("url");
+	var searchCount = x_currentPageXML.getAttribute("results");
+
+	var youtubeURL = "http://gdata.youtube.com/feeds/api/videos";
+
+	var errorTimer = setTimeout(function() {
+		$("#loadingSpinner").hide();
+		$resultsTable
+			.html('<tr><td>There was an error loading the results!!</td></tr>') // ** Need to take this from the language file
+			.find("tr:even").addClass("shaded");
+    }, 8000);
+
+	$.ajax({
+		beforeSend: function() {
+		     $('#loadingSpinner').show();
+  		},
+		url: youtubeURL,
+		data: {
+				"vq" : searchTerm,
+				"max-results" : searchCount,
+				"v" : 2,
+				"alt" : "jsonc"
+			},
+		dataType: 'jsonp',
+		jsonpCallback: "youtuberss.listVideos",
+		cache:false,
+		timeout: 5000
+	});
+
+	$panel.addClass("x_floatRight");
+	$panel.addClass("width60");
+
+	$pageContents.find("#headerHolder").html("<p>" + "Youtube results for term '" + searchTerm + "'</p>"); // ** Need an entry in the language file if we keep this??
+	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+	// call this function in every model once everything's loaded
+	x_pageLoaded();
+
+</script>
+
+<style type="text/css">
+
+	#resultsTable {
+		width:	100%;
+	}
+
+	#headerHolder {
+		text-align:		center;
+		font-weight:	bold;
+	}
+
+	#loadingSpinner {
+		display:	none;
+		text-align:	center;
+		font-weight:	bold;
+	}
+
+	#loadingSpinner img {
+		margin-right: 20px;
+		vertical-align: middle;
+	}
+
+</style>
+
+<div id="pageContents">
+
+	<div id="youtuberssHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
+		<div class="panel inline">
+			<div id="headerHolder"></div>
+			<table id="resultsTable"></table>
+			<div id="loadingSpinner"><img src="media/spinner.gif" alt="Fetching results" />Fetching results...</div>
+		</div>
+	</div>
+
+	<div id="textHolder">
+
+	</div>
+
+</div>

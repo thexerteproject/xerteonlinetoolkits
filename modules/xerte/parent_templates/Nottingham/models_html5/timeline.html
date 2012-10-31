@@ -1,0 +1,315 @@
+<script type="text/javascript">
+
+	// ** NOT FINISHED **
+	// how to size labels / targets correctly? - get size of largest label and match other to it - what if on small device?
+	// overlap labels to use less space
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var timeline = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+	}
+	
+	$("#pageContents").data("selectedLabel", false);
+	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+	
+	// checkBtnWidth attribute not used as button will be sized automatically
+	// if language attributes aren't in xml will have to use english fall back
+	var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
+	if (checkBtnTxt == undefined) {
+		checkBtnTxt = "Check Answers";
+	}
+	var checkBtnTip = x_currentPageXML.getAttribute("checkBtnTip");
+	if (checkBtnTip == undefined) {
+		checkBtnTip = "Check Answers";
+	}
+	
+	$("#button")
+		.button({
+			label:			checkBtnTxt,
+			description:	checkBtnTip
+		})
+		.click(function() {
+			$(".target img").addClass("hidden");
+			$("#answerHolder").children()
+				.each(function() {
+					var $thisTarget = $(this).find(".target");
+					var $img = $thisTarget.find("img");
+					var $thisLabel = $thisTarget.data("label");
+					if ($thisLabel != false) {
+						if ($thisLabel.data("correct") == $thisTarget.data("correct")) {
+							$img
+								.attr({
+									"src":	x_templateLocation + "common_html5/tick.png",
+									"alt":	x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick")
+								})
+								.removeClass("hidden");
+						} else {
+							$img
+								.attr({
+									"src":	x_templateLocation + "common_html5/cross.png",
+									"alt":	x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross")
+								})
+								.removeClass("hidden");
+						}
+					}
+				});
+			
+			$("#feedback").fadeIn();
+		});
+	
+	$("#feedback")
+		.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+		.hide();
+	
+	var $labelHolder = $("#labelHolder");
+	var $answerHolder = $("#answerHolder");
+	var $label = $labelHolder.find(".label:first");
+	var $answer = $answerHolder.find(".answer:first");
+	
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisLabel, $thisAnswer;
+			if (i != 0) {
+				$thisLabel = $label.clone().appendTo($labelHolder);
+				$thisAnswer = $answer.clone().appendTo($answerHolder);
+			} else {
+				$thisLabel = $label;
+				$thisAnswer = $answer;
+			}
+			
+			$thisLabel
+				.data({
+					"correct"	:i,
+					"target"	:false
+					})
+				.html("<p>" + this.getAttribute("text") + "</p>") // need p tags in there for screen readers (otherwise gets read in 
+				.draggable({
+					helper:		"original",
+					stack:		".label",
+					revert:		"invalid"
+					})
+				.bind("dragstart", function(e) {
+					e.stopPropagation();
+					$(".answer .target img").addClass("hidden");
+					if ($("#pageContents").data("selectedLabel") != false) {
+						$("#pageContents").data("selectedLabel").removeClass("selected");
+					}
+					$("#pageContents").data("selectedLabel", $(this));
+					$(this).addClass("selected");
+					})
+				.bind("dragstop", function() {
+					// ** add something here to make it draggable to whole answer area rather than just target? **
+					})
+				.bind("keypress", function(e) {
+					if (e.charCode == 32) { // space bar to select label
+						$(this).trigger("dragstart");
+					}
+					});
+			
+			$thisAnswer
+				.find(".target")
+					.attr({
+						"tabindex"	:i + 1 + $(x_currentPageXML).children().length,
+						"title"		:x_getLangInfo(x_languageData.find("targetArea")[0], "name", "Target") + " " + (i + 1)
+						})
+					.data({
+						"correct"	:i,
+						"label"		:false
+						})
+					.droppable({
+						accept:	".label",
+						})
+					.bind("drop", function(event, ui) {
+						var $this = $(this);
+						var $oldLabel = $this.data("label");
+						if ($oldLabel != false) { // if label already on target, move it away
+							$("#labelHolder").prepend($oldLabel);
+							$oldLabel
+								.removeAttr("style")
+								.data("target", false);
+						}
+						
+						var $thisLabel = $("#pageContents").data("selectedLabel");
+						var $oldTarget = $thisLabel.data("target"); // if label has come from another target, clear old target data
+						if ($oldTarget != false) {
+							$oldTarget.data("label", false);
+						}
+						
+						$this
+							.data("label", $thisLabel)
+							.parent() // .answer
+								.removeClass("selected")
+								.find(".labelTarget").prepend($thisLabel);
+						
+						$thisLabel
+							.removeAttr("style")
+							.removeClass("selected")
+							.data("target", $this);
+						
+						$("#pageContents").data("selectedLabel", false);
+						
+						$(".label, .target").each(function(i) { // sorts tab order
+							$(this).attr("tabindex", i + 1);
+						})
+						})
+					.focusin(function() {
+						if ($("#pageContents").data("selectedLabel") != false && document.activeElement == this) {
+							$(this).parent().addClass("selected");
+						}
+						})
+					.focusout(function() {
+						$(this).parent().removeClass("selected");
+						})
+					.keypress(function(e) {
+						var $pageContents = $("#pageContents");
+						if (e.charCode == 32 && $pageContents.data("selectedLabel") != false) {
+							$(this).trigger("drop", $($pageContents.data("selectedLabel")));
+						}
+						})
+					.find("p")
+						.html(this.getAttribute("name"))
+						.keypress(function(e) {
+							var $pageContents = $("#pageContents");
+							if (e.charCode == 32 && $pageContents.data("selectedLabel") != false) {
+								$(this).parent().trigger("drop", $($pageContents.data("selectedLabel")));
+							}
+						})
+			$thisAnswer
+				.find(".labelTarget")
+					.keypress(function(e) {
+						var $pageContents = $("#pageContents");
+						if (e.charCode == 32 && $pageContents.data("selectedLabel") != false) {
+							$(this).parent().find(".target").trigger("drop", $($pageContents.data("selectedLabel")));
+						}
+					})
+		});
+	
+	// randomise order of labels
+	var labels = $labelHolder.children(".label");
+	labels.sort(function() {
+		return (Math.round(Math.random()) - 0.5);
+	});
+	$labelHolder.remove(".label");
+	for (var i=0; i<labels.length; i++) {
+		$labelHolder.append(labels[i]);
+		
+		var num = i;
+		var letter = "";
+		while(num >= 0) {
+			letter = String.fromCharCode(num % 26 + 97) + letter;
+			num = Math.floor(i / 26) - 1;
+		}	
+		$(labels[i]).attr({
+			"tabindex"	:i + 1,
+			"title"		:x_getLangInfo(x_languageData.find("draggableItem")[0], "name", "Label") + " " + letter.toUpperCase()
+		});
+	}
+	
+	if (x_currentPageXML.getAttribute("interactivity") == "Matching Pairs") {
+		$("#arrowHolder").remove();
+	} else {
+		// ** draw arrows between targets **
+	}
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+
+	#dragDropHolder {
+		padding:	10px;
+	}
+	
+	#labelHolder {
+		width:		100%;
+		text-align:	center;
+		height:		120px;
+	}
+	
+	.panel.label {
+		width:		100px;
+		height:		70px;
+		margin:		0;
+	}
+	
+	.label.selected {
+		border:	2px solid yellow;
+	}
+	
+	#answerHolder {
+		width:		100%;
+		text-align:	center;
+	}
+	
+	.answer {
+		width:		120px;
+		padding:	10px;
+		border:		1px solid gray;
+		background:	white;
+		display:	inline-block;
+	}
+	
+	.answer.selected {
+		border:	2px solid green;
+	}
+	
+	.answer .target {
+		width:	100%;
+	}
+	
+	.answer .labelTarget {
+		height:	100px;
+	}
+	
+	.answer .label {
+		width:	100px;
+	}
+	
+	#feedback {
+		margin-top:	10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="textHolder">
+		
+	</div>
+	
+	<div id="dragDropHolder">
+		
+		<div id="labelHolder">
+			<div class="label panel inline" href=""></div>
+		</div>
+		
+		<div id="answerHolder">
+			<div class="answer">
+				<div class="labelTarget"></div>
+				<div class="target">
+					<p></p>
+					<img></img>
+				</div>
+			</div>
+		</div>
+		
+		<div id="arrowHolder">
+			
+		</div>
+		
+	</div>
+	
+	<button id="button"></button>
+	<div id="feedback"></div>
+	
+</div>

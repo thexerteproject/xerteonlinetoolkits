@@ -1,0 +1,271 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var tabNavExtra = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $infoHolder = $("#pageContents .infoHolder");
+				$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10);
+				$infoHolder.tabs("resize");
+				var $paneHolder = $("#pageContents .paneHolder");
+				$paneHolder.height($infoHolder.height()-$("#pageContents .tabList:visible").height() - parseInt($paneHolder.css("padding-top")) * 2 - 5);
+			}
+		}
+	}
+	
+	// tabWidth attribute is ignored as it is automatic
+	
+	// __CREATE TOPICS__
+	// have to clone topics / tabs / pages in seperate functions as otherwise it clones the data from previous topic
+	var $topic =		$("#pageContents .topic");
+	var $infoHolder =	$("#pageContents .infoHolder");
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisTopic,	$thisInfoHolder;
+			if (i != 0) {
+				$thisTopic = $topic.clone().appendTo($topic.parent());
+				$thisInfoHolder = $infoHolder.clone().appendTo($infoHolder.parent());
+				$thisInfoHolder.hide();
+			} else {
+				$thisTopic = $topic;
+				$thisInfoHolder = $infoHolder;
+			}
+			$thisTopic
+				.attr("href", "#topic" + i)
+				.html(this.getAttribute("name"))
+				.click(function() {
+					$this = $(this);
+					if ($this != $("#pageContents .topic.highlight")) {
+						$("#pageContents .topic.highlight").removeClass("highlight");
+						$("#pageContents .infoHolder:visible").hide();
+						$this.addClass("highlight");
+						var $thisHolder = $("#pageContents .infoHolder:eq(" + $this.index() + ")");
+						$thisHolder.show();
+						if (x_currentPageXML.getAttribute("rememberTab") == "true") {
+							// auto select same tab / nested page as that viewed in previous topic
+							var $pageContents = $("#pageContents");
+							var $currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
+							if ($currentTab.length != 0) {
+								$currentTab.trigger("click");
+								var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")");
+								var $currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
+								if ($currentPane.length != 0) {
+									$currentPane.trigger("click");
+								} else {
+									// no match so go to 1st nested page on tab
+									$currentPaneHolder.find(".paneList a:eq(0)").trigger("click");
+								}
+							} else {
+								// no tab match so go to 1st tab in topic
+								$thisHolder.find(".tabHeader:eq(0) a").trigger("click");
+							}
+						} else {
+							// 1st tab and 1st nested page in highlighted topic
+							$thisHolder.find(".tabHeader:eq(0) a").trigger("click");
+							$thisHolder.find(".paneHolder:eq(0) .paneList a:eq(0)").trigger("click");
+						}
+					}
+				});
+		});
+	$topic.addClass("highlight");
+	
+	// __CREATE TABS__
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $infoHolder =	$("#pageContents .infoHolder:eq(" + i + ")");
+			var $tabHeader =	$infoHolder.find(".tabHeader");
+			var $paneHolder =	$infoHolder.find(".paneHolder");
+			$(this).children()
+				.each(function(j) {
+					var $thisTabHeader,	$thisPaneHolder;
+					if (j != 0) {
+						$thisTabHeader = $tabHeader.clone().appendTo($tabHeader.parent());
+						$thisPaneHolder = $paneHolder.clone().appendTo($paneHolder.parent());
+					} else {
+						$thisTabHeader = $tabHeader;
+						$thisPaneHolder = $paneHolder;
+					}
+					$thisTabHeader.find("a")
+						.html(this.getAttribute("name"))
+						.attr("href", "#tab" + j);
+					$thisPaneHolder.attr("id", "tab" + j);
+				});
+		});
+	
+	// __CREATE PAGES__
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			$(this).children()
+				.each(function(j) {
+					var $paneHolder =	$("#pageContents .infoHolder:eq(" + i + ") .paneHolder:eq(" + j + ")");
+					var $paneList =		$paneHolder.find(".paneList");
+					var $paneInfo =		$paneHolder.find(".paneInfo");
+					var $link =			$paneList.find("a");
+					$(this).children()
+						.each(function(k) {
+							var $thisLink,	$thisPaneInfo;
+							if (k != 0) {
+								$thisLink = $link.clone().appendTo($paneList);
+								$thisPaneInfo = $paneInfo.clone().appendTo($paneInfo.parent());
+								$thisPaneInfo.hide();
+							} else {
+								$thisLink = $link;
+								$thisPaneInfo = $paneInfo;
+							}
+							
+							if ($(this).parent().children().length > 1) {
+								if (k != $(this).parent().children().length - 1) {
+									$paneList.append(" | ");
+								}
+								$thisLink
+									.html(this.getAttribute("name"))
+									.click(function() {
+										var $this = $(this);
+										if ($this != $("#pageContents .paneList a.selected")) {
+											$this.parent().find("a.selected").removeClass("selected");
+											$("#pageContents .paneInfo:visible").hide();
+											$this.addClass("selected");
+											$this.parents(".paneHolder").find(".paneInfo:eq(" + $this.index() + ")").show();
+											$("#pageContents").data("currentPane", $this.html());
+										}
+									});
+							} else {
+								$paneList.addClass("delete");
+							}
+							
+							var infoString = "";
+							if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
+								infoString += '<div class="paneImg"><img src="' + eval(this.getAttribute("url")) + '" ';
+								if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+									infoString += 'alt="' + this.getAttribute("tip") + '" ';
+								}
+								infoString += ' /></div>';
+							}
+							infoString += x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+							$thisPaneInfo.html(infoString);
+							
+						});
+					$link.addClass("selected");
+				});
+		});
+	
+	$(".paneList.delete").remove();
+	
+	$("#pageContents").data({
+		"currentTopic":	0,
+		"currentTab":	$(x_currentPageXML).children().children()[0].getAttribute("name"),
+		"currentPane":	$(x_currentPageXML).children().children().children()[0].getAttribute("name")
+		});
+	
+	var firstLoad = true;
+	if (x_currentPageXML.getAttribute("rememberTab") == "true") {
+		$("#pageContents .infoHolder")
+			.tabs({
+				show: function(event, ui) {
+					if (firstLoad != true) {
+						var $pageContents = $("#pageContents");
+						var $panel = $(ui.panel);
+						$pageContents.data("currentTab", $panel.parent().find(".tabList .tabHeader:eq(" + ui.index + ") a").html());
+						if ($pageContents.data("currentTopic") != $panel.parents(".infoHolder").index()) {
+							$pageContents.data("currentTopic", $panel.parents(".infoHolder").index());
+						} else {
+							$pageContents.data("currentPane", $panel.parent().find(".paneHolder:eq(" + ui.index + ") .paneList a:first").html());
+							if ($panel.find(".paneInfo").length > 1) {
+								$panel.find(".paneList a:eq(0)").trigger("click");
+							}
+						}
+					}
+				}
+			});
+	} else {
+		$("#pageContents .infoHolder").tabs();
+	}
+	firstLoad = false;
+	
+	if (x_currentPage != 0) {
+		tabNavExtra.sizeChanged();
+	}
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+	.topic {
+		font-weight:	bold;
+		display:		block;
+		padding:		5px;
+	}
+	
+	.paneList {
+		color:			#CCCCCC;
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	10px;
+	}
+	
+	.paneList a {
+		font-size:	0.8em;
+	}
+	
+	.paneList a:link, .paneList a:visited, .paneList a:hover, .paneList a:active {
+		color:	black;
+	}
+	
+	.paneList a.selected {
+		font-weight:		bold;
+		text-decoration:	none;
+	}
+	
+	#pageContents .paneImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#pageContents .paneImg img {
+		max-width:	100%;
+		max-height:	100%;
+	}
+	
+	#pageContents .paneHolder {
+		overflow:	auto;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen small">
+		
+		<div id="topicHolder" class="left">
+			<a class="topic"></a>
+		</div>
+		
+		<div class="right">
+			<div>
+				<div class="infoHolder">
+					<ul class="tabList">
+						<li class="tabHeader">
+							<a></a>
+						</li>
+					</ul>
+					<div class="paneHolder">
+						<div class="paneList">
+							<a href="#"></a>
+						</div>
+						<div class="paneInfo"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
