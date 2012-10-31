@@ -1,0 +1,152 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var buttonNav = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				var $infoHolder = $("#infoHolder")
+				var $btnHolder = $("#btnHolder");
+				$infoHolder.height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+			}
+		}
+	}
+	
+	// buttonWidth attribute not used as they will be sized automatically
+	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+	if (panelWidth == "Full") {
+		$("#pageContents .panel").appendTo($("#pageContents"));
+		$("#pageContents .splitScreen").remove();
+	} else {
+		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+		if (panelWidth == "Small") {
+			$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+		} else if (panelWidth == "Large") {
+			$("#pageContents .splitScreen").addClass("small");
+		} else {
+			$("#pageContents .splitScreen").addClass("medium");
+		} 
+	}
+	
+	var $btnHolder = $("#btnHolder");
+	var $panelBtn = $("#btnHolder .panelBtn:first");
+	var $panelBtnLabel = $("#btnHolder .panelBtnLabel:first");
+	var $panelPage = $("#pageContents .panelPage");
+	$(x_currentPageXML).children()
+		.each(function(i) {
+			var $thisBtn, $thisBtnLabel, $thisPanelPage;
+			if (i != 0) {
+				$thisBtn = $panelBtn.clone().appendTo($btnHolder);
+				$thisBtnLabel = $panelBtnLabel.clone().appendTo($btnHolder);
+				$thisPanelPage = $panelPage.clone().appendTo($panelPage.parent());
+			} else {
+				$thisBtn = $panelBtn;
+				$thisBtnLabel = $panelBtnLabel;
+				$thisPanelPage = $panelPage;
+			}
+			
+			$thisBtn
+				.attr("id", "btn" + i)
+				.data({"screen"	:$thisPanelPage})
+				.bind("click", function() {
+					var $thisPanelPage = $(this).data("screen");
+					if ($thisPanelPage.is(":hidden")) {
+						$("#infoHolder .panelPage:visible").hide();
+						$thisPanelPage.show();
+					}
+				});
+			
+			$thisBtnLabel
+				.html(this.getAttribute("name"))
+				.attr("for", "btn" + i);
+			
+			var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+			if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
+				var newString = '<div class="pageImg"><img src="' + eval(this.getAttribute("url")) + '" ';
+				if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+					newString += 'alt="' + this.getAttribute("tip") + '" ';
+				}
+				newString += ' /></div>';
+				if (this.getAttribute("align") == "Top") {
+					infoString += newString;
+				} else {
+					infoString = newString + infoString;
+				}
+			}
+			
+			$thisPanelPage
+				.html(infoString)
+				.hide();
+		});
+	
+	$panelBtn.trigger("click");
+	$btnHolder.buttonset();
+	
+	if (x_currentPage != 0) {
+		buttonNav.sizeChanged();
+	}
+	
+	if (x_browserInfo.mobile == true) {
+		$("#pageContents .panel").prepend($btnHolder);
+	}
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+	#pageContents .panel {
+		padding-bottom:	5px;
+	}
+	
+	#infoHolder {
+		overflow:	auto;
+	}
+	
+	#pageContents .pageImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#pageContents .pageImg img {
+		max-width:	100%;
+		max-height:	100%;
+	}
+	
+	#btnHolder {
+		text-align:		center;
+		margin-top:		10px;
+		margin-right:	0px; /* over-ride ui style */
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left"></div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="infoHolder">
+					<div class="panelPage"></div>
+				</div>
+				<div id="btnHolder">
+					<input type="radio" name="radio" class="panelBtn" /><label class="panelBtnLabel"></label>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>

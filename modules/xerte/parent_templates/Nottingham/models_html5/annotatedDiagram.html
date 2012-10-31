@@ -1,0 +1,272 @@
+<script type="text/javascript">
+	
+	// ** DOESN'T WORK ON MOBILES **
+	// ** why isn't the layout for this done with splitScreen css? **
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var annotatedDiagram = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			var $canvas = $("#canvas");
+			if ($canvas.length > 0 && $canvas[0].getContext) {
+				var context = $canvas[0].getContext("2d");
+				var highlightColour = context.strokeStyle;
+				$canvas.attr({
+					width	:$x_pageDiv.width(),
+					height	:$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2
+				});
+				context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
+				context.strokeStyle = highlightColour;
+				context.fillStyle = highlightColour;
+				context.lineWidth = 2;
+			}
+			$("#pageContents .selected").removeClass("selected");
+			$("#pageContents .highlight").removeClass("highlight");
+			$("#infoHolder").html("");
+		}
+		
+		this.imgLoaded = function() {
+			// position text correctly
+			var marginW = $img.width() + (padding * 4);
+			if (x_currentPageXML.getAttribute("align") != "Right") {
+				$textContents.css("margin-right", marginW + "px");
+			} else {
+				$textContents.css("margin-left", marginW + "px");
+			}
+			
+			// create hotspots - taking scale of image into account
+			$hsHolder
+				.width($imageHolder.width())
+				.height($imageHolder.height());
+			var scale = $img.width() / $img.data("origSize")[0];
+			
+			var highlightColour = "yellow";
+			if (x_currentPageXML.getAttribute("colour") != undefined && x_currentPageXML.getAttribute("colour") != "") {
+				highlightColour = "#" + x_currentPageXML.getAttribute("colour").substr(2, 6);
+			}
+			
+			var shape = x_currentPageXML.getAttribute("shape");
+			if ((shape == "Arrow" || shape == "None") && $canvas[0].getContext) {
+				var context = $canvas[0].getContext("2d");
+				context.strokeStyle = highlightColour;
+				context.fillStyle = highlightColour;
+				context.lineWidth = 2;
+			} else {
+				$canvas.remove();
+				if (shape != "Oval" && shape != "Rectangle") {
+					shape = "Rectangle"; // browser doesn't support canvas so use rectangle instead of line/arrow
+				}
+			}
+			$pageContents.data("shape", shape);
+			
+			var $listItem = $(".listItem:first");
+			var $listHolder = $("#listHolder");
+			$(x_currentPageXML).children()
+				.each(function(i){
+					var $thisItem;
+					if (i != 0) {
+						$thisItem = $listItem.clone().appendTo($listHolder);
+					} else {
+						$thisItem = $listItem;
+					}
+					
+					$thisItem
+						.attr("href", "#item" + i)
+						.html(this.getAttribute("name"))
+						.data({
+							"name"	:this.getAttribute("name"),
+							"text"	:this.getAttribute("text")
+							})
+						.click(function() {
+							var $this = $(this);
+							if ($this != $(".listItem.highlight")) {
+								$(".listItem.highlight").removeClass("highlight");
+								$this.addClass("highlight");
+								
+								var shape = $("#pageContents").data("shape");
+								$("#infoHolder").html(/*"<h3>" + $this.data("name") + "</h3><br/>" + */x_addLineBreaks($this.data("text")));
+								if (shape != "None" && shape != "Arrow") {
+									$("#hsHolder .selected").removeClass("selected");
+									$($("#hsHolder").children()[$this.index()]).addClass("selected");
+								} else {
+									var $canvas = $("#canvas");
+									var context = $canvas[0].getContext("2d");
+									context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
+									var $hs = $($("#hsHolder").children()[$this.index()]);
+									if ($hs.hasClass("hsGroup")) {
+										$hs.children()
+											.each(function(){
+												annotatedDiagram.drawLine(context, $(this), $this, shape);
+											});
+									} else {
+										annotatedDiagram.drawLine(context, $hs, $this, shape);
+									}
+								}
+							}
+						});
+					
+					if (this.tagName == "hotspotGroup") {
+						var groupXML = this;
+						var $hsGroup = $('<div class="hsGroup"></div>');
+						$hsHolder.append($hsGroup);
+						$(this).children()
+							.each(function(){
+								var $hs = annotatedDiagram.createHotspot(this, $hsGroup, $thisItem, scale, groupXML);
+							});
+					} else {
+						annotatedDiagram.createHotspot(this, $hsHolder, $thisItem, scale);
+					}
+				});
+			
+			var $hotspot = $("#pageContents .hotspot");
+			if (shape == "Oval") {
+				$hotspot
+					.css("border-color", highlightColour)
+					.addClass("oval");
+			} else if (shape == "Rectangle") {
+				$hotspot.css("border-color", highlightColour);
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+		
+		this.createHotspot = function(hsXML, $parent, $listItem, scale, groupXML) {
+			var $hotspot = $('<a class="hotspot" href="#" />');
+			var hsName = hsXML.getAttribute("name");
+			if (groupXML != undefined) { // hs in a group
+				hsName = groupXML.getAttribute("name");
+			}
+			
+			$hotspot
+				.attr("title", hsName)
+				.data("listItem", $listItem)
+				.css({
+					width	:Math.round(hsXML.getAttribute("w") * scale) + "px",
+					height	:Math.round(hsXML.getAttribute("h") * scale) + "px",
+					left	:Math.round(hsXML.getAttribute("x") * scale) + "px",
+					top		:Math.round(hsXML.getAttribute("y") * scale) + "px"
+					})
+				.click(function() {
+					$(this).data("listItem").trigger("click");
+					});
+			$parent.append($hotspot);
+		}
+		
+		this.drawLine = function(context, $hs, $listItem, shape) {
+			var startX = $hs.position().left + ($hs.width() / 2) + $hs.parents("#hsHolder").position().left;
+			var startY = $hs.position().top + ($hs.height() / 2) + parseInt($x_pageDiv.css("padding-top"));
+			var endX = parseInt($("#textContents").css("margin-left"));
+			if (x_currentPageXML.getAttribute("align") != "Right") {
+				endX += $listItem.width() + $listItem.position().left;
+			}
+			context.beginPath();
+			context.moveTo(startX, startY);
+			context.lineTo(endX, $listItem.position().top);
+			context.stroke();
+			if (shape == "Arrow") {
+				context.beginPath();
+				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
+				context.fill();
+			}
+			context.stroke();
+		}
+	}
+	
+	var $pageContents = $("#pageContents");
+	var $imageHolder = $("#imageHolder");
+	var $img = $imageHolder.find("img");
+	var $canvas = $("#canvas");
+	var $hsHolder = $("#hsHolder");
+	var $textContents = $("#textContents");
+	
+	if (x_currentPageXML.getAttribute("align") != "Right") {
+		$imageHolder.css("right", $x_pageDiv.css("padding-right"));
+		$hsHolder.css("right", $x_pageDiv.css("padding-right"));
+	}
+	$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+	
+	var imgMaxW = 400,	imgMaxH = 450;
+	if (x_browserInfo.mobile == true) {
+		imgMaxW = 250; // mobile
+		imgMaxH = 250;
+	}
+	
+	var padding = parseInt($imageHolder.css("padding-left"));
+	$hsHolder.css("margin", padding);
+	$img.attr({
+		"src"	:eval(x_currentPageXML.getAttribute("url")),
+		"alt"	:x_currentPageXML.getAttribute("tip")
+	});
+	
+	if (x_currentPage != 0) {
+		annotatedDiagram.sizeChanged();
+	}
+	
+</script>
+
+<style>
+	
+	#imageHolder, #canvas, #hsHolder {
+		position:	absolute;
+		margin:		0;
+	}
+	
+	#pageContents .hotspot {
+		background:	url(x_templateLocation + "commonx_html5/transparent.png");
+		position:	absolute;
+		cursor:		pointer;
+	}
+	
+	#pageContents .oval {
+		-moz-border-radius:	50% 50%;
+		border-radius:		50% 50%;
+	}
+	
+	#hsHolder a.selected, #hsHolder .hsGroup.selected a {
+		border:		2px solid;
+	}
+	
+	#textContents {
+		position: 	absolute;
+		top:		0;
+		left:		0;
+	}
+	
+	#textContents div {
+		padding:	10px;
+	}
+	
+	.listItem {
+		font-weight:	bold;
+		display:		block;
+		padding:		5px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="imageHolder" class="panel inline">
+		<img onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); annotatedDiagram.imgLoaded();" />
+	</div>
+	
+	<canvas id="canvas"></canvas>
+	
+	<div id="hsHolder"></div>
+	
+	<div id="textContents">
+		<div id="mainText"></div>
+		<div id="listHolder">
+			<a class="listItem"></a>
+		</div>
+		<div id="infoHolder"></div>
+	</div>
+	
+</div>

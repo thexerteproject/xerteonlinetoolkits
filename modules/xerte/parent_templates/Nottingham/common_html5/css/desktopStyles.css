@@ -1,0 +1,83 @@
+/* DESKTOP & TABLET LAYOUT CSS (not mobile) */
+
+/* _floatLeft & _floatRight display inline on mobiles */
+#x_pageDiv .x_floatLeft {
+	margin-left:	0px;
+	padding:		10px;
+}
+
+#x_pageDiv .x_floatRight {
+	margin-right:	0px;
+	padding:		10px;
+}
+
+/* these all display as width 100% on mobiles */
+.width40 {
+	width:	40%;
+}
+
+.width50 {
+	width:	50%;
+}
+
+.width60 {
+	width:	60%;
+}
+
+.width80 {
+	width:	80%;
+}
+
+.width100 {
+	width:	100%;
+}
+
+/* ** SORT THIS OUT - DO I REALLY NEED THE WIDTH CLASSES ABOVE TOO? ** */
+/* displays as one column on mobiles */
+.splitScreen {
+	padding:	0 0 0 50%;
+	position:	relative;
+}
+
+.splitScreen.small {
+	padding:	0 0 0 20%;
+}
+
+.splitScreen.medium {
+	padding:	0 0 0 40%;
+}
+
+.splitScreen.large {
+	padding:	0 0 0 60%;
+}
+
+.splitScreen.xlarge {
+	padding:	0 0 0 80%;
+}
+
+.splitScreen .left {
+	position:	absolute;
+	top:		0;
+	left:		0;
+	width:		50%;
+}
+
+.splitScreen.small .left {
+	width:		20%;;
+}
+
+.splitScreen.medium .left {
+	width:		40%;
+}
+
+.splitScreen.large .left {
+	width:		60%;
+}
+
+.splitScreen.xlarge .left {
+	width:		80%;
+}
+
+.splitScreen .right {
+	margin-left: 10px;
+}

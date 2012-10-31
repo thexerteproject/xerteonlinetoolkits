@@ -1,0 +1,51 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var embedDiv = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			$("#iFrame").height(embedDiv.calcHeight());
+		}
+		
+		this.calcHeight = function() {
+			var frameHeight;
+			if (x_browserInfo.mobile == false) {
+				frameHeight = $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 3;
+			} else {
+				frameHeight = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
+			}
+			return frameHeight;
+		}
+	}
+	
+	var $pageContents = $("#pageContents");
+	var pageSrc = x_currentPageXML.getAttribute("src");
+	if (pageSrc.substr(0, 1) == "<") { // insert html directly
+		$pageContents.html(pageSrc);
+	} else { // use iframe to load web page
+		var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '"></iframe>';
+		$pageContents.html(iFrameTag);
+	}
+	
+	// call this function in every model once everything's loaded
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+
+	#pageContents {
+		text-align:	center;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+</div>

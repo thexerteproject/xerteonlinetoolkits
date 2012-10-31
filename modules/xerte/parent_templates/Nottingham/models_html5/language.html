@@ -1,0 +1,63 @@
+<script type="text/javascript">
+	
+	var $charsHolder = $("#charsHolder");
+	var $specChar = $charsHolder.find(".specChar:first");
+	for (var i=0; i<x_specialChars.length; i++) {
+		var $thisChar;
+		if (i != 0) {
+			$thisChar = $specChar.clone().appendTo($charsHolder);
+		} else {
+			$thisChar = $specChar;
+		}
+		
+		$thisChar.html(x_specialChars[i].lower);
+	}
+	
+	$(".specChar")
+		.button()
+		.click(function() {
+			if (x_inputFocus != false) {
+				var textArea = x_inputFocus;
+				var specChar = x_specialChars[$(this).index()].lower;
+				// ** need to use upper/lower depending on caps lock on/off **
+				if (document.selection) {
+					textArea.focus();
+					var sel = document.selection.createRange();
+					sel.text = specChar;
+					textArea.focus();
+				} else if (textArea.selectionStart || textArea.selectionStart === 0) {
+					var startPos = textArea.selectionStart;
+					var endPos = textArea.selectionEnd;
+					var scrollTop = textArea.scrollTop;
+					textArea.value = textArea.value.substring(0, startPos) + specChar + textArea.value.substring(endPos, textArea.value.length);
+					textArea.focus();
+					textArea.selectionStart = startPos + specChar.length;
+					textArea.selectionEnd = startPos + specChar.length;
+					textArea.scrollTop = scrollTop;
+				} else {
+					textArea.value += specChar;
+					textArea.focus();
+				}
+			}
+		});
+	
+</script>
+
+<style type="text/css">
+	
+	#charsHolder .specChar {
+		width:			20px;
+		height:			20px;
+		float:			left;
+		margin:			4px;
+	}
+	
+	#charsHolder .specChar span {
+		padding:	0px;
+	}
+	
+</style>
+
+<div id="charsHolder">
+	<button class="specChar"/>
+</div>

@@ -1,0 +1,254 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var bleedingImage = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.sizeChanged(true);
+		}
+		
+		$("#pageContents").data("firstLoad", true);
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			var $pageContents = $("#pageContents");
+			var firstLoad = $pageContents.data("firstLoad");
+			var pageAttr = x_currentPageXML;
+			
+			var prevSize = $("#x_pageDiv div:first").data("size");
+			var resize = false;
+			if (prevSize == undefined || prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
+				resize = true;
+			}
+			if (resize == true) {
+				if (pageAttr.getAttribute("imagesize") == "full screen") { // set image size for full screen
+					var addMargin = pageAttr.getAttribute("addMargin");
+					if (addMargin != "true" && pageAttr.getAttribute("sound") != undefined && pageAttr.getAttribute("sound") != "") {
+						addMargin = "true";
+					}
+					if (firstLoad == true && x_currentPage == 0) {
+						if (addMargin == false) {
+							imgMaxW = $x_pageHolder.width();
+							imgMaxH = $x_pageHolder.height();
+						} else {
+							var offset = this.calculateOffset(addMargin);
+							imgMaxW = $x_pageHolder.width() - offset[0];
+							imgMaxH = $x_pageHolder.height() - offset[1];
+						}
+					} else {
+						if (pageAttr.getAttribute("addmargin") != "true") {
+							x_scaleImg($("#pageImg"), $x_pageHolder.width(), $x_pageHolder.height(), true, false);
+						} else {
+							var offset = this.calculateOffset(addMargin);
+							x_scaleImg($("#pageImg"), $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
+						}
+						
+					}
+				}
+			}
+			
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				if (pageChg == true) {
+					this.loadAudio($("#pageImg").width());
+				} else if ($("#pageAudio").width() != $("#pageImg").width()) {
+					// ** need to change the narration bar width here **
+				}
+			}
+			
+			if (resize == true) {
+				if (firstLoad != true) {
+					// reload magnifier
+					bleedingImage.setUpMagnifier(true);
+				} else {
+					$pageContents.data("firstLoad", false);
+				}
+			}
+		}
+		
+		this.setUpAudio = function() {
+			bleedingImage.loadAudio($pageImg.width());
+			bleedingImage.setUpMagnifier(true);
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.loadAudio = function(width) {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			if (soundFile != undefined && soundFile != "") {
+				$("#pageAudio").mediaPlayer({
+					type		:"audio",
+					source		:soundFile,
+					width		:width
+				});
+			}
+		}
+		
+		this.calculateOffset = function(addMargin) {
+			// calculates available space when image is full screen
+			var pageAttr = x_currentPageXML;
+			var offset = [0, 0];
+			if (addMargin == "true") {
+				offset.splice(0, 1, offset[0] + parseInt($(".panel").css("padding-left")) + 20 * 2);
+				offset.splice(1, 1, offset[1] + parseInt($(".panel").css("padding-top")) + 20 * 2);
+			}
+			if (pageAttr.getAttribute("sound") != undefined && pageAttr.getAttribute("sound") != "") {
+				offset.splice(1, 1, offset[1] + x_audioBarH);
+			}
+			return offset;
+		}
+		
+		this.setUpMagnifier = function(setEvent) {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(".magnifier").remove();
+				$(".magnifiedImg").remove();
+				$("#pageImg").imageLens();
+			}
+		}
+	}
+	
+	var $pageContents	= $("#pageContents");
+	var $textHolder		= $("#textHolder");
+	var $panel			= $("#pageContents .panel");
+	var $pageImg		= $("#pageImg");
+	
+	// image scaling
+	var imageSize = x_currentPageXML.getAttribute("imagesize"); // auto|full screen
+	var addMargin = x_currentPageXML.getAttribute("addmargin");
+	var imgMaxW,	imgMaxH;
+	if (imageSize == "full screen") {
+		if (parseInt($x_pageHolder.css("margin-top")) != 0) {
+			if (addMargin != "true" && (x_currentPageXML.getAttribute("sound") == undefined || x_currentPageXML.getAttribute("sound") == "")) {
+				imgMaxW = $x_pageHolder.width();
+				imgMaxH = $x_pageHolder.height();
+			} else {
+				var offset = bleedingImage.calculateOffset();
+				imgMaxW = $x_pageHolder.width() - offset[0];
+				imgMaxH = $x_pageHolder.height() - offset[1];
+			}
+		}
+	} else { // auto
+		imgMaxW = 500; // desktop / tablet
+		imgMaxH = 450;
+		if (x_browserInfo.mobile == true) {
+			imgMaxW = 250; // mobile
+			imgMaxH = 250;
+		}
+	}
+	
+	// text align
+	if (imageSize == "full screen") {
+		$("#imgHolder").addClass("centerAlign");
+		$textHolder.remove();
+		if (addMargin != "true") {
+			var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
+			$panel.css("margin", newMargin);
+		}
+	} else { // auto
+		var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+		if (textAlign == "Top" || textAlign == "Bottom") {
+			if (textAlign == "Top") {
+				$pageContents.prepend($textHolder);
+			} else {
+				$textHolder.css("padding-top", "20px");
+			}
+			$("#imgHolder").addClass("centerAlign");
+			if (addMargin != "true") {
+				// remove margin which indents image away from LO border
+				var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
+				if (textAlign == "Top") {
+					$panel.css("margin-bottom", newMargin);
+				} else {
+					$panel.css("margin-top", newMargin);
+				}
+				$panel.css({
+					"margin-left"	:newMargin,
+					"margin-right"	:newMargin
+				});
+			}
+		} else {
+			if (textAlign != "Right") { // Left
+				$panel.addClass("x_floatRight");
+			} else {
+				$panel.addClass("x_floatLeft");
+			}
+			if (addMargin != "true") {
+				// remove margin which indents image away from LO border
+				var newMargin = 0 - Number(parseInt($panel.css("padding-top")) + 10);
+				if (textAlign != "Right") {
+					$pageImg.css("margin-right", newMargin + 2);
+				} else {
+					$panel.css("margin-left", newMargin);
+				}
+				$panel.css("margin-top", newMargin);
+			}
+		}
+	}
+	
+	if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
+		// ** see Alistair's email - this link is accessible but doesn't show as selected when you tab to it **
+		var tooltip = "";
+		if (x_currentPageXML.getAttribute("linkIntro") != undefined) {
+			tooltip = x_currentPageXML.getAttribute("linkIntro");
+		}
+		var target = "x_blank";
+		if (x_currentPageXML.getAttribute("linktarget") != undefined) {
+			target = x_currentPageXML.getAttribute("linktarget");
+		}
+		
+		var imgTag = '<a href="' + x_currentPageXML.getAttribute("link") + '" target="' + target + '" id="linkImgA" title="' + tooltip + '"><img src="' + x_templateLocation + 'common_html5/linkicon.png" alt="' + tooltip + '" id="linkImg" /></a>';
+		$panel.append(imgTag);
+	}
+	
+	if (addMargin != "true") {
+		$panel
+			.addClass("noBorder")
+			.removeClass("panel")
+			.removeClass("inline");
+	}
+	
+	if (x_currentPageXML.getAttribute("size") != undefined) {
+		$textHolder.css("font-size", Number(x_currentPageXML.getAttribute("size")) + "pt");
+	}
+	
+	$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+	$pageImg.attr({
+		"src":	eval(x_currentPageXML.getAttribute("url")),
+		"alt":	x_currentPageXML.getAttribute("tip")
+		});
+	
+</script>
+
+<style type="text/css">
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	.noBorder {
+		display:	inline-block;
+		margin:		0px;
+	}
+	
+	#linkImg {
+		padding:	10px;
+		position:	absolute;
+		top:		0;
+		right:		0;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="imgHolder" class="mobileAlign">
+		<div class="panel inline">
+			<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); bleedingImage.setUpAudio();" />
+			<div id="pageAudio"></div>
+		</div>
+	</div>
+	
+	<div id="textHolder">
+	
+	</div>
+	
+</div>

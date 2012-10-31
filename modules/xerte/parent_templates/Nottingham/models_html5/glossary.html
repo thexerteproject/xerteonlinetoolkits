@@ -1,0 +1,19 @@
+<script type="text/javascript">
+	
+	var tableData = '<table class="glossary">';
+	
+	for (var i=0; i<x_glossary.length; i++) {
+		tableData += "<tr><td>" + x_glossary[i].word + "</td><td>" + x_glossary[i].definition + "</td></tr>";
+	}
+	
+	tableData += "</table>";
+	$("#glossaryItems").append(tableData);
+	
+	// add class for shaded rows rather than using css selector as doesn't work for IE8 & below
+	$("#glossaryItems .glossary tr:nth-child(even)").addClass("shaded");
+
+</script>
+
+<div id="glossaryItems">
+	
+</div>

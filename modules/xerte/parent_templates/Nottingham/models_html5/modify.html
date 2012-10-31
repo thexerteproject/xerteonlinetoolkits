@@ -1,0 +1,85 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var modify = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#button").show();
+			$("#modelTxt").hide();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+	}
+	
+	// feedbackBtnWidth attribute not used as button will be sized automatically
+	
+	// if language attributes aren't in xml will have to use english fall back
+	var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
+	if (answerHeaderTxt == undefined) {
+		answerHeaderTxt = "Write your answer here:"
+	};
+	var feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
+	if (feedbackBtnTxt == undefined) {
+		feedbackBtnTxt = "Feedback"
+	};
+	var feedbackBtnTip = x_currentPageXML.getAttribute("feedbackBtnTip");
+	if (feedbackBtnTip == undefined) {
+		feedbackBtnTip = "Feedback"
+	};
+	
+	$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+	$("#initText").html(x_currentPageXML.getAttribute("text"));
+	$("#answer").html(answerHeaderTxt);
+	$("#answerTxt").html(x_currentPageXML.getAttribute("prompt"));
+	
+	$("#modelTxt")
+		.html(x_currentPageXML.getAttribute("answer"))
+		.hide();
+	
+	$("#button")
+		.button({
+			label:			feedbackBtnTxt,
+			description:	feedbackBtnTip
+		})
+		.click(function() {
+			$(this).hide();
+			$("#modelTxt").fadeIn();
+		});
+	
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+	#pageContents textarea {
+		display:		block;
+		width:			100%;
+		resize:			vertical;
+	}
+	
+	#answer, #modelTxt {
+		margin-top:	20px;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<p id="instruction"></p>
+	<textarea id="initText" rows="5" readonly></textarea> 
+	<p id="answer"></p>
+	<textarea id="answerTxt" rows="5"></textarea>
+	<button id="button"></button>
+	<textarea id="modelTxt" rows="5" readonly></textarea>
+	
+</div>
