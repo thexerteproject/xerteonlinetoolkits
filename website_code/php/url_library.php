@@ -81,7 +81,7 @@
 					break;
 
 			case "scorm_rich":	if($xerte_toolkits_site->apache=="true"){
-						return $string . "_rich_" . $template_number;
+						return $string . "_" . $template_number;
 					}else{
 						return $xerte_toolkits_site->php_library_path . "scorm/export.php?data=rich&scorm=true&template_id=" . $template_number;
 					}
