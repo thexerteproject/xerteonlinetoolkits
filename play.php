@@ -20,6 +20,7 @@ require $xerte_toolkits_site->php_library_path . "display_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 
 
+
 //error_reporting(E_ALL);
 //ini_set(display_errors,"ON");
 
@@ -329,11 +330,11 @@ if($lti->valid) {
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
-            dont_show_template();
+            dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
         }
     } else {
-
-        dont_show_template();
+      require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+      dont_show_template('No HTTP Referer');
     }
 } else if (sizeof($query_for_security_content_response) > 0) {
 
