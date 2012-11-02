@@ -20,8 +20,7 @@ require_once(dirname(__FILE__) . '/../../config.php');
  * @author Patrick Lockley
  */
 
-function dont_show_template(){
-
+function dont_show_template($optional=''){
 
     _load_language_file("/modules/xerte/module_functions.inc");
 
@@ -45,7 +44,9 @@ function dont_show_template(){
 <?PHP
 
     echo XERTE_DISPLAY_FAIL;
-
+if($optional!=='') {
+      echo '</div><div>' . $optional;
+}
     ?></div></div></body></html><?PHP
 
         die();
