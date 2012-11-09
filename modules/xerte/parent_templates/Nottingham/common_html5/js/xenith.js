@@ -2,7 +2,7 @@
 var x_languageData	= [];
 var x_params		= new Object(); // all attributes of learningObject that aren't undefined  ** all code for x_params data is written except authorSupport - remember to use when making the Connectors pages **
 var x_pages;		// xml info about all pages in this LO
-var x_pageInfo		= [];	// holds info about pages (type, built)
+var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID)
 var x_currentPage	= 0;
 var x_currentPageXML;
 var x_glossary		= [];
@@ -124,9 +124,13 @@ $(document).ready(function() {
 			
 			x_pages = xmlData.children();
 			x_pages.each(function() {
+                var linkID = $(this)[0].getAttribute("linkID");
+                var pageID = $(this)[0].getAttribute("pageID");
 				var page = new Object();
 				page.type = $(this)[0].nodeName;
 				page.built = false;
+                if (linkID != undefined) page.linkID = linkID;
+                if (pageID != undefined && pageID != "Unique ID for this page") page.pageID = pageID;
 				x_pageInfo.push(page);
 			});
 			if (x_params.navigation != "Linear" && x_params.navigation != undefined) { // 1st page is menu
@@ -919,4 +923,43 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 // function swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
 	return text.replace(/\n/g, "<br />");
+}
+
+function x_addPageLinks(pageText) {
+    var regExp = new RegExp('href="asfunction:_level0\.engine\.fnTextCon,([a-z0-9]+)" target="_blank"','ig');
+    return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');return false;"');
+}
+
+function x_navigateToPage(strPage) {
+    if (isNaN(strPage)) {
+        var page = x_lookupPage(strPage);
+        if (page != null)
+        {
+            x_currentPage = page;
+            x_changePage();
+        }
+        else {
+            console.log("'" + strPage + "' was not found!")
+        }
+    }
+    else {
+        x_currentPage = parseInt(strPage);
+        x_changePage();
+    }
+}
+
+function x_lookupPage(strPageIdentifier) {
+    var i, len = x_pageInfo.length;
+    for (i = 0; i < len; i++) {
+        if (x_pageInfo[i].pageID && x_pageInfo[i].pageID == strPageIdentifier || x_pageInfo[i].linkID && x_pageInfo[i].linkID == strPageIdentifier) {
+            break;
+        }
+    }
+
+    if (i != len) {
+        return i;
+    }
+    else {
+        return null;
+    }
 }
