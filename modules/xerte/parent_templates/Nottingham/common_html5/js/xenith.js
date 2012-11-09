@@ -925,9 +925,15 @@ function x_addLineBreaks(text) {
 	return text.replace(/\n/g, "<br />");
 }
 
-function x_addPageLinks(pageText) {
+function x_addPageLinks(pageText, returnMethod) {
     var regExp = new RegExp('href="asfunction:_level0\.engine\.fnTextCon,([a-z0-9]+)" target="_blank"','ig');
-    return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');return false;"');
+    if (returnMethod.length > 0) {
+        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');' + returnMethod + ';return false;"');
+    }
+    else {
+        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');return false;"');
+
+    }
 }
 
 function x_navigateToPage(strPage) {
