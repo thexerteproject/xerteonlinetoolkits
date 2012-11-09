@@ -1,0 +1,60 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var connectorPlainText = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+            // turn off the buttons after we've called x_pageLoaded()
+            if (x_currentPageXML.getAttribute("pageNav") == "none") {
+                console.log("turn off buttons");
+                $x_menuBtn.hide();
+                $x_nextBtn
+                        .button("disable")
+                        .removeClass("ui-state-focus")
+                        .removeClass("ui-state-hover");
+                $x_prevBtn
+                        .button("disable")
+                        .removeClass("ui-state-focus")
+                        .removeClass("ui-state-hover");
+            }
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+
+        this.afterNavigation = function(strPage) {
+            console.log("we were returned to the model");
+            $x_menuBtn.show();
+        }
+
+        this.init = function() {
+            var $pageContents = $("#pageContents");
+            var strPageContents = x_addPageLinks(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue), "connectorPlainText.afterNavigation()");
+            $pageContents.html(strPageContents);
+
+            /* Changing "textWidth" in XOT seems to have no effect at present
+             if (x_currentPageXML.getAttribute("textWidth") == "Small") {
+             $pageContents.addClass("width40");
+             } else if (x_currentPageXML.getAttribute("textWidth") == "Medium") {
+             $pageContents.addClass("width60");
+             } else if (x_currentPageXML.getAttribute("textWidth") == "Large") {
+             $pageContents.addClass("width80");
+             }*/
+
+            // call this function in every model once everything's loaded
+            x_pageLoaded();
+
+            this.pageChanged();
+        }
+	}
+
+    connectorPlainText.init(); // Temporary solution until XMP ready
+
+</script>
+
+<div id="pageContents">
+	
+</div>
