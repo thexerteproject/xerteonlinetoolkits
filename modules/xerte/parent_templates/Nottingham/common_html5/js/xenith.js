@@ -152,7 +152,7 @@ $(document).ready(function() {
 
 // function gets data from language file
 function x_getLangData(lang) {
-	if (lang == undefined) {
+	if (lang == undefined || lang == "undefined") {
 		lang = "en-GB";
 	}
 	$.ajax({
