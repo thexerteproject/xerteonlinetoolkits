@@ -402,7 +402,7 @@ function x_setUp() {
 			});
 	}
 	
-	if (x_params.ic != undefined) {
+	if (x_params.ic != undefined && x_params.ic != "") {
 		$x_headerBlock.prepend('<img src="' + eval(x_params.ic) + '" class="x_floatLeft" />');
 	}
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
