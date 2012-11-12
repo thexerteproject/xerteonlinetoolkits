@@ -4,3 +4,4 @@ editor size: *
 preview size: *
 preview filename: preview.inc
 public filename: data.inc
+supports: 

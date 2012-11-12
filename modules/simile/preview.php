@@ -25,7 +25,7 @@
 function show_preview_code($row, $row_username){
 
 	global $xerte_toolkits_site;
-	
+		
 	require_once(dirname(__FILE__) . '/module_functions.php');
 
 	/*
@@ -35,15 +35,15 @@ function show_preview_code($row, $row_username){
 	if(!file_exists($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.inc")){
 
 	}
-
-
-	if(isset($_POST['save_path'])){
 	
+	if(isset($_POST['save_path'])){
+		
 		$data = array();
 		
 		$data['simile_description'] = strip_tags($_POST['simile_description'],"<p><a><img>");
 		$data['simile_start'] = htmlentities(strip_tags($_POST['simile_start']));
 		$data['simile_stop'] = htmlentities(strip_tags($_POST['simile_stop']));
+		$data['simile_center'] = htmlentities(strip_tags($_POST['simile_center']));
 		
 		$counter = 0;
 		
@@ -55,14 +55,14 @@ function show_preview_code($row, $row_username){
 		
 			$zone = array();
 			
-			if($_POST['simile_zone_delete_' . $counter]!="on"){
+			if(!isset($_POST['simile_zone_delete_' . $counter])){
 			
-				$zone['simile_zone_start_' . $save_counter] = $_POST['simile_zone_start_' . $counter];
-				$zone['simile_zone_stop_' . $save_counter] = $_POST['simile_zone_stop_' . $counter];
-				$zone['simile_zone_width_' . $save_counter] = $_POST['simile_zone_width_' . $counter];
-				$zone['simile_zone_interval_pixels_' . $save_counter] = $_POST['simile_zone_interval_pixels_' . $counter];
-				$zone['simile_zone_unit_' . $save_counter] = $_POST['simile_zone_unit_' . $counter];
-				$zone['simile_zone_sync_' . $save_counter] = $_POST['simile_zones_sync_' . $counter];
+				$zone['simile_zone_start_' . $save_counter] = @$_POST['simile_zone_start_' . $counter];
+				$zone['simile_zone_stop_' . $save_counter] = @$_POST['simile_zone_stop_' . $counter];
+				$zone['simile_zone_width_' . $save_counter] = @$_POST['simile_zone_width_' . $counter];
+				$zone['simile_zone_interval_pixels_' . $save_counter] = @$_POST['simile_zone_interval_pixels_' . $counter];
+				$zone['simile_zone_unit_' . $save_counter] = @$_POST['simile_zone_unit_' . $counter];
+				$zone['simile_zone_sync_' . $save_counter] = @$_POST['simile_zones_sync_' . $counter];
 									
 				if($_POST['simile_zone_width_' . $counter]!=""){
 					
@@ -123,21 +123,21 @@ function show_preview_code($row, $row_username){
 		
 			$event = array();
 			
-			if($_POST['simile_event_delete_' . $counter]!="on"){
+			if(!isset($_POST['simile_event_delete_' . $counter])){
 			
-				$event['simile_event_title_' . $save_counter] = stripslashes($_POST['simile_event_title_' . $counter]);
-				$event['simile_event_description_' . $save_counter] = $_POST['simile_event_description_' . $counter];
-				$event['simile_event_link_' . $save_counter] = $_POST['simile_event_link_' . $counter];
-				$event['simile_event_image_' . $save_counter] = $_POST['simile_event_image_' . $counter];
-				$event['simile_event_start_' . $save_counter] = $_POST['simile_event_start_' . $counter];
-				$event['simile_event_lateststart_' . $save_counter] = $_POST['simile_event_lateststart_' . $counter];
-				$event['simile_event_earliestend_' . $save_counter] = $_POST['simile_event_earliestend_' . $counter];
-				$event['simile_event_end_' . $save_counter] = $_POST['simile_event_end_' . $counter];
-				$event['simile_event_durationevent_' . $save_counter] = $_POST['simile_event_durationevent_' . $counter];
-				$event['simile_event_color_' . $save_counter] = $_POST['simile_event_color_' . $counter];
-				$event['simile_event_textcolor_' . $save_counter] = $_POST['simile_event_textcolor_' . $counter];
-				$event['simile_event_opacity_' . $save_counter] = $_POST['simile_event_opacity_' . $counter];
-				$event['simile_event_zones_' . $save_counter] = $_POST['simile_event_zones_' . $counter];
+				$event['simile_event_title_' . $save_counter] = stripslashes(@$_POST['simile_event_title_' . $counter]);
+				$event['simile_event_description_' . $save_counter] = @$_POST['simile_event_description_' . $counter];
+				$event['simile_event_link_' . $save_counter] = @$_POST['simile_event_link_' . $counter];
+				$event['simile_event_image_' . $save_counter] = @$_POST['simile_event_image_' . $counter];
+				$event['simile_event_start_' . $save_counter] = @$_POST['simile_event_start_' . $counter];
+				$event['simile_event_lateststart_' . $save_counter] = @$_POST['simile_event_lateststart_' . $counter];
+				$event['simile_event_earliestend_' . $save_counter] = @$_POST['simile_event_earliestend_' . $counter];
+				$event['simile_event_end_' . $save_counter] = @$_POST['simile_event_end_' . $counter];
+				$event['simile_event_durationevent_' . $save_counter] = @$_POST['simile_event_durationevent_' . $counter];
+				$event['simile_event_color_' . $save_counter] = @$_POST['simile_event_color_' . $counter];
+				$event['simile_event_textcolor_' . $save_counter] = @$_POST['simile_event_textcolor_' . $counter];
+				$event['simile_event_opacity_' . $save_counter] = @$_POST['simile_event_opacity_' . $counter];
+				$event['simile_event_zones_' . $save_counter] = @$_POST['simile_event_zones_' . $counter];
 								
 				if($_POST['simile_event_title_' . $counter]!=""){
 						
@@ -155,30 +155,49 @@ function show_preview_code($row, $row_username){
 		}
 		
 	
-	}
+	}	
 	
-	?>
+	if(isset($_POST['save_path'])){
+							
+		file_put_contents($_POST['save_path'] . "/preview.inc", serialize($data));	
+						
+		if(isset($_POST['save'])&&$_POST['save']=="Save and continue"){
+
+			header("Location: edit.php?template_id=" . $row['template_id']);
+
+		}else{
+	
+			?>
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title><?PHP echo SIMILE_EDIT_TITLE; ?></title>
 		<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 		<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
     </head>
 
     <body>
 	<?PHP
-					
-	if(isset($_POST['save_path'])){
+	
+			?><p><a href="edit.php?template_id=<?PHP echo $row['template_id']; ?>">Return to editor</a></p><?PHP
+	
+			display_timeline($data);
 			
-		?><p><a href="edit.php?template_id=<?PHP echo $row['template_id']; ?>">Return to editor</a></p><?PHP
-			
-		file_put_contents($_POST['save_path'] . "/preview.inc", serialize($data));
-		
-		display_timeline($data);
+		}
 	
 	}else{
+	
+		?>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+		<script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
+    </head>
+
+    <body>
+	<?PHP
 		
 		display_timeline(unserialize(file_get_contents($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.inc")));
 
