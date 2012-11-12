@@ -140,6 +140,7 @@ if (!isset($xerte_toolkits_site)) {
 								case "preview size" : $learning_objects->{$folder . "_" . $inner_folder}->preview_size = trim($attr_data[1]); break;
 								case "preview filename" : $learning_objects->{$folder . "_" . $inner_folder}->preview_file = trim($attr_data[1]); break;
 								case "public filename" : $learning_objects->{$folder . "_" . $inner_folder}->public_file = trim($attr_data[1]); break;
+								case "supports" : $learning_objects->{$folder . "_" . $inner_folder}->supports = explode(",",trim($attr_data[1])); break;
 							
 							}
 						
