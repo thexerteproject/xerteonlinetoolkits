@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/website_code/php/template_library.php");
 _load_language_file("/properties.inc");
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -39,6 +40,15 @@ _include_javascript_file("website_code/scripts/template_management.js");
 _include_javascript_file("website_code/scripts/properties_tab.js");
 _include_javascript_file("website_code/scripts/screen_display.js");
 _include_javascript_file("website_code/scripts/file_system.js");
+
+$template_supports = $learning_objects->{get_template_type((int) $_GET['template_id'])}->supports;
+
+if($template_supports==""){
+
+	$template_supports = array();
+
+}
+
 ?>
 
 </head>
@@ -118,6 +128,11 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div class="tab_spacer">							
                             </div>
+							<?PHP
+							
+								if(in_array("media", $template_supports)){
+							
+							?>
                             <div id="tab3-1" class="tab_right_pad" style="height:38px;">					
                             </div>
                             <div id="tab3" class="tab"  style="width:146px;  height:38px;">
@@ -127,6 +142,11 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div class="tab_spacer">							
                             </div>
+							<?PHP
+							
+								}
+							
+							?>
                             <div id="tab4-1" class="tab_right_pad" style="height:38px;">																	
                             </div>
                             <div id="tab4" class="tab"  style="width:146px;  height:38px;">
@@ -163,24 +183,49 @@ Hidden Iframe to allow for ajax file uploads
                             </div>							
                             <div class="tab_spacer">							
                             </div>
+							<?PHP
+							
+								if(in_array("export", $template_supports)){
+							
+							?>							
                             <div id="tab8-1" class="tab_right_pad" style="height:38px;">					
                             </div>
                             <div id="tab8" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('8');export_template()">
                                     <?PHP echo PROPERTIES_TAB_EXPORT; ?>
                                 </p>									
-                            </div>							
-                            <div class="tab_spacer">							
                             </div>
+							<div class="tab_spacer">							
+                            </div>
+							<?PHP
+							
+								}
+							
+							?>							                            
+							<?PHP
+							
+								if(in_array("peer", $template_supports)){
+							
+							?>	
                             <div id="tab9-1" class="tab_right_pad" style="height:38px;">					
                             </div>
                             <div id="tab9" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('9');peer_template()">
                                     <?PHP echo PROPERTIES_TAB_PEER; ?>
                                 </p>									
-                            </div>				
-                            <div class="tab_spacer">							
+                            </div>	
+							<div class="tab_spacer">							
                             </div>
+							<?PHP
+							
+								}
+							
+							?>	
+							<?PHP
+							
+								if(in_array("give", $template_supports)){
+							
+							?>
                             <div id="tab10-1" class="tab_right_pad" style="height:38px;">					
                             </div>
                             <div id="tab10" class="tab" style="width:146px; height:38px;">
@@ -190,6 +235,16 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div class="tab_spacer">							
                             </div>
+							<?PHP
+							
+								}
+								
+							?>
+							<?PHP
+							
+								if(in_array("xml", $template_supports)){
+							
+							?>
                             <div id="tab11-1" class="tab_right_pad" style="height:38px;">					
                             </div>
                             <div id="tab11" class="tab" style="width:146px; height:38px;">
@@ -202,7 +257,12 @@ Hidden Iframe to allow for ajax file uploads
                                 Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel	
 
                             -->
-                            <div class="tab_spacer" style="height:17px;">							
+							<?PHP
+							
+								}
+								
+							?>
+                            <div class="tab_spacer" style="height:<?PHP echo (((5-count($template_supports))*53))+18; ?>px;">							
                             </div>
                         </div>						
                 </div>									
