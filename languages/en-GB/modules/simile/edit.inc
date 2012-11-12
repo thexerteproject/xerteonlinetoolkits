@@ -13,13 +13,19 @@
 
 	define("SIMILE_EDIT_TITLE", "Simile Editor Window");
 	
-	define("SIMILE_DESC_TEXT", "Enter the description for your timeline here. You can use &lt;p&gt;, &lt;img&gt; and &lt;a&gt; HTML tags.");
+	define("SIMILE_EXPLAIN_CREATE", "To start creating a timeline - please choose the years you would like the timeline to start and end, and provide a description");
 	
-	define("SIMILE_START_STOP", "Timeline start and end years");
+	define("SIMILE_REQUIRED", "All data you have to provide has a red border.");
+			
+	define("SIMILE_DESC_TEXT", "The Description will appear below the timeline");
+	
+	define("SIMILE_START_STOP", "Years the timeline should start and end on.");
 	
 	define("SIMILE_START", "Start");
 	
-	define("SIMILE_STOP", "Stop");
+	define("SIMILE_STOP", "End");
+	
+	define("SIMILE_CENTER", "Year to center on");
 	
 	define("SIMILE_START_STOP_EXTRA" , "In these fields enter the years you want your timeline to start and stop.");
 	
@@ -67,9 +73,9 @@
 	
 	define("SIMILE_ZONE_UNIT_EXPLAIN", "You must add a size for the zone to be added. Experiment with this size if you want different time zones to use different scales");
 	
-	define("SIMILE_ZONE_LABELS", "Timeline zone labels");
+	define("SIMILE_ZONE_LABELS", "Timeline zone labels (optional)");
 	
-	define("SIMILE_ZONE_LABEL_INSTRUCTION", "Add a text label for a zone");
+	define("SIMILE_ZONE_LABEL_INSTRUCTION", "Add a text label for a zone - You don't have to use a zone label if you don't want to.");
 	
 	define("SIMILE_ZONE_LABEL_CHOICE", "A label for which zone");
 	
@@ -103,18 +109,30 @@
 	
 	define("SIMILE_EXISTING_EVENTS", "Existing events");
 	
-	define("SIMILE_ZONE_APPEAR_EVENT","Which Time Zones should this event appear in?");
+	define("SIMILE_NEW_EVENTS", "Create a new event");
+	
+	define("SIMILE_ZONE_APPEAR_EVENTS","Which Time Zones should this event appear in?");
 	define("SIMILE_ZONE_ZONE", "Zone"); 
 	define("SIMILE_EVENT_TITLE", "Title (This is the text that will appear omn the timeline)");
 	define("SIMILE_EVENT_DESCRIPTION", "Description (This is text which appears in the bubble when the timeline is clicked on)");
 	define("SIMILE_EVENT_LINK", "Link (Web address to make available in the bubble)");
 	define("SIMILE_EVENT_IMAGE", "Image (Web address of picture used in the bubble)");
-	define("SIMILE_EVENT_START", "Start (date of event, or date when event starts - please see date format mentioned above)");
+	define("SIMILE_EVENT_START", "Start");
+	
+	define("SIMILE_DATE_EXPLAIN", "date of event, or date when event starts - please see date format mentioned above");
+	
 	define("SIMILE_EVENT_LATEST_START", "Latest start");
+	
 	define("SIMILE_EVENT_EARLIEST_END", "Earliest end");
+	
 	define("SIMILE_EVENT_END", "End");
+	
 	define("SIMILE_EVENT_DURATION_EVENT", "Duration Event (if you want the event to be a line between two dates - start and end - check this box ). ");
+	
 	define("SIMILE_TEXT_COLOUR", "Text Colour");
+	
 	define("SIMILE_PREVIEW", "Preview");
+	
+	define("SIMILE_CONTINUE", "Save and continue");
 
 ?>
