@@ -5,9 +5,16 @@
 	var connectorPlainText = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-            // turn off the buttons after we've called x_pageLoaded()
+            this.setPageNav();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+
+        this.setPageNav = function() {
             if (x_currentPageXML.getAttribute("pageNav") == "none") {
-                console.log("turn off buttons");
                 $x_menuBtn.hide();
                 $x_nextBtn
                         .button("disable")
@@ -18,15 +25,9 @@
                         .removeClass("ui-state-focus")
                         .removeClass("ui-state-hover");
             }
-		}
-		
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			
-		}
+        }
 
         this.afterNavigation = function(strPage) {
-            console.log("we were returned to the model");
             $x_menuBtn.show();
         }
 
@@ -47,14 +48,13 @@
             // call this function in every model once everything's loaded
             x_pageLoaded();
 
-            this.pageChanged();
+            // *** Not sure why but the prevBtn isn't disabled when model loads but is when we return to this page !?!
+            this.setPageNav();
         }
 	}
 
-    connectorPlainText.init(); // Temporary solution until XMP ready
-
+    connectorPlainText.init(); // Temporarily call init() until XMP ready
 </script>
 
 <div id="pageContents">
-	
 </div>
