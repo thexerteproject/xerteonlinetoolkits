@@ -83,3 +83,20 @@ function resizeRLO(w,h){
   document.writeln('</object>');
   document.writeln('</div>');
 }
+function getUrlParam(pairName){
+var searchString = location.search;
+var pairVal = "";
+
+searchString = searchString.substring(1);
+
+var nvPairs = searchString.split("&");
+
+  for (i = 0; i < nvPairs.length; i++)
+  {
+     var nvPair = nvPairs[i].split("=");
+	 if (nvPair[0] == pairName){
+	   pairVal = nvPair[1];
+	 }  
+  }
+  return pairVal;
+}
