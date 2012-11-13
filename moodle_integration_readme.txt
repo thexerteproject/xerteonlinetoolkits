@@ -33,9 +33,11 @@ require("/home/youraccountname/public_html/config.php");
 For a xampp/maxos install this should be something like: 
 require("/xampp/htdocs/moodle/config.php");
 
-Step 3 comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
+Step 3.
+In the XOT config.php comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
 
-Step 4. view http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
+Step 4.
+View http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
 
 Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented our code at the bottom of config.php
 
