@@ -1,0 +1,281 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var QRcode = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.sizeChanged(true);
+		}
+		
+		$("#pageContents").data("firstLoad", true);
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			var $pageContents = $("#pageContents");
+			var firstLoad = $pageContents.data("firstLoad");
+			
+			var prevSize = $("#x_pageDiv div:first").data("size");
+			var resize = false;
+			if (prevSize == undefined || prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
+				resize = true;
+			}
+			if (resize == true) {
+				//if (x_currentPageXML.getAttribute("imagesize") == "full screen") { // set image size for full screen
+                if (x_currentPageXML.getAttribute("align") == "Hide text") {
+					var hidePanel = x_currentPageXML.getAttribute("hidePanel");
+					if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != "")) {
+						hidePanel = "false";
+					}
+					if (firstLoad == true && x_currentPage == 0) {
+						if (hidePanel == "false" && (x_currentPageXML.getAttribute("sound") == undefined || x_currentPageXML.getAttribute("sound") == "")) {
+							imgMaxW = $x_pageHolder.width();
+							imgMaxH = $x_pageHolder.height();
+						} else {
+							var offset = this.calculateOffset(hidePanel);
+							imgMaxW = $x_pageHolder.width() - offset[0];
+							imgMaxH = $x_pageHolder.height() - offset[1];
+						}
+					} else {
+						if (hidePanel == "false" && (x_currentPageXML.getAttribute("sound") == undefined || x_currentPageXML.getAttribute("sound") == "")) {
+							x_scaleImg($("#pageImg"), $x_pageHolder.width(), $x_pageHolder.height(), true, false);
+						} else {
+							var offset = this.calculateOffset(hidePanel);
+							x_scaleImg($("#pageImg"), $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
+						}
+
+					}
+				}
+			}
+			
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				if (pageChg == true) {
+					this.loadAudio($("#pageImg").width());
+				} else if ($("#pageAudio").width() != $("#pageImg").width()) {
+					// ** need to change the narration bar width here **
+				}
+			}
+			
+			if (resize == true) {
+				if (firstLoad != true) {
+					// reload magnifier
+					QRcode.setUpMagnifier(true);
+				} else {
+					$pageContents.data("firstLoad", false);
+				}
+			}
+		}
+		
+		this.setUpAudio = function() {
+			QRcode.loadAudio($pageImg.width());
+			QRcode.setUpMagnifier(true);
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.loadAudio = function(width) {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			if (soundFile != undefined && soundFile != "") {
+				$("#pageAudio").mediaPlayer({
+					type		:"audio",
+					source		:soundFile,
+					width		:width
+				});
+			}
+		}
+		
+		this.calculateOffset = function(hidePanel) {
+			// calculates available space when image is full screen
+			var offset = [20, 20];
+			if (hidePanel != "true") {
+				offset.splice(0, 1, offset[0] + parseInt($(".panel").css("padding-left")) + 20 * 2);
+				offset.splice(1, 1, offset[1] + parseInt($(".panel").css("padding-top")) + 20 * 2);
+			}
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				offset.splice(1, 1, offset[1] + x_audioBarH);
+				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != "") {
+					offset.splice(1, 1, offset[1] + 35);
+				}
+			}
+			return offset;
+		}
+		
+		this.setUpMagnifier = function(setEvent) {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(".magnifier").remove();
+				$(".magnifiedImg").remove();
+				$("#pageImg").imageLens();
+
+			}
+		}
+	}
+	
+	var $pageContents	= $("#pageContents");
+	var $textHolder		= $("#textHolder");
+	var $panel			= $("#pageContents .panel");
+	var $pageImg		= $("#pageImg");
+    var pastedurl = x_currentPageXML.getAttribute("url");
+    var qrcodelink = "http://splashurl.net/qr.png?q="+pastedurl+"&s=12";
+var $shorturltodisplay=$("#shorturltodisplay");
+    //should probably move the following css to the relevant stylesheet
+    //these only affect the short url display
+    $shorturltodisplay.css("font-size", "40px");
+    $shorturltodisplay.css("text-align", "center");
+    var shorturl = "rss_proxy.php?rss=http://is.gd/api.php?longurl="+pastedurl;
+    $.ajax({
+        url: shorturl,
+        cache: false
+    }).done(function( html ) {
+                html="<a href="+html+">"+html+"</a>";
+                $shorturltodisplay.html(html);
+            });
+
+    // image scaling
+    //RM: rather than change/remove image size code just set the value based on alignment value
+    if (x_currentPageXML.getAttribute("align")=="Hide text"){
+        var imageSize = "full screen";
+    }else{
+        var imageSize = "actual size";
+    }
+	var hidePanel = x_currentPageXML.getAttribute("hidePanel");
+	var transcriptTxt = x_currentPageXML.getAttribute("transcript");
+	if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
+		hidePanel = "false";
+	}
+	var scale = true;
+	var imgMaxW,	imgMaxH;
+	if (imageSize == "actual size") {
+		scale = false;
+	} else if (imageSize == "full screen") {
+		if (parseInt($x_pageHolder.css("margin-top")) != 0) {
+			if (hidePanel == "false" && (x_currentPageXML.getAttribute("sound") == undefined || x_currentPageXML.getAttribute("sound") == "")) {
+				imgMaxW = $x_pageHolder.width();
+				imgMaxH = $x_pageHolder.height();
+			} else {
+				var offset = QRcode.calculateOffset(hidePanel);
+				imgMaxW = $x_pageHolder.width() - offset[0];
+				imgMaxH = $x_pageHolder.height() - offset[1];
+			}
+		}
+	} else { // auto
+		imgMaxW = 500; // desktop / tablet
+		imgMaxH = 400;
+		if (x_browserInfo.mobile == true) {
+			imgMaxW = 250; // mobile
+			imgMaxH = 250;
+		}
+	}
+	
+	// text align
+	if (imageSize != "full screen") {
+		var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+		if (textAlign == "Top" || textAlign == "Bottom") {
+			if (textAlign == "Top") {
+				$pageContents.prepend($textHolder);
+			} else {
+				$textHolder.css("padding-top", "20px");
+			}
+			$("#imgHolder").addClass("centerAlign");
+		} else if (textAlign == "Right") {
+			$panel.addClass("x_floatLeft");
+		} else {
+			$panel.addClass("x_floatRight");
+		}
+	} else {
+		$("#imgHolder").addClass("centerAlign");
+		$textHolder.remove();
+	}
+
+	// transcript stuff
+	if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
+		var $transcript = $("#transcript");
+		$transcript
+			.hide()
+			.html(x_addLineBreaks(transcriptTxt));
+
+		// if language attributes aren't in xml will have to use english fall back
+		var transcriptbuttonlabel = x_currentPageXML.getAttribute("transcriptbuttonlabel");
+		if (transcriptbuttonlabel == undefined) {
+			transcriptbuttonlabel = "Transcript";
+		}
+
+		$("#transcriptBtn")
+			.button({
+				label: 	transcriptbuttonlabel
+			})
+			.data({
+				"up"			:true,
+				"transcriptTag"	:$transcript
+			})
+			.click(function() {
+				$this = $(this);
+				if ($this.data("up") == true) {
+					$this.data("transcriptTag").slideDown();
+					$this.data("up", false);
+				} else {
+					$this.data("transcriptTag").slideUp();
+					$this.data("up", true);
+				}
+			});
+	} else {
+		$("#transcriptHolder").remove();
+	}
+	
+	if (hidePanel == "true") {
+		$panel
+			.addClass("noBorder")
+			.removeClass("panel")
+			.removeClass("inline");
+	}
+	$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+	$pageImg.attr({
+        "src":	qrcodelink,
+		"alt":	x_currentPageXML.getAttribute("tip")
+		});
+	
+</script>
+
+<style type="text/css">
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	.noBorder {
+		display:	inline-block;
+		margin:		0px;
+	}
+	
+	#transcriptHolder {
+		text-align:	right;
+	}
+	
+	#transcript {
+		padding-top:	10px;
+		text-align:		left;
+	}
+	
+	#transcriptBtn {
+		margin-top:	10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+
+	<div id="imgHolder" class="mobileAlign">
+		<div class="panel inline">
+            <div id="shorturltodisplay" class="su"></div>
+			<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, scale, true); QRcode.setUpAudio();" />
+			<div id="pageAudio"></div>
+			<div id="transcriptHolder">
+				<div id="transcript"></div>
+				<button id="transcriptBtn"></button>
+			</div>
+		</div>
+	</div>
+	
+	<div id="textHolder">
+	
+	</div>
+	
+</div>
