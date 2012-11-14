@@ -1,18 +1,5 @@
 <script type="text/javascript">
 	
-	/*
-	** NOT FINISHED **
-	need to add functionality for these attributes:
-	
-	tip="Breaking up christmas video"
-	reset="true"
-	
-	optional:
-	endFrame="15"
-	startFrame="10"
-	
-	*/
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textVideo = new function() {
@@ -28,22 +15,13 @@
 		
 		this.loadVideo = function(firstLoad) {
 			var $video = $("#pageVideo");
-			var videoDimensions = $video.data("dimensions", videoDimensions);
-			if (videoDimensions != undefined) {
-				$video.mediaPlayer({
-					type			:"video",
-					source			:$video.data("src"),
-					width			:videoDimensions[0],
-					height			:videoDimensions[1],
-					startEndFrame	:$video.data("startEndFrame")
-				});
-			} else {
-				$video.mediaPlayer({
-					type			:"video",
-					source			:$video.data("src"),
-					startEndFrame	:$video.data("startEndFrame")
-				});
-			}
+			$video.mediaPlayer({
+				type			:"video",
+				source			:$video.data("src"),
+				width			:$video.data("dimensions")[0],
+				height			:$video.data("dimensions")[1],
+				startEndFrame	:$video.data("startEndFrame")
+			});
 			if (firstLoad == true) {
 				x_pageLoaded(); // call this function in every model once everything's loaded
 			}
@@ -99,18 +77,21 @@
 	}
 	
 	var $pageVideo = $("#pageVideo");
-	var videoDimensions = [];
+	var videoDimensions = [320,240];
 	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-		videoDimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-		if (videoDimensions[0] == 0 || videoDimensions[1] == 0) {
-			videoDimensions = undefined;
+		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+		if (dimensions[0] != 0 && dimensions[1] != 0) {
+			videoDimensions = dimensions;
 		}
 	}
-	$pageVideo.data({
-		"src"			:x_currentPageXML.getAttribute("url"),
-		"dimensions"	:videoDimensions,
-		"startEndFrame"	:[x_currentPageXML.getAttribute("startFrame"), x_currentPageXML.getAttribute("endFrame")]
-	});
+	$pageVideo
+		.data({
+			"src"			:x_currentPageXML.getAttribute("url"),
+			"dimensions"	:videoDimensions,
+			"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
+		})
+		.attr("title", x_currentPageXML.getAttribute("tip"));
+	
 	textVideo.loadVideo(true);
 	
 </script>

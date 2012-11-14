@@ -111,7 +111,7 @@ $(document).ready(function() {
 				} else {
 					newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
 				}
-				newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/\n/g, "&#10;");
+				newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
 				if (i == indexAttr.length - 1) {
 					newString += text.substring(indexAttr[i].end, text.length);
 				}
@@ -191,7 +191,7 @@ function x_setUp() {
 	$x_nextBtn		= $("#x_nextBtn");
 	$x_background	= $("#x_background");
 	
-	$x_body.css("font-size", Number(x_params.textSize) + "pt");
+	$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 	
 	if (screen.width <= 550) {
 		x_browserInfo.mobile = true;
@@ -922,7 +922,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 
 // function swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-	return text.replace(/\n/g, "<br />");
+	return text.replace(/(\n|\r|\r\n)/g, "<br />");
 }
 
 function x_addPageLinks(pageText, returnMethod) {
