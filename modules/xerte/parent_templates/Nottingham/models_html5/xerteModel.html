@@ -1,0 +1,35 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var xerteModel = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+	}
+	
+	console.log(eval(x_currentPageXML.getAttribute("modelFile")));
+	if (x_currentPageXML.getAttribute("modelFile").toLowerCase().indexOf(".html") >= 0) {
+		$("#pageContents").load(eval(x_currentPageXML.getAttribute("modelFile")));
+	} else {
+		$("#x_pageDiv div").html("You can not view this type of content in the HTML5 viewer"); // ** need translated error message for if trying to load xerte model
+	}
+	
+	// call this function in every model once everything's loaded
+	x_pageLoaded();
+	
+</script>
+
+<style type="text/css">
+	
+</style>
+
+<div id="pageContents">
+	
+</div>

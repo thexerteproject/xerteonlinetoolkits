@@ -3,9 +3,7 @@
 	$.fn.mediaPlayer = function(options) {
 		var defaults = {
 			type			:"audio",
-			source			:"",
-			autoPlay		:false,
-			autoNavigate	:false
+			source			:""
 		};
 		var opts = $.extend({}, defaults, options);
 		
@@ -26,14 +24,14 @@
 		}
 		
 		opts.source = eval(opts.source);
-		
 		var fileType = opts.type + "/" + opts.source.substring(opts.source.indexOf(".")+1);
 		this.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + fileType + '" src="' + opts.source + '" /></' + opts.type + '>');
+		
 		this.find(opts.type).mediaelementplayer({
 			startVolume:		x_volume,
 			alwaysShowControls:	true,
 			pauseOtherPlayers:	true,
-			success: 		function (mediaElement, domObject) {
+			success:	function (mediaElement, domObject) {
 				if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
 					mediaElement.addEventListener("ended", function() {
 						$x_nextBtn.trigger("click");
@@ -65,7 +63,25 @@
 				if (opts.autoPlay == "true") { // autoplay media (won't work on iOS on 1st load)
 					mediaElement.play();
 				}
+				
+				if (opts.startEndFrame != undefined) { // start / end playing video at specified frame
+					var startFrame	= opts.startEndFrame[0];
+					var endFrame	= opts.startEndFrame[1];
+					if (startFrame != 0) {
+						mediaElement.addEventListener("canplay", function() {
+							mediaElement.setCurrentTime(startFrame);
+						});
+					}
+					if (endFrame != 0) {
+						mediaElement.addEventListener("timeupdate", function(e) {
+							if (mediaElement.currentTime > endFrame) {
+								mediaElement.pause();
+							}
+						}, false);
+					}
+				}
 			}
 		});
 	}
+	
 })(jQuery);
