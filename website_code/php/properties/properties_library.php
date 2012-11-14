@@ -313,7 +313,7 @@ function access_display($xerte_toolkits_site){
 
     echo " " . PROPERTIES_LIBRARY_ACCESS_PASSWORD . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id'])) =="Other"){
+    if(substr(template_access_settings(mysql_real_escape_string($_POST['template_id'])),0,5) == "Other"){
 
         echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
