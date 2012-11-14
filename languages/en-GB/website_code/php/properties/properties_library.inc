@@ -43,6 +43,8 @@
 	
 	define("PROPERTIES_LIBRARY_PROJECT_LINK", "To allow other people to access this file, the link is");
 	
+	define("PROPERTIES_LIBRARY_PROJECT_HTML5_LINK", "To allow other people to access the HTML 5 version, the link is");
+	
 	define("PROPERTIES_LIBRARY_PROJECT_IFRAME", "This code will allow you to embed your project into a web page");
 			
 	define("PROPERTIES_LIBRARY_PROJECT_FAIL", "Sorry you do not have rights to this template");

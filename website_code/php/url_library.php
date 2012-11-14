@@ -23,6 +23,13 @@
 						return "play.php?template_id=" . $template_number;
 					}
 					break;
+					
+			case "playhtml5":	if($xerte_toolkits_site->apache=="true"){
+						return $string . "_html5_" . $template_number;
+					}else{
+						return "play_html5.php?template_id=" . $template_number;
+					}
+					break;
 
 			case "preview":if($xerte_toolkits_site->apache=="true"){
 						return $string . "_" . $template_number;
