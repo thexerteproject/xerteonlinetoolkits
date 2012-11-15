@@ -48,10 +48,10 @@
 	}
 	
 	swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "", function(e) {
-		if (e.success == true) {
+		/*if (e.success == true) {
 			var swf = e.ref;
-			//swf.init("Function called from page"); // ** this is not working to call the function is swf - possibly to do with swfObject **
-		}
+			swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
+		}*/
 	});
 	
 	$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
