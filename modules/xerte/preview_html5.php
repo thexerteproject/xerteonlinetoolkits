@@ -20,12 +20,19 @@
 * @version 1.0
 * @author Patrick Lockley
 */
-
+require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 function show_preview_code($row, $row_username){
 
 	global $xerte_toolkits_site;
 
-	$string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.xml" . "?time=" . time();
+    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
+
+    $xmlfile = $string_for_flash . "preview.xml";
+
+    $xmlFixer = new XerteXMLInspector();
+    $xmlFixer->loadTemplateXML($xmlfile);
+
+    $string_for_flash_xml = $xmlfile . "?time=" . time();
 
 	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
 	
