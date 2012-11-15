@@ -583,8 +583,9 @@ function x_setUp() {
 			"filter"	:"alpha(opacity=" + alpha + ")"
 			});
 	}
-	
-	x_changePage();
+
+    x_navigateToPage({type:'page', ID:0});
+    x_navigateToPage(x_startPage);
 }
 
 // function called on page change to load page model - x_currentPage should be changed to index of page to load before calling this function
@@ -928,36 +929,33 @@ function x_addLineBreaks(text) {
 function x_addPageLinks(pageText, returnMethod) {
     var regExp = new RegExp('href="asfunction:_level0\.engine\.fnTextCon,([a-z0-9]+)" target="_blank"','ig');
     if (returnMethod.length > 0) {
-        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');' + returnMethod + ';return false;"');
+        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage({type : \'linkID\', ID : \'$1\'});' + returnMethod + ';return false;"');
     }
     else {
-        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(\'$1\');return false;"');
-
+        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage({type : \'linkID\', ID : \'$1\'});return false;"');
     }
 }
 
-function x_navigateToPage(strPage) {
-    if (isNaN(strPage)) {
-        var page = x_lookupPage(strPage);
+function x_navigateToPage(pageInfo) { // {type, ID}
+    if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+        var page = x_lookupPage(pageInfo.type, pageInfo.ID);
         if (page != null)
         {
             x_currentPage = page;
             x_changePage();
         }
-        else {
-            console.log("'" + strPage + "' was not found!")
-        }
     }
     else {
-        x_currentPage = parseInt(strPage);
+        x_currentPage = parseInt(pageInfo.ID);
         x_changePage();
     }
 }
 
-function x_lookupPage(strPageIdentifier) {
+function x_lookupPage(pageType, pageID) {
     var i, len = x_pageInfo.length;
     for (i = 0; i < len; i++) {
-        if (x_pageInfo[i].pageID && x_pageInfo[i].pageID == strPageIdentifier || x_pageInfo[i].linkID && x_pageInfo[i].linkID == strPageIdentifier) {
+        if ((pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+            (pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)) {
             break;
         }
     }

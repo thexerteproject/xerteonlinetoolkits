@@ -61,6 +61,19 @@ function show_template($row_play){
 			var FileLocation = "<?PHP echo $string_for_flash ?>";
 			var x_templateLocation = "<?PHP echo $template_path_string ?>/";
 			var x_projectXML = "<?PHP echo $string_for_flash_xml ?>/";
+			var x_startPage = {type : "<?PHP if(isset($_GET['linkID'])) {
+                echo "linkID\", ID : \"".mysql_real_escape_string($_GET['linkID'])."\"";
+            }
+            else if(isset($_GET['pageID'])) {
+                echo "pageID\", ID : \"".mysql_real_escape_string($_GET['pageID'])."\"";
+            }
+            else if(isset($_GET['page']) && is_numeric($_GET['page'])) {
+                echo "page\", ID : ".mysql_real_escape_string($_GET['page']);
+            }
+            else {
+                echo "page\", ID : 0";
+            }
+        ?>};
 		</script>
 		
 	</head>
