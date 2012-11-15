@@ -6,14 +6,19 @@ require("module_functions.php");
 // Version 1.0 University of Nottingham
 // (pl)
 // Set up the preview window for a xerte piece
-
+require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 function show_template($row_play){
     global $xerte_toolkits_site;
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml?time=" . time();
-
     $string_for_flash = $xerte_toolkits_site-> users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
-	
+
+    $xmlfile = $string_for_flash . "data.xml";
+
+    $xmlFixer = new XerteXMLInspector();
+    $xmlFixer->loadTemplateXML($xmlfile);
+
+    $string_for_flash_xml = $xmlfile . "?time=" . time();
+
 	$template_path_string = "modules/xerte/parent_templates/" . $row_play['template_name'];
 
     list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
