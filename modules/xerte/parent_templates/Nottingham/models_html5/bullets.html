@@ -72,7 +72,10 @@
 		endTag = "</li>";
 	}
 	for (var i=0; i<bulletArray.length; i++) {
-		contentsStr += startTag + bulletArray[i] + endTag;
+		console.log(bulletArray[i]);
+		if (bulletArray[i] != "" && $.trim(bulletArray[i]) != "") {
+			contentsStr += startTag + bulletArray[i] + endTag;
+		}
 	}
 	if (x_currentPageXML.getAttribute("showBullets") != 0) {
 		contentsStr += "</ul>";
