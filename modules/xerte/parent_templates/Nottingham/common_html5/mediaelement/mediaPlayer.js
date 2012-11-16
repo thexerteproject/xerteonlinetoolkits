@@ -86,6 +86,10 @@
 						}, false);
 					}
 				}
+				
+				if (opts.pageName) {
+					eval(opts.pageName).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
+				}
 			}
 		});
 	}

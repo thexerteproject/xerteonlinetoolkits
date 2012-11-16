@@ -1,0 +1,133 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var videoSynch = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#infoHolder div").hide();
+			this.loadVideo();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			
+		}
+		
+		this.loadVideo = function(firstLoad) {
+			var $video = $("#pageVideo");
+			$video.mediaPlayer({
+				type			:"video",
+				source			:$video.data("src"),
+				width			:$video.data("dimensions")[0],
+				height			:$video.data("dimensions")[1],
+				pageName		:"videoSynch"
+			});
+			if (firstLoad == true) {
+				var $pageContents = $("#pageContents");
+				$pageContents.css("padding-left", $video.data("dimensions")[0] + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
+				$("#videoHolder").width($pageContents.css("padding-left"));
+				x_pageLoaded(); // call this function in every model once everything's loaded
+			}
+		}
+		
+		// function called from mediaPlayer.js when video player has been set up
+		this.mediaFunct = function(mediaElement) {
+			var $captions 	= $($("#pageContents").data("captions"));
+			var pause 		= x_currentPageXML.getAttribute("pause");
+			var erase    	= x_currentPageXML.getAttribute("erase");
+			
+			mediaElement.addEventListener("timeupdate", function(e) {
+				var currentTime = mediaElement.currentTime;
+				$captions.each(function(){
+					var $thisCaption = $(this);
+					if (erase == "False") {
+						if (currentTime > $thisCaption.data("synch")) {
+							if ($thisCaption.is(":hidden") == true) {
+								$thisCaption.show();
+								if (pause == "True") {
+									mediaElement.pause();
+								}
+							}
+						} else {
+							$thisCaption.hide();
+						}
+					} else {
+						if (currentTime > $thisCaption.data("synch") && (currentTime < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
+							if ($thisCaption.is(":hidden") == true) {
+								$thisCaption.show();
+								if (pause == "True") {
+									mediaElement.pause();
+								}
+							}
+						} else {
+							$thisCaption.hide();
+						}
+					}
+				})
+			});
+		}
+	}
+	
+	$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
+	
+	var $infoHolder = $("#infoHolder");
+	var captions = new Array();
+	$(x_currentPageXML).children().each(function(){
+		var $caption = $("<div>" + $(this).attr("text") + "</div>")
+			.hide()
+			.data("synch", $(this).attr("synch"));
+		
+		$infoHolder.append($caption);
+		captions.push($caption[0]);
+	});
+	$("#pageContents").data("captions", captions);
+	
+	var $pageVideo = $("#pageVideo");
+	var videoDimensions = [320,240]; // ** need to add movie size attribute to wizard so it doesn't always default to this **
+	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+		if (dimensions[0] != 0 && dimensions[1] != 0) {
+			videoDimensions = dimensions;
+		}
+	}
+	$pageVideo.data({
+		"src"			:x_currentPageXML.getAttribute("url"),
+		"dimensions"	:videoDimensions
+	});
+	videoSynch.loadVideo(true);
+	
+</script>
+
+<style type="text/css">
+	
+	#mainText {
+		padding: 10px;
+	}
+	
+	#infoHolder {
+		padding: 0 10px;
+	}
+	
+	#infoHolder div {
+		margin-bottom:	10px;
+	}
+	
+</style>
+
+<div id="pageContents" class="splitScreen">
+	
+	<div id="videoHolder" class="left">
+		<div class="panel">
+			<div id="pageVideo"></div>
+		</div>
+		<div id="mainText">
+			
+		</div>
+	</div>
+	
+	<div id="infoHolder" class="right">
+		
+	</div>
+	
+</div>
