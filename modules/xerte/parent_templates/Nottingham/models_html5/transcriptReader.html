@@ -1,0 +1,127 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var transcriptReader = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#infoHolder").scrollTop(0);
+			$("#infoHolder .highlight").removeClass("highlight");
+			this.loadAudio();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$("#infoHolder").height($panel.height() - x_audioBarH);
+			}
+			$("#infoHolder").scrollTop(0);
+			$("#infoHolder div").each(function() {
+				var $caption = $(this);
+				$caption.data("scrollPos", $caption.position().top);
+			});
+			
+			this.loadAudio();
+		}
+		
+		this.loadAudio = function() {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			$("#pageAudio").mediaPlayer({
+				type		:"audio",
+				source		:soundFile,
+				pageName	:"transcriptReader"
+			});
+			if ($("#pageContents").data("loaded") != true) {
+				$("#pageContents").data("loaded", true);
+				x_pageLoaded(); // call this function in every model once everything's loaded
+			}
+		}
+		
+		// function called from mediaPlayer.js when video player has been set up
+		this.mediaFunct = function(mediaElement) {
+			var $captions 	= $($("#pageContents").data("captions"));
+			mediaElement.addEventListener("timeupdate", function(e) {
+				var currentTime = mediaElement.currentTime;
+				$captions.each(function(){
+					var $thisCaption = $(this);
+					if (currentTime > $thisCaption.data("synch")) {
+						$("#infoHolder .highlight").removeClass("highlight");
+						$thisCaption.addClass("highlight");
+						// ** this isn't always scrolling to correct position when full screen **
+						$("#infoHolder").scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+					} else {
+						$thisCaption.removeClass("highlight");
+					}
+				});
+			});
+		}
+	}
+	
+	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
+	
+	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+	if (panelWidth == "Full") {
+		$("#pageContents .panel").appendTo($("#pageContents"));
+		$("#pageContents .splitScreen").remove();
+	} else {
+		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+		if (panelWidth == "Small") {
+			$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+		} else if (panelWidth == "Large") {
+			$("#pageContents .splitScreen").addClass("small");
+		} else {
+			$("#pageContents .splitScreen").addClass("medium");
+		} 
+	}
+	
+	var $infoHolder = $("#infoHolder");
+	var captions = new Array();
+	$(x_currentPageXML).children().each(function(){
+		var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>").data("synch", $(this).attr("synch"));
+		$infoHolder.append($caption);
+		$caption.data("scrollPos", $caption.position().top);
+		captions.push($caption[0]);
+	});
+	$("#pageContents").data("captions", captions);
+	
+	if (x_currentPage != 0) {
+		setTimeout(function () { // audio won't load properly without a delay here
+			transcriptReader.sizeChanged();
+		},1);
+	}
+	
+</script>
+
+<style type="text/css">
+	
+	#infoHolder {
+		overflow:	auto;
+	}
+	
+	#infoHolder div {
+		padding:		10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left">
+			
+		</div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="infoHolder">
+				</div>
+				<div id="pageAudio"></div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>

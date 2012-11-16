@@ -74,7 +74,7 @@
 	var $infoHolder = $("#infoHolder");
 	var captions = new Array();
 	$(x_currentPageXML).children().each(function(){
-		var $caption = $("<div>" + $(this).attr("text") + "</div>")
+		var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>")
 			.hide()
 			.data("synch", $(this).attr("synch"));
 		
