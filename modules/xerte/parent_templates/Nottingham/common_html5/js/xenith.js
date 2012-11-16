@@ -134,6 +134,9 @@ $(document).ready(function() {
                 if (pageID != undefined && pageID != "Unique ID for this page") page.pageID = pageID;
 				x_pageInfo.push(page);
 			});
+			if (x_params.navigation == undefined) {
+				x_params.navigation = "Linear";
+			}
 			if (x_params.navigation != "Linear" && x_params.navigation != undefined) { // 1st page is menu
 				x_pages.splice(0, 0, "menu");
 				var page = new Object();
