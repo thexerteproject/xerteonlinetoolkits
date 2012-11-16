@@ -12,6 +12,8 @@
   
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
+  <glossaryButton label="Glossary" description="Glossary Button. "/>
+  
   <continueButton label="Continue" description="Continue Button"/>
   
   <toc label="Table of Contents" description="table of contents. Use the arrow keys to select a page. Press space to go to that page.">
@@ -20,7 +22,25 @@
 	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
   </toc>
   
+  <glossary label="Glossary" description="A list of words and their definitions.">
+	  <closeButton label="" description="Close glossary list button"/>
+  </glossary>
+  
+  <kbLanguage label="Special Characters" description="A list of buttons which add special characters to text areas">
+	  <closeButton label="" description="Close special character list button"/>
+  </kbLanguage>
+  
   <textToSpeech label="null" description="Text to Speech"/>
+  
+  <errorProject label="The project data has not loaded."/>
+  
+  <errorPage label="No template is currently available for this page type."/>
+  
+  <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
+  
+  <tick label="Tick"/>
+  
+  <cross label="Cross"/>
 
   <themes label="--Colour Schemes--" description="Colour Scheme Options">
     <item>default</item>
@@ -79,6 +99,14 @@
 	<loader label="Loading: "/>
   </movieController>
   
+  <mediaElementControls>
+	<stopButton label="Stop" description="Stop Media Button"/>
+	<playPauseButton label="Play/Pause" description="Play/Pause Media Button"/>
+	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
+	<fullscreenButton label="Fullscreen" description="Fullscreen Movie Button"/>
+	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
+  </mediaElementControls>
+  
   <interactions>
 	  <button name="Button"/>
 	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
@@ -89,7 +117,6 @@
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
-	  
   </interactions>
 
 </language>

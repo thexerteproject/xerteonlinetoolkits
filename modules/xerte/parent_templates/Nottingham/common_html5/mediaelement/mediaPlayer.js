@@ -31,6 +31,12 @@
 			startVolume:		x_volume,
 			alwaysShowControls:	true,
 			pauseOtherPlayers:	true,
+			enableAutosize:		true,
+			playpauseText:		x_mediaText[1].label,
+			muteText:			x_mediaText[2].label,
+			fullscreenText:		x_mediaText[3].label,
+			stopText:			x_mediaText[0].label,
+			tracksText:			x_mediaText[4].label,
 			success:	function (mediaElement, domObject) {
 				if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
 					mediaElement.addEventListener("ended", function() {

@@ -15,6 +15,7 @@ var x_firstLoad		= true;
 var x_fillWindow	= false;
 var x_volume		= 1;
 var x_audioBarH		= 30;
+var x_mediaText		= [];
 var x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
@@ -583,6 +584,16 @@ function x_setUp() {
 			"filter"	:"alpha(opacity=" + alpha + ")"
 			});
 	}
+	
+	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
+	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+	
+	for (var i=0; i<mediaElementText.length; i++) {
+		var mediaTextObj = new Object();
+		mediaTextObj.label = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]);
+		mediaTextObj.description = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0]);
+		x_mediaText.push(mediaTextObj);
+	}
 
     x_navigateToPage({type:'page', ID:0});
     x_navigateToPage(x_startPage);
@@ -669,16 +680,7 @@ function x_setUpPage() {
 		if (x_pageInfo[0].type == "menu") {
 			$x_menuBtn.button("enable");
 		}
-		if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-			$("#x_footerBlock div:first").before('<div id="x_pageNarration"></div>');
-			$("#x_footerBlock #x_pageNarration").mediaPlayer({
-				type		:"audio",
-				source		:x_currentPageXML.getAttribute("narration"),
-				width		:"100%",
-				autoPlay	:x_currentPageXML.getAttribute("playNarration"),
-				autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
-			});
-		}
+		x_addNarration();
 	}
 	
 	$("#x_headerBlock h2").html(pageTitle);
@@ -718,6 +720,19 @@ function x_pageLoaded() {
 		.fadeIn();
 }
 
+function x_addNarration() {
+	if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
+		$("#x_footerBlock div:first").before('<div id="x_pageNarration"></div>');
+		$("#x_footerBlock #x_pageNarration").mediaPlayer({
+			type		:"audio",
+			source		:x_currentPageXML.getAttribute("narration"),
+			width		:"100%",
+			autoPlay	:x_currentPageXML.getAttribute("playNarration"),
+			autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
+		});
+	}
+}
+
 // function returns correct phrase from language file or uses fallback if no matches / no language file
 function x_getLangInfo(node, attribute, fallBack) {
 	var string = fallBack;
@@ -735,7 +750,11 @@ function x_getLangInfo(node, attribute, fallBack) {
 function x_updateCss(updatePage) {
 	// adjust width of narration controls
 	if ($("#x_pageNarration").length > 0) {
-		// ** need to change the narration bar width here **
+		if ($("#x_pageNarration audio").is(":visible")) { // html5 audio tag being used (not flash)
+			// can't get narration bar width to resize (audio tag not flash) without reloading it
+			$("#x_pageNarration").remove();
+			x_addNarration();
+		}
 	}
 	if ($("audio,video").length > 0) {
 		$("audio,video").each(function() {
