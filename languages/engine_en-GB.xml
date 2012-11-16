@@ -10,6 +10,8 @@
 
   <mediaButton label="Media" description="Media Button. "/>
   
+  <homeButton label="Home" description="Home Button. "/>
+  
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
   <glossaryButton label="Glossary" description="Glossary Button. "/>
@@ -75,6 +77,7 @@
   </textSizes>
   
   <volumeControl label="Vol:" description="Volume Control"/>
+  <volumeControlSlider label="" description="Volume Control Slider"/>
   
   <vocab>
 	  <page>Page</page>
