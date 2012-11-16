@@ -595,7 +595,7 @@ function x_setUp() {
 		x_mediaText.push(mediaTextObj);
 	}
 
-    x_navigateToPage({type:'page', ID:0});
+    x_navigateToPage({type:'page', ID:1});
     x_navigateToPage(x_startPage);
 }
 
@@ -956,8 +956,9 @@ function x_addPageLinks(pageText, returnMethod) {
 }
 
 function x_navigateToPage(pageInfo) { // {type, ID}
+    var page;
     if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        var page = x_lookupPage(pageInfo.type, pageInfo.ID);
+        page = x_lookupPage(pageInfo.type, pageInfo.ID);
         if (page != null)
         {
             x_currentPage = page;
@@ -965,7 +966,10 @@ function x_navigateToPage(pageInfo) { // {type, ID}
         }
     }
     else {
-        x_currentPage = parseInt(pageInfo.ID);
+        page = parseInt(pageInfo.ID);
+        if (page > 0 && page <= x_pages.length) {
+            x_currentPage = page - 1;
+        }
         x_changePage();
     }
 }
