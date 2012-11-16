@@ -71,7 +71,7 @@ function show_template($row_play){
                 echo "page\", ID : ".mysql_real_escape_string($_GET['page']);
             }
             else {
-                echo "page\", ID : 0";
+                echo "page\", ID : 1";
             }
         ?>};
 		</script>
