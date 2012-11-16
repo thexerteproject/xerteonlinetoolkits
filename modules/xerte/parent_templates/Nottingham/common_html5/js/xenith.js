@@ -780,7 +780,7 @@ function x_updateCss(updatePage) {
 	if (updatePage == true) {
 		// calls function in current page model which does anything needed on size change
 		if (x_pageInfo[x_currentPage].type == "text") {
-			simpleText.sizeChanged(); // errors if you just call text.pageChanged()
+			simpleText.sizeChanged(); // errors if you just call text.sizeChanged()
 		} else {
 			eval(x_pageInfo[x_currentPage].type).sizeChanged();
 		}
