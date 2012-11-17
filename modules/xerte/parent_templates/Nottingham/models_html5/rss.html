@@ -3,78 +3,97 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var rss = new function() {
+		var $pageContents,
+			$textHolder,
+			$panel,
+			$resultsHolder,
+			rssURL;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
-		}
+		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 
-		}
+		};
 
 		this.listFeed = function(data) {
-			clearTimeout(errorTimer);
-			$("#loadingSpinner").hide();
-			var resultsString = "";
-			if (data.responseData.feed.entries == 0) {
-				resultsString = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
-			} else {
-				$pageContents.find("#headerHolder").html("<p>" + data.responseData.feed.description + "</p>"); // ** Need to take this from the language file
-				$.each(data.responseData.feed.entries, function (index, item) {
-					resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
-				});
+			clearTimeout(x_timer);
+			if (data.responseStatus == 200) {
+				$("#loadingSpinner").hide();
+
+				var resultsString = "";
+				if (data.responseData.feed.entries == 0) {
+					resultsString = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
+				} else {
+					$pageContents.find("#headerHolder").html("<p>" + data.responseData.feed.description + "</p>");
+					$.each(data.responseData.feed.entries, function (index, item) {
+						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
+					});
+				}
+				$resultsHolder
+					.html(resultsString)
+					.find("div:even").addClass("shadedDiv");
 			}
+			else {
+				this.errorLoading("Error loading \"" + rssURL +"\""); // ** Need to take this from the language file
+			}
+		};
+
+		this.errorLoading = function(msg) {
+			$("#loadingSpinner").hide();
 			$resultsHolder
-				.html(resultsString)
-				.find("div:even").addClass("shadedDiv");
-		}
-	}
+				.html('<div><p>' + msg + '</p></div>');
+		};
 
-	var $pageContents = $("#pageContents");
-	var $textHolder = $("#textHolder");
-	var $panel = $("#pageContents .panel");
-	var $resultsHolder = $pageContents.find("#resultsHolder");
+		this.init = function() {
+			rssURL = x_currentPageXML.getAttribute("url");
+			var googleFeedURL = document.location.protocol + "//ajax.googleapis.com/ajax/services/feed/load";
 
-	var rssURL = x_currentPageXML.getAttribute("url");
+			$pageContents = $("#pageContents");
+			$textHolder = $("#textHolder");
+			$panel = $("#pageContents .panel");
+			$resultsHolder = $pageContents.find("#resultsHolder");
+			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
 
-	var googleFeedURL = document.location.protocol + "//ajax.googleapis.com/ajax/services/feed/load";
+			$("#loadingSpinner").show();
+			$.ajax({
+				beforeSend: function() {
+					$("#loadingSpinner").show();
+					x_timer = setTimeout(function() {
+						rss.errorLoading("Error loading \"" + rssURL +"\""); // ** Need to take this from the language file
+					}, 5000);
+				},
+				url: googleFeedURL,
+				data: {
+						"q" : encodeURI(rssURL),
+						"num" : 10,
+						"v" : "1.0"
+					},
+				dataType: 'jsonp',
+				jsonpCallback: "rss.listFeed",
+				cache:false
+			});
 
-	var errorTimer = setTimeout(function() {
-		$("#loadingSpinner").hide();
-		$resultsTable
-			.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
-			.find("div:even").addClass("shadedDiv");
-    }, 5000);
+			$panel.addClass("width60");
+			if (x_currentPageXML.getAttribute("align") == "Right") {
+				$panel.addClass("x_floatLeft");
+			} else {
+				$panel.addClass("x_floatRight");
+			}
 
-	$.ajax({
-		beforeSend: function() {
-		     $('#loadingSpinner').show();
-  		},
-		url: googleFeedURL,
-		data: {
-				"q" : encodeURI(rssURL),
-				"num" : 10,
-				"v" : "1.0"
-			},
-		dataType: 'jsonp',
-		jsonpCallback: "rss.listFeed",
-		cache:false
-	});
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-	$panel.addClass("width60");
-	if (x_currentPageXML.getAttribute("align") == "Right") {
-		$panel.addClass("x_floatLeft");
-	} else {
-		$panel.addClass("x_floatRight");
-	}
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		};
+	};
 
-	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+	rss.init();
 
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
-
-</script>
+</script><!-- /*box-sizing: border-box; *behavior: url(/scripts/boxsizing.htc);*/ -->
 
 <style type="text/css">
 
@@ -90,7 +109,7 @@
 	#resultsHolder div {
 		width: 100%;
 		padding: 2px 2px 2px 2px;
-		box-sizing: border-box; *behavior: url(/scripts/boxsizing.htc);
+
 	}
 
 	#resultsHolder div p {
@@ -102,14 +121,18 @@
 	}
 
 	#loadingSpinner {
-		display:	none;
-		text-align:	center;
-		font-weight:	bold;
+		margin-left: auto ;
+  		margin-right: auto ;
+		width:180px;
 	}
 
-	#loadingSpinner div {
-		vertical-align: middle;
-		display: inline;
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
 	}
 
 </style>
@@ -118,9 +141,10 @@
 
 	<div id="rssHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
 		<div class="panel inline">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
 			<div id="headerHolder"></div>
 			<div id="resultsHolder"></div>
-			<div id="loadingSpinner"><div class="spinner"></div><p>Fetching results...</p></div>
+
 		</div>
 	</div>
 
