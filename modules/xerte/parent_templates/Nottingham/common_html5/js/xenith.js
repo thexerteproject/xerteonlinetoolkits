@@ -598,8 +598,7 @@ function x_setUp() {
 		x_mediaText.push(mediaTextObj);
 	}
 
-    x_navigateToPage({type:'page', ID:1});
-    x_navigateToPage(x_startPage);
+    x_navigateToPage(true, x_startPage);
 }
 
 // function called on page change to load page model - x_currentPage should be changed to index of page to load before calling this function
@@ -961,7 +960,7 @@ function x_addPageLinks(pageText, returnMethod) {
     }
 }
 
-function x_navigateToPage(pageInfo) { // {type, ID}
+function x_navigateToPage(force, pageInfo) { // {type, ID}
     var page;
     if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
         page = x_lookupPage(pageInfo.type, pageInfo.ID);
@@ -970,13 +969,21 @@ function x_navigateToPage(pageInfo) { // {type, ID}
             x_currentPage = page;
             x_changePage();
         }
+        else if (force == true) {
+            x_currentPage = 0;
+            x_changePage();
+        }
     }
     else {
         page = parseInt(pageInfo.ID);
         if (page > 0 && page <= x_pages.length) {
             x_currentPage = page - 1;
+            x_changePage();
         }
-        x_changePage();
+        else if (force == true) {
+	    x_currentPage = 0;
+	    x_changePage();
+        }
     }
 }
 
