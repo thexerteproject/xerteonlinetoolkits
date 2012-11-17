@@ -3,102 +3,130 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var delicious = new function() {
+		var $pageContents,
+			$textHolder,
+			$panel,
+			$resultsHolder,
+			deliciousSearch,
+			deliciousTerm;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
-		}
+		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 
-		}
+		};
 
 		this.showLinks = function(data) {
-			clearTimeout(errorTimer);
+			clearTimeout(x_timer);
 			$("#loadingSpinner").hide();
-			var tableString = "";
+
+			var resultsString = "";
+			$pageContents.find("#headerHolder").html("<p>" + "Delicious bookmarks for " + deliciousSearch + " '" + deliciousTerm + "'</p>"); // ** Need to take this from the language file
 			if (data.length == 0) {
-				tableString = '<tr><td>No results returned!!</td></tr>';  // ** Need to take this from the language file
+				resultsString = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
 			} else {
 				$.each(data, function (index, value) {
-					tableString += '<tr><td><a href="' + value.u + '">' + value.d + '</a></td></tr>';
+					resultsString += '<div><p><a href="' + value.u + '">' + value.d + '</a></p></div>';
 				});
 			}
-			$resultsTable
-				.html(tableString)
-				.find("tr:even").addClass("shaded");
+			$resultsHolder
+				.html(resultsString)
+				.find("div:even").addClass("shadedDiv");
+		};
+
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			$textHolder = $("#textHolder");
+			$panel = $("#pageContents .panel");
+			$resultsHolder = $pageContents.find("#resultsHolder");
+			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
+
+			deliciousSearch = x_currentPageXML.getAttribute("search");
+			deliciousTerm = x_currentPageXML.getAttribute("term");
+			var deliciousCount = x_currentPageXML.getAttribute("results");
+
+			var deliciousURL;
+			if (deliciousSearch == 'popular') {
+				deliciousURL = "http://feeds.delicious.com/v2/json/popular/" + encodeURI(deliciousTerm);
+			} else if (deliciousSearch == 'user'){
+				deliciousURL = "http://feeds.delicious.com/v2/json/" + encodeURI(deliciousTerm);
+			} else { //recent - default
+				//deliciousSearch = 'tag';
+				deliciousURL = "http://feeds.delicious.com/v2/json/tag/" + encodeURI(deliciousTerm);
+			}
+
+			$.ajax({
+				beforeSend: function() {
+					x_timer = setTimeout(function() {
+					 	$("#loadingSpinner").show();
+					 	$resultsHolder
+					 		.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
+					 		.find("div:even").addClass("shadedDiv");
+					}, 5000);
+				},
+				url: deliciousURL,
+				data: {count : deliciousCount},
+				dataType: 'jsonp',
+				jsonpCallback: "delicious.showLinks",
+				cache: false
+			});
+
+			$panel.addClass("x_floatRight");
+			$panel.addClass("width60");
+
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
 		}
-	}
+	};
 
-	var $pageContents = $("#pageContents");
-	var $textHolder = $("#textHolder");
-	var $panel = $("#pageContents .panel");
-	var $resultsTable = $pageContents.find("#resultsTable");
-
-	var deliciousSearch = x_currentPageXML.getAttribute("search");
-	var deliciousTerm = x_currentPageXML.getAttribute("term");
-	var deliciousCount = x_currentPageXML.getAttribute("results");
-
-	var deliciousURL;
-	if (deliciousSearch == 'popular'){
-		deliciousURL = "http://feeds.delicious.com/v2/json/popular/"; // ** Doesn't seem to be an equivalent JSON url??
-	} else if (deliciousSearch == 'user'){
-		deliciousURL = "http://feeds.delicious.com/v2/json/" + encodeURI(deliciousTerm);
-	} else { //recent - default
-		deliciousSearch = 'tag';
-		deliciousURL = "http://feeds.delicious.com/v2/json/tag/" + encodeURI(deliciousTerm);
-	}
-
-	var errorTimer = setTimeout(function() {
-		$("#loadingSpinner").hide();
-		$resultsTable
-			.html('<tr><td>There was an error loading the results!!</td></tr>') // ** Need to take this from the language file
-			.find("tr:even").addClass("shaded");
-    }, 8000);
-
-	$.ajax({
-		beforeSend: function() {
-		     $('#loadingSpinner').show();
-  		},
-		url: deliciousURL,
-		data: {count : deliciousCount},
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		jsonpCallback: "delicious.showLinks",
-    	cache:false
-	});
-
-	$panel.addClass("x_floatRight");
-	$panel.addClass("width60");
-
-	$pageContents.find("#headerHolder").html("<p>" + "Delicious bookmarks for '" + deliciousSearch + " '" + deliciousTerm + "'</p>"); // ** Need to take this from the language file
-	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	delicious.init();
 
 </script>
 
 <style type="text/css">
-
-	#resultsTable {
-		width:	100%;
-	}
 
 	#headerHolder {
 		text-align:		center;
 		font-weight:	bold;
 	}
 
-	#loadingSpinner {
-		display:	none;
-		text-align:	center;
-		font-weight:	bold;
+	#resultsHolder {
+		width:	100%;
 	}
 
-	#loadingSpinner img {
-		margin-right: 20px;
-		vertical-align: middle;
+	#resultsHolder div {
+		width: 100%;
+		padding: 2px 2px 2px 2px;
+
+	}
+
+	#resultsHolder div p {
+		margin: 0;
+	}
+
+	.shadedDiv {
+		background-color: #E3FFD6;
+	}
+
+	#loadingSpinner {
+		margin-left: auto ;
+  		margin-right: auto ;
+		width:180px;
+	}
+
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
 	}
 
 </style>
@@ -107,9 +135,10 @@
 
 	<div id="deliciousHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
 		<div class="panel inline">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
 			<div id="headerHolder"></div>
-			<table id="resultsTable"></table>
-			<div id="loadingSpinner"><img src="media/spinner.gif" alt="Fetching results" />Fetching results...</div>
+			<div id="resultsHolder"></div>
+
 		</div>
 	</div>
 
