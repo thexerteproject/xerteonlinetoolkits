@@ -6,6 +6,8 @@
 	 * @version 1.0
 	 * @copyright Copyright (c) 2008,2009 University of Nottingham
 	 * @package
+	 *
+	 * PLEASE USE DOUBLE QUOTES IN THESE FILES, OTHERWISE XERTE TRANS DOES NOT WORK!
 	 */
 
 	var RECYCLE_EDIT = "You cannot edit files in the recycle bin. Please remove the file from the recycle bin before editing";
@@ -48,9 +50,9 @@
 	
 	var FILE_SYNC_FAIL = "Error synchronising ";
 	
-	var ERROR_DELETE = 'Error while trying to delete template';
+	var ERROR_DELETE = "Error while trying to delete template";
 	
-	var ERROR_DUPLICATE = 'Error while duplicating ';
+	var ERROR_DUPLICATE = "Error while duplicating ";
 	
 	var RECYCLE_EMPTY = "Are you sure you want to empty the recycle bin?";
 
