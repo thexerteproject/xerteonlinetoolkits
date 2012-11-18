@@ -3,98 +3,127 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtuberss = new function() {
+		var $pageContents,
+			$textHolder,
+			$panel,
+			$resultsHolder,
+			searchTerm;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 
-		}
+		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 
-		}
+		};
 
 		this.listVideos = function(data) {
-			clearTimeout(errorTimer);
+			clearTimeout(x_timer);
 			$("#loadingSpinner").hide();
-			var tableString = "";
+			var resultsHolder = "";
+			$pageContents.find("#headerHolder").html("<p>" + "Youtube results for term '" + searchTerm + "'</p>"); // ** Need an entry in the language file if we keep this??
 			if (data.data.totalItems == 0) {
-				tableString = '<tr><td>No results returned!!</td></tr>';  // ** Need to take this from the language file
+				resultsHolder = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
 			} else {
 				$.each(data.data.items, function (index, item) {
-					tableString += '<tr><td><img src="' + item.thumbnail.sqDefault + '" width="60" /></td><td><a target="_blank" href="' + item.player.default + '">' + item.title + '</a></td></tr>';
+					resultsHolder += '<div><img src="' + item.thumbnail.sqDefault + '" />';
+					resultsHolder += '<p><a target="_blank" href="' + item.player.default + '">' + item.title + '</a></p></div>';
 				});
 			}
-			$resultsTable
-				.html(tableString)
-				.find("tr:even").addClass("shaded");
+			$resultsHolder
+				.html(resultsHolder)
+				.find("div:even").addClass("shadedDiv");
+		};
+
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			$textHolder = $("#textHolder");
+			$panel = $("#pageContents .panel");
+			$resultsHolder = $pageContents.find("#resultsHolder");
+			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
+
+			searchTerm = x_currentPageXML.getAttribute("url");
+			var searchCount = x_currentPageXML.getAttribute("results");
+
+			var youtubeURL = "http://gdata.youtube.com/feeds/api/videos";
+
+			$.ajax({
+				beforeSend: function() {
+					$('#loadingSpinner').show();
+					x_timer = setTimeout(function() {
+						$("#loadingSpinner").hide();
+						$resultsHolder
+							.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
+							.find("div:even").addClass("shadedDiv");
+					}, 5000);
+				},
+				url: youtubeURL,
+				data: {
+						"vq" : searchTerm,
+						"max-results" : searchCount,
+						"v" : 2,
+						"alt" : "jsonc"
+					},
+				dataType: 'jsonp',
+				jsonpCallback: "youtuberss.listVideos",
+				cache:false,
+				timeout: 5000
+			});
+
+			$panel.addClass("x_floatRight");
+			$panel.addClass("width60");
+
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
 		}
-	}
+	};
 
-	var $pageContents = $("#pageContents");
-	var $textHolder = $("#textHolder");
-	var $panel = $("#pageContents .panel");
-	var $resultsTable = $pageContents.find("#resultsTable");
-
-	var searchTerm = x_currentPageXML.getAttribute("url");
-	var searchCount = x_currentPageXML.getAttribute("results");
-
-	var youtubeURL = "http://gdata.youtube.com/feeds/api/videos";
-
-	var errorTimer = setTimeout(function() {
-		$("#loadingSpinner").hide();
-		$resultsTable
-			.html('<tr><td>There was an error loading the results!!</td></tr>') // ** Need to take this from the language file
-			.find("tr:even").addClass("shaded");
-    }, 8000);
-
-	$.ajax({
-		beforeSend: function() {
-		     $('#loadingSpinner').show();
-  		},
-		url: youtubeURL,
-		data: {
-				"vq" : searchTerm,
-				"max-results" : searchCount,
-				"v" : 2,
-				"alt" : "jsonc"
-			},
-		dataType: 'jsonp',
-		jsonpCallback: "youtuberss.listVideos",
-		cache:false,
-		timeout: 5000
-	});
-
-	$panel.addClass("x_floatRight");
-	$panel.addClass("width60");
-
-	$pageContents.find("#headerHolder").html("<p>" + "Youtube results for term '" + searchTerm + "'</p>"); // ** Need an entry in the language file if we keep this??
-	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	youtuberss.init();
 
 </script>
 
 <style type="text/css">
-
-	#resultsTable {
-		width:	100%;
-	}
 
 	#headerHolder {
 		text-align:		center;
 		font-weight:	bold;
 	}
 
-	#loadingSpinner {
-		display:	none;
-		text-align:	center;
-		font-weight:	bold;
+	#resultsHolder div {
+		height:50px;
 	}
 
-	#loadingSpinner img {
-		margin-right: 20px;
-		vertical-align: middle;
+	#resultsHolder div img {
+		width:60px;
+		float:left;
+	}
+
+	#resultsHolder div p {
+		margin-left:70px;
+
+	}
+
+	.shadedDiv {
+		background-color: #E3FFD6;
+	}
+
+	#loadingSpinner {
+		margin-left: auto;
+  		margin-right: auto;
+		width:180px;
+	}
+
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
 	}
 
 </style>
@@ -103,9 +132,9 @@
 
 	<div id="youtuberssHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
 		<div class="panel inline">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
 			<div id="headerHolder"></div>
-			<table id="resultsTable"></table>
-			<div id="loadingSpinner"><img src="media/spinner.gif" alt="Fetching results" />Fetching results...</div>
+			<div id="resultsHolder"></div>
 		</div>
 	</div>
 
