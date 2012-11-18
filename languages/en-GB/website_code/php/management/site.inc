@@ -8,6 +8,9 @@
 	 * @version 1.0
 	 * @copyright Pat Lockley
 	 * @package
+	 *
+	 * PLEASE USE DOUBLE QUOTES IN THESE FILES, OTHERWISE XERTE TRANS DOES NOT WORK!
+	 *
 	 */
 	 
 
@@ -150,12 +153,12 @@ define("LTI_KEYS_UPDATED_ON","When was this last updated");
 
 define("MANAGEMENT_SITE_LTI_KEYS","LTI Keys");
 
-define("LTI_KEYS_NEW",'New');
-define("LTI_KEYS_DELETE",'Delete');
-define("LTI_KEYS_ADD",'Add New LTI Key');
-define("LTI_KEYS_ADD_SUBMIT",'Add New LTI Key');
-define("LTI_KEYS_EDIT_SUBMIT",'Save LTI Key');
-define("LTI_KEYS_DELETE_SUBMIT",'Delete LTI Key');
+define("LTI_KEYS_NEW","New");
+define("LTI_KEYS_DELETE","Delete");
+define("LTI_KEYS_ADD","Add New LTI Key");
+define("LTI_KEYS_ADD_SUBMIT","Add New LTI Key");
+define("LTI_KEYS_EDIT_SUBMIT","Save LTI Key");
+define("LTI_KEYS_DELETE_SUBMIT","Delete LTI Key");
 
 
 ?>
