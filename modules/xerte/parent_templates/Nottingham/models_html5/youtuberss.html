@@ -27,11 +27,18 @@
 			if (data.data.totalItems == 0) {
 				resultsHolder = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
 			} else {
+				var safePlayer, hyperlink;
 				$.each(data.data.items, function (index, item) {
 					// item.player.default breaks IE so this is a workaround
-					var safePlayer = JSON.parse(JSON.stringify(item.player).replace('"default"', '"standard"'));
+					safePlayer = JSON.parse(JSON.stringify(item.player).replace('"default"', '"standard"'));
+					if (x_browserInfo.iOS == true || x_browserInfo.touchScreen || x_browserInfo.mobile) {
+						hyperlink = '<a href="' + safePlayer.standard + '">' + item.title + '</a>';
+					}
+					else {
+						hyperlink = '<a target="_blank" href="' + safePlayer.standard + '">' + item.title + '</a>';
+					}
 					resultsHolder += '<div><img src="' + item.thumbnail.sqDefault + '" />';
-					resultsHolder += '<p><a target="_blank" href="' + safePlayer.standard + '">' + item.title + '</a></p></div>';
+					resultsHolder += '<p>' + hyperlink + '</p></div>';
 				});
 			}
 			$resultsHolder
