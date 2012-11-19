@@ -91,7 +91,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 		
 		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_HTML5_LINK . "</p>";
 		
-		echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("playhtml5", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("playhtml5", $_POST['template_id']) . "</a></p>";
+		echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play_html5", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play_html5", $_POST['template_id']) . "</a></p>";
 
         // Get the template screen size
 

@@ -18,6 +18,13 @@ if(isset($_GET['export'])){
     $action_modifder = "export";
 
 }
+if(isset($_GET['html5'])){
+
+    $query_modifier = "rss";
+
+    $action_modifder = "play_html5";
+
+}
 
 if(!isset($_GET['username'])){
 
@@ -110,6 +117,9 @@ foreach($rows as $row) {
     $action = 'play';
     if(isset($_GET['export'])){
         $action = 'export';
+    }
+	if(isset($_GET['html5'])){
+        $action = 'play_html5';
     }
     echo "<item>
         <title>" . str_replace("_"," ",$row['template_name']) . "</title>

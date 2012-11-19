@@ -24,8 +24,8 @@
 					}
 					break;
 					
-			case "playhtml5":	if($xerte_toolkits_site->apache=="true"){
-						return $string . "_html5_" . $template_number;
+			case "play_html5":	if($xerte_toolkits_site->apache=="true"){
+						return $string . "_" . $template_number;
 					}else{
 						return "play_html5.php?template_id=" . $template_number;
 					}
@@ -147,6 +147,12 @@
 								return "export/";
 							}else{
 								return "export.php";
+							}
+							break;
+			case "RSS_html5":		if($xerte_toolkits_site->apache=="true"){
+								return "RSS/";
+							}else{
+								return "rss.php?html5=";
 							}
 							break;
 
