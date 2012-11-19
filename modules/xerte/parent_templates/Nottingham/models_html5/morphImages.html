@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var morphImages = new function() {
@@ -17,7 +17,7 @@
 						marginTop	:img1AnimationData[2] + "px",
 						opacity		:img1AnimationData[3]
 						});
-				
+
 				var img2AnimationData = $img2.data("state0");
 				$img2
 					.stop()
@@ -30,30 +30,31 @@
 					.data("zoom", 1);
 			}
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		}
-		
+
 		this.setUpZoom = function() {
+			$img1.hide().fadeIn(1000);
 			$cropImg = $("#cropImg");
 			$cropImg
 				.width($cropImg.width())
 				.height($cropImg.height());
-			
+
 			var scale = $img1.width() / $img1.data("origSize")[0]; // xywh to be scaled with image
 			var $hotspotInfo = $(x_currentPageXML).find("hotspot")[0];
 			var w = Math.round($hotspotInfo.getAttribute("w") * scale);
 			var h = Math.round($hotspotInfo.getAttribute("h") * scale);
 			var x = Math.round($hotspotInfo.getAttribute("x") * scale) + $img1.position().left;
 			var y = Math.round($hotspotInfo.getAttribute("y") * scale) + $img1.position().top;
-			
+
 			var zoomSpeed = x_currentPageXML.getAttribute("zoomSpeed");
 			if (zoomSpeed == undefined) {
 				zoomSpeed = 3;
 			}
-			
+
 			var $img2 = $('<img id="pageImg2" />');
 			$img2
 				.load(function() {
@@ -70,7 +71,7 @@
 					$this.data({
 						"state1"	:[$this.width() * scale2, xPos, yPos, 1], // zoomed in info
 						});
-					
+
 					var marginLeft = Math.round($img1.width()  * scale2 * ((x - $img1.position().left) / $img1.width()));
 					var marginTop  = Math.round($img1.height() * scale2 * ((y - $img1.position().top) / $img1.height()));
 					if (xPos != $img1.position().left) {
@@ -105,12 +106,12 @@
 					})
 			$img1.after($img2);
 		}
-		
+
 		this.zoom = function() {
 			if ($("#pageImg2:animated").length == 0) {
 				var $img1 = $("#pageImg1");
 				var $img2 = $("#pageImg2");
-				
+
 				var img1AnimationData = $img1.data("state" + $img2.data("zoom"));
 				$("#pageImg1")
 					.animate({
@@ -120,7 +121,7 @@
 						opacity		:img1AnimationData[3]
 						}, $img2.data("speed"), "linear"
 					);
-				
+
 				var img2AnimationData = $img2.data("state" + $img2.data("zoom"));
 				$img2
 					.animate({
@@ -139,25 +140,25 @@
 			}
 		}
 	}
-	
+
 	var imgMaxW1 = 500;
 	var imgMaxH1 = 400;
 	if (x_browserInfo.mobile == true) {
 		imgMaxW1 = 250;
 		imgMaxH1 = 250;
 	}
-	
+
 	var imgMaxW2 = imgMaxW1;
 	var imgMaxH2 = imgMaxH1;
-	
+
 	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-	
+
 	var $img1 = $("#pageImg1");
 	$img1.attr({
 		"src":	eval(x_currentPageXML.getAttribute("url")),
 		"alt":	x_currentPageXML.getAttribute("tip1")
 		});
-	
+
 	// if language attributes aren't in xml will have to use english fall back
 	var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
 	if (buttonLabel == undefined) {
@@ -175,29 +176,29 @@
 		.bind("click", function() {
 			morphImages.zoom();
 			});
-	
+
 </script>
 
 <style type="text/css">
-	
+
 	.whiteBorder #pageImg1 {
 		visibility:	hidden;
 	}
-	
+
 	#cropImg {
 		overflow:	hidden;
 	}
-	
+
 	#zoomBtn {
 		display:		block;
 		margin-top:		10px;
 	}
-	
+
 	#pageImg2 {
 		position:	absolute;
 		cursor:		pointer;
 	}
-	
+
 </style>
 
 <div id="imgHolder" class="mobileAlign">
@@ -210,5 +211,5 @@
 </div>
 
 <div id="textHolder">
-	
+
 </div>
