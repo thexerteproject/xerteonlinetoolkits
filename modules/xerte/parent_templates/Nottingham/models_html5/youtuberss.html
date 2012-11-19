@@ -28,8 +28,10 @@
 				resultsHolder = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
 			} else {
 				$.each(data.data.items, function (index, item) {
+					// item.player.default breaks IE so this is a workaround
+					var safePlayer = JSON.parse(JSON.stringify(item.player).replace('"default"', '"standard"'));
 					resultsHolder += '<div><img src="' + item.thumbnail.sqDefault + '" />';
-					resultsHolder += '<p><a target="_blank" href="' + item.player.default + '">' + item.title + '</a></p></div>';
+					resultsHolder += '<p><a target="_blank" href="' + safePlayer.standard + '">' + item.title + '</a></p></div>';
 				});
 			}
 			$resultsHolder
