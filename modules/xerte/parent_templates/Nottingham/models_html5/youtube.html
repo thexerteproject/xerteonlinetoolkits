@@ -13,17 +13,32 @@
 
 		};
 
+		// Should
 		this.buildIframe = function(iframe) {
 			if (iframe.code.length > 0) {
 				var html = "<iframe";
 				html += " width=\"" + iframe.width + "\"";
 				html += " height=\"" + iframe.height + "\"";
 				html += " src=\"http://www.youtube.com/embed/" + iframe.code;
-				if (iframe.time>0) html += "?start=" + iframe.time;
+				var params = "?wmode=opaque";
+				if (iframe.time > 0) {
+					params += "&start=" + iframe.time;
+				}
+				if (iframe.related == 0) {
+					params += "&rel=0";
+				}
+				if (iframe.autoplay == 1) {
+					params += "&autoplay=1";
+				}
+				if (params.length > 1) {
+					html += params;
+				}
 				html += "\"";
 				html += " frameborder=\"0\"";
-				html += " allowfullscreen>";
-				html += "</iframe>";
+				if (iframe.allowfullscreen == true) {
+					html += " allowfullscreen";
+				}
+				html += "></iframe>";
 				return html;
 			}
 			else {
@@ -63,9 +78,12 @@
 			var youtubeCode = $($(x_currentPageXML)).text();
 
 			// Start with some defaults and build on them
-			var iframe = {code:"", width:420, height:315, time:0};
+			var iframe = {code:"", width:420, height:315, time:0, related:1, autoplay:0, allowfullscreen:false};
 
-			if (youtubeCode.indexOf('iframe') != -1) {
+			if (youtubeCode.length == 11) {
+				iframe.code = youtubeCode;
+			}
+			else if (youtubeCode.indexOf('iframe') != -1) {
 				iframe = this.parseIframeCode(youtubeCode, iframe);
 			}
 			else if (youtubeCode.substring(0, 29) == "http://www.youtube.com/watch?") {
@@ -82,6 +100,19 @@
 			}
 			else if (youtubeCode.substring(0, 16) == "http://youtu.be/") {
 				iframe.code = youtubeCode.substring(16);
+			}
+
+			var videoSize = x_currentPageXML.getAttribute("videoSize");
+			if (videoSize != null && videoSize != '') {
+				var splitters = ",xX|-_".split("");
+				for (var i = 0; i < splitters.length; i++)
+				{
+					if (videoSize.indexOf(splitters[i]) != -1) {
+						iframe.width = parseInt(videoSize.split(splitters[i])[0]);
+						iframe.height = parseInt(videoSize.split(splitters[i])[1]);
+						break;
+					}
+				}
 			}
 
 			$("#pageVideo").html(this.buildIframe(iframe));
