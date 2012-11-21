@@ -1,10 +1,8 @@
 <script type="text/javascript">
 	
-	// ** accessibility - need to be able to navigate buttons with tab rather than arrows **
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var buttonNav = new function() {
+	var slideshow = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			
@@ -20,12 +18,30 @@
 				$infoHolder.height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
 			}
 		}
+		
+		this.panelChange = function(newPage) {
+			var $pageContents = $("#pageContents");
+			$pageContents.data("currentPage", newPage);
+			$("#infoHolder .panelPage:visible").hide();
+			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
+			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
+			if (newPage == 0) {
+				$("#prevBtn").button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+				$("#nextBtn").button("enable");
+			} else if (newPage + 1 == $pageContents.data("totalPages")) {
+				$("#prevBtn").button("enable");
+				$("#nextBtn").button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+			} else {
+				$("#prevBtn").button("enable");
+				$("#nextBtn").button("enable");
+			}
+		}
 	}
 	
-	// buttonWidth attribute not used as they will be sized automatically
+	var $pageContents = $("#pageContents");
 	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 	if (panelWidth == "Full") {
-		$("#pageContents .panel").appendTo($("#pageContents"));
+		$("#pageContents .panel").appendTo($pageContents);
 		$("#pageContents .splitScreen").remove();
 	} else {
 		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -38,39 +54,17 @@
 		} 
 	}
 	
-	var $btnHolder = $("#btnHolder");
-	var $panelBtn = $("#btnHolder .panelBtn:first");
-	var $panelBtnLabel = $("#btnHolder .panelBtnLabel:first");
 	var $panelPage = $("#pageContents .panelPage");
 	$(x_currentPageXML).children()
 		.each(function(i) {
-			var $thisBtn, $thisBtnLabel, $thisPanelPage;
+			var $thisPanelPage;
 			if (i != 0) {
-				$thisBtn = $panelBtn.clone().appendTo($btnHolder);
-				$thisBtnLabel = $panelBtnLabel.clone().appendTo($btnHolder);
 				$thisPanelPage = $panelPage.clone().appendTo($panelPage.parent());
 			} else {
-				$thisBtn = $panelBtn;
-				$thisBtnLabel = $panelBtnLabel;
 				$thisPanelPage = $panelPage;
 			}
 			
-			$thisBtn
-				.attr("id", "btn" + i)
-				.data({"screen"	:$thisPanelPage})
-				.bind("click", function() {
-					var $thisPanelPage = $(this).data("screen");
-					if ($thisPanelPage.is(":hidden")) {
-						$("#infoHolder .panelPage:visible").hide();
-						$thisPanelPage.show();
-					}
-				});
-			
-			$thisBtnLabel
-				.html(this.getAttribute("name"))
-				.attr("for", "btn" + i);
-			
-			var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+			var infoString = x_addLineBreaks('<h3>' + this.getAttribute("name") + '</h3><p>' + this.getAttribute("text") + '</p>');
 			var url = this.getAttribute("url");
 			if (url != undefined && url != "") {
 				var newString = "";
@@ -104,11 +98,54 @@
 			}
 		});
 	
-	$panelBtn.trigger("click");
-	$btnHolder.buttonset();
+	var slideTxt = x_currentPageXML.getAttribute("slideCount");
+	if (slideTxt == undefined || slideTxt == "") {
+		slideTxt = "Slide {i} of {n}";
+	}
+	
+	$pageContents.data({
+		"slideTxt"		:slideTxt,
+		"totalPages"	:$("#infoHolder .panelPage").length,
+		"currentPage"	:-1
+	});
+	
+	var $btnHolder = $("#btnHolder");
+	
+	var btnTxt = [x_currentPageXML.getAttribute("nextBtnTip"), x_currentPageXML.getAttribute("priorBtnTip")];
+	if (btnTxt[0] == undefined || btnTxt[0] == "") {
+		btnTxt.splice(0, 1, "Next Button");
+	}
+	if (btnTxt[1] == undefined || btnTxt[1] == "") {
+		btnTxt.splice(1, 1, "Previous Button");
+	}
+	
+	$("#prevBtn")
+		.button({
+			icons: {
+				primary: "ui-icon-carat-1-w"
+			},
+			label:	btnTxt[1],
+			text:	false
+		})
+		.click(function() {
+			slideshow.panelChange($("#pageContents").data("currentPage") - 1);
+		});
+	
+	$("#nextBtn")
+		.button({
+			icons: {
+				primary: "ui-icon-carat-1-e"
+			},
+			label:	btnTxt[0],
+			text:	false
+		})
+		.click(function() {
+			slideshow.panelChange($("#pageContents").data("currentPage") + 1);
+		})
+		.trigger("click");
 	
 	if (x_currentPage != 0) {
-		buttonNav.sizeChanged();
+		slideshow.sizeChanged();
 	}
 	
 	if (x_browserInfo.mobile == true) {
@@ -140,9 +177,15 @@
 	}
 	
 	#btnHolder {
-		text-align:		center;
+		float:			right;
 		margin-top:		10px;
 		margin-right:	0px; /* over-ride ui style */
+	}
+	
+	#slideTxt {
+		float:			left;
+		font-weight:	bold;
+		margin-top:		20px;
 	}
 	
 </style>
@@ -158,8 +201,10 @@
 				<div id="infoHolder">
 					<div class="panelPage"></div>
 				</div>
+				<p id="slideTxt"></p>
 				<div id="btnHolder">
-					<input type="radio" name="radio" class="panelBtn" /><label class="panelBtnLabel"></label>
+					<button id="prevBtn"></button>
+					<button id="nextBtn"></button>
 				</div>
 			</div>
 		</div>

@@ -149,7 +149,7 @@ $(document).ready(function() {
 		},
 		error: function() {
 			// can't have translation for this as if it fails to load we don't know what language file to use?
-			$("body").append("<p>The project data has not loaded.");
+			$("body").append("<p>The project data has not loaded.</p>");
 		}
 	});
 });
@@ -389,8 +389,8 @@ function x_setUp() {
 				icons: {
 					primary: "x_media"
 				},
-				label: 			x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-				text: false
+				label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+				text:	false
 			})
 			.click(function() {
 				$(this)
@@ -417,8 +417,8 @@ function x_setUp() {
 			icons: {
 				primary: "x_prev"
 			},
-			label: 			x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text: false
+			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
+			text:	false
 		})
 		.click(function() {
 			x_currentPage--;
@@ -433,8 +433,8 @@ function x_setUp() {
 			icons: {
 				primary: "x_next"
 			},
-			label: 			x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
-			text: false
+			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+			text:	false
 		})
 		.click(function() {
 			x_currentPage++;
@@ -449,8 +449,8 @@ function x_setUp() {
 			icons: {
 				primary: "x_info"
 			},
-			label: 			x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents"),
-			text: false
+			label:	x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents"),
+			text:	false
 		})
 		.click(function() {
 			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
