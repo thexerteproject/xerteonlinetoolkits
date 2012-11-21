@@ -1,0 +1,117 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var youtube = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+
+		};
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+
+		};
+
+		this.buildIframe = function(iframe) {
+			if (iframe.code.length > 0) {
+				var html = "<iframe";
+				html += " width=\"" + iframe.width + "\"";
+				html += " height=\"" + iframe.height + "\"";
+				html += " src=\"http://www.youtube.com/embed/" + iframe.code;
+				if (iframe.time>0) html += "?start=" + iframe.time;
+				html += "\"";
+				html += " frameborder=\"0\"";
+				html += " allowfullscreen>";
+				html += "</iframe>";
+				return html;
+			}
+			else {
+				return "<p>ERROR</p>"; // ** Needs to come from language file if even required
+			}
+		};
+
+		this.parseIframeCode = function(code, params) {
+			var parts = code.split(' ');
+			for (var i = 0; i < parts.length; i++) {
+				if (parts[i].indexOf("=") != -1) {
+					var part = parts[i].split("=");
+					var val = ("" + part[1]).replace('"', '');
+					if (part[0] == "width") {
+						params.width = parseInt(val);
+					}
+					else if (part[0] == "height") {
+						params.height = parseInt(val);
+					}
+					else if (part[0] == "src") {
+						var s = val.indexOf('http://www.youtube.com/embed/') + 29;
+						var f = val.indexOf('"', s+1);
+						params.code = val.substring(s, f);
+					}
+				}
+			}
+			return params;
+		};
+
+		this.init = function() {
+			var $textHolder = $("#textHolder");
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			var $panel = $("#pageContents .panel");
+			$panel.addClass("x_floatRight");
+
+			// Get the youtube code the user pasted
+			var youtubeCode = $($(x_currentPageXML)).text();
+
+			// Start with some defaults and build on them
+			var iframe = {code:"", width:420, height:315, time:0};
+
+			if (youtubeCode.indexOf('iframe') != -1) {
+				iframe = this.parseIframeCode(youtubeCode, iframe);
+			}
+			else if (youtubeCode.substring(0, 29) == "http://www.youtube.com/watch?") {
+				var keypairs = youtubeCode.substring(29).split('&');
+				for (var i=0; i < keypairs.length; i++) {
+					var parts = keypairs[i].split("=");
+					if (parts[0] == "v") {
+						iframe.code = parts[1];
+					}
+					else if (parts[0] == "t") {
+						iframe.time = eval(parts[1].replace("s", "").replace("m", "*60+"));
+					}
+				}
+			}
+			else if (youtubeCode.substring(0, 16) == "http://youtu.be/") {
+				iframe.code = youtubeCode.substring(16);
+			}
+
+			$("#pageVideo").html(this.buildIframe(iframe));
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		};
+	};
+
+	youtube.init();
+
+
+</script>
+
+<style type="text/css">
+
+	#textHolder {
+		padding-bottom:	20px;
+	}
+
+</style>
+
+<div id="pageContents">
+
+	<div class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
+		<div class="panel inline">
+			<div id="pageVideo"></div>
+		</div>
+	</div>
+
+	<div id="textHolder"></div>
+
+</div>
