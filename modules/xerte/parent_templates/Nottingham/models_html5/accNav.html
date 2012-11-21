@@ -36,6 +36,7 @@
 	var $infoHolder = $("#infoHolder");
 	var $paneHeader = $("#infoHolder .paneHeader");
 	var $paneContents = $("#infoHolder .paneContents");
+	
 	$(x_currentPageXML).children()
 		.each(function(i) {
 			var $thisHeader, $thisContents;
@@ -79,7 +80,19 @@
 			}
 		});
 	
-	$infoHolder.accordion({fillSpace: true});
+	$infoHolder.accordion({
+		fillSpace:	true,
+		change:	function(e, ui) {
+			// force tabindex to stay the same - jquery ui accordion code overrides this otherwise
+			ui.oldHeader.attr("tabindex", (ui.oldHeader.index() / 2) + 1);
+			ui.newHeader.attr("tabindex", (ui.newHeader.index() / 2) + 1);
+		}
+	});
+	
+	// default accordion uses arrow keys to focus on headers but all other navigators use tab - force tab index on headers so it's consistent with other pages
+	$(".ui-accordion-header").each(function(i) {
+		$(this).attr("tabindex", ($(this).index() / 2) + 1);
+	})
 	
 	if (x_browserInfo.iOS == true) {
 		// ** images won't show on iOS because their size stays at 0 x 0 with max-width / max-height **

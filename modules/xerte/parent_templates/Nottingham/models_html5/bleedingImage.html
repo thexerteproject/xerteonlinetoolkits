@@ -185,7 +185,6 @@
 	}
 	
 	if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
-		// ** see Alistair's email - this link is accessible but doesn't show as selected when you tab to it **
 		var tooltip = "";
 		if (x_currentPageXML.getAttribute("linkIntro") != undefined) {
 			tooltip = x_currentPageXML.getAttribute("linkIntro");
@@ -234,6 +233,14 @@
 		position:	absolute;
 		top:		0;
 		right:		0;
+	}
+	
+	#pageContents a img {
+		border:	2px solid transparent;
+	}
+	
+	#pageContents a:focus img {
+		border-color:	red;
 	}
 	
 </style>
