@@ -177,8 +177,18 @@ function edit_window(admin){
             if(drag_manager.selected_items[x].className=="file"){
 
                 if(drag_manager.selected_items[x].parentNode.id!="folderchild_recyclebin"){
+				
+					size = drag_manager.selected_items[x].getAttribute("editor_size").split(",");
+					
+					if(size.length==1){
+					
+							var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
+					
+					}else{
 
-                    var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=665, width=800" );
+						var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+
+					}
 
                     NewEditWindow.window_reference = self;	
 
@@ -451,13 +461,17 @@ function preview_window(admin){
 
                 if(drag_manager.selected_items[x].className=="file"){
 
-                    var url="website_code/php/properties/screen_size_template.php";
+					size = drag_manager.selected_items[x].getAttribute("preview_size").split(",");
+					
+					if(size.length!=1){
 
-                    xmlHttp.open("post",url,true);
-                    xmlHttp.onreadystatechange=screensize_stateChanged;
-                    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xmlHttp.send('tutorial_id=' + (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))); 
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+						
+					}else{
 
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id);
+						
+					}
 
                 }else{
 
@@ -484,38 +498,6 @@ function preview_window(admin){
 
 }
 
-// Function screen size state changed (duplicate)
-// 
-// Version 1.0 University of Nottingham
-// (pl)
-// opens a new window to the right size
-
-function screensize_stateChanged(){
-
-    if (xmlHttp.readyState==4){ 
-
-        if(xmlHttp.responseText!=""){
-
-            temp = xmlHttp.responseText.toString().split("~");
-
-            parameter = "height=" + temp[1] + ",width=" + temp[0] + ",status=No,resizable=1";
-
-            //parameter = "height=" + screen.height + ",width=" + screen.width + ",status=No";
-
-            var property_id = temp[2];
-
-            var NewWindow = window.open(site_url + url_return("preview", property_id), "previewwindow" + property_id, parameter);
-
-            //var NewWindow = window.open(site_url + url_return("preview", property_id), "previewwindow" + property_id, parameter);
-
-            NewWindow.focus();
-
-
-        }
-
-    }
-
-}
 
 /**
  * 
@@ -1195,7 +1177,17 @@ function tutorial_created(){
             response = String(xmlHttp.responseText);
             response = response.trim();
             if(response!=""){
-                var neweditorwindow = window.open(site_url + url_return("edit" , xmlHttp.responseText.split(" ").join("")), "editwindow" + xmlHttp.responseText.split(" ").join(""), "height=665, width=800");
+				data = xmlHttp.responseText.split(",");
+				
+				if(data[1]=="*"){
+				
+					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
+					
+				}else{
+				
+					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
+						
+				}
                 new_file = xmlHttp.responseText;
                 neweditorwindow.window_reference = self;
                 neweditorwindow.focus();		
