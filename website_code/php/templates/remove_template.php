@@ -27,7 +27,7 @@ if(is_numeric($_POST['template_id'])){
 
     $safe_template_id = mysql_real_escape_string($_POST['template_id']);
 
-    if(!is_template_syndicated($template_id)){
+    if(!is_template_syndicated($safe_template_id)){
 
         if(is_user_creator($safe_template_id)){
 
