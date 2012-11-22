@@ -1,0 +1,7 @@
+display name: Xerte Online Toolkit
+description: A flexible template for creating interactive learning objects.
+editor size: 800,665
+preview size: 800,665
+preview filename: preview.xml
+public filename: data.xml
+supports: media,export,give,peer,xml
