@@ -15,11 +15,21 @@ if(is_user_admin()){
 
     $query_response = mysql_query($query);
 
-    echo "<p style=\"margin:5px\">" . TEMPLATE_UPLOAD . "<br><form style=\"margin:5px\" method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"submit\" name=\"submitBtn\" value=\"" . TEMPLATE_UPLOAD_BUTTON . "\" onsubmit=\"javascript:iframe_check_initialise()\" /></form></p>";
+    echo "<p style=\"margin:20px 0 0 5px\"><a onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</a></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
+	
+	$last_template_type = "";
 
     while($row = mysql_fetch_array($query_response)){
+
+		if($row['template_framework']!=$last_template_type){
+		
+			echo "<h2 style='margin-left:5px'>" . ucfirst($row['template_framework']) . "</h2>";
+		
+			$last_template_type = $row['template_framework'];
+		
+		}
 
         echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . $row['template_name'] . " <a href=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</a></p></div><div class=\"template_details\" id=\"" . $row['template_name']  . "_child\">";
         echo "<p>" . TEMPLATE_TYPE . " " . $row['template_framework'] . "</p>";
