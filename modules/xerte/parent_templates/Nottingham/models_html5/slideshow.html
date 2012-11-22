@@ -12,147 +12,151 @@
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				var $infoHolder = $("#infoHolder")
 				var $btnHolder = $("#btnHolder");
-				$infoHolder.height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
 			}
 		}
 		
 		this.panelChange = function(newPage) {
 			var $pageContents = $("#pageContents");
+			var $prevBtn = $("#prevBtn");
+			var $nextBtn = $("#nextBtn");
 			$pageContents.data("currentPage", newPage);
+			$("#infoHolder").scrollTop(0);
 			$("#infoHolder .panelPage:visible").hide();
 			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
 			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
 			if (newPage == 0) {
-				$("#prevBtn").button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
-				$("#nextBtn").button("enable");
+				$prevBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+				$nextBtn.button("enable");
 			} else if (newPage + 1 == $pageContents.data("totalPages")) {
-				$("#prevBtn").button("enable");
-				$("#nextBtn").button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+				$prevBtn.button("enable");
+				$nextBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
 			} else {
-				$("#prevBtn").button("enable");
-				$("#nextBtn").button("enable");
+				$prevBtn.button("enable");
+				$nextBtn.button("enable");
 			}
+		}
+		
+		this.init = function() {
+			var $pageContents = $("#pageContents");
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($pageContents);
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				} 
+			}
+			
+			var $panelPage = $("#pageContents .panelPage");
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisPanelPage;
+					if (i != 0) {
+						$thisPanelPage = $panelPage.clone().appendTo($panelPage.parent());
+					} else {
+						$thisPanelPage = $panelPage;
+					}
+					
+					var infoString = x_addLineBreaks('<h3>' + this.getAttribute("name") + '</h3><p>' + this.getAttribute("text") + '</p>');
+					var url = this.getAttribute("url");
+					if (url != undefined && url != "") {
+						var newString = "";
+						if (url.split('.').pop().slice(0, -1) == "swf") {
+							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
+						} else {
+							newString += '<div class="pageImg"><img src="' + eval(url) + '" ';
+							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+								newString += 'alt="' + this.getAttribute("tip") + '" ';
+							}
+							newString += ' /></div>';
+						}
+						if (this.getAttribute("align") == "Top") {
+							infoString += newString;
+						} else {
+							infoString = newString + infoString;
+						}
+					}
+					
+					$thisPanelPage
+						.html(infoString)
+						.hide();
+					
+					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
+						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
+						// ** need to add functionality for initObject and interactivity optional properties **
+						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						$("#pageSWF" + i + " h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+						$(".flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+					}
+				});
+			
+			var slideTxt = x_currentPageXML.getAttribute("slideCount");
+			if (slideTxt == undefined || slideTxt == "") {
+				slideTxt = "Slide {i} of {n}";
+			}
+			
+			$pageContents.data({
+				"slideTxt"		:slideTxt,
+				"totalPages"	:$("#infoHolder .panelPage").length,
+				"currentPage"	:-1
+			});
+			
+			var btnTxt = [x_currentPageXML.getAttribute("nextBtnTip"), x_currentPageXML.getAttribute("priorBtnTip")];
+			if (btnTxt[0] == undefined || btnTxt[0] == "") {
+				btnTxt.splice(0, 1, "Next Button");
+			}
+			if (btnTxt[1] == undefined || btnTxt[1] == "") {
+				btnTxt.splice(1, 1, "Previous Button");
+			}
+			
+			$("#prevBtn")
+				.button({
+					icons: {
+						primary: "ui-icon-carat-1-w"
+					},
+					label:	btnTxt[1],
+					text:	false
+				})
+				.click(function() {
+					slideshow.panelChange($("#pageContents").data("currentPage") - 1);
+				});
+			
+			$("#nextBtn")
+				.button({
+					icons: {
+						primary: "ui-icon-carat-1-e"
+					},
+					label:	btnTxt[0],
+					text:	false
+				})
+				.click(function() {
+					slideshow.panelChange($("#pageContents").data("currentPage") + 1);
+				})
+				.trigger("click");
+			
+			if (x_currentPage != 0) {
+				slideshow.sizeChanged();
+			}
+			
+			if (x_browserInfo.mobile == true) {
+				$("#pageContents .panel").prepend($("#btnHolder"));
+			}
+			
+			x_pageLoaded();
 		}
 	}
 	
-	var $pageContents = $("#pageContents");
-	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-	if (panelWidth == "Full") {
-		$("#pageContents .panel").appendTo($pageContents);
-		$("#pageContents .splitScreen").remove();
-	} else {
-		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-		if (panelWidth == "Small") {
-			$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-		} else if (panelWidth == "Large") {
-			$("#pageContents .splitScreen").addClass("small");
-		} else {
-			$("#pageContents .splitScreen").addClass("medium");
-		} 
-	}
-	
-	var $panelPage = $("#pageContents .panelPage");
-	$(x_currentPageXML).children()
-		.each(function(i) {
-			var $thisPanelPage;
-			if (i != 0) {
-				$thisPanelPage = $panelPage.clone().appendTo($panelPage.parent());
-			} else {
-				$thisPanelPage = $panelPage;
-			}
-			
-			var infoString = x_addLineBreaks('<h3>' + this.getAttribute("name") + '</h3><p>' + this.getAttribute("text") + '</p>');
-			var url = this.getAttribute("url");
-			if (url != undefined && url != "") {
-				var newString = "";
-				if (url.split('.').pop().slice(0, -1) == "swf") {
-					newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
-				} else {
-					newString += '<div class="pageImg"><img src="' + eval(url) + '" ';
-					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-						newString += 'alt="' + this.getAttribute("tip") + '" ';
-					}
-					newString += ' /></div>';
-				}
-				if (this.getAttribute("align") == "Top") {
-					infoString += newString;
-				} else {
-					infoString = newString + infoString;
-				}
-			}
-			
-			$thisPanelPage
-				.html(infoString)
-				.hide();
-			
-			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-				// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-				// ** need to add functionality for initObject and interactivity optional properties **
-				swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
-				$("#pageSWF" + i + " h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
-				$(".flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
-				$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
-			}
-		});
-	
-	var slideTxt = x_currentPageXML.getAttribute("slideCount");
-	if (slideTxt == undefined || slideTxt == "") {
-		slideTxt = "Slide {i} of {n}";
-	}
-	
-	$pageContents.data({
-		"slideTxt"		:slideTxt,
-		"totalPages"	:$("#infoHolder .panelPage").length,
-		"currentPage"	:-1
-	});
-	
-	var $btnHolder = $("#btnHolder");
-	
-	var btnTxt = [x_currentPageXML.getAttribute("nextBtnTip"), x_currentPageXML.getAttribute("priorBtnTip")];
-	if (btnTxt[0] == undefined || btnTxt[0] == "") {
-		btnTxt.splice(0, 1, "Next Button");
-	}
-	if (btnTxt[1] == undefined || btnTxt[1] == "") {
-		btnTxt.splice(1, 1, "Previous Button");
-	}
-	
-	$("#prevBtn")
-		.button({
-			icons: {
-				primary: "ui-icon-carat-1-w"
-			},
-			label:	btnTxt[1],
-			text:	false
-		})
-		.click(function() {
-			slideshow.panelChange($("#pageContents").data("currentPage") - 1);
-		});
-	
-	$("#nextBtn")
-		.button({
-			icons: {
-				primary: "ui-icon-carat-1-e"
-			},
-			label:	btnTxt[0],
-			text:	false
-		})
-		.click(function() {
-			slideshow.panelChange($("#pageContents").data("currentPage") + 1);
-		})
-		.trigger("click");
-	
-	if (x_currentPage != 0) {
-		slideshow.sizeChanged();
-	}
-	
-	if (x_browserInfo.mobile == true) {
-		$("#pageContents .panel").prepend($btnHolder);
-	}
-	
-	x_pageLoaded();
+	slideshow.init();
 	
 </script>
 

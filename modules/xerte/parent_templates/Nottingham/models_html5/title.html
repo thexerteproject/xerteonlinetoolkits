@@ -25,7 +25,7 @@
 				
 				var $pageBg = $('<img id="pageBg"/>');
 				$pageBg
-					.attr("src", eval(x_currentPageXML.getAttribute("bgImage"))/*+'?'+new Date().getTime()*/)
+					.attr("src", eval(x_currentPageXML.getAttribute("bgImage")))
 					.css({
 						"opacity"		:Number(alpha/100),
 						"filter"		:"alpha(opacity=" + alpha + ")",
@@ -75,55 +75,59 @@
 							$this.css("visibility", "visible");
 						}
 						});
+				
 				$x_background.append($pageBg);
 				$pageBg.fadeIn();
+				
 				if (firstLoad == true) {
-					// call this function in every model once everything's loaded
 					x_pageLoaded();
 				}
 			} else if (firstLoad == true) {
-				// call this function in every model once everything's loaded
 				x_pageLoaded();
 			}
 		}
-	}
-	
-	var $pageContents = $("#pageContents");
-	$pageContents
-		.html(x_currentPageXML.childNodes[0].nodeValue)
-		.css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-	
-	if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
-		$pageContents.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x","#"));
-	}
-	
-	if (x_currentPageXML.getAttribute("titleHAlign") != undefined) {
-		$pageContents.addClass(x_currentPageXML.getAttribute("titleHAlign") + "Align");
-	} else {
-		$pageContents.addClass("centerAlign");
-	}
-	
-	var titleAlign = x_currentPageXML.getAttribute("titleVAlign");
-	if (x_browserInfo.mobile == true) {
-		$pageContents.css({
-			"position"		:"inherit",
-			"margin-left"	:0
-		});
-	} else {
-		if (titleAlign == 200 || titleAlign == undefined) { // middle
-			$pageContents.css({
-				"top"			:"50%",
-				"margin-top"	:0 - Math.round($pageContents.height() / 2)
-			})
-		} else if (titleAlign == 400) { // bottom
-			$pageContents.css({
-				"top"			:"100%",
-				"margin-top"	:0 - $pageContents.height()
-			})
+		
+		this.init = function() {
+			var $pageContents = $("#pageContents");
+			$pageContents
+				.html(x_currentPageXML.childNodes[0].nodeValue)
+				.css("font-size", x_currentPageXML.getAttribute("size") + "pt");
+			
+			if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
+				$pageContents.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x","#"));
+			}
+			
+			if (x_currentPageXML.getAttribute("titleHAlign") != undefined) {
+				$pageContents.addClass(x_currentPageXML.getAttribute("titleHAlign") + "Align");
+			} else {
+				$pageContents.addClass("centerAlign");
+			}
+			
+			var titleAlign = x_currentPageXML.getAttribute("titleVAlign");
+			if (x_browserInfo.mobile == true) {
+				$pageContents.css({
+					"position"		:"inherit",
+					"margin-left"	:0
+				});
+			} else {
+				if (titleAlign == 200 || titleAlign == undefined) { // middle
+					$pageContents.css({
+						"top"			:"50%",
+						"margin-top"	:0 - Math.round($pageContents.height() / 2)
+					})
+				} else if (titleAlign == 400) { // bottom
+					$pageContents.css({
+						"top"			:"100%",
+						"margin-top"	:0 - $pageContents.height()
+					})
+				}
+			}
+			
+			title.setUpBg(true);
 		}
 	}
 	
-	title.setUpBg(true);
+	title.init();
 	
 </script>
 

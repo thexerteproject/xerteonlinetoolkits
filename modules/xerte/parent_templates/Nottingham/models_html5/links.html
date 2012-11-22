@@ -10,7 +10,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-			var numCols = x_currentPageXML.getAttribute("cols");
+			var numCols = x_currentPageXML.getAttribute("cols");;
 			if (numCols < 1) {
 				numCols = 3;
 			}
@@ -33,38 +33,42 @@
 				x_pageLoaded();
 			}
 		}
+		
+		this.init = function() {
+			var $linkHolder = $("#linkHolder");
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			var numCols = x_currentPageXML.getAttribute("cols");
+			if (numCols < 1) {
+				numCols = 3;
+			}
+			
+			var $linkBlock = $(".linkBlock:first");
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisLink;
+					if (i != 0) {
+						$thisLink = $linkBlock.clone().appendTo($linkHolder);
+					} else {
+						$thisLink = $linkHolder;
+					}
+					$thisLink.find("h3").html(this.getAttribute("name"));
+					$thisLink.find("p").html(x_addLineBreaks(this.getAttribute("text")));
+					$thisLink.find("a")
+						.html(this.getAttribute("url"))
+						.attr({
+							"href"		:this.getAttribute("url"),
+							"target"	:"_blank"
+							});
+					if (i % numCols == 0) {
+						$thisLink.addClass("clear");
+					}
+				});
+			
+			links.sizeChanged(true); // set initial linkBlock width
+		}
 	}
 	
-	var $linkHolder = $("#linkHolder");
-	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-	var numCols = x_currentPageXML.getAttribute("cols");
-	if (numCols < 1) {
-		numCols = 3;
-	}
-	
-	var $linkBlock = $(".linkBlock:first");
-	$(x_currentPageXML).children()
-		.each(function(i) {
-			var $thisLink;
-			if (i != 0) {
-				$thisLink = $linkBlock.clone().appendTo($linkHolder);
-			} else {
-				$thisLink = $linkHolder;
-			}
-			$thisLink.find("h3").html(this.getAttribute("name"));
-			$thisLink.find("p").html(this.getAttribute("text"));
-			$thisLink.find("a")
-				.html(this.getAttribute("url"))
-				.attr({
-					"href"		:this.getAttribute("url"),
-					"target"	:"_blank"
-					});
-			if (i % numCols == 0) {
-				$thisLink.addClass("clear");
-			}
-		});
-	
-	links.sizeChanged(true); // set initial linkBlock width
+	links.init();
 	
 </script>
 

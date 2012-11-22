@@ -617,22 +617,20 @@ function x_changePage() {
 		builtPage.hide();
 		builtPage.fadeIn();
 		x_setUpPage();
-		if (x_pageInfo[x_currentPage].type != "menu") {
-			// calls function in current page model which does anything needed to reset the page (if it needs to be reset)
+		// calls function in current page model which does anything needed to reset the page (if it needs to be reset)
+		if (x_pageInfo[x_currentPage].type == "text") {
+			simpleText.pageChanged(); // errors if you just call text.pageChanged()
+		} else {
+			eval(x_pageInfo[x_currentPage].type).pageChanged();
+		}
+		
+		// checks if size has changed since last load
+		var prevSize = builtPage.data("size");
+		if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
 			if (x_pageInfo[x_currentPage].type == "text") {
-				simpleText.pageChanged(); // errors if you just call text.pageChanged()
+				simpleText.sizeChanged();
 			} else {
-				eval(x_pageInfo[x_currentPage].type).pageChanged();
-			}
-			
-			// checks if size has changed since last load
-			var prevSize = builtPage.data("size");
-			if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-				if (x_pageInfo[x_currentPage].type == "text") {
-					simpleText.sizeChanged();
-				} else {
-					eval(x_pageInfo[x_currentPage].type).sizeChanged();
-				}
+				eval(x_pageInfo[x_currentPage].type).sizeChanged();
 			}
 		}
 	} else { // x_currentPage hasn't been viewed previously - load model file

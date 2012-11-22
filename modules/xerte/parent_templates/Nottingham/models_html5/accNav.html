@@ -14,6 +14,9 @@
 				$("#infoHolder")
 					.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
 					.accordion("resize");
+			} else {
+				// ** need to look at this - possible change the way mobile pages are laid out so that the css is easier to do **
+				//$x_pageDiv.height($x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 1);
 			}
 		}
 	}
