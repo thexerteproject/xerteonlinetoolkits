@@ -12,7 +12,6 @@
 require_once("../../../config.php");
 _load_language_file("/website_code/php/properties/export_template.inc");
 
-
 include "../template_status.php";
 
 include "../url_library.php";
@@ -31,12 +30,25 @@ if(is_numeric($_POST['template_id'])){
 
         echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";
 
-        echo "<p>" . EXPORT_DESCRIPTION . "</p>";
-        echo "<ol type='1'>";
-        echo "<li>" . EXPORT_ZIP . "<ul><li><a href='" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "'>" . EXPORT_ZIP_LINK . "</a></li></li><br />";
-        echo "<li>" . EXPORT_SCORM . "<ol type='a'><li><a href='" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "'>" . EXPORT_SCORM_12_LINK . "</a></li><br/><li><a href='" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "'>" . EXPORT_SCORM_2004_LINK . "</a></li><br /></ol></li>";
-        echo "<li>" . EXPORT_ZIP_ARCHIVE . "<ul><li><a href='" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "'>" . EXPORT_ZIP_ARCHIVE_LINK . "</a></li><br /></li>";
-        echo "</ol>";
+		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+
+		$safe_template_id = htmlentities($_POST['template_id']);
+
+		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
+
+		$query_for_play_content_response = mysql_query($query_for_play_content);
+
+		$row_play = mysql_fetch_array($query_for_play_content_response);
+		
+		if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php")){
+
+			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
+			
+		}else{
+		
+			echo "<p>" . EXPORT_NOT_AVAILABLE . "</p>";
+		
+		}
 
     }else{
 
