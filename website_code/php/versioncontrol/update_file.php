@@ -41,6 +41,8 @@ if(isset($_POST['template_id'])){
 			array_push($temp_array, $row_play['username']);
 
 			array_push($temp_array, $row_play['template_name']);
+			
+			array_push($temp_array, $row_play['template_framework']);
 
 		}
 			/*
@@ -48,16 +50,28 @@ if(isset($_POST['template_id'])){
 			*/
 
 		if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
+		
+			if(!isset($xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->preview_file)){
+				
+				require("../../../modules/" . $temp_array[2] . "/publish.php");
+				
+				publish($row_play, $_POST['template_id']);
+				
+				echo UPDATE_SUCCESS;
+			
+			}else{
+		
+				$preview_xml = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/" . $xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->preview_file);
 
-			$preview_xml = file_get_contents($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/preview.xml");
+				$data_handle = fopen($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/" . $xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->public_file,"w");
 
-			$data_handle = fopen($xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2] . "/data.xml","w");
+				fwrite($data_handle,$preview_xml);
 
-			fwrite($data_handle,$preview_xml);
+				fclose($data_handle);
 
-			fclose($data_handle);
-
-			echo UPDATE_SUCCESS;
+				echo UPDATE_SUCCESS;
+			
+			}
 			
 		}
 
