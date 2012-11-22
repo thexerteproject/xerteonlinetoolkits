@@ -155,31 +155,38 @@ function scorm_html_page_create($name, $type){
 	 * @author Patrick Lockley
 	 */
 
-function folder_loop($path, $recursive=true, $ext=NULL){
+function export_folder_loop($path, $recursive=true, $ext=NULL){
 
 	global $folder_id_array, $folder_array, $file_array, $zipfile, $dir_path;
-
+	
 	$d = opendir($path);
 	array_push($folder_id_array, $d);
 	while($f = readdir($d)){
+	
 		if(is_dir($path . $f)){
+		
 			if(($f!=".")&&($f!="..")&&$recursive){
-				folder_loop($path . $f . "/");
+				export_folder_loop($path . $f . "/");
 			}
 
 		}else{
 			if($f!="data.xml"){
-        if ($ext == NULL || strrpos($f, $ext) == strlen($f)-strlen($ext))
-        {
-				  $string = $path . $f;
-				  array_push($file_array, $string);
-        }
+				if ($ext == NULL || strrpos($f, $ext) == strlen($f)-strlen($ext))
+				{
+						  $string = $path . $f;
+						  
+						  //echo $string . "<br />";
+						  
+						  array_push($file_array, $string);
+				}
 			}
 		}
 	}
 
 	$x = array_pop($folder_id_array);
+	
 	closedir($x);
+	
 }
 
 	/**
@@ -316,26 +323,33 @@ function copy_scorm_files(){
 	 * @author Patrick Lockley
 	 */
 
-function xerte_zip_files($fullArchive=false){
-	global $file_array, $zipfile, $dir_path;
-  _debug("Zipping up: " . $fullArchive);
+function xerte_zip_files($fullArchive=false, $dir_path){
+
+	global $file_array, $zipfile;
+	
+    _debug("Zipping up: " . $fullArchive);
 	while($file = array_pop($file_array)){
 		if(($file!="data.xwd")||($file!="data.xml")||$file!="preview.xml"){
       /* Check if this is a media file */
       if (!$fullArchive && strpos($file, "/media/") !== false)
       {
+	  
         /* only add file if used */
- 			  $string = str_replace($dir_path, "", $file);
-        if (strpos(file_get_contents($dir_path . "template.xml"), $string) !== false)
+ 			  $string = str_replace($dir_path, "", $file);			  
+			  
+        if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false)
         {
+		
           _debug("  add " . $string);
+		  
 	  		  $zipfile->add_files($string);
         }
       }
       else
       {
 			  $string = str_replace($dir_path, "", $file);
-        _debug("  add " . $string);
+              _debug("  add " . $string);
+			  
 			  $zipfile->add_files($string);
       }
 		}
