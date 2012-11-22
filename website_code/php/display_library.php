@@ -210,7 +210,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   global $level, $xerte_toolkits_site;
 
-  $query = "select template_name, template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") ";
+    $query = "select templatedetails.template_name as template_name, template_id, template_framework, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name as name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id ";
 
   if ($sort_type == "alpha_down") {
     $query .= "order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name DESC";
@@ -226,7 +226,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   while ($row = mysql_fetch_array($query_response)) {
 
-        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
+        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
 
   }
 
@@ -369,7 +369,7 @@ function list_blank_templates() {
 
     echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
-    echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" size=\"40\" length=\"40\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
+        echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
   }
 
@@ -441,8 +441,6 @@ function list_specific_templates() {
     if (access_check($row['access_rights'])) {
 
       echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon\"></div><div class=\"template_desc\"><p class=\"template_name\">";
-
-      echo $row['display_name'];
 
       echo "</p><p class=\"template_desc_p\">";
 
