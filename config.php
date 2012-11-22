@@ -108,6 +108,55 @@ if (!isset($xerte_toolkits_site)) {
     
     $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
 
+	$dir = opendir($xerte_toolkits_site->root_file_path . "modules/");
+	
+	$learning_objects = new StdClass();
+	
+	while($folder = readdir($dir)){
+	
+		if($folder!="."&&$folder!=".."){
+			
+			$inner_dir = opendir($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates");
+			
+			while($inner_folder = readdir($inner_dir)){
+	
+				if($inner_folder!="."&&$inner_folder!=".."){
+					
+					if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates/" . $inner_folder . "/" . $inner_folder . ".info")){
+					
+						$data = file_get_contents($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates/" . $inner_folder . "/" . $inner_folder . ".info");	
+						
+						$info = explode("\n",$data);
+						
+						$learning_objects->{$folder . "_" . $inner_folder} = new StdClass();
+						
+						while($attribute = array_pop($info)){
+						
+							$attr_data = explode(":",$attribute);
+							
+							switch(trim(strtolower($attr_data[0]))){
+							
+								case "editor size" : $learning_objects->{$folder . "_" . $inner_folder}->editor_size = trim($attr_data[1]); break;
+								case "preview size" : $learning_objects->{$folder . "_" . $inner_folder}->preview_size = trim($attr_data[1]); break;
+								case "preview filename" : $learning_objects->{$folder . "_" . $inner_folder}->preview_file = trim($attr_data[1]); break;
+								case "public filename" : $learning_objects->{$folder . "_" . $inner_folder}->public_file = trim($attr_data[1]); break;
+								case "supports" : $learning_objects->{$folder . "_" . $inner_folder}->supports = explode(",",trim($attr_data[1])); break;
+							
+							}
+						
+						}
+						
+					}
+				
+				}
+				
+			}
+			
+		}
+	
+	}
+
+	$xerte_toolkits_site->learning_objects = $learning_objects;
 
     /* Optional :
       require_once("session_handler.php");
