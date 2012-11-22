@@ -29,68 +29,77 @@
 				});
 			$x_background.append($pageBg);
 		}
-	}
-	
-	var numOffset = 0;
-	if (x_params.navigation != "Linear") {
-		numOffset = 1;
-	}
-	
-	var $menuItems = $("#menuItems");
-	var $menuItem = $menuItems.find(".menuItem:first");
-	for (var i=0; i<x_pages.length-numOffset; i++) {
-		var $thisItem;
-		if (i != 0) {
-			$thisItem = $menuItem.clone().appendTo($menuItems);
-		} else {
-			$thisItem = $menuItem;
-		}
 		
-		$thisItem.html(x_pages[i+numOffset].getAttribute("name"));
-	}
-	
-	$(".menuItem")
-		.button()
-		.click(function() {
-			$this = $(this);
-			x_currentPage = $this.index() + numOffset;
-			$this.removeClass("ui-state-focus");
-			$this.removeClass("ui-state-hover");
-			x_changePage();
-		});
-	
-	if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear") {
-		if (x_params.menuImageProperties != "Full Screen") { // use panel
-			var imgMaxW = $(".right").width() - 80;
-			var imgMaxH = 450;
-			$(".right").append('<img/>');
-			$(".right img")
-				.css("visibility", "hidden")
-				.addClass("panel centre")
-				.bind("load", function() {
-					x_scaleImg(this, imgMaxW, imgMaxH)
-					})
-				.attr({
-					"id":"pageImg",
-					"src":eval(x_params.menuImage)
-					})
-				.load(function() {
-					// call this function in every model once everything's loaded
-					x_pageLoaded();
-					});
-		} else {
-			menu.setUpBg(true);
+		this.init = function() {
+			var numOffset = 0;
+			if (x_params.navigation != "Linear") {
+				numOffset = 1;
+			}
+			
+			var $menuItems = $("#menuItems");
+			var $menuItem = $menuItems.find(".menuItem:first");
+			for (var i=0; i<x_pages.length-numOffset; i++) {
+				var $thisItem;
+				if (i != 0) {
+					$thisItem = $menuItem.clone().appendTo($menuItems);
+				} else {
+					$thisItem = $menuItem;
+				}
+				
+				$thisItem.html(x_pages[i+numOffset].getAttribute("name"));
+			}
+			
+			$(".menuItem")
+				.button()
+				.click(function() {
+					$this = $(this);
+					x_currentPage = $this.index() + numOffset;
+					$this.removeClass("ui-state-focus");
+					$this.removeClass("ui-state-hover");
+					x_changePage();
+				});
+			
+			if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear") {
+				if (x_params.menuImageProperties != "Full Screen") { // use panel
+					var imgMaxW;
+					if (x_browserInfo.mobile == false) {
+						imgMaxW = $(".right").width() - 80;
+					} else {
+						imgMaxW = $x_mobileScroll.width() - 40;
+					}
+					var imgMaxH = 450;
+					$(".right").append('<img/>');
+					$(".right img")
+						.css("visibility", "hidden")
+						.addClass("panel centre")
+						.bind("load", function() {
+							x_scaleImg(this, imgMaxW, imgMaxH)
+							})
+						.attr({
+							"id":"pageImg",
+							"src":eval(x_params.menuImage)
+							})
+						.load(function() {
+							// call this function in every model once everything's loaded
+							x_pageLoaded();
+							});
+				} else {
+					menu.setUpBg(true);
+				}
+			} else {
+				$("#menuHolder").removeClass("splitScreen");
+				if (x_browserInfo.mobile == false && x_params.navigation != "Linear" && x_params.navigation != undefined) {
+					$menuItems.width("70%");
+				}
+			}
+			
+			if (x_params.navigation != "Linear" && (x_params.menuImage == undefined || x_params.menuImage == "")) {
+				x_pageLoaded();
+			}
 		}
-	} else {
-		$("#menuHolder").removeClass("splitScreen");
-		if (x_browserInfo.mobile == false && x_params.navigation != "Linear" && x_params.navigation != undefined) {
-			$menuItems.width("70%");
-		}
 	}
 	
-	if (x_params.navigation != "Linear" && (x_params.menuImage == undefined || x_params.menuImage == "")) {
-		x_pageLoaded();
-	}
+	menu.init();
 	
 </script>
 

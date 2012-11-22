@@ -2,7 +2,9 @@
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var bullets = new function() {		
+	var bullets = new function() {
+		var firstLoad;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$(".bullet").hide();
@@ -14,20 +16,16 @@
 			}
 		}
 		
-		$("#pageContents").data("firstLoad", true);
-		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $pageContents = $("#pageContents");
-			var firstLoad = $pageContents.data("firstLoad");
-			if ($pageContents.data("firstLoad") != true || x_currentPage != 0) {
+			if (firstLoad != true || x_currentPage != 0) {
 				// don't change div height here if this is the 1st page and it's the 1st load of it
 				$(".bullet").show();
+				var $pageContents = $("#pageContents");
 				$pageContents.height("");
 				$pageContents.height($pageContents.height());
-				
 			} else {
-				$pageContents.data("firstLoad", false);
+				firstLoad = false;
 			}
 		}
 		
@@ -41,59 +39,65 @@
 				if (currentBullet >= $(".bullet").length) {
 					clearInterval(x_timer);
 				}
-			}, x_currentPageXML.getAttribute("delaySecs") * 100);
+			}, x_currentPageXML.getAttribute("delaySecs") * 1000);
+		}
+		
+		this.init = function() {
+			var $pageContents = $("#pageContents");
+			firstLoad = true;
+			
+			if (x_currentPageXML.getAttribute("showPanel") != 0) {
+				$pageContents.addClass("panel");
+			}
+			
+			if (x_browserInfo.mobile == false) {
+				var panelW = x_currentPageXML.getAttribute("panelWidth");
+				if (panelW == "Small") {
+					$pageContents.addClass("width40");
+				} else if (panelW == "Medium") {
+					$pageContents.addClass("width60");
+				} else if (panelW == "Large") {
+					$pageContents.addClass("width80");
+				} // else full width
+			}
+			
+			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
+			var bulletArray = text.split("<br />");
+			
+			var contentsStr = "";
+			var startTag = '<p class="bullet">';
+			var endTag = "</p>";
+			if (x_currentPageXML.getAttribute("showBullets") != 0) {
+				contentsStr += "<ul>";
+				startTag = '<li class="bullet">';
+				endTag = "</li>";
+			}
+			for (var i=0; i<bulletArray.length; i++) {
+				if (bulletArray[i] != "" && $.trim(bulletArray[i]) != "") {
+					contentsStr += startTag + bulletArray[i] + endTag;
+				}
+			}
+			if (x_currentPageXML.getAttribute("showBullets") != 0) {
+				contentsStr += "</ul>";
+			}
+			$("#holder").append(contentsStr);
+			if (x_currentPageXML.getAttribute("showPanel") != 0) {
+				$pageContents.height($pageContents.height()); // force height otherwise panel shrinks when bullets are hidden
+			}
+			$(".bullet").hide();
+			if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined) {
+				$(".bullet").fadeIn();
+			} else {
+				$(".bullet:eq(0)").show();
+				bullets.timer();
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
 		}
 	}
 	
-	var $pageContents = $("#pageContents");
-	
-	if (x_currentPageXML.getAttribute("showPanel") != 0) {
-		$pageContents.addClass("panel");
-	}
-	
-	var panelW = x_currentPageXML.getAttribute("panelWidth");
-	if (panelW == "Small") {
-		$pageContents.addClass("width40");
-	} else if (panelW == "Medium") {
-		$pageContents.addClass("width60");
-	} else if (panelW == "Large") {
-		$pageContents.addClass("width80");
-	} // else full width
-	
-	var text = x_currentPageXML.childNodes[0].nodeValue.replace(/\n/g, "</br>");
-	var bulletArray = text.split("</br>");
-	
-	var contentsStr = "";
-	var startTag = '<p class="bullet">';
-	var endTag = "</p>";
-	if (x_currentPageXML.getAttribute("showBullets") != 0) {
-		contentsStr += "<ul>";
-		startTag = '<li class="bullet">';
-		endTag = "</li>";
-	}
-	for (var i=0; i<bulletArray.length; i++) {
-		if (bulletArray[i] != "" && $.trim(bulletArray[i]) != "") {
-			contentsStr += startTag + bulletArray[i] + endTag;
-		}
-	}
-	if (x_currentPageXML.getAttribute("showBullets") != 0) {
-		contentsStr += "</ul>";
-	}
-	$("#holder").append(contentsStr);
-	if (x_currentPageXML.getAttribute("showPanel") != 0) {
-		$pageContents.height($pageContents.height()); // force height otherwise panel shrinks when bullets are hidden
-	}
-	$(".bullet").hide();
-	
-	if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined) {
-		$(".bullet").fadeIn();
-	} else {
-		$(".bullet:eq(0)").show();
-		bullets.timer();
-	}
-	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	bullets.init();
 	
 </script>
 

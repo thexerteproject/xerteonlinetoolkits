@@ -12,22 +12,26 @@
 		this.sizeChanged = function() {
 			
 		}
+		
+		this.init = function() {
+			// if language attributes aren't in xml will have to use english fall back
+			var summaryHeader = x_currentPageXML.getAttribute("summaryHeader");
+			if (summaryHeader == undefined) {
+				summaryHeader = "Summary";
+			}
+			var nextstepsHeader = x_currentPageXML.getAttribute("nextstepsHeader");
+			if (nextstepsHeader == undefined) {
+				nextstepsHeader = "Next Steps";
+			}
+			
+			$("#pageContents").html("<h3>" + summaryHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</p><br/><h3>" + nextstepsHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</p>");
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
 	}
 	
-	// if language attributes aren't in xml will have to use english fall back
-	var summaryHeader = x_currentPageXML.getAttribute("summaryHeader");
-	if (summaryHeader == undefined) {
-		summaryHeader = "Summary";
-	}
-	var nextstepsHeader = x_currentPageXML.getAttribute("nextstepsHeader");
-	if (nextstepsHeader == undefined) {
-		nextstepsHeader = "Next Steps";
-	}
-	
-	$("#pageContents").html("<h3>" + summaryHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("summary")) + "</p><br/><h3>" + nextstepsHeader + "</h3><p>" + x_addLineBreaks(x_currentPageXML.getAttribute("nextsteps")) + "</p>");
-	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	summary.init();
 	
 </script>
 
