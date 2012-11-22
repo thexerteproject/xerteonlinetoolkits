@@ -353,7 +353,7 @@ $folder_id = "";
  * Check the file is the write type
  */
 
-if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")){
+if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")||($_FILES['filenameuploaded']['type']=="application/octet-stream")){
 
     _debug("Trying to import " . $_FILES['filenameuploaded']['name']);
  
@@ -393,7 +393,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             foreach($x as $y){
 
-				if(count(explode("/",$y))==3){
+				if(count(explode("/",$y))==8){
 				
 					die(IMPORT_ZIP_FOLDER_LEVEL . "****");
 				
