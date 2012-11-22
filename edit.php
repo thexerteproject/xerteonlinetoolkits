@@ -16,7 +16,6 @@ require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
 require $xerte_toolkits_site->php_library_path . "display_library.php";
 require $xerte_toolkits_site->php_library_path . "user_library.php";
-require_once(dirname(__FILE__) . '/modules/xerte/module_functions.php');
 
 /**
  * Function update_access_time
@@ -60,142 +59,148 @@ if(empty($row_edit)) {
     die("Invalid template_id (could not find in DB)"); 
 }
 
-if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])){	
+if(isset($_SESSION['toolkits_logon_id'])){
 
-    // Check if user is editor (could be read only)
+	if(has_rights_to_this_template($safe_template_id,$_SESSION['toolkits_logon_id'])){	
 
-    if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])){
+		// Check if user is editor (could be read only)
 
-        // Check for multiple editors
-        if(has_template_multiple_editors($safe_template_id)){
+		if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])){
 
-            // Check for lock file. A lock file is created to prevent more than one 
-            if(file_exists($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt")){
+			// Check for multiple editors
+			if(has_template_multiple_editors($safe_template_id)){
 
-                // Lock file exists, so open it up and see who created it
-                $lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt");
+				// Check for lock file. A lock file is created to prevent more than one 
+				if(file_exists($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt")){
 
-                $temp = explode("*",$lock_file_data);
+					// Lock file exists, so open it up and see who created it
+					$lock_file_data = file_get_contents($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt");
 
-                if(count($temp)==1){
-                    $temp = explode(" ",$lock_file_data);					
-                }
+					$temp = explode("*",$lock_file_data);
 
-                $lock_file_creator = $temp[0];
+					if(count($temp)==1){
+						$temp = explode(" ",$lock_file_data);					
+					}
 
-                /*
-                 * Check if lock file creator is current user, if so, continue into the code
-                 */
+					$lock_file_creator = $temp[0];
 
-                if($lock_file_creator==$_SESSION['toolkits_logon_username']) {
-                    if(update_access_time($row_edit)) {
-                        // Display the editor
-                        require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-                        output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
-                    }
-                    else {
-                        // show error
-                        error_show_template();
-                        exit(0);
-                    }
-                }
-                else {
-                    if(isset($_POST['lockfile_clear'])) {
+					/*
+					 * Check if lock file creator is current user, if so, continue into the code
+					 */
 
-                        /*
-                         * Delete the lockfile
-                         */
+					if($lock_file_creator==$_SESSION['toolkits_logon_username']) {
+						if(update_access_time($row_edit)) {
+							// Display the editor
+							require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+							output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
+						}
+						else {
+							// show error
+							error_show_template();
+							exit(0);
+						}
+					}
+					else {
+						if(isset($_POST['lockfile_clear'])) {
 
-                        $file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
+							/*
+							 * Delete the lockfile
+							 */
 
-                        fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
+							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
 
-                        fclose($file_handle);
+							fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
 
-                        /*
-                         * Update the time this template was last edited
-                         */
+							fclose($file_handle);
 
-                        if(update_access_time($row_edit)){
+							/*
+							 * Update the time this template was last edited
+							 */
 
-                            require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-                            output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
-                        }
-                        else {
-                            error_show_template();
-                            exit(0);
-                        }
-                    } 
-                    else {
+							if(update_access_time($row_edit)){
 
-                        // Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
-                        $new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " ";
-                        $file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
-                        fwrite($file_handle, $new_lock_file);
-                        fclose($file_handle);
-                        output_locked_file_code($lock_file_creator);
-                    }
-                }
-            }
-            else {
+								require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+								output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
+							}
+							else {
+								error_show_template();
+								exit(0);
+							}
+						} 
+						else {
 
-                // No lock file, so create one
-                $file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
-                fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
-                fclose($file_handle);
+							// Update the lock file. The lock file format is creator id*id that tried to access 1 <space> id that tried to access 2 and so on
+							$new_lock_file = $lock_file_data . $_SESSION['toolkits_logon_username'] . " ";
+							$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt",'w');
+							fwrite($file_handle, $new_lock_file);
+							fclose($file_handle);
+							output_locked_file_code($lock_file_creator);
+						}
+					}
+				}
+				else {
 
-                // Update the time this template was last edited
-                if(update_access_time($row_edit)){
-                    require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-                    output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
-                }else{
-                    error_show_template();
-                    exit(0);
-                }
+					// No lock file, so create one
+					$file_handle = fopen($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt", 'w');
+					fwrite($file_handle, $_SESSION['toolkits_logon_username'] . "*");
+					fclose($file_handle);
 
-            }
+					// Update the time this template was last edited
+					if(update_access_time($row_edit)){
+						require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+						output_editor_code($row_edit, $xerte_toolkits_site, "true", true);			
+					}else{
+						error_show_template();
+						exit(0);
+					}
 
-        }
-        else {
-            // One editor (but shared) for this prohect, so continue without creating a lock file
-            if(update_access_time($row_edit)){
-                require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-                output_editor_code($row_edit, $xerte_toolkits_site, "true", false);			
-            } 
-            else {
-                error_show_template();		
-                exit(0);
-            }
-        }
-    }
-    else {
-        // One editor (and no sharing) for this prohect, so continue without creating a lock file
-        if(update_access_time($row_edit)){
-            _debug("editphp - no sharing etc");
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-            output_editor_code($row_edit, $xerte_toolkits_site, "false", false);			
-        }
-        else {
-            error_show_template();			
-            exit(0);
-        }
-    }
-}
-else if(is_user_admin()) {
-    // Is the current user an administrator - If so access here.
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-    output_editor_code($row_edit, $xerte_toolkits_site, "false", false);	
-}
-else {
-    // Wiki mode - check to see if template allows anonymous editing.
+				}
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/data.xml";
-    $buffer = file_get_contents($string_for_flash_xml);
-    if(strpos($buffer,"editable=true")==false){	
-        // so the user sees a blank page?
-    }else{
-        // Wiki mode set
-        require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
-        output_editor_code($row_edit, $xerte_toolkits_site, "true", false);	
-    }
+			}
+			else {
+				// One editor (but shared) for this prohect, so continue without creating a lock file
+				if(update_access_time($row_edit)){
+					require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+					output_editor_code($row_edit, $xerte_toolkits_site, "true", false);			
+				} 
+				else {
+					error_show_template();		
+					exit(0);
+				}
+			}
+		}
+		else {
+			// One editor (and no sharing) for this prohect, so continue without creating a lock file
+			if(update_access_time($row_edit)){
+				_debug("editphp - no sharing etc");
+				require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+				output_editor_code($row_edit, $xerte_toolkits_site, "false", false);			
+			}
+			else {
+				error_show_template();			
+				exit(0);
+			}
+		}
+	}
+	else if(is_user_admin()) {
+		// Is the current user an administrator - If so access here.
+		require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+		output_editor_code($row_edit, $xerte_toolkits_site, "false", false);	
+	}
+	else {
+		// Wiki mode - check to see if template allows anonymous editing.
+
+		$string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/data.xml";
+		$buffer = file_get_contents($string_for_flash_xml);
+		if(strpos($buffer,"editable=true")==false){	
+			// so the user sees a blank page?
+		}else{
+			// Wiki mode set
+			require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+			output_editor_code($row_edit, $xerte_toolkits_site, "true", false);	
+		}
+	}
+
+}else{
+	die("Session ID not set"); 
 }
