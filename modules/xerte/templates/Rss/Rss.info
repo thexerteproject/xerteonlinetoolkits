@@ -1,0 +1,7 @@
+display name: RSS Feed
+description: Easily create and maintain an RSS Feed.
+editor size: 800,665
+preview size: 800,665
+preview filename: preview.xml
+public filename: data.xml
+supports: export,give,peer,xml
