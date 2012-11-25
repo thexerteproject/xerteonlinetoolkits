@@ -1,0 +1,686 @@
+<script type="text/javascript">
+	// -----------------------------------------------------------------------------------------
+	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
+	// -----------------------------------------------------------------------------------------
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var textDrawing = new function() {
+		var $drawingArea,
+			canvasHolder,
+			canvasSupported,
+			jobQueue,
+			jobQueueIndex,
+			imageLoading,
+			imageTimer,
+			canvasSize;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+
+		};
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+
+		};
+
+        // Parse and substitute attributes and return as object
+        this.parseAttributes = function(xml) {
+            var newVal, data = {type:'', x:0, y:0, x2:0, y2:0, x3:0, y3:0, lw:1, s:12, r:0, la:100, fa:100, lc:'#000000', fc:'#FFFFFF', n:0, t:''};
+            $.each(xml[0].attributes, function(i, attribute) {
+                newVal = attribute.value;
+                if (newVal.substring(0, 2) == '0x') { // hex value
+                    data[attribute.name] = '#' + newVal.substring(2);
+                }
+                else if (isNaN(newVal) == false) { // is a number
+                    data[attribute.name] = parseFloat(newVal);
+                }
+                else {
+                    data[attribute.name] = newVal;
+                }
+            });
+            return data;
+        };
+
+		this.drawRectangle = function(canvas, attr) {
+			if (this.canvasSupported == true) {
+                var w = attr.x2, h = attr.y2;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]); //$drawingArea.fillRect(x, y, w, h); // *** should try to use this
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+			} else {
+                if (attr.r == 0) { // Draw rectangle using div
+                    canvas.append('<div style="position:absolute;left:' + (attr.x - Math.round(attr.lw / 2)) + 'px;top:' + (attr.y - Math.round(attr.lw / 2)) + 'px;width:' + (attr.x2 - attr.lw) + 'px;height:' + (attr.y2 - attr.lw) + 'px;background-color:' + attr.fc + ';border:' + attr.lw + 'px solid ' + attr.lc + ';"></div>');
+					canvas.width(Math.max(canvas.width(), attr.x + attr.x2 + 10));
+					canvas.height(Math.max(canvas.height(), attr.y + attr.y2 + 10));
+                }
+                else {
+                	console.log("Rotated rectangle not supported!");
+                }
+			}
+		};
+
+        // *** Helper function NOT the Poly shape handler, although called from it
+        this.drawPolygon = function (canvas, coords) {
+            canvas.beginPath();
+            canvas.moveTo(coords[0], coords[1]);
+            for(var i = 2; i < coords.length - 1; i += 2) {
+                canvas.lineTo(coords[i], coords[i+1]);
+            }
+            canvas.closePath();
+        };
+
+		this.drawText = function (canvas, attr) {
+            var fontWeight = (attr.b == "1") ? "bold" : "normal";
+            //var lw = parseInt($this.attr("lw")); // ** Not really sure what this is yet???
+
+			if (this.canvasSupported == true) {
+                canvas.textBaseline = "top";
+                canvas.fillStyle = attr.lc;
+                canvas.font = fontWeight + " " + attr.s + "px " + attr.f;
+                this.wrapText(canvas, attr.t, attr.x, attr.y, attr.x2, 20);
+			}
+			else {
+                var div = canvas.append('<div style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
+				canvas.width(Math.max(canvas.width(), attr.x + attr.x2));
+				canvas.height(Math.max(canvas.height(), attr.y + div.height() - 50));
+			}
+		};
+
+        this.wrapText = function (canvas, text, x, y, maxWidth, lineHeight) {
+            var line = '', words = text.split(' ');
+
+            for (var i = 0; i < words.length; i++) {
+                var tempLine = line + words[i] + ' ';
+                if (canvas.measureText(tempLine).width > maxWidth) {
+                    canvas.fillText(line, x, y);
+                    line = words[i] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = tempLine;
+                }
+            }
+            canvas.fillText(line, x, y);
+        };
+
+		this.drawPicture = function (canvas, attr) {
+			var p = FileLocation + attr.p;
+
+			if (this.canvasSupported == true) {
+				var img = new Image();
+				var that = this;
+				img.onload = function() {
+					canvas.save();
+					canvas.translate(attr.x, attr.y);
+					canvas.rotate(attr.r * Math.PI / 180);
+					canvas.drawImage(img, 0, 0);
+					canvas.restore();
+					that.imageTimer = 0;
+				};
+				img.src = p;
+				this.imageLoading = img;
+				that.imageTimer = 25;
+			} else {
+                if (attr.r == 0) {
+                    canvas.append('<img style="position:relative;left:' + attr.x + 'px;top:' + attr.y + 'px;" src="' + p + '" alt="' + attr.label + '" />');
+                	var img = new Image();
+                	img.onload = function() {
+						canvas.width(Math.max(canvas.width(), attr.x + this.width));
+						canvas.height(Math.max(canvas.height(), attr.y + this.height));
+                	}
+                	img.src = p;
+                }
+                else {
+                    console.log("Rotated pictures not supported!");
+                }
+			}
+		};
+
+        this.drawPen = function (canvas, attr) {
+            if (this.canvasSupported == true) {
+                var coords, points = attr.p.split('~');
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.moveTo(0,0);
+                for (var i = 0; i < points.length - 1; i++) {
+                    coords = points[i].split(',');
+                    canvas.quadraticCurveTo(coords[2], coords[3], coords[0], coords[1]);
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Pen tool not supported!");
+            }
+        };
+
+		this.drawFreehand = function (canvas, attr) {
+			var points = attr.p.split('~');
+			var coords = [];
+			for (var i=0; i<points.length; i++) {
+				coords.push(points[i].split(','));
+			}
+
+			if (this.canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+				for (var i=0; i<coords.length; i++) {
+                    canvas.lineTo(parseInt(coords[i][0]), parseInt(coords[i][1]));
+				}
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+			} else {
+				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
+				var pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
+				var pixels = '', maxX = 0, maxY = 0;
+				for (var i=0; i<coords.length; i++) {
+					pixels += '<div class="p_' + pixelHash + '" style="left:' + (attr.x + parseInt(coords[i][0])) + 'px;top:'+ (attr.y + parseInt(coords[i][1])) + 'px"></div>';
+					maxX = Math.max(maxX, attr.x + parseInt(coords[i][0]) + attr.lw + 1);
+					maxY = Math.max(maxY, attr.y + parseInt(coords[i][1]) + attr.lw + 1);
+				}
+                canvas.append(pixels);
+                canvas.width(Math.max(canvas.width(), maxX));
+				canvas.height(Math.max(canvas.height(), maxY));
+			}
+		};
+
+        this.drawOval = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var radiusX = attr.x2;
+                var radiusY = attr.y2;
+                var xPos, yPos;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                for (var i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
+                    xPos = radiusY * Math.sin(i) * Math.sin(0 * Math.PI) + radiusX * Math.cos(i) * Math.cos(0 * Math.PI);
+                    yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
+                    if (i == 0) {
+                        canvas.moveTo(xPos, yPos);
+                    } else {
+                        canvas.lineTo(xPos, yPos);
+                    }
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Oval tool not supported!");
+            }
+        };
+
+        this.drawPoly = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var radius = attr.x2;
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+
+                if (attr.n > 2) {
+                    var step, start, dx, dy, coords = [];
+                    step = 2 * Math.PI / attr.n;
+                    coords.push(Math.cos(0) * radius);
+                    coords.push(- Math.sin(0) * radius);
+                    for (var i = 1; i <= attr.n; i++) {
+                        coords.push(Math.cos(step * i) * radius);
+                        coords.push(- Math.sin(step * i) * radius);
+                    }
+                    this.drawPolygon(canvas, coords);
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                console.log("Poly tool not supported!");
+            }
+        };
+
+        this.drawBurst = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                if (attr.n > 2) {
+                    var outerRadius = attr.y2;
+                    var innerRadius = attr.x2;
+                    var step, hStep, qStep, i, dx, dy, cx, cy;
+                    step = 2 * Math.PI / attr.n ;
+                    hStep = step/2;
+                    qStep = step/4;
+
+                    canvas.translate(attr.x, attr.y);
+                    canvas.rotate(attr.r * Math.PI / 180);
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (i = 1; i <= attr.n; i++) {
+                        cx = Math.cos(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+                        cy = -Math.sin(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+                        dx = Math.cos(step * i - hStep) * innerRadius;
+                        dy = -Math.sin(step * i - hStep) * innerRadius;
+                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+                        cx = Math.cos(step * i - qStep) * innerRadius / Math.cos(qStep);
+                        cy = -Math.sin(step * i - qStep) * innerRadius / Math.cos(qStep);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                console.log("Burst tool not supported!");
+            }
+        };
+
+        this.drawArrow = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var w = attr.x2;
+                var h = attr.y2;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                this.drawPolygon(canvas, [0,h/4,w/2,h/4,w/2,0,w,h/2,w/2,h,w/2,3*h/4,0,3*h/4,0,h/4]);
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Arrow tool not supported!");
+            }
+        };
+
+        this.drawLine = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                canvas.lineTo(attr.x2, attr.y2);
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Line tool not supported!");
+            }
+        }
+
+        this.drawStar = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var outerRadius = attr.x2;
+                var innerRadius = attr.y2;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate((180 - attr.r) * Math.PI / 180);
+                if (attr.n > 2) {
+                    var step, hStep, i, dx, dy;
+                    step = 2 * Math.PI / attr.n;
+                    hStep = step / 2;
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (var i = 1; i <= attr.n; i++) {
+                        dx = Math.cos(step * i - hStep) * innerRadius;
+                        dy = -Math.sin(step * i - hStep) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                console.log("Star tool not supported!");
+            }
+        };
+
+        this.drawNgon = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var p = attr.p.split('~');
+                var i, coords;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                if (p.length > 1) {
+                    canvas.beginPath();
+                    for (i = 0; i < p.length; i++) {
+                        coords = p[i].split(',');
+                        if (i == 0) {
+                            canvas.moveTo(parseInt(coords[0]), parseInt(coords[1]));
+                        } else {
+                            canvas.lineTo(parseInt(coords[0]), parseInt(coords[1]));
+                        }
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                console.log("Ngon tool not supported!");
+            }
+        };
+
+        this.drawWedge = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var radius = attr.x2;
+                var arc = attr.y2;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                var segAngle, theta, angle, angleMid, segs, ax, ay, bx, by, cx, cy;
+                if (Math.abs(arc) > 360) {
+                    arc = 360;
+                }
+                segs = Math.ceil(Math.abs(arc) / 45);
+                segAngle = arc / segs;
+                theta = - Math.PI * segAngle / 180;
+                angle = - Math.PI * 0 / 180;
+                if (segs > 0) {
+                    ax = Math.cos(0 * Math.PI / 180) * radius;
+                    ay = Math.sin(-0 * Math.PI / 180) * radius;
+                    canvas.lineTo(ax, ay);
+                    for (var i = 0; i < segs; i++) {
+                        angle += theta;
+                        angleMid = angle - theta / 2;
+                        bx = Math.cos(angle) * radius;
+                        by = Math.sin(angle) * radius;
+                        cx = Math.cos(angleMid) * radius / Math.cos(theta / 2);
+                        cy = Math.sin(angleMid) * radius / Math.cos(theta / 2);
+                        canvas.quadraticCurveTo(cx, cy, bx, by);
+                    }
+                    canvas.lineTo(0, 0);
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Wedge tool not supported!");
+            }
+        };
+
+        this.drawGear = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                var outerRadius = attr.x2;
+                var innerRadius = attr.y2;
+
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate((180 - attr.r) * Math.PI / 180);
+                if (attr.n > 2) {
+                    var step, qStep, start, i, dx, dy;
+                    step = 2 * Math.PI / attr.n;
+                    qStep = step / 4;
+
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (i = 1; i <= attr.n; i++) {
+                        dx = Math.cos(step * i - qStep * 3) * innerRadius;
+                        dy = -Math.sin(step * i - qStep * 3) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i - qStep * 2) * innerRadius;
+                        dy = -Math.sin(step * i - qStep * 2) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i - qStep) * outerRadius;
+                        dy = -Math.sin(step * i - qStep) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                console.log("Gear tool not supported!");
+            }
+        };
+
+        this.drawCurve = function(canvas, attr) {
+            if (this.canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                canvas.quadraticCurveTo(attr.x3, attr.y3, attr.x2, attr.y2);
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                console.log("Curve tool not supported!");
+            }
+        };
+
+        this.drawShape = function(attr) {
+        	var canvas = this.$drawingArea;
+        	if (this.canvasSupported == true) {
+				canvas.save(); // Save context so we start afresh each time
+				canvas.fillStyle = attr.fc;
+				canvas.lineWidth = attr.lw;
+				canvas.strokeStyle = attr.lc;
+				canvas.globalAlpha = attr.fa / 100;
+			}
+			switch (attr.type)
+			{
+				case "rect" : textDrawing.drawRectangle(canvas, attr); break;
+				case "image" : textDrawing.drawPicture(canvas, attr); break;
+				case "free" : textDrawing.drawFreehand(canvas, attr); break;
+				case "pen" : textDrawing.drawPen(canvas, attr); break;
+				case "text" : textDrawing.drawText(canvas, attr); break;
+				case "oval" : textDrawing.drawOval(canvas, attr); break;
+				case "poly" : textDrawing.drawPoly(canvas, attr); break;
+				case "burst" : textDrawing.drawBurst(canvas, attr); break;
+				case "arrow" : textDrawing.drawArrow(canvas, attr); break;
+				case "star" : textDrawing.drawStar(canvas, attr); break;
+				case "line" : textDrawing.drawLine(canvas, attr); break;
+				case "ngon" : textDrawing.drawNgon(canvas, attr); break;
+				case "wedge" : textDrawing.drawWedge(canvas, attr); break;
+				case "gear" : textDrawing.drawGear(canvas, attr); break;
+				case "curve" : textDrawing.drawCurve(canvas, attr); break;
+				default: console.log("Unknown drawing tool..." + attr.type);
+			}
+			if (this.canvasSupported == true) {
+				canvas.restore();
+			}
+        };
+
+        this.measureSize = function (minSize) {
+			var canvasContext = this.$drawingArea,
+				canvas = this.canvasHolder,
+				imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height),
+				data = imageData.data,
+
+				getRBG = function(x, y) {
+					return {
+						red:   data[(canvas.width*y + x) * 4],
+						green: data[(canvas.width*y + x) * 4 + 1],
+						blue:  data[(canvas.width*y + x) * 4 + 2]
+					};
+				},
+				isWhite = function (rgb) {
+					return rgb.red == 0 && rgb.green == 0 && rgb.blue == 0;
+				},
+				getHeight = function () {
+					for (var y = canvas.height - 1; y > -1; y--) {
+						for(var x = 0; x < canvas.width; x++) {
+							if (!isWhite(getRBG(x, y))) {
+								return y;
+							}
+						}
+					}
+					return 0;
+				},
+				getWidth = function () {
+					for (var x = canvas.width - 1; x > -1; x--) {
+						for(var y = 0; y < canvas.height; y++) {
+							if (!isWhite(getRBG(x, y))) {
+								return x;
+							}
+						}
+					}
+					return 0;
+				};
+			var size = {w: Math.max(getWidth(), minSize.w), h: Math.max(getHeight(), minSize.h)};
+			canvas.width = size.w;
+            canvas.height = size.h;
+        };
+
+        this.processShapeData = function() {
+        	var xml;
+			if (jQuery.browser.msie) { // Had to add this in to get IE to parse <shapes> correctly
+				var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.loadXML($(x_currentPageXML).text());
+				xml = xmlDoc;
+			}
+			else {
+				xml = $($(x_currentPageXML).text());
+			}
+
+        	var that = this;
+            $(xml)
+            	.find("shape")
+				.each(function () {
+					var attr = that.parseAttributes($(this));
+					that.jobQueue.push({"type":"shape", "data":attr});
+				});
+        };
+
+        this.doJobFromQueue = function() {
+			if (this.weNeedToWait()) {
+				var that = this;
+				setTimeout(function() {
+					that.doJobFromQueue();
+				}, 20);
+			}
+        	else {
+        		var getJob = this.jobQueue[this.jobQueueIndex++];
+        		switch (getJob.type) {
+        			case "shape":
+        				this.drawShape(getJob.data);
+        			break;
+        			case "measure":
+        				this.measureSize(getJob.data);
+        			break;
+        			case "finished":
+        				x_pageLoaded();
+        			break;
+        		}
+        		if (this.jobQueueIndex < this.jobQueue.length) {
+        			this.doJobFromQueue();
+        		}
+        	}
+        };
+
+        this.weNeedToWait = function() {
+        	if (this.imageTimer <= 0) {
+        		this.imageTimer = 0;
+        		if (this.imageLoading) this.imageLoading.onload = function(){ };
+        		return false;
+        	}
+        	else {
+        		this.imageTimer -= 0.02;
+        		return true;
+        	}
+        };
+
+        this.init = function() {
+            var $pageContents = $("#pageContents");
+            var $textHolder = $("#textHolder");
+            var $panel = $("#pageContents .panel");
+
+            $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("desc")));
+            $textHolder.css('font-size', parseInt(x_currentPageXML.getAttribute("size")) + "pt");
+
+            if (x_currentPageXML.getAttribute("align") != "right") {
+                $panel.addClass("x_floatRight");
+            } else {
+                $panel.addClass("x_floatLeft");
+            }
+
+            this.canvasHolder = document.getElementById('canvasHolder');
+
+            // Setup the drawing area
+            if (this.canvasHolder.getContext) {
+                this.$drawingArea = this.canvasHolder.getContext("2d");
+                this.canvasSupported = true;
+            } else {
+                $("#canvasHolder").css("height", 0);
+                this.$drawingArea = $("#divHolder");
+                this.$drawingArea.attr("style", "position:relative");
+                this.canvasSupported = false;
+            }
+
+			// Setup queue
+			this.jobQueue = [];
+			this.jobQueueIndex = 0;
+
+			//loop through shape data and save in jobQueue
+			this.processShapeData();
+
+			if (this.canvasSupported == true) {
+				// Set initial size as measureCanvas will resize
+				this.canvasHolder.width = 1000;
+				this.canvasHolder.height = 1000;
+
+				//add measureCanvas to jobQueue
+				this.jobQueue.push({"type":"measure", "data":{w:200,h:200}});
+
+				//loop through shape data and save in jobQueue
+				this.processShapeData();
+			}
+
+			//add job for x_pageLoaded() to jobQueue
+			this.jobQueue.push({"type":"finished", "data":null});
+
+            // Begin processing jobQueue
+            this.imageTimer = 0;
+            this.doJobFromQueue();
+        };
+	};
+
+    textDrawing.init();
+
+</script>
+
+<style type="text/css">
+
+</style>
+
+<div id="pageContents">
+
+	<div id="tableHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
+		<div class="panel inline">
+			<div id="divHolder"></div>
+			<canvas id="canvasHolder"></canvas>
+		</div>
+	</div>
+
+	<div id="textHolder">
+
+	</div>
+
+</div>
