@@ -77,7 +77,6 @@
 
 		this.drawText = function (canvas, attr) {
             var fontWeight = (attr.b == "1") ? "bold" : "normal";
-            //var lw = parseInt($this.attr("lw")); // ** Not really sure what this is yet???
 
 			if (this.canvasSupported == true) {
                 canvas.textBaseline = "top";
@@ -88,12 +87,12 @@
 			else {
                 var div = canvas.append('<div style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
 				canvas.width(Math.max(canvas.width(), attr.x + attr.x2));
-				canvas.height(Math.max(canvas.height(), attr.y + div.height() - 50));
+				canvas.height(Math.max(canvas.height(), attr.y + div.height()));
 			}
 		};
 
-        this.wrapText = function (canvas, text, x, y, maxWidth, lineHeight) {
-            var line = '', words = text.split(' ');
+        this.wrapText = function (canvas, t, x, y, maxWidth, lineHeight) {
+            var line = '', text = String(t), words = text.split(' ');
 
             for (var i = 0; i < words.length; i++) {
                 var tempLine = line + words[i] + ' ';
