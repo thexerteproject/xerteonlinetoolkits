@@ -24,7 +24,7 @@ Please follow these steps carefully.
 Step 1. 
 Test your XOT installation before trying to use the moodle integration e.g. install toolkits and use the guest authentication to make sure everything is working - creating, viewing, exporting an LO etc
 
-Note: the different authentication options are enabled/disabled at the bottom of config.php e.g. uncomment //$xerte_toolkits_site->authentication_method = 'Guest'; to test with guest authentication.
+Note: the different authentication options are enabled/disabled at the bottom of auth_config.php e.g. uncomment //$xerte_toolkits_site->authentication_method = 'Guest'; to test with guest authentication.
 
 Step 2. 
 Either by using the management page or by editing sitedetails in the database add the path to your moodle installation to the integration config path field
@@ -34,12 +34,12 @@ For a xampp/maxos install this should be something like:
 require("/xampp/htdocs/moodle/config.php");
 
 Step 3.
-In the XOT config.php comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
+In the XOT auth_config.php comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
 
 Step 4.
 View http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
 
-Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented our code at the bottom of config.php
+Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented our code at the bottom of auth_config.php
 
 
 /////////////////////////////////////////////////////
