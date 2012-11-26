@@ -432,7 +432,7 @@
   </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true"/>
 	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true"/>
@@ -1232,8 +1232,8 @@
 	<score1Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
     <score1WinMessage label="Score 1 Win Message" type="TextArea" height="60"/>	
     <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>
-	<score1WinEndID label="Score 1 Win go to Page" type="pageList" default=""/>	
-	<score1LoseEndID label="Score 1 Lose go to Page" type="pageList" default=""/>	
+	<score1WinEndID label="Score 1 Win go to" type="pageList" default=""/>	
+	<score1LoseEndID label="Score 1 Lose go to" type="pageList" default=""/>	
 	
     <score2Use label="Display Score 2" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
 	<score2Label label="Score 2 Label" type="TextInput" width="200"/>	
@@ -1246,8 +1246,8 @@
 	<score2Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score2WinMessage label="Score 2 Win Message" type="TextArea" height="60"/>	
     <score2LoseMessage label="Score 2 Lose Message" type="TextArea" height="60"/>		
-	<score2WinEndID label="Score 2 Win go to Page" type="pageList" default=""/>	
-	<score2LoseEndID label="Score 2 Lose go to Page" type="pageList" default=""/>
+	<score2WinEndID label="Score 2 Win go to" type="pageList" default=""/>	
+	<score2LoseEndID label="Score 2 Lose go to" type="pageList" default=""/>
 	
     <score3Use label="Display Score 3" type="ComboBox" options="Yes,No" defaultValue="0" data="1,0" width="100"/>
 	<score3Label label="Score 3 Label" type="TextInput" width="200"/>	
@@ -1260,8 +1260,8 @@
 	<score3Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score3WinMessage label="Score 3 Win Message" type="TextArea" height="60"/>	
     <score3LoseMessage label="Score 3 Lose Message" type="TextArea" height="60"/>
-	<score3WinEndID label="Score 3 Win go to Page" type="pageList" default=""/>	
-	<score3LoseEndID label="Score 3 Lose go to Page" type="pageList" default=""/>
+	<score3WinEndID label="Score 3 Win go to" type="pageList" default=""/>	
+	<score3LoseEndID label="Score 3 Lose go to" type="pageList" default=""/>
 	
     <winEffect label="Win Sound File" type="media" optional="true"/>
     <loseEffect label="Lose Sound File" type="media" optional="true"/>		
