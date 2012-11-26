@@ -544,8 +544,8 @@
 					return 0;
 				};
 			var size = {w: Math.max(getWidth(), minSize.w), h: Math.max(getHeight(), minSize.h)};
-			canvas.width = size.w;
-            canvas.height = size.h;
+			canvas.width = size.w + 10;
+            canvas.height = size.h + 10;
         };
 
         this.processShapeData = function() {
