@@ -15,80 +15,84 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
-	}
-	
-	// buttonWidth attribute not used as button will be sized automatically
-	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-	var $splitScreen = $("#pageContents .splitScreen");
-	var $textHolder = $("#textHolder");
-	if (panelWidth == "Full") {
-		$("#pageContents .panel").appendTo($("#pageContents"));
-		$splitScreen.remove();
-	} else {
-		$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-		var textAlign = x_currentPageXML.getAttribute("align");
-		if (textAlign != "Right") {
-			if (panelWidth == "Small") {
-				$splitScreen.addClass("large");
-			} else if (panelWidth == "Large") {
-				$splitScreen.addClass("small");
+		
+		this.init = function() {
+			// buttonWidth attribute not used as button will be sized automatically
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var $splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#textHolder");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
 			} else {
-				$splitScreen.addClass("medium");
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign != "Right") {
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
 			}
-		} else {
-			$textHolder
-				.removeClass("left")
-				.addClass("right")
-				.appendTo($splitScreen);
-			$("#infoHolder")
-				.removeClass("right")
-				.addClass("left");
-			if (panelWidth == "Small") {
-				$splitScreen.addClass("medium");
-			} else if (panelWidth == "Large") {
-				$splitScreen.addClass("xlarge");
-			} else {
-				$splitScreen.addClass("large");
+			
+			var $panel = $("#infoHolder .panel");
+			var $infoGroup = $(".infoGroup:first");
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisGroup;
+					if (i != 0) {
+						$thisGroup = $infoGroup.clone().appendTo($panel);
+						if (i == $(x_currentPageXML).children().length - 1) {
+							$thisGroup.find("button").remove();
+						}
+						$thisGroup.hide();
+					} else {
+						$thisGroup = $infoGroup;
+					}
+					
+					$thisGroup.find("p")
+						.html(x_addLineBreaks(this.getAttribute("text")));
+					
+					$thisGroup.find("button")
+						.button({
+							label:	this.getAttribute("name")
+							})
+						.click(function() {
+							var $this = $(this);
+							$this.hide();
+							if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
+								$("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")").fadeIn();
+							}
+						});
+				});
+			
+			if (x_currentPage != 0) {
+				buttonSequence.sizeChanged();
 			}
+			
+			x_pageLoaded();
 		}
 	}
 	
-	var $panel = $("#infoHolder .panel");
-	var $infoGroup = $(".infoGroup:first");
-	$(x_currentPageXML).children()
-		.each(function(i) {
-			var $thisGroup;
-			if (i != 0) {
-				$thisGroup = $infoGroup.clone().appendTo($panel);
-				if (i == $(x_currentPageXML).children().length - 1) {
-					$thisGroup.find("button").remove();
-				}
-				$thisGroup.hide();
-			} else {
-				$thisGroup = $infoGroup;
-			}
-			
-			$thisGroup.find("p")
-				.html(x_addLineBreaks(this.getAttribute("text")));
-			
-			$thisGroup.find("button")
-				.button({
-					label:	this.getAttribute("name")
-					})
-				.click(function() {
-					var $this = $(this);
-					$this.hide();
-					if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
-						$("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")").fadeIn();
-					}
-				});
-		});
-	
-	if (x_currentPage != 0) {
-		buttonSequence.sizeChanged();
-	}
-	
-	x_pageLoaded();
+	buttonSequence.init();
 	
 </script>
 

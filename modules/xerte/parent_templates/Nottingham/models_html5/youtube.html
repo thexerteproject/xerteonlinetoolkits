@@ -12,8 +12,7 @@
 		this.sizeChanged = function() {
 
 		};
-
-		// Should
+		
 		this.buildIframe = function(iframe) {
 			if (iframe.code.length > 0) {
 				var html = "<iframe";
@@ -42,7 +41,7 @@
 				return html;
 			}
 			else {
-				return "<p>ERROR</p>"; // ** Needs to come from language file if even required
+				return "<p>" + x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + "</p>";
 			}
 		};
 

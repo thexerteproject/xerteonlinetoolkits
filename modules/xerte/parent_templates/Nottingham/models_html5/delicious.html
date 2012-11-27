@@ -23,11 +23,18 @@
 		this.showLinks = function(data) {
 			clearTimeout(x_timer);
 			$("#loadingSpinner").hide();
+			
+			// if language attributes aren't in xml will have to use english fall back
+			// ** need to add this to the xwd file
+			var headerTxt = x_currentPageXML.getAttribute("headerTxt");
+			if (headerTxt == undefined) {
+				headerTxt = "Delicious bookmarks for";
+			}
 
 			var resultsString = "";
-			$pageContents.find("#headerHolder").html("<p>" + "Delicious bookmarks for " + deliciousSearch + " '" + deliciousTerm + "'</p>"); // ** Need to take this from the language file
+			$pageContents.find("#headerHolder").html("<h3>" + headerTxt + " " + deliciousSearch + " '" + deliciousTerm + "'</h3>");
 			if (data.length == 0) {
-				resultsString = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
+				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
 			} else {
 				$.each(data, function (index, value) {
 					resultsString += '<div><p><a href="' + value.u + '">' + value.d + '</a></p></div>';
@@ -43,7 +50,7 @@
 			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
-			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
+			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			deliciousSearch = x_currentPageXML.getAttribute("search");
 			deliciousTerm = x_currentPageXML.getAttribute("term");
@@ -64,7 +71,7 @@
 					x_timer = setTimeout(function() {
 					 	$("#loadingSpinner").show();
 					 	$resultsHolder
-					 		.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
+					 		.html('<div><p>' + x_getLangInfo(x_languageData.find("errorResults")[0], "label", "There was an error loading the results") + '</p></div>')
 					 		.find("div:even").addClass("shadedDiv");
 					}, 5000);
 				},
@@ -93,7 +100,7 @@
 
 	#headerHolder {
 		text-align:		center;
-		font-weight:	bold;
+		margin-bottom:	10px;
 	}
 
 	#resultsHolder {
@@ -138,7 +145,6 @@
 			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
 			<div id="headerHolder"></div>
 			<div id="resultsHolder"></div>
-
 		</div>
 	</div>
 

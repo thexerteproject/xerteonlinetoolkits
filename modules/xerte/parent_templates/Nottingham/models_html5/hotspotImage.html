@@ -1,10 +1,13 @@
 <script type="text/javascript">
-	
 	// ** DOESN'T WORK ON MOBILES **
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var hotspotImage = new function() {
+		var	$imageHolder,
+			$img,
+			padding;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$(".selected").removeClass("selected");
@@ -20,7 +23,7 @@
 		
 		this.imgLoaded = function() {
 			// position text correctly
-			var padding = parseInt($("#image").parent().css("padding-left"));
+			//var padding = parseInt($("#image").parent().css("padding-left"));
 			var marginW = $img.width() + (padding * 4);
 			if (x_currentPageXML.getAttribute("align") == "Left") {
 				$("#textContents").css("margin-right", marginW + "px");
@@ -95,66 +98,72 @@
 				$("#pageContents .hotspot:eq(" + (i - 1) + ")").trigger("click");
 			}
 		}
+		
+		this.init = function() {
+			$imageHolder = $("#imageHolder");
+			$img = $("#image");
+			
+			if (x_currentPageXML.getAttribute("align") == "Left") {
+				$("#pageContents").prepend($("#textContents"));
+				$imageHolder.css("right", "10px");
+			}
+			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			$img
+				.attr({
+					"src"	:eval(x_currentPageXML.getAttribute("url")),
+					"alt"	:x_currentPageXML.getAttribute("tip")
+				});
+			padding = parseInt($imageHolder.css("padding-left"));
+			
+			if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
+				// if language attributes aren't in xml will have to use english fall back
+				var nextTxt = x_currentPageXML.getAttribute("nextTxt");
+				if (nextTxt == undefined) {
+					nextTxt = "Next";
+				}
+				var priorTxt = x_currentPageXML.getAttribute("priorTxt");
+				if (priorTxt == undefined) {
+					priorTxt = "Previous";
+				}
+				
+				$("#nextHS")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-e"
+						},
+						label	:nextTxt,
+						text	:false
+					})
+					.click(function() {
+						hotspotImage.selectHs("next");
+					});
+				
+				$("#prevHS")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-w"
+						},
+						label		:priorTxt,
+						text		:false,
+						disabled	:true
+					})
+					.click(function() {
+						hotspotImage.selectHs("prev");
+					});
+			} else { // click explore
+				$("#pageContents button").remove();
+			}
+		}
 	}
-	
-	var $imageHolder = $("#imageHolder");
-	if (x_currentPageXML.getAttribute("align") == "Left") {
-		$("#pageContents").prepend($("#textContents"));
-		$imageHolder.css("right", "10px");
-	}
-	$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 	
 	var imgMaxW = 400,	imgMaxH = 450;
 	if (x_browserInfo.mobile == true) {
 		imgMaxW = 250; // mobile
 		imgMaxH = 250;
 	}
-	var $img = $("#image");
-	$img
-		.attr({
-			"src"	:eval(x_currentPageXML.getAttribute("url")),
-			"alt"	:x_currentPageXML.getAttribute("tip")
-		});
-	var padding = parseInt($imageHolder.css("padding-left"));
 	
-	if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
-		// if language attributes aren't in xml will have to use english fall back
-		var nextTxt = x_currentPageXML.getAttribute("nextTxt");
-		if (nextTxt == undefined) {
-			nextTxt = "Next";
-		}
-		var priorTxt = x_currentPageXML.getAttribute("priorTxt");
-		if (priorTxt == undefined) {
-			priorTxt = "Previous";
-		}
-		
-		$("#nextHS")
-			.button({
-				icons: {
-					primary: "ui-icon-carat-1-e"
-				},
-				label	:nextTxt,
-				text	:false
-			})
-			.click(function() {
-				hotspotImage.selectHs("next");
-			});
-		
-		$("#prevHS")
-			.button({
-				icons: {
-					primary: "ui-icon-carat-1-w"
-				},
-				label		:priorTxt,
-				text		:false,
-				disabled	:true
-			})
-			.click(function() {
-				hotspotImage.selectHs("prev");
-			});
-	} else { // click explore
-		$("#pageContents button").remove();
-	}
+	hotspotImage.init();
 	
 </script>
 

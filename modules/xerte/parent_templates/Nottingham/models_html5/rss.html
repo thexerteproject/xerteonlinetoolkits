@@ -26,9 +26,9 @@
 
 				var resultsString = "";
 				if (data.responseData.feed.entries == 0) {
-					resultsString = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
+					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
 				} else {
-					$pageContents.find("#headerHolder").html("<p>" + data.responseData.feed.description + "</p>");
+					$pageContents.find("#headerHolder").html("<h3>" + data.responseData.feed.description + "</h3>");
 					$.each(data.responseData.feed.entries, function (index, item) {
 						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
 					});
@@ -38,7 +38,7 @@
 					.find("div:even").addClass("shadedDiv");
 			}
 			else {
-				this.errorLoading("Error loading \"" + rssURL +"\""); // ** Need to take this from the language file
+				this.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
 			}
 		};
 
@@ -56,14 +56,14 @@
 			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
-			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
+			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			$("#loadingSpinner").show();
 			$.ajax({
 				beforeSend: function() {
 					$("#loadingSpinner").show();
 					x_timer = setTimeout(function() {
-						rss.errorLoading("Error loading \"" + rssURL +"\""); // ** Need to take this from the language file
+						rss.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL + "\"");
 					}, 5000);
 				},
 				url: googleFeedURL,
@@ -99,7 +99,7 @@
 
 	#headerHolder {
 		text-align:		center;
-		font-weight:	bold;
+		margin-bottom:	10px;
 	}
 
 	#resultsHolder {

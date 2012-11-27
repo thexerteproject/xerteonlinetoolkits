@@ -13,44 +13,48 @@
 		this.sizeChanged = function() {
 			
 		}
+		
+		this.init = function() {
+			// feedbackBtnWidth attribute not used as button will be sized automatically
+			
+			// if language attributes aren't in xml will have to use english fall back
+			var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
+			if (answerHeaderTxt == undefined) {
+				answerHeaderTxt = "Write your answer here:"
+			};
+			var feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
+			if (feedbackBtnTxt == undefined) {
+				feedbackBtnTxt = "Feedback"
+			};
+			var feedbackBtnTip = x_currentPageXML.getAttribute("feedbackBtnTip");
+			if (feedbackBtnTip == undefined) {
+				feedbackBtnTip = "Feedback"
+			};
+			
+			$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+			$("#initText").html(x_currentPageXML.getAttribute("text"));
+			$("#answer").html(answerHeaderTxt);
+			$("#answerTxt").html(x_currentPageXML.getAttribute("prompt"));
+			
+			$("#modelTxt")
+				.html(x_currentPageXML.getAttribute("answer"))
+				.hide();
+			
+			$("#button")
+				.button({
+					label:			feedbackBtnTxt,
+					description:	feedbackBtnTip
+				})
+				.click(function() {
+					$(this).hide();
+					$("#modelTxt").fadeIn();
+				});
+			
+			x_pageLoaded();
+		}
 	}
 	
-	// feedbackBtnWidth attribute not used as button will be sized automatically
-	
-	// if language attributes aren't in xml will have to use english fall back
-	var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
-	if (answerHeaderTxt == undefined) {
-		answerHeaderTxt = "Write your answer here:"
-	};
-	var feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
-	if (feedbackBtnTxt == undefined) {
-		feedbackBtnTxt = "Feedback"
-	};
-	var feedbackBtnTip = x_currentPageXML.getAttribute("feedbackBtnTip");
-	if (feedbackBtnTip == undefined) {
-		feedbackBtnTip = "Feedback"
-	};
-	
-	$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-	$("#initText").html(x_currentPageXML.getAttribute("text"));
-	$("#answer").html(answerHeaderTxt);
-	$("#answerTxt").html(x_currentPageXML.getAttribute("prompt"));
-	
-	$("#modelTxt")
-		.html(x_currentPageXML.getAttribute("answer"))
-		.hide();
-	
-	$("#button")
-		.button({
-			label:			feedbackBtnTxt,
-			description:	feedbackBtnTip
-		})
-		.click(function() {
-			$(this).hide();
-			$("#modelTxt").fadeIn();
-		});
-	
-	x_pageLoaded();
+	modify.init();
 	
 </script>
 

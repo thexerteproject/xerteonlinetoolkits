@@ -22,20 +22,24 @@
 			}
 			return frameHeight;
 		}
+		
+		this.init = function() {
+			var $pageContents = $("#pageContents");
+			var pageSrc = x_currentPageXML.getAttribute("src");
+			if (pageSrc.substr(0, 1) == "<") { // insert html directly
+				$pageContents.html(pageSrc);
+			} else { // use iframe to load web page
+				var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '"></iframe>';
+				$pageContents.html(iFrameTag);
+				$pageContents.addClass("centerAlign");
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
 	}
 	
-	var $pageContents = $("#pageContents");
-	var pageSrc = x_currentPageXML.getAttribute("src");
-	if (pageSrc.substr(0, 1) == "<") { // insert html directly
-		$pageContents.html(pageSrc);
-	} else { // use iframe to load web page
-		var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '"></iframe>';
-		$pageContents.html(iFrameTag);
-		$pageContents.addClass("centerAlign");
-	}
-	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	embedDiv.init();
 	
 </script>
 
