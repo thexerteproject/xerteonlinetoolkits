@@ -121,5 +121,10 @@
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
   </interactions>
+  
+  <fetchResults label="Fetching results..."/>
+  <errorResults label="There was an error loading the results"/>
+  <loadError label="Error loading"/>
+  <noResults label="No results returned"/>
 
 </language>

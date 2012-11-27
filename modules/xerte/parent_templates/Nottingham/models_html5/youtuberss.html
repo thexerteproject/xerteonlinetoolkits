@@ -23,9 +23,16 @@
 			clearTimeout(x_timer);
 			$("#loadingSpinner").hide();
 			var resultsHolder = "";
-			$pageContents.find("#headerHolder").html("<p>" + "Youtube results for term '" + searchTerm + "'</p>"); // ** Need an entry in the language file if we keep this??
+			
+			// if language attributes aren't in xml will have to use english fall back
+			// ** need to add this to the xwd file
+			var resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
+			if (resultsTxt == undefined) {
+				resultsTxt = "Youtube results for term";
+			}
+			$pageContents.find("#headerHolder").html("<p>" + resultsTxt + " '" + searchTerm + "'</p>");
 			if (data.data.totalItems == 0) {
-				resultsHolder = '<div><p>No results returned!!</p></div>';  // ** Need to take this from the language file
+				resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
 			} else {
 				var safePlayer, hyperlink;
 				$.each(data.data.items, function (index, item) {
@@ -51,7 +58,7 @@
 			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
-			$("#loadingSpinner p").html("Fetching results..."); // ** Need to take this from the language file
+			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			searchTerm = x_currentPageXML.getAttribute("url");
 			var searchCount = x_currentPageXML.getAttribute("results");
@@ -64,7 +71,7 @@
 					x_timer = setTimeout(function() {
 						$("#loadingSpinner").hide();
 						$resultsHolder
-							.html('<div><p>There was an error loading the results!!</p></div>') // ** Need to take this from the language file
+							.html('<div><p>' + x_getLangInfo(x_languageData.find("errorResults")[0], "label", "There was an error loading the results") + '</p></div>')
 							.find("div:even").addClass("shadedDiv");
 					}, 5000);
 				},

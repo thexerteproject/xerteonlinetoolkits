@@ -1,11 +1,19 @@
 <script type="text/javascript">
-	
 	// ** DOESN'T WORK ON MOBILES **
 	// ** why isn't the layout for this done with splitScreen css? **
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var annotatedDiagram = new function() {
+		var scale,
+			$textContents,
+			$hsHolder,
+			$imageHolder,
+			$img,
+			$canvas,
+			$pageContents,
+			padding;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			
@@ -44,7 +52,7 @@
 			$hsHolder
 				.width($imageHolder.width())
 				.height($imageHolder.height());
-			var scale = $img.width() / $img.data("origSize")[0];
+			scale = $img.width() / $img.data("origSize")[0];
 			
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("colour") != undefined && x_currentPageXML.getAttribute("colour") != "") {
@@ -117,10 +125,10 @@
 						$hsHolder.append($hsGroup);
 						$(this).children()
 							.each(function(){
-								var $hs = annotatedDiagram.createHotspot(this, $hsGroup, $thisItem, scale, groupXML);
+								var $hs = annotatedDiagram.createHotspot(this, $hsGroup, $thisItem, groupXML);
 							});
 					} else {
-						annotatedDiagram.createHotspot(this, $hsHolder, $thisItem, scale);
+						annotatedDiagram.createHotspot(this, $hsHolder, $thisItem);
 					}
 				});
 			
@@ -137,7 +145,7 @@
 			x_pageLoaded();
 		}
 		
-		this.createHotspot = function(hsXML, $parent, $listItem, scale, groupXML) {
+		this.createHotspot = function(hsXML, $parent, $listItem, groupXML) {
 			var $hotspot = $('<a class="hotspot" href="#" />');
 			var hsName = hsXML.getAttribute("name");
 			if (groupXML != undefined) { // hs in a group
@@ -177,20 +185,33 @@
 			}
 			context.stroke();
 		}
+		
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			$imageHolder = $("#imageHolder");
+			$img = $imageHolder.find("img");
+			$canvas = $("#canvas");
+			$hsHolder = $("#hsHolder");
+			$textContents = $("#textContents");
+			
+			if (x_currentPageXML.getAttribute("align") != "Right") {
+				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
+				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
+			}
+			$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			padding = parseInt($imageHolder.css("padding-left"));
+			$hsHolder.css("margin", padding);
+			$img.attr({
+				"src"	:eval(x_currentPageXML.getAttribute("url")),
+				"alt"	:x_currentPageXML.getAttribute("tip")
+			});
+			
+			if (x_currentPage != 0) {
+				annotatedDiagram.sizeChanged();
+			}
+		}
 	}
-	
-	var $pageContents = $("#pageContents");
-	var $imageHolder = $("#imageHolder");
-	var $img = $imageHolder.find("img");
-	var $canvas = $("#canvas");
-	var $hsHolder = $("#hsHolder");
-	var $textContents = $("#textContents");
-	
-	if (x_currentPageXML.getAttribute("align") != "Right") {
-		$imageHolder.css("right", $x_pageDiv.css("padding-right"));
-		$hsHolder.css("right", $x_pageDiv.css("padding-right"));
-	}
-	$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 	
 	var imgMaxW = 400,	imgMaxH = 450;
 	if (x_browserInfo.mobile == true) {
@@ -198,16 +219,7 @@
 		imgMaxH = 250;
 	}
 	
-	var padding = parseInt($imageHolder.css("padding-left"));
-	$hsHolder.css("margin", padding);
-	$img.attr({
-		"src"	:eval(x_currentPageXML.getAttribute("url")),
-		"alt"	:x_currentPageXML.getAttribute("tip")
-	});
-	
-	if (x_currentPage != 0) {
-		annotatedDiagram.sizeChanged();
-	}
+	annotatedDiagram.init();
 	
 </script>
 

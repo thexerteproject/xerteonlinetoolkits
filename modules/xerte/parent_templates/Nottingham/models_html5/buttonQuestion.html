@@ -16,67 +16,71 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
-	}
-	
-	// labelWidth attribute not used as button will be sized automatically
-	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-	var $splitScreen = $("#pageContents .splitScreen");
-	var $textHolder = $("#textHolder");
-	if (panelWidth == "Full") {
-		$("#pageContents .panel").appendTo($("#pageContents"));
-		$splitScreen.remove();
-	} else {
-		$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-		var textAlign = x_currentPageXML.getAttribute("align");
-		if (textAlign != "Right") {
-			if (panelWidth == "Small") {
-				$splitScreen.addClass("large");
-			} else if (panelWidth == "Large") {
-				$splitScreen.addClass("small");
+		
+		this.init = function() {
+			// labelWidth attribute not used as button will be sized automatically
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var $splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#textHolder");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
 			} else {
-				$splitScreen.addClass("medium");
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign != "Right") {
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
 			}
-		} else {
-			$textHolder
-				.removeClass("left")
-				.addClass("right")
-				.appendTo($splitScreen);
-			$("#infoHolder")
-				.removeClass("right")
-				.addClass("left");
-			if (panelWidth == "Small") {
-				$splitScreen.addClass("medium");
-			} else if (panelWidth == "Large") {
-				$splitScreen.addClass("xlarge");
-			} else {
-				$splitScreen.addClass("large");
+			
+			$("#prompt").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
+			var btnTxt = x_currentPageXML.getAttribute("label");
+			if (btnTxt == undefined || btnTxt == "") {
+				btnTxt = "Let's See";
 			}
+			$("#button")
+				.button({
+					label:	btnTxt
+				})
+				.click(function() {
+					$(this).hide();
+					$("#answer").fadeIn();
+				});
+			
+			$("#answer")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+				.hide();
+			
+			if (x_currentPage != 0) {
+				buttonQuestion.sizeChanged();
+			}
+			
+			x_pageLoaded();
 		}
 	}
 	
-	$("#prompt").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
-	var btnTxt = x_currentPageXML.getAttribute("label");
-	if (btnTxt == undefined || btnTxt == "") {
-		btnTxt = "Let's See";
-	}
-	$("#button")
-		.button({
-			label:	btnTxt
-		})
-		.click(function() {
-			$(this).hide();
-			$("#answer").fadeIn();
-		});
-	
-	$("#answer")
-		.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-		.hide();
-	
-	if (x_currentPage != 0) {
-		buttonQuestion.sizeChanged();
-	}
-	
-	x_pageLoaded();
+	buttonQuestion.init();
 	
 </script>
 

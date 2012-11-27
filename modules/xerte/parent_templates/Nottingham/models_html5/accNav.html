@@ -19,94 +19,98 @@
 				//$x_pageDiv.height($x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 1);
 			}
 		}
-	}
-	
-	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-	if (panelWidth == "Full") {
-		$("#pageContents .right div:first").appendTo($("#pageContents"));
-		$("#pageContents .splitScreen").remove();
-	} else {
-		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-		if (panelWidth == "Small") {
-			$("#pageContents .splitScreen").addClass("large"); // make text area on left large so accordion on right is small
-		} else if (panelWidth == "Large") {
-			$("#pageContents .splitScreen").addClass("small");
-		} else {
-			$("#pageContents .splitScreen").addClass("medium");
-		}
-	}
-	
-	var $infoHolder = $("#infoHolder");
-	var $paneHeader = $("#infoHolder .paneHeader");
-	var $paneContents = $("#infoHolder .paneContents");
-	
-	$(x_currentPageXML).children()
-		.each(function(i) {
-			var $thisHeader, $thisContents;
-			if (i != 0) {
-				$thisHeader = $paneHeader.clone().appendTo($infoHolder);
-				$thisContents = $paneContents.clone().appendTo($infoHolder);
+		
+		this.init = function() {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
 			} else {
-				$thisHeader = $paneHeader;
-				$thisContents = $paneContents;
-			}
-			$thisHeader.find("a").html(this.getAttribute("name"));
-			
-			var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
-			var url = this.getAttribute("url");
-			if (url != undefined && url != "") {
-				var newString = "";
-				if (url.split('.').pop().slice(0, -1) == "swf") {
-					newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so accordion on right is small
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
 				} else {
-					newString += '<div class="paneImg"><img src="' + eval(url) + '" ';
-					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-						newString += 'alt="' + this.getAttribute("tip") + '" ';
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
+			
+			var $infoHolder = $("#infoHolder");
+			var $paneHeader = $("#infoHolder .paneHeader");
+			var $paneContents = $("#infoHolder .paneContents");
+			
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisHeader, $thisContents;
+					if (i != 0) {
+						$thisHeader = $paneHeader.clone().appendTo($infoHolder);
+						$thisContents = $paneContents.clone().appendTo($infoHolder);
+					} else {
+						$thisHeader = $paneHeader;
+						$thisContents = $paneContents;
 					}
-					newString += ' /></div>';
-				}
-				if (this.getAttribute("align") == "Top") {
-					infoString += newString;
-				} else {
-					infoString = newString + infoString;
-				}
-			}
-			$thisContents.html(infoString);
+					$thisHeader.find("a").html(this.getAttribute("name"));
+					
+					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+					var url = this.getAttribute("url");
+					if (url != undefined && url != "") {
+						var newString = "";
+						if (url.split('.').pop().slice(0, -1) == "swf") {
+							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
+						} else {
+							newString += '<div class="paneImg"><img src="' + eval(url) + '" ';
+							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+								newString += 'alt="' + this.getAttribute("tip") + '" ';
+							}
+							newString += ' /></div>';
+						}
+						if (this.getAttribute("align") == "Top") {
+							infoString += newString;
+						} else {
+							infoString = newString + infoString;
+						}
+					}
+					$thisContents.html(infoString);
+					
+					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
+						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
+						// ** need to add functionality for initObject and interactivity optional properties **
+						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						$("#pageSWF" + i + " h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+						$(".flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+					}
+				});
 			
-			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-				// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-				// ** need to add functionality for initObject and interactivity optional properties **
-				swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
-				$("#pageSWF" + i + " h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
-				$(".flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
-				$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+			$infoHolder.accordion({
+				fillSpace:	true,
+				change:	function(e, ui) {
+					// force tabindex to stay the same - jquery ui accordion code overrides this otherwise
+					ui.oldHeader.attr("tabindex", (ui.oldHeader.index() / 2) + 1);
+					ui.newHeader.attr("tabindex", (ui.newHeader.index() / 2) + 1);
+				}
+			});
+			
+			// default accordion uses arrow keys to focus on headers but all other navigators use tab - force tab index on headers so it's consistent with other pages
+			$(".ui-accordion-header").each(function(i) {
+				$(this).attr("tabindex", ($(this).index() / 2) + 1);
+			})
+			
+			if (x_browserInfo.iOS == true) {
+				// ** images won't show on iOS because their size stays at 0 x 0 with max-width / max-height **
+				// ** need a work around for this - have tried refreshing image / refreshing sizes etc. and they still don't work **
 			}
-		});
-	
-	$infoHolder.accordion({
-		fillSpace:	true,
-		change:	function(e, ui) {
-			// force tabindex to stay the same - jquery ui accordion code overrides this otherwise
-			ui.oldHeader.attr("tabindex", (ui.oldHeader.index() / 2) + 1);
-			ui.newHeader.attr("tabindex", (ui.newHeader.index() / 2) + 1);
+			
+			if (x_currentPage != 0) {
+				accNav.sizeChanged();
+			}
+			
+			x_pageLoaded();
 		}
-	});
-	
-	// default accordion uses arrow keys to focus on headers but all other navigators use tab - force tab index on headers so it's consistent with other pages
-	$(".ui-accordion-header").each(function(i) {
-		$(this).attr("tabindex", ($(this).index() / 2) + 1);
-	})
-	
-	if (x_browserInfo.iOS == true) {
-		// ** images won't show on iOS because their size stays at 0 x 0 with max-width / max-height **
-		// ** need a work around for this - have tried refreshing image / refreshing sizes etc. and they still don't work **
 	}
 	
-	if (x_currentPage != 0) {
-		accNav.sizeChanged();
-	}
-	
-	x_pageLoaded();
+	accNav.init();
 	
 </script>
 

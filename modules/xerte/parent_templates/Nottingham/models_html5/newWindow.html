@@ -12,32 +12,36 @@
 		this.sizeChanged = function() {
 			
 		}
-	}
-	
-	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
-	
-	var imgMaxW = 500; // desktop / tablet
-	var imgMaxH = 400;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW = 250; // mobile
-		imgMaxH = 250;
-	}
-	
-	$("#pageImg").attr({
-		"src":	eval(x_currentPageXML.getAttribute("previewImage")),
-		"alt":	x_currentPageXML.getAttribute("tip")
-		});
-	
-	$("#pageContents .newWindowLink").bind("click", function() {
-		if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
-			var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
-			popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
-			popupWindow.focus();
-		} else {
-			var src = x_currentPageXML.getAttribute("url");
-			window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+		
+		this.init = function() {
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
+			
+			var imgMaxW = 500; // desktop / tablet
+			var imgMaxH = 400;
+			if (x_browserInfo.mobile == true) {
+				imgMaxW = 250; // mobile
+				imgMaxH = 250;
+			}
+			
+			$("#pageImg").attr({
+				"src":	eval(x_currentPageXML.getAttribute("previewImage")),
+				"alt":	x_currentPageXML.getAttribute("tip")
+				});
+			
+			$("#pageContents .newWindowLink").bind("click", function() {
+				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
+					var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+					popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
+					popupWindow.focus();
+				} else {
+					var src = x_currentPageXML.getAttribute("url");
+					window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+				}
+			});
 		}
-	});
+	}
+	
+	newWindow.init();
 	
 </script>
 
