@@ -41,7 +41,12 @@ function copy_r( $path, $dest )
                 }
                 else
                 {
-                    copy( $path.DS.$file, $dest.DS.$file );
+				
+					if(strpos($file,".info")===FALSE){
+				
+						copy( $path.DS.$file, $dest.DS.$file );
+						
+					}
                 }
             }
         }
