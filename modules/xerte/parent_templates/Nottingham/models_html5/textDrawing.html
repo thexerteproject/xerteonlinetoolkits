@@ -13,7 +13,8 @@
 			jobQueueIndex,
 			imageLoading,
 			imageTimer,
-			canvasSize;
+			canvasSize,
+			fullySupported;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -53,14 +54,15 @@
                 canvas.fill();
                 canvas.globalAlpha = attr.la / 100;
                 canvas.stroke();
-			} else {
-                if (attr.r == 0) { // Draw rectangle using div
+			}
+			else {
+                if (attr.r == 0) { // Draw rectangle using div ONLY IF not rotated
                     canvas.append('<div style="position:absolute;left:' + (attr.x - Math.round(attr.lw / 2)) + 'px;top:' + (attr.y - Math.round(attr.lw / 2)) + 'px;width:' + (attr.x2 - attr.lw) + 'px;height:' + (attr.y2 - attr.lw) + 'px;background-color:' + attr.fc + ';border:' + attr.lw + 'px solid ' + attr.lc + ';"></div>');
 					canvas.width(Math.max(canvas.width(), attr.x + attr.x2 + 10));
 					canvas.height(Math.max(canvas.height(), attr.y + attr.y2 + 10));
                 }
                 else {
-                	console.log("Rotated rectangle not supported!");
+                	this.fullySupported = false;
                 }
 			}
 		};
@@ -69,7 +71,7 @@
         this.drawPolygon = function (canvas, coords) {
             canvas.beginPath();
             canvas.moveTo(coords[0], coords[1]);
-            for(var i = 2; i < coords.length - 1; i += 2) {
+            for (var i = 2; i < coords.length - 1; i += 2) {
                 canvas.lineTo(coords[i], coords[i+1]);
             }
             canvas.closePath();
@@ -85,7 +87,9 @@
                 this.wrapText(canvas, attr.t, attr.x, attr.y, attr.x2, 20);
 			}
 			else {
-                var div = canvas.append('<div style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
+				var idHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
+                canvas.append('<div id="txt_' + idHash + '" style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
+				var div = canvas.find("#txt_" + idHash);
 				canvas.width(Math.max(canvas.width(), attr.x + attr.x2));
 				canvas.height(Math.max(canvas.height(), attr.y + div.height()));
 			}
@@ -125,7 +129,8 @@
 				img.src = p;
 				this.imageLoading = img;
 				that.imageTimer = 25;
-			} else {
+			}
+			else {
                 if (attr.r == 0) {
                     canvas.append('<img style="position:relative;left:' + attr.x + 'px;top:' + attr.y + 'px;" src="' + p + '" alt="' + attr.label + '" />');
                 	var img = new Image();
@@ -136,7 +141,7 @@
                 	img.src = p;
                 }
                 else {
-                    console.log("Rotated pictures not supported!");
+                    this.fullySupported = false;
                 }
 			}
 		};
@@ -158,7 +163,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Pen tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -179,7 +184,9 @@
 				}
                 canvas.globalAlpha = attr.la / 100;
                 canvas.stroke();
-			} else {
+			}
+			else {
+				this.fullySupported = false;
 				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
 				var pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
 				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
@@ -209,7 +216,8 @@
                     yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
                     if (i == 0) {
                         canvas.moveTo(xPos, yPos);
-                    } else {
+                    }
+                    else {
                         canvas.lineTo(xPos, yPos);
                     }
                 }
@@ -219,7 +227,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Oval tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -245,7 +253,7 @@
                 }
             }
             else {
-                console.log("Poly tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -282,7 +290,7 @@
                 }
             }
             else {
-                console.log("Burst tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -299,7 +307,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Arrow tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -314,7 +322,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Line tool not supported!");
+                this.fullySupported = false;
             }
         }
 
@@ -346,7 +354,7 @@
                 }
             }
             else {
-                console.log("Star tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -374,7 +382,7 @@
                 }
             }
             else {
-                console.log("Ngon tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -416,7 +424,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Wedge tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -455,7 +463,7 @@
                 }
             }
             else {
-                console.log("Gear tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -470,7 +478,7 @@
                 canvas.stroke();
             }
             else {
-                console.log("Curve tool not supported!");
+                this.fullySupported = false;
             }
         };
 
@@ -500,7 +508,6 @@
 				case "wedge" : textDrawing.drawWedge(canvas, attr); break;
 				case "gear" : textDrawing.drawGear(canvas, attr); break;
 				case "curve" : textDrawing.drawCurve(canvas, attr); break;
-				default: console.log("Unknown drawing tool..." + attr.type);
 			}
 			if (this.canvasSupported == true) {
 				canvas.restore();
@@ -585,6 +592,9 @@
         				this.measureSize(getJob.data);
         			break;
         			case "finished":
+        				if (this.fullySupported == false) {
+        					$("#textHolder").prepend('<p class="alert">Your browser does not fully support this page type</p>');
+        				}
         				x_pageLoaded();
         			break;
         		}
@@ -616,17 +626,23 @@
 
             if (x_currentPageXML.getAttribute("align") != "right") {
                 $panel.addClass("x_floatRight");
-            } else {
+            }
+            else {
                 $panel.addClass("x_floatLeft");
             }
 
             this.canvasHolder = document.getElementById('canvasHolder');
 
+            // Lets start by assuming the pagetype will be supported
+            this.fullySupported = true;
+
+
             // Setup the drawing area
             if (this.canvasHolder.getContext) {
                 this.$drawingArea = this.canvasHolder.getContext("2d");
                 this.canvasSupported = true;
-            } else {
+            }
+            else {
                 $("#canvasHolder").css("height", 0);
                 this.$drawingArea = $("#divHolder");
                 this.$drawingArea.attr("style", "position:relative");
@@ -666,6 +682,8 @@
 </script>
 
 <style type="text/css">
+
+	.alert {font-weight: bold; color: red; text-align: center;}
 
 </style>
 
