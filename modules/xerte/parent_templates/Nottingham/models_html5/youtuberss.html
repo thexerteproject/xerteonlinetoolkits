@@ -30,7 +30,7 @@
 			if (resultsTxt == undefined) {
 				resultsTxt = "Youtube results for term";
 			}
-			$pageContents.find("#headerHolder").html("<p>" + resultsTxt + " '" + searchTerm + "'</p>");
+			$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
 			if (data.data.totalItems == 0) {
 				resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
 			} else {
@@ -106,21 +106,22 @@
 
 	#headerHolder {
 		text-align:		center;
-		font-weight:	bold;
+		margin-bottom:	10px;
 	}
 
 	#resultsHolder div {
-		height:50px;
+		min-height:50px;
+		padding-top:	5px;
 	}
 
 	#resultsHolder div img {
 		width:60px;
 		float:left;
+		padding-left:	5px;
 	}
 
 	#resultsHolder div p {
-		margin-left:70px;
-
+		margin:	0 5px 0 70px;
 	}
 
 	.shadedDiv {
