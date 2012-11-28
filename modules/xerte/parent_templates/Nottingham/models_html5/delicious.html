@@ -37,7 +37,7 @@
 				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
 			} else {
 				$.each(data, function (index, value) {
-					resultsString += '<div><p><a href="' + value.u + '">' + value.d + '</a></p></div>';
+					resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
 				});
 			}
 			$resultsHolder
@@ -106,15 +106,16 @@
 	#resultsHolder {
 		width:	100%;
 	}
-
+	
 	#resultsHolder div {
 		width: 100%;
-		padding: 2px 2px 2px 2px;
-
+		padding-top:	5px;
+		padding-bottom:	5px;
 	}
 
 	#resultsHolder div p {
-		margin: 0;
+		margin:	0;
+		padding: 0 5px;
 	}
 
 	.shadedDiv {

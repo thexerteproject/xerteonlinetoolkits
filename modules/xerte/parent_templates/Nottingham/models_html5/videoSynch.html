@@ -91,11 +91,37 @@
 			videoDimensions = dimensions;
 		}
 	}
+	
+	var videoSrc = x_currentPageXML.getAttribute("url");
 	$pageVideo.data({
-		"src"			:x_currentPageXML.getAttribute("url"),
+		"src"			:videoSrc,
 		"dimensions"	:videoDimensions
 	});
-	videoSynch.loadVideo(true);
+	
+	if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
+		var fileInfo = videoSrc.split(".");
+		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
+		if (fileInfo[1] == "flv") {
+			$.ajax({
+				url:	eval(fileInfo[0] + ".mp4'"),
+				type:	"HEAD",
+				success: function() {
+					// mp4 version exists - use this instead
+					videoSrc = fileInfo[0] + ".mp4";
+					$pageVideo.data("src", videoSrc);
+					videoSynch.loadVideo(true);
+				},
+				error:	function() {
+					// no mp4 version to use
+					videoSynch.loadVideo(true);
+				}
+			});
+		} else {
+			videoSynch.loadVideo(true);
+		}
+	} else {
+		videoSynch.loadVideo(true);
+	}
 	
 </script>
 

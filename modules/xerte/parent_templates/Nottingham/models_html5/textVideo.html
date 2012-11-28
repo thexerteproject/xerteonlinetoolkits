@@ -84,15 +84,40 @@
 			videoDimensions = dimensions;
 		}
 	}
+	
+	var videoSrc = x_currentPageXML.getAttribute("url");
 	$pageVideo
 		.data({
-			"src"			:x_currentPageXML.getAttribute("url"),
+			"src"			:videoSrc,
 			"dimensions"	:videoDimensions,
 			"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
 		})
 		.attr("title", x_currentPageXML.getAttribute("tip"));
 	
-	textVideo.loadVideo(true);
+	if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
+		var fileInfo = videoSrc.split(".");
+		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
+		if (fileInfo[1] == "flv") {
+			$.ajax({
+				url:	eval(fileInfo[0] + ".mp4'"),
+				type:	"HEAD",
+				success: function() {
+					// mp4 version exists - use this instead
+					videoSrc = fileInfo[0] + ".mp4";
+					$pageVideo.data("src", videoSrc);
+					textVideo.loadVideo(true);
+				},
+				error:	function() {
+					// no mp4 version to use
+					textVideo.loadVideo(true);
+				}
+			});
+		} else {
+			textVideo.loadVideo(true);
+		}
+	} else {
+		textVideo.loadVideo(true);
+	}
 	
 </script>
 
