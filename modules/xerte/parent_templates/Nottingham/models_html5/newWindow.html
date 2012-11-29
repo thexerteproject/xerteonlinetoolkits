@@ -16,13 +16,6 @@
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
 			
-			var imgMaxW = 500; // desktop / tablet
-			var imgMaxH = 400;
-			if (x_browserInfo.mobile == true) {
-				imgMaxW = 250; // mobile
-				imgMaxH = 250;
-			}
-			
 			$("#pageImg").attr({
 				"src":	eval(x_currentPageXML.getAttribute("previewImage")),
 				"alt":	x_currentPageXML.getAttribute("tip")
@@ -39,6 +32,13 @@
 				}
 			});
 		}
+	}
+	
+	var imgMaxW = 500; // desktop / tablet
+	var imgMaxH = 400;
+	if (x_browserInfo.mobile == true) {
+		imgMaxW = 250; // mobile
+		imgMaxH = 250;
 	}
 	
 	newWindow.init();

@@ -18,9 +18,33 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
 			}
+			
+			var $pageContents = $("#pageContents");
+			$pageContents.data("count", $pageContents.data("count") + 1);
+			buttonNav.scaleImages();
 		}
 		
-		this.init = function() {			
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
+			if ($("#infoHolder .pageImg img:visible").length > 0 && $("#infoHolder .pageImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
+				var $img = $("#infoHolder .pageImg img:visible");
+				var $infoHolder = $("#infoHolder");
+				
+				var firstScale = false;
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				x_scaleImg($img, $infoHolder.width(), $infoHolder.height(), true, firstScale);
+			}
+		}
+		
+		this.init = function() {
+			$("#pageContents").data("count", 0);
+			
 			// buttonWidth attribute not used as they will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
@@ -64,6 +88,7 @@
 								$thisPanelPage.show();
 								$("#infoHolder").scrollTop(0);
 							}
+							buttonNav.scaleImages();
 						});
 					
 					$thisBtnLabel
@@ -78,6 +103,9 @@
 							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
 						} else {
 							newString += '<div class="pageImg"><img src="' + eval(url) + '" ';
+							if (i == 0) {
+								newString += 'onload="buttonNav.scaleImages();" ';
+							}
 							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 								newString += 'alt="' + this.getAttribute("tip") + '" ';
 							}
@@ -136,11 +164,6 @@
 	#pageContents .pageImg {
 		text-align:		center;
 		padding-top:	10px;
-	}
-	
-	#pageContents .pageImg img {
-		max-width:	100%;
-		max-height:	100%;
 	}
 	
 	#btnHolder {

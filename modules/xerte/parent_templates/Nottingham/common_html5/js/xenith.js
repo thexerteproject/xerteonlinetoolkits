@@ -646,7 +646,7 @@ function x_changePage() {
 // function called on page model load
 function x_loadPage(response, status, xhr) {
 	if (status == "error") {
-		$("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorPage")[0], "label", "No template is currently available for this page type"));
+		$("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorPage")[0], "label", "No template is currently available for this page type") + " (" + x_pageInfo[x_currentPage].type + ")");
 		x_pageLoaded();
 	} else {
 		x_pageInfo[x_currentPage].built = $("#x_pageDiv div:first");
