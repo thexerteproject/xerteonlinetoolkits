@@ -10,7 +10,22 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			$(".pageImg img").each(function() {
+				if ($(this).data("loaded") == true) {
+					columnPage.scaleImages($(this));
+				}
+			})
+		}
+		
+		// function manually scales images - can't use max values in css as it doesn't work on every browser
+		this.scaleImages = function($img) {
+			var firstScale = false;
+			if ($img.data("loaded") == undefined) {
+				firstScale = true;
+				$img.data("loaded", true);
+			}
 			
+			x_scaleImg($img, $img.parents(".column").width(), $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2), true, firstScale);
 		}
 		
 		this.init = function() {
@@ -37,7 +52,7 @@
 						if (url.split('.').pop().slice(0, -1) == "swf") {
 							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
 						} else {
-							newString += '<div class="pageImg"><img src="' + eval(url) + '" ';
+							newString += '<div class="pageImg"><img src="' + eval(url) + '" onload="columnPage.scaleImages($(this));" style="visibility: hidden"  ';
 							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 								newString += 'alt="' + this.getAttribute("tip") + '" ';
 							}
@@ -104,14 +119,10 @@
 		overflow-x: hidden;
 	}
 	
-	#pageContents .paneImg {
+	#pageContents .pageImg {
 		text-align:		center;
 		padding-top:	10px;
-	}
-	
-	#pageContents .paneImg img {
-		max-width:	100%;
-		max-height:	100%;
+		padding-bottom:	10px;
 	}
 	
 	#columnHolder.mobile:first-child {

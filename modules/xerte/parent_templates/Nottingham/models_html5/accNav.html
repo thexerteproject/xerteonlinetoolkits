@@ -15,12 +15,40 @@
 					.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
 					.accordion("resize");
 			} else {
-				// ** need to look at this - possible change the way mobile pages are laid out so that the css is easier to do **
+				// ** need to look at this - possibly change the way mobile pages are laid out so that the css is easier to do **
 				//$x_pageDiv.height($x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 1);
+			}
+			
+			var $pageContents = $("#pageContents");
+			$pageContents.data("count", $pageContents.data("count") + 1);
+			accNav.scaleImages();
+		}
+		
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			// is there an image on current panel?  Has it loaded?  Has it already been scaled to fit this?
+			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
+				var $img = $("#infoHolder .paneImg img:visible");
+				var $infoHolder = $("#infoHolder");
+				
+				var firstScale = false;
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				var num = 0;
+				$("#infoHolder .paneHeader").each(function() {
+					num += $(this).height() + 4;
+				});
+				
+				x_scaleImg($img, $infoHolder.width(), $infoHolder.height() - num, true, firstScale);
 			}
 		}
 		
 		this.init = function() {
+			$("#pageContents").data("count", 0);
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
 				$("#pageContents .right div:first").appendTo($("#pageContents"));
@@ -60,6 +88,9 @@
 							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
 						} else {
 							newString += '<div class="paneImg"><img src="' + eval(url) + '" ';
+							if (i == 0) {
+								newString += 'onload="accNav.scaleImages();" ';
+							}
 							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 								newString += 'alt="' + this.getAttribute("tip") + '" ';
 							}
@@ -89,6 +120,7 @@
 					// force tabindex to stay the same - jquery ui accordion code overrides this otherwise
 					ui.oldHeader.attr("tabindex", (ui.oldHeader.index() / 2) + 1);
 					ui.newHeader.attr("tabindex", (ui.newHeader.index() / 2) + 1);
+					accNav.scaleImages();
 				}
 			});
 			
@@ -96,11 +128,6 @@
 			$(".ui-accordion-header").each(function(i) {
 				$(this).attr("tabindex", ($(this).index() / 2) + 1);
 			})
-			
-			if (x_browserInfo.iOS == true) {
-				// ** images won't show on iOS because their size stays at 0 x 0 with max-width / max-height **
-				// ** need a work around for this - have tried refreshing image / refreshing sizes etc. and they still don't work **
-			}
 			
 			if (x_currentPage != 0) {
 				accNav.sizeChanged();
@@ -123,11 +150,6 @@
 	#infoHolder .paneImg {
 		text-align:		center;
 		padding-top:	10px;
-	}
-	
-	#infoHolder .paneImg img {
-		max-width:	100%;
-		max-height:	100%;
 	}
 	
 </style>
