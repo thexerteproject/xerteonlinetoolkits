@@ -15,6 +15,29 @@
 				var $infoHolder = $("#infoHolder");
 				$infoHolder.height($x_pageHolder.height() - $("#pageContents .splitScreen").position().top - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($infoHolder.css("padding-top")) * 2);
 			}
+			
+			$("#pageContents").data({
+				"maxWH"	:[$infoHolder.width(), $infoHolder.height()]
+			});
+			list.scaleImages();
+		}
+		
+		// function scales image
+		this.scaleImages = function() {
+			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
+			var $pageContents = $("#pageContents");
+			var $img = $("#infoHolder .paneImg img");
+			if ($img.length > 0) {
+				if ($img.data("maxWH") == undefined || ($pageContents.data("maxWH")[0] != $img.data("maxWH")[0] || $pageContents.data("maxWH")[1] != $img.data("maxWH")[1])) {
+					var firstScale = false;
+					if ($img.data("maxWH") == undefined) {
+						firstScale = true;
+					}
+					$img.data("maxWH", $pageContents.data("maxWH"));
+					
+					x_scaleImg($img, $img.data("maxWH")[0], $img.data("maxWH")[1], true, firstScale);
+				}
+			}
 		}
 		
 		this.init = function() {
@@ -63,7 +86,9 @@
 								$(".listItem.highlight").removeClass("highlight");
 								$this.addClass("highlight");
 								var $infoHolder = $("#infoHolder");
-								$infoHolder.html(infoString);
+								$infoHolder
+									.html(infoString)
+									.scrollTop(0);
 								if ($("#infoHolder:hidden").length > 0) {
 									$infoHolder.fadeIn();
 									list.sizeChanged();
@@ -77,6 +102,7 @@
 									$(".flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
 									$("#pageSWF" + i).attr("title", $this.data("tip"));
 								}
+								list.scaleImages();
 							}
 						});
 				});
@@ -105,14 +131,9 @@
 		overflow:	auto;
 	}
 	
-	#infoHolder .panelImg {
+	#infoHolder .paneImg {
 		text-align:		center;
 		padding-top:	10px;
-	}
-	
-	#infoHolder .panelImg img {
-		max-width:	100%;
-		max-height:	100%;
 	}
 	
 </style>
