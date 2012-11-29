@@ -78,12 +78,14 @@
 	
 	var $pageVideo = $("#pageVideo");
 	var videoDimensions = [320,240];
+	console.log(videoDimensions);
 	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 		if (dimensions[0] != 0 && dimensions[1] != 0) {
 			videoDimensions = dimensions;
 		}
 	}
+	console.log(videoDimensions);
 	
 	var videoSrc = x_currentPageXML.getAttribute("url");
 	$pageVideo
@@ -103,7 +105,7 @@
 				type:	"HEAD",
 				success: function() {
 					// mp4 version exists - use this instead
-					videoSrc = fileInfo[0] + ".mp4";
+					videoSrc = fileInfo[0] + ".mp4'";
 					$pageVideo.data("src", videoSrc);
 					textVideo.loadVideo(true);
 				},

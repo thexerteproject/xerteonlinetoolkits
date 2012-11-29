@@ -1,7 +1,5 @@
 <script type="text/javascript">
 	
-	// ** TO DO - ADD NEXT & SUBMIT AS LANGUAGE OPTIONS IN WIZARD **
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dialog = new function() {
@@ -10,7 +8,7 @@
 			// reset questions
 			$("#pageContents").data("currentQ", 0);
 			$("#submitBtn")
-				.button({label:	"Submit"}) // ****
+				.button({label:	$pageContents.data("submitTxt")})
 				.data({
 					"attempt":	0,
 					"state":	0
@@ -50,11 +48,22 @@
 			if (moveOnTxt == undefined) {
 				moveOnTxt = "Press enter to move on.";
 			}
+			var submitTxt = x_currentPageXML.getAttribute("submitBtnTxt");
+			if (submitTxt == undefined) {
+				submitTxt = "Submit";
+			}
+			var nextTxt = x_currentPageXML.getAttribute("nextBtnTxt");
+			if (nextTxt == undefined) {
+				nextTxt = "Next";
+			}
+			
 			$("#pageContents").data({
 				"currentQ"	:0,
 				"tryTxt"	:tryTxt,
 				"correctTxt":correctTxt,
-				"moveOnTxt"	:moveOnTxt
+				"moveOnTxt"	:moveOnTxt,
+				"submitTxt"	:submitTxt,
+				"nextTxt"	:nextTxt
 			});
 			
 			var $question = $("#pageContents .question:first");
@@ -81,7 +90,7 @@
 			
 			$("#submitBtn")
 				.button({
-					label:	"Submit" // ****
+					label:	submitTxt
 					})
 				.data({
 					"attempt":	0,
@@ -101,7 +110,7 @@
 							$this.focus();
 							if (qNo + 1 != $(x_currentPageXML).children().length) {
 								$this
-									.button({label:	"Next"}) // ****
+									.button({label:	$pageContents.data("nextTxt")})
 									.data("state", 1);
 							} else {
 								$this.hide();
@@ -124,7 +133,7 @@
 									.prop("readonly", true);
 								if (qNo + 1 != $(x_currentPageXML).children().length) {
 									$this
-										.button({label:	"Next"}) // ****
+										.button({label:	$pageContents.data("nextTxt")})
 										.data("state", 1);
 									$feedback.html($feedback.html() + "</br>" + $pageContents.data("moveOnTxt"));
 								} else {
@@ -143,7 +152,7 @@
 								"attempt":	0,
 								"state":	0
 								})
-							.button({label:	"Submit"});
+							.button({label:	$("#pageContents").data("submitTxt")});
 						var qNo = $pageContents.data("currentQ");
 						$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
 						$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
