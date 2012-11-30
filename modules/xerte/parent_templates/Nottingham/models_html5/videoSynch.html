@@ -84,7 +84,7 @@
 			$("#pageContents").data("captions", captions);
 			
 			var $pageVideo = $("#pageVideo");
-			var videoDimensions = [320,240]; // ** need to add movie size attribute to wizard so it doesn't always default to this **
+			var videoDimensions = [320,240];
 			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 				if (dimensions[0] != 0 && dimensions[1] != 0) {
