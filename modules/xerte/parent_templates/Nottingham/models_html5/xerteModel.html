@@ -20,7 +20,7 @@
 					.load(eval(x_currentPageXML.getAttribute("modelFile")));
 			} else {
 				// if language attributes aren't in xml will have to use english fall back
-				var errorTxt = x_currentPageXML.getAttribute("errorTxt"); // ** need to add this attribute to the xwd
+				var errorTxt = x_currentPageXML.getAttribute("errorTxt");
 				if (errorTxt == undefined) {
 					errorTxt = "You can not view this type of content in the HTML viewer.";
 				}
