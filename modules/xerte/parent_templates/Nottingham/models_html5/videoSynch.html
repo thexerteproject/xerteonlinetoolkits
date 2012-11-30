@@ -67,61 +67,65 @@
 				})
 			});
 		}
-	}
-	
-	$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
-	
-	var $infoHolder = $("#infoHolder");
-	var captions = new Array();
-	$(x_currentPageXML).children().each(function(){
-		var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>")
-			.hide()
-			.data("synch", $(this).attr("synch"));
 		
-		$infoHolder.append($caption);
-		captions.push($caption[0]);
-	});
-	$("#pageContents").data("captions", captions);
-	
-	var $pageVideo = $("#pageVideo");
-	var videoDimensions = [320,240]; // ** need to add movie size attribute to wizard so it doesn't always default to this **
-	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-		if (dimensions[0] != 0 && dimensions[1] != 0) {
-			videoDimensions = dimensions;
-		}
-	}
-	
-	var videoSrc = x_currentPageXML.getAttribute("url");
-	$pageVideo.data({
-		"src"			:videoSrc,
-		"dimensions"	:videoDimensions
-	});
-	
-	if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
-		var fileInfo = videoSrc.split(".");
-		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-		if (fileInfo[1] == "flv") {
-			$.ajax({
-				url:	eval(fileInfo[0] + ".mp4'"),
-				type:	"HEAD",
-				success: function() {
-					// mp4 version exists - use this instead
-					videoSrc = fileInfo[0] + ".mp4'";
-					$pageVideo.data("src", videoSrc);
-					videoSynch.loadVideo(true);
-				},
-				error:	function() {
-					// no mp4 version to use
+		this.init = function() {
+			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
+			
+			var $infoHolder = $("#infoHolder");
+			var captions = new Array();
+			$(x_currentPageXML).children().each(function(){
+				var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>")
+					.hide()
+					.data("synch", $(this).attr("synch"));
+				
+				$infoHolder.append($caption);
+				captions.push($caption[0]);
+			});
+			$("#pageContents").data("captions", captions);
+			
+			var $pageVideo = $("#pageVideo");
+			var videoDimensions = [320,240]; // ** need to add movie size attribute to wizard so it doesn't always default to this **
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
+			}
+			
+			var videoSrc = x_currentPageXML.getAttribute("url");
+			$pageVideo.data({
+				"src"			:videoSrc,
+				"dimensions"	:videoDimensions
+			});
+			
+			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
+				var fileInfo = videoSrc.split(".");
+				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
+				if (fileInfo[1] == "flv") {
+					$.ajax({
+						url:	eval(fileInfo[0] + ".mp4'"),
+						type:	"HEAD",
+						success: function() {
+							// mp4 version exists - use this instead
+							videoSrc = fileInfo[0] + ".mp4'";
+							$pageVideo.data("src", videoSrc);
+							videoSynch.loadVideo(true);
+						},
+						error:	function() {
+							// no mp4 version to use
+							videoSynch.loadVideo(true);
+						}
+					});
+				} else {
 					videoSynch.loadVideo(true);
 				}
-			});
-		} else {
-			videoSynch.loadVideo(true);
+			} else {
+				videoSynch.loadVideo(true);
+			}
 		}
-	} else {
-		videoSynch.loadVideo(true);
 	}
+	
+	videoSynch.init();
 	
 </script>
 

@@ -37,11 +37,12 @@
 		}
 
 		this.setUpZoom = function() {
+			var $img1 = $("#pageImg1");
 			$img1.hide().fadeIn(1000);
-			$cropImg = $("#cropImg");
-			$cropImg
-				.width($cropImg.width())
-				.height($cropImg.height());
+			$imgDiv = $("#imgDiv");
+			$imgDiv
+				.width($imgDiv.width())
+				.height($imgDiv.height());
 
 			var scale = $img1.width() / $img1.data("origSize")[0]; // xywh to be scaled with image
 			var $hotspotInfo = $(x_currentPageXML).find("hotspot")[0];
@@ -139,43 +140,59 @@
 					);
 			}
 		}
+		
+		this.init = function() {
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			var imgMaxW1 = 500;
+			var imgMaxH1 = 400;
+			if (x_browserInfo.mobile == true) {
+				imgMaxW1 = 250;
+				imgMaxH1 = 250;
+			}
+
+			var imgMaxW2 = imgMaxW1;
+			var imgMaxH2 = imgMaxH1;
+			
+			var $img1 = $("#pageImg1");
+			$img1
+				.load(function() {
+					if ($(this).data("loaded") != true) {
+						x_scaleImg(this, imgMaxW1, imgMaxH1, true, true);
+						morphImages.setUpZoom();
+					}
+					})
+				.attr({
+					"src":	eval(x_currentPageXML.getAttribute("url")),
+					"alt":	x_currentPageXML.getAttribute("tip1")
+					});
+			if ($img1[0].complete == true) {
+				$img1.data("loaded", true);
+				x_scaleImg($img1[0], imgMaxW1, imgMaxH1, true, true);
+				morphImages.setUpZoom();
+			}
+
+			// if language attributes aren't in xml will have to use english fall back
+			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
+			if (buttonLabel == undefined) {
+				buttonLabel = "Zoom"
+			}
+			var zoomBtnTip = x_currentPageXML.getAttribute("zoomBtnTip");
+			if (zoomBtnTip == undefined) {
+				zoomBtnTip = "Zoom"
+			}
+			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
+				.button({
+					label:			buttonLabel,
+					description:	zoomBtnTip
+					})
+				.bind("click", function() {
+					morphImages.zoom();
+					});
+		}
 	}
-
-	var imgMaxW1 = 500;
-	var imgMaxH1 = 400;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW1 = 250;
-		imgMaxH1 = 250;
-	}
-
-	var imgMaxW2 = imgMaxW1;
-	var imgMaxH2 = imgMaxH1;
-
-	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
-	var $img1 = $("#pageImg1");
-	$img1.attr({
-		"src":	eval(x_currentPageXML.getAttribute("url")),
-		"alt":	x_currentPageXML.getAttribute("tip1")
-		});
-
-	// if language attributes aren't in xml will have to use english fall back
-	var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
-	if (buttonLabel == undefined) {
-		buttonLabel = "Zoom"
-	}
-	var zoomBtnTip = x_currentPageXML.getAttribute("zoomBtnTip");
-	if (zoomBtnTip == undefined) {
-		zoomBtnTip = "Zoom"
-	}
-	$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
-		.button({
-			label:			buttonLabel,
-			description:	zoomBtnTip
-			})
-		.bind("click", function() {
-			morphImages.zoom();
-			});
+	
+	morphImages.init();
 
 </script>
 
@@ -185,7 +202,7 @@
 		visibility:	hidden;
 	}
 
-	#cropImg {
+	#imgDiv {
 		overflow:	hidden;
 	}
 
@@ -203,8 +220,8 @@
 
 <div id="imgHolder" class="mobileAlign">
 	<div class="panel inline x_floatLeft">
-		<div id="cropImg">
-			<img id="pageImg1" onload="x_scaleImg(this, imgMaxW1, imgMaxH1, true, true); morphImages.setUpZoom();" />
+		<div id="imgDiv">
+			<img id="pageImg1" />
 		</div>
 		<button id="zoomBtn"></button>
 	</div>
