@@ -6,16 +6,17 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			var $playBtn = $("#playBtn");
-			if ($playBtn.length > 0 && $playBtn.data("state") == "pause") {
+			if ($playBtn.length > 0) {
 				$playBtn
-					.data("state", "play")
+					.data("state", "pause")
 					.button({
 						icons: {
-							primary: "ui-icon-play"
+							primary: "ui-icon-pause"
 						},
-						label:			$playBtn.data("play"),
-						description:	$playBtn.data("play")
+						label:			$playBtn.data("pause"),
+						description:	$playBtn.data("pause")
 					});
+				$playBtn.trigger("click");
 			}
 		}
 		
@@ -23,94 +24,101 @@
 		this.sizeChanged = function() {
 			
 		}
-	}
-	
-	var $textHolder	= $("#textHolder");
-	var $panel		= $("#pageContents .panel");
-	
-	// text align
-	var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
-	if (textAlign != "Right") {
-		$panel.addClass("x_floatRight");
-	} else if (textAlign == "Right") {
-		$panel.addClass("x_floatLeft");
-	}
-	$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-	
-	var size = ["100%","100%"];
-	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-		if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
-			size = [Number(dimensions[0]), Number(dimensions[1])];
-		}
-	} else {
-		// ** need to know original swf dimensions **
-	}
-	
-	swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "", function(e) {
-		/*if (e.success == true) {
-			var swf = e.ref;
-			swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
-		}*/
-	});
-	
-	$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
-	$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
-	
-	$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
-	
-	if (x_currentPageXML.getAttribute("controls") == "Control Bar" && x_browserInfo.iOS != true) {
-		var $controls = $('<button id="playBtn"></button>');
-		$controls
-			.data({
-				"state"	:"play",
-				"play"	:x_getLangInfo(x_languageData.find("movieController").find("playButton")[0], "label", "Play Button"),
-				"pause"	:x_getLangInfo(x_languageData.find("movieController").find("pauseButton")[0], "label", "Pause Button")
-				})
-			.button({
-				icons: {
-					primary: "ui-icon-play"
-				},
-				label:			$controls.data("play"),
-				description:	$controls.data("play"),
-				text:			false
-				})
-			.bind("click", function() {
-				var flashMovie;
-				if (window.document["pageSWF"]) {
-					flashMovie = window.document["pageSWF"];
+		
+		this.init = function() {
+			var $textHolder	= $("#textHolder");
+			var $panel		= $("#pageContents .panel");
+			
+			// text align
+			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
+			if (textAlign != "Right") {
+				$panel.addClass("x_floatRight");
+			} else if (textAlign == "Right") {
+				$panel.addClass("x_floatLeft");
+			}
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			
+			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+			
+			$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
+			
+			// ** change this play button to a proper control bar like the mediaelement one
+			if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+				var $controls = $('<button id="playBtn"></button>');
+				$controls
+					.data({
+						"state"	:"pause",
+						"play"	:x_getLangInfo(x_languageData.find("movieController").find("playButton")[0], "label", "Play Button"),
+						"pause"	:x_getLangInfo(x_languageData.find("movieController").find("pauseButton")[0], "label", "Pause Button")
+						})
+					.button({
+						icons: {
+							primary: "ui-icon-pause"
+						},
+						label:			$controls.data("pause"),
+						description:	$controls.data("pause"),
+						text:			false
+						})
+					.bind("click", function() {
+						var flashMovie = $("#pageContents").data("swf");
+						var $this = $(this);
+						if ($this.data("state") == "play") {
+							flashMovie.Play();
+							$this.data("state", "pause");
+						} else {
+							flashMovie.StopPlay();
+							$this.data("state", "play");
+						}
+						var state = $this.data("state");
+						$this.button({
+							icons: {
+								primary: "ui-icon-" + state
+							},
+							label:			$this.data(state),
+							description:	$this.data(state)
+							})
+						})
+					.load(function() {
+						})
+				$panel.append($controls);
+			}
+			
+			var size = [320,240];
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+					size = [Number(dimensions[0]), Number(dimensions[1])];
 				}
-				if (navigator.appName.indexOf("Microsoft Internet") == -1) {
-					if (document.embeds && document.embeds["pageSWF"]) {
-						flashMovie = document.embeds["pageSWF"];
+			}
+			
+			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "", function(e) {
+				if (e.success == true) {
+					$("#pageContents").data({
+						"swf"			:x_getSWFRef("pageSWF"),  // reference to swf
+						"initObject"	:x_sortInitObject(x_currentPageXML.getAttribute("initObject")) // initObject data
+					}); 
+					
+					// if using the control bar make sure swf is paused initially
+					if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+						// swf is supposed to be loaded by now but this won't work without slight delay?
+						setTimeout(function () {
+							$("#playBtn").trigger("click");
+						},100);
 					}
-				} else {
-					flashMovie = document.getElementById("pageSWF");
+					
+					// ** calling init() and passing initObject not working **
+					//var swf = e.ref;
+					//swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
 				}
-				var $this = $(this);
-				if ($this.data("state") == "play") {
-					flashMovie.Play();
-					$this.data("state", "pause");
-				} else {
-					flashMovie.StopPlay();
-					$this.data("state", "play");
-				}
-				var state = $this.data("state");
-				$this.button({
-					icons: {
-						primary: "ui-icon-" + state
-					},
-					label:			$this.data(state),
-					description:	$this.data(state)
-					})
-				})
-			.load(function() {
-				})
-		$panel.append($controls);
+				
+				// call this function in every model once everything's loaded
+				x_pageLoaded();
+			});
+		}
 	}
 	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	textSWF.init();
 	
 </script>
 

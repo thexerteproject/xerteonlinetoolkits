@@ -605,7 +605,16 @@ function x_setUp() {
 function x_changePage() {
 	x_currentPageXML = x_pages[x_currentPage];
 	$("#pageBg").remove();
+	
 	if ($x_pageDiv.children().length > 0) {
+		// ** TO DO - this causes problems where swfs fill the whole page and the page size changes - I can't work out why **
+		// stop any swfs on old page before detaching it so that any audio stops playing
+		/*if ($x_pageDiv.find("object").length > 0) {
+			var $obj = $x_pageDiv.find("object");
+			var flashMovie = x_getSWFRef($obj.attr("id"));
+			flashMovie.StopPlay();
+		}*/
+		
 		$("#x_pageDiv div:lt(" + $x_pageDiv.children().length + ")")
 			.data("size", [$x_mainHolder.width(), $x_mainHolder.height()]) // save current LO size so when page is next loaded we can check if it has changed size and if anything needs updating
 			.detach();
@@ -946,6 +955,39 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 // function swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
 	return text.replace(/(\n|\r|\r\n)/g, "<br />");
+}
+
+// function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)
+function x_sortInitObject(initObj) {
+	var initObject;
+	if (initObj != undefined && initObj != "") {	
+		if (initObj.substring(0,1) == "{") { // object - just doing eval won't work
+			initObject = jQuery.parseJSON(initObj);
+		} else if (initObj.substring(0,1) == "[") { // array
+			initObject = eval(initObj);
+		} else { // string
+			initObject = initObj;
+		}
+	} else {
+		initObject = undefined;
+	}
+	return initObject;
+}
+
+// function gets reference to swfs (different depending on browser)
+function x_getSWFRef(swfID) {
+	var flashMovie;
+	if (window.document[swfID]) {
+		flashMovie = window.document[swfID];
+	}
+	if (navigator.appName.indexOf("Microsoft Internet") == -1) {
+		if (document.embeds && document.embeds[swfID]) {
+			flashMovie = document.embeds[swfID];
+		}
+	} else {
+		flashMovie = document.getElementById(swfID);
+	}
+	return flashMovie;
 }
 
 function x_addPageLinks(pageText, returnMethod) {

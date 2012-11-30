@@ -26,100 +26,102 @@
 				x_pageLoaded(); // call this function in every model once everything's loaded
 			}
 		}
-	}
-	
-	// text align
-	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-	var $panel = $("#pageContents .panel");
-	var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
-	if (textAlign != "Right") {
-		$panel.addClass("x_floatRight");
-	} else {
-		$panel.addClass("x_floatLeft");
-	}
-	
-	// transcript stuff
-	var transcriptTxt = x_currentPageXML.getAttribute("transcript");
-	if (transcriptTxt != undefined && transcriptTxt != "") {
-		var $transcript = $("#transcript");
-		$transcript
-			.hide()
-			.html(x_addLineBreaks(transcriptTxt));
 		
-		var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt");
-		var btnTip = x_currentPageXML.getAttribute("transcriptTabTip");
-		if (btnLabel == undefined) {
-			btnLabel = "Transcript";
-			btnTip = "Transcript";
-		}
-		
-		$("#transcriptBtn")
-			.button({
-				label:			btnLabel,
-				description:	btnTip // transcriptTabWidth not used as width is done automatically
-			})
-			.data({
-				"up"			:true,
-				"transcriptTag"	:$transcript
-			})
-			.click(function() {
-				$this = $(this);
-				if ($this.data("up") == true) {
-					$this.data("transcriptTag").slideDown();
-					$this.data("up", false);
+		this.init = function() {
+			// text align
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			var $panel = $("#pageContents .panel");
+			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
+			if (textAlign != "Right") {
+				$panel.addClass("x_floatRight");
+			} else {
+				$panel.addClass("x_floatLeft");
+			}
+			
+			// transcript stuff
+			var transcriptTxt = x_currentPageXML.getAttribute("transcript");
+			if (transcriptTxt != undefined && transcriptTxt != "") {
+				var $transcript = $("#transcript");
+				$transcript
+					.hide()
+					.html(x_addLineBreaks(transcriptTxt));
+				
+				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt");
+				var btnTip = x_currentPageXML.getAttribute("transcriptTabTip");
+				if (btnLabel == undefined) {
+					btnLabel = "Transcript";
+					btnTip = "Transcript";
+				}
+				
+				$("#transcriptBtn")
+					.button({
+						label:			btnLabel,
+						description:	btnTip // transcriptTabWidth not used as width is done automatically
+					})
+					.data({
+						"up"			:true,
+						"transcriptTag"	:$transcript
+					})
+					.click(function() {
+						$this = $(this);
+						if ($this.data("up") == true) {
+							$this.data("transcriptTag").slideDown();
+							$this.data("up", false);
+						} else {
+							$this.data("transcriptTag").slideUp();
+							$this.data("up", true);
+						}
+					});
+			} else {
+				$("#transcriptHolder").remove();
+			}
+			
+			var $pageVideo = $("#pageVideo");
+			var videoDimensions = [320,240];
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
+			}
+			
+			var videoSrc = x_currentPageXML.getAttribute("url");
+			$pageVideo
+				.data({
+					"src"			:videoSrc,
+					"dimensions"	:videoDimensions,
+					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
+				})
+				.attr("title", x_currentPageXML.getAttribute("tip"));
+			
+			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
+				var fileInfo = videoSrc.split(".");
+				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
+				if (fileInfo[1] == "flv") {
+					$.ajax({
+						url:	eval(fileInfo[0] + ".mp4'"),
+						type:	"HEAD",
+						success: function() {
+							// mp4 version exists - use this instead
+							videoSrc = fileInfo[0] + ".mp4'";
+							$pageVideo.data("src", videoSrc);
+							textVideo.loadVideo(true);
+						},
+						error:	function() {
+							// no mp4 version to use
+							textVideo.loadVideo(true);
+						}
+					});
 				} else {
-					$this.data("transcriptTag").slideUp();
-					$this.data("up", true);
-				}
-			});
-	} else {
-		$("#transcriptHolder").remove();
-	}
-	
-	var $pageVideo = $("#pageVideo");
-	var videoDimensions = [320,240];
-	console.log(videoDimensions);
-	if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-		var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-		if (dimensions[0] != 0 && dimensions[1] != 0) {
-			videoDimensions = dimensions;
-		}
-	}
-	console.log(videoDimensions);
-	
-	var videoSrc = x_currentPageXML.getAttribute("url");
-	$pageVideo
-		.data({
-			"src"			:videoSrc,
-			"dimensions"	:videoDimensions,
-			"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
-		})
-		.attr("title", x_currentPageXML.getAttribute("tip"));
-	
-	if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
-		var fileInfo = videoSrc.split(".");
-		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-		if (fileInfo[1] == "flv") {
-			$.ajax({
-				url:	eval(fileInfo[0] + ".mp4'"),
-				type:	"HEAD",
-				success: function() {
-					// mp4 version exists - use this instead
-					videoSrc = fileInfo[0] + ".mp4'";
-					$pageVideo.data("src", videoSrc);
-					textVideo.loadVideo(true);
-				},
-				error:	function() {
-					// no mp4 version to use
 					textVideo.loadVideo(true);
 				}
-			});
-		} else {
-			textVideo.loadVideo(true);
+			} else {
+				textVideo.loadVideo(true);
+			}
 		}
-	} else {
-		textVideo.loadVideo(true);
 	}
+	
+	textVideo.init();
 	
 </script>
 

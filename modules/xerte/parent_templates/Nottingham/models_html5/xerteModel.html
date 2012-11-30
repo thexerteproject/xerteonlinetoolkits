@@ -12,17 +12,27 @@
 		this.sizeChanged = function() {
 			
 		}
+		
+		this.init = function() {
+			if (x_currentPageXML.getAttribute("modelFile").toLowerCase().indexOf(".html") >= 0) {
+				$("#pageContents")
+					.data("initObject", x_sortInitObject(x_currentPageXML.getAttribute("initObject")))
+					.load(eval(x_currentPageXML.getAttribute("modelFile")));
+			} else {
+				// if language attributes aren't in xml will have to use english fall back
+				var errorTxt = x_currentPageXML.getAttribute("errorTxt"); // ** need to add this attribute to the xwd
+				if (errorTxt == undefined) {
+					errorTxt = "You can not view this type of content in the HTML viewer.";
+				}
+				$("#x_pageDiv div").html(errorTxt);
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
 	}
 	
-	console.log(eval(x_currentPageXML.getAttribute("modelFile")));
-	if (x_currentPageXML.getAttribute("modelFile").toLowerCase().indexOf(".html") >= 0) {
-		$("#pageContents").load(eval(x_currentPageXML.getAttribute("modelFile")));
-	} else {
-		$("#x_pageDiv div").html("You can not view this type of content in the HTML5 viewer"); // ** need translated error message for if trying to load xerte model
-	}
-	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	xerteModel.init();
 	
 </script>
 
