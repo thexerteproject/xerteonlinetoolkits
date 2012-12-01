@@ -1,8 +1,8 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var textSWF = new function() {		
+	var textSWF = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			var $playBtn = $("#playBtn");
@@ -19,16 +19,16 @@
 				$playBtn.trigger("click");
 			}
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		}
-		
+
 		this.init = function() {
 			var $textHolder	= $("#textHolder");
 			var $panel		= $("#pageContents .panel");
-			
+
 			// text align
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
 			if (textAlign != "Right") {
@@ -37,12 +37,12 @@
 				$panel.addClass("x_floatLeft");
 			}
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			
+
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
-			
+
 			$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
-			
+
 			// ** change this play button to a proper control bar like the mediaelement one
 			if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
 				var $controls = $('<button id="playBtn"></button>');
@@ -83,7 +83,7 @@
 						})
 				$panel.append($controls);
 			}
-			
+
 			var size = [320,240];
 			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
@@ -91,14 +91,14 @@
 					size = [Number(dimensions[0]), Number(dimensions[1])];
 				}
 			}
-			
-			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "", function(e) {
+
+			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
 				if (e.success == true) {
 					$("#pageContents").data({
 						"swf"			:x_getSWFRef("pageSWF"),  // reference to swf
 						"initObject"	:x_sortInitObject(x_currentPageXML.getAttribute("initObject")) // initObject data
-					}); 
-					
+					});
+
 					// if using the control bar make sure swf is paused initially
 					if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
 						// swf is supposed to be loaded by now but this won't work without slight delay?
@@ -106,20 +106,20 @@
 							$("#playBtn").trigger("click");
 						},100);
 					}
-					
+
 					// ** calling init() and passing initObject not working **
 					//var swf = e.ref;
 					//swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
 				}
-				
+
 				// call this function in every model once everything's loaded
 				x_pageLoaded();
 			});
 		}
 	}
-	
+
 	textSWF.init();
-	
+
 </script>
 
 <style type="text/css">
@@ -129,11 +129,11 @@
 		width:		20px;
 		height:		20px;
 	}
-	
+
 </style>
 
 <div id="pageContents">
-	
+
 	<div id="swfHolder" class="mobileAlign">
 		<div class="panel inline">
 			<div id="pageSWF">
@@ -142,9 +142,9 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div id="textHolder">
-	
+
 	</div>
-	
+
 </div>
