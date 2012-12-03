@@ -1,7 +1,11 @@
 <script type="text/javascript">
-	
+	// Variable to keep track of the state of Caps and Shift (Caps may be different from system Caps - no way around)
+	var shiftDown = false;
+	var capsOn = false;
+
 	var $charsHolder = $("#charsHolder");
 	var $specChar = $charsHolder.find(".specChar:first");
+	var $capsButton = $specChar.clone().removeClass("specChar").appendTo($("#charsFooter")).html("Caps: <strong>OFF</strong>");
 	for (var i=0; i<x_specialChars.length; i++) {
 		var $thisChar;
 		if (i != 0) {
@@ -9,23 +13,28 @@
 		} else {
 			$thisChar = $specChar;
 		}
-		
 		$thisChar.html(x_specialChars[i].lower);
 	}
-	
+
 	$(".specChar")
 		.button()
 		.click(function() {
 			if (x_inputFocus != false) {
 				var textArea = x_inputFocus;
-				var specChar = x_specialChars[$(this).index()].lower;
-				// ** need to use upper/lower depending on caps lock on/off **
+
+				// Attempt at handling upper/lower case - SHIFT and CAPS LOCK
+				// Short form of Boolean XOR [(A && !B) || (!A && B)]
+				var specChar	= (shiftDown ? !capsOn : capsOn)
+								? x_specialChars[$(this).index()].upper
+								: x_specialChars[$(this).index()].lower;
+
 				if (document.selection) {
 					textArea.focus();
 					var sel = document.selection.createRange();
 					sel.text = specChar;
 					textArea.focus();
-				} else if (textArea.selectionStart || textArea.selectionStart === 0) {
+				}
+				else if (textArea.selectionStart || textArea.selectionStart === 0) {
 					var startPos = textArea.selectionStart;
 					var endPos = textArea.selectionEnd;
 					var scrollTop = textArea.scrollTop;
@@ -34,30 +43,78 @@
 					textArea.selectionStart = startPos + specChar.length;
 					textArea.selectionEnd = startPos + specChar.length;
 					textArea.scrollTop = scrollTop;
-				} else {
+				}
+				else {
 					textArea.value += specChar;
 					textArea.focus();
 				}
 			}
 		});
-	
+
+	$capsButton
+		.button()
+		.click(function() {
+			toggleCaps();
+			toggleButtons(capsOn ? !shiftDown : shiftDown);
+	});
+
+	// Event handlers to deal with SHIFT key
+	$(document).bind('keyup keydown', keypressHandler);
+	$charsHolder.parent().bind('dialogclose', function(e) {
+		// Cant unbind until we figure out how to bind again on second opening
+		//$(document).unbind('keyup keydown', keypressHandler);
+ 	});
+
+	function keypressHandler(e) {
+		if (shiftDown != e.shiftKey) {
+			shiftDown = e.shiftKey;
+			toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
+		}
+		if (e.keyCode == 20) {
+			if (e.type == "keyup") {
+				toggleCaps();
+			}
+		}
+	}
+
+	function toggleCaps() {
+		capsOn = !capsOn;
+		toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
+		$capsButton.find("span").html("Caps: <strong>" + (capsOn ? "ON" : "OFF") + "</strong>");
+	}
+
+	function toggleButtons(uppercase) {
+		$charsHolder.children().each(function () {
+			var charIndex = $(this).index();
+			var $char = $(this).find("span");
+		    $char.html(uppercase ? x_specialChars[charIndex].upper : x_specialChars[charIndex].lower);
+		});
+	}
+
 </script>
 
 <style type="text/css">
-	
+
 	#charsHolder .specChar {
 		width:			20px;
 		height:			20px;
 		float:			left;
 		margin:			4px;
 	}
-	
+
 	#charsHolder .specChar span {
 		padding:	0px;
 	}
-	
+
+	#charsFooter {
+		margin-top: 15px;
+        text-align: center;
+        display: block;
+	}
+
 </style>
 
 <div id="charsHolder">
 	<button class="specChar"/>
 </div>
+<div id="charsFooter"><p>Use CAPS and SHIFT</p></div>
