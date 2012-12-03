@@ -490,7 +490,7 @@ function x_setUp() {
 					var $this = $(this);
 					if ($this.attr("readonly") == undefined) { // focus is on editable text field
 						x_inputFocus = this;
-						if ($("#x_language").length == 0) { // language dialog isn't already open
+						if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
 							x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), "top");
 						}
 					}
