@@ -363,7 +363,7 @@ if($lti->valid) {
 				
             } else {
 
-                $flag == false;
+                $flag = false;
             }
         }
     }
