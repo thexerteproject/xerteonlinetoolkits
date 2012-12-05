@@ -20,6 +20,8 @@ require_once("../file_library.php");
  * get the root folder for this user
  */
 
+database_connect("New template connect","new template fail");
+
 $root_folder_id = get_user_root_folder();
 
 /*
@@ -28,8 +30,6 @@ $root_folder_id = get_user_root_folder();
 
 $maximum_template_id = get_maximum_template_number();
 $new_template_id = $maximum_template_id + 1;
-
-$root_folder = get_user_root_folder();
 
 $row_template_type = db_query_one("select template_type_id, template_name, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
 
@@ -44,7 +44,7 @@ $ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolk
 if($ok) {
     _debug("Created new template entry in db");
     $query_for_template_rights = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
-    $ok = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator","" . $root_folder_id ));
+    $ok = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", "" . $root_folder_id));
 
     if($ok) {
         _debug("Setup template rights ok");
