@@ -35,7 +35,6 @@ exit;
 //}else{
 //echo 'yep you are ok';
 //}
-//}
     
 
     if($xerte_toolkits_site->authentication_method == "Moodle") {
