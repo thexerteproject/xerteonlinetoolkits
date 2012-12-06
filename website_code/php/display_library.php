@@ -367,7 +367,7 @@ function list_blank_templates() {
 
     }
 
-    echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+    echo "<a href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
         echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
@@ -460,7 +460,7 @@ function list_specific_templates() {
 
       }
 
-      echo "<a onclick=\"javascript:toggle('" . $row['template_name'] . "')\" href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+      echo "<a href=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</a></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
       echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /><br /><input type=\"image\" src=\"website_code/images/Bttn_CreateProjectOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_CreateProjectOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_CreateProjectClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_CreateProjectOff.gif'\" class=\"form_button_pad\" /></form></div></div>";
 
