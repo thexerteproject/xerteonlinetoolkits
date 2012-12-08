@@ -1,0 +1,75 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var wiki = new function() {
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.init();
+		};
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			$("#pageContents .panel iframe").attr("width", ($("#pageContents .panel").width()-5) + "px");
+			$("#pageContents .panel iframe").attr("height", ($("#x_pageHolder").height() - $("#x_headerBlock").height() - $("#x_footerBlock").height() + 10) + "px");
+		};
+
+		this.init = function() {
+			var $pageContents = $("#pageContents");
+			var $textHolder = $("#textHolder");
+			var $panel = $("#pageContents .panel");
+			var textAlign = x_currentPageXML.getAttribute("align");
+			$panel.addClass("width60");
+
+			var url = x_currentPageXML.getAttribute("url");
+			$("#headerHolder").html("<h3>Wikipedia: " + url + "</h3>");
+			if (url.indexOf('printable=yes') == -1) {
+				url += "?printable=yes";
+			}
+
+			if (textAlign == "Right") {
+				$panel.addClass("x_floatLeft");
+			} else {
+				$panel.addClass("x_floatRight");
+			}
+
+			var iframe = "<iframe width=\"100%\"height=\"86%\" scrolling=\"auto\" src=\"" + url+ "\"></iframe>";
+			this.sizeChanged();
+
+			$("#iframeHolder").html(iframe);
+
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	};
+
+	wiki.init();
+
+</script>
+
+<style type="text/css">
+
+	#headerHolder {
+		text-align:		center;
+		margin-bottom:	10px;
+	}
+
+</style>
+
+<div id="pageContents">
+
+	<div id="wikiHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
+		<div class="panel inline">
+			<div id="headerHolder"></div>
+			<div id="iframeHolder"></div>
+		</div>
+	</div>
+
+	<div id="textHolder">
+
+	</div>
+
+</div>
