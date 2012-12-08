@@ -690,6 +690,7 @@ function x_setUpPage() {
 			$x_menuBtn.button("enable");
 		}
 		x_addNarration();
+		x_addCountdownTimer();
 	}
 	
 	$("#x_headerBlock h2").html(pageTitle);
@@ -739,6 +740,47 @@ function x_addNarration() {
 			autoPlay	:x_currentPageXML.getAttribute("playNarration"),
 			autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
 		});
+	}
+}
+
+function x_addCountdownTimer() {
+
+	var x_countdownTicker = function () {
+		x_countdownTimer--;
+		if (x_countdownTimer > 0) {
+			$("#x_footerBlock #x_pageTimer").html("Time remaining: " + x_formatCountdownTimer());
+		}
+		else {
+			window.clearInterval(x_timer);
+			$("#x_footerBlock #x_pageTimer").html("Time up!");
+		}
+	};
+	
+	var x_formatCountdownTimer = function () {
+		var dd = function (x) { return (x<10 ? "0"+x : x); }
+
+		var hours = Math.floor(x_countdownTimer / 3600);
+		var minutes = Math.floor(x_countdownTimer / 60);
+		var seconds = x_countdownTimer % 60;
+
+		if (hours > 0) {
+			return hours + ":" + dd(minutes) + ":" + dd(seconds);
+		}
+		else if (minutes > 0) {
+			return dd(minutes) + ":" + dd(seconds);
+		}
+		else {
+			return seconds + " seconds";
+		}
+	};
+	
+	var x_countdownTimer;
+
+	if (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "") {
+		$("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
+		x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
+		$("#x_footerBlock #x_pageTimer").html("Time remaining: " + x_formatCountdownTimer());
+		x_timer = window.setInterval(x_countdownTicker, 1000);
 	}
 }
 
