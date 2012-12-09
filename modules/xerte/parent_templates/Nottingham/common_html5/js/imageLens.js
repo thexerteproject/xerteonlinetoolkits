@@ -58,7 +58,7 @@
                     target.css({ backgroundPosition: leftPos + 'px ' + topPos + 'px' });
 					
                     leftPos = String(e.pageX - (target.width() / 2));
-                    topPos = String(e.pageY - (target.height() / 2) - $headerBlock.height());
+                    topPos = String(e.pageY - (target.height() / 2) - $x_headerBlock.height());
                     target.css({ left: leftPos + 'px', top: topPos + 'px' });
                 }
             }
