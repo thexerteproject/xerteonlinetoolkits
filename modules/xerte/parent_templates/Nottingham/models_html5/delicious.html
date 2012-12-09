@@ -23,7 +23,7 @@
 		this.showLinks = function(data) {
 			clearTimeout(x_timer);
 			$("#loadingSpinner").hide();
-			
+
 			// if language attributes aren't in xml will have to use english fall back
 			var headerTxt = x_currentPageXML.getAttribute("headerTxt");
 			if (headerTxt == undefined) {
@@ -58,17 +58,18 @@
 			var deliciousURL;
 			if (deliciousSearch == 'popular') {
 				deliciousURL = "http://feeds.delicious.com/v2/json/popular/" + encodeURI(deliciousTerm);
-			} else if (deliciousSearch == 'user'){
+			}
+			else if (deliciousSearch == 'user') {
 				deliciousURL = "http://feeds.delicious.com/v2/json/" + encodeURI(deliciousTerm);
-			} else { //recent - default
-				//deliciousSearch = 'tag';
+			}
+			else { //recent - default
 				deliciousURL = "http://feeds.delicious.com/v2/json/tag/" + encodeURI(deliciousTerm);
 			}
 
 			$.ajax({
 				beforeSend: function() {
+					$("#loadingSpinner").show();
 					x_timer = setTimeout(function() {
-					 	$("#loadingSpinner").show();
 					 	$resultsHolder
 					 		.html('<div><p>' + x_getLangInfo(x_languageData.find("errorResults")[0], "label", "There was an error loading the results") + '</p></div>')
 					 		.find("div:even").addClass("shadedDiv");
@@ -105,7 +106,7 @@
 	#resultsHolder {
 		width:	100%;
 	}
-	
+
 	#resultsHolder div {
 		width: 100%;
 		padding-top:	5px;
