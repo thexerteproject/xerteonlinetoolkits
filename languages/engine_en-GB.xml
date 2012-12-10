@@ -1,4 +1,4 @@
-﻿<language name="English">
+<language name="English">
 
   <nextButton label="Next" description="Next Page Button"/>
   
@@ -37,6 +37,8 @@
   <errorProject label="The project data has not loaded."/>
   
   <errorPage label="No template is currently available for this page type."/>
+  
+  <errorBrowser label="Your browser does not support this page type."/>
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
   
