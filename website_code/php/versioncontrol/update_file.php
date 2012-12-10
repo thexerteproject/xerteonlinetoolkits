@@ -22,7 +22,7 @@ if(isset($_POST['template_id'])){
 
 		if(!empty($_POST['file_path'])){
 
-			$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",stripcslashes($_POST['file_path'])));
+			$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",$_POST['file_path']));
 
 			$template_id = $temp_array[0];
 
@@ -31,7 +31,7 @@ if(isset($_POST['template_id'])){
 			$template_id = mysql_real_escape_string($_POST['template_id']);
 		
 		}
-
+		
 		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
 		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
