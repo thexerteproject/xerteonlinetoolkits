@@ -10,11 +10,11 @@
 
 require_once('../../../config.php');
 
-require('../../../session.php');
-
 _load_language_file("/website_code/php/versioncontrol/update_file.inc");
 
 require('../template_status.php');
+
+database_connect("file update success","file_update_fail");
 
 if(isset($_POST['template_id'])){
 
@@ -24,27 +24,33 @@ if(isset($_POST['template_id'])){
 
 			$temp_array = explode("-",str_replace($xerte_toolkits_site->users_file_area_full,"",stripcslashes($_POST['file_path'])));
 
+			$template_id = $temp_array[0];
+
 		}else{
-
-			$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
-
-			$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", mysql_real_escape_string($_POST['template_id']), $query_for_play_content_strip);
-
-			$query_for_play_content_response = mysql_query($query_for_play_content);
-
-			$row_play = mysql_fetch_array($query_for_play_content_response);
-
-			$temp_array = array();
-
-			array_push($temp_array, mysql_real_escape_string($_POST['template_id']));
-
-			array_push($temp_array, $row_play['username']);
-
-			array_push($temp_array, $row_play['template_name']);
-			
-			array_push($temp_array, $row_play['template_framework']);
-
+		
+			$template_id = mysql_real_escape_string($_POST['template_id']);
+		
 		}
+
+		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+
+		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
+
+		$query_for_play_content_response = mysql_query($query_for_play_content);
+
+		$row_play = mysql_fetch_array($query_for_play_content_response);
+
+		$temp_array = array();
+
+		array_push($temp_array, mysql_real_escape_string($_POST['template_id']));
+
+		array_push($temp_array, $row_play['username']);
+
+		array_push($temp_array, $row_play['template_name']);
+		
+		array_push($temp_array, $row_play['template_framework']);
+
+		
 			/*
 			* Code to sync files
 			*/
