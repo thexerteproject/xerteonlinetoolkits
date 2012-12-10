@@ -224,72 +224,78 @@
             var $chartTitle = $("#chartTitle");
             var chartHolder = document.getElementById('chartHolder');
 
-            $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-            $chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
+            if (chartHolder.getContext) {
+            	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				$chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
 
-			allSeries = [];
-			var yMin, yMax;
-			var series = $(x_currentPageXML).children();
-			if (series.length == 0) {
-				// There are no series
+				allSeries = [];
+				var yMin, yMax;
+				var series = $(x_currentPageXML).children();
+				if (series.length == 0) {
+					// There are no series
+				}
+				else {
+					yMin = 1000000, yMax = 0;
+					$(x_currentPageXML).children().each(function () {
+						var name = this.getAttribute("name");
+						var dataString = this.getAttribute("data");
+						var colour = this.getAttribute("colour");
+						if (colour.substring(0, 2) == '0x') { // hex value
+							colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
+						}
+
+						var dataPair, dataPairs = dataString.split('||');
+						var data = [];
+						for (var i=0; i<dataPairs.length; i++) {
+							dataPair = dataPairs[i].split('|');
+							data.push({"x":parseInt(dataPair[0]), "y":parseInt(dataPair[1])});
+							if (!isNaN(parseInt(dataPair[1]))) {
+								yMax = Math.max(yMax, parseInt(dataPair[1]));
+								yMin = Math.floor(Math.min(yMin, parseInt(dataPair[1])) * 0.9);
+							}
+						}
+						allSeries.push({"name":name, "colour": colour, "data":data});
+					});
+				}
+
+				var hMax = 410 - allSeries.length * 20;
+				var scalar = hMax / (yMax - yMin);
+				var w = 350 / allSeries[0].data.length;
+				var w1 = w * 0.9 / allSeries.length;
+
+				chartHolder.width = 410;
+				chartHolder.height = 460;
+
+				chartHolder.getContext("2d").translate(60, 0);
+
+				switch (x_currentPageXML.getAttribute("chartType")) {
+					case "stacked bar":
+						this.doStackedBar(chartHolder.getContext("2d"), w, hMax);
+						break;
+					case "pie":
+						this.doPie(chartHolder.getContext("2d"));
+						break;
+					case "bar":
+						this.doBar(chartHolder.getContext("2d"), w, w1, yMin, scalar);
+						break;
+					case "line":
+						this.doLine(chartHolder.getContext("2d"), w, yMin, scalar);
+				}
+
+				if (x_currentPageXML.getAttribute("chartType") != "pie") {
+					this.doAxesAndLabels(chartHolder.getContext("2d"), w, w1, yMin, yMax, scalar, hMax)
+				}
+
+				if (x_currentPageXML.getAttribute("align") != "right") {
+					$panel.addClass("x_floatRight");
+				} else {
+					$panel.addClass("x_floatLeft");
+				}
 			}
 			else {
-				yMin = 1000000, yMax = 0;
-				$(x_currentPageXML).children().each(function () {
-					var name = this.getAttribute("name");
-					var dataString = this.getAttribute("data");
-					var colour = this.getAttribute("colour");
-					if (colour.substring(0, 2) == '0x') { // hex value
-						colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
-					}
-
-					var dataPair, dataPairs = dataString.split('||');
-					var data = [];
-					for (var i=0; i<dataPairs.length; i++) {
-						dataPair = dataPairs[i].split('|');
-						data.push({"x":parseInt(dataPair[0]), "y":parseInt(dataPair[1])});
-						if (!isNaN(parseInt(dataPair[1]))) {
-							yMax = Math.max(yMax, parseInt(dataPair[1]));
-							yMin = Math.floor(Math.min(yMin, parseInt(dataPair[1])) * 0.9);
-						}
-					}
-					allSeries.push({"name":name, "colour": colour, "data":data});
-				});
+				$("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not support this page type"));
+				$panel.hide()
 			}
-
-			var hMax = 410 - allSeries.length * 20;
-			var scalar = hMax / (yMax - yMin);
-			var w = 350 / allSeries[0].data.length;
-			var w1 = w * 0.9 / allSeries.length;
-
-			chartHolder.width = 410;
-			chartHolder.height = 460;
-
-			chartHolder.getContext("2d").translate(60, 0);
-
-			switch (x_currentPageXML.getAttribute("chartType")) {
-				case "stacked bar":
-					this.doStackedBar(chartHolder.getContext("2d"), w, hMax);
-					break;
-				case "pie":
-					this.doPie(chartHolder.getContext("2d"));
-					break;
-				case "bar":
-					this.doBar(chartHolder.getContext("2d"), w, w1, yMin, scalar);
-					break;
-				case "line":
-					this.doLine(chartHolder.getContext("2d"), w, yMin, scalar);
-			}
-
-			if (x_currentPageXML.getAttribute("chartType") != "pie") {
-				this.doAxesAndLabels(chartHolder.getContext("2d"), w, w1, yMin, yMax, scalar, hMax)
-			}
-
-            if (x_currentPageXML.getAttribute("align") != "right") {
-                $panel.addClass("x_floatRight");
-            } else {
-                $panel.addClass("x_floatLeft");
-            }
 
             // call this function in every model once everything's loaded
             x_pageLoaded();
