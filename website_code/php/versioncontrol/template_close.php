@@ -18,6 +18,8 @@ require('../template_status.php');
 
 $temp_array = explode("-",$_POST['file_path']);
 
+database_connect("template close success","template close fail");
+
 if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] . "lockfile.txt")){
 
     /*
@@ -58,11 +60,12 @@ if(file_exists($xerte_toolkits_site->users_file_area_full . $_POST['file_path'] 
  */
 
 if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
+
     $prefix = $xerte_toolkits_site->users_file_area_full . $temp_array[0] . "-" . $temp_array[1] . "-" . $temp_array[2];
     $preview_file = $prefix . '/preview.xml';
     $data_file = $prefix . '/data.xml';
 
-    if(file_exists($preview_file) && file_Exists($data_file)) { 
+    if(file_exists($preview_file) && file_exists($data_file)) { 
         $preview_xml = file_get_contents($preview_file);
         $data_xml = file_get_contents($data_file);
         if($data_xml!=$preview_xml){
