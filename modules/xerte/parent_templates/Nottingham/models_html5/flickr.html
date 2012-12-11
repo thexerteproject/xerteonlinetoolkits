@@ -1,0 +1,291 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var flickr = new function() {
+		var $pageContents,
+			$textHolder,
+			$panel,
+			$pictureHolder,
+			pictures,
+			pictureIndex;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.init();
+		};
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			//x_scaleImg($("#pictureHolder img"), this.$panel.width(), 380); // *** Not working just now...
+		};
+
+		this.feedLoaded = function(data) {
+			if (data.stat == "ok") {
+				this.pictures = data.photos.photo;
+				this.pictureIndex = 0;
+				this.getPictureInfo();
+			}
+			else {
+				$('#headerHolder').html('<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>');
+			}
+		};
+
+		this.getPictureInfo = function () { // handler 1
+			var url =  "http://api.flickr.com/services/rest/"
+			url += "?api_key=8f6f38d31f048a90c436583a6ac92e47";
+			url += "&method=flickr.photos.getInfo";
+			url += "&format=json";
+			url += "&jsoncallback=flickr.getPictureSizes";
+			url += "&photo_id=";
+			url += this.pictures[this.pictureIndex].id;
+
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				cache: false
+			});
+		};
+
+		this.getPictureSizes = function (data) { //handler 2
+			var ccLicenses = [
+				{desc: 'Creative Commons Attribution-NonCommercial-ShareAlike License', url:'http://creativecommons.org/licenses/by-nc-sa/2.0/'},
+				{desc: 'Creative Commons Attribution-NonCommercial License', url:'http://creativecommons.org/licenses/by-nc/2.0/'},
+				{desc: 'Creative Commons Attribution-NonCommercial-NoDerivs License', url:'http://creativecommons.org/licenses/by-nc-nd/2.0/'},
+				{desc: 'Creative Commons Attribution License', url:'http://creativecommons.org/licenses/by/2.0/'},
+				{desc: 'Creative Commons Attribution-ShareAlike License', url:'http://creativecommons.org/licenses/by-sa/2.0/'},
+				{desc: 'Creative Commons Attribution-NoDerivs License', url:'http://creativecommons.org/licenses/by-nd/2.0/'},
+				{desc: 'No known copyright restrictions', url:'http://flickr.com/commons/usage/'}
+			];
+
+			var ccInfo = data.photo.title._content;
+			ccInfo += ' © ' + data.photo.owner.realname + ', ' + data.photo.dates.taken.split('-')[0] + '<br />';
+			ccInfo += '<a href="' + ccLicenses[data.photo.license].url;
+			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license].desc + '</a>';
+
+			$("#licenseHolder").html(ccInfo);
+
+			var url =  "http://api.flickr.com/services/rest/"
+			url += "?api_key=8f6f38d31f048a90c436583a6ac92e47";
+			url += "&method=flickr.photos.getSizes";
+			url += "&format=json";
+			url += "&jsoncallback=flickr.displayPicture";
+			url += "&photo_id=";
+			url += this.pictures[this.pictureIndex].id;
+
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				cache: false
+			});
+
+		};
+
+		this.displayPicture = function (data) {
+			// loop through the size array to find either the first picture that is large enough,
+			// or the largest available
+			var maxWidth = 0;
+			var sizeIndex = 0;
+			for (i = 0; i < data.sizes.size.length; i++) {
+				if (data.sizes.size[i].width >= this.$panel.width() || data.sizes.size[i].height >= 600){
+					sizeIndex = i;
+					break;  // we have a picture big enough
+				}
+				else {
+					if (data.sizes.size[i].width >= maxWidth) {
+						// we have a new largest picture
+						sizeIndex = i;
+						maxWidth = parseInt(data.sizes.size[i].width);
+					}
+				}
+			}
+
+			var that = this;
+			$('#pictureHolder').html('');
+			$('<img src="' + data.sizes.size[sizeIndex].source + '"></img>')
+				.load(function() {
+					x_scaleImg(this, that.$panel.width(), 380);
+
+					$(this).show();
+					$('#headerHolder').show();
+					$('#footerHolder').show();
+				})
+				.hide()
+				.appendTo('#pictureHolder');
+
+			var imageTxt = x_currentPageXML.getAttribute("imageTxt");
+			imageTxt = imageTxt.replace("{i}", this.pictureIndex + 1);
+			imageTxt = imageTxt.replace("{n}", this.pictures.length);
+			$('#headerHolder').html(imageTxt);
+
+			clearTimeout(x_timer);
+			$("#loadingSpinner").hide();
+		};
+
+		this.doPrevious = function () {
+			var newValue = Math.max(0, this.pictureIndex-1);
+			if (newValue != this.pictureIndex) {
+				this.pictureIndex = newValue;
+				this.getPictureInfo();
+			}
+		};
+
+		this.doNext = function () {
+			var newValue = Math.min(this.pictureIndex+1, this.pictures.length-1);
+			if (newValue != this.pictureIndex) {
+				this.pictureIndex = newValue;
+				this.getPictureInfo();
+			}
+		};
+
+		this.init = function() {
+			this.$pageContents = $("#pageContents");
+			this.$textHolder = $("#textHolder");
+			this.$panel = $("#pageContents .panel");
+			this.$pictureHolder = $("#pictureHolder");
+			$("#loadingSpinner p")
+				.html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
+
+			var keywords = x_currentPageXML.getAttribute("keywords");
+			var content = x_currentPageXML.getAttribute("content");
+			var deriv = x_currentPageXML.getAttribute("deriv");
+			var nextTipTxt = x_currentPageXML.getAttribute("nextTipTxt");
+			var priorTipTxt = x_currentPageXML.getAttribute("priorTipTxt");
+			var imageTxt = x_currentPageXML.getAttribute("imageTxt");
+
+			var license;
+			if (content == 'all use'){
+				if (deriv == 'unrestricted') {
+					license = '1,2,3,4,5,6';
+				}
+				else if (deriv == 'non-derivative') {
+					license = '3,6';
+				}
+				else if (deriv == 'share alike') {
+					license = '1,5';
+				}
+			}
+			else if (content == 'non-commercial use') {
+				if (deriv == 'unrestricted') {
+					license = '2';
+				}
+				else if (deriv == 'non-derivative') {
+					license = '3';
+				}
+				else if (deriv == 'share alike') {
+					license = '5';
+				}
+			}
+			else {
+				license = '1,2,3,4,5,6';
+			}
+
+			var feedURL = "http://api.flickr.com/services/rest/";
+			feedURL += "?method=flickr.photos.search";
+			feedURL += "&text=" + keywords;
+			feedURL += "&api_key=8f6f38d31f048a90c436583a6ac92e47";
+			feedURL += "&per_page=500";
+			feedURL += "&format=json";
+			feedURL += "&jsoncallback=flickr.feedLoaded";
+			feedURL += "&lang=en-us";
+			feedURL += "&safe_search=1";
+			feedURL += "&license=" + license;
+
+			$.ajax({
+				beforeSend: function() {
+					$("#loadingSpinner").show();
+					x_timer = setTimeout(function() {
+					 	$('#headerHolder').html('<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>');
+
+					 	clearTimeout(x_timer);
+					 	$("#loadingSpinner").hide();
+					}, 20000);
+				},
+				dataType: 'jsonp',
+				url: feedURL,
+				cache: false
+			});
+
+			$('#headerHolder').hide();
+			$('#footerHolder').hide();
+
+			var that = this;
+			$('<input type="button" value="<" />')
+				.on("click", function(){
+					that.doPrevious();
+				})
+				.appendTo("#pictureButtons");
+			$('<input type="button" value=">" />')
+				.on("click", function(){
+					that.doNext();
+				})
+				.appendTo("#pictureButtons");
+
+			this.$panel.addClass("x_floatRight");
+			this.$panel.addClass("width60");
+
+			this.$textHolder.html(x_addLineBreaks($(x_currentPageXML).text()));
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	};
+
+	flickr.init();
+
+</script>
+
+<style type="text/css">
+
+	#headerHolder {
+		text-align:		left;
+		margin-bottom:	10px;
+	}
+
+	#pictureHolder {
+		width:	100%;
+		text-align:		center;
+	}
+
+	#footerHolder {
+		position: relative;
+	}
+
+	#pictureButtons {
+		float: right;
+	}
+
+	#loadingSpinner {
+		margin-left: auto ;
+  		margin-right: auto ;
+		width:180px;
+	}
+
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
+	}
+
+</style>
+
+<div id="pageContents">
+
+	<div id="deliciousHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
+		<div class="panel inline">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+			<div id="headerHolder"></div>
+			<div id="pictureHolder"></div>
+			<div id="footerHolder"><div id="pictureButtons"></div></div>
+			<div id="licenseHolder"></div>
+		</div>
+	</div>
+
+	<div id="textHolder">
+
+	</div>
+
+</div>
