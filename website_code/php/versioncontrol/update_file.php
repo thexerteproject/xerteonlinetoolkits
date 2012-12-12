@@ -1,4 +1,6 @@
-<?PHP     /**
+<?PHP     
+
+/**
 * 
 * Update file, code that runs when an editor window closes and the user is given the option of synchronising the files
 *
@@ -54,8 +56,10 @@ if(isset($_POST['template_id'])){
 			/*
 			* Code to sync files
 			*/
+			
+		print_r($temp_array);	
 
-		if(is_user_an_editor($temp_array[0],$_SESSION['toolkits_logon_id'])){
+		if(is_user_an_editor($template_id,$_SESSION['toolkits_logon_id'])){
 		
 			if(!isset($xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->preview_file)){
 				
