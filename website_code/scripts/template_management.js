@@ -182,15 +182,13 @@ function edit_window(admin){
 					
 					if(size.length==1){
 					
-							var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
+						var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
 					
 					}else{
 
 						var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
 
 					}
-
-                    NewEditWindow.window_reference = self;	
 
                     try{
 
@@ -216,7 +214,8 @@ function edit_window(admin){
 
 
                     NewEditWindow.ajax_handle = xmlHttp;		
-
+                    self.last_reference = self;		
+					
                     NewEditWindow.focus();
 
                     window_id = "editwindow" + drag_manager.selected_items[x].id;
@@ -1190,6 +1189,7 @@ function tutorial_created(){
 				}
                 new_file = xmlHttp.responseText;
                 neweditorwindow.window_reference = self;
+				
                 neweditorwindow.focus();		
                 update_your_projects();
             }
