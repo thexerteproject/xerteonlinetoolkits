@@ -79,7 +79,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <title><?PHP echo XERTE_EDIT_TITLE; ?></title>
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <script type="text/javascript" language="javascript">
-
+	
     function setunload(){
 
         window.onbeforeunload = bunload;
@@ -98,8 +98,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
 
 		template = "<?PHP  echo $row_edit['template_id']; ?>";
-
-window_reference.edit_window_close(path,template);
+		
+		if(typeof window_reference==="undefined"){
+		
+			window.opener.edit_window_close(path,template);
+		
+		}else{
+		
+			window_reference.edit_window_close(path,template);
+		
+		}
 
     }
 
