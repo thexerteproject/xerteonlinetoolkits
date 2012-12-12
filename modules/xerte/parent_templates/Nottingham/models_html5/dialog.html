@@ -8,7 +8,7 @@
 			// reset questions
 			$("#pageContents").data("currentQ", 0);
 			$("#submitBtn")
-				.button({label:	$pageContents.data("submitTxt")})
+				.button({label:	$("#pageContents").data("submitTxt")})
 				.data({
 					"attempt":	0,
 					"state":	0
@@ -94,75 +94,93 @@
 					})
 				.data({
 					"attempt":	0,
-					"state":	0
+					"state":	0,
+					"click":	true,
+					"pause":	false
 					})
 				.click(function() {
 					var $this = $(this);
-					var $pageContents = $("#pageContents");
-					var $feedback = $("#feedback");
-					if ($this.data("state") == 0) { // mark answer
-						var qNo = $pageContents.data("currentQ");
-						var $thisInput = $("#pageContents .question:eq(" + qNo + ") input");
-						if ($thisInput.val().toLowerCase() == $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase()) { // correct
-							$thisInput.prop("readonly", true);
-							$thisInput.parent().find("img").removeClass("hidden");
-							$feedback.html("");
-							$this.focus();
-							if (qNo + 1 != $(x_currentPageXML).children().length) {
-								$this
-									.button({label:	$pageContents.data("nextTxt")})
-									.data("state", 1);
-							} else {
-								$this.hide();
-							}
-						} else { // incorrect
-							$this.data("attempt", $this.data("attempt") + 1);
-							var currentAttempt = $this.data("attempt");
-							var allowedAttempts = x_currentPageXML.getAttribute("attempts");
-							if (allowedAttempts == undefined) {
-								allowedAttempts = 0;
-							}
-							if (currentAttempt == allowedAttempts) { // show hint
-								$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
-								$thisInput.focus();
-							} else if (currentAttempt > allowedAttempts) { // show correct answer
-								$feedback.html($pageContents.data("correctTxt"));
+					if ($this.data("click") == true) {
+						var $pageContents = $("#pageContents");
+						var $feedback = $("#feedback");
+						if ($this.data("state") == 0) { // mark answer
+							var qNo = $pageContents.data("currentQ");
+							var $thisInput = $("#pageContents .question:eq(" + qNo + ") input");
+							if ($thisInput.val().toLowerCase() == $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase()) { // correct
+								$thisInput.prop("readonly", true);
+								$thisInput.parent().find("img").removeClass("hidden");
+								$feedback.html("");
 								$this.focus();
-								$thisInput
-									.val($(x_currentPageXML).children()[qNo].getAttribute("answer"))
-									.prop("readonly", true);
 								if (qNo + 1 != $(x_currentPageXML).children().length) {
 									$this
 										.button({label:	$pageContents.data("nextTxt")})
 										.data("state", 1);
-									$feedback.html($feedback.html() + "</br>" + $pageContents.data("moveOnTxt"));
 								} else {
 									$this.hide();
 								}
-							} else { // another attempt allowed
-								$feedback.html($pageContents.data("tryTxt"));
-								$thisInput.focus();
+							} else { // incorrect
+								$this.data("attempt", $this.data("attempt") + 1);
+								var currentAttempt = $this.data("attempt");
+								var allowedAttempts = x_currentPageXML.getAttribute("attempts");
+								if (allowedAttempts == undefined) {
+									allowedAttempts = 0;
+								}
+								if (currentAttempt == allowedAttempts) { // show hint
+									$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
+									$thisInput.focus();
+								} else if (currentAttempt > allowedAttempts) { // show correct answer
+									$feedback.html($pageContents.data("correctTxt"));
+									$this.focus();
+									$thisInput
+										.val($(x_currentPageXML).children()[qNo].getAttribute("answer"))
+										.prop("readonly", true);
+									if (qNo + 1 != $(x_currentPageXML).children().length) {
+										$this
+											.button({label:	$pageContents.data("nextTxt")})
+											.data("state", 1);
+										$feedback.html($feedback.html() + "</br>" + $pageContents.data("moveOnTxt"));
+									} else {
+										$this.hide();
+									}
+								} else { // another attempt allowed
+									$feedback.html($pageContents.data("tryTxt"));
+									$thisInput.focus();
+								}
 							}
+						} else { // move to next question
+							$feedback.html("");
+							$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+							$this
+								.data({
+									"attempt":	0,
+									"state":	0
+									})
+								.button({label:	$("#pageContents").data("submitTxt")});
+							var qNo = $pageContents.data("currentQ");
+							$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
+							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+							$pageContents.data("currentQ", qNo + 1);
 						}
-					} else { // move to next question
-						$feedback.html("");
-						$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
-						$this
-							.data({
-								"attempt":	0,
-								"state":	0
-								})
-							.button({label:	$("#pageContents").data("submitTxt")});
-						var qNo = $pageContents.data("currentQ");
-						$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
-						$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
-						$pageContents.data("currentQ", qNo + 1);
+					}
+					if ($this.data("pause") == true) {
+						$this.data({
+							"click":	false,
+							"pause":	false
+						});
+						setTimeout(function () {
+							$this.data("click", true)
+						}, 1);
 					}
 				});
 			
 			$("#pageContents input").keypress(function(e) {
 				if ((e.keyCode ? e.keyCode : e.which) == 13) { // return key
-					$("#submitBtn").trigger("click");
+					$("#submitBtn")
+						.data({
+							"click":	true,
+							"pause":	true
+						})
+						.trigger("click");
 				}
 			});
 			
