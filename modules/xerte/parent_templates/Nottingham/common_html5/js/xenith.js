@@ -648,6 +648,7 @@ function x_changePage() {
 		if ((x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_glossary.length > 0) {
 			x_findGlossaryWords(x_currentPageXML);
 		}
+		x_findPageLinks(x_currentPageXML);
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
 }
@@ -903,7 +904,7 @@ function x_setDialogSize($x_popupDialog, position) {
 	}
 }
 
-// function finds every instance of a word from the glossary
+// function finds every instance of a word from the glossary x_addPageLinks(temp, returnMethod)
 function x_findGlossaryWords(pageXML) {
 	var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"];
 	for (var i=0; i<pageXML.attributes.length; i++) {
@@ -933,6 +934,80 @@ function x_insertGlossaryTag(node) {
 		temp = temp.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
 	}
 	node.nodeValue = temp;
+	
+}
+
+// function finds every instance of a page link and converts to xenith compatible link 
+function x_findPageLinks(pageXML) {
+	var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"];
+	for (var i=0; i<pageXML.attributes.length; i++) {
+		for (var j=0; j<attrToCheck.length; j++) {
+			if (pageXML.attributes[i].name == attrToCheck[j]) {
+				x_addPageLinks(pageXML.attributes[i], "");
+				break;
+			}
+		}
+	}
+	for (var i=0; i<pageXML.childNodes.length; i++) {
+		if (pageXML.childNodes[i].nodeValue == null) {
+			x_findPageLinks(pageXML.childNodes[i]); // it's a child node of node - check through this too
+		} else {
+			if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
+				x_addPageLinks(pageXML.childNodes[i], "");
+			}
+		}
+	}
+}
+
+function x_addPageLinks(node) {
+    var pageText = node.nodeValue;
+    var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
+    pageText = pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(false, {type : \'linkID\', ID : \'$1\'});return false;">');
+    node.nodeValue = pageText;
+}
+
+function x_navigateToPage(force, pageInfo) { // {type, ID}
+    var page;
+    if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+        page = x_lookupPage(pageInfo.type, pageInfo.ID);
+        if (page != null)
+        {
+            x_currentPage = page;
+            x_changePage();
+        }
+        else if (force == true) {
+            x_currentPage = 0;
+            x_changePage();
+        }
+    }
+    else {
+        page = parseInt(pageInfo.ID);
+        if (page > 0 && page <= x_pages.length) {
+            x_currentPage = page - 1;
+            x_changePage();
+        }
+        else if (force == true) {
+	    x_currentPage = 0;
+	    x_changePage();
+        }
+    }
+}
+
+function x_lookupPage(pageType, pageID) {
+    var i, len = x_pageInfo.length;
+    for (i = 0; i < len; i++) {
+        if ((pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+            (pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)) {
+            break;
+        }
+    }
+
+    if (i != len) {
+        return i;
+    }
+    else {
+        return null;
+    }
 }
 
 // function maximises LO size to fit window
@@ -1030,58 +1105,4 @@ function x_getSWFRef(swfID) {
 		flashMovie = document.getElementById(swfID);
 	}
 	return flashMovie;
-}
-
-function x_addPageLinks(pageText, returnMethod) {
-    var regExp = new RegExp('href="asfunction:_level0\.engine\.fnTextCon,([a-z0-9]+)" target="_blank"','ig');
-    if (returnMethod.length > 0) {
-        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage({type : \'linkID\', ID : \'$1\'});' + returnMethod + ';return false;"');
-    }
-    else {
-        return pageText.replace(regExp, 'href="#" onclick="x_navigateToPage({type : \'linkID\', ID : \'$1\'});return false;"');
-    }
-}
-
-function x_navigateToPage(force, pageInfo) { // {type, ID}
-    var page;
-    if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        page = x_lookupPage(pageInfo.type, pageInfo.ID);
-        if (page != null)
-        {
-            x_currentPage = page;
-            x_changePage();
-        }
-        else if (force == true) {
-            x_currentPage = 0;
-            x_changePage();
-        }
-    }
-    else {
-        page = parseInt(pageInfo.ID);
-        if (page > 0 && page <= x_pages.length) {
-            x_currentPage = page - 1;
-            x_changePage();
-        }
-        else if (force == true) {
-	    x_currentPage = 0;
-	    x_changePage();
-        }
-    }
-}
-
-function x_lookupPage(pageType, pageID) {
-    var i, len = x_pageInfo.length;
-    for (i = 0; i < len; i++) {
-        if ((pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-            (pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)) {
-            break;
-        }
-    }
-
-    if (i != len) {
-        return i;
-    }
-    else {
-        return null;
-    }
 }
