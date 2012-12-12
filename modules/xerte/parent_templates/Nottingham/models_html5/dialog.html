@@ -162,6 +162,7 @@
 							$pageContents.data("currentQ", qNo + 1);
 						}
 					}
+					// this is needed as if this is triggered via keypress in IE/Opera it's triggered twice so messes up no. attempts
 					if ($this.data("pause") == true) {
 						$this.data({
 							"click":	false,

@@ -670,6 +670,8 @@ function x_setUpPage() {
 	$("#x_pageNarration").remove(); // remove narration flash / html5 audio player
 	$("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
 	$(".x_popupDialog").parent().detach(); // remove any open dialogs
+	$("#x_pageTimer").remove(); // remove interaction timer
+	clearInterval(x_timer);
 	
 	$x_pageDiv.parent().scrollTop(0);
 	$("#x_pageDiv div").scrollTop(0);
@@ -745,15 +747,16 @@ function x_addNarration() {
 }
 
 function x_addCountdownTimer() {
-
+	var x_timerLangInfo = [x_getLangInfo(x_languageData.find("timer").find("remaining")[0], "name", "Time remaining"), x_getLangInfo(x_languageData.find("timer").find("timeUp")[0], "name", "Time up"), x_getLangInfo(x_languageData.find("timer").find("seconds")[0], "name", "seconds")];
+	
 	var x_countdownTicker = function () {
 		x_countdownTimer--;
 		if (x_countdownTimer > 0) {
-			$("#x_footerBlock #x_pageTimer").html("Time remaining: " + x_formatCountdownTimer());
+			$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 		}
 		else {
 			window.clearInterval(x_timer);
-			$("#x_footerBlock #x_pageTimer").html("Time up!");
+			$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
 		}
 	};
 	
@@ -771,16 +774,15 @@ function x_addCountdownTimer() {
 			return dd(minutes) + ":" + dd(seconds);
 		}
 		else {
-			return seconds + " seconds";
+			return seconds + " " + x_timerLangInfo[2];
 		}
 	};
 	
 	var x_countdownTimer;
-
 	if (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "") {
 		$("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
 		x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
-		$("#x_footerBlock #x_pageTimer").html("Time remaining: " + x_formatCountdownTimer());
+		$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 		x_timer = window.setInterval(x_countdownTicker, 1000);
 	}
 }
