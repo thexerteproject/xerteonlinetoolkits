@@ -128,5 +128,11 @@
   <errorResults label="There was an error loading the results"/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+  
+  <timer>
+	  <remaining name="Time remaining"/>
+	  <timeUp name="Time up"/>
+	  <seconds name="seconds"/>
+  </timer>
 
 </language>
