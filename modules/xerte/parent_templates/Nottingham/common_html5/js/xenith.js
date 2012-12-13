@@ -645,10 +645,12 @@ function x_changePage() {
 	} else { // x_currentPage hasn't been viewed previously - load model file
 		$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 		$("#x_page" + x_currentPage).css("visibility", "hidden");
-		if ((x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_glossary.length > 0) {
-			x_findGlossaryWords(x_currentPageXML);
+		if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
+			if (x_glossary.length > 0) {
+				x_findGlossaryWords(x_currentPageXML);
+			}
+			x_findPageLinks(x_currentPageXML);
 		}
-		x_findPageLinks(x_currentPageXML);
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
 }
