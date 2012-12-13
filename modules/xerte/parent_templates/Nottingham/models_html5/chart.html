@@ -18,7 +18,7 @@
 
 		};
 
-		this.doAxesAndLabels = function(canvas, w, w1, yMin, yMax, scalar, hMax) {
+		this.doAxesAndLabels = function(canvas, w, w1, yMin, yMax, scalar, hMax, maxCH) {
 			canvas.strokeStyle = '#000000';
 			canvas.fillStyle = '#000000';
 			canvas.beginPath();
@@ -52,27 +52,21 @@
 			}
 
 			//draw the y labels
-			canvas.fillText(yMin, -25, 434);
-			canvas.fillText(yMax, -25, 434-hMax);
+			if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
+				canvas.fillText(0, -25, 434);
+				canvas.fillText(maxCH, -25, 434-hMax);
+			}
+			else {
+				canvas.fillText(yMin, -25, 434);
+				canvas.fillText(yMax, -25, 434-hMax);
+			}
 		};
 
-		this.doStackedBar = function(canvas, w, hMax) {
+		this.doStackedBar = function(canvas, w, hMax, maxCH) {
 			var cumH = [];
 
 			for (i = 0; i < allSeries[0].data.length; i++) {
 				cumH[i] = 0;
-			}
-
-			var tempCH, maxCH = 0;
-			//find total colum height
-			for (i = 0; i < allSeries[0].data.length; i++) { //for each dimension
-				tempCH = 0;
-				for (j = 0; j < allSeries.length; j++) {
-					tempCH += allSeries[j].data[i].y;
-				}
-			}
-			if (tempCH > maxCH) {
-				maxCH = tempCH;
 			}
 
 			var scalar = hMax / maxCH;
@@ -264,6 +258,18 @@
 				var w = 350 / allSeries[0].data.length;
 				var w1 = w * 0.9 / allSeries.length;
 
+				var tempCH, maxCH = 0;
+				//find total column height
+				for (i = 0; i < allSeries[0].data.length; i++) { //for each dimension
+					tempCH = 0;
+					for (j = 0; j < allSeries.length; j++) {
+						tempCH += allSeries[j].data[i].y;
+					}
+					if (tempCH > maxCH) {
+						maxCH = tempCH;
+					}
+				}
+
 				chartHolder.width = 410;
 				chartHolder.height = 460;
 
@@ -271,7 +277,7 @@
 
 				switch (x_currentPageXML.getAttribute("chartType")) {
 					case "stacked bar":
-						this.doStackedBar(chartHolder.getContext("2d"), w, hMax);
+						this.doStackedBar(chartHolder.getContext("2d"), w, hMax, maxCH);
 						break;
 					case "pie":
 						this.doPie(chartHolder.getContext("2d"));
@@ -284,7 +290,7 @@
 				}
 
 				if (x_currentPageXML.getAttribute("chartType") != "pie") {
-					this.doAxesAndLabels(chartHolder.getContext("2d"), w, w1, yMin, yMax, scalar, hMax)
+					this.doAxesAndLabels(chartHolder.getContext("2d"), w, w1, yMin, yMax, scalar, hMax, maxCH)
 				}
 
 				if (x_currentPageXML.getAttribute("align") != "right") {
