@@ -47,7 +47,8 @@
 			for (var i = 0; i < allSeries[0].data.length; i++) {
 				canvas.fillStyle = '#000000';
 				canvas.textBaseline = "top";
-				canvas.fillText(allSeries[0].data[i].x, w * (i + 0.5) - 5, 444);
+				var xLength = canvas.measureText(allSeries[0].data[i].x).width;
+				canvas.fillText(allSeries[0].data[i].x, w * (i + 0.5) - xLength/2 - 1, 444);
 			}
 
 			//draw the y labels
@@ -248,7 +249,7 @@
 						var data = [];
 						for (var i=0; i<dataPairs.length; i++) {
 							dataPair = dataPairs[i].split('|');
-							data.push({"x":parseInt(dataPair[0]), "y":parseInt(dataPair[1])});
+							data.push({"x":dataPair[0], "y":parseInt(dataPair[1])});
 							if (!isNaN(parseInt(dataPair[1]))) {
 								yMax = Math.max(yMax, parseInt(dataPair[1]));
 								yMin = Math.floor(Math.min(yMin, parseInt(dataPair[1])) * 0.9);
