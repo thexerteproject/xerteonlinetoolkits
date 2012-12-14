@@ -1246,6 +1246,3 @@ function example_alert(){
 
     }
 } 
-
-
-

@@ -73,8 +73,16 @@ function iframe_check(){
 			string = string.substr(0,string.length-4);
 
 			alert(string);
-
-			window_reference.screen_refresh();
+			
+			if(typeof window_reference==="undefined"){
+                
+                window.opener.screen_refresh();
+                
+            }else{
+                
+                window_reference.screen_refresh();
+                
+            }
 
 			window["upload_iframe"].document.body.innerHTML="";
 
@@ -102,6 +110,8 @@ function iframe_check(){
 
 function iframe_upload_check_initialise(){
 
+	alert("HERE I AM");
+
 	iframe_interval = setInterval("iframe_check_upload()",500);
 
 }
@@ -116,6 +126,8 @@ function iframe_upload_check_initialise(){
 	 */
 
 function iframe_check_initialise(){
+
+	alert("BOOOOOOOOOOOOOOOOOOOOOM");
 
 	iframe_interval = setInterval("iframe_check()",500);
 
@@ -212,12 +224,12 @@ function new_template_name(){
 
 		if(is_ok_name(document.importform.templatename.value)){
 
-			document.getElementById("name_wrong").innerHTML = "";
-			document.importform.submitBtn.disabled = false;
+			document.getElementById("namewrong").innerHTML = "";
+			document.getElementById("submitbutton").disabled = false;
 
 		}else{
 
-			document.getElementById("name_wrong").innerHTML = NAME_FAIL_IMPORT;
+			document.getElementById("namewrong").innerHTML = NAME_FAIL_IMPORT;
 
 		}
 
