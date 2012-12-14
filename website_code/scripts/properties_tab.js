@@ -1,4 +1,4 @@
-	/**	
+f	/**	
 	 * 
 	 * properties, javascript for the properties tab
 	 *
@@ -203,7 +203,17 @@ function rename_stateChanged(){
 
 			future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
 		
-			window_reference.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
+			if(typeof window_reference==="undefined"){
+                
+                window.opener.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
+                
+            }else{
+                
+                window_reference.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
+                
+            }
+			
+			
 
 		}
 
