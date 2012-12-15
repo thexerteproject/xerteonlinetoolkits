@@ -1,4 +1,4 @@
-f	/**	
+	/**	
 	 * 
 	 * properties, javascript for the properties tab
 	 *
@@ -199,16 +199,20 @@ function rename_stateChanged(){
 			* set the file name in the file_area
 			*/
 
-			current_innerHTML = window_reference.document.getElementById("file_" + window.name).innerHTML;
-
-			future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
-		
 			if(typeof window_reference==="undefined"){
+			
+				current_innerHTML = window.opener.document.getElementById("file_" + window.name).innerHTML;
+
+				future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
                 
                 window.opener.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
                 
             }else{
                 
+				current_innerHTML = window_reference.document.getElementById("file_" + window.name).innerHTML;
+
+				future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
+				
                 window_reference.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
                 
             }
