@@ -110,8 +110,6 @@ function iframe_check(){
 
 function iframe_upload_check_initialise(){
 
-	alert("HERE I AM");
-
 	iframe_interval = setInterval("iframe_check_upload()",500);
 
 }
@@ -126,8 +124,6 @@ function iframe_upload_check_initialise(){
 	 */
 
 function iframe_check_initialise(){
-
-	alert("BOOOOOOOOOOOOOOOOOOOOOM");
 
 	iframe_interval = setInterval("iframe_check()",500);
 
