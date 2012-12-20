@@ -52,12 +52,9 @@ if(isset($_POST['template_id'])){
 		
 		array_push($temp_array, $row_play['template_framework']);
 
-		
 			/*
 			* Code to sync files
 			*/
-			
-		print_r($temp_array);	
 
 		if(is_user_an_editor($template_id,$_SESSION['toolkits_logon_id'])){
 		
