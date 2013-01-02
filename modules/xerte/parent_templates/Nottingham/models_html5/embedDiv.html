@@ -25,13 +25,18 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
+			var $iFrameHolder = $pageContents;
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+				$pageContents.html('<div class="splitScreen"><div class="left">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
+				$iFrameHolder = $pageContents.find(".right");
+			}
 			var pageSrc = x_currentPageXML.getAttribute("src");
 			if (pageSrc.substr(0, 1) == "<") { // insert html directly
-				$pageContents.html(pageSrc);
+				$iFrameHolder.html(pageSrc);
 			} else { // use iframe to load web page
 				var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '"></iframe>';
-				$pageContents.html(iFrameTag);
-				$pageContents.addClass("centerAlign");
+				$iFrameHolder.html(iFrameTag);
+				$iFrameHolder.addClass("centerAlign");
 			}
 			
 			// call this function in every model once everything's loaded
