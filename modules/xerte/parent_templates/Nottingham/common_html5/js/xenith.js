@@ -646,10 +646,7 @@ function x_changePage() {
 		$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
 		$("#x_page" + x_currentPage).css("visibility", "hidden");
 		if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
-			if (x_glossary.length > 0) {
-				x_findGlossaryWords(x_currentPageXML);
-			}
-			x_findPageLinks(x_currentPageXML);
+			x_findText(x_currentPageXML);
 		}
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
@@ -908,66 +905,58 @@ function x_setDialogSize($x_popupDialog, position) {
 	}
 }
 
-// function finds every instance of a word from the glossary x_addPageLinks(temp, returnMethod)
-function x_findGlossaryWords(pageXML) {
+// function finds attributes/nodeValues where text may need replacing for things like links / glossary words
+function x_findText(pageXML) {
 	var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"];
 	for (var i=0; i<pageXML.attributes.length; i++) {
 		for (var j=0; j<attrToCheck.length; j++) {
 			if (pageXML.attributes[i].name == attrToCheck[j]) {
-				x_insertGlossaryTag(pageXML.attributes[i]);
+				x_insertText(pageXML.attributes[i]);
 				break;
 			}
 		}
 	}
 	for (var i=0; i<pageXML.childNodes.length; i++) {
 		if (pageXML.childNodes[i].nodeValue == null) {
-			x_findGlossaryWords(pageXML.childNodes[i]); // it's a child node of node - check through this too
+			x_findText(pageXML.childNodes[i]); // it's a child node of node - check through this too
 		} else {
 			if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
-				x_insertGlossaryTag(pageXML.childNodes[i]);
+				x_insertText(pageXML.childNodes[i]);
 			}
 		}
 	}
 }
 
-// function makes every glossary word found into a link
-function x_insertGlossaryTag(node) {
-	var temp = node.nodeValue;
-	for (var k=0; k<x_glossary.length; k++) {
-		var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
-		temp = temp.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
-	}
-	node.nodeValue = temp;
+// function adds glossary links, LaTeX, page links to text found in x_findText function
+function x_insertText(node) {
+	var tempText = node.nodeValue;
 	
-}
-
-// function finds every instance of a page link and converts to xenith compatible link 
-function x_findPageLinks(pageXML) {
-	var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"];
-	for (var i=0; i<pageXML.attributes.length; i++) {
-		for (var j=0; j<attrToCheck.length; j++) {
-			if (pageXML.attributes[i].name == attrToCheck[j]) {
-				x_addPageLinks(pageXML.attributes[i], "");
-				break;
-			}
+	// check text for glossary words - if found replace with a link
+	if (x_glossary.length > 0) {
+		for (var k=0; k<x_glossary.length; k++) {
+			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
+			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
 		}
 	}
-	for (var i=0; i<pageXML.childNodes.length; i++) {
-		if (pageXML.childNodes[i].nodeValue == null) {
-			x_findPageLinks(pageXML.childNodes[i]); // it's a child node of node - check through this too
-		} else {
-			if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
-				x_addPageLinks(pageXML.childNodes[i], "");
-			}
-		}
+	
+	// check text for LaTeX tags - if found replace with image
+	var startIndex = tempText.indexOf('<tex src');
+	while (startIndex > -1) {
+		var latex = tempText.substr(startIndex, tempText.indexOf('>', startIndex) - startIndex + 1);
+		n = latex.length;
+		latex = latex.split('tex').join('img');
+		latex = latex.split('"');
+		latex[1] = 'http://xerte.tor.nl/cgi-bin/mathtex.cgi?' + escape(latex[1]) + ' #.png';
+		latex = latex.join('"');
+		tempText = tempText.substr(0, startIndex) + latex + tempText.substr(startIndex + n);
+		startIndex = tempText.indexOf('<tex src', startIndex + 1);
 	}
-}
-
-function x_addPageLinks(node) {
-    var pageText = node.nodeValue;
+	
+	// check text for page links - if found convert to xenith compatible link
     var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
-    pageText = pageText.replace(regExp, 'href="#" onclick="x_navigateToPage(false, {type : \'linkID\', ID : \'$1\'});return false;">');
-    node.nodeValue = pageText;
+    tempText = tempText.replace(regExp, 'href="#" onclick="x_navigateToPage(false, {type : \'linkID\', ID : \'$1\'});return false;">');
+	
+	node.nodeValue = tempText;
 }
 
 function x_navigateToPage(force, pageInfo) { // {type, ID}
