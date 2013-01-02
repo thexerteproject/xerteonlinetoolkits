@@ -10,15 +10,26 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			$("#pageSWF").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3);
+			if ($("#pageContents").data("resize") == true) {
+				$("#pageSWF").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3);
+			}
 		}
 		
 		this.init = function() {
-			var swfHeight = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-			if (x_currentPage == 0) {
-				swfHeight = 500;
+			var size = ["100%", $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3];
+			var $pageContents = $("#pageContents");
+			$pageContents.data("resize", true);
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+					size = [Number(dimensions[0]), Number(dimensions[1])];
+				}
+				$pageContents.data("resize", false);
+			} else if (x_currentPage == 0) {
+				size = ["100%", 500];
 			}
-			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", "100%", swfHeight, "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
+			
+			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
 			
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
@@ -32,7 +43,9 @@
 	
 </script>
 
-<div id="pageSWF">
-	<h3></h3>
-	<p><a href="http://www.adobe.com/go/getflashplayer"><img id="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p>
+<div id="pageContents" class="centerAlign">
+	<div id="pageSWF">
+		<h3></h3>
+		<p><a href="http://www.adobe.com/go/getflashplayer"><img id="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p>
+	</div>
 </div>
