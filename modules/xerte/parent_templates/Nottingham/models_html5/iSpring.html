@@ -14,7 +14,7 @@
 		}
 		
 		this.init = function() {
-			var version = x_currentPageXML.getAttribute("version"); // Pro | Free ** not sure what relevance this option has
+			// version attribute isn't being used - not sure what it's supposed to do
 			
 			var swfHeight = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
 			if (x_currentPage == 0) {

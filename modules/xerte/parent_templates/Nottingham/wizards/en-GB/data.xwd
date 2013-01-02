@@ -779,6 +779,8 @@
     <name label="Page Title" type="TextInput"/>
     <url label="Jing SWF File" type="media"/>
 
+	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
