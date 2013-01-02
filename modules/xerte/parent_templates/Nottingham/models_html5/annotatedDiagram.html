@@ -1,6 +1,5 @@
 <script type="text/javascript">
 	// ** DOESN'T WORK ON MOBILES **
-	// ** why isn't the layout for this done with splitScreen css? **
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -37,15 +36,23 @@
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlight").removeClass("highlight");
 			$("#infoHolder").html("");
+			
+			if (x_currentPageXML.getAttribute("align") == "Top") {
+				var imgIndent = ($x_pageDiv.width() - ($("#imageHolder img").width() + (padding * 4))) / 2;
+				$("#imageHolder").css("margin-left", imgIndent);
+				$("#hsHolder").css("margin-left", imgIndent);
+			}
 		}
 		
 		this.imgLoaded = function() {
 			// position text correctly
-			var marginW = $img.width() + (padding * 4);
-			if (x_currentPageXML.getAttribute("align") != "Right") {
-				$textContents.css("margin-right", marginW + "px");
+			if (x_currentPageXML.getAttribute("align") == "Top") {
+				$textContents.css("margin-top", $img.height() + (padding * 4) + "px");
+				var imgIndent = ($x_pageDiv.width() - ($img.width() + (padding * 4))) / 2;
+				$imageHolder.css("margin-left", imgIndent);
+				$hsHolder.css("margin-left", imgIndent);
 			} else {
-				$textContents.css("margin-left", marginW + "px");
+				$textContents.css("margin-right", $img.width() + (padding * 4) + "px");
 			}
 			
 			// create hotspots - taking scale of image into account
@@ -168,15 +175,25 @@
 		}
 		
 		this.drawLine = function(context, $hs, $listItem, shape) {
+			// startX/Y = centre of hotspot
 			var startX = $hs.position().left + ($hs.width() / 2) + $hs.parents("#hsHolder").position().left;
+			if (x_currentPageXML.getAttribute("align") == "Top") {
+				startX += parseInt($("#imageHolder").css("margin-left"));
+			}
 			var startY = $hs.position().top + ($hs.height() / 2) + parseInt($x_pageDiv.css("padding-top"));
-			var endX = parseInt($("#textContents").css("margin-left"));
-			if (x_currentPageXML.getAttribute("align") != "Right") {
-				endX += $listItem.width() + $listItem.position().left;
+			
+			// endX/Y = selected link
+			var endX, endY;
+			if (x_currentPageXML.getAttribute("align") == "Top") {
+				endX = $listItem.width() / 2;
+				endY = parseInt($("#textContents").css("margin-top")) + $listItem.position().top - 10;
+			} else {
+				endX = parseInt($("#textContents").css("margin-left")) + $listItem.width() + $listItem.position().left;
+				endY = $listItem.position().top;
 			}
 			context.beginPath();
 			context.moveTo(startX, startY);
-			context.lineTo(endX, $listItem.position().top);
+			context.lineTo(endX, endY);
 			context.stroke();
 			if (shape == "Arrow") {
 				context.beginPath();
@@ -194,7 +211,7 @@
 			$hsHolder = $("#hsHolder");
 			$textContents = $("#textContents");
 			
-			if (x_currentPageXML.getAttribute("align") != "Right") {
+			if (x_currentPageXML.getAttribute("align") != "Top") {
 				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
 				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
 			}
@@ -216,6 +233,9 @@
 	var imgMaxW = 400,	imgMaxH = 450;
 	if (x_browserInfo.mobile == true) {
 		imgMaxW = 250; // mobile
+		imgMaxH = 250;
+	} else if (x_currentPageXML.getAttribute("align") == "Top") {
+		imgMaxW = 600;
 		imgMaxH = 250;
 	}
 	
