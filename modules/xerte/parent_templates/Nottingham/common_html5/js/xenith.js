@@ -532,7 +532,9 @@ function x_setUp() {
 			mouseDown = [touch.pageX, touch.pageY];
 			*/
 			$x_mainHolder.unbind("click");
-			$x_glossaryHover.remove();
+			if ($x_glossaryHover != undefined) {
+				$x_glossaryHover.remove();
+			}
 		});
 		
 		$x_pageHolder.bind("touchend", function(e) {

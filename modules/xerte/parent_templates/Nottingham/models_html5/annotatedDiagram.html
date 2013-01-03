@@ -147,6 +147,7 @@
 			} else if (shape == "Rectangle") {
 				$hotspot.css("border-color", highlightColour);
 			}
+			$hotspot.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png" + "')");
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -251,7 +252,6 @@
 	}
 	
 	#pageContents .hotspot {
-		background:	url(x_templateLocation + "commonx_html5/transparent.png");
 		position:	absolute;
 		cursor:		pointer;
 	}
