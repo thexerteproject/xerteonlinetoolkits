@@ -22,7 +22,6 @@
 				var $caption = $(this);
 				$caption.data("scrollPos", $caption.position().top);
 			});
-			
 			this.loadAudio();
 		}
 		
@@ -39,9 +38,9 @@
 			}
 		}
 		
-		// function called from mediaPlayer.js when video player has been set up
+		// function called from mediaPlayer.js when audio player has been set up
 		this.mediaFunct = function(mediaElement) {
-			var $captions 	= $($("#pageContents").data("captions"));
+			var $captions = $($("#pageContents").data("captions"));
 			mediaElement.addEventListener("timeupdate", function(e) {
 				var currentTime = mediaElement.currentTime;
 				$captions.each(function(){
@@ -49,7 +48,6 @@
 					if (currentTime > $thisCaption.data("synch")) {
 						$("#infoHolder .highlight").removeClass("highlight");
 						$thisCaption.addClass("highlight");
-						// ** this isn't always scrolling to correct position when full screen **
 						$("#infoHolder").scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					} else {
 						$thisCaption.removeClass("highlight");
@@ -57,40 +55,42 @@
 				});
 			});
 		}
+		
+		this.init = function() {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				} 
+			}
+			
+			var $infoHolder = $("#infoHolder");
+			var captions = new Array();
+			$(x_currentPageXML).children().each(function(){
+				var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>").data("synch", $(this).attr("synch"));
+				$infoHolder.append($caption);
+				//$caption.data("scrollPos", $caption.position().top);
+				captions.push($caption[0]);
+			});
+			$("#pageContents").data("captions", captions);
+			
+			if (x_currentPage != 0) {
+				setTimeout(function () { // audio won't load properly without a delay here
+					transcriptReader.sizeChanged();
+				},1);
+			}
+		}
 	}
 	
-	$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
-	
-	var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-	if (panelWidth == "Full") {
-		$("#pageContents .panel").appendTo($("#pageContents"));
-		$("#pageContents .splitScreen").remove();
-	} else {
-		$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-		if (panelWidth == "Small") {
-			$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-		} else if (panelWidth == "Large") {
-			$("#pageContents .splitScreen").addClass("small");
-		} else {
-			$("#pageContents .splitScreen").addClass("medium");
-		} 
-	}
-	
-	var $infoHolder = $("#infoHolder");
-	var captions = new Array();
-	$(x_currentPageXML).children().each(function(){
-		var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>").data("synch", $(this).attr("synch"));
-		$infoHolder.append($caption);
-		$caption.data("scrollPos", $caption.position().top);
-		captions.push($caption[0]);
-	});
-	$("#pageContents").data("captions", captions);
-	
-	if (x_currentPage != 0) {
-		setTimeout(function () { // audio won't load properly without a delay here
-			transcriptReader.sizeChanged();
-		},1);
-	}
+	transcriptReader.init();
 	
 </script>
 
