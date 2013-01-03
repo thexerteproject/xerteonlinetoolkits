@@ -17,7 +17,7 @@
 						marginTop	:img1AnimationData[2] + "px",
 						opacity		:img1AnimationData[3]
 						});
-
+				
 				var img2AnimationData = $img2.data("state0");
 				$img2
 					.stop()
@@ -30,12 +30,12 @@
 					.data("zoom", 1);
 			}
 		}
-
+		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+			
 		}
-
+		
 		this.setUpZoom = function() {
 			var $img1 = $("#pageImg1");
 			$img1.hide().fadeIn(1000);
@@ -43,19 +43,19 @@
 			$imgDiv
 				.width($imgDiv.width())
 				.height($imgDiv.height());
-
+			
 			var scale = $img1.width() / $img1.data("origSize")[0]; // xywh to be scaled with image
 			var $hotspotInfo = $(x_currentPageXML).find("hotspot")[0];
 			var w = Math.round($hotspotInfo.getAttribute("w") * scale);
 			var h = Math.round($hotspotInfo.getAttribute("h") * scale);
 			var x = Math.round($hotspotInfo.getAttribute("x") * scale) + $img1.position().left;
 			var y = Math.round($hotspotInfo.getAttribute("y") * scale) + $img1.position().top;
-
+			
 			var zoomSpeed = x_currentPageXML.getAttribute("zoomSpeed");
 			if (zoomSpeed == undefined) {
 				zoomSpeed = 3;
 			}
-
+			
 			var $img2 = $('<img id="pageImg2" />');
 			$img2
 				.load(function() {
@@ -71,8 +71,9 @@
 					}
 					$this.data({
 						"state1"	:[$this.width() * scale2, xPos, yPos, 1], // zoomed in info
+						"loaded"	:true
 						});
-
+					
 					var marginLeft = Math.round($img1.width()  * scale2 * ((x - $img1.position().left) / $img1.width()));
 					var marginTop  = Math.round($img1.height() * scale2 * ((y - $img1.position().top) / $img1.height()));
 					if (xPos != $img1.position().left) {
@@ -100,19 +101,20 @@
 				.data({
 					"state0"	:[w, x, y, 0], // zoomed out info
 					"zoom"		:1,
-					"speed"		:Number(zoomSpeed * 1000)
+					"speed"		:Number(zoomSpeed * 1000),
+					"loaded"	:false
 				})
 				.bind("click", function() {
 					morphImages.zoom();
 					})
 			$img1.after($img2);
 		}
-
+		
 		this.zoom = function() {
 			if ($("#pageImg2:animated").length == 0) {
 				var $img1 = $("#pageImg1");
 				var $img2 = $("#pageImg2");
-
+				
 				var img1AnimationData = $img1.data("state" + $img2.data("zoom"));
 				$("#pageImg1")
 					.animate({
@@ -122,7 +124,7 @@
 						opacity		:img1AnimationData[3]
 						}, $img2.data("speed"), "linear"
 					);
-
+				
 				var img2AnimationData = $img2.data("state" + $img2.data("zoom"));
 				$img2
 					.animate({
@@ -150,7 +152,7 @@
 				imgMaxW1 = 250;
 				imgMaxH1 = 250;
 			}
-
+			
 			var imgMaxW2 = imgMaxW1;
 			var imgMaxH2 = imgMaxH1;
 			
@@ -171,7 +173,7 @@
 				x_scaleImg($img1[0], imgMaxW1, imgMaxH1, true, true);
 				morphImages.setUpZoom();
 			}
-
+			
 			// if language attributes aren't in xml will have to use english fall back
 			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
 			if (buttonLabel == undefined) {
