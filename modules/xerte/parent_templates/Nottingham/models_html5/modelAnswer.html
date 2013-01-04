@@ -1,0 +1,218 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var modelAnswer = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#button").show();
+			$("#answer").hide();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+		}
+		
+		// function saves data to pageData array in xenith.js so it can be used later by modelAnswerResults page
+		this.saveData = function() {
+			var $pageContents = $("#pageContents");
+			var stringToSave = $pageContents.data("dataString");
+			var answerTxt = $("#answerTxt").val();
+			if (answerTxt == "") {
+				answerTxt = $pageContents.data("noAnswerTxt");
+			}
+			stringToSave = stringToSave.replace("{A}", answerTxt);
+			$pageContents.data("savedData", stringToSave);
+			x_pageInfo[x_currentPage].savedData = stringToSave;
+		}
+		
+		this.init = function() {
+			// if language attributes aren't in xml will have to use english fall back
+			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
+			if (instructA == undefined) {
+				instructA = "The instruction and question on page"
+			}
+			var instructB = x_currentPageXML.getAttribute("instructHeaderBTxt");
+			if (instructB == undefined) {
+				instructB = "was"
+			}
+			var responseTxt = x_currentPageXML.getAttribute("responseHeaderTxt");
+			if (responseTxt == undefined) {
+				responseTxt = "Your response was:"
+			}
+			var noAnswerTxt = x_currentPageXML.getAttribute("noAnswerHeaderTxt");
+			if (noAnswerTxt == undefined) {
+				noAnswerTxt = "You didn't answer this question"
+			}
+			var exampleTxt = x_currentPageXML.getAttribute("exampleHeaderTxt");
+			if (exampleTxt == undefined) {
+				exampleTxt = "The example answer was:"
+			}
+			var pageNo = x_currentPage;
+			if (x_pageInfo[0].type != "menu") {
+				pageNo++;
+			}
+			
+			$("#pageContents").data({
+				"savedData"		:undefined,
+				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '\n' + x_currentPageXML.getAttribute("prompt") + '\n\n' + responseTxt + '\n' + '{A}' + '\n\n' + exampleTxt + '\n' + x_currentPageXML.getAttribute("feedback"),
+				"noAnswerTxt"	:noAnswerTxt
+			})
+			
+			// feedbackBtnWidth attribute not used as button will be sized automatically
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var $splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#textHolder");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			} else {
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign != "Right") {
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+			
+			var promptString = x_addLineBreaks('<p>' + x_currentPageXML.getAttribute("prompt") + '</p>');
+			var url = x_currentPageXML.getAttribute("image");
+			if (url != undefined && url != "") {
+				if (url.split('.').pop().slice(0, -1) == "swf") {
+					promptString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3></h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p></div></div>';
+				} else {
+					promptString += '<div class="panelImg"><img src="' + eval(url) + '" onload="x_scaleImg(this, 200, 200, true, true);" ';
+					if (x_currentPageXML.getAttribute("tooltip") != undefined && x_currentPageXML.getAttribute("tooltip") != "") {
+						promptString += 'alt="' + x_currentPageXML.getAttribute("tooltip") + '" ';
+					}
+					promptString += '/></div>';
+				}
+			}
+			$("#prompt").html(promptString);
+			
+			var feedbackString = x_addLineBreaks('<p>' + x_currentPageXML.getAttribute("feedback") + '</p>');
+			var copyTxt = x_currentPageXML.getAttribute("copypasteinfo");
+			if (copyTxt != undefined && copyTxt != "") {
+				// ** removed until there's a way of copying to clipboard **
+				//feedbackString += x_addLineBreaks('<p id="copyTxt">' + copyTxt + '</p>');
+			}
+			$("#answer")
+				.html(feedbackString)
+				.hide();
+			
+			var btnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
+			if (btnTxt == undefined || btnTxt == "") {
+				btnTxt = "Feedback";
+			}
+			
+			// feedbackBtnTip attribute not used
+			$("#button")
+				.button({
+					label:	btnTxt
+				})
+				.click(function() {
+					var $this = $(this);
+					$this.hide();
+					$("#answer").fadeIn();
+					
+					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {
+						// ** need to copy text to clipboard - no easy way to do this without flash because of browser security **
+						// ** possibly use a work around like this which displays text and selects it so you can just Ctrl-C but instructions in xwd would need changing **
+						//window.prompt ("Copy to clipboard: Ctrl+C", $("#pageContents").data("savedData"));
+					}
+				});
+			
+			$("#answerTxt").change(function() {
+				modelAnswer.saveData();
+			});
+			
+			if (x_currentPage != 0) {
+				modelAnswer.sizeChanged();
+			}
+			
+			modelAnswer.saveData();
+			x_pageLoaded();
+		}
+	}
+	
+	modelAnswer.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+	#answer {
+		margin-top:	10px;
+	}
+	
+	#pageContents .panelImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#answerTxt {
+		display:	block;
+		width:		100%;
+		resize:		vertical;
+		margin-top:	10px;
+	}
+	
+	#copyTxt {
+		color:		red;
+		font-size:	0.8em;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left"></div>
+		
+		<div id="infoHolder" class="right">
+			<div class="panel">
+				<div id="prompt"></div>
+				
+				<textarea id="answerTxt" rows="5"></textarea>
+				<button id="button"></button>
+				<div id="answer"></div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
