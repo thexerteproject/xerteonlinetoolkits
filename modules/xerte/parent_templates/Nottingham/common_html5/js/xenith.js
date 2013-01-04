@@ -2,7 +2,7 @@
 var x_languageData	= [];
 var x_params		= new Object(); // all attributes of learningObject that aren't undefined  ** all code for x_params data is written except authorSupport - remember to use when making the Connectors pages **
 var x_pages;		// xml info about all pages in this LO
-var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID)
+var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
 var x_currentPage	= 0;
 var x_currentPageXML;
 var x_glossary		= [];
