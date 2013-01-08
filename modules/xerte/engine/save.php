@@ -11,6 +11,11 @@
 
 require_once("../../../config.php");
 
+if(!isset($_SESSION['toolkits_logon_username'])) {
+  print "You are not logged in.";
+  exit();
+}
+
 $savepath = str_replace("preview.xml","data.xml",$_POST['filename']);
 
 /**
