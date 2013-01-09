@@ -1,4 +1,4 @@
-<?
+<?PHP
 
 	$folder_id_array = array();
 	$folder_array = array();
