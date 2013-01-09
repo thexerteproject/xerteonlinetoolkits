@@ -18,8 +18,8 @@
 			$video.mediaPlayer({
 				type			:"video",
 				source			:$video.data("src"),
-				width			:$video.data("dimensions")[0],
-				height			:$video.data("dimensions")[1],
+				width			:Number($video.data("dimensions")[0]),
+				height			:Number($video.data("dimensions")[1]),
 				startEndFrame	:$video.data("startEndFrame")
 			});
 			if (firstLoad == true) {
