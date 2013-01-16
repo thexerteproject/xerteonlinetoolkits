@@ -10,6 +10,7 @@ var x_specialChars	= [];
 var x_inputFocus	= false;
 var x_dialogInfo	= []; // (type, built)
 var x_browserInfo	= {iOS:false, touchScreen:false, mobile:false, orientation:"portrait"}; // holds info about browser/device
+var x_pageHistory	= []; // keeps track of pages visited for historic navigation
 
 var x_firstLoad		= true;
 var x_fillWindow	= false;
@@ -137,7 +138,7 @@ $(document).ready(function() {
 			if (x_params.navigation == undefined) {
 				x_params.navigation = "Linear";
 			}
-			if (x_params.navigation != "Linear" && x_params.navigation != undefined) { // 1st page is menu
+			if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
 				x_pages.splice(0, 0, "menu");
 				var page = new Object();
 				page.type = "menu";
@@ -254,6 +255,8 @@ function x_setUp() {
 			$x_nextBtn.hide();
 			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
 		}
+	} else if (x_params.navigation == "Historic") {
+		$x_pageNo.hide();
 	} else {
 		var dialog = new Object();
 		dialog.type = "menu";
@@ -412,17 +415,27 @@ function x_setUp() {
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
 	
+	var prevIcon = "x_prev";
+	if (x_params.navigation == "Historic") {
+		prevIcon = "x_prev_hist";
+	}
 	$x_prevBtn
 		.button({
 			icons: {
-				primary: "x_prev"
+				primary: prevIcon
 			},
 			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 			text:	false
 		})
 		.click(function() {
-			x_currentPage--;
-			x_changePage();
+			if (x_params.navigation != "Historic") {
+				x_currentPage--;
+				x_changePage();
+			} else {
+				x_currentPage = x_pageHistory[x_pageHistory.length-2];
+				x_pageHistory.splice(x_pageHistory.length - 2, 2);
+				x_changePage();
+			}
 			$(this)
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
@@ -444,12 +457,18 @@ function x_setUp() {
 				.removeClass("ui-state-hover");
 		});
 	
+	var menuIcon = "x_info";
+	var menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+	if (x_params.navigation == "Historic") {
+		menuIcon = "x_home";
+		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+	}
 	$x_menuBtn
 		.button({
 			icons: {
-				primary: "x_info"
+				primary: menuIcon
 			},
-			label:	x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents"),
+			label:	menuLabel,
 			text:	false
 		})
 		.click(function() {
@@ -608,6 +627,10 @@ function x_changePage() {
 	x_currentPageXML = x_pages[x_currentPage];
 	$("#pageBg").remove();
 	
+	if (x_params.navigation == "Historic") {
+		x_pageHistory.push(x_currentPage);
+	}
+	
 	if ($x_pageDiv.children().length > 0) {
 		// ** TO DO - this causes problems where swfs fill the whole page and the page size changes - I can't work out why **
 		// stop any swfs on old page before detaching it so that any audio stops playing
@@ -690,9 +713,9 @@ function x_setUpPage() {
 			.removeClass("ui-state-hover");
 	} else {
 		pageTitle = x_currentPageXML.getAttribute("name");
-		if (x_pageInfo[0].type == "menu") {
+		//if (x_pageInfo[0].type == "menu") {
 			$x_menuBtn.button("enable");
-		}
+		//}
 		x_addNarration();
 		x_addCountdownTimer();
 	}
@@ -701,7 +724,7 @@ function x_setUpPage() {
 	
 	if (x_currentPage > 0) {
 		$x_prevBtn.button("enable");
-	} else {
+	} else if (x_params.navigation != "Historic" || (x_params.navigation == "Historic" && x_pageHistory.length <= 1)) {
 		$x_prevBtn
 			.button("disable")
 			.removeClass("ui-state-focus")
@@ -715,6 +738,20 @@ function x_setUpPage() {
 			.button("disable")
 			.removeClass("ui-state-focus")
 			.removeClass("ui-state-hover");
+	}
+	
+	if (x_pageInfo[0].type != "menu" || (x_pageInfo[0].type == "menu" && x_currentPage != 0)) {
+		if (x_currentPageXML.getAttribute("navSetting") != undefined) {
+			if (x_currentPageXML.getAttribute("navSetting") != "all") {
+				$x_menuBtn.button("disable"); // toc / home button disabled
+			}
+			if (x_currentPageXML.getAttribute("navSetting") == "backonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+				$x_nextBtn.button("disable"); // nextBtn disabled
+			}
+			if (x_currentPageXML.getAttribute("navSetting") == "nextonly" || x_currentPageXML.getAttribute("navSetting") == "none") {
+				$x_prevBtn.button("disable"); // prevBtn disabled
+			}
+		}
 	}
 	
 	if (x_firstLoad == true) {
@@ -1066,7 +1103,19 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 
 // function swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-	return text.replace(/(\n|\r|\r\n)/g, "<br />");
+	if (text.indexOf("<math>") == -1) {
+		return text.replace(/(\n|\r|\r\n)/g, "<br />");
+	} else { // ignore any line breaks inside math tags as MathML won't render correctly with <br> tags
+		var newText = "";
+		var num = 0;
+		while (text.indexOf("<math>", num) != -1) {
+			newText += text.substring(num, text.indexOf("<math>", num)).replace(/(\n|\r|\r\n)/g, "<br />");
+			newText += text.substring(text.indexOf("<math>", num), text.indexOf("</math>", num) + 7);
+			num = text.indexOf("</math>", num) + 7;
+		}
+		newText += text.substring(num).replace(/(\n|\r|\r\n)/g, "<br />");
+		return newText;
+	}
 }
 
 // function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)
