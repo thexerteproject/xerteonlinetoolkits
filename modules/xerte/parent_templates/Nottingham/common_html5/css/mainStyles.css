@@ -148,16 +148,16 @@ h3 {
 	display:	inline-block;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home {
 	width:	41px;
 }
 
-.ui-icon.x_next, .ui-icon.x_prev {
+.ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
 	width:	43px;
 }
 
@@ -170,6 +170,11 @@ h3 {
 .ui-button.ui-state-hover .ui-icon.x_info {		background-position: -42px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_home {					background-image: url("../home.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_home {	background-position: -84px 0px; }
 
 .ui-button .ui-icon.x_glossary {				background-image: url("../glossary.png"); background-position: 0px 0px; }
 .ui-button.ui-state-hover .ui-icon.x_glossary {	background-position: -42px 0px; }
@@ -200,6 +205,11 @@ h3 {
 .ui-button.ui-state-hover .ui-icon.x_prev {		background-position: -44px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -44px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev {	background-position: -88px 0px; }
+
+.ui-button .ui-icon.x_prev_hist {					background-image: url("../previous_hist.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }
 
 .spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
 
