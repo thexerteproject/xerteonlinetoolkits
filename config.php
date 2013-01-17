@@ -19,13 +19,18 @@
 global $xerte_toolkits_site;
 
 // Change this to FALSE for production sites.
-// While set to true, error reporting and logging are turned on. 
+// While set to true, PHP error reporting to the browser
+// and logging (to /tmp/debug.log) are turned on; either of these may help you
+// diagnose installation and integration issues. 
 global $development;
 $development = true;
 
 ini_set('error_reporting', 0);
 if ($development) {
     ini_set('error_reporting', E_ALL);
+    // Change this to where you want the XOT log file to go; 
+    // the webserver will need to be able to write to it.
+    define('XOT_DEBUG_LOGFILE', '/tmp/debug.log');
 }
 
 

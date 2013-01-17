@@ -13,7 +13,19 @@ function _debug($string, $up = 0)
         if (isset($backtrace[$up]['file'])) {
             $string = $backtrace[$up]['file'] . $backtrace[$up]['line'] . $string;
         }
-        @file_put_contents('/tmp/debug.log', date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+        $file = '/tmp/debug.log';
+        if(defined('XOT_DEBUG_LOGFILE')) {
+            $file = XOT_DEBUG_LOGFILE;
+        }
+        if(!file_exists($file)) {
+            touch($file); // try and create it.
+        }
+        if(!is_writeable($file)) { // fall back to PHP's inbuilt log, which may go to the apache log file, syslog or somewhere else.
+            error_log($string);
+        }
+        else {
+            @file_put_contents($file, date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
+        }
     }
 }
 
