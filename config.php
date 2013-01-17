@@ -16,12 +16,12 @@
  * Variable used to hold database settings
  * @global object $xerte_toolkits_site
  */
-// Same as error_reporting(E_ALL);
 global $xerte_toolkits_site;
 
 // Change this to FALSE for production sites.
+// While set to true, error reporting and logging are turned on. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 if ($development) {
@@ -171,5 +171,5 @@ if (!isset($xerte_toolkits_site)) {
       array($session_handle,'xerte_session_destroy'),
       array($session_handle,'xerte_session_clean'));
      */
-require_once(dirname(__FILE__) . '/auth_config.php');
+    require_once(dirname(__FILE__) . '/auth_config.php');
 }
