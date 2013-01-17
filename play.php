@@ -16,8 +16,8 @@ require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/play.inc");
 
-require $xerte_toolkits_site->php_library_path . "display_library.php";
-require $xerte_toolkits_site->php_library_path . "template_library.php";
+require_once $xerte_toolkits_site->php_library_path . "display_library.php";
+require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
 
 
@@ -185,7 +185,7 @@ if ($row_recycle['folder_name'] == "recyclebin") {
     exit(0);
 }
 
-require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
+require_once $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 
 /*
  * Start to check the access_to_whom settings from templatedetails for this template
@@ -197,7 +197,7 @@ require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 
 if ($row_play['access_to_whom'] == "Private") {
 
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     dont_show_template();
 	
@@ -209,7 +209,7 @@ if ($row_play['access_to_whom'] == "Private") {
 
     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     show_template($row_play);
 	
@@ -261,7 +261,7 @@ if($lti->valid) {
   if ($success && empty($errors)) {
     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     show_template($row_play);
     //sucessfull authentication
@@ -322,18 +322,18 @@ if($lti->valid) {
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+            require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             show_template($row_play);
 			
         } else {
 
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+            require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
         }
     } else {
-      require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+      require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
       dont_show_template('No HTTP Referer');
     }
 } else if (sizeof($query_for_security_content_response) > 0) {
@@ -354,7 +354,7 @@ if($lti->valid) {
 
             if (check_security_type($row_security['security_data'])) {
 
-                require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+                require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
                 show_template($row_play);
 
@@ -371,13 +371,13 @@ if($lti->valid) {
 
     if ($flag == false) {
 
-        require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+        require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
         dont_show_template();
     }
 } else {
 
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
     dont_show_template();
 }
