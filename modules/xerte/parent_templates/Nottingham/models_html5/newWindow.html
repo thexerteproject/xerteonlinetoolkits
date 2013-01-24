@@ -14,7 +14,7 @@
 		}
 		
 		this.init = function() {
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
+			$("#textHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</p><p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
 			
 			$("#pageImg").attr({
 				"src":	eval(x_currentPageXML.getAttribute("previewImage")),
@@ -51,6 +51,10 @@
 		cursor:	pointer;
 	}
 	
+	#textHolder p:first-child {
+		margin-top:	0px;
+	}
+	
 </style>
 
 <div id="pageContents">
@@ -63,7 +67,7 @@
 		</div>
 	</div>
 	
-	<div id="textHolder">
+	<div id="textHolder" tabindex="1">
 	
 	</div>
 	
