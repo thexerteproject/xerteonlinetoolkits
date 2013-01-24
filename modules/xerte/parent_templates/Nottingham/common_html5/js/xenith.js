@@ -696,7 +696,6 @@ function x_setUpPage() {
 	$("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
 	$(".x_popupDialog").parent().detach(); // remove any open dialogs
 	$("#x_pageTimer").remove(); // remove interaction timer
-	clearInterval(x_timer);
 	
 	$x_pageDiv.parent().scrollTop(0);
 	$("#x_pageDiv div").scrollTop(0);
@@ -819,6 +818,7 @@ function x_addCountdownTimer() {
 	
 	var x_countdownTimer;
 	if (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "") {
+		clearInterval(x_timer);
 		$("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
 		x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
 		$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
