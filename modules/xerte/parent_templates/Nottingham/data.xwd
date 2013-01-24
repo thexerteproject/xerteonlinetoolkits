@@ -1143,6 +1143,7 @@
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
 
     <video label="Video" type="media" optional="true"/>
+	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
     <scorm label="Scorm Tracking" options="Track First Score,Track Last Score" type="combobox" data="Track First Score,Track Last Score" defaultValue="Track First Score" optional="true" width="150"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -1160,7 +1161,7 @@
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <image label="Image" type="Media" optional="true"/>
-    <tip label="Image Tooltip" type="Text Input" optional="true"/>
+    <tip label="Image Tooltip" type="TextInput" optional="true"/>
 
     <newNodes>
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>

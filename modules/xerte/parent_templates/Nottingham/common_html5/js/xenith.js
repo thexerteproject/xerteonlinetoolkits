@@ -22,7 +22,6 @@ var x_timer;		// use as reference to any timers in page models - they are cancel
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 $(document).ready(function() {
-	
 	$x_mainHolder = $("#x_mainHolder");
 	$x_mainHolder.css("visibility", "hidden");
 	
@@ -153,6 +152,8 @@ $(document).ready(function() {
 			$("body").append("<p>The project data has not loaded.</p>");
 		}
 	});
+	
+	x_setUpScorm();
 });
 
 // function gets data from language file
@@ -1149,4 +1150,43 @@ function x_getSWFRef(swfID) {
 		flashMovie = document.getElementById(swfID);
 	}
 	return flashMovie;
+}
+
+// functions get/set score for scorm
+function x_getValue(dataElement) {
+	// ** getValue function is in scorm2004RLO.html / scormRLO.htm **
+	//return String(getValue(dataElement));
+}
+
+function x_setValue(dataElement, value) {
+	// ** setValue function is in scorm2004RLO.html / scormRLO.htm **
+	//return String(setValue(dataElement, value));
+}
+
+// function builds SCORM objects to mirror the SCORM data model
+function x_setUpScorm() {
+	this.cmi = new Object();
+	this.cmi.core = new Object();
+	this.cmi.core.score = new Object();
+	this.cmi.core.score.raw = new Object();
+}
+
+//SCORM function - these set the values of _level0.elementName, AND call LMSSetValue
+// ** called from apiwrapper? **
+function LMSSetValue(element, value){
+	//set the variable to store the data... we always retrieve it from here directly
+	if (element == "cmi.core.lesson_location"){
+		cmi.core.lesson_location = value;
+	} else if (element == "cmi.core.lesson_status"){
+		cmi.core.lesson_status = value;
+	} else if (element == "cmi.core.score.raw"){
+		cmi.core.score.raw = value;
+	} else if (element == "cmi.suspend_data"){
+		cmi.suspend_data = value;
+	} else if (element == "cmi.core.exit"){
+		cmi.core.exit = value;
+	}
+	
+	//now call LMSSetValue and synch the values...
+	fscommand("LMSSetValue", element + "," + value);
 }

@@ -103,6 +103,12 @@ h3 {
 	float:		right;
 }
 
+#x_pageHolder button:disabled {
+	cursor: 	default;
+	opacity:	0.5;
+	filter:		alpha(opacity=50); /* For IE8 and earlier */
+}
+
 #x_footerBlock .x_floatLeft, #x_footerBlock .x_floatRight, #x_headerBlock .x_floatLeft {
 	padding:	3px;
 }

@@ -1,0 +1,457 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var quiz = new function() {
+		var questions,
+			currentQ,
+			qNoTxt,
+			myProgress;
+	
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			this.startQs();
+			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+				this.loadVideo();
+			}
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .qPanel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+				this.loadVideo();
+			}
+		}
+		
+		this.startQs = function() {
+			// if language attributes aren't in xml will have to use english fall back
+			this.qNoTxt = x_currentPageXML.getAttribute("quesCount");
+			if (this.qNoTxt == undefined) {
+				this.qNoTxt = "Question {i} of {n}";
+			}
+			
+			$("#optionHolder").show();
+			$("#restartBtn").hide();
+			$("#nextBtn, #checkBtn")
+				.show()
+				.attr("disabled", "disabled");
+			
+			this.currentQ = 0;
+			this.questions = []; // array of questions to use (index)
+			this.myProgress = []; // array of whether each question was answered correctly
+			var numQs = $(x_currentPageXML).children().length;
+			if (x_currentPageXML.getAttribute("numQuestions") != "All" && x_currentPageXML.getAttribute("numQuestions") != undefined && Number(x_currentPageXML.getAttribute("numQuestions")) < numQs) {
+				numQs = Number(x_currentPageXML.getAttribute("numQuestions"));
+			}
+			
+			if (x_currentPageXML.getAttribute("order") == "random") {
+				var qNums = [];
+				for (var i=0; i<$(x_currentPageXML).children().length; i++) {
+					qNums.push(i);
+				}
+				for (var i=0; i<numQs; i++) {
+					var qNum = Math.floor(Math.random() * qNums.length);
+					this.questions.push(qNums[qNum]);
+					qNums.splice(qNum, 1);
+					this.myProgress.push("");
+				}
+			} else {
+				for (var i=0; i<numQs; i++) {
+					this.questions.push(i);
+					this.myProgress.push("");
+				}
+			}
+			
+			this.loadQ();
+		}
+		
+		this.loadQ = function() {
+			var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+			
+			$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
+			
+			var infoString = $thisQ.getAttribute("prompt");
+			var url = $thisQ.getAttribute("image");
+			if (url != undefined && url != "") {
+				var newString = "";
+				newString += '<img src="' + eval(url) + '" class="quizImg"';
+				if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
+					newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+				}
+				newString += ' />';
+				infoString = newString + infoString;
+			}
+			$("#qTxt").html(x_addLineBreaks(infoString));
+			
+			$("#feedback").html("");
+			
+			var $optionHolder = $("#optionHolder");
+			if ($thisQ.getAttribute("type") == "Multiple Answer") {
+				$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+			} else {
+				$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+			}
+			var $option = $optionHolder.find("input");
+			var $optionTxt = $optionHolder.find(".optionTxt");
+			var $checkBtn = $("#checkBtn");
+			var $feedback = $("#feedback");
+			$($thisQ).children()
+				.each(function(i) {
+					var $thisOption, $thisOptionTxt;
+					if (i != 0) {
+						$thisOption = $option.clone().appendTo($optionHolder);
+						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+					} else {
+						$thisOption = $option;
+						$thisOptionTxt = $optionTxt;
+					}
+					
+					$thisOption
+						.attr({
+							"value"	:this.getAttribute("text"),
+							"id"	:"option" + i
+							})
+						.data("correct", this.getAttribute("correct"))
+						.change(function() {
+							$feedback.html("");
+							var $selected = $("#optionHolder input:checked");
+							if ($selected.length > 0) {
+								$checkBtn.removeAttr("disabled");
+							} else {
+								$checkBtn.attr("disabled", "disabled");
+							}
+							$("#nextBtn").attr("disabled", "disabled");
+						});
+					
+					$thisOptionTxt
+						.attr("for", "option" + i)
+						.data("option", $thisOption)
+						.html(x_addLineBreaks(this.getAttribute("text")));
+				});
+		}
+		
+		this.loadVideo = function() {
+			var $video = $("#pageVideo");
+			var videoDimensions = $video.data("dimensions");
+			var $textHolder = $("#textHolder");
+			var maxW = $textHolder.width() - parseInt($textHolder.find(".panel").css("padding-left")) * 2 - parseInt($textHolder.find(".panel").css("margin-left")) * 2;
+			if (maxW < videoDimensions[0]) {
+				var scale = maxW / videoDimensions[0];
+				videoDimensions = [videoDimensions[0] * scale, videoDimensions[1] * scale];
+			}
+			
+			$video.mediaPlayer({
+				type			:"video",
+				source			:$video.data("src"),
+				width			:Number(videoDimensions[0]),
+				height			:Number(videoDimensions[1])
+			});
+		}
+		
+		this.init = function() {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var $splitScreen = $("#pageContents .splitScreen");
+			var $textHolder = $("#textHolder");
+			if (panelWidth == "Full") {
+				$("#infoHolder .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			} else {
+				$textHolder.html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign != "right" || (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "")) {
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+			
+			if (panelWidth != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+				$textHolder.append('<div class="panel inline"><div id="pageVideo"></div></div>');
+				var $pageVideo = $("#pageVideo");
+				var videoDimensions = [320,240]; // default video size
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (dimensions[0] != 0 && dimensions[1] != 0) {
+						videoDimensions = dimensions;
+					}
+				}
+				$pageVideo.data({
+					"src"			:x_currentPageXML.getAttribute("video"),
+					"dimensions"	:videoDimensions
+				});
+				quiz.loadVideo();
+			}
+			
+			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
+			// if language attributes aren't in xml will have to use english fall back
+			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
+			if (submitBtnText == undefined) {
+				submitBtnText = "Submit";
+			}
+			var nextBtnText = x_currentPageXML.getAttribute("nextBtnText");
+			if (nextBtnText == undefined) {
+				nextBtnText = "Next";
+			}
+			var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
+			if (restartBtnText == undefined) {
+				restartBtnText = "Restart";
+			}
+			var feedbackTxt = x_currentPageXML.getAttribute("feedbackLabel");
+			if (feedbackTxt == undefined) {
+				feedbackTxt = "Feedback";
+			}
+			feedbackTxt = '<h3>' + feedbackTxt + '</h3><p>{A}</p>{B}';
+			var singleRight = x_currentPageXML.getAttribute("singleRight");
+			if (singleRight == undefined) {
+				singleRight = "Your answer is correct";
+			}
+			var singleWrong = x_currentPageXML.getAttribute("singleWrong");
+			if (singleWrong == undefined) {
+				singleWrong = "Your answer is incorrect";
+			}
+			var multiRight = x_currentPageXML.getAttribute("multiRight");
+			if (multiRight == undefined) {
+				multiRight = "You have selected all the correct answers";
+			}
+			var multiWrong = x_currentPageXML.getAttribute("multiWrong");
+			if (multiWrong == undefined) {
+				multiWrong = "You have not selected the correct combination of answers";
+			}
+			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
+			if (onCompletionText == undefined) {
+				onCompletionText = "You have completed the exercise";
+			}
+			var scoreText = x_currentPageXML.getAttribute("score");
+			if (scoreText == undefined) {
+				scoreText = "You scored {i} / {n}";
+			}
+			
+			$("#pageContents").data({
+				"feedbackTxt"		:feedbackTxt,
+				"singleRight"		:singleRight,
+				"singleWrong"		:singleWrong,
+				"multiRight"		:multiRight,
+				"multiWrong"		:multiWrong,
+				"onCompletionText"	:onCompletionText,
+				"scoreText"			:scoreText
+			});
+			
+			$("#checkBtn")
+				.button({
+					label:	submitBtnText
+					})
+				.attr("disabled", "disabled")
+				.click(function() {
+					var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
+					
+					var selected = $("#optionHolder input:checked");
+					var optionFeedback = "";
+					var correct;
+					// get feedback for selected options and check if they are correct
+					for (var i=0; i<selected.length; i++) {
+						var selectedOption = $(currentQuestion).children()[$(selected[i]).index()/2];
+						optionFeedback += x_addLineBreaks(selectedOption.getAttribute("feedback"));
+						if (i < selected.length - 1) {
+							optionFeedback += "<br/><br/>";
+						}
+						if (correct != false && selectedOption.getAttribute("correct") == "true") {
+							correct = true;
+						} else {
+							correct = false;
+						}
+					}
+					var rightWrongTxt = "";
+					if (x_currentPageXML.getAttribute("judge") != "false") {
+						// if all selected are correct - check that none of the unselected options should have been
+						if (correct != false) {
+							var notSelected = $("#optionHolder input:not(:checked)");
+							for (var i=0; i<notSelected.length; i++) {
+								var notSelectedOption = $(currentQuestion).children()[$(notSelected[i]).index()/2];
+								if (notSelectedOption.getAttribute("correct") == "true") {
+									correct = false;
+								}
+							}
+						}
+						// add correct feedback depending on if question overall has been answered correctly or not
+						if (currentQuestion.getAttribute("type") == "Multiple Answer") {
+							if (correct == true) {
+								rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiRight") + '</p>';
+							} else {
+								rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiWrong") + '</p>';
+							}
+						} else {
+							if (correct == true) {
+								rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleRight") + '</p>';
+							} else {
+								rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
+							}
+						}
+						quiz.myProgress.splice(quiz.currentQ, 1, correct);
+					}
+					var answerFeedback = $("#pageContents").data("feedbackTxt").replace("{A}", optionFeedback).replace("{B}", rightWrongTxt);
+					$("#feedback").html(answerFeedback);
+					
+					$("#nextBtn").removeAttr("disabled");
+					$(this).attr("disabled", "disabled");
+					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+				});
+			
+			$("#nextBtn")
+				.button({
+					label:	nextBtnText
+					})
+				.attr("disabled", "disabled")
+				.click(function() {
+					$(this).attr("disabled", "disabled");
+					quiz.currentQ++;
+					if (quiz.currentQ == quiz.questions.length) {
+						// last question answered - show results
+						var $pageContents = $("#pageContents");
+						$("#qNo").html($pageContents.data("onCompletionText"));
+						var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+						
+						var myScore = 0;
+						for (var i=0; i<quiz.myProgress.length; i++) {
+							if (quiz.myProgress[i] == true) {
+								myScore++;
+							}
+						}
+						if (x_currentPageXML.getAttribute("judge") != "false") {
+							fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
+						}
+						
+						$("#qTxt").html(fbTxt);
+						$("#optionHolder, #nextBtn, #checkBtn").hide();
+						$("#restartBtn").show();
+						$("#feedback").html("");
+						
+						if (x_currentPageXML.getAttribute("scorm") != undefined) {
+							var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
+							if (x_currentPageXML.getAttribute("scorm") == "Track Last Score") {
+								x_setValue("cmi.core.score.raw", String(scormScore));
+							} else if (x_currentPageXML.getAttribute("scorm") == "Track First Score") {
+								if (isNaN(x_getValue("cmi.core.score.raw"))) {
+									x_setValue("cmi.core.score.raw", String(scormScore));
+								}
+							}
+						}
+						
+					} else {
+						quiz.loadQ();
+					}
+				});
+			
+			$("#restartBtn")
+				.button({
+					label:	restartBtnText
+					})
+				.hide()
+				.click(function() {
+					quiz.startQs();
+				});
+			
+			this.startQs();
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+			
+			x_pageLoaded();
+		}
+	}
+
+	quiz.init();
+
+</script>
+
+<style type="text/css">
+
+	.qPanel {
+		overflow:	auto;
+	}
+
+	#optionHolder {
+		margin-top:	15px;
+	}
+
+	#pageContents input {
+		float:		left;
+		display:	block;
+	}
+
+	#pageContents .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		margin-bottom:	10px;
+		display:		block;
+	}
+
+	#pageContents button {
+		margin-left:	10px;
+		float:			right;
+	}
+
+	#feedback, #buttonHolder {
+		clear:		both;
+	}
+	
+	#pageContents .quizImg {
+		padding:	5px;
+		float:		right;
+		max-width:	50%;
+		height:		auto;
+	}
+	
+	#textHolder p:first-child {
+		margin-top:	0px;
+	}
+
+</style>
+
+<div id="pageContents">
+
+	<div class="splitScreen">
+
+		<div id="textHolder" class="left"></div>
+
+		<div id="infoHolder" class="right">
+			<div class="panel qPanel">
+				<h3 id="qNo"></h3>
+				<p id="qTxt"></p>
+				<div id="optionHolder"></div>
+				<div id="buttonHolder">
+					<button id="checkBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+				<div id="feedback"></div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
