@@ -55,33 +55,35 @@
 			
 			var $panel = $("#infoHolder .panel");
 			var $infoGroup = $(".infoGroup:first");
+			$infoGroup.find("p").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
+			
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisGroup;
-					if (i != 0) {
-						$thisGroup = $infoGroup.clone().appendTo($panel);
-						if (i == $(x_currentPageXML).children().length - 1) {
-							$thisGroup.find("button").remove();
-						}
-						$thisGroup.hide();
-					} else {
-						$thisGroup = $infoGroup;
+					$thisGroup = $infoGroup.clone().appendTo($panel);
+					if (i == $(x_currentPageXML).children().length - 1) {
+						$thisGroup.find("button").remove();
 					}
-					
+					$thisGroup.hide();
 					$thisGroup.find("p")
 						.html(x_addLineBreaks(this.getAttribute("text")));
-					
-					$thisGroup.find("button")
-						.button({
-							label:	this.getAttribute("name")
-							})
-						.click(function() {
-							var $this = $(this);
-							$this.hide();
-							if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
-								$("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")").fadeIn();
-							}
-						});
+				});
+			
+			$panel.children()
+				.each(function(i) {
+					if (i != $panel.children().length - 1) {
+						$panel.find(".infoGroup:eq(" + i + ") button")
+							.button({
+								label:	$(x_currentPageXML).children()[i].getAttribute("name")
+								})
+							.click(function() {
+								var $this = $(this);
+								$this.hide();
+								if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
+									$("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")").fadeIn();
+								}
+							});
+					}
 				});
 			
 			if (x_currentPage != 0) {
