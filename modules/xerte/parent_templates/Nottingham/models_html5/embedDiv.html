@@ -27,7 +27,7 @@
 			var $pageContents = $("#pageContents");
 			var $iFrameHolder = $pageContents;
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
-				$pageContents.html('<div class="splitScreen"><div class="left">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
+				$pageContents.html('<div class="splitScreen"><div class="left" tabindex="1">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
 				$iFrameHolder = $pageContents.find(".right");
 			}
 			var pageSrc = x_currentPageXML.getAttribute("src");
