@@ -14,6 +14,10 @@ function _debug($string, $up = 0)
             $string = $backtrace[$up]['file'] . $backtrace[$up]['line'] . $string;
         }
         $file = '/tmp/debug.log';
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $file = 'c:\debug.log';
+        }
+
         if(defined('XOT_DEBUG_LOGFILE')) {
             $file = XOT_DEBUG_LOGFILE;
         }
