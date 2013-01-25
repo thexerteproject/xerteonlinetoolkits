@@ -56,32 +56,6 @@ function is_ok_name(name_string){
       }
    }
 
-   if(name_string.indexOf("select")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("update")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("insert")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("drop")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("truncate")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("delete")!=-1){
-
-      name_is_ok = false;
-
-   }
-
    if(name_string.length==0){
 
 	name_is_ok = false;
@@ -114,31 +88,6 @@ function is_ok_notes(name_string){
       }
    }
 
-   if(name_string.indexOf("select")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("update")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("insert")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("drop")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("truncate")!=-1){
-
-      name_is_ok = false;
-
-   }else if(name_string.indexOf("delete")!=-1){
-
-      name_is_ok = false;
-
-   }
 
    return name_is_ok;
 
