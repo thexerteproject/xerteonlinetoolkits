@@ -54,7 +54,7 @@ echo "
             var ajax_php_path = \"website_code/php/\";";
 ?>
         </script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
+        <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"> </script>
 <?php
 _include_javascript_file("website_code/scripts/file_system.js");
 _include_javascript_file("website_code/scripts/screen_display.js");
@@ -195,6 +195,10 @@ _include_javascript_file("website_code/scripts/import.js");
             <div class="new_template_area">
                 <div class="top_left sign_in_TL m_b_d_2_child new_template_mod">
                     <div class="top_right sign_in_TR m_b_d_2_child">
+                        <?php
+                        display_language_selectionform("general");
+                        ?>
+
                         <p class="heading">
                             <?PHP echo INDEX_CREATE; ?>                                 </p>
                         <p class="general">

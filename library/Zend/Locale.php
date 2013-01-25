@@ -314,7 +314,7 @@ class Zend_Locale
         $languages = explode(';', $language);
 
         $languagearray = array();
-        require_once 'Zend/Locale/Data/Translation.php';
+        require 'Zend/Locale/Data/Translation.php';
 
         foreach ($languages as $locale) {
             if (strpos($locale, '=') !== false) {
@@ -324,9 +324,9 @@ class Zend_Locale
 
             if ($language !== 'C') {
                 if (strpos($language, '.') !== false) {
-                    $language = substr($language, 0, (strpos($language, '.') - 1));
+                    $language = substr($language, 0, (strpos($language, '.') ));
                 } else if (strpos($language, '@') !== false) {
-                    $language = substr($language, 0, (strpos($language, '@') - 1));
+                    $language = substr($language, 0, (strpos($language, '@') ));
                 }
 
                 $splitted = explode('_', $language);
