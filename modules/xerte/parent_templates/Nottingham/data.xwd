@@ -1563,7 +1563,7 @@
   </textSWF><textVideo menu="Media" menuItem="Video" hint="A page for integrating FLV video files with your presentation" label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
 
     <name label="Page Title" type="TextInput"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
     <url label="Video File" type="media"/>
     <tip label="Video Tooltip" type="TextInput"/>	
     <reset label="Reset on Completion" type="Checkbox" defaultValue="false"/>
