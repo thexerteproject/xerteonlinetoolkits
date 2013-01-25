@@ -33,6 +33,10 @@ if ($development) {
     define('XOT_DEBUG_LOGFILE', '/tmp/debug.log');
 }
 
+if (version_compare(PHP_VERSION, '5.1.0', '<')) {
+    // perhaps we should die at this point instead?
+    trigger_error("You are running an unsupported version of PHP/XerteOnlineToolkits. Please run PHP v5.1 or above");
+}
 
 require_once(dirname(__FILE__) . '/functions.php');
 require_once(dirname(__FILE__) . '/library/autoloader.php');
@@ -71,22 +75,19 @@ if (!isset($xerte_toolkits_site)) {
     }
 
     unset($row['integration_config_path']);
-    foreach($row as $key => $value) {
+    foreach ($row as $key => $value) {
         $xerte_toolkits_site->$key = $value;
     }
-    
+
     // awkward ones.
     $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
-    
     $xerte_toolkits_site->name = $row['site_name'];
-    
     $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
-
     $xerte_toolkits_site->news_text = base64_decode($row['news_text']);
     $xerte_toolkits_site->pod_one = base64_decode($row['pod_one']);
     $xerte_toolkits_site->pod_two = base64_decode($row['pod_two']);
     $xerte_toolkits_site->copyright = utf8_decode($row['copyright']);
-    
+
     /**
      * Set up the string for the password protected play page
      */
@@ -97,10 +98,10 @@ if (!isset($xerte_toolkits_site)) {
      */
     $xerte_toolkits_site->peer_form_string = base64_decode($row['peer_form_string']);
 
-    
+
     $xerte_toolkits_site->basic_template_path = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path;
     $xerte_toolkits_site->users_file_area_full = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short;
-    
+
     /**
      * SQL query string used by play,edit and preview pages
      */
@@ -110,58 +111,48 @@ if (!isset($xerte_toolkits_site)) {
      * Error handling settings
      */
     $xerte_toolkits_site->error_log_path = $xerte_toolkits_site->root_file_path . $row['error_log_path'];
-    
+
     $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
 
-	$dir = opendir($xerte_toolkits_site->root_file_path . "modules/");
-	
-	$learning_objects = new StdClass();
-	
-	while($folder = readdir($dir)){
-	
-		if($folder!="."&&$folder!=".."){
-			
-			$inner_dir = opendir($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates");
-			
-			while($inner_folder = readdir($inner_dir)){
-	
-				if($inner_folder!="."&&$inner_folder!=".."){
-					
-					if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates/" . $inner_folder . "/" . $inner_folder . ".info")){
-					
-						$data = file_get_contents($xerte_toolkits_site->root_file_path . "modules/" . $folder . "/templates/" . $inner_folder . "/" . $inner_folder . ".info");	
-						
-						$info = explode("\n",$data);
-						
-						$learning_objects->{$folder . "_" . $inner_folder} = new StdClass();
-						
-						while($attribute = array_pop($info)){
-						
-							$attr_data = explode(":",$attribute);
-							
-							switch(trim(strtolower($attr_data[0]))){
-							
-								case "editor size" : $learning_objects->{$folder . "_" . $inner_folder}->editor_size = trim($attr_data[1]); break;
-								case "preview size" : $learning_objects->{$folder . "_" . $inner_folder}->preview_size = trim($attr_data[1]); break;
-								case "preview filename" : $learning_objects->{$folder . "_" . $inner_folder}->preview_file = trim($attr_data[1]); break;
-								case "public filename" : $learning_objects->{$folder . "_" . $inner_folder}->public_file = trim($attr_data[1]); break;
-								case "supports" : $learning_objects->{$folder . "_" . $inner_folder}->supports = explode(",",trim($attr_data[1])); break;
-							
-							}
-						
-						}
-						
-					}
-				
-				}
-				
-			}
-			
-		}
-	
-	}
 
-	$xerte_toolkits_site->learning_objects = $learning_objects;
+    $dir = opendir(dirname(__FILE__) . "/modules/");
+
+    // I'm not sure why we allow this path to be set via the DB. It'd make more sense to fix it to dirname(__FILE__), which will cope with the site moving.
+    $xerte_toolkits_site->root_file_path = dirname(__FILE__) . '/';
+    foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
+        if (preg_match('!/modules/(\w+)/templates/(\w+)/!', $infoFile, $matches)) {
+            $attributeName = $matches[1] . '_' . $matches[2];
+            $templateProperties = new StdClass();
+            $learning_objects->{$attributeName} = $templateProperties;
+
+            $info = file($infoFile, FILE_SKIP_EMPTY_LINES);
+            if($info === FALSE || empty($info))  {
+                die("Invalid template info file - check $infoFile is valid.");
+            }
+            foreach ($info as $line) {
+                $attr_data = explode(":", $line, 2);
+                if(empty($attr_data) || sizeof($attr_data) != 2) {
+                    continue;
+                }
+                switch (trim(strtolower($attr_data[0]))) {
+                    case "editor size" : $templateProperties->editor_size = trim($attr_data[1]);
+                        break;
+                    case "preview size" : $templateProperties->preview_size = trim($attr_data[1]);
+                        break;
+                    case "preview filename" : $templateProperties->preview_file = trim($attr_data[1]);
+                        break;
+                    case "public filename" : $templateProperties->public_file = trim($attr_data[1]);
+                        break;
+                    case "supports" : $templateProperties->supports = explode(",", trim($attr_data[1]));
+                        break;
+                }
+            }
+        }
+        else {
+            die("Invalid template name : $infoFile");
+        }
+    }
+    $xerte_toolkits_site->learning_objects = $learning_objects;
 
     /* Optional :
       require_once("session_handler.php");
