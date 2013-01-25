@@ -31,11 +31,17 @@
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			var $panel = $("#pageContents .panel");
-			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
-			if (textAlign != "Right") {
-				$panel.addClass("x_floatRight");
-			} else {
+			
+			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+			if (textAlign == "Top" || textAlign == "Bottom") {
+				if (textAlign == "Top") {
+					$("#pageContents").prepend($("#textHolder"));
+				}
+				$("#pageContents .mobileAlign").addClass("centerAlign");
+			} else if (textAlign == "Right") {
 				$panel.addClass("x_floatLeft");
+			} else {
+				$panel.addClass("x_floatRight");
 			}
 			
 			// transcript stuff
