@@ -311,7 +311,7 @@ if($lti->valid) {
      */
 
     $test_string = substr($row_play['access_to_whom'], 6, strlen($row_play['access_to_whom']));
-
+    _debug("'Other' security is active for '" . $test_string . "', the current referrer is: '" . $_SERVER['HTTP_REFERER'] . "'");
     /*
      * Can only check against this variable, if I can't find it (say pop ups) no choice but to fail
      */

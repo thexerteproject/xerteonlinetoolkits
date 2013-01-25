@@ -53,8 +53,8 @@ function _load_language_file($file_path)
 
     $languages = dirname(__FILE__) . '/languages/';
 
-    if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
-        $_SESSION['toolkits_language'] = $_GET['language'];
+    if (isset($_REQUEST['language']) && is_dir($languages . $_REQUEST['language'])) {
+        $_SESSION['toolkits_language'] = $_REQUEST['language'];
     }
 
     if (isset($_SESSION['toolkits_language'])) {
@@ -68,11 +68,14 @@ function _load_language_file($file_path)
         if (!is_dir($languages . $language_name)) {
 
             // try and catch e.g. getting back 'en' as our locale - so choose any english language pack
+            $found = false;
             foreach (glob($languages . $language->getLanguage() . '*') as $dir) {
-                $language = basename($dir);
+                $found = true;
+                $language_name = basename($dir);
                 break;
             }
-            $language_name = "en-GB";
+            if (!$found)
+                $language_name = "en-GB";
         }
         $language = $language_name;
         $_SESSION['toolkits_language'] = $language;

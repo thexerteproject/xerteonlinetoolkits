@@ -444,7 +444,9 @@ function list_specific_templates() {
 
       echo "</p><p class=\"template_desc_p\">";
 
-      echo $row['description'];
+        echo $row['display_name'];
+
+        echo $row['description'];
 
       /*
       * If no example don't display the link

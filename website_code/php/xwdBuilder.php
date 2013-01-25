@@ -122,22 +122,22 @@ class XerteXWDBuilder
 			print("No elements found in element 'newNodes' of element pageWizard.\n");
 			return -1;
 		}
-    // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file
-    $found = 'false';
-    $pos = strrpos($fname, '.');
-    $nodeName = substr($fname, 0, $pos);
-    foreach($newnode as $child)
-    {
-      if ($nodeName == $child->getName())
-      {
-        $found = 'true';
-      }
-    }
-    if ($found == 'false')
-    {
-      print("No element '" . $child->getName() . "' found in 'newNodes' of element pageWizard.\nThis model will not work, skipped!\n");
-      return -1;
-    }
+        // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file
+        $found = 'false';
+        $pos = strrpos($fname, '.');
+        $nodeName = substr($fname, 0, $pos);
+        foreach($newnode as $child)
+        {
+          if ($nodeName == $child->getName())
+          {
+            $found = 'true';
+          }
+        }
+        if ($found == 'false')
+        {
+          print("No element '" . $child->getName() . "' found in 'newNodes' of element pageWizard.\nThis model will not work, skipped!\n");
+          return -1;
+        }
 		// loop over the newnodes in wizard xwd, and add it to the learningObject element of the pagetemplate
 		// Normally there us only one
 		foreach($newnode as $child)

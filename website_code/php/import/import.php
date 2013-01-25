@@ -387,13 +387,13 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         foreach($zip->compressedList as $x){
 
             foreach($x as $y){
-
+                    /*
 				if(count(explode("/",$y))==8){
 				
 					die(IMPORT_ZIP_FOLDER_LEVEL . "****");
 				
 				}
-
+                    */
                 if(!(strpos($y,"media/")===false)){
 
                     $string = $zip->unzip($y, false, 0777);

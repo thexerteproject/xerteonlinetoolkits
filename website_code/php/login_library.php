@@ -9,6 +9,7 @@
  * @package
  */
 
+require_once(dirname(__FILE__) . "/language_library.php");
 _load_language_file("/index.inc");
 
 function html_headers() {
@@ -28,7 +29,7 @@ function html_headers() {
 
     -->
 
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
         <title>$xerte_toolkits_site->site_title</title>
 
         <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
@@ -202,27 +203,10 @@ function login_form($messages, $xerte_toolkits_site)
 <div class="topbar">
     <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
     <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
+    <?php
+    display_language_selectionform("");
+    ?>
 
-    <form action='' method='GET'>
-        <label for="language-selector">Language:</label>
-        <select name='language' id="language-selector">
-          <?php
-          /* I've just specified a random list of possible languages; "Nonsense" is minimal and just there so you can see the login page switch around */
-          $languages = array('en-GB' => 'English', 'nl-NL' => 'Nederlands', 'en-XX' => 'Nonsense', 'fr-FR' => 'French', 'es-ES' => 'Spanish', 'it-IT' => 'Italian', 'ca-ES' => "Catalan");
-
-
-
-          foreach ($languages as $key => $value) {
-            $selected = '';
-            if (isset($_SESSION['toolkits_language']) && $_SESSION['toolkits_language'] == $key) {
-              $selected = " selected=selected ";
-            }
-            echo "<option value='{$key}' $selected>{$value}</option>\n";
-          }
-          ?>
-        </select>
-        <input type='submit' value='Set language' name='submit'/>
-    </form>
 </div>
 <div class="mainbody">
     <div class="title">
@@ -293,6 +277,24 @@ function login_processing($exit = true) {
     }
   }
   if ($authmech->needsLogin()) {
+   /**
+    *  Check if we are logged in
+    */
+    if (isset($_SESSION['toolkits_logon_username']) && !isset($_POST['login']))
+    {
+        return array(true, array());
+    }
+
+    /**
+     *
+     * Check if setting language
+     */
+    if(isset($_POST['language']))
+    {
+        login_form($errors, $xerte_toolkits_site);
+        exit(0);
+    }
+
     /**
      * Username and password left empty
      */
@@ -349,9 +351,13 @@ function login_processing($exit = true) {
 function login_processing2($firstname = false, $surname = false, $username = false) {
   global $authmech, $errors,$xerte_toolkits_site;
 
-  $_SESSION['toolkits_firstname'] = $firstname == false ? $authmech->getFirstname() : $firstname;
-  $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
-  $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
+  if (!isset($_SESSION['toolkits_logon_username']))
+  {
+      $_SESSION['toolkits_firstname'] = $firstname == false ? $authmech->getFirstname() : $firstname;
+      $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
+      $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
+  }
+
 
   require_once dirname(__FILE__) . '/user_library.php';
 
