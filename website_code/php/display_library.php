@@ -442,6 +442,8 @@ function list_specific_templates() {
 
       echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon\"></div><div class=\"template_desc\"><p class=\"template_name\">";
 
+      echo $row['display_name'];
+
       echo "</p><p class=\"template_desc_p\">";
 
       echo $row['description'];
