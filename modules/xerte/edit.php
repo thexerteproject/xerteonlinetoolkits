@@ -80,6 +80,24 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <script type="text/javascript" language="javascript">
 	
+	function getSessionID(){
+		var id;
+		
+		//stop Firefoxx losing session info which we are 
+		//using for validation the user is logged in
+		//first checks default, second check is for moodle
+		id = document.cookie.match(/PHPSESSID=[^;]+/)
+		if (id.length > 0){
+			return id;
+		} 
+		id = document.cookie.match(/MoodleSession=[^;]+/);
+		if (id.length > 0){
+			return id;
+		}
+		
+		return null;
+	}
+	
     function setunload(){
 
         window.onbeforeunload = bunload;
