@@ -1,0 +1,206 @@
+<script type="text/javascript">
+	
+	var categories = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#dragDropHolder .label").remove();
+			$("#feedback").hide();
+			this.createLabels();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			var $categoryHolder = $("#categoryHolder");
+			var $category = $categoryHolder.find(".category");
+			$category.css("min-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($categoryHolder.position().top) - parseInt($category.css("padding-top")) * 2 - $("#button").height() - 25);
+		}
+		
+		this.createLabels = function() {
+			// randomise order and create labels
+			var $pageContents = $("#pageContents");
+			var labels = [];
+			var tempLabels = $pageContents.data("labels").slice(0);
+			for (var i=0; i<$pageContents.data("labels").length; i++) {
+				var labelNum = Math.floor(Math.random() * tempLabels.length);
+				labels.push(tempLabels[labelNum]);
+				tempLabels.splice(labelNum, 1);
+			}
+			var $initHolder = $("#initHolder");
+			var tallestLabel = 0;
+			for (var i=0; i<labels.length; i++) {
+				$initHolder.append('<li class="label panel" id="label' + i + '">' + labels[i].name + '</li>');
+				var $thisLabel = $("#label" + i);
+				$thisLabel.data("category", labels[i].correct);
+				if ($thisLabel.height() > tallestLabel) {
+					tallestLabel = $thisLabel.height();
+				}
+				if (i != 0) {
+					$thisLabel.hide();
+				}
+			}
+			$initHolder.height(tallestLabel);
+			
+			$("#initHolder, #categoryHolder .category").sortable({
+				connectWith:	"#categoryHolder .category",
+				items:			".label",
+				containment:	"#dragDropHolder",
+				stop:	function(event, ui) {
+					if ($(this).is($("#initHolder"))) {
+						$("#initHolder .label:first").show();
+					}
+				},
+				start:	function() {
+					$("#feedback").hide();
+					$("#dragDropHolder .tick").remove();
+				}
+			});
+		}
+		
+		this.init = function() {
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			$("#feedback")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+				.hide();
+			
+			// buttonWidth attribute not used as button will be sized automatically
+			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
+			if (buttonLabel == undefined) {
+				buttonLabel = "Check Answers";
+			}
+			
+			$("#button")
+				.button({
+					label:	buttonLabel
+				})
+				.click(function() {
+					$("#dragDropHolder .tick").remove();
+					$("#feedback").show();
+					$("#categoryHolder .category .label").each(function() {
+						var $this = $(this);
+						if ($this.data("category").is($this.parent())) {
+							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+						}
+					});
+				});
+			
+			// create categories
+			var $categoryHolder = $("#categoryHolder");
+			var $firstCategory = $categoryHolder.find(".category");
+			var labels = [];
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisCategory;
+					if (i != 0) {
+						$thisCategory = $firstCategory.clone().appendTo($categoryHolder);
+					} else {
+						$thisCategory = $firstCategory;
+					}
+					$thisCategory.find("h3").html(this.getAttribute("name"));
+					$(this).children().each(function(j) {
+						labels.push({name:this.getAttribute("name"), correct:$thisCategory});
+					});
+				});
+			$("#pageContents").data("labels", labels);
+			
+			// style categories
+			if (x_browserInfo.mobile == false) {
+				var numColumns = $(x_currentPageXML).children().length;
+				var spacerWidth = ((numColumns - 1) * 2) + (numColumns * 2); // 2% gap between categories & 1% left & 1% right padding inside categories
+				var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
+				var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+				$("#categoryHolder .category, #initHolder")
+					.css({
+						width			:columnWidth + "%",
+						"margin-left"	:"2%"
+					});
+				$("#categoryHolder .category:first").css("margin-left", edgeWidth + "%");
+			} else {
+				$categoryHolder.addClass("mobile");
+			}
+			
+			this.createLabels();
+			
+			if (x_currentPage != 0) {
+				categories.sizeChanged();
+			}
+			
+			x_pageLoaded();
+		}
+		
+	}
+	
+	categories.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#dragDropHolder .label {
+		cursor:				pointer;
+		list-style-type:	none;
+		padding:			5px;
+	}
+	
+	#dragDropHolder .tick {
+		float:	right;
+	}
+	
+	#initHolder {
+		padding:		0px;
+		margin-right:	2%;
+		float:			right;
+	}
+	
+	#categoryHolder {
+		clear:	right;
+	}
+	
+	#categoryHolder .category {
+		padding:			1%;
+		float:				left;
+	}
+	
+	#categoryHolder .category .label {
+		margin-top:		10px;
+	}
+	
+	#categoryHolder h3 {
+		text-align:		center;
+	}
+	
+	#button {
+		clear:			left;
+		margin-bottom:	10px;
+		float:			right;
+	}
+	
+	#feedback {
+		clear:	left;
+	}
+	
+	#dragDropHolder {
+		overflow:	auto;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="dragDropHolder">
+		
+		<ul id="initHolder"></ul>
+		
+		<div id="textHolder"></div>
+		
+		<div id="categoryHolder">
+			<ul class="category highlight"><h3></h3></ul>
+		</div>
+		
+	</div>
+	
+	<button id="button"></button>
+	
+	<div id="feedback"></div>
+	
+</div>
