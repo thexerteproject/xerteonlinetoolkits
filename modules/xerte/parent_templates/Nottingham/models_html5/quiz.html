@@ -311,7 +311,12 @@
 						}
 						quiz.myProgress.splice(quiz.currentQ, 1, correct);
 					}
-					var answerFeedback = $("#pageContents").data("feedbackTxt").replace("{A}", optionFeedback).replace("{B}", rightWrongTxt);
+					var answerFeedback = "";
+					if (optionFeedback == "") {
+						answerFeedback = rightWrongTxt;
+					} else {
+						answerFeedback = $("#pageContents").data("feedbackTxt").replace("{A}", optionFeedback).replace("{B}", rightWrongTxt);
+					}
 					$("#feedback").html(answerFeedback);
 					
 					$("#nextBtn").removeAttr("disabled");
