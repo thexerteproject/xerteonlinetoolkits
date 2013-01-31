@@ -1,6 +1,12 @@
 <script type="text/javascript">
 	
 	var categories = new function() {
+		var labelTxt1,
+			labelTxt2,
+			labelTxt3,
+			targetTxt1,
+			targetTxt2;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#dragDropHolder .label").remove();
@@ -28,7 +34,7 @@
 			var $initHolder = $("#initHolder");
 			var tallestLabel = 0;
 			for (var i=0; i<labels.length; i++) {
-				$initHolder.append('<li class="label panel" id="label' + i + '">' + labels[i].name + '</li>');
+				$initHolder.append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + labels[i].name + '</li>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("category", labels[i].correct);
 				if ($thisLabel.height() > tallestLabel) {
@@ -45,21 +51,87 @@
 				items:			".label",
 				containment:	"#dragDropHolder",
 				stop:	function(event, ui) {
-					if ($(this).is($("#initHolder"))) {
-						$("#initHolder .label:first").show();
+					if (ui.item.parent().is($("#initHolder")) == false) {
+						// show next label if it came from initHolder
+						if ($(this).is($("#initHolder"))) {
+							$("#initHolder .label:first").show();
+						}
+						
+						// change tab index of label so it's now after the target it's on
+						var categoryIndex = ui.item.parent().attr("tabindex");
+						ui.item.parent().children(".label").each(function(i) {
+							$(this).attr("tabindex", categoryIndex + i + 1);
+						});
 					}
 				},
 				start:	function() {
+					// remove any focus/selection highlights made by tabbing to labels/targets
+					var $pageContents = $("#pageContents");
+					if ($("#dragDropHolder .label.focus").length > 0) {
+						$("#dragDropHolder .label.focus").attr("title", labelTxt1);
+					} else if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$pageContents.data("selectedLabel").attr("title", labelTxt1);
+						$pageContents.data("selectedLabel", "");
+					}
+					var targetInFocus = $("#dragDropHolder .category.focus");
+					if (targetInFocus.length > 0) {
+						targetInFocus.attr("title", targetTxt1 + " " + targetInFocus.find("h3").html());
+					}
+					$("#dragDropHolder .selected").removeClass("selected");
+					$("#dragDropHolder .focus").removeClass("focus");
+					
 					$("#feedback").hide();
 					$("#dragDropHolder .tick").remove();
 				}
-			});
+			}).disableSelection();
+			
+			// set up events used when keyboard rather than mouse is used
+			// these highlight selected labels / targets and set the title attr which the screen readers will use
+			$("#dragDropHolder .label")
+				.focusin(function() {
+					var $this = $(this);
+					if ($this.is($pageContents.data("selectedLabel")) == false) {
+						$this
+							.addClass("focus")
+							.attr("title", labelTxt1 + " - " + labelTxt3);
+					}
+					})
+				.focusout(function() {
+					var $this = $(this);
+					$this.removeClass("focus");
+					if ($this.is($pageContents.data("selectedLabel")) == false) {
+						$this.attr("title", labelTxt1);
+					}
+					})
+				.keypress(function(e) {
+					if (e.charCode == 32) {
+						var $pageContents = $("#pageContents");
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+							$pageContents.data("selectedLabel")
+								.removeClass("selected")
+								.attr("title", labelTxt1);
+						}
+						var $this = $(this);
+						$this
+							.removeClass("focus")
+							.addClass("selected")
+							.attr("title", labelTxt1 + ' - ' + labelTxt2);
+						$pageContents.data("selectedLabel", $this);
+					}
+				});
 		}
 		
 		this.init = function() {
+			// store strings used to give titles to labels and categories when keyboard is being used (for screen readers)
+			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
+			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
+			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
+			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
+			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			$("#feedback")
+			var $feedback = $("#feedback")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
 				.hide();
 			
@@ -69,11 +141,11 @@
 				buttonLabel = "Check Answers";
 			}
 			
-			$("#button")
+			var $button = $("#button")
 				.button({
 					label:	buttonLabel
 				})
-				.click(function() {
+				.click(function() { // mark labels and show feedback
 					$("#dragDropHolder .tick").remove();
 					$("#feedback").show();
 					$("#categoryHolder .category .label").each(function() {
@@ -101,23 +173,80 @@
 						labels.push({name:this.getAttribute("name"), correct:$thisCategory});
 					});
 				});
-			$("#pageContents").data("labels", labels);
+			
+			var $pageContents = $("#pageContents");
+			$pageContents.data("labels", labels);
 			
 			// style categories
-			if (x_browserInfo.mobile == false) {
-				var numColumns = $(x_currentPageXML).children().length;
-				var spacerWidth = ((numColumns - 1) * 2) + (numColumns * 2); // 2% gap between categories & 1% left & 1% right padding inside categories
-				var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
-				var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
-				$("#categoryHolder .category, #initHolder")
-					.css({
-						width			:columnWidth + "%",
-						"margin-left"	:"2%"
-					});
-				$("#categoryHolder .category:first").css("margin-left", edgeWidth + "%");
-			} else {
-				$categoryHolder.addClass("mobile");
+			var numColumns = $(x_currentPageXML).children().length;
+			var spacerWidth = ((numColumns - 1) * 2) + (numColumns * 2); // 2% gap between categories & 1% left & 1% right padding inside categories
+			var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
+			var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+			$("#categoryHolder .category, #initHolder")
+				.css({
+					width			:columnWidth + "%",
+					"margin-left"	:"2%"
+				});
+			$("#categoryHolder .category:first").css("margin-left", edgeWidth + "%");
+			
+			// set up events used when keyboard rather than mouse is used
+			// these highlight selected labels / targets and set the title attr which the screen readers will use
+			$("#categoryHolder .category")
+				.focusin(function(e) {
+					if ($(e.target).hasClass("category")) {
+						$(this).addClass("focus");
+						var $pageContents = $("#pageContents");
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+							$(this).attr("title", targetTxt1 + " " + $(this).find("h3").html() + " - " + targetTxt2);
+						}
+					}
+					})
+				.focusout(function() {
+					var $pageContents = $("#pageContents");
+					$(this)
+						.removeClass("focus")
+						.attr("title", targetTxt1 + " " + $(this).find("h3").html());
+					})
+				.keypress(function(e) {
+					if ($(e.target).hasClass("category")) {
+						if (e.charCode == 32) {
+							var $pageContents = $("#pageContents");
+							var $selectedLabel = $pageContents.data("selectedLabel");
+							// drop selected label on target, remove selection and show next label
+							if ($selectedLabel != undefined && $selectedLabel != "") {
+								if ($selectedLabel.parent().is($("#initHolder"))) {
+									$("#initHolder .label:eq(1)").show();
+								}
+								$selectedLabel
+									.removeClass("selected")
+									.attr("title", labelTxt1)
+									.appendTo($(this));
+								$pageContents.data("selectedLabel", "");
+								$(this).attr("title", targetTxt1 + " " + $(this).find("h3").html());
+								
+								// change tab index of label so it's now after the target it's on
+								var categoryIndex = $(this).attr("tabindex");
+								$(this).children(".label").each(function(i) {
+									$(this).attr("tabindex", categoryIndex + i + 1);
+								});
+							}
+						}
+					}
+				});
+			
+			// set tab index for targets - leaving space between them for any labels that are put on them
+			var tabIndex = 0;
+			for (i=0; i<$categoryHolder.find(".category").length; i++) {
+				tabIndex = (i + 1) * ($pageContents.data("labels").length + 1) + 1;
+				var $category = $categoryHolder.find(".category:eq(" + i + ")");
+				$category.attr({
+					"tabindex"	:tabIndex,
+					"title"		:targetTxt1 + " " + $category.find("h3").html()
+				});
 			}
+			tabIndex += $pageContents.data("labels").length;
+			$button.attr("tabindex", tabIndex + 1);
+			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
 			
@@ -142,6 +271,14 @@
 		padding:			5px;
 	}
 	
+	#dragDropHolder .label.focus {
+		border:	2px solid yellow;
+	}
+	
+	#dragDropHolder .label.selected {
+		border:	2px solid green;
+	}
+	
 	#dragDropHolder .tick {
 		float:	right;
 	}
@@ -159,6 +296,11 @@
 	#categoryHolder .category {
 		padding:			1%;
 		float:				left;
+	}
+	
+	#categoryHolder .category.focus {
+		background-color:	rgb(205, 205, 205); /* fallback */ 
+		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
 	#categoryHolder .category .label {
@@ -191,7 +333,7 @@
 		
 		<ul id="initHolder"></ul>
 		
-		<div id="textHolder"></div>
+		<div id="textHolder" tabindex="1"></div>
 		
 		<div id="categoryHolder">
 			<ul class="category highlight"><h3></h3></ul>
