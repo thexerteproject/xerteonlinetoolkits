@@ -61,4 +61,18 @@
 	<menuHelp>
 		<prompt>Help file comming soon.</prompt>
 	</menuHelp>
+	<Alert>
+		<yeslabel>Yes</yeslabel>
+		<nolabel>No</nolabel>
+		<deletenode>
+			<confirm>
+				<prompt>Do you want to delete the item?</prompt>
+				<title>Delete Item?</title>
+			</confirm>
+			<error>
+				<prompt>You cannot delete this item</prompt>
+				<title>Error</title>
+			</error>
+		</deletenode>
+	</Alert>
 </language>
