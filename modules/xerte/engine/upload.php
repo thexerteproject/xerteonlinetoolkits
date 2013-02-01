@@ -13,7 +13,7 @@ require_once("../../../config.php");
 
 if(!isset($_SESSION['toolkits_logon_username'])) {
   print "You are not logged in.";
-  exit();
+  //exit();
 }
 
 $page_sought = explode("=",$_SERVER['REQUEST_URI']);
@@ -28,7 +28,6 @@ if ($pass === false){
   print "Invalid File Name";
   exit();
 }
-
 
 $new_file_name = $xerte_toolkits_site->root_file_path . $page_sought[1] . $_FILES['Filedata']['name'];
 
