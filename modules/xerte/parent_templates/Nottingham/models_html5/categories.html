@@ -104,7 +104,8 @@
 					}
 					})
 				.keypress(function(e) {
-					if (e.charCode == 32) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
 						var $pageContents = $("#pageContents");
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 							$pageContents.data("selectedLabel")
@@ -209,7 +210,8 @@
 					})
 				.keypress(function(e) {
 					if ($(e.target).hasClass("category")) {
-						if (e.charCode == 32) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32) {
 							var $pageContents = $("#pageContents");
 							var $selectedLabel = $pageContents.data("selectedLabel");
 							// drop selected label on target, remove selection and show next label
@@ -323,6 +325,10 @@
 	
 	#dragDropHolder {
 		overflow:	auto;
+	}
+	
+	#textHolder {
+		background:	url("../common_html5/transparent.png"); /* without the text having a bg the labels strangely aren't selectable in IE */
 	}
 	
 </style>
