@@ -26,7 +26,7 @@
 	<btnPreview label="Play" tooltip="Preview"/>
 	<btnPrev tooltip="Previous Item"/>
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
-	<addProp label="Add" tooltip="add"/>
+	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
 	<chkShowLanguage label="Show Language Options" />
 	<chkShowAdvanced label="Show Advanced Options" />
@@ -61,18 +61,71 @@
 	<menuHelp>
 		<prompt>Help file comming soon.</prompt>
 	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>All Files (*.*)</allfiles>
+			<images>Images (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash Files (*.swf)</flash>
+			<sound>Sound Files (*.mp3)</sound>
+			<video>Video Files (*.flv)</video>
+		</filters>
+		<title>Select file to import...</title>
+		<filter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</filter>
+		<btnimport>Import</btnimport>
+		<btncancel>Cancel</btncancel>
+		<fileexists>
+			<prompt>The file {f} already exists.\r\rOverwrite this file?</prompt>
+			<title>Confirm</title>
+		</fileexists>
+	</importMedia>
 	<Alert>
-		<yeslabel>Yes</yeslabel>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Cancel</cancellabel>
 		<nolabel>No</nolabel>
+		<yeslabel>Yes</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Enter the URL for the link</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>You may only add {m} {i}s</prompt>
+				<title>Error</title>
+			</max>
+			<mixedcontent>
+				<prompt>You cannot mix content here.</prompt>
+				<title>Error</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>That folder is not empty. Are you sure you want to use it for the new project?</prompt>
+			<title>Confirm</title>
+		</newproject>
+		<openproject>
+			<prompt>Do you want to open the new project?</prompt>
+			<title>Confirm</title>
+		</openproject>
+		<initpreview>
+			<prompt>You must select media before you can preview it.</prompt>
+			<title>Info</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>You cannot duplicate that item.</prompt>
+			<title>Error</title>
+		</duplicateitem>
 		<deletenode>
 			<confirm>
 				<prompt>Do you want to delete the item?</prompt>
-				<title>Delete Item?</title>
+				<title>Confirmation</title>
 			</confirm>
 			<error>
 				<prompt>You cannot delete this item</prompt>
 				<title>Error</title>
 			</error>
 		</deletenode>
+		<savefile>
+			<prompt>The XML could not be formatted, and changes have not been saved. Check your recent changes.</prompt>
+		</savefile>
+		
 	</Alert>
 </language>
