@@ -86,11 +86,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 		//stop Firefoxx losing session info which we are 
 		//using for validation the user is logged in
 		//first checks default, second check is for moodle
-		id = document.cookie.match(/PHPSESSID=[^;]+/)
+		id = String(document.cookie.match(/PHPSESSID=[^;]+/));
+		id = id.split('=')[1];
 		if (id.length > 0){
 			return id;
 		} 
-		id = document.cookie.match(/MoodleSession=[^;]+/);
+		
+		//moodle?
+		id = String(document.cookie.match(/MoodleSession=[^;]+/));
+		id = id.split('=')[1];
+		
 		if (id.length > 0){
 			return id;
 		}
