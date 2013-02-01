@@ -11,12 +11,12 @@
 
 require_once("../../../config.php");
 
+file_put_contents('test.txt',var_export($_SESSION,TRUE));
+
 if(!isset($_SESSION['toolkits_logon_username'])) {
   print "You are not logged in.";
-  //exit();
+ // exit();
 }
-
-$page_sought = explode("=",$_SERVER['REQUEST_URI']);
 
 // SECURITY / TODO / XXX - someone can use this to upload an arbitrary file to a place of their choosing on the server 
 $pass = true;
@@ -29,7 +29,7 @@ if ($pass === false){
   exit();
 }
 
-$new_file_name = $xerte_toolkits_site->root_file_path . $page_sought[1] . $_FILES['Filedata']['name'];
+$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
 
 if(move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)){
 }else{
