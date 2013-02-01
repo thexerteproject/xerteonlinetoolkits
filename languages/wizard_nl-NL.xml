@@ -26,7 +26,7 @@
 	<btnPreview label="Toon" tooltip="Voorvertoning"/>
 	<btnPrev tooltip="Vorige item"/>
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
-	<addProp label="Voeg in" tooltip="Attribuut toevoegen"/>
+	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
 	<chkShowLanguage label="Toon Taal Opties" />
 	<chkShowAdvanced label="Toon Geavanceerde Opties" />
@@ -61,4 +61,72 @@
 	<menuHelp>
 		<prompt>Help bestand komt er aan.</prompt>
 	</menuHelp>
+		<importMedia>
+		<filters>
+			<allfiles>Alle bestanden (*.*)</allfiles>
+			<images>Afbeeldingen (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash Bestanden (*.swf)</flash>
+			<sound>Geluid Bestanden (*.mp3)</sound>
+			<video>Video Bestanden (*.flv)</video>
+		</filters>
+		<title>Selecteer bestand om te importeren...</title>
+		<filter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluid|*.mp3|Video|*.flv</filter>
+		<btnimport>Importeer</btnimport>
+		<btncancel>Annuleer</btncancel>
+		<fileexists>
+			<prompt>Het bestand {f} bestaat al.\r\rWilt u dit bestand overschrijven?</prompt>
+			<title>Bevestig</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Annuleer</cancellabel>
+		<nolabel>Nee</nolabel>
+		<yeslabel>Ja</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Geef the URL voor de verwijzing</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>U kunt niet meer dan {m} van {i}(en) toevoegen</prompt>
+				<title>Fout</title>
+			</max>
+			<mixedcontent>
+				<prompt>U kunt content soorten hier niet combineren.</prompt>
+				<title>Fout</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Deze map is niet leeg. Weet u zeker dat u deze map wilt gebruiken voor het nieuwe project?</prompt>
+			<title>Bevestig</title>
+		</newproject>
+		<openproject>
+			<prompt>Wilt u het nieuwe projkect openen?</prompt>
+			<title>Bevestig</title>
+		</openproject>
+		<initpreview>
+			<prompt>De media moet geselecteerd zijn, voordat u het kunt bekijken.</prompt>
+			<title>Informatie</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Dit item kan niet gedupliceerd worden.</prompt>
+			<title>Fout</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Weet u zeker dat u dit item wilt verwijderen?</prompt>
+				<title>Bevestiging</title>
+			</confirm>
+			<error>
+				<prompt>Dit item kan niet verwijderd worden.</prompt>
+				<title>Verwijder item</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>Het genereren van de XML is mislukt. Wijzigingen zijn niet opgeslagen. Controleer uw laatste wijzigingen.</prompt>
+		</savefile>
+		
+	</Alert>
+
 </language>
