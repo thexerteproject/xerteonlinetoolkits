@@ -14,7 +14,7 @@
 		<item>Portuguese</item>
 		<item>Spanish</item>
 	</kblanguage>
-	<newLink label="New " />
+	<newLink label="New {i}" />
 	<helpLink tooltip="Click for Help"/>
 	<btnInsert label="Insert" tooltip="Insert"/>
 	<btnAddChild tooltip="add some children"/>

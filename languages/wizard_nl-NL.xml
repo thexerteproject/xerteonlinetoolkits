@@ -14,7 +14,7 @@
 		<item>Portugees</item>
 		<item>Spaans</item>
 	</kblanguage>
-	<newLink label="Nieuw(e) " />
+	<newLink label="{i} toevoegen" />
 	<helpLink tooltip="Klik voor Help"/>
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
