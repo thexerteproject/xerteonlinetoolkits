@@ -8,6 +8,12 @@
  */
 _load_language_file("/website_code/php/language_library.inc");
 
+function languageInstalled($langcode)
+{
+    // Return true if the folder "languages/<code>"  or the folder "modules/xerte/parent_templates/Nottingham/wizards/<code>" exists
+    return (is_dir(dirname(__FILE__) . "/../../languages/" . $langcode) || is_dir(dirname(__FILE__) . "/../../modules/xerte/parent_templates/Nottingham/wizards/" . $langcode));
+}
+
 function getLanguages()
 {
     libxml_use_internal_errors(true);
@@ -17,7 +23,10 @@ function getLanguages()
     $xml_langs = $xml->xpath('/*/language');
     foreach ($xml_langs as $xml_lang)
     {
-        $langs[(string)$xml_lang['code']] = (string)$xml_lang['name'];
+        if (languageInstalled((string)$xml_lang['code']))
+        {
+            $langs[(string)$xml_lang['code']] = (string)$xml_lang['name'];
+        }
     }
     return $langs;
 }
