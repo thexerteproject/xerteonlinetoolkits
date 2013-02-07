@@ -54,7 +54,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   PRIMARY KEY (`template_type_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
-insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1);
+insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(9,'xerte','Bootstrap','Create responsive web native pieces.','2013-02-02','Bootstrap',0,'*',1);
 
 CREATE TABLE `$play_security_details` (
   `security_id` int(11) NOT NULL AUTO_INCREMENT,
