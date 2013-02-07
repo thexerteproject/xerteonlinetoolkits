@@ -45,7 +45,8 @@
 							width	:Math.round(this.getAttribute("w") * scale) + "px",
 							height	:Math.round(this.getAttribute("h") * scale) + "px",
 							left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
-							top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
+							top		:Math.round(this.getAttribute("y") * scale) + padding + "px",
+							"background-image"	:"url('" + x_templateLocation + "common_html5/transparent.png')" /* without a bg the hotspots aren't selectable in IE */
 							})
 						.click(function() {
 							$("#infoHolder").html("<h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
@@ -185,7 +186,6 @@
 	}
 	
 	#pageContents .hotspot {
-		background:	url("../common_html5/transparent.png");
 		position:	absolute;
 		cursor:		pointer;
 	}

@@ -1,5 +1,7 @@
 <script type="text/javascript">
 	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
 	var categories = new function() {
 		var labelTxt1,
 			labelTxt2,
@@ -16,6 +18,16 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			var tallestLabel = 0;
+			$("#dragDropHolder .label").each(function() {
+				var $this = $(this);
+				if ($this.outerHeight() > tallestLabel) {
+					tallestLabel = $this.outerHeight();
+				}
+			});
+			
+			$("#initHolder").height(tallestLabel);
+			
 			var $categoryHolder = $("#categoryHolder");
 			var $category = $categoryHolder.find(".category");
 			$category.css("min-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($categoryHolder.position().top) - parseInt($category.css("padding-top")) * 2 - $("#button").height() - 25);
@@ -31,20 +43,15 @@
 				labels.push(tempLabels[labelNum]);
 				tempLabels.splice(labelNum, 1);
 			}
-			var $initHolder = $("#initHolder");
-			var tallestLabel = 0;
 			for (var i=0; i<labels.length; i++) {
-				$initHolder.append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + labels[i].name + '</li>');
+				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + labels[i].name + '</li>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("category", labels[i].correct);
-				if ($thisLabel.height() > tallestLabel) {
-					tallestLabel = $thisLabel.height();
-				}
+				
 				if (i != 0) {
 					$thisLabel.hide();
 				}
 			}
-			$initHolder.height(tallestLabel);
 			
 			$("#initHolder, #categoryHolder .category").sortable({
 				connectWith:	"#categoryHolder .category",
@@ -118,6 +125,9 @@
 							.addClass("selected")
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
 						$pageContents.data("selectedLabel", $this);
+						
+						$("#feedback").hide();
+						$("#dragDropHolder .tick").remove();
 					}
 				});
 		}
@@ -130,7 +140,9 @@
 			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
 			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 			
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			$("#textHolder")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
+				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var $feedback = $("#feedback")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
@@ -267,6 +279,10 @@
 
 <style type="text/css">
 	
+	#dragDropHolder {
+		overflow:	auto;
+	}
+	
 	#dragDropHolder .label {
 		cursor:				pointer;
 		list-style-type:	none;
@@ -321,14 +337,6 @@
 	
 	#feedback {
 		clear:	left;
-	}
-	
-	#dragDropHolder {
-		overflow:	auto;
-	}
-	
-	#textHolder {
-		background:	url("../common_html5/transparent.png"); /* without the text having a bg the labels strangely aren't selectable in IE */
 	}
 	
 </style>
