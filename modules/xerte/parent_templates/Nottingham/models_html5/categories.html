@@ -144,9 +144,14 @@
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
-			var $feedback = $("#feedback")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-				.hide();
+			var $feedback = $("#feedback");
+			if (x_currentPageXML.getAttribute("feedback") == undefined || x_currentPageXML.getAttribute("feedback") == "") {
+				$feedback.remove();
+			} else {
+				$feedback
+					.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+					.hide();
+			}
 			
 			// buttonWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
