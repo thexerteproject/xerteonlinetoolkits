@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="">
+<wizard menus="" runtime="bootstrap.php">
 
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
