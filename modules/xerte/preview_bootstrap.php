@@ -132,7 +132,7 @@ function show_preview_code($row, $row_username){
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
 						
-						<img src="<?PHP echo $template_path_string ?>footer/cc-by-nc-sa.png">
+						<img src="<?PHP echo $template_path_string ?>/footer/cc-by-nc-sa.png">
 						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
 						
 					</div>

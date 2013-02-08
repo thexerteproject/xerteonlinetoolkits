@@ -36,86 +36,125 @@ function show_template($row_play){
 
         -->
 
-   <!DOCTYPE html>
-	<html>
-	<head>
-
+	<!DOCTYPE html>
+	<html xmlns:fb="http://ogp.me/ns/fb#">
+		<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
 		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		
+		<!--jquery-->
+		<script src="<?PHP echo $template_path_string ?>/common/js/jquery.js"></script>
 
-		<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="IE=8" />
-
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css" type="text/css" />
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common_html5/css/mainStyles.css" type="text/css" />
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common_html5/mediaelement/mediaelementplayer.min.css" />
-
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/jquery-1.7.1.min.js"></script>
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/jquery-ui-1.8.18.custom.min.js"></script>
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/jquery.ui.touch-punch.min.js"></script>			<!-- allows jQuery components to work on touchscreen devices -->
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/imageLens.js"></script>							<!-- for creating magnifiers on images -->
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/mediaelement/mediaelement-and-player.js"></script>	<!-- for audio & video players -->
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/mediaelement/mediaPlayer.js"></script>
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/swfobject.js"></script>
-
+		<!--styles -->
+		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap.css" rel="stylesheet">
+		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap-responsive.css" rel="stylesheet">
+		
+		<!--custom styles for this template-->
+		<link href="<?PHP echo $template_path_string ?>/common/css/custom.css" rel="stylesheet">
+				
+		<!--support for IE < 6-8 -->
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		
+		<!--media element and initialisation-->
+		<script src="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelement-and-player.min.js"></script>
+		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelementplayer.min.css" />
+		
 		<script type="text/javascript">
+		
 			var FileLocation = "<?PHP echo $string_for_flash ?>";
-			var x_templateLocation = "<?PHP echo $template_path_string ?>/";
-			var x_projectXML = "<?PHP echo $string_for_flash_xml ?>/";
-			var x_startPage = {type : "<?PHP if(isset($_GET['linkID'])) {
-                echo "linkID\", ID : \"".mysql_real_escape_string($_GET['linkID'])."\"";
-            }
-            else if(isset($_GET['pageID'])) {
-                echo "pageID\", ID : \"".mysql_real_escape_string($_GET['pageID'])."\"";
-            }
-            else if(isset($_GET['page']) && is_numeric($_GET['page'])) {
-                echo "page\", ID : ".mysql_real_escape_string($_GET['page']);
-            }
-            else {
-                echo "page\", ID : 1";
-            }
-        ?>};
+			var templateLocation = "<?PHP echo $template_path_string ?>/";
+			var projectXML = "<?PHP echo $string_for_flash_xml ?>/"; //this is the file to read, not the xml
+
 		</script>
-
+    
 	</head>
+	
+	<body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar">
+	
+		<!--facebookAPI-->
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";		  fjs.parentNode.insertBefore(js, fjs);		}(document, 'script', 'facebook-jssdk'));</script>
+	    
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+			  
+				<div class="container">
+				
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 
-	<body>
-
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/xenith.js"></script>
-
-		<div id="x_mainHolder">
-
-			<div id="x_mobileScroll">
-				<div id="x_headerBlock">
-					<div>
-						<h1> </h1>
-						<h2> </h2>
-					</div>
-				</div>
-
-				<div id="x_pageHolder">
-					<div id="x_pageDiv">
-
-					</div>
-				</div>
-			</div>
-
-			<div id="x_footerBlock">
-				<div id="x_footerBg"></div>
-				<div class="x_floatLeft"></div>
-				<div class="x_floatRight">
-					<button id="x_menuBtn"></button>
-					<div id="x_pageControls">
-						<button id="x_prevBtn"></button>
-						<div id="x_pageNo"></div>
-						<button id="x_nextBtn"></button>
+					<div class="nav-collapse collapse">
+						<ul class="nav"id="nav">
+							<!--<li class=""><a href="./index.html">Home</a></li>-->
+						</ul>
 					</div>
 				</div>
 			</div>
+		</div>
+	
+		<!--Learning Object Title-->
+		<header class="jumbotron" id="overview">
+			<div class="container">
+				<h1 id="pageTitle">Learning Object Title</h1>
+				<p id="pageSubTitle" class="lead">Overview title for the content below</p>
+			</div>
+		</header>
 
-			<div id="x_background"></div>
+		<!--main page content: nav bar and sections-->
+		<div class="container">
+			<div class="row-fluid">
+				<!--navigation-->
+				<div class="span3 bs-docs-sidebar">
+					<ul class="nav nav-list bs-docs-sidenav affix" id="toc">
+						<!--<li><a href="#section1ID">Section 1</a></li>-->					
+					</ul>
+				</div>
+				
+				<!--content-->
+				<div class="span9" id="mainContent">
 
+				</div>
+			</div>
 		</div>
 
+		<footer class="footer">
+			<div class="container">
+				<div class="row-fluid">
+					<div class="span12">
+					
+						<div class="addthis_toolbox addthis_default_style ">
+							<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+							<a class="addthis_button_tweet"></a>
+							<a class="addthis_button_google_plusone"></a>  
+							<a class="addthis_button_linkedin_counter"></a>
+							<a class="addthis_button_pinterest_pinit"></a>
+							<a class="addthis_counter addthis_pill_style"></a>
+						</div>
+
+						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
+						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
+						
+						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
+						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
+						
+					</div>
+				</div>
+			</div>
+		</footer>
+		
+		<!--bootstrap script-->
+		<script src="<?PHP echo $template_path_string ?>/common/js/bootstrap.min.js"></script>
+		
+		<!--initialise the application specific code-->
+		<script src="<?PHP echo $template_path_string ?>/common/js/application.js"></script>
+		
 	<script type="text/javascript" language="JavaScript">
 	<?PHP
 
@@ -124,3 +163,5 @@ function show_template($row_play){
 	}
 
 	?>
+	
+</html>
