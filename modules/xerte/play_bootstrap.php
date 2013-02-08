@@ -163,5 +163,3 @@ function show_template($row_play){
 	}
 
 	?>
-	
-</html>

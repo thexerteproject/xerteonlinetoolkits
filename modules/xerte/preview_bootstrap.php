@@ -63,9 +63,9 @@ function show_preview_code($row, $row_username){
 		</script>
     
 	</head>
-	
+
 	<body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar">
-	
+		
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";		  fjs.parentNode.insertBefore(js, fjs);		}(document, 'script', 'facebook-jssdk'));</script>
@@ -132,7 +132,7 @@ function show_preview_code($row, $row_username){
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
 						
-						<img src="<?PHP echo $template_path_string ?>/footer/cc-by-nc-sa.png">
+						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
 						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
 						
 					</div>
@@ -147,12 +147,12 @@ function show_preview_code($row, $row_username){
 		<script src="<?PHP echo $template_path_string ?>/common/js/application.js"></script>
 		
 	<script type="text/javascript" language="JavaScript">
+	
+	
 	<?PHP
-
-	echo "</script></body></html>";
+	
+	 "</script></body></html>";
 
 	}
 
 	?>
-	
-</html>

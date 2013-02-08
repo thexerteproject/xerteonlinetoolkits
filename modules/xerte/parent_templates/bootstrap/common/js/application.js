@@ -120,11 +120,14 @@ function loadContent(index){
 			initMedia();
 			initSidebar();
 			
+			window.scroll(0,0);
+			
+			$('body').scrollspy('refresh');
+
 			//force facebook / twitter objects to initialise
 			twttr.widgets.load();
 			FB.XFBML.parse(); 
-			
-			$('section').append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+	
 		}
 	})
 }
