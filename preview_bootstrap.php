@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-echo("HELLO");
+
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/preview.inc");
@@ -45,7 +45,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         if(!empty($row)) {
             // if they're an admin or have rights to see the template, then show it.
             if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
-                require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview_html5.php";
+                require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview_bootstrap.php";
                 show_preview_code($row, $row_username);		
                 exit(0);
             }
@@ -54,7 +54,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 		
     }else{
 	
-		echo PREVIEW_RESOURCE_FAIL;
+		echo PREVIEW_RESOURCE_FAIL;;
 			
 	}
 	
