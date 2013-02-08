@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
-echo("HELLO");
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/preview.inc");
