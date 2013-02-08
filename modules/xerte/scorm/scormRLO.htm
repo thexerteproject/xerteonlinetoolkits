@@ -87,7 +87,7 @@ function makePopUp(params)
 		var iframe_create_div = document.createElement("IFRAME");
 		iframe_create_div.src = params.src;
 		if (params.type == 'jmol') {
-			iframe_create_div.src += ';width=' + divW + ';height=' + divH;
+			iframe_create_div.src += ',width=' + divW + ',height=' + divH;
 		}
 		iframe_create_div.style.height = divH + "px";
 		iframe_create_div.style.width = divW + "px";	
