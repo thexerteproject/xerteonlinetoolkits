@@ -41,9 +41,20 @@
 				.height(tallestLabel);
 			
 			var newH = tallestLabel + parseInt($target.css("padding-top")) - 5;
-			if ($target.height() < newH) {
-				$target.height(newH);
+			var tallestTarget = 0;
+			
+			$target.each(function() {
+				var $this = $(this);
+				if ($this.outerHeight() > tallestTarget) {
+					tallestTarget = $this.outerHeight();
+				}
+			});
+			
+			if (tallestTarget > newH) {
+				newH = tallestTarget;
 			}
+			
+			$target.height(newH);
 			
 			$labels.each(function() {
 				var $this = $(this);

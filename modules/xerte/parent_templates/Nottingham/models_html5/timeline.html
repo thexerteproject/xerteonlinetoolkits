@@ -38,7 +38,17 @@
 			});
 			
 			$("#labelHolder").height(tallestLabel);
-			$target.height($target.outerHeight() + tallestLabel - 5);
+			
+			var tallestTarget = 0;
+			
+			$target.each(function() {
+				var $this = $(this);
+				if ($this.outerHeight() > tallestTarget) {
+					tallestTarget = $this.outerHeight();
+				}
+			});
+			
+			$target.height(tallestTarget + tallestLabel - 5);
 			
 			$labels.each(function() {
 				var $this = $(this);
