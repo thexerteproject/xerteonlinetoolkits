@@ -4,6 +4,7 @@
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
+		<header type="Media" optional="true" label="Header Image"/>
 
 		<newNodes>
 			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
