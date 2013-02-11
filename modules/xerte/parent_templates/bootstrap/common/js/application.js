@@ -37,7 +37,7 @@ function loadContent(index){
 		success: function(data) {
 		
 		if (typeof data == 'string'){
-			//have to mangel the data for IE, not sure if this works??
+			//in IE we need to turn the string into xml
 			data = $.parseXML(data);
 		}
 
