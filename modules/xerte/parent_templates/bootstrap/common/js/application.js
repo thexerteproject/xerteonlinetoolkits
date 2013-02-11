@@ -48,6 +48,11 @@ function loadContent(index){
 			$('#toc').empty();
 			$('#nav').empty();
 			
+			//set the header image, if defined
+			if ($(data).find('learningObject').attr('header') != undefined){
+				$('#overview').css('background-image', "url('" + eval( $(data).find('learningObject').attr('header'))+ "')");
+			}
+			
 			//add all the pages to the pages menu: this links bak to the same page
 			$(data).find('page').each( function(index, value){
 				$('#nav').append('<li class=""><a href="javascript:loadContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
