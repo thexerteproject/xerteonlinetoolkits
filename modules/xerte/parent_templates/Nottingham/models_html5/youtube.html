@@ -46,26 +46,34 @@
 		};
 
 		this.parseIframeCode = function(code, params) {
-			var parts = code.split(' ');
-			for (var i = 0; i < parts.length; i++) {
-				if (parts[i].indexOf("=") != -1) {
-					var part = parts[i].split("=");
-					var val = ("" + part[1]).replace('"', '');
-					if (part[0] == "width") {
-						params.width = parseInt(val);
-					}
-					else if (part[0] == "height") {
-						params.height = parseInt(val);
-					}
-					else if (part[0] == "src") {
-						var s = val.indexOf('http://www.youtube.com/embed/') + 29;
-						var f = val.indexOf('"', s+1);
-						params.code = val.substring(s, f);
-					}
-				}
-			}
-			return params;
-		};
+      var parts = code.split(' ');
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].indexOf("=") != -1) {
+          var part = parts[i].split("=");
+          if (part.length == 3) {
+            part[1] += "=" + part[2];
+          }
+          var val = ("" + part[1]).replace('"', '');
+          if (part[0] == "width") {
+            params.width = parseInt(val);
+          }
+          else if (part[0] == "height") {
+            params.height = parseInt(val);
+          }
+          else if (part[0] == "src") {
+            if (val.indexOf('?rel=0') != -1) {
+              params.related = 0;
+              val = val.replace('?rel=0', '');
+            }
+            val = val.replace('?rel=1', '');
+            var s = val.indexOf('http://www.youtube.com/embed/') + 29;
+            var f = val.indexOf('"', s+1);
+            params.code = val.substring(s, f);
+          }
+        }
+      }
+      return params;
+    };
 
 		this.init = function() {
 			var $textHolder = $("#textHolder");
