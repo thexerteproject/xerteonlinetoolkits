@@ -15,7 +15,7 @@ if(is_user_admin()){
 
     $query_response = mysql_query($query);
 
-    echo "<p style=\"margin:20px 0 0 5px\"><a onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</a></p>";
+    echo "<p style=\"margin:20px 0 0 5px; cursor:pointer; cursor:hand;\"><a onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</a></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
 	
