@@ -26,16 +26,6 @@ function show_template($row_play){
     _load_language_file("/modules/xerte/preview.inc");
 
 ?>
-
-        <!--
-
-        University of Nottingham Xerte Online Toolkits
-
-        HTML to use at the top of the Xerte preview and play windows
-        Version 1.0
-
-        -->
-
 	<!DOCTYPE html>
 	<html xmlns:fb="http://ogp.me/ns/fb#">
 		<head>
@@ -72,9 +62,9 @@ function show_template($row_play){
 		</script>
     
 	</head>
-	
+
 	<body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar">
-	
+		
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";		  fjs.parentNode.insertBefore(js, fjs);		}(document, 'script', 'facebook-jssdk'));</script>
@@ -156,9 +146,11 @@ function show_template($row_play){
 		<script src="<?PHP echo $template_path_string ?>/common/js/application.js"></script>
 		
 	<script type="text/javascript" language="JavaScript">
+	
+	
 	<?PHP
-
-	echo "</script></body></html>";
+	
+	 "</script></body></html>";
 
 	}
 
