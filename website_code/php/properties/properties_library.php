@@ -3,6 +3,7 @@
 //PROPERTIES LIBRARY
 
 require_once("../../../config.php");
+require_once("../template_library.php");
 
 _load_language_file("/website_code/php/properties/properties_library.inc");
 
@@ -89,10 +90,16 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
         echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
 		
-		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_HTML5_LINK . "</p>";
-		
-		echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play_html5", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play_html5", $_POST['template_id']) . "</a></p>";
+		$template = explode("_", get_template_type($_POST['template_id']));
 
+		if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
+		
+			require_once($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php");
+			
+			show_play_links($template[1]);
+		
+		}
+		
         // Get the template screen size
 
         $query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $tutorial_id . "\"";
