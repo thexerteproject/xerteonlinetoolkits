@@ -45,7 +45,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         if(!empty($row)) {
             // if they're an admin or have rights to see the template, then show it.
             if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
-                require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview_bootstrap.php";
+                require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview_site.php";
                 show_preview_code($row, $row_username);		
                 exit(0);
             }
