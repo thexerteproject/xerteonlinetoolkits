@@ -1,0 +1,60 @@
+<script type="text/javascript">
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var imageViewer = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+		}
+
+		this.init = function() {
+			var $textHolder		= $("#textHolder");
+			var $panel			= $("#pageContents .panel");
+			var $pageImage		= $("#pageImg");
+
+			// text align
+			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+			if (textAlign == "Top" || textAlign == "Bottom") {
+				if (textAlign == "Top") {
+					$textHolder.insertBefore("#imgHolder");
+				}
+				$("#imgHolder").addClass("centerAlign");
+			} else if (textAlign == "Right") {
+				$panel.addClass("x_floatLeft");
+			} else {
+				$panel.addClass("x_floatRight");
+			}
+
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			$("#pageImg").attr({
+							"src":	eval(x_currentPageXML.getAttribute("url"))
+				});
+
+
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+	};
+
+	imageViewer.init();
+
+</script>
+
+<style type="text/css">
+
+</style>
+
+<div id="pageContents">
+
+	<div id="imgHolder" class="mobileAlign">
+		<div class="panel inline">
+			<img id="pageImg" />
+		</div>
+	</div>
+
+	<div id="textHolder"></div>
+
+</div>
