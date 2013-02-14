@@ -58,9 +58,8 @@ function loadContent(){
 			
 			//set the header image, if defined
 			if ($(data).find('learningObject').attr('header') != undefined){
-			
-				$('#overview').css('background-image', "url('" + eval( $(data).find('learningObject').attr('header'))+ "')");
-				
+				$('#overview').css({filter:''}); //for IE8
+				$('#overview').css('background-image', "url(" + eval( $(data).find('learningObject').attr('header'))+ ")");
 			}
 			
 			//done with one time stuff, now parse the first page
