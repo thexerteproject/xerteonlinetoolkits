@@ -2,98 +2,151 @@
 
 class XerteXMLInspector
 {
-  // Properties
-  private  $fname;
-  private  $xml;
-  private  $models;
-  private  $mediaIsUsed;
 
-  private function addModel($model)
-  {
-    foreach ($this->models as $presentmodel)
+    private $fname;
+    private $xml;
+    private $models;
+    private $mediaIsUsed;
+
+    private function addModel($model)
     {
-      if ($presentmodel == $model)
-      {
-        return;
-      }
+        foreach ($this->models as $presentmodel) {
+            if ($presentmodel == $model) {
+                return;
+            }
+        }
+        array_push($this->models, $model);
     }
-    array_push($this->models, $model);
-  }
 
-  private function fixXmlFile($name)
-  {
-    $xmlcontents = file_get_contents($name);
-    //_debug("1. " . $xmlcontents);
-    // Ok replace known escape sequences to something without an '&'
-    $xmlcontents = str_replace('&lt;', '%%%lt;', $xmlcontents);
-    $xmlcontents = str_replace('&gt;', '%%%gt;', $xmlcontents);
-    $xmlcontents = str_replace('&quot;', '%%%quot;', $xmlcontents);
-    $xmlcontents = str_replace('&nbsp;', '%%%nbsp;', $xmlcontents);
-    $xmlcontents = str_replace('&amp;', '%%%amp;', $xmlcontents);
-
-    //_debug("2. " . $xmlcontents);
-    // replace & with &amp;
-    $xmlcontents = str_replace('&', '&amp;', $xmlcontents);
-
-    // replace known escape sequences back
-    $xmlcontents = str_replace('%%%lt;', '&lt;', $xmlcontents);
-    $xmlcontents = str_replace('%%%gt;', '&gt;', $xmlcontents);
-    $xmlcontents = str_replace('%%%quot;', '&quot;', $xmlcontents);
-    $xmlcontents = str_replace('%%%nbsp;', '&nbsp;', $xmlcontents);
-    $xmlcontents = str_replace('%%%amp;', '&amp;', $xmlcontents);
-
-    //_debug("3. ". $xmlcontents);
-
-    $res = file_put_contents($name, $xmlcontents);
-    //_debug("4. " . $res);
-  }
-
-  public function loadTemplateXML($name)
-  {
-    $this->fname = $name;
-    libxml_use_internal_errors(true);
-    $this->xml = simplexml_load_file($name);
-    if (!$this->xml)
+    private function fixXmlFile($name)
     {
-        _debug("Error detected in XML, try to fix...");
-        $this->fixXmlFile($name);
-        $this->xml = simplexml_load_file($name);
-    }
-    $this->models = array();
-    $nodes = $this->xml->xpath('/*/*');
-    foreach ($nodes as $node)
-    {
-      $this->addModel($node->getName());
-    }
-    $this->mediaIsUsed = false;
-    $str = $this->xml['media'];
-    if (strlen($str) > 0)
-    {
-       $this->mediaIsUsed = true;
-    }
-  }
+        $xmlcontents = file_get_contents($name);
+        //_debug("1. " . $xmlcontents);
+        // Ok replace known escape sequences to something without an '&'
+        $xmlcontents = str_replace('&lt;', '%%%lt;', $xmlcontents);
+        $xmlcontents = str_replace('&gt;', '%%%gt;', $xmlcontents);
+        $xmlcontents = str_replace('&quot;', '%%%quot;', $xmlcontents);
+        $xmlcontents = str_replace('&nbsp;', '%%%nbsp;', $xmlcontents);
+        $xmlcontents = str_replace('&amp;', '%%%amp;', $xmlcontents);
 
-  public function getUsedModels()
-  {
-    return $this->models;
-  }
+        //_debug("2. " . $xmlcontents);
+        // replace & with &amp;
+        $xmlcontents = str_replace('&', '&amp;', $xmlcontents);
 
-  public function mediaIsUsed()
-  {
-    return $this->mediaIsUsed;
-  }
+        // replace known escape sequences back
+        $xmlcontents = str_replace('%%%lt;', '&lt;', $xmlcontents);
+        $xmlcontents = str_replace('%%%gt;', '&gt;', $xmlcontents);
+        $xmlcontents = str_replace('%%%quot;', '&quot;', $xmlcontents);
+        $xmlcontents = str_replace('%%%nbsp;', '&nbsp;', $xmlcontents);
+        $xmlcontents = str_replace('%%%amp;', '&amp;', $xmlcontents);
 
-  public function modelUsed($model)
-  {
-    foreach ($this->models as $presentmodel)
-    {
-      if ($presentmodel == $model)
-      {
-        return true;
-      }
+        //_debug("3. ". $xmlcontents);
+        if ($this->isValidXml($xmlcontents)) {
+            _debug("We were able to fixup the file : $name");
+            $res = file_put_contents($name, $xmlcontents);
+            return true;
+        }
+        return false;
+        //_debug("4. " . $res);
     }
-    return false;
-  }
+
+    /**
+     * Checks to see if some XML is valid
+     * @param string $string as a string.
+     * @return boolean true if the XML appears valid.
+     */
+    private function isValidXml($string)
+    {
+
+        $orig_error_setting = libxml_use_internal_errors(true);
+        // See security note elsewhere in this file and http://php.net/manual/en/function.libxml-disable-entity-loader.php
+        $original_el_setting = libxml_disable_entity_loader(false);
+
+        // Suppress anything PHP might moan about.
+        $temp = @simplexml_load_string($string);
+        $ok = false;
+        if (!$temp) {
+            $errors = array();
+            foreach (libxml_get_errors() as $libXMLError) {
+                $errors[] = $libXMLError->file . ' : line ' . $libXMLError->line . ', col:' . $libXMLError->column . ', message:' . $libXMLError->message;
+            }
+            libxml_clear_errors();
+            _debug("Error detected in XML : " . implode(',', $errors));
+            $ok = false;
+        } else {
+            $ok = true;
+        }
+        libxml_disable_entity_loader($original_el_setting);
+        libxml_use_internal_errors($orig_error_setting);
+        return $ok;
+    }
+
+    public function loadTemplateXML($name)
+    {
+        _debug("Trying to simplexml_load_file : $name");
+        $this->fname = $name;
+
+        // We don't really want to load external entities into our XML; but have no choice here. Make sure it's enabled (revert it later on).
+        // This can be a security issue - see .e.g http://php.net/manual/en/function.libxml-disable-entity-loader.php
+        $orig_error_setting = libxml_use_internal_errors(true);
+        $original_el_setting = libxml_disable_entity_loader(false);
+
+        if (!file_exists($name)) {
+            _debug("Can't load : $name - it's not there!");
+            return false;
+        }
+
+        $xml = file_get_contents($name);
+        if (!$this->isValidXml($xml)) {
+            // Try and  fix it ?
+            _debug("Invalid XML found; trying to repair");
+            $ok = $this->fixXmlFile($name);
+            if ($ok === false) {
+                // Could not fix it!
+                _debug("Could not fix up the xml file with $name; consult error logs etc.");
+            }
+            else {
+                // reload.
+                $xml = file_get_contents($name);
+            }
+        }
+
+        $this->xml = simplexml_load_string($xml);
+        $this->models = array();
+        $nodes = $this->xml->xpath('/*/*');
+        foreach ($nodes as $node) {
+            $this->addModel($node->getName());
+        }
+        $this->mediaIsUsed = false;
+        $str = $this->xml['media'];
+        if (strlen($str) > 0) {
+            $this->mediaIsUsed = true;
+        }
+
+        libxml_disable_entity_loader($original_el_setting);
+        libxml_use_internal_errors($orig_error_setting);
+    }
+
+    public function getUsedModels()
+    {
+        return $this->models;
+    }
+
+    public function mediaIsUsed()
+    {
+        return $this->mediaIsUsed;
+    }
+
+    public function modelUsed($model)
+    {
+        foreach ($this->models as $presentmodel) {
+            if ($presentmodel == $model) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 //$template = new XerteXMLInspector();
@@ -103,5 +156,3 @@ class XerteXMLInspector
 //{
 //	print($model . "\n");
 //}
-
-?>
