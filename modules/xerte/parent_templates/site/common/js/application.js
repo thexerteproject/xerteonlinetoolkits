@@ -80,8 +80,8 @@ function parseContent(index){
 	var page = $(data).find('page').eq(index);
 	
 	//set the main page title and subtitle			
-	$('#pageTitle').text( $(data).find('learningObject').attr('name') );
-	$('#pageSubTitle').text( page.attr('name') );
+	$('#pageTitle').text( page.attr('name') );
+	$('#pageSubTitle').text( page.attr('subtitle') );
 	
 	
 	//create the sections

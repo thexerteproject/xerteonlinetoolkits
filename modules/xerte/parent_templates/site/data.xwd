@@ -7,7 +7,7 @@
 		<header type="Media" optional="true" label="Header Image"/>
 
 		<newNodes>
-			<page><![CDATA[<page name="Enter Page Title"/>]]></page>
+			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
 		</newNodes>
 
 	</learningObject>
