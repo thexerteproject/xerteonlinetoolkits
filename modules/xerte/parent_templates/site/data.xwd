@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="" runtime="preview_site.php">
+<wizard runtime="preview_site.php">
 
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
@@ -7,41 +7,43 @@
 		<header type="Media" optional="true" label="Header Image"/>
 
 		<newNodes>
-			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
+			<page><![CDATA[<page name="Enter Page Title"/>]]></page>
 		</newNodes>
 
 	</learningObject>
   
-	<page icon="icPage" remove="true" duplicate="true">
+	<page icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
 	
 		<name type="TextInput" label="Page Title"/>
-		<subtitle type="TextInput" label="Page Subtitle"/>
 	
 		<newNodes>
-			<section><![CDATA[<section name="Enter Section Title">Enter section text</section>]]></section>
+			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
+		
 	</page>
 	
-	<section icon="icPageWhite" remove="true" duplicate="true">
+	<section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 	
 		<name type="TextInput" label="Section Title"/>
 		
 		<newNodes>
-			<text><![CDATA[<text name="Name">Text Here</video]]></text>
-			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text">Text Here</image>]]></image>
-			<audio><![CDATA[<audio name="Name" url="Select File...">Text Here</video]]></audio>
+		
 			<video><![CDATA[<video name="Name" url="Select File...">Text Here</video]]></video>
+			<audio><![CDATA[<audio name="Name" url="Select File...">Text Here</audio]]></audio>
+			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text">Text Here</image>]]></image>
+			<text><![CDATA[<text name="Name">HTML Here</text>]]></text>
+			
 		</newNodes>
 		
 	</section>
 	
-	<text icon="icPageWhiteText" type="text" height="400" label="Text"  remove="true">
+	<text icon="icStyle" type="text" height="400" menuItem="Text" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		
 	</text>
 	
-	<image icon="icPageWhitePicture" type="text" height="400" label="Text" remove="true">
+	<image icon="icImage" type="text" height="250" menuItem="Image" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
@@ -49,20 +51,18 @@
 		
 	</image>
 	
-	<audio icon="icPageWhiteSound" type="text" height="400" label="Text" remove="true">
+	<audio icon="icSound" type="text" height="250" menuItem="Audio" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
 		
 	</audio>
 	
-	<video icon="icPageWHiteFilm" type="text" height="400" label="Text" remove="true">
+	<video icon="icFilm" type="text" height="250" menuItem="Video" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
 		
 	</video>
 	
-
-  
 </wizard>
