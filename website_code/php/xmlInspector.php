@@ -156,3 +156,5 @@ class XerteXMLInspector
 //{
 //	print($model . "\n");
 //}
+
+?>

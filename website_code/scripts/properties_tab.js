@@ -823,7 +823,7 @@ function delete_file(file){
 			xmlHttp.open("post",properties_ajax_php_path + url,true);
 			xmlHttp.onreadystatechange=delete_file_stateChanged;
 			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xmlHttp.send('file=' + file); 
+			xmlHttp.send('file=' + encodeURIComponent(file));
 
 		}	
 
