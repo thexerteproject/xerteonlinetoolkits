@@ -20,20 +20,28 @@ function enableTTS(){
 }
 
 function openWindow(params){
-  window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+	if (params.type == "media") {
+		var src = params.url + '?media=../' + params.media + ',transcript=../' + params.transcript + ',img=../' + params.img;
+		window.open(src,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+	} else {
+		window.open(params.url,'xerte_window',"status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0,scrollbars=0,left=" + String((screen.width / 2) - (params.width / 2)) + ",top=" + String((screen.height / 2) - (params.height / 2)) + ",height=" + params.height + ",width=" + params.width);
+	}
 }
 
-function makePopUp(params)
-{
+var popupInfo = new Array();
+var stageW;
+var stageH;
+var screenSize;
+
+function makePopUp(params) {
 	//kill any existing popups
 	var popup = document.getElementById("popup");
 	var parent = document.getElementById("popup_parent");
 	
-	if (popup != null)
-	{
+	if (popup != null) {
 		parent.removeChild(popup);
 	}
-
+	
 	//make the div and style it
 	var create_div = document.createElement("DIV");
 	create_div.id = params.id;
@@ -43,55 +51,51 @@ function makePopUp(params)
 		create_div.style.border = "1px solid " + params.borderColour;
 	}
 	
-	var stageW = params.width;
-	var stageH = params.height;
-	var divNum = Number(params.id.substring(5, params.id.length));
-	if (params.screenSize == "full screen" || params.screenSize == "fill window" || (params.width == 1600 && params.height == 1200)) {		
-		if (document.body && document.body.offsetWidth) {
-			stageW = document.body.offsetWidth;
-			stageH = document.body.offsetHeight;
-		}
-		if (document.compatMode=='CSS1Compat' && document.documentElement && document.documentElement.offsetWidth ) {
-			stageW = document.documentElement.offsetWidth;
-			stageH = document.documentElement.offsetHeight;
-		}
-		if (window.innerWidth && window.innerHeight) {
-			stageW = window.innerWidth;
-			stageH = window.innerHeight;
-		}
-		
-		if (params.screenSize == "full screen" && stageH / stageW != 0.75) {
-			var ratio = stageH / stageW;
-			if (ratio > 0.75) {
-				stageH = stageW * 0.75;
-			} else {
-				stageW = stageH / 0.75;
-			}
-		}
-		
+	stageW = params.width;
+	stageH = params.height;
+	if (stageW == 1600 && stageH == 1200) {
+		stageW = document.getElementsByTagName('body')[0].clientWidth;
+		stageH = document.getElementsByTagName('body')[0].clientHeight;
+	}
+	if (screenSize == "full screen") {
+		calcStageSize();
 	}
 	
-	var divW = stageW / 100 * params.calcW;
-	var divH = stageH / 100 * params.calcH;
-	var divX = stageW - ((divW + (stageW / 100 * params.calcX) ) * (divNum + 1));
-	var divY = stageH / 100 * params.calcY;
+	// save info about popup to use if screen resized
+	var index = popupInfo.length;
+	popupInfo[index] = new Array();
+	popupInfo[index][0] = params.id;
+	popupInfo[index][1] = params.type;
+	popupInfo[index][2] = params.calcW;
+	popupInfo[index][3] = params.calcH;
+	popupInfo[index][4] = params.calcX;
+	popupInfo[index][5] = params.calcY;
 	
-	create_div.style.width = divW + "px";
-	create_div.style.height = divH + "px";
-	create_div.style.left = divX + "px";
-	create_div.style.top = divY + "px";
+	if (screenSize == "fill window") {
+		create_div.style.width = params.calcW + "%";
+		create_div.style.height = params.calcH + "%";
+		create_div.style.left = params.calcX + "%";
+		create_div.style.top = params.calcY + "%";
+	} else {
+		create_div.style.width = calcPopupSize("width", index) + "px";
+		create_div.style.height = calcPopupSize("height", index) + "px";
+		create_div.style.left = calcPopupSize("x", index) + "px";
+		create_div.style.top = calcPopupSize("y", index) + "px";
+	}
 	
-	if (params.type == 'div'){
+	if (params.type == 'div') {
 		create_div.innerHTML = params.src;
 	} else {
 		var iframe_create_div = document.createElement("IFRAME");
+		iframe_create_div.id = "i" + params.id;
+		iframe_create_div.name = "i" + params.id;
 		iframe_create_div.src = params.src;
 		if (params.type == 'jmol') {
-			iframe_create_div.src += ',width=' + divW + ',height=' + divH;
+			iframe_create_div.src += ',width=' + calcPopupSize("width", index) + ',height=' + calcPopupSize("height", index);
 		}
-		iframe_create_div.style.height = divH + "px";
-		iframe_create_div.style.width = divW + "px";	
-		iframe_create_div.frameBorder='no';
+		iframe_create_div.style.width = "100%";
+		iframe_create_div.style.height = "100%";
+		iframe_create_div.frameBorder = 'no';
 		create_div.appendChild(iframe_create_div);
 	}
 
@@ -99,15 +103,98 @@ function makePopUp(params)
 	parent.appendChild(create_div);
 }
 
-function killPopUp()
-{
+function killPopUp() {
 	var parent = document.getElementById("popup_parent");
-	if ( parent.hasChildNodes() )
-	{
-		while ( parent.childNodes.length >= 1 )
-		{
-			parent.removeChild( parent.firstChild );       
-		} 
+	if (parent.hasChildNodes()) {
+		while (parent.childNodes.length >= 1) {
+			parent.removeChild(parent.firstChild);
+			popupInfo.splice(0, popupInfo.length);
+		}
+	}
+}
+
+function calcPopupSize(type, index) {
+	var num;
+	if (type == "width") {
+		num = stageW / 100 * popupInfo[index][2];
+	} else if (type == "height") {
+		num = stageH / 100 * popupInfo[index][3];
+	} else if (type == "x") {
+		num = stageW / 100 * popupInfo[index][4];
+	} else if (type == "y") {
+		num = stageH / 100 * popupInfo[index][5];
+	}
+	return num;
+}
+
+function calcStageSize() {
+	if (stageH / stageW != 0.75) {
+		var ratio = stageH / stageW;
+		if (ratio > 0.75) {
+			stageH = stageW * 0.75;
+		} else {
+			stageW = stageH / 0.75;
+		}
+	}
+}
+
+function resizePopup(type, width, height) {
+	if (screenSize != type && !(screenSize == undefined && type == "default")) {
+		var parent = document.getElementById("popup_parent");
+		if (parent.hasChildNodes()) {
+			if (type == "fill window") {			
+				for (i=0; i<popupInfo.length; i++) {
+					id = parent.childNodes[i].id;
+					document.getElementById(id).style.width = popupInfo[i][2] + "%";
+					document.getElementById(id).style.height = popupInfo[i][3] + "%";
+					document.getElementById(id).style.left = popupInfo[i][4] + "%";
+					document.getElementById(id).style.top = popupInfo[i][5] + "%";
+					if (popupInfo[i][1] == 'jmol') {
+						stageW = document.getElementsByTagName('body')[0].clientWidth;
+						stageH = document.getElementsByTagName('body')[0].clientHeight;
+						document.getElementById("ipopup"+i).contentWindow.resize(calcPopupSize("width", i), calcPopupSize("height", i));
+						//window.frames["ipopup"+i].resize(calcPopupSize("width", i), calcPopupSize("height", i));
+					}
+				}
+			} else {
+				if (type == "full screen") {
+					stageW = document.getElementsByTagName('body')[0].clientWidth;
+					stageH = document.getElementsByTagName('body')[0].clientHeight;
+					calcStageSize();
+				} else {
+					stageW = width;
+					stageH = height;
+				}
+				for (i=0; i<popupInfo.length; i++) {
+					id = parent.childNodes[i].id;
+					document.getElementById(id).style.width = calcPopupSize("width", i) + "px";
+					document.getElementById(id).style.height = calcPopupSize("height", i) + "px";
+					document.getElementById(id).style.left = calcPopupSize("x", i) + "px";
+					document.getElementById(id).style.top = calcPopupSize("y", i) + "px";
+					if (popupInfo[i][1] == 'jmol') {
+						document.getElementById("ipopup"+i).contentWindow.resize(calcPopupSize("width", i), calcPopupSize("height", i));
+						//window.frames["ipopup"+i].resize(calcPopupSize("width", i), calcPopupSize("height", i));
+					}
+				}
+			}
+		}
+	}
+	screenSize = type;
+}
+
+function windowResized() {
+	var parent = document.getElementById("popup_parent");
+	if (parent.hasChildNodes() && screenSize == "full screen") {
+		stageW = document.getElementsByTagName('body')[0].clientWidth;
+		stageH = document.getElementsByTagName('body')[0].clientHeight;
+		calcStageSize();
+		for (i=0; i<popupInfo.length; i++) {
+			id = parent.childNodes[i].id;
+			document.getElementById(id).style.width = calcPopupSize("width", i) + "px";
+			document.getElementById(id).style.height = calcPopupSize("height", i) + "px";
+			document.getElementById(id).style.left = calcPopupSize("x", i) + "px";
+			document.getElementById(id).style.top = calcPopupSize("y", i) + "px";
+		}
 	}
 }
 
@@ -191,6 +278,6 @@ function finish(){
 
 </script>
 
-</div>
+</div><div id="popup_parent">
 </body>
 </html>

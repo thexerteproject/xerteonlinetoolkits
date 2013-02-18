@@ -49,6 +49,10 @@
 		_debug("copy model " . $parent_template_path . "models/" . $model . ".rlm");
 		array_push($file_array, $parent_template_path . "models/" . $model . ".rlm");
 	  }
+	  /* Always add menu.rlm */
+	  _debug("copy model " . $parent_template_path . "models/menu.rlm");
+	  array_push($file_array, $parent_template_path . "models/menu.rlm");
+	  
 	  array_push($file_array, $parent_template_path . $row['template_name'] . ".rlt");
 	  export_folder_loop($parent_template_path . "common/");
 	}

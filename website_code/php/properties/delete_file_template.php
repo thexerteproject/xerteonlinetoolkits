@@ -13,7 +13,7 @@
 	include "../error_library.php";
 
 /** XXX/ TODO SECURITY HOLE - NEED TO CHECK $_POST['file'] IS VALID */
-if(unlink($_POST['file'])){
+if(unlink(urldecode($_POST['file']))){
 
     receive_message($_SESSION['toolkits_logon_username'], "FILE", "SUCCESS", "The file " . $_POST['file'] . "has been deleted", "User " . $_SESSION['toolkits_logon_username'] . " has deleted " . $_POST['file']);
 
