@@ -28,6 +28,7 @@
 		
 		<newNodes>
 		
+			<script><![CDATA[<script name="Name">JavaScript Here</script>]]></script>
 			<video><![CDATA[<video name="Name" url="Select File...">Text Here</video]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File...">Text Here</audio]]></audio>
 			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text">Text Here</image>]]></image>
@@ -37,11 +38,17 @@
 		
 	</section>
 	
-	<text icon="icStyle" type="text" height="400" menuItem="Text" label="Text" remove="true">
+	<text icon="icFont" type="text" height="400" menuItem="Text" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		
 	</text>
+	
+	<script icon="icCog" type="text" height="400" menuItem="Script" label="Script" remove="true">
+	
+		<name type="TextInput" label="Script"/>
+		
+	</script>
 	
 	<image icon="icImage" type="text" height="250" menuItem="Image" label="Text" remove="true">
 	
