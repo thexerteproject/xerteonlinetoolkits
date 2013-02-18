@@ -210,16 +210,16 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   global $level, $xerte_toolkits_site;
 
-    $query = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name as template_name, template_id, template_framework, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name as name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id ";
+  $query = "select td.template_name, td.template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix  . "templaterights tr where td.template_id = tr.template_id and tr.user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and tr.folder=\"" . $folder_id . "\" ";
 
   if ($sort_type == "alpha_down") {
-    $query .= "order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name DESC";
+    $query .= "order by td.template_name DESC";
   } elseif ($sort_type == "alpha_up") {
-    $query .= "order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name ASC";
+    $query .= "order by td.template_name ASC";
   } elseif ($sort_type == "date_down") {
-    $query .= "order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.date_created DESC";
+    $query .= "order by td.date_created DESC";
   } elseif ($sort_type == "date_up") {
-    $query .= "order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.date_created ASC";
+    $query .= "order by td.date_created ASC";
   }
 
   $query_response = mysql_query($query);
