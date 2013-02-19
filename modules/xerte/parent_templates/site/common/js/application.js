@@ -98,7 +98,13 @@ function parseContent(index){
 		$(this).children().each( function(index, value){
 			
 			//for all nodes append the text
-			section.append( '<p>' + $(this).text() + '</p>');
+			if (this.nodeName == 'text'){
+				section.append( '<p>' + $(this).text() + '</p>');
+			}
+			
+			if (this.nodeName == 'script'){
+				section.append( '<script>' + $(this).text() + '</script>');
+			}
 			
 			//handle media
 			if ( $(this).attr('url') != undefined){
