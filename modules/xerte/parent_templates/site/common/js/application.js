@@ -96,7 +96,7 @@ function parseContent(index){
 
 		//add the section contents
 		$(this).children().each( function(index, value){
-			
+		
 			//for all nodes append the text
 			if (this.nodeName == 'text'){
 				section.append( '<p>' + $(this).text() + '</p>');
@@ -106,33 +106,18 @@ function parseContent(index){
 				section.append( '<script>' + $(this).text() + '</script>');
 			}
 			
-			//handle media
-			if ( $(this).attr('url') != undefined){
-			
-				var mediaStr;
-				var file = eval( $(this).attr('url') );
-				
-				if (this.nodeName == 'image'){
-				
-					mediaStr = '<p><img class="img-polaroid" src="' + file + '" title="Alt Text" alt="Alt Text"/></p>';
-					
-				}
-				
-				if (this.nodeName == 'audio'){
-				
-					mediaStr = '<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + file + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>';
-				
-				}
-				
-				if (this.nodeName == 'video'){
-				
-					mediaStr = '<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + file + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>';
-				
-				}
-				
-				//now append it to the section
-				section.append(mediaStr);
+			if (this.nodeName == 'image'){
+				section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
 			}
+			
+			if (this.nodeName == 'audio'){
+				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+			}
+			
+			if (this.nodeName == 'video'){
+				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+
 		});
 		
 		//a return to top button
@@ -150,9 +135,12 @@ function parseContent(index){
 	window.scroll(0,0);
 	
 	$('body').scrollspy('refresh');
-
+	
+	//an event for user defined code to know when loading is done
+	$(document).trigger('contentLoaded');
+	
 	//force facebook / twitter objects to initialise
 	twttr.widgets.load();
 	FB.XFBML.parse(); 
-
+	
 }
