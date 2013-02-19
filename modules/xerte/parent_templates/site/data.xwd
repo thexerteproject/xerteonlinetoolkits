@@ -44,7 +44,7 @@
 		
 	</text>
 	
-	<script icon="icCog" type="text" height="400" menuItem="Script" label="Script" remove="true">
+	<script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true">
 	
 		<name type="TextInput" label="Script"/>
 		
