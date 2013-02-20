@@ -112,21 +112,21 @@
 							if (correctAnswer.indexOf(answerDelimeter) != -1) {
 								var splitAnswers = correctAnswer.split(answerDelimeter);
 								for (var i=0; i<splitAnswers.length; i++) {
-									if ($thisInput.val().toLowerCase().trim() == splitAnswers[i].trim()) {
+									if ($.trim($thisInput.val().toLowerCase()) == $.trim(splitAnswers[i])) {
 										isCorrect = true;
 										break;
 									}
 								}
 							}
 							else {
-								if ($thisInput.val().toLowerCase().trim() == correctAnswer) {
+								if ($.trim($thisInput.val().toLowerCase()) == correctAnswer) {
 									isCorrect = true;
 								}
 							}
 
 							if (isCorrect == true) { // correct
 								$thisInput
-									.val($thisInput.val().toLowerCase().trim())
+									.val($.trim($thisInput.val().toLowerCase()))
 									.prop("readonly", true);
 								$thisInput.parent().find("img").removeClass("hidden");
 								$feedback.html("");
@@ -153,7 +153,7 @@
 									$this.focus();
 									var correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer");
 									if (correctAnswer.indexOf(answerDelimeter) != -1) {
-										correctAnswer = correctAnswer.split(answerDelimeter)[0].trim();
+										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
 									}
 									$thisInput
 										.val(correctAnswer)
