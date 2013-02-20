@@ -208,18 +208,20 @@
 
 			$('#headerHolder').hide();
 			$('#footerHolder').hide();
-
-			var that = this;
-			$('<input type="button" value="<" />')
-				.on("click", function(){
-					that.doPrevious();
-				})
-				.appendTo("#pictureButtons");
-			$('<input type="button" value=">" />')
-				.on("click", function(){
-					that.doNext();
-				})
-				.appendTo("#pictureButtons");
+			
+			if ($("#pictureButtons").children().length == 0) {
+				var that = this;
+				$('<input type="button" value="<" />')
+					.on("click", function(){
+						that.doPrevious();
+					})
+					.appendTo("#pictureButtons");
+				$('<input type="button" value=">" />')
+					.on("click", function(){
+						that.doNext();
+					})
+					.appendTo("#pictureButtons");
+			}
 
 			this.$panel.addClass("x_floatRight");
 			this.$panel.addClass("width60");
