@@ -1,60 +1,632 @@
 <script type="text/javascript">
-
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var imageViewer = new function() {
+		var	$pageImg,
+			$cropImg,
+			$imgCover,
+			$controlPanel,
+			$moveBtn,
+			$zoomInBtn,
+			$zoomOutBtn,
+			$selectBtn,
+			$resetBtn,
+			$fullBtn;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$pageImg 		= $("#pageImg");
+			$cropImg 		= $("#cropImg");
+			$imgCover		= $("#imgCover");
+			$controlPanel	= $("#controlPanel");
+			$moveBtn		= $controlPanel.find("#move");
+			$zoomInBtn		= $controlPanel.find("#zoomIn");
+			$zoomOutBtn		= $controlPanel.find("#zoomOut");
+			$selectBtn		= $controlPanel.find("#selectArea");
+			$resetBtn		= $controlPanel.find("#resetImage");
+			$fullBtn		= $controlPanel.find("#toggleScreen");
+			
+			$resetBtn.trigger("click");
 		}
-
+		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			if ($("#imgHolder").hasClass("fullScreen")) {
+				if ($pageImg.hasClass("move")) {
+					$moveBtn.trigger("click");
+				}
+				$pageImg.css({
+					"left"	:0,
+					"top"	:0
+				});
+				this.setFullScreenWH();
+			}
 		}
-
+		
+		this.imgLoaded = function() {
+			$cropImg
+				.width($pageImg.width())
+				.height($pageImg.height());
+			
+			$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
+			
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.animate = function(newW, newL, newT) {
+			if ($pageImg.filter(":animated").length > 0) {
+				$pageImg.stop();
+			}
+			$pageImg.animate({
+				width	:newW,
+				left	:newL + "px",
+				top		:newT + "px"
+			}, {
+				duration	:500,
+				//easing		:"easeInOutQuad",
+				complete	:imageViewer.calculateDragArea
+			});
+		}
+		
+		this.setFullScreenWH = function() {
+			var $panel = $("#mainPanel");
+			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			
+			$pageImg.width($panel.width());
+			
+			// is $panel too tall now $pageImg has been scaled to fill its width?
+			if ($panel.height() > $pageImg.height()) {
+				$panel.height($pageImg.height());
+			}
+			
+			$cropImg
+				.width($panel.width())
+				.height($panel.height());
+		}
+		
+		this.calculateDragArea = function() {
+			// calculate drag constraints
+			if ($pageImg.hasClass("ui-draggable")) {
+				$pageImg.draggable({
+					containment:	[($cropImg.offset().left + $cropImg.width()) - $pageImg.width(), ($cropImg.offset().top + $cropImg.height()) - $pageImg.height(), $cropImg.offset().left, $cropImg.offset().top]
+				});
+			}
+			
+			if ($pageImg.width() == $cropImg.width()) {
+				$zoomOutBtn.button("disable");
+			} else {
+				$zoomOutBtn.button("enable");
+			}
+		}
+		
 		this.init = function() {
+			$pageImg 		= $("#pageImg");
+			$cropImg 		= $("#cropImg");
+			$imgCover		= $("#imgCover");
+			$controlPanel	= $("#controlPanel");
+			$moveBtn		= $controlPanel.find("#move");
+			$zoomInBtn		= $controlPanel.find("#zoomIn");
+			$zoomOutBtn		= $controlPanel.find("#zoomOut");
+			$selectBtn		= $controlPanel.find("#selectArea");
+			$resetBtn		= $controlPanel.find("#resetImage");
+			$fullBtn		= $controlPanel.find("#toggleScreen");
+			
 			var $textHolder		= $("#textHolder");
-			var $panel			= $("#pageContents .panel");
-			var $pageImage		= $("#pageImg");
-
+			var $panel			= $("#mainPanel");
+			
+			$imgCover
+				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')") /* without a bg the div won't respond to mouse events in IE */
+				.disableSelection(); // select area control won't work without coverImg
+			
+			
 			// text align
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
 			if (textAlign == "Top" || textAlign == "Bottom") {
 				if (textAlign == "Top") {
-					$textHolder.insertBefore("#imgHolder");
+					$("#pageContents").prepend($textHolder);
 				}
 				$("#imgHolder").addClass("centerAlign");
+				$pageImg.css({
+					"left"	:0,
+					"top"	:0
+				});
 			} else if (textAlign == "Right") {
 				$panel.addClass("x_floatLeft");
 			} else {
 				$panel.addClass("x_floatRight");
 			}
-
+			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			$("#pageImg").attr({
-							"src":	eval(x_currentPageXML.getAttribute("url"))
+			
+			
+			// set up control panel & buttons
+			$controlPanel.draggable({containment:	"parent"});
+			
+			var attr	= ["move", "zoomIn", "zoomOut", "selectArea", "resetImage", "toggleScreen"];
+			var btnTip	= ["Move", "Zoom In", "Zoom Out", "Select Area", "Reset Image", "Toggle Full Screen"];
+			
+			for (var i=0; i<attr.length; i++) {
+				var xmlTxt = x_currentPageXML.getAttribute(attr[i] + "Tip");
+				if (xmlTxt != undefined) {
+					btnTip.splice(i, 1, xmlTxt);
+				}
+				
+				$controlPanel.find("#" + attr[i]).button({
+					icons:	{primary: "x_" + attr[i]},
+					label: 	btnTip[i],
+					text:	false
+				})
+			}
+			
+			$controlPanel.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/img_viewer_btns.png")');
+			
+			$moveBtn.toggle(
+				function() { // turn move on
+					$controlPanel.find("label[for='move']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					if ($controlPanel.find("label[for='selectArea']").hasClass("ui-state-active")) { // turn select area off
+						$selectBtn.trigger("click");
+						$controlPanel.find("label[for='selectArea']").removeClass("ui-state-active");
+					}
+					
+					var offsets = [$cropImg.position().left, $cropImg.position().top];
+					
+					$pageImg
+						.addClass("move")
+						.draggable({disabled:	false});
+					
+					imageViewer.calculateDragArea();
+					$imgCover.hide();
+					
+					$("#pageContents").keydown(function(e) {
+						// move image around using arrow keys
+						var charCode = e.charCode || e.keyCode;
+						if (charCode >= 37 && charCode <= 40) {
+							var oldXY = [$pageImg.position().left, $pageImg.position().top];
+							var newXY = [$pageImg.position().left, $pageImg.position().top];
+							
+							if (charCode == 37) { // move img right
+								if ($pageImg.position().left < 0) { // there's space to move the image over
+									newXY.splice(0, 1, $pageImg.position().left + 25);
+									if (newXY[0] > 0) { // adjust newXY if it will move view off the edge of the image
+										newXY.splice(0, 1, 0);
+									}
+								}
+								
+							} else if (charCode == 38) { // move img down
+								if ($pageImg.position().top < 0) {
+									newXY.splice(1, 1, $pageImg.position().top + 25);
+									if (newXY[1] > 0) {
+										newXY.splice(1, 1, 0);
+									}
+								}
+								
+							} else if (charCode == 39) { // move img left
+								if ($pageImg.width() + $pageImg.position().left - $cropImg.width() > 0) {
+									newXY.splice(0, 1, $pageImg.position().left - 25);
+									if ($pageImg.width() + newXY[0] - $cropImg.width() < 0) {
+										newXY.splice(0, 1, $cropImg.width() - $pageImg.width());
+									}
+								}
+								
+							} else if (charCode == 40) { // move img up
+								if ($pageImg.height() + $pageImg.position().top - $cropImg.height() > 0) {
+									newXY.splice(1, 1, $pageImg.position().top - 25);
+									if ($pageImg.height() + newXY[1] - $cropImg.height() < 0) {
+										newXY.splice(1, 1, $cropImg.height() - $pageImg.height());
+									}
+								}
+							}
+							
+							if (oldXY[0] != newXY[0] || oldXY[1] != newXY[1]) {
+								$pageImg.css({
+									left:	newXY[0] + "px",
+									top:	newXY[1] + "px"
+								});
+								imageViewer.calculateDragArea;
+							}
+						}
+					});
+				},
+				
+				function() { // turn move off
+					$controlPanel.find("label[for='move']").removeClass("ui-state-active"); // remove manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					$pageImg
+						.draggable({disabled:	true})
+						.removeClass("move ui-draggable-disabled ui-state-disabled");
+					
+					$imgCover.show();
+					$("#pageContents").off("keydown");
+				}
+			);
+			
+			
+			$zoomInBtn.click(function() {
+				var	oldW	= $pageImg.width(),
+					newW	= $pageImg.width() * 1.25,
+					centreX	= $cropImg.width() / 2,
+					centreY	= $cropImg.height() / 2,
+					xOffset	= (($pageImg.position().left - centreX)) / (oldW / 2),
+					yOffset	= (($pageImg.position().top  - centreY)) / (oldW / 2);
+				
+				imageViewer.animate(newW, (newW * xOffset / 2 ) + centreX, (newW * yOffset / 2 ) + centreY);
+			});
+			
+			
+			$zoomOutBtn.click(function() {
+				// calculate new width/height (can't be smaller than $cropImg)
+				var	oldW	= $pageImg.width(),
+					newW	= $pageImg.width() * 0.8,
+					newH	= $pageImg.height() * 0.8;
+				
+				if (newW < $cropImg.width()) {
+					newW = $cropImg.width();
+					newH = $cropImg.height();
+				}
+				
+				// calculate centre of $cropImg and offset of $pageImg so it zooms on centered part of image
+				var	centreX	= $cropImg.width() / 2,
+					centreY	= $cropImg.height() / 2,
+					xOffset = (($pageImg.position().left - centreX)) / (oldW / 2),
+					yOffset = (($pageImg.position().top  - centreY)) / (oldW / 2),
+					left	= (newW * xOffset / 2 ) + centreX,
+					top		= (newW * yOffset / 2 ) + centreY;
+				
+				// image must stay inside $cropImg borders
+				if (0 - left + $cropImg.width() > newW) {
+					left = $cropImg.width() - newW;
+				} else if (left > 0) {
+					left = 0;
+				}
+				if (0 - top + $cropImg.height() > newH) {
+					top = $cropImg.height() - newH;
+				} else if (top > 0) {
+					top = 0;
+				}
+				
+				imageViewer.animate(newW, left, top);
+				
+			}).button("disable");
+			
+			
+			// zoom in/out also works on scrolling mouse wheel
+			if (x_browserInfo.touchScreen == false) {
+				$("#pageImg, #imgCover").bind("mousewheel DOMMouseScroll", function(e) {
+					// has wheel scrolled up or down? different browsers show this in e.originalEvent in different ways
+					if (e.originalEvent.detail == -3 || e.originalEvent.wheelDelta == 120) { // up
+						$zoomInBtn.trigger("click");
+					} else { // down
+						$zoomOutBtn.trigger("click");
+					}
 				});
-
-
-			x_pageLoaded(); // call this function in every model once everything's loaded
+			} else {
+				$selectBtn.remove();
+				$controlPanel.find("label[for='selectArea']").remove();
+			}
+			
+			
+			$selectBtn.toggle(
+				function() { // turn select on
+					$controlPanel.find("label[for='selectArea']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					if ($pageImg.hasClass("move")) { // turn move off
+						$moveBtn.trigger("click");
+						$controlPanel.find("label[for='move']").removeClass("ui-state-active");
+					}
+					
+					$imgCover
+						.show()
+						.on("mousedown.select", function(e) {
+							// create $selectBox at mousedown position
+							var mouseXY = [e.pageX, e.pageY];
+							
+							$("#pageContents").append('<div id="selectBox" style="position:absolute" />');
+							var $selectBox = $("#selectBox");
+							$selectBox
+								.css({
+									left	:mouseXY[0],
+									top		:mouseXY[1] - $x_headerBlock.height()
+									})
+								.data("start", mouseXY)
+								// pass mousemove/up events to $imgCover if triggered here instead
+								.on("mousemove.select", function(e) {
+									mouseXY = [e.pageX, e.pageY];
+									$imgCover.trigger("mousemove.select");
+									})
+								.on("mouseup.select", function() {
+									$imgCover.trigger("mouseup.select");
+								});
+							
+							$imgCover
+								.on("mousemove.select", function(e) {
+									// adjust size & position of $selectBox
+									if (e.pageX != undefined) { // mousemove triggered on $imgCover (not called from $selectBox mousemove)
+										mouseXY = [e.pageX, e.pageY];
+									}
+									
+									var xywh = [$selectBox.data("start")[0], $selectBox.data("start")[1], mouseXY[0] - $selectBox.data("start")[0], mouseXY[1] - $selectBox.data("start")[1]];
+									// is it being drawn backwards?
+									if (mouseXY[0] < xywh[0]) {
+										xywh.splice(0, 1, mouseXY[0]);
+										xywh.splice(2, 1, $selectBox.data("start")[0] - mouseXY[0]);
+									}
+									if (mouseXY[1] < xywh[1]) {
+										xywh.splice(1, 1, mouseXY[1]);
+										xywh.splice(3, 1, $selectBox.data("start")[1] - mouseXY[1]);
+									}
+									
+									$selectBox.css({
+										left	:xywh[0],
+										top		:xywh[1] - $x_headerBlock.height(),
+										width	:xywh[2],
+										height	:xywh[3]
+									});
+								})
+								.on("mouseup.select", function() {
+									// zoom to selected area if larger than 20px
+									if ($selectBox.width() >= 20 ) {
+										var	oldWH = [$pageImg.width(), $pageImg.height()],
+											scale = oldWH[0] / $selectBox.width(),
+											newWH = [$cropImg.width() * scale, oldWH[1] * (($cropImg.width() * scale) / oldWH[0])],
+											indentLeft = ($selectBox.position().left - $cropImg.position().left) + (0 - $pageImg.position().left), // distance from edge of image to $selectBox
+											indentTop  = ($selectBox.position().top  - $cropImg.position().top)  + (0 - $pageImg.position().top),  // distance from top of image to $selectBox
+											offsetLeft = indentLeft / oldWH[0], // offset of $selectBox in proportion to whole img width
+											offsetTop  = indentTop  / oldWH[1], // offset of $selectBox in proportion to whole img height
+											left  = 0 - (newWH[0] * offsetLeft), // left for newWH
+											top   = 0 - (newWH[1] * offsetTop);  // top for new WH
+										
+										if ($cropImg.width() - left > newWH[0]) {
+											newWH.splice(0, 1, $cropImg.width() - left);
+										}
+										if ($cropImg.height() - top > newWH[1]) {
+											top = $cropImg.height() - newWH[1];
+										}
+										
+										imageViewer.animate(newWH[0], left, top);
+										
+										$zoomOutBtn.button("enable");
+										
+										// recalculate drag constraints
+										if ($pageImg.hasClass("ui-draggable")) {
+											$pageImg.draggable({
+												containment:	[($cropImg.offset().left + $cropImg.width()) - $pageImg.width(), ($cropImg.offset().top + $cropImg.height()) - $pageImg.height(), $cropImg.offset().left, $cropImg.offset().top]
+											});
+										}
+									}
+									
+									// remove $selectBox & mouse event listeners
+									$selectBox
+										.off("mousemove.select")
+										.off("mouseup.select")
+										.remove();
+									
+									$imgCover
+										.off("mousemove.select")
+										.off("mouseup.select");
+								});
+						});
+				},
+				
+				function() { // turn select off (remove mouse events)
+					$controlPanel.find("label[for='selectArea']").removeClass("ui-state-active"); // remove manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					$imgCover.off(".select");
+					
+					$("#selectBox")
+						.off(".select")
+						.remove();
+				}
+			);
+			
+			
+			$resetBtn.click(function(e, ignore) {
+				if (ignore == "fullScreen") {
+					$pageImg.css({
+						left	:0,
+						top		:0
+					});
+					
+				} else {
+					// remove full screen
+					if ($("#imgHolder").hasClass("fullScreen")) {
+						$fullBtn.trigger("click");
+						$controlPanel.find("label[for='toggleScreen']").removeClass("ui-state-active");
+					}
+					
+					// reset dimensions / position
+					imageViewer.animate($cropImg.width(), 0, 0);
+				}
+				
+				$zoomOutBtn.button("disable");
+				
+				// turn move / select area off
+				if ($pageImg.hasClass("move")) {
+					$moveBtn.trigger("click");
+					$controlPanel.find("label[for='move']").removeClass("ui-state-active");
+				}
+				if ($controlPanel.find("label[for='selectArea']").hasClass("ui-state-active")) {
+					$selectBtn.trigger("click");
+					$controlPanel.find("label[for='selectArea']").removeClass("ui-state-active");
+				}
+			});
+			
+			
+			$fullBtn.toggle(
+				function() { // full screen on
+					$controlPanel.find("label[for='toggleScreen']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					$resetBtn.trigger("click", "fullScreen");
+					
+					$("#textHolder").hide();
+					$("#imgHolder").addClass("fullScreen");
+					
+					$("#mainPanel").removeClass("inline x_floatLeft x_floatRight");
+					
+					imageViewer.setFullScreenWH();
+					
+					$controlPanel.css({
+						"left"	:5,
+						"top"	:5
+					});
+					
+					$(this).parent().find("label .ui-icon.x_toggleScreen").css("background-position", "-180px 0px");
+				},
+				
+				function() { // full screen off
+					$controlPanel.find("label[for='toggleScreen']").removeClass("ui-state-active"); // remove manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
+					
+					$resetBtn.trigger("click", "fullScreen");
+					
+					$("#textHolder").show();
+					$("#imgHolder").removeClass("fullScreen");
+					
+					var $panel = $("#mainPanel");
+					var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+					if (textAlign == "Right") {
+						$panel.addClass("x_floatLeft");
+					} else if (textAlign != "Top" && textAlign != "Bottom") {
+						$panel.addClass("x_floatRight");
+					}
+					
+					$panel
+						.addClass("inline")
+						.css("height", "auto");
+					
+					$pageImg.width($pageImg.data("scaledSize")[0]);
+					$cropImg
+						.width($pageImg.width())
+						.height($pageImg.height());
+					
+					$controlPanel.css({
+						"left"	:5,
+						"top"	:5
+					});
+					
+					$(this).parent().find("label .ui-icon.x_toggleScreen").css("background-position", "-150px 0px");
+				}
+			);
+			
+			
+			$pageImg.attr("src", eval(x_currentPageXML.getAttribute("url"))); // set image src - imgLoaded function will be called when it's loaded
 		}
-	};
-
+	}
+	
+	var imgMaxW = 500; // desktop / tablet
+	var imgMaxH = 400;
+	if (x_browserInfo.mobile == true) {
+		imgMaxW = 250; // mobile
+		imgMaxH = 250;
+	}
+	
 	imageViewer.init();
-
+	
 </script>
 
 <style type="text/css">
-
+	
+	#cropImg {
+		position:	relative;
+		overflow:	hidden;
+	}
+	
+	#pageImg {
+		position:	absolute;
+	}
+	
+	#pageImg.move {
+		cursor:	move;
+	}
+	
+	#controlPanel {
+		display:	inline-block;
+		padding:	5px;
+		top:		5px;
+		left:		5px;
+		cursor:		move;
+	}
+	
+	#imgCover {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+		top:		0px;
+		left:		0px;
+	}
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	#selectBox {
+		border:		2px solid yellow;
+	}
+	
+	#imgHolder.fullScreen {
+		width:		100%;
+		height:		100%;
+	}
+	
+	/* override jquery ui default button styles */
+	#controlPanel button.ui-button-icon-only, #controlPanel .ui-icon {
+		width:		24px;
+		height:		24px;
+	}
+	
+	#controlPanel label.ui-button-icon-only { /* for some reason buttons made from input/label appear 2px larger than proper button ones - adjust this here */
+		width:		22px;
+		height:		22px;
+	}
+	
+	#controlPanel .ui-icon {
+		margin-left:	-15px;
+		margin-top:		-15px;
+	}
+	
+	#controlPanel * { /* all children of controlPanel */
+		float:			left;
+		margin-right:	5px;
+	}
+	
+	#controlPanel label:last-child {
+		margin-right:	0px;
+	}
+	
+	#zoomIn .ui-icon.x_zoomIn {				background-position: -30px 0px;  }
+	#zoomOut .ui-icon.x_zoomOut {			background-position: -60px 0px;  }
+	#resetImage .ui-icon.x_resetImage {		background-position: -120px 0px; }
+	#controlPanel label[for=move] .ui-icon.x_move {					background-position: 0px 0px;    }
+	#controlPanel label[for=selectArea] .ui-icon.x_selectArea {		background-position: -90px 0px;  }
+	#controlPanel label[for=toggleScreen] .ui-icon.x_toggleScreen {	background-position: -150px 0px; }
+	
 </style>
 
 <div id="pageContents">
-
+	
 	<div id="imgHolder" class="mobileAlign">
-		<div class="panel inline">
-			<img id="pageImg" />
+		<div id="mainPanel" class="panel inline">
+			
+			<div id="cropImg">
+				
+				<img id="pageImg" tabindex="2" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); imageViewer.imgLoaded();" />
+				
+				<div id="imgCover"/>
+				
+				<div id="controlPanel" class="panel">
+					<input  id="move" type="checkbox" tabindex="3" /><label for="move"></label>
+					<button id="zoomIn" tabindex="4"></button>
+					<button id="zoomOut" tabindex="5"></button>
+					<input  id="selectArea" type="checkbox" tabindex="6"/><label for="selectArea"></label>
+					<button id="resetImage" tabindex="7"></button>
+					<input  id="toggleScreen" type="checkbox" tabindex="8"/><label for="toggleScreen"></label>
+				</div>
+				
+			</div>
+			
 		</div>
 	</div>
-
-	<div id="textHolder"></div>
-
+	
+	<div id="textHolder" tabindex="1"></div>
+	
 </div>
