@@ -74,7 +74,7 @@
 	  nextBtnText="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
 	  restartBtnText="Restart" restartBtnTip="Restart Quiz" restartBtnWidth="100"	  
 	  />]]></inventory><iSpring><![CDATA[<iSpring name="Enter Page Title" url="Select an iSpring Movie" version="Pro"/>]]></iSpring><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a tooltip" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
-	  feedbackLabel="Feedback" checkBtnTxt="Check" checkBtnTip="Check Answer" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Enter Page Title"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
+	  feedbackLabel="Feedback" checkBtnTxt="Check" checkBtnTip="Check Answer" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was" responseHeaderTxt="Your response was:"
 	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
@@ -925,7 +925,8 @@
 
   </option><memory menu="Games" menuItem="Memory Game" hint="An interaction for the user to match chunks of text" icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>    
+    <name label="Page Title" type="TextInput"/> 
+	<resetBtnTxt label="Reset Button Label" type="textInput" language="true"/>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
