@@ -11,6 +11,7 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").css("opacity", 0);
+			$("#textHolder input").val("");
 			this.createQuiz();
 		}
 		
@@ -100,6 +101,8 @@
 								$nextBtn.show();
 							}
 							$(this).unbind("keypress.pageEvent");
+							$x_pageHolder.unbind("touchend.pageEvent");
+							$("#textHolder input").val("").blur();
 						}
 						
 					} else { // incorrect
@@ -118,7 +121,11 @@
 								if (hangman.currentWord < hangman.words.length - 1) {
 									$nextBtn.show();
 								}
+								
 								$(this).unbind("keypress.pageEvent");
+								$x_pageHolder.unbind("touchend.pageEvent");
+								$("#textHolder input").val("").blur();
+								
 								$clue.find(".dash, .space").each(function(i) {
 									if ($(this).hasClass("dash")) {
 										$(this).html(thisWord[i]);
@@ -129,6 +136,12 @@
 					}
 				}
 			});
+			
+			if (x_browserInfo.touchScreen == true) {
+				$x_pageHolder.bind("touchend.pageEvent", function() {
+					$("#textHolder input").focus();
+				});
+			}
 		}
 		
 		this.init = function() {
@@ -149,6 +162,13 @@
 					hangman.loadWord();
 				});
 			
+			// need hidden input for touchscreen otherwise you can't access keyboard to enter letters
+			if (x_browserInfo.touchScreen == true) {
+				$("<input/>")
+					.appendTo("#textHolder")
+					.css("opacity", 0);
+			}
+			
 			this.createQuiz();
 			
 			if (x_currentPage != 0) {
@@ -167,6 +187,12 @@
 	
 	#infoHolder .panel {
 		overflow:	auto;
+	}
+	
+	#textHolder input {
+		position:	absolute;
+		top:		0;
+		left:		0;
 	}
 	
 	#clue .subWord {
@@ -219,7 +245,7 @@
 	<div class="splitScreen small">
 
 		<div id="textHolder" class="left" tabindex="1"></div>
-
+		
 		<div id="infoHolder" class="right">
 			<div class="panel centerAlign">
 				<div id="clue"/>
