@@ -627,7 +627,7 @@ function x_setUp() {
 function x_changePage() {
 	x_currentPageXML = x_pages[x_currentPage];
 	$("#pageBg").remove();
-	$(document).unbind(".pageEvent"); // any events in page models added to document should have this namespace so they can be removed on page change
+	$(document).add($x_pageHolder).unbind(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change
 	
 	if (x_params.navigation == "Historic") {
 		x_pageHistory.push(x_currentPage);
