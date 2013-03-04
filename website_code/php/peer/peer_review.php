@@ -22,15 +22,15 @@ $query_for_file_name = "select template_name from {$xerte_toolkits_site->databas
 
 $row_template_name = db_query_one($query_for_file_name, array($_POST['template_id']));
 
-$headers = str_replace("*","\n",$xerte_toolkits_site->headers);
+$headers = get_email_headers();
 
-if(isset($_POST['user'])){
+if(isset($_POST['retouremail'])){
 
 	$subject = PEER_REVIEW_FEEDBACK . " - \"" . str_replace("_"," ",$row_template_name['template_name']) ."\"";
 	
 	$message = PEER_REVIEW_EMAIL_GREETING . " <br><br> " . PEER_REVIEW_EMAIL_INTRO . "<br><br><br>" . $_POST['feedback'] . "<br><br><br>" . PEER_REVIEW_EMAIL_YOURS . "<br><br>" . PEER_REVIEW_EMAIL_SIGNATURE;
 
-    if(mail( $_POST['user'] . "@" . $xerte_toolkits_site->email_to_add_to_username, $subject, $message, $headers)){
+    if(mail( $_POST['retouremail'], $subject, $message, $headers)){
 
         echo "<b>" . PEER_REVIEW_USER_FEEDBACK . "</b>";
 

@@ -180,6 +180,6 @@ function email_message($user_name, $type, $level, $subject, $content){
 
     $email_content = date("G:i:s-d/m/Y") . "\n" . $content;
 
-    mail($xerte_toolkits_site->email_error_list, $email_subject, $email_content);		
+    mail($xerte_toolkits_site->email_error_list, $email_subject, $email_content,get_email_headers());
 
 }

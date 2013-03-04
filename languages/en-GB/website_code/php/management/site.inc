@@ -128,9 +128,9 @@
 
 	define("MANAGEMENT_SITE_EMAIL", "Email ");
 
-	define("MANAGEMENT_SITE_EMAIL_ACCOUNT", "The site email account is ");
+	define("MANAGEMENT_SITE_EMAIL_ACCOUNT", "The site email account is (you NEED to fill this in if you want to enable feedback and/or peer reviews.)");
 
-	define("MANAGEMENT_SITE_EMAIL_HEADERS", "The site email headers is (use the * symbol to represent a new line)");
+	define("MANAGEMENT_SITE_EMAIL_HEADERS", "The site email extra headers is (use the * symbol to represent a new line)");
 
 	define("MANAGEMENT_SITE_EMAIL_SUFFIX", "The site email to add to username is ");
 

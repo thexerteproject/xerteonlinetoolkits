@@ -186,3 +186,22 @@ function _include_javascript_file($file_path)
     }
     return true;
 }
+
+function get_email_headers()
+{
+    global $xerte_toolkits_site;
+
+    $from = $xerte_toolkits_site->site_email_account;
+    $extraheaders = str_replace("*","\n",$xerte_toolkits_site->headers);
+    $headers = "";
+    if (strpos("From:", $extraheaders) === false)
+    {
+        $headers .=  "From: " . $from . "\n" . $extraheaders;
+    }
+    if (strpos("Content-Type:", $extraheaders) === false)
+    {
+        $headers .= "Content-Type: text/html; charset=\"ISO-8859-1\"";
+    }
+    $headers .= $extraheaders;
+    return $headers;
+}

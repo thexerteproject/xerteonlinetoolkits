@@ -18,7 +18,7 @@
  * @author Patrick Lockley
  */
 
-function show_template($row_play){
+function show_template($row_play, $retouremail){
     global $xerte_toolkits_site;
 
     _load_language_file("/modules/xerte/peer.inc");
@@ -63,7 +63,7 @@ function show_template($row_play){
 
     echo "<a name=\"feedbackform\"><p style=\"width:250px; color:red;\"  id=\"feedback\"></p></a>";
 
-    echo "<br><form name=\"peer\" action=\"javascript:send_review('" . $row_play['username'] . "','" . $row_play['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" /></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
+    echo "<br><form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row_play['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" /></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
 
     echo "</body></html>";
 

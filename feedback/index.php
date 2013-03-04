@@ -36,7 +36,7 @@ require_once("../config.php");
 
 		echo "<p>" . FEEDBACK_RESPONSE . "</p></div></body></html>";
 
-		mail($xerte_toolkits_site->feedback_list, FEEDBACK_EMAIL_TITLE, FEEDBACK_GIVER . mysql_real_escape_string($_POST['name']) . "<br>" . FEEDBACK_MESSAGE_INTRO . "<br>" . mysql_real_escape_string($_POST['feedback']), $xerte_toolkits_site->headers); 
+		mail($xerte_toolkits_site->feedback_list, FEEDBACK_EMAIL_TITLE, FEEDBACK_GIVER . mysql_real_escape_string($_POST['name']) . "<br>" . FEEDBACK_MESSAGE_INTRO . "<br>" . mysql_real_escape_string($_POST['feedback']), get_email_headers());
 
 		echo "<div class=\"title\"><p>" . FEEDBACK_PAGE_TITLE . "</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">" . FEEDBACK_DESCRIPTION . "</div><div style=\"width:50%; float:left; position:relative;\">";
 

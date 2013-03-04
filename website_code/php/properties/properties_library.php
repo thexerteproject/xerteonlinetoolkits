@@ -160,7 +160,7 @@ function peer_display($xerte_toolkits_site,$change){
 
         echo "<p class=\"share_status_paragraph\"><img id=\"peeron\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeron')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
         echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
-        echo "<p class=\"share_status_paragraph\">The link for peer review is <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id']) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id'])  . "</a></p>";
+        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_LINK . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id']) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id'])  . "</a></p>";
 
     }else{
 
@@ -170,8 +170,30 @@ function peer_display($xerte_toolkits_site,$change){
     }
 
     $row = mysql_fetch_array($query_response);
+    $extra = explode("," , $row['extra'],2);
 
-    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:peer_change_template()\" name=\"peer\" >" . PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . " <input type=\"text\" size=\"15\" name=\"password\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" /></p></form>";
+    $passwd = $extra[0];
+    if (count($extra) > 1)
+    {
+        $retouremail = $extra[1];
+    }
+    else
+    {
+        $retouremail = $_SESSION['toolkits_logon_username'];
+        $retouremail .= '@';
+        if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
+        {
+            $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+        }
+
+    }
+    echo "<p class=\"share_status_paragraph\">";
+    echo "<form action=\"javascript:peer_change_template()\" name=\"peer\" >";
+    echo PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . " <input type=\"text\" size=\"15\" name=\"password\" style=\"margin:0px; padding:0px\" value=\"" . $passwd . "\" /><br /><br />";
+    echo PROPERTIES_LIBRARY_PEER_RETOUREMAIL_PROMPT . "<br /> <input type=\"text\" size=\"50\" name=\"retouremail\" style=\"margin:0px; padding:0px\" value=\"" . $retouremail . "\" />";
+    echo "<br><br><input type=\"image\" src=\"website_code/images/Bttn_SaveOff.gif\" onmouseover=\"this.src='website_code/images/Bttn_SaveClick.gif'\" onmousedown=\"this.src='website_code/images/Bttn_SaveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_SaveOff.gif'\" />";
+    echo "</p>";
+    echo "</form>";
 
     if($change){
 

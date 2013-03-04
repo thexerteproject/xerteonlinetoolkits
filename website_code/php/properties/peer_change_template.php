@@ -33,7 +33,7 @@ if(is_numeric($_POST['template_id'])){
 
         }else{
 
-            $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "additional_sharing (template_id, sharing_type, extra) VALUES (" . mysql_real_escape_string($_POST['template_id']) . ", \"peer\",\"" .  mysql_real_escape_string($_POST['password']) . "\")";
+            $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "additional_sharing (template_id, sharing_type, extra) VALUES (" . mysql_real_escape_string($_POST['template_id']) . ", \"peer\",\"" .  mysql_real_escape_string($_POST['extra']) . "\")";
 
             mysql_query($query);
 

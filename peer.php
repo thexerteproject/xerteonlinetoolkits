@@ -45,8 +45,25 @@ if(!empty($query_for_peer_response)) {
         /**
          *  Check the password againsr the value in the database
          */
+        $extra = explode("," , $query_for_peer_response['extra'],2);
 
-        if($_POST['password'] == $query_for_peer_response['extra']) {
+        $passwd = $extra[0];
+        if (count($extra) > 1)
+        {
+            $retouremail = $extra[1];
+        }
+        else
+        {
+            $retouremail = $_SESSION['toolkits_logon_username'];
+            $retouremail .= '@';
+            if (strlen($xerte_toolkits_site->email_to_add_to_username)>0)
+            {
+                $retouremail .= $xerte_toolkits_site->email_to_add_to_username;
+            }
+
+        }
+
+        if($_POST['password'] == $passwd) {
 
             /**
              *  Output the code
@@ -62,7 +79,7 @@ if(!empty($query_for_peer_response)) {
             $row_play = db_query_one($query_for_play_content);
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/peer.php";
-            show_template($row_play);					
+            show_template($row_play, $retouremail);
         }else{
             $buffer = $xerte_toolkits_site->peer_form_string . $temp[1] . "<p>" . PEER_LOGON_FAIL . ".</p></center></body></html>";
             echo $buffer;
