@@ -35,7 +35,7 @@ function peer_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function send_review(user,template_id){
+function send_review(retouremail,template_id){
 
 	if(setup_ajax()!=false){
 
@@ -45,7 +45,7 @@ function send_review(user,template_id){
 		xmlHttp.onreadystatechange=peer_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('user=' + user + '&template_id=' + template_id + '&feedback=' + document.peer.response.value); 
+		xmlHttp.send('retouremail=' + retouremail + '&template_id=' + template_id + '&feedback=' + document.peer.response.value);
 
 	}	
 

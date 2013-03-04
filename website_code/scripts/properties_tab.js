@@ -499,12 +499,18 @@ function peer_change_template(){
 		if(document.peer.password.value!=""){
 
 			if(setup_ajax()!=false){
-    
+
+                var extra = document.peer.password.value;
+                if (document.peer.retouremail.value!="")
+                {
+                    extra += ",";
+                    extra += document.peer.retouremail.value;
+                }
 				var url="peer_change_template.php";
 
 				properties_ajax_send_prepare(url);
 
-				xmlHttp.send('template_id=' + window.name + '&peer_status=on' + '&password=' + document.peer.password.value); 
+				xmlHttp.send('template_id=' + window.name + '&peer_status=on' + '&extra=' + extra);
 
 			}
 
