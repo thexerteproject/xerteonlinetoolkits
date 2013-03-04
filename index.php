@@ -1,4 +1,9 @@
 <?php
+
+// Load the plugin files and fire a startup action
+require_once(dirname(__FILE__) . "/plugins.php"); startup();
+
+
 require_once(dirname(__FILE__) . "/config.php");
 
 _load_language_file("/index.inc");
@@ -29,7 +34,7 @@ recycle_bin();
  */
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
-
+<?php head_start();?>
         <!--
 
         University of Nottingham Xerte Online Toolkits
@@ -41,7 +46,7 @@ recycle_bin();
         -->
 
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+        <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
 
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" /><?PHP
@@ -64,7 +69,7 @@ _include_javascript_file("website_code/scripts/template_management.js");
 _include_javascript_file("website_code/scripts/logout.js");
 _include_javascript_file("website_code/scripts/import.js");
 ?>
-    </head>
+    <?php head_end();?></head>
 
     <!--
 
@@ -75,7 +80,7 @@ _include_javascript_file("website_code/scripts/import.js");
     -->
 
     <body onload="javascript:sort_display_settings()"  onselectstart="return false;" onscroll="body_scroll()">
-
+	<?php body_start();?>
         <!--
 
         Folder popup is the div that appears when creating a new folder
@@ -124,7 +129,7 @@ _include_javascript_file("website_code/scripts/import.js");
                     <div class="top_left sign_in_TL m_b_d_2_child">
                         <div class="top_right sign_in_TR m_b_d_2_child">
                             <p class="heading">
-                                <?PHP echo INDEX_WORKSPACE_TITLE; ?>
+                                <?PHP echo apply_filters('page_title', INDEX_WORKSPACE_TITLE);?>
                             </p>
                         </div>
                     </div>
@@ -184,11 +189,11 @@ _include_javascript_file("website_code/scripts/import.js");
                 </div>
                 <div class="border" style="margin-top:10px"></div>
                 <div class="help" style="width:48%">
-                    <?PHP echo $xerte_toolkits_site->pod_one; ?>
+                    <?PHP echo apply_filters('editor_pod_one', $xerte_toolkits_site->pod_one); ?>
                 </div>
 
                 <div class="help" style="width:48%; float:right;">
-                    <?PHP echo $xerte_toolkits_site->pod_two; ?>
+                    <?PHP echo apply_filters('editor_pod_two', $xerte_toolkits_site->pod_two); ?>
                 </div>
             </div>
 
@@ -239,5 +244,6 @@ _include_javascript_file("website_code/scripts/import.js");
         </div>
 
 
-    </body>
+    <?php body_end();?></body>
 </html>
+<?php shutdown();?>

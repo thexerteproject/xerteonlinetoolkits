@@ -1,0 +1,77 @@
+<?php
+
+	if(!class_exists('XOT_Plugin_One')) {
+
+		class XOT_Plugin_One {
+
+			public static function head_start1() {
+				echo("<!-- This was inserted by the first head_start action in XOT_Plugin_One -->");
+			}
+
+			public static function head_start2() {
+				echo("<!-- This was inserted by the second head_start action in XOT_Plugin_One - higher priority so should appear FIRST-->");
+			}
+
+			public static function head_end1() {
+				echo("<!-- This was inserted by the second head_start action in XOT_Plugin_One -->");
+			}
+
+			public static function all_actions() {
+				// This will fire on actions AND filters
+			}
+
+			public static function plugins_loaded() {
+				echo("<!-- Plugins have finished loading (this message added by XOT_Plugin_One) -->");
+				if (class_exists('GCU Plugin')) {
+					echo("<!-- We've detected that the GCU Plugin is being used -->");
+				}
+			}
+
+			public static function detect_context() {
+				echo("<!-- We are in ");
+				if (is_login_page())
+					echo("Main Login Page");
+				elseif (is_editor_page())
+					echo("Editor Page");
+				echo(" -->");
+			}
+
+			public static function shutdown() {
+				echo("<!-- shutdown script in XOT_Plugin_One -->");
+			}
+
+			public static function startup() {
+				echo("<!-- startup script in XOT_Plugin_One -->");
+			}
+
+			public static function augment_head_title($title) {
+				$title = "*****" . $title;
+				return $title;
+			}
+
+			public static function augment_page_title($title) {
+				$title = "These Are " . $title;
+				return $title;
+			}
+
+		}
+
+		add_action('head_start', array('XOT_Plugin_One', 'head_start1'));
+		add_action('head_start', array('XOT_Plugin_One', 'head_start2'), 5);
+		add_action('head_end', array('XOT_Plugin_One', 'head_end1'));
+		add_action('all', array('XOT_Plugin_One', 'all_actions'));
+		add_action('plugins_loaded', array('XOT_Plugin_One', 'all_actions'));
+		add_action('body_start', array('XOT_Plugin_One', 'detect_context'));
+		add_action('startup', array('XOT_Plugin_One', 'startup'));
+		add_action('shutdown', array('XOT_Plugin_One', 'shutdown'));
+
+		add_filter('page_title', array('XOT_Plugin_One', 'augment_page_title'));
+		add_filter('head_title', array('XOT_Plugin_One', 'augment_head_title'));
+
+	}
+	else {
+		// TODO : log an error that there's been a collision
+	}
+
+
+
