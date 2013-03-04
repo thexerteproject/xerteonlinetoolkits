@@ -1,6 +1,6 @@
-<?php  
+<?php
 /**
- * 
+ *
  * Save page, used by xerte to update its XML files
  *
  * @author Patrick Lockley
@@ -10,6 +10,7 @@
  */
 
 require_once("../../../config.php");
+require_once("../../../plugins.php");
 
 if(!isset($_SESSION['toolkits_logon_username'])) {
   print "You are not logged in.";
@@ -29,6 +30,8 @@ if(strlen($_POST['filedata'])!=strlen($_POST['filesize'])){
 
 }
 
+$filedata = apply_filters("editor_save_data", $_POST['filedata']);
+
 /**
  * Save and play do slightly different things. Save sends an extra variable so we update data.xml as well as preview.xml
  */
@@ -37,13 +40,13 @@ if($_POST['fileupdate']=="true"){
 
     $file_handle = fopen($xerte_toolkits_site->root_file_path . $savepath,'w');
 
-    if(fwrite($file_handle, stripslashes($_POST['filedata']))!=false){
+    if(fwrite($file_handle, stripslashes($filedata))!=false){
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved" , stripslashes($_POST['filedata']));
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved" , stripslashes($filedata));
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save" , stripslashes($_POST['filedata']));
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save" , stripslashes($filedata));
 
     }
 
@@ -55,9 +58,11 @@ if($_POST['fileupdate']=="true"){
  * Update preview.xml
  */
 
+$filedata = apply_filters("editor_save_preview", $_POST['filedata']);
+
 $file_handle = fopen($xerte_toolkits_site->root_file_path . $_POST['filename'],'w');
 
-if(fwrite($file_handle, stripslashes($_POST['filedata']))!=false){
+if(fwrite($file_handle, stripslashes($filedata))!=false){
 
     receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved" , stripslashes($_POST['filedata']));
 
