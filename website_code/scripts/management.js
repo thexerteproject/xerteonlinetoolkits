@@ -798,3 +798,42 @@ function save_changes(){
 	}
 
 }
+
+function list_templates_for_user(tag){
+
+    user = document.getElementById(tag).value;
+
+    if(setup_ajax()!=false){
+
+        var url="get_templates_for_user.php";
+
+        xmlHttp.open("post","website_code/php/management/" + url,true);
+        xmlHttp.onreadystatechange=list_templates_for_user_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send('user_id=' + user);
+
+    }else{
+
+        alert(USERTEMPLATES_FAIL_RETRIEVE);
+
+    }
+
+}
+
+function list_templates_for_user_stateChanged(){
+
+    if (xmlHttp.readyState==4){
+
+        if(xmlHttp.responseText!=""){
+
+            document.getElementById('usertemplatelist').innerHTML = xmlHttp.responseText;
+
+        }else{
+
+            alert("ERROR " + xmlHttp.responseText);
+
+        }
+    }
+
+}

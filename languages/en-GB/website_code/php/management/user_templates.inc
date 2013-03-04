@@ -24,9 +24,9 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_ACCESS", "Access for this is set as"); 	
 
-	define("USERS_MANAGEMENT_TEMPLATE_EDIT", "Edit");	
+	define("USERS_MANAGEMENT_TEMPLATE_EDIT", "Edit");
 
-	define("USERS_MANAGEMENT_TEMPLATE_PREVIEW", "Preview");				
+    define("USERS_MANAGEMENT_TEMPLATE_PREVIEW", "Preview");
 
 	define("USERS_MANAGEMENT_TEMPLATE_PROPERTIES", "Properties");				
 
@@ -36,5 +36,7 @@
 
 	define("USERS_MANAGEMENT_TEMPLATE_NONE", "This user has no templates at present");
 
-	
+    define("USERS_MANAGEMENT_TEMPLATE_OWNER", "Owner");
+
+    define("USERS_MANAGEMENT_TEMPLATE_ROLE", "Role");
 ?>
