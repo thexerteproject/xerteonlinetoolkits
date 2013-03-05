@@ -15,6 +15,7 @@
 	<page icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
 	
 		<name type="TextInput" label="Page Title"/>
+		<subtitle type="TextInput" label="Page Subtitle"/>
 	
 		<newNodes>
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
