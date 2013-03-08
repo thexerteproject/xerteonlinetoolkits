@@ -1,0 +1,242 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var audioSlideshow = new function() {
+		var loaded;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$("#infoHolder").scrollTop(0);
+			$("#infoHolder .slide")
+				.hide()
+				.filter(function() {return $(this).data("synch") == "0";}).show();
+			
+			this.loadAudio();
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$("#infoHolder").height($panel.height() - x_audioBarH);
+			}
+			
+			if (loaded != true) {
+				// first load of page - now panel size is set, add slides
+				this.createSlides();
+				loaded = true;
+				
+			} else {
+				// not the 1st load of the page - scale images to new size and reset slides and audio
+				$("#infoHolder .slide")
+					.hide()
+					.filter(function() {return $(this).data("synch") == "0";}).show();
+				
+				$("#infoHolder").scrollTop(0);
+				
+				var $pageContents = $("#pageContents");
+				$pageContents.data("count", $pageContents.data("count") + 1);
+				
+				this.scaleImages();
+				this.loadAudio();
+			}
+		}
+		
+		this.init = function() {
+			$("#pageContents").data("count", 0);
+			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
+			
+			// erase attribute not used - old slides are always hidden
+			
+			if (x_currentPage != 0) { // if it's the 1st page this is called by xenith.js after size of x_pageHolder is set
+				this.sizeChanged();
+			}
+		}
+		
+		this.createSlides = function() {
+			var $infoHolder = $("#infoHolder");
+			$(x_currentPageXML).children().each(function(i){
+				var infoString = x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>');
+				var url = this.getAttribute("url");
+				if (url != undefined && url != "") {
+					var newString = '<div class="pageImg"><img ';
+					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+						newString += 'alt="' + this.getAttribute("tip") + '" ';
+					}
+					if (this.getAttribute("align") != "Bottom") {
+						newString += 'class="padBottom" /></div>';
+						infoString += newString;
+					} else {
+						newString += 'class="padTop" /></div>';
+						infoString = newString + infoString;
+					}
+				}
+				infoString = '<h3>' + this.getAttribute("name") + '</h3>' + infoString;
+				
+				var $slide = $('<div class="slide"></div>')
+					.html(infoString)
+					.appendTo($infoHolder)
+					.data("synch", this.getAttribute("synch"));
+				
+				// image on slide visible at beginning needs to be scaled when loaded
+				if (i == 0 && this.getAttribute("synch") == "0") {
+					$slide.find("img")
+						.css({ // stops flicker on 1st load of image
+							"opacity"	:0,
+							"filter"	:'alpha(opacity=0)'
+						})
+						.one("load", function() {
+							audioSlideshow.scaleImages();
+						})
+						.attr("src", eval(url))
+						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+							if (this.complete) {
+								$(this).trigger("load");
+							}
+						});
+				} else {
+					$slide.find("img")
+						.css({ // stops flicker on 1st load of image
+							"opacity"	:0,
+							"filter"	:'alpha(opacity=0)'
+						})
+						.attr("src", eval(url));
+				}
+				
+				if (this.getAttribute("synch") != "0") {
+					$slide.hide();
+				}
+			});
+			
+			setTimeout(function () { // audio doesn't always load properly without a delay here
+				audioSlideshow.loadAudio(true);
+			},1);
+		}
+		
+		// function scales image on visible slide - have to do them individually after slide change as I can't get dimensions of images on hidden slides
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			
+			// has img already been scaled to fit this size screen?
+			if ($pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
+				var $img = $("#infoHolder .pageImg img:visible");
+				var $infoHolder = $("#infoHolder");
+				
+				var firstScale = false;
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				x_scaleImg($img, $infoHolder.width() - 20, $infoHolder.height() - 20, true, firstScale);
+				
+				$img.css({
+					"opacity"	:1,
+					"filter"	:'alpha(opacity=100)'
+				});
+			}
+		}
+		
+		this.loadAudio = function(firstLoad) {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			$("#pageAudio").mediaPlayer({
+				type		:"audio",
+				source		:soundFile,
+				pageName	:"audioSlideshow"
+			});
+			
+			if (firstLoad == true) {
+				x_pageLoaded(); // call this function in every model once everything's loaded
+			}
+		}
+		
+		// function called from mediaPlayer.js when audio player has been set up
+		this.mediaFunct = function(mediaElement) {
+			var $slides = $("#infoHolder .slide");
+			mediaElement.addEventListener("timeupdate", function(e) {
+				var currentTime = mediaElement.currentTime;
+				var $visibleSlide;
+				$slides.each(function(){
+					var $thisSlide = $(this);
+					if (currentTime > $thisSlide.data("synch")) {
+						$visibleSlide = $thisSlide;
+					}
+				});
+				
+				// fade old caption out and new one in
+				var $currentSlide = $("#infoHolder .slide:visible");
+				if ($currentSlide.length > 0) {
+					if ($currentSlide.is($visibleSlide) == false && currentTime != 0) {
+						$currentSlide.fadeOut({
+							complete:
+								function() {
+									$("#infoHolder").scrollTop(0);
+									$visibleSlide.fadeIn();
+									audioSlideshow.scaleImages();
+								}
+							});
+					};
+				} else if ($visibleSlide != undefined) {
+					$visibleSlide.fadeIn();
+					audioSlideshow.scaleImages();
+				}
+			});
+		}
+	}
+	
+	audioSlideshow.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#infoHolder {
+		overflow:	auto;
+	}
+	
+	#pageContents .pageImg {
+		text-align:		center;
+	}
+	
+	#pageContents .padBottom {
+		padding-bottom:	10px;
+	}
+	
+	#pageContents .padTop {
+		padding-top:	10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="infoHolder"></div>
+				<div id="pageAudio"></div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
