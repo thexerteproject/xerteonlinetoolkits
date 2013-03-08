@@ -1,0 +1,51 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var geocommons = new function() {
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			var $mapHolder = $("#mapHolder");
+			$mapHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($mapHolder.css("padding-top")) * 2 - 15);
+		}
+		
+		this.init = function() {
+			var src = x_currentPageXML.getAttribute("src");
+			var mapUrl = src.substring(src.indexOf('src="') + 5, src.indexOf('"', src.indexOf('src="') + 5));
+			
+			// ** need to add this to xwd - description for contents of iframe for screen readers
+			var description = "";
+			if (x_currentPageXML.getAttribute("description") != "" && x_currentPageXML.getAttribute("description") != undefined) {
+				description = 'title="' + x_currentPageXML.getAttribute("description") + '"';
+			}
+			
+			$("#mapHolder").append('<iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + mapUrl + '" ' + description + '></iframe>');
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+
+	geocommons.init();
+
+</script>
+
+<style type="text/css">
+
+</style>
+
+<div id="pageContents">
+
+	<div id="mapHolder" class="panel"/>
+	
+</div>
