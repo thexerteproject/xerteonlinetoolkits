@@ -45,7 +45,7 @@ recycle_bin();
 
         -->
 
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
 
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
