@@ -1,5 +1,5 @@
 <?php
-header("Content-Type: application/xml; charset=iso-8859-1");
+header("Content-Type: application/xml; charset=utf-8");
 
 require_once(dirname(__FILE__) . "/config.php");
 

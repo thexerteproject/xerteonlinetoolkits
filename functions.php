@@ -200,7 +200,7 @@ function get_email_headers()
     }
     if (strpos("Content-Type:", $extraheaders) === false)
     {
-        $headers .= "Content-Type: text/html; charset=\"ISO-8859-1\"";
+        $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
     }
     $headers .= $extraheaders;
     return $headers;
