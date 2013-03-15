@@ -30,6 +30,7 @@
 		<newNodes>
 		
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
+			<navigator><![CDATA[<navigator name="Name" type="Tabs"/>]]></navigator>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
 			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text"/>]]></image>
@@ -72,5 +73,32 @@
 		<url type="Media" label="Image File"/>
 		
 	</video>
+	
+	<navigator icon="icPages" menuItem="Navigator" remove="true">
+	
+		<name type="TextInput" label="Name"/>
+		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" width="120"/>
+		
+		<newNodes>
+		
+			<pane><![CDATA[<pane name="Name"/>]]></pane>
+			
+		</newNodes>
+		
+	</navigator>
+	
+	<pane icon="icPageWhite" remove="true" duplicate="true" menuItem="Pane">
+		
+		<name type="TextInput" label="Pane Title"/>
+		
+		<newNodes>
+		
+			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
+			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
+			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text"/>]]></image>
+			<text><![CDATA[<text name="Name">Enter Text Here</text>]]></text>
+			
+		</newNodes>
+	</pane>
 	
 </wizard>
