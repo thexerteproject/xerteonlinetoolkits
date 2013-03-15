@@ -117,6 +117,27 @@ function parseContent(index){
 			if (this.nodeName == 'video'){
 				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 			}
+			
+			if (this.nodeName == 'navigator'){
+			
+			alert("Navver");
+				
+				if ($(this).attr('type') == 'Tabs'){
+					alert("make a tab set");
+				}
+				
+				if ($(this).attr('type') == 'Accordion'){
+					alert("make an accordion");
+				}
+				
+				if ($(this).attr('type') == 'Pills'){
+					alert("make a pill set");
+				}
+				
+				if ($(this).attr('type') == 'Carousel'){
+					alert("make a carousel");
+				}
+			}
 
 		});
 		
