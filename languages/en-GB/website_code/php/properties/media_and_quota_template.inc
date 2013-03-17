@@ -13,7 +13,13 @@
 	// XML SHARING TAB
 
 	define("MEDIA_AND_QUOTA_USE", "In use");
-	
+
+    define("MEDIA_AND_QUOTA_IMPORT_MEDIA", "Import media");
+
+    define("MEDIA_AND_QUOTA_CLICK_FILENAME", "Click on a file name and a link will appear below");
+
+    define("MEDIA_AND_QUOTA_BUTTON_IMPORT", "Import");
+
 	define("MEDIA_AND_QUOTA_DOWNLOAD", "Download this file");
 	
 	define("MEDIA_AND_QUOTA_NOT_IN_USE", "Not in use");

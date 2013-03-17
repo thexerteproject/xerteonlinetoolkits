@@ -64,7 +64,7 @@ if(is_user_admin()){
             $debug_rec = print_r($row_templates, true);
             _debug($debug_rec);
 
-            echo "<div class=\"template\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_name'] .  " <a href=\"javascript:templates_display('" . $row['login_id'] . "template" . $row_templates['template_id'] . "')\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</a></p></div><div class=\"template_details\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id']  . "_child\">";
+            echo "<div class=\"template\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "\"><p>" . $row_templates['template_name'] .  " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id'] . "_btn\" onclick=\"javascript:templates_display('" . $row['login_id'] . "template" . $row_templates['template_id'] . "')\">". USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['login_id'] . "template" . $row_templates['template_id']  . "_child\">";
             echo "<table class=\"template_details_table\">";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ID . "</td><td>" . $row_templates['template_id']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_OWNER . "</td><td>" . $row_templates['owner_firstname'] . " " . $row_templates['owner_surname'] . " (" . $row_templates['owner_username'] . ")</td></tr>";
@@ -75,9 +75,9 @@ if(is_user_admin()){
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_PLAYS . "</td><td>" . $row_templates['number_of_uses']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ACCESS . "</td><td>" . $row_templates['access_to_whom']  . "</td></tr>";
             echo "</table>";
-            echo "<p><a href=\"javascript:edit_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_EDIT . "</a>";
-            echo " - <a href=\"javascript:preview_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PREVIEW . "</a>";
-            echo " - <a href=\"javascript:properties_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</a></p>";
+            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:edit_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_EDIT . "</button>";
+            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:preview_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PREVIEW . "</button>";
+            echo " - <button type=\"button\" class=\"xerte_button\" onclick==\"javascript:properties_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</button></p>";
 
             echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
@@ -102,7 +102,7 @@ if(is_user_admin()){
 
             //}
 
-            echo "<input type=\"hidden\" value=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><input type=\"submit\" value=\"" . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "\" /></form></div>";
+            echo "<input type=\"hidden\" value=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "</button></form></div>";
             // Next record
 
         }

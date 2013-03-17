@@ -288,54 +288,46 @@ function screen_refresh(){
 	 */
 
 function button_check(){
+     var propertiesbtn = document.getElementById("properties");
+     var editbtn = document.getElementById("edit");
+     var previewbtn = document.getElementById("preview");
+     var deletebtn = document.getElementById("delete");
+     var duplicatebtn = document.getElementById("duplicate");
+     var publishbtn = document.getElementById("publish");
 
 	if(drag_manager.selected_items.length==0){
 
-		document.getElementById("edit").src="website_code/images/Bttn_EditDis.gif"; 
-		document.getElementById("edit").onmousedown="";
-		document.getElementById("edit").onmouseover="";
-		document.getElementById("edit").onmouseout="";
-		document.getElementById("edit").onclick="";
+		editbtn.disabled="disabled";
+        editbtn.className = "xerte_button_disabled";
+        editbtn.onclick="";
 
-		document.getElementById("preview").src="website_code/images/Bttn_PreviewDis.gif"; 
-		document.getElementById("preview").onmousedown="";
-		document.getElementById("preview").onmouseover="";
-		document.getElementById("preview").onmouseout="";
-		document.getElementById("preview").onclick="";
+		previewbtn.disabled="disabled";
+        previewbtn.className = "xerte_button_disabled";
+        previewbtn.onclick="";
 
-		document.getElementById("delete").src="website_code/images/Bttn_DeleteDis.gif"; 
-		document.getElementById("delete").onmousedown="";
-		document.getElementById("delete").onmouseover="";
-		document.getElementById("delete").onmouseout="";
-		document.getElementById("delete").onclick="";
+		deletebtn.disabled="disabled";
+		deletebtn.className="xerte_button_disabled";
+		deletebtn.onclick="";
 
-		document.getElementById("duplicate").src="website_code/images/Bttn_DuplicateDis.gif"; 
-		document.getElementById("duplicate").onmousedown="";
-		document.getElementById("duplicate").onmouseover="";
-		document.getElementById("duplicate").onmouseout="";
-		document.getElementById("duplicate").onclick="";
+		duplicatebtn.disabled="disabled";
+        duplicatebtn.className = "xerte_button_disabled";
+		duplicatebtn.onclick="";
 
-		document.getElementById("publish").src="website_code/images/Bttn_PublishDis.gif";
-		document.getElementById("publish").onmousedown="";
-		document.getElementById("publish").onmouseover="";
-		document.getElementById("publish").onmouseout="";
-		document.getElementById("publish").onclick="";
+		publishbtn.disabled="disabled";
+        publishbtn.className = "xerte_button_disabled";
+		publishbtn.onclick="";
 
 		if(document.getElementById("folder_workspace").mainhighlight){
 
-			document.getElementById("properties").src="website_code/images/Bttn_PropertiesOff.gif"; 
-			document.getElementById("properties").onmousedown= function(){ this.src="website_code/images/Bttn_PropertiesClick.gif"};
-			document.getElementById("properties").onmouseover= function(){ this.src="website_code/images/Bttn_PropertiesOn.gif"};
-			document.getElementById("properties").onmouseout= function(){ this.src="website_code/images/Bttn_PropertiesOff.gif"};
-			document.getElementById("properties").onclick=function(){properties_window()}; 
+			propertiesbtn.removeAttribute("disabled");
+            propertiesbtn.className = "xerte_button";
+            propertiesbtn.onclick=function(){properties_window()};
 
 		}else{
 
-			document.getElementById("properties").src="website_code/images/Bttn_PropertiesDis.gif"; 
-			document.getElementById("properties").onmousedown="";
-			document.getElementById("properties").onmouseover="";
-			document.getElementById("properties").onmouseout="";
-			document.getElementById("properties").onclick="";
+			propertiesbtn.disabled="disabled";
+            propertiesbtn.className = "xerte_button_disabled";
+            propertiesbtn.onclick="";
 
 		}
 
@@ -343,12 +335,9 @@ function button_check(){
 
 			if(document.getElementById("folderchild_recyclebin").childNodes.length!=0){
 
-				document.getElementById("delete").src="website_code/images/Bttn_DeleteOff.gif";
-				document.getElementById("delete").onmousedown=function(){ this.src="website_code/images/Bttn_DeleteClick.gif"};
-				document.getElementById("delete").onmouseover=function(){ this.src="website_code/images/Bttn_DeleteOn.gif"};
-				document.getElementById("delete").onmouseout=function(){ this.src="website_code/images/Bttn_DeleteOff.gif"};
-				document.getElementById("delete").onclick=function(){remove_this()};
-
+				deletebtn.removeAttribute("disabled");
+				deletebtn.className = "xerte_button_disabled";
+				deletebtn.onclick=function(){remove_this()};
 			}
 
 		}	
@@ -357,75 +346,53 @@ function button_check(){
 
 		if(drag_manager.selected_items[0].id.indexOf("folder")==-1){
 
-			document.getElementById("edit").src="website_code/images/Bttn_EditOff.gif";
-			document.getElementById("edit").onmousedown= function(){ this.src="website_code/images/Bttn_EditClick.gif"};
-			document.getElementById("edit").onmouseover= function(){ this.src="website_code/images/Bttn_EditOn.gif"};
-			document.getElementById("edit").onmouseout= function(){ this.src="website_code/images/Bttn_EditOff.gif"};
-			document.getElementById("edit").onclick=function(){edit_window()};
+			editbtn.removeAttribute("disabled");
+            editbtn.className = "xerte_button";
+			editbtn.onclick=function(){edit_window()};
 
-			document.getElementById("preview").src="website_code/images/Bttn_PreviewOff.gif";
-			document.getElementById("preview").onmousedown=function(){ this.src="website_code/images/Bttn_PreviewClick.gif"};
-			document.getElementById("preview").onmouseover=function(){ this.src="website_code/images/Bttn_PreviewOn.gif"};
-			document.getElementById("preview").onmouseout=function(){ this.src="website_code/images/Bttn_PreviewOff.gif"};
-			document.getElementById("preview").onclick=function(){preview_window()}; 			
+			previewbtn.removeAttribute("disabled");
+            previewbtn.className = "xerte_button";
+            previewbtn.onclick=function(){preview_window()};
 
-			document.getElementById("publish").src="website_code/images/Bttn_PublishOff.gif";
-			document.getElementById("publish").onmousedown=function(){ this.src="website_code/images/Bttn_PublishClick.gif"};
-			document.getElementById("publish").onmouseover=function(){ this.src="website_code/images/Bttn_PublishOn.gif"};
-			document.getElementById("publish").onmouseout=function(){ this.src="website_code/images/Bttn_PublishOff.gif"};
-			document.getElementById("publish").onclick=function(){publish_this()}; 
+			publishbtn.removeAttribute("disabled");
+			publishbtn.className = "xerte_button";
+			publishbtn.onclick=function(){publish_this()};
 
-			document.getElementById("duplicate").src="website_code/images/Bttn_DuplicateOff.gif";
-			document.getElementById("duplicate").onmousedown=function(){ this.src="website_code/images/Bttn_DuplicateClick.gif"};
-			document.getElementById("duplicate").onmouseover=function(){ this.src="website_code/images/Bttn_DuplicateOn.gif"};
-			document.getElementById("duplicate").onmouseout=function(){ this.src="website_code/images/Bttn_DuplicateOff.gif"};
-			document.getElementById("duplicate").onclick=function(){duplicate_template()}; 
+			duplicatebtn.removeAttribute("disabled");
+			duplicatebtn.className = "xerte_button";
+			duplicatebtn.onclick=function(){duplicate_template()};
 
 		}else{
 			
-			document.getElementById("edit").src="website_code/images/Bttn_EditDis.gif"; 
-			document.getElementById("edit").onmousedown="";
-			document.getElementById("edit").onmouseover="";
-			document.getElementById("edit").onmouseout="";
-			document.getElementById("edit").onclick="";
+			editbtn.disabled="disabled";
+			editbtn.className = "xerte_button_disabled";
+			editbtn.onclick="";
 
-			document.getElementById("preview").src="website_code/images/Bttn_PreviewDis.gif"; 
-			document.getElementById("preview").onmousedown="";
-			document.getElementById("preview").onmouseover="";
-			document.getElementById("preview").onmouseout="";
-			document.getElementById("preview").onclick="";
+			previewbtn.disabled="disabled";
+			previewbtn.className = "xerte_button_disabled";
+			previewbtn.onclick="";
 
-			document.getElementById("delete").src="website_code/images/Bttn_DeleteDis.gif";
-			document.getElementById("delete").onmousedown="";
-			document.getElementById("delete").onmouseover="";
-			document.getElementById("delete").onmouseout="";
-			document.getElementById("delete").onclick="";
+			deletebtn.disabled="disabled";
+			deletebtn.className = "xerte_button_disabled";
+			deletebtn.onclick="";
  
-			document.getElementById("duplicate").src="website_code/images/Bttn_DuplicateDis.gif";
-			document.getElementById("duplicate").onmousedown="";
-			document.getElementById("duplicate").onmouseover="";
-			document.getElementById("duplicate").onmouseout="";
-			document.getElementById("duplicate").onclick="";
+			duplicatebtn.disabled="disabled";
+			duplicatebtn.className = "xerte_button_disabled";
+			duplicatebtn.onclick="";
 
-			document.getElementById("publish").src="website_code/images/Bttn_PublishDis.gif";
-			document.getElementById("publish").onmousedown="";
-			document.getElementById("publish").onmouseover="";
-			document.getElementById("publish").onmouseout="";
-			document.getElementById("publish").onclick="";
+			publishbtn.disabled="disabled";
+			publishbtn.className = "xerte_button_disabled";
+			publishbtn.onclick="";
 
 		}
 
-		document.getElementById("properties").src="website_code/images/Bttn_PropertiesOff.gif";
-		document.getElementById("properties").onmousedown= function(){ this.src="website_code/images/Bttn_PropertiesClick.gif"};
-		document.getElementById("properties").onmouseover= function(){ this.src="website_code/images/Bttn_PropertiesOn.gif"};
-		document.getElementById("properties").onmouseout= function(){ this.src="website_code/images/Bttn_PropertiesOff.gif"};
-		document.getElementById("properties").onclick=function(){properties_window()}; 
+		propertiesbtn.removeAttribute("disabled");
+		propertiesbtn.className = "xerte_button";
+		propertiesbtn.onclick=function(){properties_window()};
 
-		document.getElementById("delete").src="website_code/images/Bttn_DeleteOff.gif";
-		document.getElementById("delete").onmousedown=function(){ this.src="website_code/images/Bttn_DeleteClick.gif"};
-		document.getElementById("delete").onmouseover=function(){ this.src="website_code/images/Bttn_DeleteOn.gif"};
-		document.getElementById("delete").onmouseout=function(){ this.src="website_code/images/Bttn_DeleteOff.gif"};
-		document.getElementById("delete").onclick=function(){remove_this()};
+		deletebtn.removeAttribute("disabled");
+		deletebtn.className = "xerte_button";
+		deletebtn.onclick=function(){remove_this()};
 
 	}
 

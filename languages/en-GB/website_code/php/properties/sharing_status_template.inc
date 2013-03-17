@@ -19,7 +19,9 @@
 	define("SHARING_EDITOR","Editor");
 
 	define("SHARING_READONLY","Read only");
-	
+
+    define("SHARING_REMOVE", "Remove");
+
 	define("SHARING_STOP","Click to stop sharing this file");
 
 	define("SHARING_NOT_SHARED","This template is not shared");

@@ -34,7 +34,11 @@
 
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			var answerDelimeter = ",";
+			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
+			if (answerDelimeter == undefined) {
+				answerDelimeter = ",";
+			}
+
 
 			// if language attributes aren't in xml will have to use english fall back
 			var tryTxt = x_currentPageXML.getAttribute("tryTxt");

@@ -152,7 +152,7 @@ function login_prompt($messages, $extra_path = '') {
                             </p>
                             <div>
 
-                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='<?php echo $extra_path; ?>website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
+                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button"  style="float:right"><?php echo INDEX_BUTTON_LOGIN; ?></button></p></form>
                                 <script>   document.getElementById("login_box").focus();      </script>
                               <?php
                               if (!empty($messages)) {

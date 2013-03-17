@@ -11,7 +11,7 @@
 	 */
 
 	define("MANAGEMENT_LIBRARY_REMOVE", "Remove");
-	define("MANAGEMENT_LIBRARY_VIEW", "View");	 
+	define("MANAGEMENT_LIBRARY_VIEW", "Show");
 
 	define("MANAGEMENT_LIBRARY_ADD_CATEGORY", "Add a new category");
 	define("MANAGEMENT_LIBRARY_NEW_CATEGORY", "The new category is");

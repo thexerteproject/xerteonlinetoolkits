@@ -10,9 +10,11 @@
 	 * @package
 	 */
 	 
-	define("MANAGEMENT_LOGIN","login area for site administration"); 
-	 
-	define("MANAGEMENT_NOT_ADMIN_USERNAME","This is the management panel. Only site administrators can access this resource");
+	define("MANAGEMENT_LOGIN","login area for site administration");
+
+    define("MANAGEMENT_BUTTON_LOGIN","Sign In");
+
+    define("MANAGEMENT_NOT_ADMIN_USERNAME","This is the management panel. Only site administrators can access this resource");
 	
 	define("MANAGEMENT_USERNAME_AND_PASSWORD_EMPTY","Please enter your username and password");
 	

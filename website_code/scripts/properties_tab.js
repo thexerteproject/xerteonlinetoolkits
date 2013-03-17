@@ -1274,6 +1274,7 @@ function set_sharing_rights_template(rights, template, user){
 
 }
 
+
 var last_selected=null;
 
      /**
@@ -1316,3 +1317,17 @@ function tab_highlight(id){
 	last_selected = id;
 	
 }
+
+function property_tab_download(id,url)
+{
+    var ifrm = document.getElementById(id);
+    ifrm.src = url;
+}
+
+function setup_download_link(path, buttonlbl, file)
+{
+    var button = '<button type="button" class="xerte_button" onclick="property_tab_download(\'download_frame\', \'getfile.php?file=' + path + '\')">' + buttonlbl +  '</button>';
+    document.getElementById('linktext').value=path;
+    document.getElementById('download_link').innerHTML=button;
+}
+

@@ -332,7 +332,7 @@ body{
 	margin:1px;
 }
 
-.file_mgt_area_middle_button img{
+.file_mgt_area_middle_button img, .file_mgt_area_middle_button button {
 	margin:4px;
 }
 
@@ -340,7 +340,7 @@ body{
 	float:left; 
 	position:relative; 
 	border-right:#b6b3a8 1px solid; 
-	height:35px;
+	height:30px;
 }
 
 .file_mgt_area_middle_button_right{

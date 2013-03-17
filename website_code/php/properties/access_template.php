@@ -50,7 +50,7 @@ if(is_numeric($_POST['template_id'])){
 
     if(has_rights_to_this_template($_POST['template_id'],$_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-        access_display($xerte_toolkits_site);
+        access_display($xerte_toolkits_site, false);
 
     }else{
 
@@ -60,6 +60,6 @@ if(is_numeric($_POST['template_id'])){
 
 }else{
 
-    echo "<p>Sorry only the creator can set the access settings</p>";
+    echo "<p>" . PROPERTIES_LIBRARY_ACCESS_FAIL . "</p>";
 
 }

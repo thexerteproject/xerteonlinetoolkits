@@ -63,7 +63,7 @@ function display_language_selectionform($formclass)
           }
           ?>
         </select>
-        <input type='submit' value='<?PHP echo LANGUAGE_BUTTON_TEXT; ?>' name='submit'/>
+        <input type='submit' class="xerte_button" value='<?PHP echo LANGUAGE_BUTTON_TEXT; ?>' name='submit'/>
     </form>
 <?php
 }

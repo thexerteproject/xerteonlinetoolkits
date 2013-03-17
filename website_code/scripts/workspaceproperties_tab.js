@@ -275,6 +275,6 @@ function folder_rss_templates_template(){
 
 function import_templates_template(){
 
-	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise();" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><input name="filenameuploaded" type="file" /><br /><br />New project name<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><br /><span id="namewrong"></span><br /><input id="submitbutton" type="submit" name="submitBtn" onsubmit="javascript:iframe_check_initialise();" value="' + WORKSPACE_UPLOAD + '" /></form></p>';
+	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise();" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><input name="filenameuploaded" type="file" /><br /><br />' + WORKSPACE_NEW_PROJECTNAME + '<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><br /><span id="namewrong"></span><br /><button id="submitbutton" type="submit" name="submitBtn" onsubmit="javascript:iframe_check_initialise();" class="xerte_button">' + WORKSPACE_UPLOAD + '</button></form></p>';
 
 }

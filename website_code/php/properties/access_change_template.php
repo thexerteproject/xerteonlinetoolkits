@@ -58,7 +58,7 @@ if(isset($_POST['server_string'])){
 
 if(mysql_query($query)){
 
-    access_display($xerte_toolkits_site);
+    access_display($xerte_toolkits_site, true);
 
 }else{
 

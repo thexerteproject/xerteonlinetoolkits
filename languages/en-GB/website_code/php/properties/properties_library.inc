@@ -9,7 +9,11 @@
 	 * @copyright Pat Lockley
 	 * @package
 	 */
-	 
+
+    define("PROPERTIES_LIBRARY_SAVE", "Save");
+
+    define("PROPERTIES_LIBRARY_RENAME", "Rename");
+
 	// XML SHARING TAB
 
 	define("PROPERTIES_LIBRARY_XML_TITLE", "XML Sharing");
@@ -133,7 +137,10 @@
 		
 	define("PROPERTIES_LIBRARY_ACCESS_FAIL", "Sorry only the creator can set the access settings");
 	
-	
+	define("PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE", "Change Access");
+
+    define("PROPERTIES_LIBRARY_ACCESS_CHANGED", "The new access settings are saved.");
+
 	// RSS TAB
 	
 	define("PROPERTIES_LIBRARY_RSS", "RSS feeds");

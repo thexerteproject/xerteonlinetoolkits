@@ -15,7 +15,7 @@ if(is_user_admin()){
 
     $query_response = mysql_query($query);
 
-    echo "<p style=\"margin:20px 0 0 5px; cursor:pointer; cursor:hand;\"><a onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</a></p>";
+    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</button></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
 	
@@ -31,7 +31,7 @@ if(is_user_admin()){
 		
 		}
 
-        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . $row['template_name'] . " <a href=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</a></p></div><div class=\"template_details\" id=\"" . $row['template_name']  . "_child\">";
+        echo "<div class=\"template\" id=\"" . $row['template_name'] . "\" savevalue=\"" . $row['template_type_id'] . "\"><p>" . $row['template_name'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['template_name'] . "_btn\" onclick=\"javascript:templates_display('" . $row['template_name'] . "')\">" . TEMPLATE_VIEW . "</button></p></div><div class=\"template_details\" id=\"" . $row['template_name']  . "_child\">";
         echo "<p>" . TEMPLATE_TYPE . " " . $row['template_framework'] . "</p>";
 
         if($row['template_framework']=="xerte"){
@@ -68,7 +68,7 @@ if(is_user_admin()){
 
         }
 
-        echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><input type=\"submit\" name=\"submitBtn\" value=\"" . TEMPLATE_UPLOAD_BUTTON. "\" onsubmit=\"javascript:iframe_check_initialise()\" /></form></p>";
+        echo "<p>" . TEMPLATE_REPLACE . "<br><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/import_template.php\" onsubmit=\"javascript:iframe_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><input type=\"hidden\" name=\"replace\" value=\"" . $row['template_type_id'] . "\" /><input type=\"hidden\" name=\"folder\" value=\"" . $row['template_name'] . "\" /><input type=\"hidden\" name=\"version\" value=\"" . $version[1] . "\" /><br /><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\" >" . TEMPLATE_UPLOAD_BUTTON . "</button></form></p>";
 
         echo "</div>";		
 
