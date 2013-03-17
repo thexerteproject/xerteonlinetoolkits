@@ -11,7 +11,7 @@
 		echo "<p>" . MANAGEMENT_LIBRARY_ADD_CATEGORY . "</p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_CATEGORY . "<form><textarea cols=\"100\" rows=\"2\" id=\"newcategory\">" . MANAGEMENT_LIBRARY_NEW_CATEGORY_NAME . "</textarea></form></p>";
- 	    echo "<p><form action=\"javascript:new_category();\"><input type=\"submit\" label=\"" . MANAGEMENT_LIBRARY_NEW_LABEL . "\" /></form></p>"; 
+ 	    echo "<p><form action=\"javascript:new_category();\"><button class=\"xerte_button\" type=\"submit\">" . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_CATEGORIES . "</p>";
 
@@ -19,7 +19,7 @@
 
 		while($row = mysql_fetch_array($query_response)){
 
-			echo "<p>" . $row['category_name'] . " - <a href=\"javascript:remove_category('" . $row['category_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </a></p>";
+			echo "<p>" . $row['category_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_category('" . $row['category_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
 
 		}
 	
@@ -41,19 +41,19 @@
 
 			if($row['rss']=="true"){
 
-				echo " - <a href=\"javascript:remove_feed('" . $row['template_id'] .  "','RSS')\">" . MANAGEMENT_LIBRARY_REMOVE_RSS . "</a> ";
+				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','RSS')\">" . MANAGEMENT_LIBRARY_REMOVE_RSS . "</button> ";
 
 			}
 
 			if($row['export']=="true"){
 
-				echo " - <a href=\"javascript:remove_feed('" . $row['template_id'] .  "', 'EXPORT')\">" . MANAGEMENT_LIBRARY_REMOVE_EXPORT . "</a> ";
+				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "', 'EXPORT')\">" . MANAGEMENT_LIBRARY_REMOVE_EXPORT . "</button> ";
 
 			}
 
 			if($row['syndication']=="true"){
 
-				echo " - <a href=\"javascript:remove_feed('" . $row['template_id'] .  "','SYND')\">" . MANAGEMENT_LIBRARY_REMOVE_SYNDICATION . "</a> ";
+				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','SYND')\">" . MANAGEMENT_LIBRARY_REMOVE_SYNDICATION . "</button> ";
 
 			}
 
@@ -74,19 +74,19 @@
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_SECURITY  . "<form><textarea cols=\"100\" rows=\"2\" id=\"newsecurity\">" . MANAGEMENT_LIBRARY_NEW_SECURITY_NAME . "</textarea></form></p>";
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_SECURITY_DATA . "<form><textarea cols=\"100\" rows=\"2\" id=\"newdata\">" . MANAGEMENT_LIBRARY_NEW_SECURITY_DETAILS . "</textarea></form></p>";
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_SECURITY_INFO . "<form><textarea cols=\"100\" rows=\"2\" id=\"newdesc\">" . MANAGEMENT_LIBRARY_NEW_SECURITY_DESCRIPTION . "</textarea></form></p>"; 
-		echo "<p><form action=\"javascript:new_security();\"><input type=\"submit\" label=\"" . MANAGEMENT_LIBRARY_ADD_SECURITY . "\" /></form></p>"; 
+		echo "<p><form action=\"javascript:new_security();\"><button type=\"submit\" class=\"xerte_button\">" . MANAGEMENT_LIBRARY_ADD_SECURITY . " </button></form></p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_SECURITY . "</p>";
 
 		while($row_security = mysql_fetch_array($query_for_play_security_response)){
 		
-			echo "<div class=\"template\" id=\"play" . $row_security['security_id'] . "\" savevalue=\"" . $row_security['security_id'] .  "\"><p>" . $row_security['security_setting'] . " <a href=\"javascript:templates_display('play" . $row_security['security_id'] . "')\">" . MANAGEMENT_LIBRARY_VIEW . "</a></p></div><div class=\"template_details\" id=\"play" . $row_security['security_id']  . "_child\">";
+			echo "<div class=\"template\" id=\"play" . $row_security['security_id'] . "\" savevalue=\"" . $row_security['security_id'] .  "\"><p>" . $row_security['security_setting'] . " <button type=\"button\" class=\"xerte_button\" id=\"play" . $row_security['security_id'] . "_btn\" onclick=\"javascript:templates_display('play" . $row_security['security_id'] . "')\">" . MANAGEMENT_LIBRARY_VIEW . "</button></p></div><div class=\"template_details\" id=\"play" . $row_security['security_id']  . "_child\">";
 		
 			echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_SECURITY_IS . "<form><textarea id=\"" . $row_security['security_id'] . "security\">" . $row_security['security_setting']  . "</textarea></form></p>";
 			echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_SECURITY_DATA . "<form><textarea id=\"" . $row_security['security_id'] .  "data\">" .  $row_security['security_data']  . "</textarea></form></p>";
 			echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_SECURITY_INFO . "<form><textarea id=\"" . $row_security['security_id'] .  "info\">" .  $row_security['security_info']  . "</textarea></form></p>"; 
 		
-			echo "<p><a href=\"javascript:remove_security()\">" . MANAGEMENT_LIBRARY_EXISTING_SECURITY_REMOVE . "</a>. " . MANAGEMENT_LIBRARY_EXISTING_SECURITY_WARNING . "</p></div>";
+			echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_security()\">" . MANAGEMENT_LIBRARY_EXISTING_SECURITY_REMOVE . "</button>. " . MANAGEMENT_LIBRARY_EXISTING_SECURITY_WARNING . "</p></div>";
 
 		}
 	
@@ -101,7 +101,7 @@
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_LICENCE . "</p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_NEW_LICENCE_DETAILS . "<form><textarea cols=\"100\" rows=\"2\" id=\"newlicense\">" . MANAGEMENT_LIBRARY_NEW_LICENCE_NAME . "</textarea></form></p>";
-		echo "<p><form action=\"javascript:new_license();\"><input type=\"submit\" label=\"" . MANAGEMENT_LIBRARY_NEW_LABEL . "\" /></form></p>"; 
+		echo "<p><form action=\"javascript:new_license();\"><button type=\"submit\" class=\"xerte_button\" >" . MANAGEMENT_LIBRARY_NEW_LABEL . "</button></form></p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_MANAGE_LICENCES . "</p>";
 
@@ -111,7 +111,7 @@
 
 		while($row = mysql_fetch_array($query_response)){
 
-			echo "<p>" . $row['license_name'] . " - <a href=\"javascript:remove_licenses('" . $row['license_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </a></p>";
+			echo "<p>" . $row['license_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_licenses('" . $row['license_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
 
 		}
 	

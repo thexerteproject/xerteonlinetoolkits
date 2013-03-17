@@ -31,6 +31,7 @@ function mgt_page($xerte_toolkits_site, $extra)
     ?></script>
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+            <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 
             <!-- 
 
@@ -67,7 +68,7 @@ function mgt_page($xerte_toolkits_site, $extra)
     <?PHP echo MANAGEMENT_LOGIN; ?>
                                         </p>
                                         <div>
-                                            <form method="post" enctype="application/x-www-form-urlencoded" action="management.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src='website_code/images/Bttn_LoginOn.gif'" onmousedown="this.src='website_code/images/Bttn_LoginClick.gif'" onmouseout="this.src='website_code/images/Bttn_LoginOff.gif'" style="float:right" /></p></form>
+                                            <form method="post" enctype="application/x-www-form-urlencoded" action="management.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button" style="float:right" ><?php echo MANAGEMENT_BUTTON_LOGIN; ?></button></p></form>
 
 
                                             <!-- 
@@ -148,6 +149,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
 
                 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+                <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
         <?PHP
         echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
@@ -192,7 +194,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 -->
                 <div class="topbar">
                     <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                        <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13"><?PHP echo MANAGEMENT_LOGOUT; ?></a></p>
+                        <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
                     </div>
                     <img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
                 </div>
@@ -226,18 +228,18 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <a href="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</a>				
-                                    <a href="javascript:templates_list();"><?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</a>
-                                    <a href="javascript:users_list();"><?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</a>
-                                    <a href="javascript:user_templates_list();"><?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</a>
-                                    <a href="javascript:errors_list();"><?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</a>
-                                    <a href="javascript:play_security_list();"><?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</a>
-                                    <a href="javascript:categories_list();"><?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</a>
-                                    <a href="javascript:licenses_list();"><?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</a>
-                                    <a href="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</a>
+                                    <button type="button" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:templates_list();"><?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:users_list();"><?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:errors_list();"><?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:categories_list();"><?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
-                                    <a href="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</a>						
+                                    <button type="button" class="xerte_button" onclick="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</button>
                                 </div>					
                                 <div id="admin_area">
 

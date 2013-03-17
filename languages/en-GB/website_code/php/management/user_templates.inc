@@ -10,7 +10,7 @@
 	 * @package
 	 */
 
-	define("USERS_MANAGEMENT_TEMPLATE_VIEW", "View");		 
+	define("USERS_MANAGEMENT_TEMPLATE_VIEW", "Show");
 
 	define("USERS_MANAGEMENT_TEMPLATE_ID", "The template id is");
 

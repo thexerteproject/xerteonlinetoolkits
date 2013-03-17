@@ -24,6 +24,7 @@ Version 1.0
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 
 <?php
 _include_javascript_file("website_code/scripts/template_management.js");

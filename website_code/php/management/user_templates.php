@@ -32,7 +32,7 @@ if(is_user_admin()){
 
     //}
 
-    echo "<input type=\"submit\" value=\"" . USERS_MANAGEMENT_TEMPLATE_VIEW . "\" /></form></div><div id=\"usertemplatelist\"></div>";
+    echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></form></div><div id=\"usertemplatelist\"></div>";
 
     mysql_close($database_id);
 

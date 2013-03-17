@@ -764,17 +764,18 @@ var active_section = null;
 
 function templates_display(tag){
 
-	new_tag = tag + "_child";
-
+	child_tag = tag + "_child";
+    button_tag = tag + "_btn";
 	active_section = document.getElementById(tag).getAttribute("savevalue");
 
-	if(document.getElementById(new_tag).style.display=="block"){
+	if(document.getElementById(child_tag).style.display=="block"){
 
-		document.getElementById(new_tag).style.display="none";
-	
+		document.getElementById(child_tag).style.display="none";
+	    document.getElementById(button_tag).innerHTML = MANAGEMENT_SHOW;
 	}else{
 
-		document.getElementById(new_tag).style.display="block";
+		document.getElementById(child_tag).style.display="block";
+        document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
 
 	}
 	

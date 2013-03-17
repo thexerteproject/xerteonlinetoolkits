@@ -18,7 +18,7 @@ if(is_user_admin()){
 
     $row = mysql_fetch_array($query_response);
 
-    echo "<div class=\"template\" id=\"sitedetails\"><p>" . MANAGEMENT_SITE_TITLE . "<a href=\"javascript:templates_display('sitedetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"sitedetails_child\">";
+    echo "<div class=\"template\" id=\"sitedetails\"><p>" . MANAGEMENT_SITE_TITLE . " <button type=\"button\" class=\"xerte_button\" id=\"sitedetails_btn\" onclick=\"javascript:templates_display('sitedetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sitedetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_URL . "<form><textarea id=\"site_url\">" . $row['site_url'] . "</textarea></form></p>";
 
@@ -52,7 +52,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"serverdetails\"><p>" . MANAGEMENT_SITE_SERVER . "<a href=\"javascript:templates_display('serverdetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"serverdetails_child\">";
+    echo "<div class=\"template\" id=\"serverdetails\"><p>" . MANAGEMENT_SITE_SERVER . " <button type=\"button\" class=\"xerte_button\" id=\"serverdetails_btn\" onclick=\"javascript:templates_display('serverdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"serverdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_HTACCESS . "<form><textarea id=\"apache\">" . $row['apache'] . "</textarea></form>
         </p>";	
@@ -73,7 +73,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"rssdetails\"><p>" . MANAGEMENT_SITE_RSS . "<a href=\"javascript:templates_display('rssdetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"rssdetails_child\">";
+    echo "<div class=\"template\" id=\"rssdetails\"><p>" . MANAGEMENT_SITE_RSS . " <button type=\"button\" class=\"xerte_button\" id=\"rssdetails_btn\" onclick=\"javascript:templates_display('rssdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"rssdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_RSS_TITLE . "<form><textarea id=\"rss_title\">" . $row['rss_title'] . "</textarea></form></p>";	
 
@@ -85,7 +85,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"pathdetails\"><p>" . MANAGEMENT_SITE_PATH . "<a href=\"javascript:templates_display('pathdetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"pathdetails_child\">";
+    echo "<div class=\"template\" id=\"pathdetails\"><p>" . MANAGEMENT_SITE_PATH . " <button type=\"button\" class=\"xerte_button\" id=\"pathdetails_btn\" onclick=\"javascript:templates_display('pathdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"pathdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_PATH_MODULE . "<form><textarea id=\"module_path\">" . $row['module_path'] . "</textarea></form></p>";	
 
@@ -101,13 +101,13 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"sqldetails\"><p>" . MANAGEMENT_SITE_SQL . "<a href=\"javascript:templates_display('sqldetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"sqldetails_child\">";
+    echo "<div class=\"template\" id=\"sqldetails\"><p>" . MANAGEMENT_SITE_SQL . " <button type=\"button\" class=\"xerte_button\" id=\"sqldetails_btn\" onclick=\"javascript:templates_display('sqldetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sqldetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_QUERY . "<form><textarea rows=\"20\" id=\"play_edit_preview_query\">" . str_replace("$","\$",str_replace("\\","",base64_decode($row['play_edit_preview_query'])))  . "</textarea></form></p>";	
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"errordetails\"><p>" . MANAGEMENT_SITE_ERROR_HANDLING . "<a href=\"javascript:templates_display('errordetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"errordetails_child\">";
+    echo "<div class=\"template\" id=\"errordetails\"><p>" . MANAGEMENT_SITE_ERROR_HANDLING . " <button type=\"button\" class=\"xerte_button\" id=\"errordetails_btn\" onclick=\"javascript:templates_display('errordetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"errordetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_ERROR_EMAIL_ACCOUNT . "<form><textarea id=\"error_log_message\">" . $row['error_log_message'] . "</textarea></form></p>";	
 
@@ -117,7 +117,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"ldapdetails\"><p>" . MANAGEMENT_SITE_LDAP . "<a href=\"javascript:templates_display('ldapdetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"ldapdetails_child\">";
+    echo "<div class=\"template\" id=\"ldapdetails\"><p>" . MANAGEMENT_SITE_LDAP . " <button type=\"button\" class=\"xerte_button\" id=\"ldapdetails_btn\" onclick=\"javascript:templates_display('ldapdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ldapdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_DELIMIT . "</p>";
 
@@ -139,7 +139,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"xertedetails\"><p>" . MANAGEMENT_SITE_XERTE . " <a href=\"javascript:templates_display('xertedetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"xertedetails_child\">";
+    echo "<div class=\"template\" id=\"xertedetails\"><p>" . MANAGEMENT_SITE_XERTE . " <button type=\"button\" class=\"xerte_button\" id=\"xertedetails_btn\" onclick=\"javascript:templates_display('xertedetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"xertedetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_XERTE_SAVE . "<form><textarea id=\"flash_save_path\">" . $row['flash_save_path'] . "</textarea></form></p>";
 
@@ -151,7 +151,7 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    echo "<div class=\"template\" id=\"emaildetails\"><p>" . MANAGEMENT_SITE_EMAIL . " <a href=\"javascript:templates_display('emaildetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"emaildetails_child\">";
+    echo "<div class=\"template\" id=\"emaildetails\"><p>" . MANAGEMENT_SITE_EMAIL . " <button type=\"button\" class=\"xerte_button\" id=\"emaildetails_btn\" onclick=\"javascript:templates_display('emaildetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"emaildetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_EMAIL_ACCOUNT . "<form><textarea id=\"site_email_account\">" . $row['site_email_account'] . "</textarea></form></p>";
 
@@ -167,10 +167,10 @@ if(is_user_admin()){
 
     echo "</div>";
 
-  echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <a href=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
+  echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
 
 
-  echo "<div class=\"template\" id=\"ltikeys\"><p>" . MANAGEMENT_SITE_LTI_KEYS . " <a href=\"javascript:templates_display('ltikeys')\">" . MANAGEMENT_VIEW . "</a></p></div><div class=\"template_details\" id=\"ltikeys_child\">";
+  echo "<div class=\"template\" id=\"ltikeys\"><p>" . MANAGEMENT_SITE_LTI_KEYS . " <button type=\"button\" class=\"xerte_button\" id=\"ltikeys_btn\"onclick=\"javascript:templates_display('ltikeys')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltikeys_child\">";
 
 
     echo "<div id=\"ltikeys\">";

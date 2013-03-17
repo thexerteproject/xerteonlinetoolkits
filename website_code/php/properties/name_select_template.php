@@ -35,7 +35,7 @@ if(is_numeric($_POST['template_id'])){
 
             while($row = mysql_fetch_array($query_names_response)){
 
-                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <a href=\"javascript:share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">" . NAME_SELECT_CLICK . "</a></p>";
+                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">" . NAME_SELECT_CLICK . "</button></p>";
 
             }
 

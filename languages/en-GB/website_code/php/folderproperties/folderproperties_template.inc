@@ -15,6 +15,8 @@
 
 	define("FOLDER_PROPERTIES_CALLED","This folder is called");
 	
-	define("FOLDER_PROPERTIES_CHANGE","Change the name of the project");
+	define("FOLDER_PROPERTIES_CHANGE","Change the name of the folder");
+
+    define("FOLDER_PROPERTIES_BUTTON_SAVE","Rename");
 	
 ?>

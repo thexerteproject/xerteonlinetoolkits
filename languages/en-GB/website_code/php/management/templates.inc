@@ -14,7 +14,9 @@
 
 	define("TEMPLATE_UPLOAD_BUTTON", "Upload");
 
-	define("TEMPLATE_VIEW", "View");
+	define("TEMPLATE_VIEW", "Show");
+
+    define("TEMPLATE_UPDATE_EXPLANATION", "To add a template to your xot installation, please upload the template using ftp and press the button below to update");
 
 	define("TEMPLATE_UPDATE", "Update template list");
 	

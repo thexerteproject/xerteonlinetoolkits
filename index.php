@@ -49,17 +49,19 @@ recycle_bin();
         <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
 
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-        <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" /><?PHP
+        <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
+        <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
+    <?PHP
 echo "
-                <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
+            <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
             var site_url = \"{$xerte_toolkits_site->site_url}\";
             var site_apache = \"{$xerte_toolkits_site->apache}\";
             var properties_ajax_php_path = \"website_code/php/properties/\";
             var management_ajax_php_path = \"website_code/php/management/\";
-            var ajax_php_path = \"website_code/php/\";";
+            var ajax_php_path = \"website_code/php/\";
+            </script>";
 ?>
-        </script>
-        <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"> </script>
+        <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js" ></script>
 <?php
 _include_javascript_file("website_code/scripts/file_system.js");
 _include_javascript_file("website_code/scripts/screen_display.js");
@@ -97,7 +99,7 @@ _include_javascript_file("website_code/scripts/import.js");
             <div class="main_area_holder_1">
                 <div class="main_area_holder_2">
                     <div class="main_area" id="dynamic_section">
-                        <p><?PHP echo INDEX_FOLDER_PROMPT; ?></p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" />   <input type="image" src="website_code/images/Bttn_NewFolderOff.gif" onmouseover="this.src='website_code/images/Bttn_NewFolderOn.gif'" onmousedown="this.src='website_code/images/Bttn_NewFolderClick.gif'" onmouseout="this.src='website_code/images/Bttn_NewFolderOff.gif'" style="vertical-align:middle; margin-left:5px; border:1px solid #0f0;" /></form><p><img src="website_code/images/Bttn_CancelOff.gif" onmouseover="this.src='website_code/images/Bttn_CancelOn.gif'" onmousedown="this.src='website_code/images/Bttn_CancelClick.gif'" onmouseout="this.src='website_code/images/Bttn_CancelOff.gif'" onclick="javascript:popup_close()" /></p>
+                        <p><?PHP echo INDEX_FOLDER_PROMPT; ?></p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" /><br /><br />   <button type="submit" class="xerte_button"><img src="website_code/images/Icon_Folder_15x12.gif"/><?php echo INDEX_BUTTON_NEWFOLDER; ?></button><button type="button" class="xerte_button"  onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?></button></form>
                     </div>
                 </div>
             </div>
@@ -111,7 +113,7 @@ _include_javascript_file("website_code/scripts/import.js");
 
         <div class="topbar">
             <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13"><?PHP echo INDEX_LOG_OUT; ?></a></p>
+                <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo INDEX_BUTTON_LOGOUT; ?></button></p>
             </div>
             <img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
         </div>
@@ -145,17 +147,17 @@ _include_javascript_file("website_code/scripts/import.js");
                         -->
 
                         <div class="file_mgt_area_middle_button_left">
-                            <img src="website_code/images/Bttn_NewFolderOff.gif" onmousedown="this.src='website_code/images/Bttn_NewFolderClick.gif'" onmouseover="this.src='website_code/images/Bttn_NewFolderOn.gif'" onmouseout="this.src='website_code/images/Bttn_NewFolderOff.gif'" onclick="javascript:make_new_folder()" />
+                            <button type="button" class="xerte_button" id="newfolder" onclick="javascript:make_new_folder()"><img src="website_code/images/Icon_Folder_15x12.gif"/><?php echo INDEX_BUTTON_NEWFOLDER; ?></button>
                         </div>
                         <div class="file_mgt_area_middle_button_left">
-                            <img id="properties" src="website_code/images/Bttn_PropertiesDis.gif" />
-                            <img id="edit" src="website_code/images/Bttn_EditDis.gif" />
-                            <img id="preview" src="website_code/images/Bttn_PreviewDis.gif" />
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="properties"><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="edit"><?php echo INDEX_BUTTON_EDIT; ?></button>
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="preview"><?php echo INDEX_BUTTON_PREVIEW; ?></button>
                         </div>
                         <div class="file_mgt_area_middle_button_right">
-                            <img id="delete" src="website_code/images/Bttn_DeleteDis.gif" />
-                            <img id="duplicate" src="website_code/images/Bttn_DuplicateDis.gif" />
-                            <img id="publish" src="website_code/images/Bttn_PublishDis.gif" />
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="delete"><?php echo INDEX_BUTTON_DELETE; ?></button>
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="duplicate"><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
+                            <button type="button" class="xerte_button_disabled" disabled="disabled" id="publish"><?php echo INDEX_BUTTON_PUBLISH; ?></button>
                         </div>
                         <div id="file_area" onscroll="scroll_check(event,this)" onmousemove="mousecoords(event)" onmouseup="file_drag_stop(event,this)"><?PHP
                                 list_users_projects("data_down");
@@ -181,7 +183,8 @@ _include_javascript_file("website_code/scripts/import.js");
                                         <option value="date_down"><?PHP echo INDEX_SORT_NEW; ?></option>
                                         <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
                                     </select>
-                                    <a href="javascript:selection_changed()">Sort</a>
+                                    <button type="button" class="xerte_button" onclick="javascript:selection_changed()"><?php echo INDEX_BUTTON_SORT; ?></button>
+
                                 </p>
                             </form>
                         </div>

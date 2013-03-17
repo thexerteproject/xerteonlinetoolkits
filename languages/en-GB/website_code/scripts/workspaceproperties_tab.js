@@ -10,3 +10,4 @@
 
 	var WORKSPACE_IMPORT = "Import";
 	var WORKSPACE_UPLOAD = "Upload";
+    var WORKSPACE_NEW_PROJECTNAME = "New project name";

@@ -48,7 +48,7 @@
 
 	define("MANAGEMENT_SITE_SERVER", "Server Settings ");
 		
-	define("MANAGEMENT_VIEW", "View");
+	define("MANAGEMENT_VIEW", "Show");
 
 	define("MANAGEMENT_SITE_HTACCESS", "The HTACCESS setting is (Whether or not you are using a .htaccess file on the site)");
 

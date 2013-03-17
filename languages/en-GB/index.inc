@@ -58,4 +58,31 @@ define("INDEX_LOG_OUT","Log out");
 
 define("INDEX_LOGGED_IN_AS","Logged in as");
 
+define("INDEX_BUTTON_PROJECT_CREATE", "Create Project");
+
+define("INDEX_BUTTON_LOGIN","Sign In");
+
+define("INDEX_BUTTON_LOGOUT","Log out");
+
+define("INDEX_BUTTON_PROPERTIES","Properties");
+
+define("INDEX_BUTTON_EDIT","Edit");
+
+define("INDEX_BUTTON_PREVIEW", "Preview");
+
+define("INDEX_BUTTON_SORT", "Sort");
+
+define("INDEX_BUTTON_NEWFOLDER", "New Folder");
+
+define("INDEX_BUTTON_DELETE", "Delete");
+
+define("INDEX_BUTTON_DUPLICATE", "Duplicate");
+
+define("INDEX_BUTTON_PUBLISH", "Publish");
+
+define("INDEX_BUTTON_CANCEL", "Cancel");
+
+define("INDEX_BUTTON_SAVE", "Save");
+
+
 ?>

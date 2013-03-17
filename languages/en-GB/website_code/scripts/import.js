@@ -26,3 +26,7 @@
 	var IMPORT_OVERWRITE_CONFIRM = "By selection this option you will import a new template into this folder - are you sure?";
 
 	var IMPORT_CONFIRM = "You are about to import a new template - are you sure?";
+
+    var IMPORT_BUTTON_UPLOAD = "Upload";
+
+    var IMPORT_BUTTON_CLOSE = "Close";

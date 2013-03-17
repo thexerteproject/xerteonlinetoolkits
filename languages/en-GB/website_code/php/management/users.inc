@@ -11,7 +11,7 @@
 	 */
 	 
 
-	define("USERS_TOGGLE", "View");
+	define("USERS_TOGGLE", "Show");
 
 	define("USERS_ID", "The user's ID is ");
 

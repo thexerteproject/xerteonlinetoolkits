@@ -13,7 +13,7 @@ if(is_user_admin()){
 
     $error_file_list = opendir($path);
 
-    echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><a href=\"javascript:delete_error_logs()\">" . DELETE_ALL . "</a></div>";
+    echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\"><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_error_logs()\">" . DELETE_ALL . "</button></div>";
 
     while($file = readdir($error_file_list)){
 

@@ -74,7 +74,7 @@ if(is_numeric($_POST['template_id'])){
                             echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_READONLY;
                         }
 
-                        echo "<img src=\"website_code/images/Bttn_RemoveOff.gif\" onmousedown=\"this.src='website_code/images/Bttn_RemoveClick.gif'\" onmouseover=\"this.src='website_code/images/Bttn_RemoveOn.gif'\" onmouseout=\"this.src='website_code/images/Bttn_RemoveOff.gif'\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" class=\"share_files_img\" />";
+                        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" >" . SHARING_REMOVE . "</button>";
 
                         echo "</p>";
 

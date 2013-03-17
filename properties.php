@@ -21,6 +21,7 @@ Version 1.0
 
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
 
@@ -63,11 +64,12 @@ Start the page and once loaded set the default option
 
 <!--
 
-Hidden Iframe to allow for ajax file uploads
+Hidden Iframes to allow for ajax file uploads and Downloads (Could be one I suppose)
 
 -->
 
 <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none"></iframe>
+<iframe id="download_frame" style="display:none"></iframe>
 
 <div class="properties_main">
     <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
