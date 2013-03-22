@@ -1,0 +1,1673 @@
+<script type="text/javascript">
+	
+	// ** need to test properly when canvas not supported - should it just fail completely or only fail completely if not fullySupported?
+	// ** fullySupported fail should immediately stop everything loading and show error message - no point in carying on drawing stuff for it to later be deleted
+	
+	// -----------------------------------------------------------------------------------------
+	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
+	// -----------------------------------------------------------------------------------------
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var customHotspots = new function() {
+		
+		var	fullySupported,	// false if canvas isn't supported and shapes are needed that can't be drawn in another way
+			canvasSupported,
+			jobQueue,
+			jobQueueIndex,
+			tempCanvas,
+			imageLoading,
+			imageTimer,
+			highlightStyle,
+			$mainCanvas,
+			$drawingArea,	// $mainCanvas[0].getContext("2d") OR $("#fallbackDiv") if canvas not supported
+			$pageContents,
+			$hsInfoLabel,
+			$hsInfoTxt;
+		
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents	= $("#pageContents");
+			$hsInfoLabel	= $("#textHolder #hsInfo #label");
+			$hsInfoTxt		= $("#textHolder #hsInfo #info");
+			
+			if ($("#mainCanvas").height() == 0) {
+				canvasSupported = false;
+			} else {
+				canvasSupported = true;
+			}
+			
+			// reset interactivity
+			$hsInfoLabel.html("");
+			$hsInfoTxt.html("");
+			
+			$("#hsHolder canvas, #hsHolder div").removeClass("visible");
+			
+			if ($pageContents.data("intType") == "Show Me") {
+				$pageContents.data("counter", 0);
+				$("#nextBtn").button("enable");
+				$("#prevBtn").button("disable");
+				
+			} else if ($pageContents.data("intType") == "MCQ") {
+				this.createQuiz();
+			}
+			// nothing to reset for hotspots and labels interactivity types
+		};
+		
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if ($pageContents.data("intType") == "Labels") {
+				// reset labels (positions won't be right any more)
+				if ($("#pinHolder").children().length > 0) {
+					$("#pinHolder").empty();
+					$("#labelHolder .pinImg").addClass("visible");
+					
+					$("#hsHolder canvas, #hsHolder div").removeClass("visible");
+					$hsInfoLabel.html("");
+					$hsInfoTxt.html("");
+					
+					$("#labelHolder .label")
+						.removeData("success")
+						.off("click")
+						.draggable("enable");
+					
+					$pageContents.removeData("selectedLabel");
+				}
+			}
+		};
+		
+		
+        this.init = function() {
+			$pageContents	= $("#pageContents");
+			$hsInfoLabel	= $("#textHolder #hsInfo #label");
+			$hsInfoTxt		= $("#textHolder #hsInfo #info");
+			
+			$("#textHolder").prepend(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			
+			// store highlight style info
+			var colour = x_currentPageXML.getAttribute("highlightColour").substring(2);
+			while (colour.length < 6) {
+				colour = "0" + colour;
+			}
+			
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#" + colour);
+			var rgba = result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16),
+				a: 0.5
+			} : null;
+			
+			highlightStyle = {};
+			highlightStyle.fill	= "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")"; // have to convert to rgb so alpha can be added
+			highlightStyle.lineW	= x_currentPageXML.getAttribute("lineWidth");
+			highlightStyle.stroke	= "#" + colour;
+			
+			
+			// draw everything on canvas - predominately John Smith's code
+			$mainCanvas = $("#mainCanvas");
+            fullySupported = true;
+			
+            // Setup the drawing area
+            if ($mainCanvas[0].getContext) {
+                $drawingArea = $mainCanvas[0].getContext("2d");
+                canvasSupported = true;
+            } else {
+                $mainCanvas.css("height", 0);
+                $drawingArea = $("#fallbackDiv");
+                $drawingArea.attr("style", "position:relative");
+                canvasSupported = false;
+            }
+			
+			// Setup queue
+			jobQueue = [];
+			jobQueueIndex = 0;
+			
+			if (canvasSupported == true) {
+				//loop through shape data and save in jobQueue
+				this.processShapeData();
+				var tempQueue = jobQueue.slice(0);
+				
+				// Set initial size as measureCanvas will resize
+				$mainCanvas[0].width = 1000;
+				$mainCanvas[0].height = 1000;
+				
+				//add measureCanvas to jobQueue
+				jobQueue.push({"type":"measure", "data":{w:200,h:200}});
+				
+				// need to draw shapes again after measure as they are cleared with resize
+				jobQueue = jobQueue.concat(tempQueue); 
+				tempCanvas = true; // stops hotspots being created until after measureCanvas is called
+				
+			} else {
+				//loop through shape data and save in jobQueue
+				this.processShapeData();
+			}
+			
+			//add job for x_pageLoaded() to jobQueue
+			jobQueue.push({"type":"finished", "data":null});
+			
+            // Begin processing jobQueue
+            imageTimer = 0;
+            this.doJobFromQueue();
+        };
+		
+		
+        this.processShapeData = function() {
+        	if ($(x_currentPageXML).text().length > 1) {
+				var xml;
+				if (jQuery.browser.msie) { // Had to add this in to get IE to parse <shapes> correctly
+					var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+					xmlDoc.loadXML($(x_currentPageXML).text());
+					xml = xmlDoc;
+				}
+				else {
+					xml = $($(x_currentPageXML).text());
+				}
+				
+				var that = this;
+				$(xml)
+					.find("shape")
+					.each(function (i) {
+						var attr = that.parseAttributes($(this));
+						attr["info"] = $(this).text(); // save any info added to shape too
+						jobQueue.push({"type":"shape", "data":attr});
+					});
+			}
+        };
+		
+		
+		// Parse and substitute attributes and return as object
+        this.parseAttributes = function(xml) {
+            var newVal, data = {type:'', x:0, y:0, x2:0, y2:0, x3:0, y3:0, lw:1, s:12, r:0, la:100, fa:100, lc:'#000000', fc:'#FFFFFF', n:0, t:''};
+            $.each(xml[0].attributes, function(i, attribute) {
+                newVal = attribute.value;
+                if (newVal.substring(0, 2) == '0x') { // hex value
+                    data[attribute.name] = '#' + newVal.substring(2);
+                }
+                else if (isNaN(newVal) == false) { // is a number
+                    data[attribute.name] = parseFloat(newVal);
+                }
+                else {
+                    data[attribute.name] = newVal;
+                }
+            });
+            return data;
+        };
+		
+		
+		this.doJobFromQueue = function() {
+			if (this.weNeedToWait()) {
+				var that = this;
+				setTimeout(function() {
+					that.doJobFromQueue();
+				}, 20);
+			}
+        	else {
+        		var getJob = jobQueue[jobQueueIndex++];
+        		switch (getJob.type) {
+        			case "shape":
+        				this.drawShape(getJob.data);
+        			break;
+        			case "measure":
+        				this.measureSize(getJob.data);
+						tempCanvas = false;
+        			break;
+        			case "finished":
+        				if (fullySupported == false) {
+							$("#pageContents .mobileAlign").remove();
+        					$("#textHolder").prepend('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
+        				}
+						this.setUpInteraction();
+        				x_pageLoaded();
+        			break;
+        		}
+        		if (jobQueueIndex < jobQueue.length) {
+        			this.doJobFromQueue();
+        		}
+        	}
+        };
+		
+		
+		this.weNeedToWait = function() {
+        	if (imageTimer <= 0) {
+        		imageTimer = 0;
+        		if (imageLoading) imageLoading.onload = function(){ };
+        		return false;
+        	}
+        	else {
+        		imageTimer -= 0.02;
+        		return true;
+        	}
+        };
+		
+		
+		this.drawShape = function(attr) {
+			var hs = "";
+			
+			// it's a shape with info attached - create a separate canvas containing just this shape so we can detect its shape for click/drag events
+			if (tempCanvas != true && attr.info != undefined && attr.label != undefined && attr.label != "") {
+				if (attr.type != "free" && attr.type != "text" && attr.type != "line" && attr.type != "curve") { // some shapes can't be used as hotspots
+					hs = true;
+					var canvas = $("#hsHolder");
+					
+					if (canvasSupported == true) {
+						var newCanvas = $('<canvas width="' + $mainCanvas.width() + '" height="' + $mainCanvas.height() + '"></canvas>')
+											.appendTo(canvas)
+											.data({
+												"label"	:attr.label,
+												"info"	:x_addLineBreaks(attr.info)
+											});
+						canvas = newCanvas[0].getContext("2d");
+						
+						canvas.fillStyle	= highlightStyle.fill;
+						canvas.lineWidth	= highlightStyle.lineW;
+						canvas.strokeStyle	= highlightStyle.stroke;
+						
+						this.callShapeFunc(canvas, attr);
+						canvas.restore();
+						
+					} else {
+						// use highlightColour / lineWidth attributes instead of shape data
+						var hsAttr = attr;
+						hsAttr.fc = highlightStyle.stroke;
+						hsAttr.lw = highlightStyle.lineW;
+						hsAttr.lc = highlightStyle.stroke;
+						
+						this.callShapeFunc(canvas, hsAttr);
+					}
+				}
+			}
+			
+			// shape either isn't a hotspot or is but showShapes is on - draw on main canvas
+			if (hs != true || x_currentPageXML.getAttribute("showShapes") != "false") {
+				var canvas = $drawingArea;
+				if (canvasSupported == true) {
+					canvas.save(); // Save context so we start afresh each time
+					canvas.fillStyle = attr.fc;
+					canvas.lineWidth = attr.lw;
+					canvas.strokeStyle = attr.lc;
+					canvas.globalAlpha = attr.fa / 100;
+					
+					this.callShapeFunc(canvas, attr);
+					canvas.restore();
+					
+				} else {
+					this.callShapeFunc(canvas, attr);
+				}
+			}
+        };
+		
+		
+		this.callShapeFunc = function(canvas, attr) {
+			switch (attr.type)
+			{
+				case "rect"		:customHotspots.drawRectangle(canvas, attr);	break;
+				case "image" 	:customHotspots.drawPicture(canvas, attr);		break;
+				case "oval" 	:customHotspots.drawOval(canvas, attr);			break;
+				case "poly" 	:customHotspots.drawPoly(canvas, attr);			break;
+				case "burst" 	:customHotspots.drawBurst(canvas, attr);		break;
+				case "arrow" 	:customHotspots.drawArrow(canvas, attr);		break;
+				case "star" 	:customHotspots.drawStar(canvas, attr);			break;
+				case "ngon" 	:customHotspots.drawNgon(canvas, attr);			break;
+				case "wedge" 	:customHotspots.drawWedge(canvas, attr);		break;
+				case "gear" 	:customHotspots.drawGear(canvas, attr);			break;
+				case "free" 	:customHotspots.drawFreehand(canvas, attr);		break;
+				case "pen" 		:customHotspots.drawPen(canvas, attr);			break;
+				case "text"		:customHotspots.drawText(canvas, attr);			break;
+				case "line" 	:customHotspots.drawLine(canvas, attr);			break;
+				case "curve"	:customHotspots.drawCurve(canvas, attr);		break;
+			}
+		};
+		
+		
+		this.measureSize = function (minSize) {
+			var canvasContext = $drawingArea,
+				canvas = $mainCanvas[0],
+				imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height),
+				data = imageData.data,
+				
+				getRBG = function(x, y) {
+					return {
+						red:   data[(canvas.width*y + x) * 4],
+						green: data[(canvas.width*y + x) * 4 + 1],
+						blue:  data[(canvas.width*y + x) * 4 + 2]
+					};
+				},
+				isWhite = function (rgb) {
+					return rgb.red == 0 && rgb.green == 0 && rgb.blue == 0;
+				},
+				getHeight = function () {
+					for (var y = canvas.height - 1; y > -1; y--) {
+						for(var x = 0; x < canvas.width; x++) {
+							if (!isWhite(getRBG(x, y))) {
+								return y;
+							}
+						}
+					}
+					return 0;
+				},
+				getWidth = function () {
+					for (var x = canvas.width - 1; x > -1; x--) {
+						for(var y = 0; y < canvas.height; y++) {
+							if (!isWhite(getRBG(x, y))) {
+								return x;
+							}
+						}
+					}
+					return 0;
+				};
+			
+			var size = {w: Math.max(getWidth(), minSize.w), h: Math.max(getHeight(), minSize.h)};
+			canvas.width = size.w + 10;
+            canvas.height = size.h + 10;
+			// changing the w/h clears the first drawing of shapes
+			
+			$("#instructions").width(size.w + 10);
+        };
+		
+		
+		this.setUpInteraction = function() {
+			var intType = x_currentPageXML.getAttribute("interactivity");
+			if (intType == undefined) {
+				$pageContents.data("intType", "Hotspots");
+			} else {
+				$pageContents.data("intType", intType);
+			}
+			
+			
+			// --- HOTSPOTS ---
+			if (intType == "Hotspots") {
+				var instructions = x_currentPageXML.getAttribute("hotspotsTxt");
+				if (instructions == undefined) {
+					instructions = "Explore the diagram. Click on the various parts to learn more.";
+				}
+				$("#instructions").html(instructions);
+				
+				// on click check all canvases/divs in hsHolder to see if any shapes have been hit
+				if (canvasSupported == true) {
+					
+					$("#hsHolder canvas").each(function(i) {
+						$(this).attr("tabindex", 2 + i);
+					});
+					
+					$("#diagramHolder, #hsHolder canvas").click(function(e) {
+						var $hsHolder = $("#hsHolder");
+						
+						// get xy pos of click relative to position of canvas
+						var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))];
+						var xyCoords = [e.pageX - offset[0], e.pageY - offset[1]];
+						var hit = false;
+						
+						// check each hotspot canvas to see if a non-alpha pixel in it has been hit
+						$hsHolder.find("canvas").each(function() {
+							var $this = $(this);
+							
+							// get pixel data from the whole canvas - and then from pixel clicked
+							var pix = $this[0].getContext("2d").getImageData(0, 0, $this.width(), $this.height());
+							var dataPos = ((xyCoords[1] * $this.width()) + xyCoords[0]) * 4;
+							
+							if (pix.data[dataPos+3] > 0) { // is it transparent?
+								$hsHolder.find("canvas.visible").removeClass("visible");
+								$this.addClass("visible");
+								$hsInfoLabel.html($this.data("label"));
+								$hsInfoTxt.html($this.data("info"));
+								hit = true;
+							} else {
+								$this.removeClass("visible");
+							}
+							
+							if (hit == false) { // no hotspot hit - hide info
+								$hsInfoLabel.html("");
+								$hsInfoTxt.html("");
+							}
+						});
+					});
+					
+				} else {
+					$("#hsHolder div").click(function() {
+						var $this = $(this);
+						$("#hsHolder div.visible").removeClass("visible");
+						$this.addClass("visible");
+						$hsInfoLabel.html($this.data("label"));
+						$hsInfoTxt.html($this.data("info"));
+					});
+					
+					$("#diagramHolder").click(function(e) {
+						$("#hsHolder div.visible").removeClass("visible");
+					});
+				}
+				
+				// you can tab through hotspots to highlight them instead of clicking on them
+				$("#hsHolder canvas, #hsHolder div")
+					.focusin(function(e) {
+						var $this = $(this);
+						$this.addClass("visible");
+						$hsInfoLabel.html($this.data("label"));
+						$hsInfoTxt.html($this.data("info"));
+						})
+					.focusout(function() {
+						$(this).removeClass("visible");
+						$hsInfoLabel.html("");
+						$hsInfoTxt.html("");
+						});
+			
+			
+			// --- LABELS ---
+			} else if (intType == "Labels") {
+				var instructions = x_currentPageXML.getAttribute("labelsTxt");
+				if (instructions == undefined) {
+					instructions = "Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required.";
+				}
+				$("#instructions").html(instructions);
+				
+				
+				// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
+				var	labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item"),
+					labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected"),
+					labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select"),
+					targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for"),
+					targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+				
+				
+				$('<div id="pinHolder"></div>').insertAfter("#hsHolder");
+				
+				var $labelHolder = $("#labelHolder");
+				
+				// create label for each hotspot canvas
+				var $hsCanvases = $("#hsHolder canvas");
+				$hsCanvases.each(function(i) {
+					var $this = $(this);
+					// label tabindex leaves space for dropped pins
+					$('<div class="label panel" tabindex="' + ((i*2)+2) + '" title="' + labelTxt1 + '"><img class="pinImg visible" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + (i + 1) + ". " + $this.data("label") + '</div>')
+						.appendTo($labelHolder)
+						.data("correct", $this);
+					
+					$this.attr("tabindex", ($hsCanvases.length * 2) + 2 + i);
+				});
+				
+				// set up drag events (mouse and keyboard controlled)
+				// label itself isn't dragged but a helper (pin image) used instead
+				$labelHolder.find(".label")
+					.draggable({
+						containment:	$x_pageHolder,
+						helper:			function() {
+							var thisHelper = $('<div class="helper"><img class="pinImg visible" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + ($(this).index() + 1) + '</div>').appendTo($labelHolder);
+							return thisHelper;
+						},
+						cursor:			"none",
+						cursorAt:		{left: -1, top: 7},
+						start:			function() {
+							// reset any info shown and hide pin on label
+							$("#hsHolder canvas")
+								.removeClass("visible")
+								.removeAttr("title");
+							$hsInfoLabel.html("");
+							$hsInfoTxt.html("");
+							$(this).find(".pinImg").removeClass("visible");
+							
+							// remove any focus/selection highlights made by tabbing to labels/targets
+							if ($("#labelHolder .label.focus").length > 0) {
+								$("#labelHolder .label.focus").attr("title", labelTxt1);
+							}
+							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+								$pageContents.data("selectedLabel").attr("title", labelTxt1);
+								$pageContents.data("selectedLabel", "");
+							}
+							
+							$("#labelHolder .selected").removeClass("selected");
+							$("#labelHolder .focus").removeClass("focus");
+						},
+						stop:			function() {
+							// if not dropped correctly, reset pin (not done using revert as this isn't triggered if it's dropped on hs canvas outside of the hs shape
+							var $this = $(this);
+							if ($this.data("success") != true) {
+								$this.find(".pinImg")
+									.hide()
+									.addClass("visible")
+									.fadeIn();
+							}
+						}
+						})
+					// set up events used when keyboard rather than mouse is used
+					// these highlight selected labels / targets and set the title attr which the screen readers will use
+					.focusin(function() {
+						var $this = $(this);
+						if ($this.data("success") != true) {
+							if ($this.is($pageContents.data("selectedLabel")) == false) {
+								$this
+									.addClass("focus")
+									.attr("title", labelTxt1 + " - " + labelTxt3);
+							}
+						} else {
+							var $thisCanvas = $("#hsHolder canvas:eq(" + $this.index() + ")");
+							$thisCanvas.addClass("visible");
+							$hsInfoLabel.html($thisCanvas.data("label"));
+							$hsInfoTxt.html($thisCanvas.data("info"));
+						}
+						})
+					.focusout(function() {
+						var $this = $(this);
+						if ($this.data("success") != true) {
+							$this.removeClass("focus");
+							if ($this.is($pageContents.data("selectedLabel")) == false) {
+								$this.attr("title", labelTxt1);
+							}
+						} else {
+							$("#hsHolder canvas:eq(" + $this.index() + ")").removeClass("visible");
+							$hsInfoLabel.html("");
+							$hsInfoTxt.html("");
+						}
+						})
+					.keypress(function(e) {
+						var $this = $(this);
+						if ($this.data("success") != true) {
+							var charCode = e.charCode || e.keyCode;
+							if (charCode == 32) {
+								if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+									$pageContents.data("selectedLabel")
+										.removeClass("selected")
+										.attr("title", labelTxt1);
+								}
+								$this
+									.removeClass("focus")
+									.addClass("selected")
+									.attr("title", labelTxt1 + ' - ' + labelTxt2);
+								$pageContents.data("selectedLabel", $this);
+								
+								// reset any info shown
+								$("#hsHolder canvas").removeClass("visible");
+								$hsInfoLabel.html("");
+								$hsInfoTxt.html("");
+							}
+						}
+						})
+					.disableSelection();
+				
+				// set up droppable area - on drop it checks the label's correct hotspot canvas to see if a non-alpha pixel in it has been hit
+				$("#mainCanvas")
+					.droppable({
+						accept:	$("#labelHolder .label"),
+						drop:	function(e, ui) {
+							// helper pin has been dropped on mainCanvas
+							var $hsHolder = $("#hsHolder");
+							
+							// get xy pos of drop relative to position of canvas
+							var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))];
+							var xyCoords = [e.pageX - offset[0], e.pageY - offset[1]];
+							var $thisHSCanvas = ui.draggable.data("correct");
+							
+							// get pixel data from the whole canvas - and then from pixel dropped on
+							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
+							var dataPos = ((xyCoords[1] * $thisHSCanvas.width()) + xyCoords[0]) * 4;
+							
+							if (pix.data[dataPos+3] > 0) { // is it transparent?
+								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
+							}
+						}
+					});
+				
+				// only for when using keyboard controls so you can focus and drop on individual shapes
+				$hsCanvases
+					.focusin(function(e) {
+						var $this = $(this);
+						if ($("#labelHolder .label:eq(" + $this.index() + ")").data("success") != true) {
+							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+								$this.addClass("visible");
+								$this.attr("title", targetTxt1 + " " + ($this.index() + 1) + " - " + targetTxt2);
+							}
+							
+						} else { // already a pin on the target
+							$this.parent().find("canvas").removeClass("visible");
+							$this.addClass("visible");
+							$hsInfoLabel.html($this.data("label"));
+							$hsInfoTxt.html($this.data("info"));
+						}
+						})
+					.focusout(function() {
+						var $this = $(this);
+						if ($("#labelHolder .label:eq(" + $this.index() + ")").data("success") != true) {
+							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+								$this
+									.removeClass("visible")
+									.removeAttr("title");
+							}
+						} else { // already a pin on the target
+							$this.removeClass("visible");
+							$hsInfoLabel.html("");
+							$hsInfoTxt.html("");
+						}
+						})
+					.keypress(function(e) {
+						var $this = $(this);
+						if ($("#labelHolder .label:eq(" + $this.index() + ")").data("success") != true) { // no pin on target
+							var charCode = e.charCode || e.keyCode;
+							if (charCode == 32) {
+								var $selectedLabel = $pageContents.data("selectedLabel");
+								if ($selectedLabel != undefined && $selectedLabel != "") {
+									$this.removeAttr("title");
+									$selectedLabel
+										.removeClass("selected")
+										.attr("title", labelTxt1);
+									// only accept drops for correct answers
+									if ($selectedLabel.data("correct").is($this) == true) {
+										customHotspots.dropLabel($this, $selectedLabel);
+									} else {
+										$this.removeClass("visible");
+										$pageContents.data("selectedLabel", "");
+									}
+								}
+							}
+						}
+						});
+			
+			
+			// --- SHOW ME ---
+			} else if (intType == "Show Me") {
+				// next/prev buttons below diagram that highlight hotspot and show info for it
+				var instructions = x_currentPageXML.getAttribute("showMeTxt");
+				if (instructions == undefined) {
+					instructions = "Use the arrows to learn more.";
+				}
+				instructions = '<button id="prevBtn"></button><button id="nextBtn"></button>' + instructions;
+				
+				var btnTxt = [x_currentPageXML.getAttribute("nextTxt"), x_currentPageXML.getAttribute("priorTxt")];
+				if (btnTxt[0] == undefined || btnTxt[0] == "") {
+					btnTxt.splice(0, 1, "Next");
+				}
+				if (btnTxt[1] == undefined || btnTxt[1] == "") {
+					btnTxt.splice(1, 1, "Previous");
+				}
+				
+				$("#instructions").html(instructions);
+				
+				$pageContents.data("counter", 0);
+				
+				$("#nextBtn")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-e"
+						},
+						label:	btnTxt[0],
+						text:	false
+					})
+					.click(function() {
+						var $hsCanvas = $("#hsHolder canvas, #hsHolder div");
+						
+						if ($pageContents.data("counter") != 0) {
+							$($hsCanvas[$pageContents.data("counter") - 1]).removeClass("visible");
+						}
+						var thisCanvas = $($hsCanvas[$pageContents.data("counter")]);
+						thisCanvas.addClass("visible");
+						$hsInfoLabel.html(thisCanvas.data("label"));
+						$hsInfoTxt.html(thisCanvas.data("info"));
+						
+						$pageContents.data("counter", $pageContents.data("counter") + 1);
+						
+						if ($pageContents.data("counter") == $hsCanvas.length) {
+							$(this).button("disable");
+						}
+						$("#prevBtn").button("enable");
+					});
+				
+				$("#prevBtn")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-w"
+						},
+						label:	btnTxt[1],
+						text:	false,
+						disabled:	true
+					})
+					.click(function() {
+						var $hsCanvas = $("#hsHolder canvas, #hsHolder div");
+						
+						$($hsCanvas[$pageContents.data("counter") - 1]).removeClass("visible");
+						if ($pageContents.data("counter") != 1) {
+							var thisCanvas = $($hsCanvas[$pageContents.data("counter") - 2]);
+							thisCanvas.addClass("visible");
+							$hsInfoLabel.html(thisCanvas.data("label"));
+							$hsInfoTxt.html(thisCanvas.data("info"));
+						} else {
+							$hsInfoLabel.html("");
+							$hsInfoTxt.html("");
+						}
+						
+						$pageContents.data("counter", $pageContents.data("counter") - 1);
+						
+						if ($pageContents.data("counter") == 0) {
+							$(this).button("disable");
+						}
+						$("#nextBtn").button("enable");
+					});
+			
+			
+			// --- MCQ ---
+			} else {
+				var	phrases = {}, // object will contain all quiz phrases from xml...
+					txt = x_currentPageXML.getAttribute("beforeQuesCount");
+				if (txt == undefined) { txt = "Question"; };
+				phrases.beforeQuesCount = txt;
+				
+				txt = x_currentPageXML.getAttribute("betweenQuesCount");
+				if (txt == undefined) { txt = "of"; };
+				phrases.betweenQuesCount = txt;
+				
+				txt = x_currentPageXML.getAttribute("afterQuesCount");
+				if (txt == undefined) { txt = ""; };
+				phrases.afterQuesCount = txt;
+				
+				txt = x_currentPageXML.getAttribute("correctTxt");
+				if (txt == undefined) { txt = "That's right."; };
+				phrases.correctTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("wrong1stTxt");
+				if (txt == undefined) { txt = "No. The"; };
+				phrases.wrong1stTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("wrong2ndTxt");
+				if (txt == undefined) { txt = "is highlighted in green. The correct answer is the"; };
+				phrases.wrong2ndTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("continueTxt");
+				if (txt == undefined) { txt = "Move on to the next question."; };
+				phrases.continueTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("beforeScore");
+				if (txt == undefined) { txt = "You scored"; };
+				phrases.beforeScore = txt;
+				
+				txt = x_currentPageXML.getAttribute("betweenScore");
+				if (txt == undefined) { txt = "out of"; };
+				phrases.betweenScore = txt;
+				
+				txt = x_currentPageXML.getAttribute("afterScore");
+				if (txt == undefined) { txt = "in the quiz"; };
+				phrases.afterScore = txt;
+				
+				$pageContents.data("phrases", phrases);
+				
+				
+				var fixedPhrases = {}; // object will contain all quiz phrases that only need to be set once - at first load...
+				txt = x_currentPageXML.getAttribute("questionTxt");
+				if (txt == undefined) { txt = "Which item is highlighted in the diagram? Choose from the following options"; };
+				fixedPhrases.questionTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("checkBtnTxt");
+				if (txt == undefined) { txt = "Check"; };
+				fixedPhrases.checkBtnTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("nextBtnTxt");
+				if (txt == undefined) { txt = "Next"; };
+				fixedPhrases.nextBtnTxt = txt;
+				
+				txt = x_currentPageXML.getAttribute("scoreLabel");
+				if (txt == undefined) { txt = "Score"; };
+				fixedPhrases.scoreLabel = txt;
+				
+				txt = x_currentPageXML.getAttribute("onCompletion");
+				if (txt == undefined) { txt = "You can retake the quiz at any time"; };
+				fixedPhrases.onCompletion = txt;
+				
+				txt = x_currentPageXML.getAttribute("restart");
+				if (txt == undefined) { txt = "Restart"; };
+				fixedPhrases.restart = txt;
+				
+				
+				// set up divs needed for quiz - one containing question stuff and one containing results shown at end of the quiz
+				$("#labelHolder, #hsInfo").remove();
+				$("#textHolder")
+					.append('<div id="qHolder"><h3 id="qCount"></h3><p id="qTxt">' + fixedPhrases.questionTxt + ':</p><div id="optionHolder"></div><div class="buttonHolder"><button id="checkBtn"></button><button id="nextBtn"></button></div><div id="feedback"></div></div>')
+					.append('<div id="scoreHolder"><h3 id="score">' + fixedPhrases.scoreLabel + '</h3><p id="scoreTxt"></p><p id="retakeTxt">' + fixedPhrases.onCompletion + '.</p><div class="buttonHolder"><button id="restartBtn"></button></div></div>');
+				
+				$("#checkBtn")
+					.button({ label:	fixedPhrases.checkBtnTxt })
+					.click(function() {
+						// mark answer
+						var	$currentShape = $("#hsHolder canvas.visible, #hsHolder div.visible"),
+							myAnswer = $("#optionHolder input:checked").val();
+						if ($currentShape.data("label") == myAnswer) { // correct
+							$("#feedback").html($pageContents.data("phrases").correctTxt + "</br>" + $pageContents.data("phrases").continueTxt + ".");
+							$pageContents.data("mcqData").score++;
+							
+						} else { // incorrect
+							$("#feedback").html($pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+							
+							// tint wrong answer canvas/div green
+							var	$myAnswerCanvas = $("#hsHolder canvas, #hsHolder div").filter(function() { return $(this).data("label") && $(this).data("label") == myAnswer; });
+							if (canvasSupported == true) {
+								var	ctx = $myAnswerCanvas[0].getContext("2d"),
+									canvasImage = ctx.getImageData(0, 0, $myAnswerCanvas.width(), $myAnswerCanvas.height()),
+									pixelData = canvasImage.data,
+									idx, i;
+								for (var i=1; i<(pixelData.length/4); i++) {
+									idx = i * 4;
+									pixelData[idx] = 0;			// red
+									pixelData[idx + 1] = 255;	// green
+									pixelData[idx + 2] = 0;		// blue
+								}
+								ctx.putImageData(canvasImage, 0, 0);
+								
+							}
+							
+							$myAnswerCanvas
+								.addClass("greenTint")
+								.addClass("visible");
+						}
+						
+						$("#optionHolder input").prop("disabled", true);
+						$("#nextBtn").removeAttr("disabled");
+						$(this)
+							.attr("disabled", "disabled")
+							.hide()
+							.show(); // hack to take care of IEs inconsistent handling of clicks
+					});
+				
+				$("#nextBtn")
+					.button({ label:	fixedPhrases.nextBtnTxt })
+					.click(function() {
+						$(this).attr("disabled", "disabled");
+						$pageContents.data("mcqData").currentQ++;
+						if ($pageContents.data("mcqData").currentQ == $pageContents.data("mcqData").questions.length) {
+							// last question answered - show results
+							$("#hsHolder canvas, #hsHolder div").removeClass("visible");
+							$("#qHolder").hide();
+							$("#scoreHolder").show();
+							$("#scoreTxt").html($pageContents.data("phrases").beforeScore + " " + $pageContents.data("mcqData").score + " " + $pageContents.data("phrases").betweenScore + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterScore + ".");
+							
+						} else {
+							customHotspots.createQ();
+						}
+						
+						if ($("#hsHolder .greenTint").length > 0) {
+							// remove green tint on canvas/div
+							var	$greenCanvas = $("#hsHolder .greenTint");
+							if (canvasSupported == true) {
+								var	ctx = $greenCanvas[0].getContext("2d"),
+									canvasImage = ctx.getImageData(0, 0, $greenCanvas.width(), $greenCanvas.height()),
+									pixelData = canvasImage.data,
+									idx, i;
+								
+								var rgba = highlightStyle.fill.substring(5).split(",");
+								
+								for (var i=1; i<(pixelData.length/4); i++) {
+									idx = i * 4;
+									pixelData[idx]		= rgba[0];
+									pixelData[idx + 1]	= rgba[1];
+									pixelData[idx + 2]	= rgba[2];
+								}
+								ctx.putImageData(canvasImage, 0, 0);
+							}
+							
+							$greenCanvas.removeClass("greenTint");
+						}
+					});
+				
+				$("#restartBtn")
+					.button({ label:	fixedPhrases.restart })
+					.click(function() {
+						customHotspots.createQuiz();
+					});
+				
+				this.createQuiz();
+			}
+		};
+		
+		
+		// only used in label interaction - called when pin dropped to hotspots (mouse and keyboard)
+		this.dropLabel = function($target, $label, $helper) {
+			var $hsHolder = $("#hsHolder");
+			$hsHolder.find("canvas.visible").removeClass("visible");
+			$target.addClass("visible");
+			$hsInfoLabel.html($target.data("label"));
+			$hsInfoTxt.html($target.data("info"));
+			
+			var $pin;
+			if ($helper != undefined) {
+				// clone helper to use as permanant pin
+				$pin = $helper.clone();
+			} else {
+				// create new pin
+				$pin = $('<div class="helper"><img class="pinImg" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + ($target.index() + 1) + '</div>');
+				
+				if (canvasSupported == true) {
+					// position $pin on 1st non-transparent pixel on canvas
+					var $thisHSCanvas = $target;
+					var $hsHolder = $target.parent();
+					
+					// get pixel data from the whole canvas
+					var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
+					for (var i=0; i<pix.data.length/4; i++) {
+						// find 1st non-transparent pixel
+						if (pix.data[(i * 4) + 3] > 0) {
+							var	y = Math.floor(i / $thisHSCanvas.width()),
+								x = i - (y * $thisHSCanvas.width());
+							
+							$pin.css({
+								left:	x + $hsHolder.position().left - 8,
+								top:	y + $hsHolder.position().top - 15
+							});
+							break;
+						}
+					}
+				} else {
+					// position $pin in centre of div
+					$pin.css({
+						left:	$target.css("left") + ($target.width() / 2),
+						top:	$target.css("top") + ($target.height() / 2)
+					});
+				}
+				
+				$label.find(".pinImg").removeClass("visible");
+			}
+			$pin
+				.appendTo("#pinHolder")
+				.removeClass("ui-draggable-dragging")
+				.data("correct", $target)
+				.css("cursor", "pointer");
+			
+			// stop label being draggable but make pin and label clickable
+			$label
+				.draggable("disable")
+				.attr("style", "cursor: pointer !important; opacity: 1")
+				.data("success", true);
+			
+			$pin.add($label)
+				.on("click", function() {
+					$("#hsHolder canvas").removeClass("visible");
+					var $thisHSCanvas = $(this).data("correct");
+					$thisHSCanvas.addClass("visible");
+					$hsInfoLabel.html($thisHSCanvas.data("label"));
+					$hsInfoTxt.html($thisHSCanvas.data("info"));
+				});
+		};
+		
+		
+		// only used in mcq interaction - creates new quiz
+		this.createQuiz = function() {
+			$("#qHolder").show();
+			$("#nextBtn, #checkBtn")
+				.show()
+				.attr("disabled", "disabled");
+			
+			$("#scoreHolder").hide();
+			
+			var mcqData = {};
+				mcqData.currentQ = 0;
+				mcqData.score = 0;
+				mcqData.questions = []; // array of questions to use (index)
+			$pageContents.data("mcqData", mcqData);
+			
+			var	numQs = $("#hsHolder canvas, #hsHolder div").length,
+				qNums = [];
+			
+			for (var i=0; i<numQs; i++) {
+				qNums.push(i);
+			}
+			for (var i=0; i<numQs; i++) {
+				var qNum = Math.floor(Math.random() * qNums.length);
+				$pageContents.data("mcqData").questions.push(qNums[qNum]);
+				qNums.splice(qNum, 1);
+			}
+			this.createQ();
+		};
+		
+		
+		// only used in mcq interaction - creates new question
+		this.createQ = function() {
+			$("#qCount").html($pageContents.data("phrases").beforeQuesCount + " " + ($pageContents.data("mcqData").currentQ + 1) + " " + $pageContents.data("phrases").betweenQuesCount + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterQuesCount);
+			$("#feedback").html("");
+			
+			var correctShape = $pageContents.data("mcqData").questions[$pageContents.data("mcqData").currentQ];
+			
+			var options = [], // array of options to use (index)
+				numShapes = $pageContents.data("mcqData").questions.length,
+				shapeNums = [];
+			
+			// get max 3 random wrong answer options
+			for (var i=0; i<numShapes; i++) {
+				if (i != correctShape) {
+					shapeNums.push(i);
+				}
+			}
+			var numOptions = shapeNums.length;
+			if (numOptions > 3) {
+				numOptions = 3;
+			}
+			for (var i=0; i<numOptions; i++) {
+				var shapeNum = Math.floor(Math.random() * shapeNums.length);
+				options.push(shapeNums[shapeNum]);
+				shapeNums.splice(shapeNum, 1);
+			}
+			
+			// insert correct option in random position
+			options.splice(Math.floor(Math.random() * 4), 0, correctShape);
+			
+			var $hsCanvases = $("#hsHolder canvas, #hsHolder div");
+			$hsCanvases.removeClass("visible");
+			$("#hsHolder canvas:eq(" + correctShape + "), #hsHolder div:eq(" + correctShape + ")").addClass("visible");
+			
+			// create answer option radio buttons
+			var $optionHolder = $("#optionHolder")
+				.empty()
+				.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+			
+			var	$option = $optionHolder.find("input"),
+				$optionTxt = $optionHolder.find(".optionTxt");
+			for (var i=0; i<options.length; i++) {
+				var $thisOption, $thisOptionTxt;
+				if (i != 0) {
+					$thisOption = $option.clone().appendTo($optionHolder);
+					$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+				} else {
+					$thisOption = $option;
+					$thisOptionTxt = $optionTxt;
+				}
+				
+				$thisOption
+					.attr({
+						"value"	:$($hsCanvases[options[i]]).data("label"),
+						"id"	:"option" + i
+						})
+					.change(function() {
+						$("#checkBtn").removeAttr("disabled");
+					});
+				
+				$thisOptionTxt
+					.attr("for", "option" + i)
+					.html($($hsCanvases[options[i]]).data("label"));
+			};
+		};
+		
+		
+		
+		// --- FUNCTIONS TO DRAW SHAPES ON CANVAS ---
+		
+		this.drawRectangle = function(canvas, attr) {
+			if (canvasSupported == true) {
+				var w = attr.x2, h = attr.y2;
+				canvas.translate(attr.x, attr.y);
+				canvas.rotate(attr.r * Math.PI / 180);
+				this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]);
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
+			else {
+				if (attr.r == 0) { // Draw rectangle using div ONLY IF not rotated
+					canvas.append('<div style="position:absolute;left:' + (attr.x - Math.round(attr.lw / 2)) + 'px;top:' + (attr.y - Math.round(attr.lw / 2)) + 'px;width:' + (attr.x2 - attr.lw) + 'px;height:' + (attr.y2 - attr.lw) + 'px;background-color:' + attr.fc + ';border:' + attr.lw + 'px solid ' + attr.lc + ';"></div>');
+					canvas.width(Math.max(canvas.width(), attr.x + attr.x2 + 10));
+					canvas.height(Math.max(canvas.height(), attr.y + attr.y2 + 10));
+				}
+				else {
+					fullySupported = false;
+				}
+			}
+		};
+		
+		this.drawText = function (canvas, attr) {
+            var fontWeight = (attr.b == "1") ? "bold" : "normal";
+			
+			if (canvasSupported == true) {
+                canvas.textBaseline = "top";
+                canvas.fillStyle = attr.lc;
+                canvas.font = fontWeight + " " + attr.s + "px " + attr.f;
+                this.wrapText(canvas, attr.t, attr.x, attr.y, attr.x2, 20);
+			}
+			else {
+				var idHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
+                canvas.append('<div id="txt_' + idHash + '" style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
+				var div = canvas.find("#txt_" + idHash);
+				canvas.width(Math.max(canvas.width(), attr.x + attr.x2));
+				canvas.height(Math.max(canvas.height(), attr.y + div.height()));
+			}
+		};
+		
+        this.wrapText = function (canvas, t, x, y, maxWidth, lineHeight) {
+            var line = '', text = String(t), words = text.split(' ');
+			
+            for (var i = 0; i < words.length; i++) {
+                var tempLine = line + words[i] + ' ';
+                if (canvas.measureText(tempLine).width > maxWidth) {
+                    canvas.fillText(line, x, y);
+                    line = words[i] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = tempLine;
+                }
+            }
+            canvas.fillText(line, x, y);
+        };
+		
+		this.drawPicture = function (canvas, attr) {
+			var p = FileLocation + attr.p;
+			
+			if (canvasSupported == true) {
+				var img = new Image();
+				img.onload = function() {
+					canvas.save();
+					canvas.translate(attr.x, attr.y);
+					canvas.rotate(attr.r * Math.PI / 180);
+					canvas.drawImage(img, 0, 0);
+					canvas.restore();
+					imageTimer = 0;
+				};
+				img.src = p;
+				imageLoading = img;
+				imageTimer = 25;
+			}
+			else {
+                if (attr.r == 0) {
+                    canvas.append('<img style="position:relative;left:' + attr.x + 'px;top:' + attr.y + 'px;" src="' + p + '" alt="' + attr.label + '" />');
+                	var img = new Image();
+                	img.onload = function() {
+						canvas.width(Math.max(canvas.width(), attr.x + this.width));
+						canvas.height(Math.max(canvas.height(), attr.y + this.height));
+                	}
+                	img.src = p;
+                }
+                else {
+                    fullySupported = false;
+                }
+			}
+		};
+		
+        this.drawPen = function (canvas, attr) {
+            if (canvasSupported == true) {
+                var coords, points = attr.p.split('~');
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.moveTo(0,0);
+                for (var i = 0; i < points.length - 1; i++) {
+                    coords = points[i].split(',');
+                    canvas.quadraticCurveTo(coords[2], coords[3], coords[0], coords[1]);
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+		this.drawFreehand = function (canvas, attr) {
+			var points = attr.p.split('~');
+			var coords = [];
+			for (var i=0; i<points.length; i++) {
+				coords.push(points[i].split(','));
+			}
+			
+			if (canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+				for (var i=0; i<coords.length; i++) {
+                    canvas.lineTo(parseInt(coords[i][0]), parseInt(coords[i][1]));
+				}
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+			}
+			else {
+				fullySupported = false;
+				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
+				var pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
+				var pixels = '', maxX = 0, maxY = 0;
+				for (var i=0; i<coords.length; i++) {
+					pixels += '<div class="p_' + pixelHash + '" style="left:' + (attr.x + parseInt(coords[i][0])) + 'px;top:'+ (attr.y + parseInt(coords[i][1])) + 'px"></div>';
+					maxX = Math.max(maxX, attr.x + parseInt(coords[i][0]) + attr.lw + 1);
+					maxY = Math.max(maxY, attr.y + parseInt(coords[i][1]) + attr.lw + 1);
+				}
+                canvas.append(pixels);
+                canvas.width(Math.max(canvas.width(), maxX));
+				canvas.height(Math.max(canvas.height(), maxY));
+			}
+		};
+		
+        this.drawOval = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var radiusX = attr.x2;
+                var radiusY = attr.y2;
+                var xPos, yPos;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                for (var i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
+                    xPos = radiusY * Math.sin(i) * Math.sin(0 * Math.PI) + radiusX * Math.cos(i) * Math.cos(0 * Math.PI);
+                    yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
+                    if (i == 0) {
+                        canvas.moveTo(xPos, yPos);
+                    }
+                    else {
+                        canvas.lineTo(xPos, yPos);
+                    }
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawPoly = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var radius = attr.x2;
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+				
+                if (attr.n > 2) {
+                    var step, start, dx, dy, coords = [];
+                    step = 2 * Math.PI / attr.n;
+                    coords.push(Math.cos(0) * radius);
+                    coords.push(- Math.sin(0) * radius);
+                    for (var i = 1; i <= attr.n; i++) {
+                        coords.push(Math.cos(step * i) * radius);
+                        coords.push(- Math.sin(step * i) * radius);
+                    }
+                    this.drawPolygon(canvas, coords);
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawBurst = function(canvas, attr) {
+            if (canvasSupported == true) {
+                if (attr.n > 2) {
+                    var outerRadius = attr.y2;
+                    var innerRadius = attr.x2;
+                    var step, hStep, qStep, i, dx, dy, cx, cy;
+                    step = 2 * Math.PI / attr.n ;
+                    hStep = step/2;
+                    qStep = step/4;
+					
+                    canvas.translate(attr.x, attr.y);
+                    canvas.rotate(attr.r * Math.PI / 180);
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (i = 1; i <= attr.n; i++) {
+                        cx = Math.cos(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+                        cy = -Math.sin(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+                        dx = Math.cos(step * i - hStep) * innerRadius;
+                        dy = -Math.sin(step * i - hStep) * innerRadius;
+                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+                        cx = Math.cos(step * i - qStep) * innerRadius / Math.cos(qStep);
+                        cy = -Math.sin(step * i - qStep) * innerRadius / Math.cos(qStep);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawArrow = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var w = attr.x2;
+                var h = attr.y2;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                this.drawPolygon(canvas, [0,h/4,w/2,h/4,w/2,0,w,h/2,w/2,h,w/2,3*h/4,0,3*h/4,0,h/4]);
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawLine = function(canvas, attr) {
+            if (canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                canvas.lineTo(attr.x2, attr.y2);
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        }
+		
+        this.drawStar = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var outerRadius = attr.x2;
+                var innerRadius = attr.y2;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate((180 - attr.r) * Math.PI / 180);
+                if (attr.n > 2) {
+                    var step, hStep, i, dx, dy;
+                    step = 2 * Math.PI / attr.n;
+                    hStep = step / 2;
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (var i = 1; i <= attr.n; i++) {
+                        dx = Math.cos(step * i - hStep) * innerRadius;
+                        dy = -Math.sin(step * i - hStep) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawNgon = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var p = attr.p.split('~');
+                var i, coords;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                if (p.length > 1) {
+                    canvas.beginPath();
+                    for (i = 0; i < p.length; i++) {
+                        coords = p[i].split(',');
+                        if (i == 0) {
+                            canvas.moveTo(parseInt(coords[0]), parseInt(coords[1]));
+                        } else {
+                            canvas.lineTo(parseInt(coords[0]), parseInt(coords[1]));
+                        }
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawWedge = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var radius = attr.x2;
+                var arc = attr.y2;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                var segAngle, theta, angle, angleMid, segs, ax, ay, bx, by, cx, cy;
+                if (Math.abs(arc) > 360) {
+                    arc = 360;
+                }
+                segs = Math.ceil(Math.abs(arc) / 45);
+                segAngle = arc / segs;
+                theta = - Math.PI * segAngle / 180;
+                angle = - Math.PI * 0 / 180;
+                if (segs > 0) {
+                    ax = Math.cos(0 * Math.PI / 180) * radius;
+                    ay = Math.sin(-0 * Math.PI / 180) * radius;
+                    canvas.lineTo(ax, ay);
+                    for (var i = 0; i < segs; i++) {
+                        angle += theta;
+                        angleMid = angle - theta / 2;
+                        bx = Math.cos(angle) * radius;
+                        by = Math.sin(angle) * radius;
+                        cx = Math.cos(angleMid) * radius / Math.cos(theta / 2);
+                        cy = Math.sin(angleMid) * radius / Math.cos(theta / 2);
+                        canvas.quadraticCurveTo(cx, cy, bx, by);
+                    }
+                    canvas.lineTo(0, 0);
+                }
+                canvas.closePath();
+                canvas.fill();
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawGear = function(canvas, attr) {
+            if (canvasSupported == true) {
+                var outerRadius = attr.x2;
+                var innerRadius = attr.y2;
+				
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate((180 - attr.r) * Math.PI / 180);
+                if (attr.n > 2) {
+                    var step, qStep, start, i, dx, dy;
+                    step = 2 * Math.PI / attr.n;
+                    qStep = step / 4;
+					
+                    canvas.beginPath();
+                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+                    for (i = 1; i <= attr.n; i++) {
+                        dx = Math.cos(step * i - qStep * 3) * innerRadius;
+                        dy = -Math.sin(step * i - qStep * 3) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i - qStep * 2) * innerRadius;
+                        dy = -Math.sin(step * i - qStep * 2) * innerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i - qStep) * outerRadius;
+                        dy = -Math.sin(step * i - qStep) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                        dx = Math.cos(step * i) * outerRadius;
+                        dy = -Math.sin(step * i) * outerRadius;
+                        canvas.lineTo(dx, dy);
+                    }
+                    canvas.closePath();
+                    canvas.fill();
+                    canvas.globalAlpha = attr.la / 100;
+                    canvas.stroke();
+                }
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+        this.drawCurve = function(canvas, attr) {
+            if (canvasSupported == true) {
+                canvas.translate(attr.x, attr.y);
+                canvas.rotate(attr.r * Math.PI / 180);
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                canvas.quadraticCurveTo(attr.x3, attr.y3, attr.x2, attr.y2);
+                canvas.globalAlpha = attr.la / 100;
+                canvas.stroke();
+            }
+            else {
+                fullySupported = false;
+            }
+        };
+		
+		// Helper function NOT the Poly shape handler, although called from it
+        this.drawPolygon = function (canvas, coords) {
+            canvas.beginPath();
+            canvas.moveTo(coords[0], coords[1]);
+            for (var i = 2; i < coords.length - 1; i += 2) {
+                canvas.lineTo(coords[i], coords[i+1]);
+            }
+            canvas.closePath();
+        };
+		
+	};
+
+    customHotspots.init();
+
+</script>
+
+<style type="text/css">
+
+	.alert {
+		font-weight:	bold;
+		color:			red;
+	}
+	
+	#hsHolder {
+		position:	relative;
+	}
+	
+	#hsHolder canvas, #hsHolder div {
+		position:	absolute;
+		opacity:	0;
+		top:		0;
+		left:		0;
+	}
+	
+	#hsHolder canvas.visible, #hsHolder div.visible {
+		opacity:	1;
+	}
+	
+	#instructions {
+		margin-top:	10px;
+	}
+	
+	#instructions button {
+		margin-right:	5px;
+	}
+	
+	#hsInfo {
+		margin-top:	20px;
+	}
+	
+	
+	/* styles below are only used for label interactivity */
+	
+	#labelHolder {
+		margin-top:	10px;
+	}
+	
+	#labelHolder .label {
+		border:		2px solid transparent;
+		display:	inline-block;
+		cursor:		pointer;
+		padding:	5px;
+		margin:		10px;
+	}
+	
+	#labelHolder .label.focus {
+		border:		2px solid yellow;
+	}
+	
+	#labelHolder .label.selected {
+		border:		2px solid green;
+	}
+	
+	#pageContents img.pinImg {
+		padding-right:	5px;
+	}
+	
+	#labelHolder img.pinImg {
+		opacity:	0;
+	}
+	
+	#labelHolder img.visible {
+		opacity:	1;
+	}
+	
+	#labelHolder .helper, #pinHolder .helper {
+		padding:	5px;
+	}
+	
+	#pinHolder .helper {
+		position:	absolute;
+	}
+	
+	
+	/* styles below are only used in mcq interactivity */
+	
+	#hsHolder div.greenTint {
+		background-color:	green;
+		border-color:		green;
+	}
+	
+	#qHolder, #scoreHolder {
+		margin-top:		20px;
+	}
+	
+	#qHolder button, #scoreHolder button {
+		margin-left:	10px;
+		float:			right;
+	}
+	
+	#optionHolder {
+		margin-left:	15px;
+	}
+	
+	#optionHolder input {
+		float:		left;
+		display:	block;
+	}
+
+	#optionHolder .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		margin-bottom:	10px;
+		display:		block;
+	}
+
+	#feedback, #buttonHolder {
+		clear:		both;
+	}
+
+</style>
+
+<div id="pageContents">
+	
+	<div class="mobileAlign">
+		<div class="panel inline x_floatRight">
+			
+			<div id="hsHolder"></div>
+			
+			<div id="diagramHolder">
+				<div id="fallbackDiv"></div> <!-- used if canvas tag not supported -->
+				<canvas id="mainCanvas"></canvas>
+			</div>
+			
+			<div id="instructions"></div>
+			
+		</div>
+	</div>
+	
+	<div id="textHolder" tabindex="1">
+		<div id="labelHolder"></div>
+		<div id="hsInfo">
+			<h3 id="label"></h3>
+			<div id="info"></div>
+		</div>
+	</div>
+	
+</div>

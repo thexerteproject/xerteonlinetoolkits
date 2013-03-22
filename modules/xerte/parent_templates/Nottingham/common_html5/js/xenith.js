@@ -599,7 +599,7 @@ function x_setUp() {
 	}
 	
 	if (x_params.background != undefined) {
-		var alpha = 50;
+		var alpha = 30;
 		if (x_params.backgroundopacity != undefined) {
 			alpha = x_params.backgroundopacity;
 		}
@@ -1081,7 +1081,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 			imgW = $img.data("origSize")[0];
 			imgH = $img.data("origSize")[1];
 		}
-		if (imgW > maxW || imgH > maxH || firstScale == false) {
+		if (imgW > maxW || imgH > maxH || firstScale != true) {
 			if (imgW > maxW) {
 				var scale = maxW / imgW;
 				imgW = imgW * scale;
