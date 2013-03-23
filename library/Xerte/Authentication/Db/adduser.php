@@ -40,7 +40,7 @@ if(is_user_admin()){
     {
         $mesg .= "<li>" . AUTH_DB_ADDUSER_INVALIDPASSWORD . "</li>";
     }
-    else if (isset($_POST['password']) && strlen(urldecode(['password'])) < 5)
+    else if (isset($_POST['password']) && strlen(urldecode($_POST['password'])) < 5)
     {
         $mesg .= "<li>" . AUTH_DB_ADDUSER_PASSWORDTOOSHORT . "</li>";
     }
