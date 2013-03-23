@@ -191,7 +191,7 @@ function peer_display($xerte_toolkits_site,$change){
     echo "<form action=\"javascript:peer_change_template()\" name=\"peer\" >";
     echo PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . " <input type=\"text\" size=\"15\" name=\"password\" style=\"margin:0px; padding:0px\" value=\"" . $passwd . "\" /><br /><br />";
     echo PROPERTIES_LIBRARY_PEER_RETOUREMAIL_PROMPT . "<br /> <input type=\"text\" size=\"50\" name=\"retouremail\" style=\"margin:0px; padding:0px\" value=\"" . $retouremail . "\" />";
-    echo "<br><br><button type=\"button\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . "</button>";
+    echo "<br><br><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . "</button>";
     echo "</p>";
     echo "</form>";
 
