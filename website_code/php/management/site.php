@@ -7,6 +7,7 @@ require_once("../../../config.php");
 _load_language_file("/website_code/php/management/site.inc");
 
 require_once("../user_library.php");
+require_once("management_library.php");
 
 if(is_user_admin()){
 
@@ -167,6 +168,12 @@ if(is_user_admin()){
 
     echo "</div>";
 
+    echo "<div class=\"template\" id=\"languagedetails\">";
+    echo "<p>" . MANAGEMENT_LIBRARY_LANGUAGES . " <button type=\"button\" class=\"xerte_button\" id=\"languagedetails_btn\" onclick=\"javascript:templates_display('languagedetails')\">" . MANAGEMENT_LIBRARY_VIEW . "</button></p></div><div class=\"template_details\" id=\"languagedetails_child\">";
+    language_details(false);
+    echo "</div>";
+    echo "</div>";
+
   echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
 
 
@@ -230,11 +237,12 @@ if(!isset($lti)) {
     echo "</div>";
 
   }
+    echo "</div>";
+    echo "</div>";
 
-  echo "</div>";
-  echo "</div>";
-  echo "</div>";
 
+
+    echo "</div>";
 
 }else{
 

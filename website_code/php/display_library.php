@@ -280,7 +280,7 @@ function list_users_projects($sort_type) {
 
   echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/folder_workspace.gif\"";
 
-    echo " />Workspace</p></div><div id=\"folderchild_workspace\" class=\"workspace\">";
+    echo " />" . INDEX_WORKSPACE . "</p></div><div id=\"folderchild_workspace\" class=\"workspace\">";
 
   $level = 1;
 

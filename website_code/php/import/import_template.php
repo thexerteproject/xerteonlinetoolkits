@@ -109,7 +109,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     if(@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)){
 
-        require_once dirname(__FILE__)."/dUnzip2.inc.php";
+        require_once dirname(__FILE__) . "/dUnzip2.inc.php";
 
         $zip = new dUnzip2($new_file_name);
 

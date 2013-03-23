@@ -46,4 +46,10 @@
 
 	define("MANAGEMENT_LIBRARY_FAIL", "the feature is for administrators only");
 
+    define("MANAGEMENT_LIBRARY_ADD_LANGUAGE", "Add or update a language definition");
+    define("MANAGEMENT_LIBRARY_EXISTING_LANGUAGES", "Manage existing languages");
+    define("MANAGEMENT_LIBRARY_LANGUAGE_INSTALL", "Install language definition");
+    define("MANAGEMENT_LIBRARY_LANGUAGES", "Language settings");
+    define("MANAGEMENT_LIBRARY_LANGUAGES_EXPLAINED", "Upload and refresh the language definitions using the upload button below. New language definitions can be found in the download section of the Xerte Community website (http://www.xerte.org.uk). There are three different kinds of packages. You can use any of them here.");
+    define("MANAGEMENT_LIBRARY_LANGUAGES_UPDATED", "Language definitions are updated.");
 ?>

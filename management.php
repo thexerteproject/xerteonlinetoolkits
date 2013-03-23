@@ -132,6 +132,12 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
      */
 } else {
 
+    global $authmech;
+
+    if (!isset($authmech))
+    {
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
     if (($_POST["login"] == $xerte_toolkits_site->admin_username) && ($_POST["password"] == $xerte_toolkits_site->admin_password)) {
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";
@@ -179,6 +185,11 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 _include_javascript_file("website_code/scripts/import.js");
                 _include_javascript_file("website_code/scripts/template_management.js");
                 _include_javascript_file("website_code/scripts/logout.js");
+
+                if ($authmech->canManageUser($jsscript))
+                {
+                    _include_javascript_file($jsscript);
+                }
                 ?>
 
             </head>
