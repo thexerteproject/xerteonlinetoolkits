@@ -72,4 +72,46 @@ abstract class Xerte_Authentication_Abstract
     public function needsLogin() {
         return true;
     }
+
+    /**
+     * canManageUser
+     *
+     * Change this to return true if the four AJAX functions getUserList(), addUser(), delUser() and changePassword() are implemented.
+     * Using these four functions the users can be fully managed in the management page
+     */
+    public function canManageUser(&$jsscript)
+    {
+        $jsscript="";
+        return false;
+    }
+
+    /**
+     * getUserList
+     *
+     * Create a form that contains a list, or selection box with all users, and the capability to change password, delete user, and add a new user
+     * @param $changed, indicates whether this function is called after an update. It should mention that the list has been updated and displays $mesg below the form,
+     *                  see Db.php for an example
+     * @param $mesg, message to display if $changed is true
+     * @return string, contains the form code to manage users. It will be placed dynamically in the Users management page
+     */
+    public function getUserList($changed, $mesg)
+    {
+        echo "";
+    }
+
+    public function addUser($username, $passwd, $firstname, $lastname)
+    {
+        $this->getUserList(true, "");
+    }
+
+    public function delUser($username)
+    {
+        $this->getUserList(true, "");
+    }
+
+    public function changePassword($username, $newpassword)
+    {
+        $this->getUserList(true, "");
+    }
+
 }

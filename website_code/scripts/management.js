@@ -712,6 +712,158 @@ function delete_template(template){
 
 }
 
+
+var iframe_language_interval = 0;
+
+function iframe_language_check_upload(){
+
+    if(window["upload_iframe"].document.body.innerHTML!=""){
+
+        if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
+
+            clearInterval(iframe_language_interval);
+
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+
+            string = string.substr(0,string.length-4);
+
+            alert(string);
+
+            refresh_languages();
+
+            window["upload_iframe"].document.body.innerHTML="";
+
+        }else{
+
+            clearInterval(iframe_language_interval);
+
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+
+            alert(PHP_ERROR + " - " + string);
+
+        }
+
+    }
+
+}
+
+var iframe_language_interval = 0;
+
+function iframe_language_check(){
+
+    if(window["upload_iframe"].document.body.innerHTML!=""){
+
+        if(window["upload_iframe"].document.body.innerHTML.indexOf("****")!=-1){
+
+            clearInterval(iframe_language_interval);
+
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+
+            string = string.substr(0,string.length-4);
+
+            alert(string);
+
+            if(typeof window_reference==="undefined"){
+
+                window.opener.screen_refresh();
+
+            }else{
+
+                window_reference.screen_refresh();
+
+            }
+
+            window["upload_iframe"].document.body.innerHTML="";
+
+        }else{
+
+            clearInterval(iframe_language_interval);
+
+            string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+
+            alert(PHP_ERROR + " - " + string);
+
+        }
+
+    }
+
+}
+
+/**
+ *
+ * Function iframe upload check initialise
+ * This function starts checking the iframe for the response text every 5 seconds (used by the media quota import page).
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function iframe_upload_language_check_initialise(){
+
+    iframe_language_interval = setInterval("iframe_language_check_upload()",500);
+
+}
+
+function iframe_language_check_initialise(){
+
+    iframe_language_interval = setInterval("iframe_language_check()",500);
+
+}
+
+function management_languageChanged(){
+
+    if (xmlHttp.readyState==4){
+
+        response = xmlHttp.responseText.trim();
+        if(response!=""){
+            p = response.indexOf("****");
+            if (p != -1)
+            {
+                msg = response.substr(0, p);
+                innerhtml = response.substr(p+4);
+                elmnt = document.getElementById('languagedetails_child');
+                elmnt.innerHTML = innerhtml;
+                if (msg != "")
+                    alert(msg);
+            }
+            else
+            {
+                alert(response);
+            }
+
+        }
+    }
+}
+
+function delete_language(code){
+    var answer = confirm(MANAGEMENT_DELETE_LANGUAGE + code);
+    if (answer)
+    {
+        if (setup_ajax() != false)
+        {
+            var url = "../language/delete_language.php";
+
+            xmlHttp.open("post",management_ajax_php_path + url,true);
+            xmlHttp.onreadystatechange=management_languageChanged;
+            xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xmlHttp.send('code=' + code);
+        }
+    }
+}
+
+function refresh_languages()
+{
+    if (setup_ajax() != false)
+    {
+        var url = "../language/refresh_language.php";
+
+        xmlHttp.open("post",management_ajax_php_path + url,true);
+        xmlHttp.onreadystatechange=management_languageChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xmlHttp.send();
+    }
+}
 // Function give a project 
 //
 // Version 1.0 University of Nottingham

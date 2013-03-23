@@ -8,6 +8,19 @@ require("../user_library.php");
 require("management_library.php");
 
 if(is_user_admin()){
+    global $authmech;
+    if (!isset($authmech))
+    {
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+    if ($authmech->canManageUser($jsscript))
+    {
+        echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
+        echo "<div id=\"manage_auth_users\">";
+        $authmech->getUserList(false, "");
+        echo "</div>";
+        echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
+    }
 
     $database_id = database_connect("templates list connected","template list failed");
 

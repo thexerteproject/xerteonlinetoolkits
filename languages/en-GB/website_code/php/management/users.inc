@@ -20,5 +20,9 @@
 	define("USERS_KNOWN", "The user's surname is ");
 	
 	define("USERS_USERNAME", "The user's username is");
+
+    define("USERS_MANAGE_AUTH", "Authorized users");
+
+    define("USERS_MANAGE_ACTIVE", "Active users with Learning Objects");
 	
 ?>

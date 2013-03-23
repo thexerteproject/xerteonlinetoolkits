@@ -1,7 +1,7 @@
 <?PHP
 
 	_load_language_file("/website_code/php/management/management_library.inc");
-	
+	require_once("../language_library.php");
 	function category_list(){
 	
 		global $xerte_toolkits_site;
@@ -91,7 +91,9 @@
 		}
 	
 	}
-	
+
+
+
 	function licence_list(){
 	
 		global $xerte_toolkits_site;
@@ -123,4 +125,34 @@
 	
 	}
 
+    function language_details($changed){
+
+        global $xerte_toolkits_site;
+
+
+        echo "<p>" . MANAGEMENT_LIBRARY_LANGUAGES_EXPLAINED . "</p>";
+        echo "<p>" . MANAGEMENT_LIBRARY_ADD_LANGUAGE . "</p>";
+        echo "<p><br><form method=\"post\" enctype=\"multipart/form-data\" id=\"languagepopup\" name=\"languageform\" target=\"upload_iframe\" action=\"website_code/php/language/import_language.php\" onsubmit=\"javascript:iframe_upload_language_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><br /><br/><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_language_check_initialise()\" >" . MANAGEMENT_LIBRARY_LANGUAGE_INSTALL . "</button></form></p>";
+        echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_LANGUAGES . "</p>";
+        $langs = getLanguages();
+        $codes = array_keys($langs);
+        echo "<ul>";
+        foreach($codes as $code)
+        {
+            echo "<li>" . $langs[$code];
+            if ($code != "en-GB")
+            {
+                echo " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_language('" . $code .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </button></li>";
+            }
+            else{
+                echo "</li>";
+            }
+        }
+        echo "</ul>";
+        if ($changed)
+        {
+            echo "<p>". MANAGEMENT_LIBRARY_LANGUAGES_UPDATED . "</p>";
+        }
+
+    }
 ?>
