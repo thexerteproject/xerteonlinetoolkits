@@ -79,30 +79,27 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <title><?PHP echo XERTE_EDIT_TITLE; ?></title>
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <script type="text/javascript" language="javascript">
-	
+
 	function getSessionID(){
 		var id;
-		
-		//stop Firefoxx losing session info which we are 
-		//using for validation the user is logged in
-		//first checks default, second check is for moodle
-		id = String(document.cookie.match(/PHPSESSID=[^;]+/));
-		id = id.split('=')[1];
-		if (id.length > 0){
-			return id;
-		} 
-		
-		//moodle?
-		id = String(document.cookie.match(/MoodleSession=[^;]+/));
-		id = id.split('=')[1];
-		
-		if (id.length > 0){
-			return id;
+
+		//Pass session info (Firefox Flash Cookie Bug) which we are
+		//using for validation that the user is logged in
+		//It first checks fo default, then checks is for Moodle
+		if ((id = document.cookie.match(/PHPSESSID=[^;]+/))) {
+
+			// Its Default authentication so we only need session id
+			return 'AUTH=xerte&' + id;
 		}
-		
+		else if (document.cookie.match(/MoodleSession=[^;]+/)) {
+
+			//Its Moodle integration so we need the whole cookie
+			return 'AUTH=moodle&COOKIE=' + escape(document.cookie);
+		}
+
 		return null;
 	}
-	
+
     function setunload(){
 
         window.onbeforeunload = bunload;
@@ -121,15 +118,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
 
 		template = "<?PHP  echo $row_edit['template_id']; ?>";
-		
+
 		if(typeof window_reference==="undefined"){
-		
+
 			window.opener.edit_window_close(path,template);
-		
+
 		}else{
-		
+
 			window_reference.edit_window_close(path,template);
-		
+
 		}
 
     }
