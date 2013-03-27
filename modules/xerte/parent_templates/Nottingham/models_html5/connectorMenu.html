@@ -1,0 +1,125 @@
+<script type="text/javascript">
+	
+	// ** HTML5 version currently ignores these optional properties:	itemHeight, menuOverLineCol, menuLineCol, menuOverFillCol, menuFillCol, itemSpacingX
+	// ** listToClip optional property doesn't do anything either (and therefore reportTitle, pageLabel, titleLabel, idLabel)
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var connectorMenu = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+            
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			var	allIDs = [],	// linkIDs of all pages in LO
+				menuItems = [];	// index of pages in allIDs that should be included in menu
+			
+			// get list of all linkIDs
+			$(x_pageInfo).each(function() {
+				allIDs.push(this.linkID);
+			});
+			
+			
+			// work out which pages to include in menu item list...
+			
+			// use pages set in child nodes
+			if ($(x_currentPageXML).children().length > 0) {
+				$(x_currentPageXML).children().each(function() {
+					menuItems.push(jQuery.inArray(this.getAttribute("pageID"), allIDs));
+				});
+				
+			} else {
+				// use pages between endPageID / startPageID
+				if ((x_currentPageXML.getAttribute("startPageID") != undefined && x_currentPageXML.getAttribute("startPageID") != "") || (x_currentPageXML.getAttribute("endPageID") != undefined && x_currentPageXML.getAttribute("endPageID") != "")) {
+					var	start	= jQuery.inArray(x_currentPageXML.getAttribute("startPageID"), allIDs),
+						end		= jQuery.inArray(x_currentPageXML.getAttribute("endPageID"), allIDs);
+					if (start == -1) {
+						start = 0;
+					}
+					if (end == -1) {
+						end = allIDs.length - 1;
+					}
+					
+					for (var i=0; i<allIDs.length; i++) {
+						if (i >= start && i <= end) {
+							menuItems.push(i);
+						}
+					}
+				
+				// use all pages
+				} else {
+					for (var i=0; i<allIDs.length; i++) {
+						menuItems.push(i);
+					}
+				}
+				
+				// remove current page from menuItems
+				if (jQuery.inArray(x_currentPage, menuItems) != -1) {
+					menuItems.splice(jQuery.inArray(x_currentPage, menuItems), 1);
+				}
+				
+				// remove main navigation menu from menuItems (if there is one)
+				if (x_pageInfo[0].type == "menu" && jQuery.inArray(0, menuItems) != -1) {
+					menuItems.splice(0, 1);
+				}
+			}
+			
+			var $menuItems = $("#subMenuItems");
+			var $menuItem = $menuItems.find(".subMenuItem:first");
+			for (var i=0; i<menuItems.length; i++) {
+				var $thisItem;
+				if (i != 0) {
+					$thisItem = $menuItem.clone().appendTo($menuItems);
+				} else {
+					$thisItem = $menuItem;
+				}
+				
+				$thisItem
+					.data("id", allIDs[menuItems[i]])
+					.html(x_pages[menuItems[i]].getAttribute("name"));
+			}
+			
+			$(".subMenuItem")
+				.button()
+				.click(function() {
+					x_navigateToPage(false, {type:"linkID", ID:$(this).data("id")});
+				});
+			
+			
+			// vertical spacing
+			if (x_currentPageXML.getAttribute("itemSpacingY") != undefined) {
+				$("#subMenuItems .subMenuItem").css("margin-bottom", Number(x_currentPageXML.getAttribute("itemSpacingY")));
+			}
+			
+			x_pageLoaded();
+		}
+	}
+
+    connectorMenu.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+	#subMenuItems .subMenuItem {
+		display:		block;
+		margin-bottom:	5px;
+		text-align:		left;
+	}
+	
+</style>
+
+<div id="subMenuHolder">
+	
+	<div id="subMenuItems">
+		<button class="subMenuItem width80"/>
+	</div>
+
+</div>
