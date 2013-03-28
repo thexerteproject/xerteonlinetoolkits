@@ -1,6 +1,6 @@
-// all elements, variables and functions for interface are called "x_id" - do not use id's prefixed with "x_" in page models
+// all elements, variables and functions for interface are called "x_id" - do not make new id's prefixed with "x_" in page models
 var x_languageData	= [];
-var x_params		= new Object(); // all attributes of learningObject that aren't undefined  ** all code for x_params data is written except authorSupport - remember to use when making the Connectors pages **
+var x_params		= new Object(); // all attributes of learningObject that aren't undefined
 var x_pages;		// xml info about all pages in this LO
 var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
 var x_currentPage	= 0;
@@ -511,7 +511,7 @@ function x_setUp() {
 					if ($this.attr("readonly") == undefined) { // focus is on editable text field
 						x_inputFocus = this;
 						if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
-							x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), "top");
+							x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
 						}
 					}
 				});
@@ -883,7 +883,7 @@ function x_updateCss(updatePage) {
 	$(".x_popupDialog").parent().detach();
 }
 
-function x_openDialog(type, title, close, position) {
+function x_openDialog(type, title, close, position, load) {
 	var index = -1;
 	for (var i=0; i<x_dialogInfo.length; i++) {
 		if (x_dialogInfo[i].type == type) {
@@ -895,11 +895,17 @@ function x_openDialog(type, title, close, position) {
 		$(".x_popupDialog").parent().detach();
 		if (x_dialogInfo[index].built != false) {
 			$x_body.append(x_dialogInfo[index].built);
+			
+			if (load != undefined) {
+				x_dialogInfo[index].built.children(".x_popupDialog").html(load);
+			}
+			
 			if (position == undefined) {
 				x_setDialogSize(x_dialogInfo[index].built.children(".x_popupDialog"));
 			} else {
 				x_dialogInfo[index].built.show();
 			}
+			
 		} else {
 			$x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
 			var $x_popupDialog = $("#x_" + type);
@@ -910,9 +916,16 @@ function x_openDialog(type, title, close, position) {
 					closeText:		close,
 					close: function() {$x_popupDialog.parent().detach();}
 					})
-				.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
+				.parent().hide();
 			
-			$x_popupDialog.parent().hide();
+			if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
+				$x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
+				
+			} else {
+				$x_popupDialog.html(load);
+				x_setDialogSize($x_popupDialog, position);
+			}
+			
 			x_dialogInfo[index].built = $x_popupDialog.parent();
 		}
 	}
@@ -927,10 +940,23 @@ function x_setDialogSize($x_popupDialog, position) {
 		width = $x_mainHolder.width()-20;
 		left = 10;
 		top = $x_mainHolder.height()/4;
-	} else if (position == "top") {
-		width = $x_mainHolder.width()/4;
-		left = $x_mainHolder.width() - width - 10;
-		top = $x_headerBlock.height() + 5;
+		
+	} else if (position != undefined) {
+		if (position.width == "small") {
+			width = $x_mainHolder.width()/4;
+		}
+		
+		if (position.left == "left") {
+			left = 10;
+		} else if (position.left == "right") {
+			left = $x_mainHolder.width() - width - 10;
+		}
+		
+		if (position.top == "top") {
+			top = $x_headerBlock.height() + 5;
+		} else if (position.top == "bottom") {
+			top = $x_mainHolder.height() * 0.75;
+		}
 	}
 	
 	$x_popupDialog.dialog({
