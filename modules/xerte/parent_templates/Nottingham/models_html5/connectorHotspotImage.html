@@ -1,0 +1,330 @@
+<script type="text/javascript">
+	
+	// ** HTML5 version currently ignores imageTransition optional property and most of the textWidth attributes (narrow/wide/max)
+	// ** These properties are currently ignored as they're for desktop Xerte only:	reportTitle, pageLabel, titleLabel, idLabel
+	
+	/*
+	** need to get contents of dialog windows to load:
+		tip			
+		startFrame	
+		movieSize		"320,240"
+		reset			true|false
+		endFrame
+		hotspotMovie
+		hotspotPopUp
+		hotspotSound
+	*/
+	
+	// ** get selection to highlight when tabbing through hotspots
+	
+	// ** not tested on iPad
+	// ** hotspots aren't showing in IE - something strange is happening with the tags
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var connectorHotspotImage = new function() {
+		var	$imageHolder,
+			$img,
+			$mainText;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$(".selected").removeClass("selected");
+			$("#feedback").html("");
+			$(".x_popupDialog").parent().detach(); // remove any open dialogs
+		}
+		
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		
+		this.init = function() {
+			$imageHolder = $("#imageHolder");
+			$img = $("#image");
+			$mainText = $("#mainText");
+			
+			// ignores most of the textWidth attributes (narrow/wide/max) - except "none"
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				$mainText.remove();
+				// ** need to align panel centrally - possible increase image size (see how it's done on text and graphics page)
+				
+			} else {
+				if (x_currentPageXML.getAttribute("align") == "Left") {
+					$("#pageContents").prepend($mainText);
+					$imageHolder.css("right", "10px");
+				}
+				$mainText.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			}
+			
+			
+			// set up dialog object for later if it hasn't already been set up on another page of this type
+			// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
+			var newDialog = true;
+			for (var i = 0; i<x_dialogInfo.length; i++) {
+				if (x_dialogInfo[i].type == "connectorHotspotImage") {
+					newDialog = false;
+					break;
+				}
+			}
+			if (newDialog == true) {
+				var dialog = new Object();
+				dialog.type = "connectorHotspotImage";
+				dialog.built = false;
+				x_dialogInfo.push(dialog);
+			}
+			
+			
+			if (x_currentPageXML.getAttribute("hidePanel") == "true") {
+				$imageHolder.removeClass("panel");
+			}
+			
+			$img
+				.one("load", function() {
+					connectorHotspotImage.imgLoaded();
+				})
+				.attr({
+					"src"	:eval(x_currentPageXML.getAttribute("url")),
+					"alt"	:x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
+				});
+		}
+		
+		
+		this.imgLoaded = function() {
+			var imgMaxW = 400,	imgMaxH = 450;
+			if (x_browserInfo.mobile == true) {
+				imgMaxW = 250; // mobile
+				imgMaxH = 250;
+			}
+			
+			x_scaleImg($img, imgMaxW, imgMaxH, true, true);
+			
+			
+			// position text
+			var padding = parseInt($imageHolder.css("padding-left"));
+			if (x_currentPageXML.getAttribute("textWidth") != "none") {
+				var marginW = $img.width() + (padding * 4);
+				if (x_currentPageXML.getAttribute("align") == "Left") {
+					$mainText.css("margin-right", marginW + "px");
+				} else {
+					$mainText.css("margin-left", marginW + "px");
+				}
+			}
+			
+			
+			// get feedback text if authorSupport is on
+			var $feedback = $("#feedback");
+			var notFoundTxt;
+			if (x_params.authorSupport == "true") {
+				notFoundTxt = x_currentPageXML.getAttribute("notFoundMessage");
+				if (notFoundTxt == undefined) {
+					notFoundTxt = "could not be found in this project.";
+				}
+			} else {
+				$feedback.remove();
+			}
+			
+			// get info about dialog popups ready
+			var dialogPos = {left:"center", top:"middle"};
+			if (x_currentPageXML.getAttribute("popUpHAlign") != undefined && x_currentPageXML.getAttribute("popUpHAlign") != "") {
+				dialogPos.left = x_currentPageXML.getAttribute("popUpHAlign");
+			}
+			if (x_currentPageXML.getAttribute("popUpVAlign") != undefined && x_currentPageXML.getAttribute("popUpVAlign") != "") {
+				dialogPos.top = x_currentPageXML.getAttribute("popUpVAlign");
+			}
+			
+			var continueBtnTxt = x_currentPageXML.getAttribute("continueBtnTxt");
+			if (continueBtnTxt == undefined) {
+				continueBtnTxt = "Close";
+			}
+			
+			
+			// create hotspots - taking scale of image into account
+			var scale = $img.width() / $img.data("origSize")[0];
+			
+			$(x_currentPageXML).children()
+				.each(function(){
+					var hsType,	// what does hs do when clicked?
+						hsInfo;
+					
+					// go to page in LO
+					if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
+						hsType = "pageLink";
+						hsInfo = this.getAttribute("destination");
+					} else if (this.getAttribute("relNav") != undefined && this.getAttribute("relNav") != "") {
+						hsType = "pageLink";
+						if (this.getAttribute("relNav") == "first") {
+							if ($(x_pageInfo)[0].type == "menu") {
+								hsInfo = $(x_pageInfo)[1].linkID;
+							} else {
+								hsInfo = $(x_pageInfo)[0].linkID;
+							}
+						} else if (this.getAttribute("relNav") == "last") {
+							hsInfo = $(x_pageInfo)[x_pageInfo.length - 1].linkID;
+						} else if (this.getAttribute("relNav") == "prev") {
+							hsInfo = $(x_pageInfo)[x_currentPage - 1].linkID;
+						} else { // next page
+							hsInfo = $(x_pageInfo)[x_currentPage + 1].linkID;
+						}
+					
+					// open dialog popup
+					} else if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
+						hsType = "dialog";
+						hsInfo = "video";
+					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
+						hsType = "dialog";
+						hsInfo = "sound";
+					} else if (this.getAttribute("hotspotPopUp") != undefined && this.getAttribute("hotspotPopUp") != "") {
+						hsType = "dialog";
+						hsInfo = "text";
+					
+					// open new window
+					} else if (this.getAttribute("htm") != undefined && this.getAttribute("") != "htm") {
+						hsType = "newWindow";
+						hsInfo = "html";
+					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("") != "windowURL") {
+						hsType = "newWindow";
+						hsInfo = "url";
+					}
+					
+					if (hsType != undefined) {
+						var _this = this,
+							$hotspot = $('<a class="hotspot" href="#" />');
+						
+						$hotspot
+							.attr("title", this.getAttribute("name"))
+							.css({
+								width	:Math.round(this.getAttribute("w") * scale) + "px",
+								height	:Math.round(this.getAttribute("h") * scale) + "px",
+								left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
+								top		:Math.round(this.getAttribute("y") * scale) + padding + "px",
+								"background-image"	:"url('" + x_templateLocation + "common_html5/transparent.png')" /* without a bg the hotspots aren't selectable in IE */
+							})
+							.click(function() {
+								$(".x_popupDialog").parent().detach(); // remove any open dialogs
+								$(".selected").removeClass("selected");
+								$(this).addClass("selected");
+								$feedback.html("");
+								
+								// go to page in LO
+								if (hsType == "pageLink") {
+									if (x_lookupPage("linkID", hsInfo) == null) { // destination not found
+										if (x_params.authorSupport == "true") {
+											$feedback.html(hsInfo + " " + notFoundTxt);
+										}
+										
+									} else { // go to destination page
+										x_navigateToPage(false, {type:"linkID", ID:hsInfo});
+									}
+								
+								// open dialog popup
+								} else if (hsType == "dialog") {
+									var dialogHtml;
+									if (hsInfo == "video") {
+										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotMovie")); // **
+										// ** other optional attributes: tip, startFrame, endFrame, movieSize, reset
+									} else if (hsInfo == "sound") {
+										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotSound")); // **
+									} else { // text
+										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp")); // **
+									}
+									
+									x_openDialog("connectorHotspotImage", "", continueBtnTxt, dialogPos, dialogHtml);
+								
+								// open new window
+								} else if (hsType == "newWindow") {
+									var wh = [550,400];
+									if (_this.getAttribute("windowWidth") != undefined && _this.getAttribute("windowWidth") != "") {
+										wh.splice(0, 1, _this.getAttribute("windowWidth"));
+									}
+									if (_this.getAttribute("windowHeight") != undefined && _this.getAttribute("windowHeight") != "") {
+										wh.splice(2, 1, _this.getAttribute("windowHeight"));
+									}
+									
+									if (hsInfo == "url") {
+										var src = _this.getAttribute("windowURL");
+										window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
+									} else {
+										var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
+										popupWindow.document.write(_this.getAttribute("htm"));
+										popupWindow.focus();
+									}
+								}
+							});
+						
+						$imageHolder.append($hotspot);
+					}
+				});
+			
+			
+			var highlightColour = "yellow";
+			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
+				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+			}
+			$("#imageHolder .hotspot").css("border-color", highlightColour);
+			if (x_currentPageXML.getAttribute("highlight") == "true") {
+				$("#imageHolder .hotspot").addClass("highlight");
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+	
+	connectorHotspotImage.init();
+	
+</script>
+
+<style>
+	
+	#imageHolder {
+		position: absolute;
+		margin:	0;
+	}
+	
+	#imageHolder .hotspot {
+		position:	absolute;
+		cursor:		pointer;
+	}
+	
+	#imageHolder .highlight {
+		border:		1px solid;
+	}
+	
+	#imageHolder .selected {
+		border:		2px solid;
+	}
+	
+	#feedback.alert {
+		text-align:		center;
+		color:			red;
+		font-weight:	bold;
+	}
+	
+	#mainText {
+		position: 	absolute;
+		top:		0;
+		left:		0;
+		padding:	10px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="imageHolder" class="panel inline">
+		<img id="image" />
+		<div id="feedback" class="alert" />
+	</div>
+	
+	<div id="mainText" tabindex="1"></div>
+	
+</div>
