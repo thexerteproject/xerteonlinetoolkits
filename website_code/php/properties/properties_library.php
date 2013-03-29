@@ -9,7 +9,7 @@ _load_language_file("/website_code/php/properties/properties_library.inc");
 
 function xml_template_display($xerte_toolkits_site,$change){
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_XML_TITLE . "</span></p>";			
+    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_XML_TITLE . "</span></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_DESCRIPTION . "</p>";
 
@@ -89,17 +89,17 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
 
         echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
-		
+
 		$template = explode("_", get_template_type($_POST['template_id']));
 
 		if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
-		
+
 			require_once($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php");
-			
+
 			show_play_links($template[1]);
-		
+
 		}
-		
+
         // Get the template screen size
 
         $query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $tutorial_id . "\"";
@@ -112,7 +112,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
         $temp_array = explode("~",$temp_string);
 
-        echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src='"  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "' width='" . $temp_array[0] . "' height='" . $temp_array[1] . "' frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></></iframe></textarea></form>";
+        echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src='"  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "' width='" . $temp_array[0] . "' height='" . $temp_array[1] . "' frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
 
     }
 
@@ -140,13 +140,13 @@ function notes_display($notes, $change){
 
 function notes_display_fail(){
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_FAIL . "</p>";	
+    echo "<p>" . PROPERTIES_LIBRARY_NOTES_FAIL . "</p>";
 
 }
 
 function peer_display($xerte_toolkits_site,$change){
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PEER . "</span></p>";			
+    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PEER . "</span></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_EXPLAINED . "</p>";
 
@@ -306,7 +306,7 @@ function syndication_not_public($xerte_toolkits_site){
 
 function syndication_display_fail(){
 
-    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_FAIL . "</p>";	
+    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_FAIL . "</p>";
 
 }
 
@@ -330,7 +330,7 @@ function access_display($xerte_toolkits_site, $change){
 
         echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
-    }	
+    }
 
     echo " " . PROPERTIES_LIBRARY_ACCESS_PUBLIC . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED . "</p>";
 
@@ -405,13 +405,13 @@ function access_display($xerte_toolkits_site, $change){
 
             }
 
-            echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";					
+            echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";
 
         }
 
-    }		
+    }
 
-    echo "</div>";	
+    echo "</div>";
 
     echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\">" . PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE . "</button> </p>";
 
@@ -442,7 +442,7 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
     $row_rss = mysql_fetch_array($query_rss_response);
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_RSS . "</span></p>";	
+    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_RSS . "</span></p>";
 
     if($row_rss['rss']=="true"){
 
@@ -490,7 +490,7 @@ function rss_display_public(){
 
 function rss_display_fail(){
 
-    echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";	
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";
 
 }
 
