@@ -56,6 +56,7 @@ function show_template($row_play){
 		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/mediaelement/mediaelement-and-player.js"></script>	<!-- for audio & video players -->
 		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/mediaelement/mediaPlayer.js"></script>
 		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/swfobject.js"></script>
+        <script type="text/javascript" src="<?PHP echo $template_path_string ?>/common_html5/js/xttracking_noop.js"></script>
 
 		<script type="text/javascript">
 			var FileLocation = "<?PHP echo $string_for_flash ?>";

@@ -53,10 +53,9 @@
 				.button()
 				.click(function() {
 					$this = $(this);
-					x_currentPage = $this.index() + numOffset;
 					$this.removeClass("ui-state-focus");
 					$this.removeClass("ui-state-hover");
-					x_changePage();
+					x_changePage($this.index() + numOffset);
 				});
 			
 			if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear") {

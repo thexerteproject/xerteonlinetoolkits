@@ -1318,10 +1318,34 @@ function tab_highlight(id){
 	
 }
 
-function property_tab_download(id,url)
+function export_engine_toggle(tag){
+    if(document.getElementById(tag).src==("website_code/images/TickBoxOn.gif")){
+        document.getElementById(tag).src = "website_code/images/TickBoxOff.gif";
+    }
+    else
+    {
+        document.getElementById(tag).src = "website_code/images/TickBoxOn.gif";
+    }
+}
+
+function export_use_engine(tag)
+{
+    if(document.getElementById(tag).src==("website_code/images/TickBoxOn.gif"))
+    {
+        return 'true';
+    }
+    else
+    {
+        return 'false';
+    }
+}
+
+function property_tab_download(id,html5_tag, flash_tag, url)
 {
     var ifrm = document.getElementById(id);
-    ifrm.src = url;
+    var export_html5_engine = export_use_engine(html5_tag);
+    var export_flash_engine = export_use_engine(flash_tag);
+    ifrm.src = url+'&html5='+export_html5_engine+'&flash='+export_flash_engine;
 }
 
 function setup_download_link(path, buttonlbl, file)

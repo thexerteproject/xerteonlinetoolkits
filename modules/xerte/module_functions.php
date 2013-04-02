@@ -27,7 +27,7 @@ function dont_show_template($optional=''){
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    <script src="modules/Xerte/javascript/swfobject.js"></script>
+    <script src="modules/Xerte/js/swfobject.js"></script>
     <script src="website_code/scripts/opencloseedit.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />

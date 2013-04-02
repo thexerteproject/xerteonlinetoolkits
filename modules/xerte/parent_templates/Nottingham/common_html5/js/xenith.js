@@ -3,7 +3,7 @@ var x_languageData	= [];
 var x_params		= new Object(); // all attributes of learningObject that aren't undefined
 var x_pages;		// xml info about all pages in this LO
 var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
-var x_currentPage	= 0;
+var x_currentPage	= -1;
 var x_currentPageXML;
 var x_glossary		= [];
 var x_specialChars	= [];
@@ -146,14 +146,15 @@ $(document).ready(function() {
 			}
 			
 			x_getLangData(x_params.language);
+            // Setup nr of pages for tracking
+            XTSetOption('nrpages', x_pageInfo.length);
 		},
 		error: function() {
 			// can't have translation for this as if it fails to load we don't know what language file to use?
 			$("body").append("<p>The project data has not loaded.</p>");
 		}
 	});
-	
-	x_setUpScorm();
+
 });
 
 // function gets data from language file
@@ -430,12 +431,11 @@ function x_setUp() {
 		})
 		.click(function() {
 			if (x_params.navigation != "Historic") {
-				x_currentPage--;
-				x_changePage();
+				x_changePage(x_currentPage -1);
 			} else {
-				x_currentPage = x_pageHistory[x_pageHistory.length-2];
+				var prevPage = x_pageHistory[x_pageHistory.length-2];
 				x_pageHistory.splice(x_pageHistory.length - 2, 2);
-				x_changePage();
+				x_changePage(prevPage);
 			}
 			$(this)
 				.removeClass("ui-state-focus")
@@ -451,8 +451,7 @@ function x_setUp() {
 			text:	false
 		})
 		.click(function() {
-			x_currentPage++;
-			x_changePage();
+			x_changePage(x_currentPage+1);
 			$(this)
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
@@ -476,8 +475,7 @@ function x_setUp() {
 			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
 			} else {
-				x_currentPage = 0;
-				x_changePage();
+				x_changePage(0);
 			}
 			$(this)
 				.blur()
@@ -567,13 +565,11 @@ function x_setUp() {
 				if (Math.abs(dif[0]) > Math.abs(dif[1])) {	
 					if (dif[0] >= 75) {
 						if (x_pageInfo.length > x_currentPage + 1) {
-							x_currentPage++;
-							x_changePage();
+							x_changePage(x_currentPage+1);
 						}
 					} else if (dif[0] <= -75) {
 						if (x_currentPage != 0) {
-							x_currentPage--;
-							x_changePage();
+							x_changePage(x_currentPage-1);
 						}
 					}
 				}
@@ -623,8 +619,16 @@ function x_setUp() {
     x_navigateToPage(true, x_startPage);
 }
 
-// function called on page change to load page model - x_currentPage should be changed to index of page to load before calling this function
-function x_changePage() {
+// function called on page change to load page model - x_currentPage will be changed to index of page to load
+// If x_currentPage == -1, than do not try to exit tracking of the page
+function x_changePage(x_gotoPage) {
+    // End page tracking of x_currentPage
+    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
+    {
+        XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"))
+    }
+    x_currentPage = x_gotoPage;
+
 	x_currentPageXML = x_pages[x_currentPage];
 	$("#pageBg").remove();
 	$(document).add($x_pageHolder).unbind(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change
@@ -762,6 +766,9 @@ function x_setUpPage() {
 	} else {
 		x_updateCss(false);
 	}
+    // Start page tracking
+    XTEnterPage(x_currentPage, pageTitle);
+
 }
 
 // function called from each model when fully loaded to trigger fadeIn
@@ -1032,23 +1039,19 @@ function x_navigateToPage(force, pageInfo) { // {type, ID}
         page = x_lookupPage(pageInfo.type, pageInfo.ID);
         if (page != null)
         {
-            x_currentPage = page;
-            x_changePage();
+            x_changePage(page);
         }
         else if (force == true) {
-            x_currentPage = 0;
-            x_changePage();
+            x_changePage(0);
         }
     }
     else {
         page = parseInt(pageInfo.ID);
         if (page > 0 && page <= x_pages.length) {
-            x_currentPage = page - 1;
-            x_changePage();
+            x_changePage(page-1);
         }
         else if (force == true) {
-	    x_currentPage = 0;
-	    x_changePage();
+	    x_changePage(0);
         }
     }
 }
@@ -1177,43 +1180,4 @@ function x_getSWFRef(swfID) {
 		flashMovie = document.getElementById(swfID);
 	}
 	return flashMovie;
-}
-
-// functions get/set score for scorm
-function x_getValue(dataElement) {
-	// ** getValue function is in scorm2004RLO.html / scormRLO.htm **
-	//return String(getValue(dataElement));
-}
-
-function x_setValue(dataElement, value) {
-	// ** setValue function is in scorm2004RLO.html / scormRLO.htm **
-	//return String(setValue(dataElement, value));
-}
-
-// function builds SCORM objects to mirror the SCORM data model
-function x_setUpScorm() {
-	this.cmi = new Object();
-	this.cmi.core = new Object();
-	this.cmi.core.score = new Object();
-	this.cmi.core.score.raw = new Object();
-}
-
-//SCORM function - these set the values of _level0.elementName, AND call LMSSetValue
-// ** called from apiwrapper? **
-function LMSSetValue(element, value){
-	//set the variable to store the data... we always retrieve it from here directly
-	if (element == "cmi.core.lesson_location"){
-		cmi.core.lesson_location = value;
-	} else if (element == "cmi.core.lesson_status"){
-		cmi.core.lesson_status = value;
-	} else if (element == "cmi.core.score.raw"){
-		cmi.core.score.raw = value;
-	} else if (element == "cmi.suspend_data"){
-		cmi.suspend_data = value;
-	} else if (element == "cmi.core.exit"){
-		cmi.core.exit = value;
-	}
-	
-	//now call LMSSetValue and synch the values...
-	fscommand("LMSSetValue", element + "," + value);
 }
