@@ -5,8 +5,10 @@ class XerteXMLInspector
 
     private $fname;
     private $xml;
+    private $name;
     private $models;
     private $mediaIsUsed;
+    private $language;
 
     private function addModel($model)
     {
@@ -112,13 +114,17 @@ class XerteXMLInspector
         }
 
         $this->xml = simplexml_load_string($xml);
+        $this->language = (string)$this->xml['language'];
+        if (strlen($this->language) == 0)
+            $this->language = 'en-GB';
+        $this->name = (string)$this->xml['name'];
         $this->models = array();
         $nodes = $this->xml->xpath('/*/*');
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
         }
         $this->mediaIsUsed = false;
-        $str = $this->xml['media'];
+        $str = (string)$this->xml['media'];
         if (strlen($str) > 0) {
             $this->mediaIsUsed = true;
         }
@@ -135,6 +141,16 @@ class XerteXMLInspector
     public function mediaIsUsed()
     {
         return $this->mediaIsUsed;
+    }
+
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function modelUsed($model)

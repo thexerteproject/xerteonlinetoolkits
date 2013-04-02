@@ -27,7 +27,7 @@ function lmsmanifest_2004_create($name, $lo_name){
 	$scorm_personalise_string .= "</item>";
 	$scorm_personalise_string .= "<imsss:sequencing> <imsss:controlMode choice=\"false\" flow=\"true\" /> </imsss:sequencing>";
 	$scorm_personalise_string .= "</organization></organizations>";
-	$scorm_personalise_string .= "<resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $strID . "\" href=\"scorm2004RLO.htm\"><file href=\"scorm2004RLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
+	$scorm_personalise_string .= "<resources><resource type=\"webcontent\" adlcp:scormType=\"sco\" identifier=\"" .  "XERTE-RES-" . $strID . "\" href=\"scorm2004RLO.htm\"><file href=\"scorm2004RLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
 
 	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
 
@@ -50,7 +50,7 @@ function lmsmanifest_2004_create($name, $lo_name){
 	 * @author Patrick Lockley
 	 */
 
-function lmsmanifest_2004_create_rich($row, $metadata, $users){
+function lmsmanifest_2004_create_rich($row, $metadata, $users, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile, $xerte_toolkits_site;
 
@@ -75,10 +75,10 @@ function lmsmanifest_2004_create_rich($row, $metadata, $users){
 	$scorm_personalise_string = "";
 	$scorm_personalise_string .= "<organizations default=\"" . "XERTE-ORG-" . $date . "\">";
 	$scorm_personalise_string .= "<organization identifier=\"" . "XERTE-ORG-" . $date . "\" structure=\"hierarchical\">";
-	$scorm_personalise_string .= "<title>" . str_replace("_"," ",$row['zipname']) . "</title>";
+	$scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
-
-	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
+    $scorm_personalise_string .= "<title>" . $lo_name . "</title>";
+	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormType=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
 
 	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
 
@@ -96,18 +96,20 @@ function lmsmanifest_2004_create_rich($row, $metadata, $users){
 /**
 *
 * Function scorm html page create
-* This function creates a scorm HTML page for export
+* This function creates a customized scorm HTML page for export
 * @param string $name - name of the template
 * @param string $type - type of template this is
+ * @param string $rlo_file - name of the lo file
+ * @param string $lo_name - name of the lo
 * @version 1.0
 * @author Patrick Lockley
 */
 
-function scorm2004_html_page_create($name, $type, $lo_name){
+function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language){
 
-	global $scorm2004_path, $dir_path, $delete_file_array, $zipfile;
+	global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-	$scorm_html_page_content = file_get_contents($scorm2004_path . "scorm2004RLO.htm");
+	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player/scorm2004RLO.htm");
 
 	$temp = get_template_screen_size($name,$type);
 
@@ -115,39 +117,38 @@ function scorm2004_html_page_create($name, $type, $lo_name){
 
 	$scorm_html_page_content = str_replace("%WIDTH%", $new_temp[0],$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
-	$scorm_html_page_content = str_replace("%FILE%","learningobject.rlo",$scorm_html_page_content);
-	$scorm_html_page_content = str_replace("<title>SCO Example</title>","<title>" . $lo_name . "</title>",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
 
 	$file_handle = fopen($dir_path . "scorm2004RLO.htm", 'w');
 
 	fwrite($file_handle,$scorm_html_page_content,strlen($scorm_html_page_content));
 	fclose($file_handle);
 
-	$zipfile->add_files("scorm2004RLO.htm");
+    $zipfile->add_files("scorm2004RLO.htm");
 
-	array_push($delete_file_array,  $dir_path . "scorm2004RLO.htm");
+    array_push($delete_file_array,  $dir_path . "scorm2004RLO.htm");
 
 }
 
-	/**
-	 *
-	 * Function copy scorm files
- 	 * This function copies scorm files into the zip
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
+function scorm2004_html5_page_create($type, $lo_name, $language){
 
-function copy_scorm2004_files(){
+    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-	global $file_array, $dir_path, $scorm2004_path, $delete_file_array;
+    $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/scorm2004RLO.htm");
 
-	while($file = array_pop($file_array)){
-		if(strpos($file,"scorm2004RLO.htm")===false){
-			$string = str_replace($scorm2004_path, "", $file);
-			array_push($delete_file_array, $dir_path . $string);
-			@copy($file, $dir_path . $string);
-		}
-	}
+    $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
+
+    $file_handle = fopen($dir_path . "scorm2004RLO.htm", 'w');
+
+    fwrite($file_handle,$scorm_html_page_content,strlen($scorm_html_page_content));
+    fclose($file_handle);
+
+    $zipfile->add_files("scorm2004RLO.htm");
+
+    array_push($delete_file_array,  $dir_path . "scorm2004RLO.htm");
+
 }
-
 ?>

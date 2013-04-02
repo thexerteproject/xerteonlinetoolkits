@@ -6,7 +6,7 @@
 	 * @author Patrick Lockley
 	 */
 
-function lmsmanifest_create($name){
+function lmsmanifest_create($name, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile;
 
@@ -16,9 +16,9 @@ function lmsmanifest_create($name){
 	$scorm_personalise_string = "";
 	$scorm_personalise_string .= "<organizations default=\"" . "XERTE-ORG-" . $date . "\">";
 	$scorm_personalise_string .= "<organization identifier=\"" . "XERTE-ORG-" . $date . "\" structure=\"hierarchical\">";
-	$scorm_personalise_string .= "<title>" . str_replace("_"," ",$name) . "</title>";
+	$scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
-	$scorm_personalise_string .= "<title>" . "My learning object title" . "</title>";
+	$scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 
 	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
 
@@ -41,7 +41,7 @@ function lmsmanifest_create($name){
 	 * @author Patrick Lockley
 	 */
 
-function lmsmanifest_create_rich($row, $metadata, $users){
+function lmsmanifest_create_rich($row, $metadata, $users, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile, $xerte_toolkits_site;
 
@@ -66,8 +66,9 @@ function lmsmanifest_create_rich($row, $metadata, $users){
 	$scorm_personalise_string = "";
 	$scorm_personalise_string .= "<organizations default=\"" . "XERTE-ORG-" . $date . "\">";
 	$scorm_personalise_string .= "<organization identifier=\"" . "XERTE-ORG-" . $date . "\" structure=\"hierarchical\">";
-	$scorm_personalise_string .= "<title>" . str_replace("_"," ",$row['zipname']) . "</title>";
+	$scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
+    $scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 
 	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
 	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
@@ -93,7 +94,7 @@ function lmsmanifest_create_rich($row, $metadata, $users){
 	 * @author Patrick Lockley
 	 */
 
-function basic_html_page_create($name, $type){
+function basic_html_page_create($name, $type, $rlo_file, $lo_name){
 
 	global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -101,17 +102,19 @@ function basic_html_page_create($name, $type){
 	$temp = get_template_screen_size($name,$type);
 	$new_temp = explode("~",$temp);
 
-	$buffer = str_replace("change_width",$new_temp[0],$buffer);
-	$buffer = str_replace("change_height",$new_temp[1],$buffer);
+	$buffer = str_replace("%WIDTH%",$new_temp[0],$buffer);
+	$buffer = str_replace("%HEIGHT%",$new_temp[1],$buffer);
+    $buffer = str_replace("%TITLE%",$lo_name,$buffer);
+    $buffer = str_replace("%RLOFILE%",$rlo_file,$buffer);
 
-	$file_handle = fopen($dir_path . "index.htm", 'w');
+	$file_handle = fopen($dir_path . "index_flash.htm", 'w');
 
 	fwrite($file_handle,$buffer,strlen($buffer));
 	fclose($file_handle);
 
-	$zipfile->add_files("index.htm");
+	$zipfile->add_files("index_flash.htm");
 
-	array_push($delete_file_array,  $dir_path . "index.htm");
+	array_push($delete_file_array,  $dir_path . "index_flash.htm");
 }
 
 /**
@@ -124,25 +127,84 @@ function basic_html_page_create($name, $type){
 * @author Patrick Lockley
 */
 
-function scorm_html_page_create($name, $type){
+function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language){
 
-	global $scorm_path, $dir_path, $delete_file_array, $zipfile;
+	global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-	$scorm_html_page_content = file_get_contents($scorm_path . "scormRLO.htm");
+	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player/scormRLO.htm");
 	$temp = get_template_screen_size($name,$type);
 	$new_temp = explode("~",$temp);
 
-	$scorm_html_page_content = str_replace("rloWidth = 800","rloWidth = " . $new_temp[0],$scorm_html_page_content);
-	$scorm_html_page_content = str_replace("rloHeight = 600","rloHeight = " . $new_temp[0],$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%WIDTH%",$new_temp[0],$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
 
 	$file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 
 	fwrite($file_handle,$scorm_html_page_content,strlen($scorm_html_page_content));
 	fclose($file_handle);
 
-	$zipfile->add_files("scormRLO.htm");
+    $zipfile->add_files("scormRLO.htm");
 
-	array_push($delete_file_array,  $dir_path . "scormRLO.htm");
+    array_push($delete_file_array,  $dir_path . "scormRLO.htm");
+
+}
+
+/**
+ *
+ * Function basic html page create
+ * This function creates a basic HTML page for export
+ * @param string $name - name of the template
+ * @param string $type - type of template this is
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function basic_html5_page_create($type, $lo_name){
+
+    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
+
+    $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+    $buffer = str_replace("%TITLE%",$lo_name,$buffer);
+
+    $file_handle = fopen($dir_path . "index.htm", 'w');
+
+    fwrite($file_handle,$buffer,strlen($buffer));
+    fclose($file_handle);
+
+    $zipfile->add_files("index.htm");
+
+    array_push($delete_file_array,  $dir_path . "index.htm");
+}
+
+/**
+ *
+ * Function scorm html page create
+ * This function creates a scorm HTML page for export
+ * @param string $name - name of the template
+ * @param string $type - type of template this is
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+function scorm_html5_page_create($type, $lo_name, $language){
+
+    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
+
+    $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/scormRLO.htm");
+    $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
+
+    $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
+
+    fwrite($file_handle,$scorm_html_page_content,strlen($scorm_html_page_content));
+    fclose($file_handle);
+
+    $zipfile->add_files("scormRLO.htm");
+
+    array_push($delete_file_array,  $dir_path . "scormRLO.htm");
 
 }
 
@@ -155,7 +217,7 @@ function scorm_html_page_create($name, $type){
 	 * @author Patrick Lockley
 	 */
 
-function export_folder_loop($path, $recursive=true, $ext=NULL){
+function export_folder_loop($path, $recursive=true, $ext=NULL, $dest=NULL){
 
 	global $folder_id_array, $folder_array, $file_array, $zipfile, $dir_path;
 	
@@ -173,11 +235,17 @@ function export_folder_loop($path, $recursive=true, $ext=NULL){
 			if($f!="data.xml"){
 				if ($ext == NULL || strrpos($f, $ext) == strlen($f)-strlen($ext))
 				{
-						  $string = $path . $f;
-						  
-						  //echo $string . "<br />";
-						  
-						  array_push($file_array, $string);
+                    $srcfile = $path . $f;
+                    if ($dest != NULL)
+                    {
+                        $destfile = $dest . $f;
+                    }
+                    else
+                    {
+                        $destfile = "";
+                    }
+                    //echo $string . "<br />";
+                    array_push($file_array, array($srcfile, $destfile));
 				}
 			}
 		}
@@ -185,7 +253,7 @@ function export_folder_loop($path, $recursive=true, $ext=NULL){
 
 	$x = array_pop($folder_id_array);
 	
-	closedir($x);
+	closedir($d);
 	
 }
 
@@ -263,13 +331,13 @@ function copy_parent_files(){
 	global $file_array, $dir_path, $parent_template_path, $delete_file_array;
 
 	while($file = array_pop($file_array)){
-		$string = str_replace($parent_template_path, "", $file);
+		$string = str_replace($parent_template_path, "", $file[0]);
 		directory_maker($string);
 		if($string=="data.xwd"){
 			$string="template.xwd";
 		}
 		array_push($delete_file_array, $dir_path . $string);
-		@copy($file, $dir_path . $string);
+		@copy($file[0], $dir_path . $string);
 	}
 }
 
@@ -287,33 +355,22 @@ function copy_extra_files(){
 	global $file_array, $dir_path, $xerte_toolkits_site, $delete_file_array;
 
 	while($file = array_pop($file_array)){
-		$string = str_replace($xerte_toolkits_site->root_file_path, "", $file);
+        if (strlen($file[1]) == 0)
+        {
+		    $string = str_replace($xerte_toolkits_site->root_file_path, "", $file[0]);
+        }
+        else
+        {
+            $string = $file[1];
+        }
 		directory_maker($string);
 
 		array_push($delete_file_array, $dir_path . $string);
-		@copy($file, $dir_path . $string);
+		@copy($file[0], $dir_path . $string);
 	}
 }
 
 
-	/**
-	 *
-	 * Function copy scorm files
- 	 * This function copies scorm files into the zip
-	 * @version 1.0
-	 * @author Patrick Lockley
-	 */
-
-function copy_scorm_files(){
-	global $file_array, $dir_path, $scorm_path, $delete_file_array;
-	while($file = array_pop($file_array)){
-		if(strpos($file,"scormRLO.htm")===false){
-			$string = str_replace($scorm_path, "", $file);
-			array_push($delete_file_array, $dir_path . $string);
-			@copy($file, $dir_path . $string);
-		}
-	}
-}
 
 	/**
 	 *
@@ -329,29 +386,29 @@ function xerte_zip_files($fullArchive=false, $dir_path){
 	
     _debug("Zipping up: " . $fullArchive);
 	while($file = array_pop($file_array)){
-		if(($file!="data.xwd")||($file!="data.xml")||$file!="preview.xml"){
-      /* Check if this is a media file */
-      if (!$fullArchive && strpos($file, "/media/") !== false)
-      {
-	  
-        /* only add file if used */
- 			  $string = str_replace($dir_path, "", $file);			  
-			  
-        if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false)
-        {
-		
-          _debug("  add " . $string);
-		  
-	  		  $zipfile->add_files($string);
-        }
-      }
-      else
-      {
-			  $string = str_replace($dir_path, "", $file);
+		if(strpos($file[0], "data.xwd")===false||strpos($file[0], "data.xml")===false||strpos($file[0], "preview.xml")===false){
+          /* Check if this is a media file */
+          if (!$fullArchive && strpos($file[0], "/media/") !== false)
+          {
+
+            /* only add file if used */
+            $string = str_replace($dir_path, "", $file[0]);
+
+            if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false)
+            {
+
               _debug("  add " . $string);
-			  
-			  $zipfile->add_files($string);
-      }
+
+              $zipfile->add_files($string);
+            }
+          }
+          else
+          {
+              $string = str_replace($dir_path, "", $file[0]);
+              _debug("  add " . $string);
+
+              $zipfile->add_files($string);
+          }
 		}
 	}
 }

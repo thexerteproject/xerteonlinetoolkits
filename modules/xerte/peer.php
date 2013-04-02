@@ -32,7 +32,9 @@ function show_template($row_play, $retouremail){
 ?>
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en">
         <head>
-        <title>Interactive Learning Content</title>
+        <title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+        <script type="text/javascript" src="modules/xerte/js/rlohelper.js"></script>
+        <script type="text/javascript" src="modules/xerte/js/xttracking_noop.js"></script>
         <script src = "rloObject.js"></script>
         <script type="text/javascript" language="Javascript" src="website_code/scripts/peer.js"></script>
         <script type="text/javascript" language="Javascript" src="website_code/scripts/ajax_management.js"></script>
