@@ -1319,7 +1319,7 @@ function tab_highlight(id){
 }
 
 function export_engine_toggle(tag){
-    if(document.getElementById(tag).src==("website_code/images/TickBoxOn.gif")){
+    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 ){
         document.getElementById(tag).src = "website_code/images/TickBoxOff.gif";
     }
     else
@@ -1330,7 +1330,7 @@ function export_engine_toggle(tag){
 
 function export_use_engine(tag)
 {
-    if(document.getElementById(tag).src==("website_code/images/TickBoxOn.gif"))
+    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0)
     {
         return 'true';
     }
