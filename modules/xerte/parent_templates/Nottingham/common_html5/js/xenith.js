@@ -907,10 +907,10 @@ function x_openDialog(type, title, close, position, load) {
 				x_dialogInfo[index].built.children(".x_popupDialog").html(load);
 			}
 			
-			if (position == undefined) {
-				x_setDialogSize(x_dialogInfo[index].built.children(".x_popupDialog"));
+			if (type != "language") {
+				x_setDialogSize(x_dialogInfo[index].built.children(".x_popupDialog"), position);
 			} else {
-				x_dialogInfo[index].built.show();
+				x_dialogInfo[index].built.show(); // don't reset size / position for language dialogs
 			}
 			
 		} else {
@@ -940,6 +940,7 @@ function x_openDialog(type, title, close, position, load) {
 
 function x_setDialogSize($x_popupDialog, position) {
 	var width = $x_mainHolder.width()/2;
+	var height = undefined;
 	var left = $x_mainHolder.width()/4;
 	var top = $x_mainHolder.height()/4;
 	
@@ -951,6 +952,12 @@ function x_setDialogSize($x_popupDialog, position) {
 	} else if (position != undefined) {
 		if (position.width == "small") {
 			width = $x_mainHolder.width()/4;
+		} else if (position.width != undefined) {
+			width = position.width;
+		}
+		
+		if (position.height != undefined) {
+			height = position.height;
 		}
 		
 		if (position.left == "left") {
@@ -974,8 +981,13 @@ function x_setDialogSize($x_popupDialog, position) {
 		"top"	:top
 	});
 	$x_popupDialog.parent().show();
-	if ($x_popupDialog.height() > $x_mainHolder.height()/2) {
-		$x_popupDialog.height($x_mainHolder.height()/2);
+	
+	if (height != undefined) {
+		$x_popupDialog.height(height);
+	} else {
+		if ($x_popupDialog.height() > $x_mainHolder.height()/2) {
+			$x_popupDialog.height($x_mainHolder.height()/2);
+		}
 	}
 }
 
