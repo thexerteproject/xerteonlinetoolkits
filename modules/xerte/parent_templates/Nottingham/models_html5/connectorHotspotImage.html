@@ -3,23 +3,6 @@
 	// ** HTML5 version currently ignores imageTransition optional property and most of the textWidth attributes (narrow/wide/max)
 	// ** These properties are currently ignored as they're for desktop Xerte only:	reportTitle, pageLabel, titleLabel, idLabel
 	
-	/*
-	** need to get contents of dialog windows to load:
-		tip			
-		startFrame	
-		movieSize		"320,240"
-		reset			true|false
-		endFrame
-		hotspotMovie
-		hotspotPopUp
-		hotspotSound
-	*/
-	
-	// ** get selection to highlight when tabbing through hotspots
-	
-	// ** not tested on iPad
-	// ** hotspots aren't showing in IE - something strange is happening with the tags
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var connectorHotspotImage = new function() {
@@ -29,7 +12,8 @@
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$(".selected").removeClass("selected");
+			$("#pageContents .selected").removeClass("selected");
+			$("#pageContents .highlighted").removeClass("highlighted");
 			$("#feedback").html("");
 			$(".x_popupDialog").parent().detach(); // remove any open dialogs
 		}
@@ -49,7 +33,6 @@
 			// ignores most of the textWidth attributes (narrow/wide/max) - except "none"
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$mainText.remove();
-				// ** need to align panel centrally - possible increase image size (see how it's done on text and graphics page)
 				
 			} else {
 				if (x_currentPageXML.getAttribute("align") == "Left") {
@@ -63,12 +46,11 @@
 			// set up dialog object for later if it hasn't already been set up on another page of this type
 			// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
 			var newDialog = true;
-			for (var i = 0; i<x_dialogInfo.length; i++) {
-				if (x_dialogInfo[i].type == "connectorHotspotImage") {
+			$(x_dialogInfo).each(function(i) {
+				if (this.type == "connectorHotspotImage") {
 					newDialog = false;
-					break;
 				}
-			}
+			});
 			if (newDialog == true) {
 				var dialog = new Object();
 				dialog.type = "connectorHotspotImage";
@@ -132,7 +114,7 @@
 			}
 			
 			// get info about dialog popups ready
-			var dialogPos = {left:"center", top:"middle"};
+			var dialogPos = {left:"center", top:"middle", width:undefined, height:undefined};
 			if (x_currentPageXML.getAttribute("popUpHAlign") != undefined && x_currentPageXML.getAttribute("popUpHAlign") != "") {
 				dialogPos.left = x_currentPageXML.getAttribute("popUpHAlign");
 			}
@@ -150,7 +132,7 @@
 			var scale = $img.width() / $img.data("origSize")[0];
 			
 			$(x_currentPageXML).children()
-				.each(function(){
+				.each(function(i){
 					var hsType,	// what does hs do when clicked?
 						hsInfo;
 					
@@ -186,10 +168,10 @@
 						hsInfo = "text";
 					
 					// open new window
-					} else if (this.getAttribute("htm") != undefined && this.getAttribute("") != "htm") {
+					} if (this.getAttribute("htm") != undefined && this.getAttribute("htm") != "") {
 						hsType = "newWindow";
 						hsInfo = "html";
-					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("") != "windowURL") {
+					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
 						hsType = "newWindow";
 						hsInfo = "url";
 					}
@@ -199,7 +181,10 @@
 							$hotspot = $('<a class="hotspot" href="#" />');
 						
 						$hotspot
-							.attr("title", this.getAttribute("name"))
+							.attr({
+								"title"		:this.getAttribute("name"),
+								"tabindex"	:i + 1
+							})
 							.css({
 								width	:Math.round(this.getAttribute("w") * scale) + "px",
 								height	:Math.round(this.getAttribute("h") * scale) + "px",
@@ -209,7 +194,8 @@
 							})
 							.click(function() {
 								$(".x_popupDialog").parent().detach(); // remove any open dialogs
-								$(".selected").removeClass("selected");
+								$("#pageContents .selected").removeClass("selected");
+								$("#pageContents .highlighted").removeClass("highlighted");
 								$(this).addClass("selected");
 								$feedback.html("");
 								
@@ -228,12 +214,51 @@
 								} else if (hsType == "dialog") {
 									var dialogHtml;
 									if (hsInfo == "video") {
-										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotMovie")); // **
-										// ** other optional attributes: tip, startFrame, endFrame, movieSize, reset
+										var videoDimensions = [320,240];
+										if (_this.getAttribute("movieSize") != "" && _this.getAttribute("movieSize") != undefined) {
+											var dimensions = _this.getAttribute("movieSize").split(",");
+											if (dimensions[0] != 0 && dimensions[1] != 0) {
+												videoDimensions = dimensions;
+											}
+										}
+										var videoTip = "";
+										if (_this.getAttribute("tip") != "" &&  _this.getAttribute("tip") != undefined) {
+											videoTip = _this.getAttribute("tip");
+										}
+										
+										dialogHtml = '<div id="pageVideo"></div>' +
+											'<script type="text/javascript">' +
+												'$("#pageVideo")' +
+													'.attr("title", "' + videoTip + '")' +
+													'.mediaPlayer({' +
+														'type			:"video",' +
+														'source			:"' + _this.getAttribute("hotspotMovie") + '",' +
+														'width			:' + videoDimensions[0] + ',' +
+														'height			:' + videoDimensions[1] + ',' +
+														'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
+													'});' +
+											'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
+										
+										dialogPos.width = videoDimensions[0];
+										dialogPos.height = Number(videoDimensions[1]) + 3;
+										
 									} else if (hsInfo == "sound") {
-										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotSound")); // **
+										dialogHtml = '<div id="pageAudio"></div>' +
+											'<script type="text/javascript">' +
+												'$("#pageAudio").mediaPlayer({' +
+													'type : "audio",' +
+													'source : "' + _this.getAttribute("hotspotSound") + '",' +
+													'width : "100%"' +
+												'});' +
+											'</' + 'script>';
+										
+										dialogPos.width = undefined;
+										dialogPos.height = x_audioBarH;
+										
 									} else { // text
-										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp")); // **
+										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
+										dialogPos.width = undefined;
+										dialogPos.height = undefined;
 									}
 									
 									x_openDialog("connectorHotspotImage", "", continueBtnTxt, dialogPos, dialogHtml);
@@ -257,6 +282,19 @@
 										popupWindow.focus();
 									}
 								}
+							})
+							.focusin(function() {
+								$("#pageContents .highlighted").removeClass("highlighted");
+								$(this).addClass("highlighted");
+							})
+							.focusout(function() {
+								$(this).removeClass("highlighted");
+							})
+							.keypress(function(e) {
+								var charCode = e.charCode || e.keyCode;
+								if (charCode == 32) {
+									$(this).trigger("click");
+								}
 							});
 						
 						$imageHolder.append($hotspot);
@@ -264,13 +302,13 @@
 				});
 			
 			
-			var highlightColour = "yellow";
+			var borderColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+				borderColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
 			}
-			$("#imageHolder .hotspot").css("border-color", highlightColour);
+			$("#imageHolder .hotspot").css("border-color", borderColour);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
-				$("#imageHolder .hotspot").addClass("highlight");
+				$("#imageHolder .hotspot").addClass("border");
 			}
 			
 			// call this function in every model once everything's loaded
@@ -295,12 +333,16 @@
 		cursor:		pointer;
 	}
 	
-	#imageHolder .highlight {
+	#imageHolder .border {
 		border:		1px solid;
 	}
 	
 	#imageHolder .selected {
 		border:		2px solid;
+	}
+	
+	#imageHolder .highlighted {
+		border:		2px solid yellow;
 	}
 	
 	#feedback.alert {
