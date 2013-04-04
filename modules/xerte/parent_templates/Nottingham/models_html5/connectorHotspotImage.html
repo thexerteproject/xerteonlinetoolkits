@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	
-	// ** HTML5 version currently ignores imageTransition optional property and most of the textWidth attributes (narrow/wide/max)
+	// ** HTML5 version currently ignores imageTransition optional property
 	// ** These properties are currently ignored as they're for desktop Xerte only:	reportTitle, pageLabel, titleLabel, idLabel
 	
 	// pageChanged & sizeChanged functions are needed in every model file
@@ -80,10 +80,22 @@
 		
 		
 		this.imgLoaded = function() {
-			var imgMaxW = 400,	imgMaxH = 450;
+			var imgMaxW = 500,	imgMaxH = 476;
 			if (x_browserInfo.mobile == true) {
 				imgMaxW = 250; // mobile
 				imgMaxH = 250;
+			}
+			
+			// ** ideally needs to be more flexible/responsive than this e.g. respond to window size
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				imgMaxW = 760;
+				imgMaxH = 476;
+			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
+				imgMaxW = 600;
+				imgMaxH = 476;
+			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
+				imgMaxW = 400;
+				imgMaxH = 476;
 			}
 			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, true);
