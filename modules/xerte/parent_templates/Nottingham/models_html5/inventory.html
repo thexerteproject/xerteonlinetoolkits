@@ -1,0 +1,636 @@
+<script type="text/javascript">
+	// -----------------------------------------------------------------------------------------
+	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
+	// -----------------------------------------------------------------------------------------
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var inventory = new function() {
+		var	$pageContents;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#infoHolder .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+		}
+		
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			
+			// set fixed text fields and page layout
+			$("#mainTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
+			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
+			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
+			
+			if (x_currentPageXML.getAttribute("align") == "right") {
+				$("#textHolder")
+					.removeClass("left")
+					.addClass("right")
+					.appendTo($("#pageContents .splitScreen"));
+				$("#infoHolder")
+					.removeClass("right")
+					.addClass("left");
+				$("#pageContents .splitScreen").addClass("large");
+			} else {
+				$("#pageContents .splitScreen").addClass("medium");
+			}
+			
+			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+			if (feedbackLabel == undefined) {
+				feedbackLabel = "Feedback";
+			}
+			$("#qFeedbackTitle").html(feedbackLabel);
+			
+			
+			// get language strings for buttons etc. - if language attributes aren't in xml will have to use english fall back
+			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically
+			var checkBtnText = x_currentPageXML.getAttribute("submitBtnText");
+			if (checkBtnText == undefined) {
+				checkBtnText = "Submit";
+			}
+			var nextBtnText = x_currentPageXML.getAttribute("nextBtnText");
+			if (nextBtnText == undefined) {
+				nextBtnText = "Next";
+			}
+			var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
+			if (restartBtnText == undefined) {
+				restartBtnText = "Restart";
+			}
+			
+			
+			// set up buttons - check & next buttons shown during quiz and restart button shown at end with chart
+			$("#checkBtn")
+				.button({
+					label:	checkBtnText
+					})
+				.attr("disabled", "disabled")
+				.click(function() {
+					$("#optionHolder input").attr("disabled", "disabled");
+					
+					// get feedback for selected options and add question weighted score to class score
+					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]],
+						feedbackTxt = "";
+					
+					$("#optionHolder input:checked").each(function() {
+						var $this = $(this);
+						var selectedOptionData = $(currentQuestion).children()[$this.index()/2];
+						// calculate and store new score for this option's class based on it's previous score and this option's weight
+						$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
+						
+						if (currentQuestion.getAttribute("questionFeedback") == "yes") {
+							feedbackTxt += x_addLineBreaks(selectedOptionData.getAttribute("feedback")) + '<br/>';
+						}
+					});
+					
+					if (currentQuestion.getAttribute("questionFeedback") == "yes") {
+						$("#qFeedbackTxt").html(feedbackTxt);
+						$("#qFeedback").show();
+					}
+					
+					$("#nextBtn").removeAttr("disabled");
+					$(this).attr("disabled", "disabled");
+					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+				});
+			
+			$("#nextBtn")
+				.button({
+					label:	nextBtnText
+					})
+				.attr("disabled", "disabled")
+				.click(function() {
+					$(this).attr("disabled", "disabled");
+					
+					$pageContents.data("currentQ", $pageContents.data("currentQ") + 1);
+					if ($pageContents.data("currentQ") == $pageContents.data("questions").length) {
+						inventory.drawChart();
+					} else {
+						inventory.loadQ();
+					}
+				});
+			
+			$("#restartBtn")
+				.button({
+					label:	restartBtnText
+					})
+				.click(function() {
+					inventory.startQs();
+				});
+			
+			
+			// store data needed later - class info and string to base qNoTxt on
+			var	classes = x_currentPageXML.getAttribute("classes").split(",");
+			if (classes[classes.length - 1] == "") {
+				classes.splice(-1, 1);
+			}
+			if (classes.length > 10) {
+				classes.splice(10);
+			}
+			
+			var qNoTxt = x_currentPageXML.getAttribute("quesCount");
+			if (qNoTxt == undefined) {
+				qNoTxt = "Question {i} of {n}";
+			}
+			
+			$pageContents.data({
+				"classes"	:classes,
+				"qNoTxt"	:qNoTxt
+			});
+			
+			
+			this.startQs();
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+			
+			x_pageLoaded();
+		}
+		
+		
+		this.startQs = function() {
+			$("#pageContents .quiz").show();
+			$("#pageContents .chart").hide();
+			$("#nextBtn, #checkBtn").attr("disabled", "disabled");
+			
+			var questions = [],
+				scores = [],
+				totals = [],
+				numQs = $(x_currentPageXML).children().length;
+			
+			// get list of the order questions will be shown
+			if (x_currentPageXML.getAttribute("order") == "random") {
+				var qNums = [];
+				for (var i=0; i<numQs; i++) {
+					qNums.push(i);
+				}
+				for (var i=0; i<numQs; i++) {
+					var qNum = Math.floor(Math.random() * qNums.length);
+					questions.push(qNums[qNum]);
+					qNums.splice(qNum, 1);
+				}
+				
+			} else { // sequence
+				for (var i=0; i<numQs; i++) {
+					questions.push(i);
+				}
+			}
+			
+			// reset stored scores
+			for (var i=0; i<$pageContents.data("classes").length; i++) {
+				scores.push(0);
+				totals.push(0);
+			}
+			
+			$pageContents.data({
+				"questions"	:questions,
+				"currentQ"	:0,
+				"scores"	:scores,
+				"totals"	:totals
+			});
+			
+			this.loadQ();
+		}
+		
+		
+		this.loadQ = function() {
+			var thisQ = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+			
+			// set up question text, image, feedback text
+			$("#qNo").html($pageContents.data("qNoTxt").replace("{i}", $pageContents.data("currentQ") + 1).replace("{n}", $pageContents.data("questions").length));
+			
+			var infoString = thisQ.getAttribute("prompt"),
+				url = thisQ.getAttribute("image");
+			if (url != undefined && url != "") {
+				var newString = "";
+				newString += '<img src="' + eval(url) + '" class="quizImg"';
+				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
+					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
+				}
+				newString += ' />';
+				infoString = newString + infoString;
+			}
+			$("#qTxt").html(x_addLineBreaks(infoString));
+			
+			$("#qFeedback")
+				.hide()
+				.find("#qFeedbackTxt").html("");
+			
+			
+			// set up radio buttons or check boxes
+			var $optionHolder = $("#optionHolder");
+			if (thisQ.getAttribute("type") == "Multiple Answer") {
+				$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+			} else {
+				$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+			}
+			var	$option = $optionHolder.find("input"),
+				$optionTxt = $optionHolder.find(".optionTxt"),
+				$checkBtn = $("#checkBtn"),
+				$qFeedback = $("#qFeedback");
+			
+			$(thisQ).children()
+				.each(function(i) {
+					var $thisOption, $thisOptionTxt;
+					if (i != 0) {
+						$thisOption = $option.clone().appendTo($optionHolder);
+						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+					} else {
+						$thisOption = $option;
+						$thisOptionTxt = $optionTxt;
+					}
+					
+					$thisOption
+						.attr({
+							"value"	:this.getAttribute("text"),
+							"id"	:"option" + i
+							})
+						.change(function() {
+							$qFeedback.hide();
+							var $selected = $("#optionHolder input:checked");
+							if ($selected.length > 0) {
+								$checkBtn.removeAttr("disabled");
+							} else {
+								$checkBtn.attr("disabled", "disabled");
+							}
+						});
+					
+					var optTxt = x_addLineBreaks(this.getAttribute("text"));
+					if (x_params.authorSupport == "true") {
+						optTxt += ' <span class="alert">[' + $pageContents.data("classes")[this.getAttribute("class")] + " : " + this.getAttribute("weight") + ']</span>';
+					}
+					
+					$thisOptionTxt
+						.attr("for", "option" + i)
+						.data("option", $thisOption)
+						.html(optTxt);
+					
+					
+					if (x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+						// need to keep track of max score possible for each class
+						$pageContents.data("totals").splice(this.getAttribute("class"), 1, $pageContents.data("totals")[this.getAttribute("class")] + Number(this.getAttribute("weight")));
+					}
+				});
+		}
+		
+		
+		this.drawChart = function() {
+			$("#pageContents .quiz").hide();
+			$("#pageContents .chart").show();
+			
+			var	scores = $pageContents.data("scores"),
+				maxScore = 0, // max value to show on bar / line graph
+				i;
+			
+			if (x_currentPageXML.getAttribute("scoreType") == "relative percent") {
+				// convert scores to percentage of total points scored
+				// e.g. classA = 20%, classB = 65%, classC = 15%
+				var totalScore = 0;
+				for (i=0; i<scores.length; i++) {
+					totalScore += scores[i];
+				}
+				for (i=0; i<scores.length; i++) {
+					scores.splice(i, 1, Math.round((scores[i] / totalScore) * 100));
+				}
+				maxScore = 100;
+				
+			} else if (x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+				// coverts scores to percantage of total points possible for that class
+				// e.g. classA = 70%, classB = 60%, classC = 20%
+				var totals = $pageContents.data("totals");
+				for (i=0; i<scores.length; i++) {
+					if (scores[i] > 0) {
+						scores.splice(i, 1, Math.round((scores[i] / totals[i]) * 100));
+					}
+				}
+				maxScore = 100;
+				
+			} else {
+				// absolute - uses numeric scores
+				// e.g. classA = 12, classB = 36, classC = 7
+				for (i=0; i<scores.length; i++) {
+					maxScore = Math.max(maxScore, scores[i]);
+				}
+				
+			}
+			
+			// draw everything on canvas - predominately John Smith's code from chart page model
+            var	chartHolder = document.getElementById("chartHolder");
+            if (chartHolder.getContext) {
+				var	$panel = $("#pageContents .panel"),
+					availW = Math.min(550, Math.max(300, $panel.width())),
+					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15 - $("#restartBtn").height() - $("#chartTitle").height()));
+				
+				chartHolder.width = availW;
+				chartHolder.height = availH;
+				
+				var	chartHolderContext = chartHolder.getContext("2d");
+				if (x_currentPageXML.getAttribute("chartType") == "pie") {
+					chartHolderContext.translate(60, 0); // space on left for legend
+				} else {
+					chartHolderContext.translate(30, 0); // space on left for y axis text
+				}
+				
+				var	colour = x_currentPageXML.getAttribute("chartColour"),
+					txtColour = $("#mainTxt").css("color");
+				
+				if (colour.substring(0, 2) == "0x") { // hex value
+					colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
+				}
+				chartHolderContext.strokeStyle = colour;
+				chartHolderContext.fillStyle = colour;
+				chartHolderContext.lineWidth = 2;
+				
+				
+				switch (x_currentPageXML.getAttribute("chartType")) {
+					case "pie":
+						this.doPie(chartHolderContext, scores, colour, availW, availH, txtColour);
+						break;
+					case "bar":
+						this.doBar(chartHolderContext, scores, maxScore, availW, availH);
+						break;
+					case "line":
+						this.doLine(chartHolderContext, scores, maxScore, availW, availH);
+				}
+				
+				if (x_currentPageXML.getAttribute("chartType") != "pie") {
+					this.doAxesAndLabels(chartHolderContext, scores, maxScore, availW, availH, txtColour);
+				}
+				
+				// give canvas a description including data so it's accessible
+				var chartDescr = x_currentPageXML.getAttribute("chartTitle") + ":";
+				for (i=0; i<scores.length; i++) {
+					chartDescr += " " + $pageContents.data("classes")[i] + " = " + scores[i];
+					if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+						chartDescr += "%";
+					}
+					if (i != scores.length - 1) {
+						chartDescr += ",";
+					}
+				}
+				$("#chartHolder").attr("title", chartDescr);
+				
+			} else { // canvas tag not supported - display error message and data in a table
+				var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not support this page type"),
+					tableHolder = $("#infoHolder .chart"),
+					table = '<table class="full">';
+				
+				tableHolder.find("#chartTitle, #chartHolder").hide();
+				tableHolder.find("table, p").remove();
+				
+				for (var i=0; i<scores.length; i++) {
+					table += '<tr><td>' + $pageContents.data("classes")[i] + '</td><td>' + scores[i]; 
+					if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+						table += "%";
+					}
+					table += '</td></tr>';
+				}
+				table += '</table>';
+				
+				tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
+			}
+		}
+		
+		
+		// --- FUNCTIONS TO DRAW SHAPES ON CANVAS ---
+		
+		this.doBar = function(canvas, scores, maxScore, availW, availH) {
+			//var	barW = 350 / scores.length,
+			var	barW = (availW - 40) / scores.length,
+				barH,
+				h = (availH - 30) / maxScore; // height on graph of each score point
+			
+			for (var i=0; i<scores.length; i++) {
+				barH = scores[i] * h;
+				canvas.fillRect(barW * i, availH - 20, barW * 0.9, -barH); // xywh
+			}
+			
+			canvas.fill();
+			canvas.stroke();
+		}
+		
+		this.doLine = function(canvas, scores, maxScore, availW, availH) {
+			var	barW = (availW - 40) / scores.length,
+				barH,
+				h = (availH - 30) / maxScore;
+			
+			canvas.beginPath();
+			canvas.moveTo(barW / 2, availH - 20 - (scores[0] * h));
+			for (var i=0; i<scores.length; i++) {
+				canvas.lineTo((barW * i) + (barW / 2), availH - 20 - (scores[i] * h));
+			}
+			canvas.stroke();
+		}
+		
+		this.doAxesAndLabels = function(canvas, scores, maxScore, availW, availH, txtColour) {
+			// draw x/y axis
+			canvas.strokeStyle = "#000000";
+			canvas.beginPath();
+			canvas.moveTo(0, 10);
+			canvas.lineTo(0, availH - 20 + 5);
+			canvas.moveTo(-5, availH - 20);
+			canvas.lineTo(availW - 40, availH - 20);
+			canvas.stroke();
+			
+			// draw the x labels
+			var	barW = (availW - 40) / scores.length;
+			for (var i=0; i<scores.length; i++) {
+				canvas.fillStyle = txtColour;
+				canvas.textBaseline = "top";
+				var xLength = canvas.measureText($pageContents.data("classes")[i]).width;
+				canvas.fillText($pageContents.data("classes")[i], barW * (i + 0.5) - xLength / 2 - 1, availH - 16);
+			}
+			
+			// draw the y labels
+			canvas.fillText(0, -25, availH - 20 - 6);
+			canvas.fillText(maxScore, -25, 5);
+		}
+		
+		this.doPie = function(canvas, scores, colour, availW, availH, txtColour) {
+			// build the colour array - convert to rgb to get different shades and then convert back to hex
+			var rgbToHex = function (r, g, b) {
+				return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+			}
+			
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(colour);
+			var rgb = result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			} : null;
+			
+			var colours = [];
+			for (var i=0; i<scores.length; i++) {
+				colours.push(rgbToHex(
+					parseInt(rgb.r + i * (255 - rgb.r)/scores.length),
+					parseInt(rgb.g + i * (255 - rgb.g)/scores.length),
+					parseInt(rgb.b + i * (255 - rgb.b)/scores.length)
+				));
+			}
+			
+			// draw legend
+			for (var i=0; i<scores.length; i++) {
+				canvas.fillStyle = colours[i];
+				canvas.fillRect(-50, 10 + i * 20, 12, 12); // xywh
+				canvas.fill();
+				canvas.textBaseline = "top";
+				canvas.fillStyle = txtColour;
+				canvas.fillText($pageContents.data("classes")[i], -30, 10 + i * 20);
+			}
+			
+			// draw chart
+			var total = 0;
+			for (var i=0; i<scores.length; i++) {
+				total += scores[i];
+			}
+			
+			var	theta,
+				exTheta = 0,
+				diameter = Math.min(availW - 70, availH - 20);
+			for (var i=0; i<scores.length; i++) { // draw each segment
+				theta = Number(scores[i]) / total * 360;
+				this.drawWedge(canvas, diameter / 2, diameter / 2 + 10, diameter / 2, theta, exTheta, colours[i]);
+				exTheta += theta;
+			}
+		}
+		
+        this.drawWedge = function(canvas, x, y, radius, arc, r, colour) { // xy are to centre of circle
+        	canvas.save();
+			canvas.translate(x, y);
+			canvas.rotate(-r * Math.PI / 180);
+			canvas.fillStyle = colour;
+			canvas.strokeStyle = colour;
+			canvas.beginPath();
+			canvas.moveTo(0, 0);
+			var segAngle, theta, angle, angleMid, segs, ax, ay, bx, by, cx, cy;
+			if (Math.abs(arc) > 360) {
+				arc = 360;
+			}
+			segs = Math.ceil(Math.abs(arc) / 45);
+			segAngle = arc / segs;
+			theta = - Math.PI * segAngle / 180;
+			angle = - Math.PI * 0 / 180;
+			if (segs > 0) {
+				ax = Math.cos(0 * Math.PI / 180) * radius;
+				ay = Math.sin(-0 * Math.PI / 180) * radius;
+				canvas.lineTo(ax, ay);
+				for (var i=0; i<segs; i++) {
+					angle += theta;
+					angleMid = angle - theta / 2;
+					bx = Math.cos(angle) * radius;
+					by = Math.sin(angle) * radius;
+					cx = Math.cos(angleMid) * radius / Math.cos(theta / 2);
+					cy = Math.sin(angleMid) * radius / Math.cos(theta / 2);
+					canvas.quadraticCurveTo(cx, cy, bx, by);
+				}
+				canvas.lineTo(0, 0);
+			}
+			canvas.closePath();
+			canvas.fill();
+			canvas.globalAlpha = 100;
+			canvas.stroke();
+			canvas.restore();
+        }
+	}
+	
+	inventory.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#mainTxt p:first-child, #feedbackTxt p:first-child {
+		margin-top:	0px;
+	}
+	
+	#infoHolder .panel {
+		overflow:	auto;
+	}
+
+	#optionHolder {
+		margin-top:	15px;
+	}
+
+	#optionHolder input {
+		float:		left;
+		display:	block;
+	}
+
+	#optionHolder .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		margin-bottom:	10px;
+		display:		block;
+	}
+	
+	#qFeedback, #buttonHolder {
+		clear:		both;
+	}
+
+	#pageContents button {
+		margin-left:	10px;
+		float:			right;
+	}
+	
+	#infoHolder .quizImg {
+		padding:	5px;
+		float:		right;
+		max-width:	50%;
+		height:		auto;
+	}
+	
+	#chartTitle {
+		text-align:	center;
+	}
+	
+	#pageContents .alert {
+		color:			red;
+		font-weight:	bold;
+	}
+	
+</style>
+
+<div id="pageContents">
+
+	<div class="splitScreen">
+
+		<div id="textHolder" class="left" tabindex="1">
+			<div id="mainTxt" class="quiz"></div>
+			<div id="feedbackTxt" class="chart"></div>
+		</div>
+
+		<div id="infoHolder" class="right">
+			<div class="panel">
+				
+				<div class="quiz">
+					<h3 id="qNo"></h3>
+					<p id="qTxt"></p>
+					<div id="optionHolder"></div>
+					<div id="buttonHolder">
+						<button id="checkBtn"></button>
+						<button id="nextBtn"></button>
+					</div>
+					<div id="qFeedback">
+						<h3 id="qFeedbackTitle"></h3>
+						<p id="qFeedbackTxt"></p>
+					</div>
+				</div>
+				
+				<div class="chart">
+					<h3 id="chartTitle"></h3>
+					<canvas id="chartHolder"></canvas>
+					<button id="restartBtn"></button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>

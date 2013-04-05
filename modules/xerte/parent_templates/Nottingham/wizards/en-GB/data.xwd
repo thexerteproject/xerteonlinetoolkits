@@ -781,6 +781,7 @@
     <questionFeedback label="Display Feedback" options="no,yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
 
     <image label="Image" type="Media" optional="true"/>
+	<tip label="Image Tooltip" type="textInput" optional="true"/>
 
     <newNodes>
       <invOption><![CDATA[<invOption text="here is an option" class="0" feedback="feedback for this option"   weight="1"/>]]></invOption>
