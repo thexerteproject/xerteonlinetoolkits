@@ -377,7 +377,7 @@
 				$("#chartHolder").attr("title", chartDescr);
 				
 			} else { // canvas tag not supported - display error message and data in a table
-				var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not support this page type"),
+				var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
 					tableHolder = $("#infoHolder .chart"),
 					table = '<table class="full">';
 				
@@ -588,11 +588,6 @@
 	
 	#chartTitle {
 		text-align:	center;
-	}
-	
-	#pageContents .alert {
-		color:			red;
-		font-weight:	bold;
 	}
 	
 </style>
