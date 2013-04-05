@@ -7,18 +7,21 @@
  */
 
 var scorm='2004';
-var tracking='first score';
 
 function makeId(page_nr, ia_nr, ia_type, ia_name)
 {
     var tmpid = 'urn:x-xerte:page-' + (page_nr + 1);
-    if (ia_nr > 0)
+    if (ia_nr >= 0)
     {
-        tmpid += ':interaction-' + ia_type + '-' + ia_nr;
+        tmpid += ':interaction-' + (ia_nr + 1);
+        if (ia_type.length > 0)
+        {
+            tmpid += '-' + ia_type;
+        }
     }
     if (ia_name)
     {
-        tmpid += ':' + encodeURIComponent(ia_name.replace(" ", "_"));
+        tmpid += ':' + encodeURIComponent(ia_name.replace(/ /g, "_"));
     }
     return tmpid;
 }
@@ -29,6 +32,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.page_nr = page_nr;
     this.page_ref = page_nr+1;
     this.ia_nr = ia_nr;
+    this.ia_ref = ia_nr+1;
     this.ia_type = ia_type;
     this.ia_name = ia_name;
     this.state = "entered";
@@ -36,6 +40,17 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.end = this.start;
     this.count = 0;
     this.duration = 0;
+    this.nrinteractions = 0;
+    this.weighting = 0.0;
+    this.score = 0.0;
+    this.result = 'unknown';
+    this.complete = false;
+    this.correctoptions = "";
+    this.correctanswer = "";
+    this.correctfeedback = "";
+    this.learneroptions = "";
+    this.learneranswer = "";
+    this.answerfeedback = "";
     this.id = makeId(page_nr, ia_nr, ia_type, ia_name);
     this.exit = exit;
     this.reenter = reenter;
@@ -68,17 +83,21 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 function ScormTrackingState()
 {
     this.currentid = "";
-    this.fulltracking = true;
+    this.trackingmode = "full";
     this.nrpages = 0;
     this.pages_visited=0;
     this.start = new Date();
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = "-1.0";
+    this.lo_completed = "unknown";
 
     this.interactions = new Array();
-    this.findcreate = findcreate;
     this.find = find;
+    this.findcreate = findcreate;
+    this.findPage = findPage;
+    this.findInteraction = findInteraction;
+    this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
     this.exitInteraction = exitInteraction;
@@ -95,8 +114,8 @@ function ScormTrackingState()
     this.getMaxScore = getMaxScore;
     this.formatDate = formatDate;
     this.formatDuration = formatDuration;
-    this.nr_comments = nr_comments;
-    this.nr_interactions = nr_interactions;
+    this.scorm_nr_comments = scorm_nr_comments;
+    this.scorm_nr_interactions = scorm_nr_interactions;
     this.id_to_interactionidx = id_to_interactionidx;
 
     function findcreate(page_nr, ia_nr, ia_type, ia_name)
@@ -118,7 +137,7 @@ function ScormTrackingState()
             }
         }
 
-        this.interactions[this.interactions.length] = sit;
+        this.interactions.push(sit);
         return sit;
     }
 
@@ -129,7 +148,46 @@ function ScormTrackingState()
             if (this.interactions[i].id == id)
                 return this.interactions[i];
         }
-        alert('Error: ' + id +  ' not found');
+
+        return null;
+    }
+
+    function findPage(page_nr)
+    {
+        var id = makeId(page_nr, -1, 'page', "");
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].id.indexOf(id) == 0 && this.interactions[i].id.indexOf(id + ':interaction') < 0)
+                return this.interactions[i];
+        }
+        return null;
+    }
+
+    function findInteraction(page_nr, ia_nr)
+    {
+        if (ia_nr < 0)
+        {
+            return this.findPage(page_nr);
+        }
+        var id = makeId(page_nr, ia_nr, "", "");
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].id.indexOf(id) == 0)
+                return this.interactions[i];
+        }
+        return null;
+    }
+
+    function countInteractions(page_nr)
+    {
+        var count = 0;
+        var id = makeId(page_nr, -1, 'page', "");
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].id.indexOf(id + ':interaction') == 0)
+                count++;
+        }
+        return count;
     }
 
     function enter(page_nr, ia_nr, ia_type, ia_name)
@@ -142,10 +200,14 @@ function ScormTrackingState()
         return sit;
     }
 
-    function exit(id)
+    function exit(page_nr, ia_nr)
     {
-        var sit = this.find(id);
-        return sit.exit();
+        sit = this.findInteraction(page_nr, ia_nr);
+        if (sit != null)
+        {
+            return sit.exit();
+        }
+        return false;
     }
 
     function formatDate(d)
@@ -172,19 +234,19 @@ function ScormTrackingState()
         return 'PT'+rounded_d+'S';
     }
 
-    function nr_comments()
+    function scorm_nr_comments()
     {
         return getValue('cmi.comments_from_learner._count');
     }
 
-    function nr_interactions()
+    function scorm_nr_interactions()
     {
         return getValue('cmi.interactions._count');
     }
 
     function id_to_interactionidx(id)
     {
-        var count = nr_interactions();
+        var count = scorm_nr_interactions();
         for (i=0; i<count; i++)
         {
             ia_id = getValue('cmi.interactions.' + i + '.id');
@@ -197,67 +259,113 @@ function ScormTrackingState()
         return count;
     }
 
-    function exitInteraction(id, force)
+    function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, force)
     {
-        if (this.exit(id))
+        var sit = this.findInteraction(page_nr, ia_nr);
+        if (sit != null && sit.exit())
         {
             // Record this action
-            var sit = this.find(id);
-            var currnrinteractions = this.nr_interactions();
+            var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
+            var currnrinteractions = this.scorm_nr_interactions();
             var index = this.id_to_interactionidx(id);
-            var newinteraction = (currnrinteractions == index);
             var interaction = 'cmi.interactions.' + index + '.';
-            if (newinteraction)
+
+            sit.learneroptions = learneroptions;
+            sit.learneranswer = learneranswer;
+            sit.result = result;
+            sit.answerfeedback = feedback;
+
+            if (!this.trackingmode != 'none' && (sit.ia_type == 'page' || this.trackingmode=='full'))
             {
-                result = setValue(interaction + 'id', id);
-                result = setValue(interaction + 'timestamp', this.formatDate(sit.start));
-                result = setValue(interaction + 'type', 'other');
-                result = setValue(interaction + 'correct_responses.0.pattern', SCORM2004_VIEWED);
-                result = setValue(interaction + 'weighting', '0.0');
-                result = setValue(interaction + 'learner_response', SCORM2004_VIEWED);
-                result = setValue(interaction + 'result', 'neutral');
-                result = setValue(interaction + 'description', sit.ia_name);
-                if (sit.ia_nr == 0)
-                    this.pages_visited++;
+                res = setValue(interaction + 'id', id);
+                res = setValue(interaction + 'timestamp', this.formatDate(sit.start));
+                res = setValue(interaction + 'description', sit.ia_name);
+                res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
+
+                switch (sit.ia_type)
+                {
+                    case 'multiplechoice':
+                        var psit = this.findPage(sit.page_nr);
+                        if (psit != null)
+                        {
+                            pweighting = psit.weighting;
+                            nrquestions = psit.nrinteractions;
+                        }
+                        else
+                        {
+                            pweighting = 1.0;
+                            nrquestions = 1.0;
+                        }
+                        // We have an options as numbers, separated by ';'
+                        // and we have corresponding answers strings separated by ';'
+                        // Construct answers like a:Answerstring
+                        loptionsArray = learneroptions.split(';');
+                        scormAnswerArray = [];
+                        for (i=0; i<loptionsArray.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = String.fromCharCode(parseInt(loptionsArray[i])+96);
+                            scormAnswerArray.push(entry);
+                        }
+                        scorm_lanswer = scormAnswerArray.join('[,]');
+
+                        // Do the same for the answer pattern
+                        coptionsArray = sit.correctoptions.split(';');
+                        scormCorrectArray = [];
+                        for (i=0; i<coptionsArray.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = String.fromCharCode(parseInt(coptionsArray[i])+96);
+                            scormCorrectArray.push(entry);
+                        }
+                        scorm_canswer = scormCorrectArray.join('[,]');
+                        res = setValue(interaction + 'type', 'choice');
+                        res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrquestions*100)/100);
+                        res = setValue(interaction + 'learner_response', scorm_lanswer);
+                        res = setValue(interaction + 'result', (result ? 'correct' : 'incorrect'));
+                        break;
+                    case 'numeric':
+                        res = setValue(interaction + 'type', 'numeric');
+                        res = setValue(interaction + 'correct_responses.0.pattern', '100');
+                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'learner_response', sit.score);
+                        res = setValue(interaction + 'result', sit.score);
+                        break;
+                    case 'page':
+                    default:
+                        res = setValue(interaction + 'type', 'other');
+                        res = setValue(interaction + 'correct_responses.0.pattern', SCORM2004_VIEWED);
+                        res = setValue(interaction + 'weighting', '0.0');
+                        res = setValue(interaction + 'learner_response', SCORM2004_VIEWED);
+                        res = setValue(interaction + 'result', 'neutral');
+                }
             }
-            result = setValue(interaction + 'latency', this.formatDuration(sit.duration));
-            if(this.fulltracking)
+            if (sit.ia_nr < 0)
+                this.pages_visited++;
+
+            if(this.trackingmode == 'full')
             {
-                var currnrcomments = this.nr_comments();
+                var currnrcomments = this.scorm_nr_comments();
                 var comment = 'cmi.comments_from_learner.' + currnrcomments + '.';
                 var commentText = SCORM2004_LEFT_PAGE + ' ' + sit.page_ref;
-                if (sit.ia_nr>0)
+                if (sit.ia_nr>=0)
                 {
-                    commentText += ', interaction ' + sit.ia_nr;
+                    commentText += ', interaction ' + sit.ia_ref;
                 }
                 commentText += ': ' + sit.ia_name;
-                result = setValue(comment + 'comment', commentText);
-                result = setValue(comment + 'location', sit.page_ref);
-                result = setValue(comment + 'timestamp', this.formatDate(new Date()));
+                res = setValue(comment + 'comment', commentText);
+                res = setValue(comment + 'location', sit.page_ref);
+                res = setValue(comment + 'timestamp', this.formatDate(new Date()));
             }
-            result = persistData();
+            res = persistData();
         }
         this.currentid = "";
     }
 
     function getCompletionStatus()
     {
-        if (this.lo_type != "pages only")
-        {
-            if (this.getScaledScore() > this.lo_passed)
-            {
-                return "completed";
-            }
-            else if (this.nrpages <= this.pages_visited)
-            {
-                return "incomplete";
-            }
-            else
-            {
-                return "unknown";
-            }
-        }
-        else
+        if (this.lo_completed == 'unknown')
         {
             if (this.nrpages <= this.pages_visited)
             {
@@ -271,6 +379,10 @@ function ScormTrackingState()
             {
                 return "unknown"
             }
+        }
+        else
+        {
+            return this.lo_completed;
         }
     }
 
@@ -323,7 +435,33 @@ function ScormTrackingState()
         {
             return this.pages_visited;
         }
-        return 0.0;
+        else
+        {
+            var score = [];
+            var weight = [];
+            var totalweight = 0.0;
+            // Walk passed the pages
+            for (i=0; i<this.nrpages; i++)
+            {
+                var sit = this.findPage(i);
+                if (sit != null && sit.weighting > 0)
+                {
+                    totalweight += sit.weighting;
+                    score.push(sit.score);
+                    weight.push(sit.weighting);
+                }
+            }
+            var totalscore = 0.0;
+            if (totalweight > 0.0)
+            {
+                for (i=0; i<score.length; i++)
+                {
+                    totalscore += (score[i] * weight[i]);
+                }
+                totalscore = totalscore / totalweight;
+            }
+            return totalscore;
+        }
     }
 
     function getRawScore()
@@ -337,7 +475,10 @@ function ScormTrackingState()
         {
             return 0.0;
         }
-        return 0.0;
+        else
+        {
+            return 0.0;
+        }
     }
 
     function getMinScore()
@@ -351,7 +492,10 @@ function ScormTrackingState()
         {
             return this.nrpages;
         }
-        return 0.0;
+        else
+        {
+            return 100.0;
+        }
     }
 
     function getMaxScore()
@@ -361,21 +505,25 @@ function ScormTrackingState()
 
     function finishTracking(currentid)
     {
-        setValue('cmi.completion_status', this.getCompletionStatus());
-        setValue('cmi.success_status', this.getSuccessStatus());
-        setValue('cmi.score.scaled', this.getScaledScore());
-        setValue('cmi.score.raw', this.getRawScore());
-        setValue('cmi.score.min', this.getMinScore());
-        setValue('cmi.score.max', this.getMaxScore());
-
-        var end = new Date();
-        var duration = end.getTime() - this.start.getTime();
-        setValue('cmi.session_time', this.formatDuration(duration));
-        setValue('cmi.total_time', this.formatDuration(state.duration_previous_attempts + duration));
-
-        if (String(getValue('cmi.exit')) == 'suspend')
+        if (this.trackingmode != 'none')
         {
-            setValue('cmi.suspend_data', currentid + ',' + duration);
+
+            setValue('cmi.completion_status', this.getCompletionStatus());
+            setValue('cmi.success_status', this.getSuccessStatus());
+            setValue('cmi.score.scaled', this.getScaledScore());
+            setValue('cmi.score.raw', this.getRawScore());
+            setValue('cmi.score.min', this.getMinScore());
+            setValue('cmi.score.max', this.getMaxScore());
+
+            var end = new Date();
+            var duration = end.getTime() - this.start.getTime();
+            setValue('cmi.session_time', this.formatDuration(duration));
+            setValue('cmi.total_time', this.formatDuration(state.duration_previous_attempts + duration));
+
+            if (String(getValue('cmi.exit')) == 'suspend')
+            {
+                setValue('cmi.suspend_data', currentid + ',' + duration);
+            }
         }
     }
 }
@@ -396,6 +544,11 @@ function setValue(elementName, value){
 function XTInitialise()
 {
     initializeCommunication();
+}
+
+function XTTrackingSystem()
+{
+    return "SCORM 2004 3rd Ed.";
 }
 
 function XTLogin(login, passwd)
@@ -422,23 +575,34 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-    if (option == 'nrpages')
+    switch (option)
     {
-        state.nrpages = value;
+        case "nrpages":
+            state.nrpages = value;
+            break;
+        case "tracking-mode":
+            state.trackingmode = value;
+            break;
+        case "completed":
+            state.lo_completed = value;
+            break;
+        case "objective_passed":
+            state.lo_passed = value;
+            break;
     }
 }
 
 function XTEnterPage(page_nr, page_name)
 {
-    var sit = state.enter(page_nr, 0, "page", page_name);
-    if (state.fulltracking)
+    var sit = state.enter(page_nr, -1, "page", page_name);
+    if (state.trackingmode == 'full')
     {
-        var currnrcomments = state.nr_comments();
+        var currnrcomments = state.scorm_nr_comments();
         var comment = 'cmi.comments_from_learner.' + currnrcomments + '.';
         var commentText = SCORM2004_ENTERED_PAGE + ' ' + sit.page_ref;
         if (sit.ia_nr>0)
         {
-            commentText += ', interaction ' + sit.ia_type + '-' + sit.ia_nr;
+            commentText += ', interaction ' + sit.ia_type + '-' + sit.ia_ref;
         }
         commentText += ': ' + sit.ia_name;
         result = setValue(comment + 'comment', commentText);
@@ -451,19 +615,47 @@ function XTEnterPage(page_nr, page_name)
 
 
 
-function XTExitPage(page_nr, page_name)
+function XTExitPage(page_nr)
 {
-    return state.exitInteraction(makeId(page_nr, 0, "page", page_name), false);
+    return state.exitInteraction(page_nr, -1, false, "", "", "", false);
 }
 
-function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
+function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 {
+    sit = state.findPage(page_nr);
+    if (sit != null)
+    {
+        sit.ia_type = page_type;
 
+        sit.nrinteractions = nrinteractions;
+        sit.weighting = weighting;
+        if (page_type != 'page')
+        {
+            state.lo_type = 'interactive';
+        }
+    }
 }
 
-function XTExitInteraction(page_nr, ia_nr, is_type, ia_name, learneranswer, feedback)
+function XTSetPageScore(page_nr, score)
 {
+    sit = state.findPage(page_nr);
+    if (sit != null)
+    {
+        sit.score = score;
+    }
+}
 
+function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
+{
+    var sit = state.enter(page_nr, ia_nr, ia_type, ia_name);
+    sit.correctoptions = correctoptions;
+    sit.correctanswer = correctanswer;
+    sit.correctfeedback = feedback;
+}
+
+function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
+{
+    return state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, false);
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
@@ -499,8 +691,12 @@ function XTTerminate()
     if (state.currentid)
     {
         currentid = state.currentid;
+        var sit = state.find(currentid);
         // there is still a page open, close it
-        state.exitInteraction(state.currentid, false);
+        if (sit != null)
+        {
+            state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+        }
     }
     state.finishTracking(currentid);
 

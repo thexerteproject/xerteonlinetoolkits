@@ -13,6 +13,11 @@ function XTInitialise()
 
 }
 
+function XTTrackingSystem()
+{
+    return "";
+}
+
 function XTLogin(login, passwd)
 {
     return true;
@@ -43,9 +48,19 @@ function XTEnterPage(page_nr, page_name)
     //alert("Opening page " + page_nr + ": " + page_name);
 }
 
-function XTExitPage(page_nr, page_name)
+function XTExitPage(page_nr)
 {
     //alert("Leaving page " + page_nr + ": " + page_name);
+}
+
+function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
+{
+
+}
+
+function XTSetPageScore(page_nr, score)
+{
+
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
@@ -53,7 +68,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
 }
 
-function XTExitInteraction(page_nr, ia_nr, is_type, ia_name, learneranswer, feedback)
+function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
 {
 
 }

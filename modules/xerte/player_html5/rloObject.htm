@@ -18,7 +18,7 @@
     <script type="text/javascript" src="common_html5/mediaelement/mediaelement-and-player.js"></script>	<!-- for audio & video players -->
     <script type="text/javascript" src="common_html5/mediaelement/mediaPlayer.js"></script>
     <script type="text/javascript" src="common_html5/js/swfobject.js"></script>
-    <script type="text/javascript" src="common_html5/js/xttracking_noop.js"></script>
+    %TRACKING_SUPPORT%
 
     <script type="text/javascript">
         function getUrlVars() {
@@ -53,7 +53,7 @@
 
 </head>
 
-<body>
+<body onload = "XTInitialise();" onunload = "XTTerminate();" >
 
 <script type="text/javascript" src="common_html5/js/xenith.js"></script>
 
