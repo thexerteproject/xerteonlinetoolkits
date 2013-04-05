@@ -650,9 +650,18 @@ function x_changePage(x_gotoPage) {
 			.data("size", [$x_mainHolder.width(), $x_mainHolder.height()]) // save current LO size so when page is next loaded we can check if it has changed size and if anything needs updating
 			.detach();
 	}
-	
-	if (x_pageInfo[x_currentPage].built != false) { // x_currentPage has already been viewed so is already loaded
-		var builtPage = x_pageInfo[x_currentPage].built;
+
+    if (x_pageInfo[0].type == "menu" && x_currentPage == 0) {
+        pageTitle = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+    } else {
+        pageTitle = x_currentPageXML.getAttribute("name");
+    }
+
+    if (x_pageInfo[x_currentPage].built != false) { // x_currentPage has already been viewed so is already loaded
+        // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
+        XTEnterPage(x_currentPage, pageTitle);
+
+        var builtPage = x_pageInfo[x_currentPage].built;
 		$x_pageDiv.append(builtPage);
 		builtPage.hide();
 		builtPage.fadeIn();
@@ -679,6 +688,9 @@ function x_changePage(x_gotoPage) {
 		if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
 			x_findText(x_currentPageXML);
 		}
+        // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
+        XTEnterPage(x_currentPage, pageTitle);
+
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
 }
@@ -766,9 +778,6 @@ function x_setUpPage() {
 	} else {
 		x_updateCss(false);
 	}
-    // Start page tracking
-    XTEnterPage(x_currentPage, pageTitle);
-
 }
 
 // function called from each model when fully loaded to trigger fadeIn

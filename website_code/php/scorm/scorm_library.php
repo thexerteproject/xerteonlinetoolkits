@@ -6,7 +6,7 @@
 	 * @author Patrick Lockley
 	 */
 
-function lmsmanifest_create($name, $lo_name){
+function lmsmanifest_create($name, $flash, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile;
 
@@ -20,7 +20,12 @@ function lmsmanifest_create($name, $lo_name){
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
 	$scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 
-	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
+	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" />";
+    if ($flash)
+    {
+        $scorm_bottom_string .= "<file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" />";
+    }
+    $scorm_bottom_string .= "</resource></resources></manifest>";
 
 	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
 	$buffer = $scorm_top_string . $scorm_personalise_string . $scorm_bottom_string;
@@ -41,7 +46,7 @@ function lmsmanifest_create($name, $lo_name){
 	 * @author Patrick Lockley
 	 */
 
-function lmsmanifest_create_rich($row, $metadata, $users, $lo_name){
+function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile, $xerte_toolkits_site;
 
@@ -70,8 +75,12 @@ function lmsmanifest_create_rich($row, $metadata, $users, $lo_name){
 	$scorm_personalise_string .= "<item identifier=\"" . "XERTE-ITEM-" . $date . "\" identifierref=\"" .  "XERTE-RES-" . $date . "\" isvisible=\"true\">";
     $scorm_personalise_string .= "<title>" . $lo_name . "</title>";
 
-	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" /><file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" /></resource></resources></manifest>";
-	$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
+	$scorm_bottom_string = "</item></organization></organizations><resources><resource type=\"webcontent\" adlcp:scormtype=\"sco\" identifier=\"" .  "XERTE-RES-" . $date . "\" href=\"scormRLO.htm\"><file href=\"scormRLO.htm\" />";
+    if ($flash)
+    {
+        $scorm_bottom_string .= "<file href=\"MainPreloader.swf\" /><file href=\"XMLEngine.swf\" />";
+    }
+    $scorm_bottom_string .= "</resource></resources></manifest>";$file_handle = fopen($dir_path . "imsmanifest.xml", 'w');
 
 	$buffer = $scorm_top_string . $scorm_personalise_string . $scorm_bottom_string;
 
@@ -106,6 +115,7 @@ function basic_html_page_create($name, $type, $rlo_file, $lo_name){
 	$buffer = str_replace("%HEIGHT%",$new_temp[1],$buffer);
     $buffer = str_replace("%TITLE%",$lo_name,$buffer);
     $buffer = str_replace("%RLOFILE%",$rlo_file,$buffer);
+    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"xttracking_noop.js\"></script>", $buffer);
 
 	$file_handle = fopen($dir_path . "index_flash.htm", 'w');
 
@@ -131,7 +141,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language){
 
 	global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player/scormRLO.htm");
+	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player/rloObject.htm");
 	$temp = get_template_screen_size($name,$type);
 	$new_temp = explode("~",$temp);
 
@@ -139,7 +149,15 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language){
 	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
+
+    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
+    if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js"))
+    {
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
+    }
+    $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
 
 	$file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 
@@ -168,6 +186,7 @@ function basic_html5_page_create($type, $lo_name){
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $buffer = str_replace("%TITLE%",$lo_name,$buffer);
+    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"xttracking_noop.js\"></script>", $buffer);
 
     $file_handle = fopen($dir_path . "index.htm", 'w');
 
@@ -193,9 +212,17 @@ function scorm_html5_page_create($type, $lo_name, $language){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-    $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/scormRLO.htm");
+    $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%LANGUAGE%",$language,$scorm_html_page_content);
+
+    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
+    if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js"))
+    {
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
+    }
+    $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 

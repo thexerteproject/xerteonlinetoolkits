@@ -217,6 +217,7 @@
 	 * Create scorm manifests or a basic HTML page
 	 */
 	if($scorm=="true"){
+        $useflash = ($export_flash && !$export_html5);
         if(isset($_GET['data'])){
             if($_GET['data']==true){
 
@@ -225,14 +226,14 @@
                     $metadata = mysql_fetch_array($query_response_metadata);
                     $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
                     $query_response_users = mysql_query($query);
-                    lmsmanifest_create_rich($row, $metadata, $query_response_users, $lo_name);
+                    lmsmanifest_create_rich($row, $metadata, $query_response_users, $useflash, $lo_name);
                 }
         }
         else
         {
-            lmsmanifest_create($row['zipname'], $lo_name);
+            lmsmanifest_create($row['zipname'], $useflash, $lo_name);
 		}
-        if ($export_flash && !$export_html5)
+        if ($useflash)
         {
 		    scorm_html_page_create($row['template_name'],$row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
         }
@@ -241,7 +242,8 @@
             scorm_html5_page_create($row['template_framework'], $lo_name, $xml->getLanguage());
         }
 	}else if ($scorm=="2004"){
-		lmsmanifest_2004_create($row['zipname'], $lo_name);
+        $useflash = ($export_flash && !$export_html5);
+		lmsmanifest_2004_create($row['zipname'], $useflash, $lo_name);
         if ($export_flash && !$export_html5)
         {
     		scorm2004_html_page_create($row['template_name'],$row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());

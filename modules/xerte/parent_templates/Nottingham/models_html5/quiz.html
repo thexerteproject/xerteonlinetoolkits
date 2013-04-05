@@ -65,7 +65,9 @@
 					this.myProgress.push("");
 				}
 			}
-			
+			// Track the quiz page
+            XTSetPageType(x_currentPage, 'numeric', numQs, 1.0);
+
 			this.loadQ();
 		}
 		
@@ -75,6 +77,7 @@
 			$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
 			
 			var infoString = $thisQ.getAttribute("prompt");
+
 			var url = $thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
@@ -99,6 +102,9 @@
 			var $optionTxt = $optionHolder.find(".optionTxt");
 			var $checkBtn = $("#checkBtn");
 			var $feedback = $("#feedback");
+            var correctOptions = [];
+            var correctAnswer = [];
+            var correctFeedback = [];
 			$($thisQ).children()
 				.each(function(i) {
 					var $thisOption, $thisOptionTxt;
@@ -109,7 +115,12 @@
 						$thisOption = $option;
 						$thisOptionTxt = $optionTxt;
 					}
-					
+					if (this.getAttribute("correct") == 'true')
+                    {
+                        correctOptions.push(i+1+"");
+                        correctAnswer.push(this.getAttribute("text"));
+                        correctFeedback.push(this.getAttribute("feedback"));
+                    }
 					$thisOption
 						.attr({
 							"value"	:this.getAttribute("text"),
@@ -132,6 +143,7 @@
 						.data("option", $thisOption)
 						.html(x_addLineBreaks(this.getAttribute("text")));
 				});
+            XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
 		}
 		
 		this.loadVideo = function() {
@@ -270,9 +282,13 @@
 					var selected = $("#optionHolder input:checked");
 					var optionFeedback = "";
 					var correct;
+                    var l_options = [];
+                    var l_answer = [];
+                    var l_feedback = [];
 					// get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
-						var selectedOption = $(currentQuestion).children()[$(selected[i]).index()/2];
+                        var optionIndex = $(selected[i]).index()/2;
+						var selectedOption = $(currentQuestion).children()[optionIndex];
 						optionFeedback += x_addLineBreaks(selectedOption.getAttribute("feedback"));
 						if (i < selected.length - 1) {
 							optionFeedback += "<br/><br/>";
@@ -282,6 +298,9 @@
 						} else {
 							correct = false;
 						}
+                        l_options.push(optionIndex+1+"");
+                        l_answer.push(selectedOption.getAttribute("text"));
+                        l_feedback.push(selectedOption.getAttribute("feedback"));
 					}
 					var rightWrongTxt = "";
 					if (x_currentPageXML.getAttribute("judge") != "false") {
@@ -309,6 +328,8 @@
 								rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
 							}
 						}
+                        // Track answer
+                        XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
 						quiz.myProgress.splice(quiz.currentQ, 1, correct);
 					}
 					var answerFeedback = "";
@@ -353,17 +374,9 @@
 						$("#restartBtn").show();
 						$("#feedback").html("");
 						
-						if (x_currentPageXML.getAttribute("scorm") != undefined) {
-							var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
-							if (x_currentPageXML.getAttribute("scorm") == "Track Last Score") {
-								x_setValue("cmi.core.score.raw", String(scormScore));
-							} else if (x_currentPageXML.getAttribute("scorm") == "Track First Score") {
-								if (isNaN(x_getValue("cmi.core.score.raw"))) {
-									x_setValue("cmi.core.score.raw", String(scormScore));
-								}
-							}
-						}
-						
+						var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
+                        XTSetPageScore(x_currentPage, scormScore);
+
 					} else {
 						quiz.loadQ();
 					}
