@@ -1,4 +1,5 @@
 /* MAIN CSS DOCUMENT */
+/* don't change styles that start with x_ in page models as they will change interface css */
 
 body {
 	font-family:	Arial, sans-serif;
@@ -256,6 +257,34 @@ h3 {
 .ui-tabs-panel a:hover, .ui-accordion-content a:hover		{ color:	#FF0000; }
 .ui-tabs-panel a:active, .ui-accordion-content a:active		{ color:	#FF0000; }
 
+
+/* GLOSSARY */
+
+a.x_glossary {
+	font-weight:		bold;
+	text-decoration:	none;
+	color:				#010101;
+	border-bottom:		1px dotted;
+}
+
+a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+	color:	#010101;
+}
+
+#x_glossaryHover {
+	display:			none;
+	position:			absolute;
+	border:				1px solid #333;
+	background-color:	#161616;
+	border-radius:		4px;
+	padding:			2px 5px;
+	color:				#fff;
+	max-width:			200px;
+}
+
+
+/* STYLES FOR PAGE MODEL CONTENTS */
+
 .leftAlign {
 	text-align:	left;
 }
@@ -310,29 +339,9 @@ audio {
 	filter:		alpha(opacity = 0);
 }
 
-
-/* GLOSSARY */
-
-a.x_glossary {
-	font-weight:		bold;
-	text-decoration:	none;
-	color:				#010101;
-	border-bottom:		1px dotted;
-}
-
-a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
-	color:	#010101;
-}
-
-#x_glossaryHover {
-	display:			none;
-	position:			absolute;
-	border:				1px solid #333;
-	background-color:	#161616;
-	border-radius:		4px;
-	padding:			2px 5px;
-	color:				#fff;
-	max-width:			200px;
+.alert {
+	font-weight:	bold;
+	color:			red;
 }
 
 

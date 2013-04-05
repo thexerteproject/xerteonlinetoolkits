@@ -595,7 +595,7 @@
         			break;
         			case "finished":
         				if (this.fullySupported == false) {
-        					$("#textHolder").prepend('<p class="alert">Your browser does not fully support this page type</p>');
+        					$("#textHolder").prepend('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
         				}
         				x_pageLoaded();
         			break;
@@ -682,12 +682,6 @@
     textDrawing.init();
 
 </script>
-
-<style type="text/css">
-
-	.alert {font-weight: bold; color: red; text-align: center;}
-
-</style>
 
 <div id="pageContents">
 

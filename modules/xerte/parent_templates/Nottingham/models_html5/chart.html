@@ -300,7 +300,7 @@
 				}
 			}
 			else {
-				$("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not support this page type"));
+				$("#x_pageDiv div").html('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
 				$panel.hide()
 			}
 
