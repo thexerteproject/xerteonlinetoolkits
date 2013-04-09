@@ -37,11 +37,9 @@
 				$panel.addClass("x_floatLeft");
 			}
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-
+			
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
-
-			$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 
 			// ** change this play button to a proper control bar like the mediaelement one
 			if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
@@ -106,10 +104,15 @@
 							$("#playBtn").trigger("click");
 						},100);
 					}
+					
+					$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 
 					// ** calling init() and passing initObject not working **
 					//var swf = e.ref;
 					//swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
+					
+				} else { // no Flash
+					$("#playBtn").remove();
 				}
 
 				// call this function in every model once everything's loaded
@@ -137,7 +140,7 @@
 	<div id="swfHolder" class="mobileAlign">
 		<div class="panel inline">
 			<div id="pageSWF">
-				<h3></h3>
+				<h3 class="alert"></h3>
 				<p><a href="http://www.adobe.com/go/getflashplayer"><img id="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p>
 			</div>
 		</div>

@@ -2,7 +2,12 @@
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var table = new function() {		
+	var table = new function() {
+		var $tableInfo,
+			$table,
+			header,
+			footer;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			
@@ -13,9 +18,92 @@
 			
 		}
 		
+		this.init = function() {
+			$tableInfo = $(x_currentPageXML).find("tableData");
+			
+			var $pageContents = $("#pageContents"),
+				$textHolder = $("#textHolder"),
+				$panel = $("#pageContents .panel");
+			
+			if ($tableInfo[0].getAttribute("name") != "") {
+				$pageContents.find("#tableName").html("<p>" + $tableInfo[0].getAttribute("name") + "</p>");
+			}
+			if ($tableInfo[0].getAttribute("caption") != "" && $tableInfo[0].getAttribute("caption") != undefined) {
+				$pageContents.find("#footnote").html("<p>" + $tableInfo[0].getAttribute("caption") + "</p>");
+			}
+			
+			var textAlign = x_currentPageXML.getAttribute("align"),
+				tableSize = $tableInfo[0].getAttribute("size");
+			if (tableSize != "full screen") {
+				if (textAlign == "top" || textAlign == "bottom") {
+					if (textAlign == "top") {
+						$pageContents.prepend($textHolder);
+						$panel.css("margin-top", "20px");
+					}
+					$("#tableHolder").addClass("centerAlign");
+				} else if (textAlign == "right") {
+					$panel.addClass("x_floatLeft");
+				} else {
+					$panel.addClass("x_floatRight");
+				}
+				if (tableSize == "small") {
+					$panel.addClass("width40");
+				} else if (tableSize == "large") {
+					$panel.addClass("width80");
+				} else {
+					$panel.addClass("width60");
+				}
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			} else {
+				$panel.removeClass("inline");
+				$textHolder.remove();
+			}
+			
+			$table = $pageContents.find("#table");
+			header = false;
+			footer = false;
+			$table.addClass($tableInfo[0].getAttribute("borders"));
+			if ($tableInfo[0].getAttribute("header") == "header" || $tableInfo[0].getAttribute("header") == "both") {
+				header = true;
+				$table.addClass("header");
+			}
+			if ($tableInfo[0].getAttribute("header") == "footer" || $tableInfo[0].getAttribute("header") == "both") {
+				footer = true;
+				$table.addClass("footer");
+			}
+			if ($tableInfo[0].getAttribute("shadeHeader") == "true") {
+				$(".header").addClass("shaded");
+				$(".footer").addClass("shaded");
+			}
+			
+			if ($tableInfo[0].getAttribute("url") != undefined && $tableInfo[0].getAttribute("url") != "") {
+				$.ajax({
+					type: "GET",
+					url: eval($tableInfo[0].getAttribute("url")),
+					dataType: "text",
+					success: function(csv) {
+						var csvData = csv.split("\r\n");
+						if (csvData[csvData.length-1] == "") {
+							csvData.splice(csvData.length-1, 1);
+						}
+						table.makeTable(csvData, true);
+					},
+					error: function () {
+						table.makeTable($tableInfo[0].getAttribute("data").split("||"), false);
+					}
+				});
+			} else {
+				table.makeTable($tableInfo[0].getAttribute("data").split("||"), false);
+			}
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+			
+		}
+		
 		this.makeTable = function(tableData, csv) {
-			var tableString = "";
-			var seperator = "|";
+			var tableString = "",
+				seperator = "|";
 			if (csv == true) {
 				seperator = ",";
 			}
@@ -35,8 +123,8 @@
 			
 			if ($tableInfo[0].getAttribute("shade") == "true") {
 				$table.children(0).children().each(function() {
-					var $this = $(this);
-					var thisIndex = $this.index();
+					var $this = $(this),
+						thisIndex = $this.index();
 					if (footer != true || thisIndex != tableData.length-1) {
 						if (header == true) { // shade even no. rows, except for 1st row
 							if (thisIndex%2 == 0 && thisIndex != 0) {
@@ -51,84 +139,7 @@
 		}
 	}
 	
-	var $tableInfo = $(x_currentPageXML).find("tableData");
-	var $pageContents = $("#pageContents");
-	var $textHolder = $("#textHolder");
-	var $panel = $("#pageContents .panel");
-	
-	if ($tableInfo[0].getAttribute("name") != "") {
-		$pageContents.find("#tableName").html("<p>" + $tableInfo[0].getAttribute("name") + "</p>");
-	}
-	if ($tableInfo[0].getAttribute("caption") != "" && $tableInfo[0].getAttribute("caption") != undefined) {
-		$pageContents.find("#footnote").html("<p>" + $tableInfo[0].getAttribute("caption") + "</p>");
-	}
-	
-	var textAlign = x_currentPageXML.getAttribute("align");
-	var tableSize = $tableInfo[0].getAttribute("size");
-	if (tableSize != "full screen") {
-		if (textAlign == "top" || textAlign == "bottom") {
-			if (textAlign == "top") {
-				$pageContents.prepend($textHolder);
-				$panel.css("margin-top", "20px");
-			}
-			$("#tableHolder").addClass("centerAlign");
-		} else if (textAlign == "right") {
-			$panel.addClass("x_floatLeft");
-		} else {
-			$panel.addClass("x_floatRight");
-		}
-		if (tableSize == "small") {
-			$panel.addClass("width40");
-		} else if (tableSize == "large") {
-			$panel.addClass("width80");
-		} else {
-			$panel.addClass("width60");
-		}
-		$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-	} else {
-		$panel.removeClass("inline");
-		$textHolder.remove();
-	}
-	
-	var $table = $pageContents.find("#table");
-	$table.addClass($tableInfo[0].getAttribute("borders"));
-	var header = false;
-	var footer = false;
-	if ($tableInfo[0].getAttribute("header") == "header" || $tableInfo[0].getAttribute("header") == "both") {
-		header = true;
-		$table.addClass("header");
-	}
-	if ($tableInfo[0].getAttribute("header") == "footer" || $tableInfo[0].getAttribute("header") == "both") {
-		footer = true;
-		$table.addClass("footer");
-	}
-	if ($tableInfo[0].getAttribute("shadeHeader") == "true") {
-		$(".header").addClass("shaded");
-		$(".footer").addClass("shaded");
-	}
-	
-	if ($tableInfo[0].getAttribute("url") != undefined && $tableInfo[0].getAttribute("url") != "") {
-		$.ajax({
-			type: "GET",
-			url: eval($tableInfo[0].getAttribute("url")),
-			dataType: "text",
-			success: function(csv) {
-				var csvData = csv.split("\r\n");
-				if (csvData[csvData.length-1] == "") {
-					csvData.splice(csvData.length-1, 1);
-				}
-				table.makeTable(csvData, true);
-			},
-			error: function () {
-				table.makeTable($tableInfo[0].getAttribute("data").split("||"), false);
-			}
-		});
-	} else {
-		table.makeTable($tableInfo[0].getAttribute("data").split("||"), false);
-	}
-	
-	// call this function in every model once everything's loaded
-	x_pageLoaded();
+	table.init();
 	
 </script>
 
