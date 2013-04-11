@@ -657,6 +657,8 @@
 
     <name label="Page Title" type="TextInput"/>
     <src label="IFrame code" type="TextInput"/>
+	
+	<description label="Description" type="TextInput" optional="true"/>
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -1107,6 +1109,7 @@
     <name label="Title" type="TextInput"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Video File" type="media"/>
+	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
   </movie><sound menuItem="Sound" icon="icSound" duplicate="true" remove="true">
     <name label="Title" type="TextInput"/>
     <txt label="Text" type="TextArea" height="300"/>
