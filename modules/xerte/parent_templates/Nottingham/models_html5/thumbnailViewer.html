@@ -1,0 +1,406 @@
+<script type="text/javascript">
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var thumbnailViewer = new function() {
+		var $mainTxt,
+			$mainInfoHolder;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$mainTxt = $("#mainTxt");
+			$mainInfoHolder = $("#mainInfoHolder");
+			
+			$mainTxt.show();
+			$mainInfoHolder
+				.hide()
+				.removeData("index");
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			if ($mainTxt.css("display") == "none") {
+				$("#thumbHolder .thumbBox").filter(function(){ return $(this).data("index") == $mainInfoHolder.data("index")}).trigger("click");
+			}
+		}
+		
+		this.init = function() {
+			$mainTxt = 			$("#mainTxt");
+			$mainInfoHolder =	$("#mainInfoHolder");
+			var	$thumbHolder =	$("#thumbHolder");
+			
+			// set up thumb scrolling
+			var btnText = x_currentPageXML.getAttribute("priorBtnTip");
+			if (btnText == undefined) {
+				btnText = "Previous";
+			}
+			
+			$("#prevBtn")
+				.button({
+					icons:	{primary: "prev"},
+					label: 	btnText,
+					text:	false
+				})
+				.click(function() {
+					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() - $thumbHolder.find(".thumbBox:eq(0)").width() - 10}, 800, "easeInOutCubic");
+				})
+				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_prev.png")');
+			
+			
+			btnText = x_currentPageXML.getAttribute("nextBtnTip");
+			if (btnText == undefined) {
+				btnText = "Next";
+			}
+			
+			$("#nextBtn")
+				.button({
+					icons:	{primary: "next"},
+					label: 	btnText,
+					text:	false
+				})
+				.click(function() {
+					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() + $thumbHolder.find(".thumbBox:eq(0)").width() + 10}, 800, "easeInOutCubic");
+				})
+				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_next.png")');
+			
+			if (x_browserInfo.touchScreen == true) {
+				$thumbHolder.css("overflow-x", "auto");
+			}
+			
+			
+			// create thumbs in thumbBar
+			var newThumb = '<a href="#" class="thumbBox"><img class="centre" /></a>';
+			$(x_currentPageXML).children().each(function(i) {
+				if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
+					var	$thisThumb = $(newThumb),
+						$thisThumbImg = $thisThumb.find("img");
+					
+					$thumbHolder.append($thisThumb);
+					$thisThumb.data("index", i);
+					
+					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+						$thisThumbImg.attr("alt", this.getAttribute("tip"));
+					}
+					
+					thumbnailViewer.loadImage($thisThumbImg, [$thisThumb.width(), $thisThumb.height()], this.getAttribute("url"));
+				}
+			});
+			
+			
+			var	$panelLink =		$("#panelLink"),
+				$panelImg =			$("#panelImg"),
+				$panelTxt =			$("#panelTxt");
+			
+			$mainTxt.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
+			$("#thumbHolder .thumbBox")
+				.click(function() {
+					if ($mainTxt.css("display") != "none") {
+						$mainTxt.fadeOut();
+					}
+					
+					var chgImg = false;
+					if ($mainInfoHolder.data("index") == undefined || $mainInfoHolder.data("index") != $(this).data("index")) {
+						chgImg = true;
+					}
+					$mainInfoHolder.data("index", $(this).data("index"));
+					
+					if (chgImg == true) {
+						var	thisData = $(x_currentPageXML).children()[$mainInfoHolder.data("index")];
+						
+						$mainInfoHolder.fadeOut(400, function() {
+							$mainInfoHolder.css({ // need to change the way the div's hidden so I can get its dimensions
+								"visibility"	:"hidden",
+								"display"		:"inherit"
+							});
+							
+							
+							// is there a link from the image?
+							var	link = "#",
+								target = "";
+							if (thisData.getAttribute("linktarget") == "Original image") {
+								link = eval(thisData.getAttribute("url"));
+								target = "_blank";
+							} else if (thisData.getAttribute("linktarget") == "Specified URL") {
+								if (thisData.getAttribute("link") != undefined && thisData.getAttribute("link") != "") {
+									link = thisData.getAttribute("link");
+									target = "_blank";
+								}
+							}
+							$panelLink.attr({
+								"href"		:link,
+								"target"	:target
+							});
+							
+							
+							// load main image
+							$panelImg.html('<img class="centre" />');
+							var $img = $panelImg.find("img");
+							if (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") != "") {
+								$img.attr("alt", thisData.getAttribute("tip"));
+							}
+							thumbnailViewer.loadImage($img, [$mainInfoHolder.width() - 40, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 55], thisData.getAttribute("url"));
+							
+							
+							// add main text
+							if (thisData.getAttribute("align") == "Bottom") {
+								$panelTxt.addClass("bottom");
+							} else {
+								$panelTxt.removeClass("bottom");
+							}
+							
+							$panelTxt
+								.hide()
+								.width($img.width())
+								.height($img.height())
+								.html('<p>' + x_addLineBreaks(thisData.getAttribute("text")) + '</p>');
+							
+							
+							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn
+								"display"		:"none",
+								"visibility"	:"visible"
+							});
+							$mainInfoHolder.fadeIn();
+						});
+						
+					} else { // no change to image shown - just resize if needed
+						x_scaleImg($panelImg.find("img"), $mainInfoHolder.width() - 40, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 55, true, false);
+						
+						$panelTxt
+							.width($panelImg.find("img").width())
+							.height($panelImg.find("img").height());
+					}
+				})
+				.focusin(function() {
+					$(this).addClass("selected");
+				})
+				.focusout(function() {
+					$(this).removeClass("selected");
+				})
+				.keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						$(this).trigger("click");
+					}
+				});
+			
+			
+			// show text on rollover/focus
+			$panelLink
+				.on("mouseover focusin", function() {
+					$panelTxt.show();
+				})
+				.on("mouseout focusout", function() {
+					$panelTxt.hide();
+				});
+			
+			
+			// have to add this css using jQuery rather than in styles below as some browsers (IE) don't support first-child/last-child
+			$("#thumbHolder .thumbBox:eq(0)").css("margin-left", "40px");
+			$("#thumbHolder .thumbBox:last-child").css("margin-right", "40px");
+			
+			x_pageLoaded();
+		}
+		
+		this.loadImage = function($img, maxDimensions, src) {
+			$img
+				.css({ // stops flicker on 1st load of image
+					"opacity"	:0,
+					"filter"	:'alpha(opacity=0)'
+				})
+				.one("load", function() {
+					var $this = $(this);
+					x_scaleImg($this, maxDimensions[0], maxDimensions[1], true, true);
+					
+					if ($img.parent().hasClass("thumbBox")) {
+						$img.css("margin-top", -$img.height() / 2); // centre vertically
+					}
+					
+					$this.css({
+						"opacity"	:1,
+						"filter"	:'alpha(opacity=100)'
+					});
+				})
+				.attr("src", eval(src))
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
+				});
+		}
+	}
+	
+	thumbnailViewer.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#thumbBar {
+		position:	absolute;
+		top:		10px;
+		left:		0px;
+		width:		100%;
+		height:		110px;
+		
+		background:		#434343; /* for non-css3 browsers */
+		filter:			progid:DXImageTransform.Microsoft.gradient(startColorstr="#010101", endColorstr="#434343"); /* for IE */
+		background:		-webkit-gradient(linear, left top, left bottom, from(#010101), to(#434343)); /* for webkit browsers */
+		background:		-moz-linear-gradient(top,  #010101,  #434343); /* for firefox 3.6+ */
+		background-image:	-o-linear-gradient(#010101, #434343); /* for Opera */
+	}
+	
+	#thumbOverlayLeft, #thumbOverlayRight {
+		position:		absolute;
+		width:			40px;
+		height:			100%;
+	}
+	
+	#thumbOverlayLeft {
+		background:	#434343; /* for non-css3 browsers */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#010101', endColorstr='#00010101',GradientType=1 ); /* IE */
+		background: -moz-linear-gradient(left,  rgba(1,1,1,1) 0%, rgba(1,1,1,1) 20%, rgba(1,1,1,0) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,1)), color-stop(20%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,0))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* IE10+ */
+		background: linear-gradient(to right,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* W3C */
+	}
+	
+	#thumbOverlayRight {
+		right:	0;
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00010101', endColorstr='#010101',GradientType=1 ); /* IE */
+		background:	#434343; /* for non-css3 browsers */
+		background: -moz-linear-gradient(left,  rgba(1,1,1,0) 0%, rgba(1,1,1,1) 80%, rgba(1,1,1,1) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,0)), color-stop(80%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,1))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* IE10+ */
+		background: linear-gradient(to right,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* W3C */
+	}
+	
+	#thumbHolder {
+		position:			absolute;
+		width:				100%;
+		height:				100%;
+		overflow:			hidden;
+		white-space:		nowrap;
+	}
+	
+	#thumbHolder .thumbBox {
+		display:			inline-block;
+		width:				90px;
+		height:				90px;
+		margin-top:			5px;
+		padding:			3px;
+		border:				2px solid transparent;
+		text-decoration:	none;
+	}
+	
+	#thumbHolder .thumbBox.selected {
+		border-color:	yellow;
+	}
+	
+	#thumbHolder .thumbBox img {
+		border-width:	0px; /* IE8 fix */
+		position:		absolute;
+		top:			50%;
+	}
+	
+	
+	#prevBtn {
+		float:		left;
+		z-index:	5;
+	}
+	
+	#nextBtn {
+		float:	right;
+	}
+	
+	/* over ride default jquery button styles */
+	#thumbBar button {
+		background:		none;
+		border:			none;
+		width:			40px;
+		height:			100%;
+		margin-right:	0;
+	}
+	
+	#thumbBar button .ui-icon {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+		top:		0;
+		left:		0;
+		margin:		0px;
+		background-position:	0px 0px;
+	}
+	
+	#thumbBar button.ui-state-hover .ui-icon, #thumbBar button.ui-state-focus .ui-icon, #thumbBar button.ui-state-active .ui-icon {
+		background-position: -40px 0px;
+	}
+	
+	
+	#mainInfoHolder, #mainTxt {
+		margin-top:	130px;
+	}
+	
+	#mainInfoHolder {
+		position:	absolute;
+		top:		10px;
+		left:		0px;
+		width:		100%;
+		visibility:	hidden;
+		text-align:	center;
+	}
+	
+	#panelLink img {
+		border-style:	none;
+	}
+	
+	#panelTxt {
+		position:	absolute;
+		top:		10px;
+		overflow:	auto;
+	}
+	
+	#panelTxt p {
+		position:			absolute;
+		top:				0px;
+		padding:			10px;
+		margin:				0px;
+		background-color:	#010101;
+		color:				white;
+		text-align:			left;
+	}
+	
+	#panelTxt.bottom p {
+		top:	auto;
+		bottom:	0px;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="mainTxt"></div>
+	
+	<div id="mainInfoHolder">
+		<div id="mainPanel" class="panel inline">
+			<a id="panelLink" href="#" target="_blank">
+				<div id="panelImg"></div>
+				<div id="panelTxt"></div>
+			</a>
+		</div>
+	</div>
+	
+	<div id="thumbBar">
+		<button id="prevBtn"/>
+		<div id="thumbHolder"></div>
+		<div id="thumbOverlayLeft"/>
+		<div id="thumbOverlayRight"/>
+		<button id="nextBtn"/>
+	</div>
+	
+</div>
