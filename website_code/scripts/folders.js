@@ -86,7 +86,8 @@ function delete_folder(folder_id){
 
 function create_folder(){
 
-	if(is_ok_name(document.foldercreateform.foldername.value)){
+    var foldername = document.getElementById('foldername').value;
+	if(is_ok_name(foldername)){
 
 		if(setup_ajax()!=false){
 
@@ -114,23 +115,23 @@ function create_folder(){
 					
 						open_folders.push(drag_manager.last_selected);
 
-						xmlHttp.send('folder_id=' + drag_manager.last_selected.id.substr(drag_manager.last_selected.id.indexOf("_")+1,drag_manager.last_selected.id.length) + '&folder_name=' + document.foldercreateform.foldername.value); 
+						xmlHttp.send('folder_id=' + drag_manager.last_selected.id.substr(drag_manager.last_selected.id.indexOf("_")+1,drag_manager.last_selected.id.length) + '&folder_name=' + foldername);
 
 					}else{
 
-						xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + document.foldercreateform.foldername.value); 
+						xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
 
 					}
 
 				}else{
 
-					xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + document.foldercreateform.foldername.value); 
+					xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
 
 				}
 
 			}else{
 
-				xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + document.foldercreateform.foldername.value);
+				xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
  
 			}
 
