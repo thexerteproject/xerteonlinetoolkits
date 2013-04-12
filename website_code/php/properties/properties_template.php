@@ -27,7 +27,7 @@ if(is_numeric($_POST['template_id'])){
 
     if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
-        properties_display($xerte_toolkits_site,$tutorial_id,false);
+        properties_display($xerte_toolkits_site,$tutorial_id,false,"");
 
     }else{
 

@@ -38,9 +38,6 @@ rloObject = function(w,h,rloFile,xmlPath,xmlFile,site,link_id){
   }
   var FileLocation = xmlPath;
 
-function resizeRLO(w,h){
-	
-}
 
   document.write('<script language = "JavaScript">');
   document.write('function ' + rloID + '_DoFSCommand(command, args){');

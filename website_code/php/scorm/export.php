@@ -12,6 +12,7 @@
 require_once("../../../config.php");
 include "../template_status.php";
 
+
 ini_set('max_execution_time', 300);
 
 if(is_numeric($_GET['template_id'])){

@@ -129,6 +129,10 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%JSDIR%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js\"></script>\n";
@@ -157,6 +161,9 @@ function scorm2004_html5_page_create($type, $lo_name, $language){
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js\"></script>\n";

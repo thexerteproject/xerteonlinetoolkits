@@ -44,7 +44,15 @@
 	define("PROPERTIES_LIBRARY_PROJECT_CREATE", "This file was created on");
 	
 	define("PROPERTIES_LIBRARY_PROJECT_MODIFY", "This file was last modified on");
-	
+
+    define("PROPERTIES_LIBRARY_DEFAULT_ENGINE", "What is the default engine to use for this project?");
+
+    define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "Javascript (a.k.a. HTML5)");
+
+    define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
+
+    define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED", "Default engine has been changed.");
+
 	define("PROPERTIES_LIBRARY_PROJECT_LINK", "To allow other people to access this file, the link is");
 	
 	define("PROPERTIES_LIBRARY_PROJECT_HTML5_LINK", "To allow other people to access the HTML 5 version, the link is");

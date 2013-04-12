@@ -36,10 +36,14 @@ $row_template_type = db_query_one("select template_type_id, template_name, templ
 /*
  * create the new template record in the database
  */
-
-$query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)";
-$ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), "Private", str_replace(" ","_", $_POST['tutorialname'])));
+$extraflags = "";
+if ($row_template_type['template_framework'] == 'xerte')
+{
+    $extraflags = "engine=javascript";
+}
+$query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
 
 if($ok) {
     _debug("Created new template entry in db");

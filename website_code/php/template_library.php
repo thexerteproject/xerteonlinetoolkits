@@ -39,3 +39,31 @@ function get_template_type($template_id){
 
 }
 
+function get_default_engine($template_id)
+{
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("SELECT td.extra_flags  FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td WHERE td.template_id = ?", array($template_id));
+
+    if($row == false) {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get default template engine", "Failed to get the default template engine");
+    }
+    else
+    {
+        $engine='javascript';
+        $extra_flags = explode(";", $row['extra_flags']);
+        foreach($extra_flags as $flag)
+        {
+            $parameter = explode("=", $flag);
+            switch($parameter[0])
+            {
+                case 'engine':
+                    $engine = $parameter[1];
+                    break;
+            }
+        }
+
+        return $engine;
+    }
+}
+

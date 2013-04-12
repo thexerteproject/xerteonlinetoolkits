@@ -20,7 +20,6 @@
 	 */
 	$dir_path = $xerte_toolkits_site->users_file_area_full . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 	$parent_template_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
-	$export_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/export/";
 	$scorm_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm1.2/";
     $scorm_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm1.2/";
 	$scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm2004.3rd/";
@@ -121,20 +120,16 @@
         /*
          * Copy engine and support files
          *
-         * From $export_path
-         */
-        copy($export_path . "rloObject.js", $dir_path . "rloObject.js");
-        array_push($delete_file_array,  $dir_path . "rloObject.js");
-        copy($export_path . "resources.swf", $dir_path . "resources.swf");
-        array_push($delete_file_array,  $dir_path . "resources.swf");
-
-        /*
          *  From root
          */
         copy($xerte_toolkits_site->root_file_path . "XMLEngine.swf", $dir_path . "XMLEngine.swf");
         array_push($delete_file_array,  $dir_path . "XMLEngine.swf");
         copy($xerte_toolkits_site->root_file_path . "MainPreloader.swf", $dir_path . "MainPreloader.swf");
         array_push($delete_file_array,  $dir_path . "MainPreloader.swf");
+        copy($xerte_toolkits_site->root_file_path . "rloObject.js", $dir_path . "rloObject.js");
+        array_push($delete_file_array,  $dir_path . "rloObject.js");
+        copy($xerte_toolkits_site->root_file_path . "resources.swf", $dir_path . "resources.swf");
+        array_push($delete_file_array,  $dir_path . "resources.swf");
     }
 	/*
 	 * If scorm copy the scorm files as well

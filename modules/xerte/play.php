@@ -1,84 +1,123 @@
 <?php
 require("module_functions.php");
-
+require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 //Function show_template
 //
 // Version 1.0 University of Nottingham
 // (pl)
 // Set up the preview window for a xerte piece
 
-function show_template($row_play){
+function show_template_page($row, $datafile="")
+{
     global $xerte_toolkits_site;
-
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml?time=" . time();
-
-    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
-
-    list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
 
     _load_language_file("/modules/xerte/preview.inc");
 
+
+    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+
+    if (strlen($datafile) > 0)
+    {
+        $xmlfile = $string_for_flash . $datafile;
+    }
+    else
+    {
+        $xmlfile = $string_for_flash . "data.xml";
+    }
+
+    $xmlFixer = new XerteXMLInspector();
+    $xmlFixer->loadTemplateXML($xmlfile);
+
+    if (strlen($xmlFixer->getName()) > 0)
+    {
+        $title = $xmlFixer->getName();
+    }
+    else
+    {
+        $title = XERTE_PREVIEW_TITLE;
+    }
+    $string_for_flash_xml = $xmlfile . "?time=" . time();
+
+    $flash_js_dir = "modules/" . $row['template_framework'] . "/";
+    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $rlo_file = $template_path . $row['template_name'] . ".rlt";
+
+    list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
+
+    // determine the correct engine to use
+    $engine = 'flash';
+    $extra_flags = explode(";", $row['extra_flags']);
+    foreach($extra_flags as $flag)
+    {
+        $parameter = explode("=", $flag);
+        switch($parameter[0])
+        {
+            case 'engine':
+                $engine = $parameter[1];
+                break;
+        }
+    }
+    // If given as a parameter, force this engine
+    if (isset($_REQUEST['engine']))
+    {
+        if ($_REQUEST['engine'] == 'other')
+        {
+            if ($engine == 'flash')
+                $engine = 'javascript';
+            else
+                $engine = 'flash';
+        }
+        else
+        {
+            $engine=$_REQUEST['engine'];
+        }
+    }
+    if ($engine == 'flash')
+    {
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/rloObject.htm");
+
+        $page_content = str_replace("%WIDTH%", $x, $page_content);
+        $page_content = str_replace("%HEIGHT%", $y, $page_content);
+        $page_content = str_replace("%TITLE%", $title , $page_content);
+        $page_content = str_replace("%RLOFILE%", $rlo_file, $page_content);
+        $page_content = str_replace("%JSDIR%", $flash_js_dir, $page_content);
+        $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
+        $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
+        $page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$page_content);
+
+        $tracking = "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "js/xttracking_noop.js\"></script>";
+
+        $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+    }
+    else if ($engine == 'xml')
+    {
+        // Just return the raw xml
+        $page_content = file_get_contents($xmlfile);
+
+        // Replace "FileLocation + '" with $xerte_toolkits_site->site_url . $string_for_flash
+        // NOTE: also get rid of the closing '
+        return preg_replace("#FileLocation\s*\+\s*'([^']+)'#", $xerte_toolkits_site->site_url . $string_for_flash . "$1", $page_content);
+    }
+    else
+    {
+        // $engine is assumed to be javascript if flash is NOT set
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+        $page_content = str_replace("%TITLE%", $title , $page_content);
+        $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
+        $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
+        $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
+
+        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js\"></script>";
+
+        $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+    }
+    return $page_content;
+}
+
+function show_template($row)
+{
+    echo show_template_page($row);
+}
+
 ?>
 
-        <!-- 
-
-        University of Nottingham Xerte Online Toolkits
-
-        HTML to use at the top of the Xerte preview and play windows
-        Version 1.0
-
-        -->
-
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-        <html style="width:100%; height:100%; min-height:100%;">
-        <head>
-        <title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
-    <script type="text/javascript" src="modules/xerte/js/rlohelper.js"></script>
-    <script type="text/javascript" src="modules/xerte/js/xttracking_noop.js"></script>
-    <SCRIPT LANGUAGE=JavaScript1.1>
-    <!--
-        var MM_contentVersion = 6;
-
-    var plugin = (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"]) ? navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin : 0;
-    if ( plugin ) {
-        var words = navigator.plugins["Shockwave Flash"].description.split(" ");
-        for (var i = 0; i < words.length; ++i)
-        {
-            if (isNaN(parseInt(words[i])))
-                continue;
-            var MM_PluginVersion = words[i]; 
-        }
-        var MM_FlashCanPlay = MM_PluginVersion >= MM_contentVersion;
-    }
-    else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 
-        && (navigator.appVersion.indexOf("Win") != -1)) {
-            document.write('<SCR' + 'IPT LANGUAGE=VBScript\> \n'); //FS hide this from IE4.5 Mac by splitting the tag
-            document.write('on error resume next \n');
-            document.write('MM_FlashCanPlay = ( IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash." & MM_contentVersion)))\n');
-            document.write('</SCR' + 'IPT\> \n');
-        }
-    if (! MM_FlashCanPlay ) {
-        document.write("You don't have Adobe Flash installed. Please visit <a href=\"http://get.adobe.com/flashplayer/?promoid=BUIGP\">The Adobe Website</a> to download it.");
-    }
-    //-->
-
-    </SCRIPT>
-        <script type="text/javascript" src = "rloObject.js"></script>
-        </head>
-
-        <body style="margin:0; width:100%; height:100%; min-height:100%;">
-
-        <!--<div style="margin:0px auto;">-->
-
-        <div style="min-height:100%; width:100%; height:100%;">
-
-    <script type="text/javascript" language="JavaScript">
-<?PHP
-
-    // slightly modified xerte preview code to allow for flash vars
-
-    echo "myRLO = new rloObject('" . $x . "','" . $y . "','modules/" . $row_play['template_framework'] . "/parent_templates/" . $row_play['template_name'] . "/" . $row_play['template_name'] . ".rlt','$string_for_flash', '$string_for_flash_xml', '$xerte_toolkits_site->site_url')";
-
-    echo "</script></div><div id=\"popup_parent\"></body></html>";
-
-}

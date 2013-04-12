@@ -34,7 +34,7 @@ if(is_numeric($_POST['template_id'])){
 
         echo "~~**~~" . $_POST['template_name'] . "~~**~~";	
 
-        properties_display($xerte_toolkits_site,$tutorial_id,true);
+        properties_display($xerte_toolkits_site,$tutorial_id,true,"name");
 
     }else{
 
