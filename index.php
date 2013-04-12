@@ -100,6 +100,7 @@ _include_javascript_file("website_code/scripts/import.js");
                 <div class="main_area_holder_2">
                     <div class="main_area" id="dynamic_section">
                         <p><?PHP echo INDEX_FOLDER_PROMPT; ?></p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" /><br /><br />   <button type="submit" class="xerte_button"><img src="website_code/images/Icon_Folder_15x12.gif"/><?php echo INDEX_BUTTON_NEWFOLDER; ?></button><button type="button" class="xerte_button"  onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?></button></form>
+                        <p><span id="folder_feedback"></span></p>
                     </div>
                 </div>
             </div>
