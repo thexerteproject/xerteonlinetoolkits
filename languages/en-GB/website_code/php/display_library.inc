@@ -27,5 +27,7 @@
 	
 	define("DISPLAY_LOCKFILE_DELETE", "Delete Lockfile");
 
+    define("DISPLAY_WORKSPACE","Workspace");
+
 
 ?>
