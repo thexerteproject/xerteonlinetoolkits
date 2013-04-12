@@ -26,30 +26,28 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 
         $safe_template_id = (int) $_GET['template_id'];
 
-         // Need to run a proper string replace on any embedded instances of '$xerte_toolkits_site->database_table_prefix' so it's actually expanded.
-        $query_for_preview_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
-
         /*
          * Standard query
          */
-
-        $query_for_preview_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_preview_content_strip);	
+        $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
+        $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
+        $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
 
 		$row = db_query_one($query_for_preview_content);
-
-        // get their username from the db which matches their login_id from the $_SESSION
-        $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?", array($row['user_id']));
-		
-        
-        // is there a matching template?
         if(!empty($row)) {
+
+            // get their username from the db which matches their login_id from the $_SESSION
+            // ???? This is just the same user as in the previous query, NOT from the session. WHY?
+            //$row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?", array($row['user_id']));
+
+            require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
+
+            // is there a matching template?
             // if they're an admin or have rights to see the template, then show it.
             if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
-                require $xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/preview.php";
-                show_preview_code($row, $row_username);		
+                show_preview_code($row);
                 exit(0);
             }
-			
         }
 		
     }else{

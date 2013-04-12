@@ -35,10 +35,18 @@ $query_for_peer_response = db_query_one("SELECT * FROM {$xerte_toolkits_site->da
 
 if(!empty($query_for_peer_response)) {
 
+    $query_for_play_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
+    $query_for_play_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
+    $query_for_play_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $template_id .  " and role='creator'";
+
+    $row_play = db_query_one($query_for_play_content);
+
 
     /**
      *  Peer review needs a password, so check if anything has been posted
      */
+    require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
+    require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/peer.php";
 
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -72,23 +80,23 @@ if(!empty($query_for_peer_response)) {
             require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 
             // should the $ really be escaped with \ ?
-            $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
+            //$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-            $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
+            //$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
 
-            $row_play = db_query_one($query_for_play_content);
 
-            require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/peer.php";
-            show_template($row_play, $retouremail);
+
+            show_peer_template($row_play, $retouremail);
         }else{
-            $buffer = $xerte_toolkits_site->peer_form_string . $temp[1] . "<p>" . PEER_LOGON_FAIL . ".</p></center></body></html>";
-            echo $buffer;
-        }		
+            show_peer_login_form(PEER_LOGON_FAIL);
+        }
     }else{
         /**
          *  Nothing posted so output the password string
          */
-        echo $xerte_toolkits_site->peer_form_string;
+        show_peer_login_form();
+        // echo $xerte_toolkits_site->peer_form_string;
+
     }
 }else{
     dont_show_template();

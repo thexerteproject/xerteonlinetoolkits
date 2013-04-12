@@ -115,6 +115,11 @@ function basic_html_page_create($name, $type, $rlo_file, $lo_name){
 	$buffer = str_replace("%HEIGHT%",$new_temp[1],$buffer);
     $buffer = str_replace("%TITLE%",$lo_name,$buffer);
     $buffer = str_replace("%RLOFILE%",$rlo_file,$buffer);
+    $buffer = str_replace("%XMLPATH%","",$buffer);
+    $buffer = str_replace("%JSDIR%","",$buffer);
+    $buffer = str_replace("%XMLFILE%","template.xml",$buffer);
+    $buffer = str_replace("%SITE%",$xerte_toolkits_site->site_url,$buffer);
+
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"xttracking_noop.js\"></script>", $buffer);
 
 	$file_handle = fopen($dir_path . "index_flash.htm", 'w');
@@ -149,6 +154,12 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language){
 	$scorm_html_page_content = str_replace("%HEIGHT%",$new_temp[1],$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%RLOFILE%",$rlo_file,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%JSDIR%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$scorm_html_page_content);
+
+
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
@@ -186,6 +197,10 @@ function basic_html5_page_create($type, $lo_name){
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $buffer = str_replace("%TITLE%",$lo_name,$buffer);
+    $buffer = str_replace("%TEMPLATEPATH%","",$buffer);
+    $buffer = str_replace("%XMLPATH%","",$buffer);
+    $buffer = str_replace("%XMLFILE%","template.xml",$buffer);
+
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"xttracking_noop.js\"></script>", $buffer);
 
     $file_handle = fopen($dir_path . "index.htm", 'w');
@@ -214,6 +229,9 @@ function scorm_html5_page_create($type, $lo_name, $language){
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";

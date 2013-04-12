@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script src="modules/xerte/js/swfobject.js"></script>
+<script src="website_code/scripts/opencloseedit.js"></script>
+<script src="website_code/scripts/template_management.js"></script>
+<script src="website_code/scripts/ajax_management.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Xerte Online Editor Window</title>
+<link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+
+function setunload(){
+
+	window.onbeforeunload = bunload;
+
+}
+
+function hideunload(){
+
+	window.onbeforeunload = null;
+}
+
+window.onbeforeunload = bunload;
+
+function bunload(){
+
+	path = "$1";
+
+	window_reference.edit_window_close(path);	
+
+}
+
+function receive_picture(url){
+
+	alert(url);
+
+}
+
+</script>
+</head>
+
+<body>
+
+<div style="margin:0 auto; width:800px">
+	<div class="edit_topbar" style="width:800px">
+		<img src="{{site_logo}}" style="margin-left:10px; float:left" />
+<img src="{{organisational_logo}}" style="margin-right:10px; float:right" />
+	</div>	
+</div> 
+<center>
+	<div id="flashcontent" style="margin:0 auto">
+		  This text is replaced by the Flash movie.
+	</div>
+</center>
+<script type="text/javascript">
+   var so = new SWFObject("modules/xerte/engine/wizard.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
+   so.addParam("quality", "high");

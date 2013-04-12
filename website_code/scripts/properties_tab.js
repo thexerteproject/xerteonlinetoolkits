@@ -726,6 +726,20 @@ function properties_template(){
 
 }
 
+function default_engine_toggle(tag, engine1, engine2)
+{
+    var url="properties_default_engine.php";
+    properties_ajax_send_prepare(url);
+
+    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
+    {
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2);
+    }
+    else
+    {
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1);
+    }
+}
      /**
 	 * 
 	 * Function name template ********** OBSOLETE ***************
@@ -1345,7 +1359,8 @@ function property_tab_download(id,html5_tag, flash_tag, url)
     var ifrm = document.getElementById(id);
     var export_html5_engine = export_use_engine(html5_tag);
     var export_flash_engine = export_use_engine(flash_tag);
-    ifrm.src = url+'&html5='+export_html5_engine+'&flash='+export_flash_engine;
+    var urlparams = url.indexOf('?') !== false;
+    ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
 }
 
 function setup_download_link(path, buttonlbl, file)

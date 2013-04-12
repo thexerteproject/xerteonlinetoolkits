@@ -18,55 +18,61 @@
  * @author Patrick Lockley
  */
 
-function show_template($row_play, $retouremail){
+require_once(dirname(__FILE__) . "/play.php");
+_load_language_file("/modules/xerte/peer.inc");
+
+function show_peer_template($row, $retouremail)
+{
     global $xerte_toolkits_site;
 
-    _load_language_file("/modules/xerte/peer.inc");
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/data.xml";
+    $peer_template = show_template_page($row, "data.xml");
 
-    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
+    // Look for the body element and insert description and explanation
+    $body_pos = strpos($peer_template, "<body");
+    $end_body_pos = strpos($peer_template, ">", $body_pos);
+    $peer_page = substr($peer_template, 0, $end_body_pos);
+    $peer_page .= " style=\"#ffffff; font-family:verdana,tahoma,arial; font-size:80%;\">\n";
+    $peer_page .= "   <div style=\"width:900px; margin:0 auto;\">\n";
+    $peer_page .= "   <div><p style=\"margin 0px; padding:0px\">\n";
+    $peer_page .= "   <h1>" . XERTE_PEER_DESCRIPTION . "</h1>" . XERTE_PEER_GUIDANCE . "</p></div><div>\n";
 
-    list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
+    $peer_page .=  "<div><a name=\"feedbackform\"><p style=\"color:red;\"  id=\"feedback\"></p></a>\n";
+    $peer_page .= "<br><form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
+    $peer_page .= "</div><div>";
 
-?>
-        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en">
-        <head>
-        <title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
-        <script type="text/javascript" src="modules/xerte/js/rlohelper.js"></script>
-        <script type="text/javascript" src="modules/xerte/js/xttracking_noop.js"></script>
-        <script src = "rloObject.js"></script>
-        <script type="text/javascript" language="Javascript" src="website_code/scripts/peer.js"></script>
-        <script type="text/javascript" language="Javascript" src="website_code/scripts/ajax_management.js"></script>
-    <script type="text/javascript">
-    function enableTTS(){
-        if (navigator.appName.indexOf("Microsoft") != -1){
-            VoiceObj = new ActiveXObject("Sapi.SpVoice");
-        }
-    }
-    </script>
-        </head>
-        <body style="#ffffff; font-family:verdana,tahoma,arial; font-size:80%;">
-        <div style="width:900px; margin:0 auto;">
-        <p style="margin 0px; padding:0px">
-        <b><?PHP echo XERTE_PEER_DESCRIPTION; ?></b><br><?PHP echo XERTE_PEER_GUIDANCE;?> 
-        </p>
-    <script type="text/javascript" language="JavaScript">
+    $peer_page .= substr($peer_template, $end_body_pos + 1);
 
-<?PHP
 
-    /*
-     * slightly modified xerte preview code to allow for flash vars
-     */
+    // Look for </body> and insert </div>
+    $peer_page  = str_replace("</body>", "</div></body>", $peer_page);
 
-    echo "myRLO = new rloObject('" . $x . "','" . $y . "','modules/" . $row_play['template_framework'] . "/parent_templates/" . $row_play['template_name'] . "/" . $row_play['template_name'] . ".rlt','$string_for_flash', '$string_for_flash_xml', '$xerte_toolkits_site->site_url')";
+    // Look for </head> and insert javascript
+    $ajax = "<script type=\"text/javascript\" language=\"Javascript\" src=\"website_code/scripts/peer.js\"></script>\n";
+    $ajax .= "<script type=\"text/javascript\" language=\"Javascript\" src=\"website_code/scripts/ajax_management.js\"></script>\n";
+    $ajax .= "</head>";
 
-    echo "</script>";
+    $peer_page  = str_replace("</head>", $ajax, $peer_page);
 
-    echo "<a name=\"feedbackform\"><p style=\"width:250px; color:red;\"  id=\"feedback\"></p></a>";
 
-    echo "<br><form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row_play['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
-
-    echo "</body></html>";
+    echo $peer_page;
 
 }
+
+function show_peer_login_form($mesg="")
+{
+    echo "<html>\n";
+    echo "<body style=\"#ffffff; font-family:verdana,tahoma,arial; font-size:80%;\">\n";
+    echo "   <div style=\"width:900px; margin:0 auto;\">\n";
+    echo "   <div><p style=\"margin 0px; padding:0px\">\n";
+    echo "   <b>" . XERTE_PEER_DESCRIPTION . "</b><br>" . XERTE_PEER_GUIDANCE . "</p></div><div>\n";
+    echo "<center><p><form method=\"post\" action=\"\">\n";
+    echo "<p>" . XERTE_PEER_PASSWORD . " <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><button type=\"submit\">" . XERTE_PEER_LOGIN_BUTTON . "</button></p>\n";
+    if (strlen($mesg)>0)
+    {
+        echo "<p>" . $mesg . "</p>";
+    }
+    echo "</center></div></body></html>";
+}
+
+?>

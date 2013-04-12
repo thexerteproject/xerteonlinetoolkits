@@ -18,4 +18,9 @@
 	define("XERTE_PEER_TEXTAREA_INSTRUCTIONS", "You have been asked to provide some feedback on this learning object. Please enter your feedback and click save when you have finished. This feedback is anonymous.");
 
     define("XERTE_PEER_BUTTON_SEND", "Send");
+
+    define("XERTE_PEER_PASSWORD", "Password");
+
+    define("XERTE_PEER_LOGIN_BUTTON", "SignIn");
+
 ?>

@@ -161,9 +161,10 @@ if (get_maximum_template_number() < $safe_template_id) {
  * Take the query from site variable and alter it to suit this request
  */
 
-$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
+$query_for_play_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
+$query_for_play_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
+$query_for_play_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
 
 $query_for_play_content_response = mysql_query($query_for_play_content);
 
@@ -188,16 +189,19 @@ if ($row_recycle['folder_name'] == "recyclebin") {
 require_once $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 
 /*
+ * Ge show template functions for this 'module'  / 'template framework'
+*/
+require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+
+/*
  * Start to check the access_to_whom settings from templatedetails for this template
  */
 
-/*
- * Private - so do nothing
- */
 
 if ($row_play['access_to_whom'] == "Private") {
-
-    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
+    /*
+     * Private - so do nothing
+     */
 
     dont_show_template();
 	
@@ -209,8 +213,6 @@ if ($row_play['access_to_whom'] == "Private") {
 
     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
     show_template($row_play);
 	
 } else if ($row_play['access_to_whom'] == "Password") {
@@ -221,8 +223,8 @@ if ($row_play['access_to_whom'] == "Private") {
 
    // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-      require_once $xerte_toolkits_site->php_library_path . "login_library.php";
-  _load_language_file("/website_code/php/display_library.inc");
+   require_once $xerte_toolkits_site->php_library_path . "login_library.php";
+   _load_language_file("/website_code/php/display_library.inc");
 
   if (!isset($mysqli)) {
     $mysqli = new mysqli($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $xerte_toolkits_site->database_name);
@@ -259,12 +261,10 @@ if($lti->valid) {
 }
 
   if ($success && empty($errors)) {
+    //sucessfull authentication
     db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
     show_template($row_play);
-    //sucessfull authentication
   } else {
     html_headers();
     login_prompt($errors);
@@ -322,18 +322,12 @@ if($lti->valid) {
 
             db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
-            require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
             show_template($row_play);
 			
         } else {
-
-            require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
         }
     } else {
-      require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
       dont_show_template('No HTTP Referer');
     }
 } else if (sizeof($query_for_security_content_response) > 0) {
@@ -354,8 +348,6 @@ if($lti->valid) {
 
             if (check_security_type($row_security['security_data'])) {
 
-                require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
                 show_template($row_play);
 
                 $flag = true;
@@ -371,13 +363,8 @@ if($lti->valid) {
 
     if ($flag == false) {
 
-        require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
         dont_show_template();
     }
 } else {
-
-    require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
     dont_show_template();
 }

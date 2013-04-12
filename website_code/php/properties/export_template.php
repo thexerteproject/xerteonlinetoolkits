@@ -12,6 +12,8 @@
 require_once("../../../config.php");
 _load_language_file("/website_code/php/properties/export_template.inc");
 
+require_once("../template_library.php");
+
 include "../template_status.php";
 
 include "../url_library.php";

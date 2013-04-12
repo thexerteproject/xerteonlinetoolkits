@@ -50,11 +50,11 @@ function xml_template_display_fail(){
 
 }
 
-function properties_display($xerte_toolkits_site,$tutorial_id,$change){
+function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
 
-    $query_for_names = "select template_name, date_created, date_modified from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
+    $query_for_names = "select template_name, date_created, date_modified, extra_flags from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
 
     $query_names_response = mysql_query($query_for_names);
 
@@ -72,7 +72,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
         echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $_POST['template_id'] ."', 'rename_form')\"><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" >" . PROPERTIES_LIBRARY_RENAME . "</button></form>";
 
-        if($change){
+        if($change && $msgtype=="name"){
 
             echo "<p>" . PROPERTIES_LIBRARY_PROJECT_CHANGED . "</p>";
 
@@ -84,6 +84,24 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
 
+    echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+
+    if (get_default_engine($_POST['template_id']) == 'flash')
+    {
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
+        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    }
+    else
+    {
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
+        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    }
+    if($change && $msgtype=="engine"){
+
+        echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
+
+    }
+
     if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!='Private'){
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
@@ -92,7 +110,8 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change){
 
 		$template = explode("_", get_template_type($_POST['template_id']));
 
-		if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
+
+        if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
 
 			require_once($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php");
 
