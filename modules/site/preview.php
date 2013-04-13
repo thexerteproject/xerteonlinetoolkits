@@ -3,11 +3,11 @@
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
-function show_preview_code($row, $row_username){
+function show_preview_code($row){
 
 	global $xerte_toolkits_site;
 
-    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
+    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     $xmlfile = $string_for_flash . "preview.xml";
 
@@ -16,7 +16,7 @@ function show_preview_code($row, $row_username){
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/";
+	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
 	$template_path_string = "modules/xerte/parent_templates/" . $row['template_name'];
 
@@ -133,7 +133,7 @@ function show_preview_code($row, $row_username){
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
 						
 						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
-						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
+						<strong><small>ï¿½ 2013 The Univeristy of Nottingham</small></strong>
 						
 					</div>
 				</div>
