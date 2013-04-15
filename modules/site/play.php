@@ -1,5 +1,5 @@
 <?php
-require("module_functions.php");
+require(dirname(__FILE__) . "module_functions.php");
 
 //Function show_template
 //
@@ -132,7 +132,7 @@ function show_template($row_play){
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
 						
 						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
-						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
+						<strong><small>ï¿½ 2013 The Univeristy of Nottingham</small></strong>
 						
 					</div>
 				</div>
