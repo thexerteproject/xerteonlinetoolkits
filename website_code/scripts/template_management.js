@@ -63,16 +63,6 @@ function url_return(url,parameter){
 
         }
         break;
-        case "example": if(site_apache=="true"){
-
-            return url + "_" + parameter;
-
-        }else{
-
-            return url + ".php?template_id=" + parameter;
-
-        }
-        break;
         case "properties": if(site_apache=="true"){
 
             return url + "_" + parameter;
@@ -518,7 +508,7 @@ function example_stateChanged(){
 
             var property_id = temp[2];
 
-            var NewWindow = window.open(site_url + url_return("example",property_id), "examplewindow" + property_id, parameter);
+            var NewWindow = window.open(site_url + url_return("play",property_id), "examplewindow" + property_id, parameter);
 
             NewWindow.focus();
 
