@@ -10,6 +10,10 @@ require_once(dirname(__FILE__) . '/../../config.php');
  * @package
  */
 
+function display_links($change,$msgtype){
+
+}
+
 function dont_show_template($optional=''){
 
     _load_language_file("/modules/xerte/module_functions.inc");
