@@ -54,7 +54,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
 
-    $query_for_names = "select template_name, date_created, date_modified, extra_flags from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
+    $query_for_names = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id=\"". $tutorial_id . "\" and " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id ";
 
     $query_names_response = mysql_query($query_for_names);
 
@@ -84,23 +84,9 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+	include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    if (get_default_engine($_POST['template_id']) == 'flash')
-    {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
-    }
-    else
-    {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
-    }
-    if($change && $msgtype=="engine"){
-
-        echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
-
-    }
+	display_links($change,$msgtype);
 
     if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!='Private'){
 
