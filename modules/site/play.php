@@ -19,7 +19,7 @@ function show_template($row_play){
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-	$template_path_string = "modules/xerte/parent_templates/" . $row_play['template_name'];
+	$template_path_string = "modules/site/parent_templates/" . $row_play['template_name'];
 
     list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
 
