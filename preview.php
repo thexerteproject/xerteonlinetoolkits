@@ -34,6 +34,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
 
 		$row = db_query_one($query_for_preview_content);
+		
         if(!empty($row)) {
 
             // get their username from the db which matches their login_id from the $_SESSION
