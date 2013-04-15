@@ -16,4 +16,4 @@ if (isset($_REQUEST['Page']))
 }
 
 
-header("Location: " . $xerte_toolkits_site->site_url . "play.php?engine=html5&template_id=" . $_REQUEST['template_id'] . $extraflags);
+header("Location: " . $xerte_toolkits_site->site_url . "play.php?engine=html5&template_id=" . $_REQUEST['template_id'] . $extraparams);
