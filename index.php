@@ -1,8 +1,9 @@
 <?php
 
 // Load the plugin files and fire a startup action
-require_once(dirname(__FILE__) . "/plugins.php"); startup();
+require_once(dirname(__FILE__) . "/plugins.php"); 
 
+startup();
 
 require_once(dirname(__FILE__) . "/config.php");
 
