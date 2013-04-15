@@ -23,7 +23,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 if ($development) {
@@ -50,7 +50,9 @@ if (!isset($xerte_toolkits_site)) {
      * Access the database to get the variables
      */
     if (!is_file(dirname(__FILE__) . '/database.php')) {
-        die("please run /setup");
+		
+		header("Location: " . $_SERVER['REQUEST_URI'] . "setup/");
+	
     }
 
     require_once(dirname(__FILE__) . '/database.php');
