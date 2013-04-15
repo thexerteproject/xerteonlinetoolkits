@@ -120,10 +120,8 @@ function parseContent(index){
 			
 			if (this.nodeName == 'navigator'){
 			
-			alert("Navver");
-				
 				if ($(this).attr('type') == 'Tabs'){
-					alert("make a tab set");
+					makeTabSet( $(this), section );
 				}
 				
 				if ($(this).attr('type') == 'Accordion'){
@@ -165,3 +163,87 @@ function parseContent(index){
 	FB.XFBML.parse(); 
 	
 }
+
+function makeTabSet(node,section){
+
+	var topStr = '<div class="tabbable"><ul class="nav nav-tabs">';
+	var bottomStr = '<div class="tab-content">';
+	
+	node.children().each( function(index, value){
+	
+		if (index == 0){
+			topStr += '<li class="active"><a href="#tab' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>';
+			bottomStr += '<div id="tab' + index + '" class="tab-pane active">' + $(this).children().text() + '</div>';
+		} else {
+			topStr += '<li><a href="#tab' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>';
+			bottomStr += '<div id="tab' + index + '" class="tab-pane">' + $(this).children().text() + '</div>';
+		}
+	
+	});
+	
+	topStr += '</ul>';
+	bottomStr += '</div></div>';
+	
+	alert(topStr + bottomStr);
+	
+	section.append(topStr + bottomStr + '</p>');
+	
+	/*
+<div class="tabbable">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#tab1" data-toggle="tab">Tab One</a></li>
+		<li><a href="#tab2" data-toggle="tab">Tab Two</a></li>
+		<li><a href="#tab3" data-toggle="tab">Tab Three</a></li>
+		<li><a href="#tab4" data-toggle="tab">Tab Four</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="tab1" class="tab-pane active"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+		<div id="tab2" class="tab-pane"><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p></div>
+		<div id="tab3" class="tab-pane"><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>										
+		<div id="tab4" class="tab-pane"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>									
+	</div>
+</div>
+
+<div class="tabbable">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#tab0" data-toggle="tab">Intro</a></li>
+		<li><a href="#tab1" data-toggle="tab">Content</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="#tab0" class="tab-pane active">This si some text</div>
+		<div id="#tab1" class="tab-pane">This is more text here, there is more of it</div>
+	</div>
+</div>
+
+
+*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
