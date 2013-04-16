@@ -336,8 +336,9 @@ function button_check(){
 			if(document.getElementById("folderchild_recyclebin").childNodes.length!=0){
 
 				deletebtn.removeAttribute("disabled");
-				deletebtn.className = "xerte_button_disabled";
+				deletebtn.className = "xerte_button";
 				deletebtn.onclick=function(){remove_this()};
+				
 			}
 
 		}	
