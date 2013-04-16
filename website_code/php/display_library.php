@@ -210,7 +210,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   global $level, $xerte_toolkits_site;
 
-  $query = "select td.template_name, td.template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix  . "templaterights tr where td.template_id = tr.template_id and tr.user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and tr.folder=\"" . $folder_id . "\" ";
+  $query = "select td.template_name as project_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework, td.template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix  . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where td.template_id = tr.template_id and tr.user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and tr.folder=\"" . $folder_id . "\" and  " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = td.template_type_id ";
 
   if ($sort_type == "alpha_down") {
     $query .= "order by td.template_name DESC";
@@ -226,7 +226,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   while ($row = mysql_fetch_array($query_response)) {
 
-        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['template_name']) . "</div>";
+        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
 
   }
 
