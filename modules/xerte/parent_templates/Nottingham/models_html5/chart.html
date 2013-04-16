@@ -2,182 +2,319 @@
 	// -----------------------------------------------------------------------------------------
 	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
 	// -----------------------------------------------------------------------------------------
-
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var chart = new function() {
 		var allSeries;
-
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
+		
 		};
-
+		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+			
 		};
-
-		this.doAxesAndLabels = function(canvas, w, w1, yMin, yMax, scalar, hMax, maxCH) {
-			canvas.strokeStyle = '#000000';
-			canvas.fillStyle = '#000000';
-			canvas.beginPath();
-			canvas.moveTo(0,30 + allSeries.length * 20);
-			canvas.lineTo(0,445);
-			canvas.moveTo(-5,440);
-			canvas.lineTo(350,440);
+		
+		this.init = function() {
+            var	$pageContents	= $("#pageContents"),
+				$textHolder		= $("#textHolder"),
+				$panel			= $("#pageContents .panel"),
+				$chartTitle		= $("#chartTitle"),
+				chartHolder		= document.getElementById("chartHolder");
+			
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			$chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
+			
+			if (x_currentPageXML.getAttribute("align") == "right") {
+				$textHolder
+					.removeClass("left")
+					.addClass("right")
+					.appendTo($("#pageContents .splitScreen"));
+				$("#infoHolder")
+					.removeClass("right")
+					.addClass("left");
+				$("#pageContents .splitScreen").addClass("large");
+			} else {
+				$("#pageContents .splitScreen").addClass("medium");
+			}
+			
+			var series = $(x_currentPageXML).children();
+			if (series.length == 0) {
+				// There are no series - don't draw chart
+				
+			} else {
+				if (chartHolder.getContext) { // canvas is supported
+					allSeries = [];
+					
+					var	$panel = $("#pageContents .panel"),
+					availW = Math.min(550, Math.max(300, $panel.width())),
+					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15- $("#chartTitle").height()));
+					
+					chartHolder.width = availW;
+					chartHolder.height = availH;
+					
+					allSeries = [];
+					$(x_currentPageXML).children().each(function () {
+						var name = this.getAttribute("name"),
+							dataString = this.getAttribute("data"),
+							colour = this.getAttribute("colour");
+						if (colour.substring(0, 2) == '0x') { // hex value
+							colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
+						}
+						
+						var	dataPair,
+							dataPairs = dataString.split('||'),
+							data = [];
+						for (var i=0; i<dataPairs.length; i++) {
+							dataPair = dataPairs[i].split('|');
+							data.push({"x":dataPair[0], "y":parseInt(dataPair[1])});
+						}
+						allSeries.push({"name":name, "colour": colour, "data":data});
+					});
+					
+					var	chartHolderContext = chartHolder.getContext("2d"),
+						maxH = 0, i, j;
+					if (x_currentPageXML.getAttribute("chartType") == "pie") {
+						chartHolderContext.translate(60, 0); // space on left for legend
+					} else {
+						chartHolderContext.translate(100, 0); // space on left for y axis text
+						
+						if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
+							var tempH;
+							for (i=0; i<allSeries[0].data.length; i++) {
+								tempH = 0;
+								for (j=0; j<allSeries.length; j++) {
+									tempH += allSeries[j].data[i].y;
+								}
+								maxH = Math.max(maxH, tempH);
+							}
+						} else {
+							for (i=0; i<allSeries.length; i++) {
+								for (j=0; j<allSeries[i].data.length; j++) {
+									maxH = Math.max(maxH, allSeries[i].data[j].y);
+								}
+							}
+						}
+					}
+					
+					var txtColour = $textHolder.css("color");
+					switch (x_currentPageXML.getAttribute("chartType")) {
+						case "stacked bar":
+							this.doStackedBar(chartHolderContext, maxH, availW, availH);
+							break;
+						case "pie":
+							this.doPie(chartHolderContext, availW, availH, txtColour);
+							break;
+						case "bar":
+							this.doBar(chartHolderContext, maxH, availW, availH);
+							break;
+						case "line":
+							this.doLine(chartHolderContext, maxH, availW, availH);
+					}
+					
+					if (x_currentPageXML.getAttribute("chartType") != "pie") {
+						this.doAxesAndLabels(chartHolderContext, maxH, availW, availH, txtColour);
+					}
+					
+				} else { // canvas tag not supported - display error message and data in a table
+					var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
+						tableHolder = $("#chartTitle").parent(),
+						table = '<table class="full">';
+					
+					tableHolder.find("#chartHolder").hide();
+					
+					var rows, cols, i, j;
+					if (x_currentPageXML.getAttribute("chartType") != "pie") {
+						table += '<tr><td></td>'; // row containing series names
+						for (i=0; i<series.length; i++) {
+							table += '<td>' + series[i].getAttribute("name") + '</td>';
+						}
+						table += '</tr>';
+						
+						rows = series[0].getAttribute("data").split("||");
+						for (i=0; i<rows.length; i++) {
+							table += '<tr>'; // each row contains name followed by data from each series
+							cols = rows[i].split("|");
+							table += '<td>' + cols[0] + '</td><td>' + cols[1] + '</td>';
+							for (j=0; j<series.length - 1; j++) {
+								table += '<td>' + series[j + 1].getAttribute("data").split("||")[i].split("|")[1] + '</td>';
+							}
+							table += '</tr>';
+						}
+						
+					} else { // pie - just show 1st series data
+						rows = series[0].getAttribute("data").split("||");
+						for (i=0; i<rows.length; i++) {
+							cols = rows[i].split("|");
+							table += '<tr><td>' + cols[0] + '</td><td>' + cols[1] + '</td></tr>';
+						}
+					}
+					
+					table += '</table>';
+					tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
+				}
+			}
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+			
+            // call this function in every model once everything's loaded
+            x_pageLoaded();
+        };
+		
+		this.doBar = function(canvas, maxH, availW, availH) {
+			var i, j,
+				barW = ((availW - 110) / allSeries[0].data.length) / allSeries.length,
+				barH,
+				h = (availH - 30) / maxH; // height on graph of each point
+			
+			canvas.lineWidth = 2;
+			for (i=0; i<allSeries.length; i++) {
+				canvas.strokeStyle = allSeries[i].colour;
+				canvas.fillStyle = allSeries[i].colour;
+				for (j=0; j<allSeries[i].data.length; j++) {
+					barH = allSeries[i].data[j].y * h;
+					canvas.fillRect((barW * allSeries.length) * j + (barW * i), availH - 20, barW * 0.9, -barH); // xywh
+				}
+			}
 			canvas.fill();
 			canvas.stroke();
-
-  			//draw the legend
-  			canvas.beginPath();
-			for (var i = 0;i < allSeries.length; i++) {
-				canvas.strokeStyle = allSeries[i].colour;
-				canvas.fillStyle = allSeries[i].colour;
-				canvas.fillRect(-50, 23 + i * 20, 12, 12);
-				canvas.fill()
-				canvas.stroke();
-
-				canvas.fillStyle = '#000000';
-				canvas.textBaseline = "top";
-				canvas.fillText(allSeries[i].name, -30, 22 + i * 20);
+		}
+		
+		this.doStackedBar = function(canvas, maxH, availW, availH) {
+			var cumH = [],
+				tempH, i, j;
+			for (i=0; i<allSeries[0].data.length; i++) {
+				cumH.push(0);
 			}
-
-			//draw the x labels
-			for (var i = 0; i < allSeries[0].data.length; i++) {
-				canvas.fillStyle = '#000000';
-				canvas.textBaseline = "top";
-				var xLength = canvas.measureText(allSeries[0].data[i].x).width;
-				canvas.fillText(allSeries[0].data[i].x, w * (i + 0.5) - xLength/2 - 1, 444);
-			}
-
-			//draw the y labels
-			if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
-				canvas.fillText(0, -25, 434);
-				canvas.fillText(maxCH, -25, 434-hMax);
-			}
-			else {
-				canvas.fillText(yMin, -25, 434);
-				canvas.fillText(yMax, -25, 434-hMax);
-			}
-		};
-
-		this.doStackedBar = function(canvas, w, hMax, maxCH) {
-			var cumH = [];
-
-			for (i = 0; i < allSeries[0].data.length; i++) {
-				cumH[i] = 0;
-			}
-
-			var scalar = hMax / maxCH;
-
-  			var tempH
-  			canvas.lineWidth = 2;
-			for (i = 0; i < allSeries.length; i++) { //for each series
-				canvas.strokeStyle = allSeries[i].colour;
-				canvas.fillStyle = allSeries[i].colour;
-				for (j = 0; j < allSeries[i].data.length; j++) {
-					tempH = allSeries[i].data[j].y;
-					canvas.fillRect(w * j, 440 - cumH[j] * scalar, w * 0.9 , -tempH * scalar);
-					cumH[j] += tempH;
-				}
-				canvas.fill();
-				canvas.stroke();
-			}
-		};
-
-		this.doBar = function(canvas, w, w1, yMin, scalar) {
-			var tempH;
+			
+			var	barW = (availW - 110) / allSeries[0].data.length,
+				barH,
+				h = (availH - 30) / maxH;
+			
 			canvas.lineWidth = 2;
-			for (var i=0; i<allSeries.length; i++) {
+			for (i=0; i<allSeries.length; i++) {
 				canvas.strokeStyle = allSeries[i].colour;
 				canvas.fillStyle = allSeries[i].colour;
-				for (var j=0; j<allSeries[i].data.length; j++) {
-					if (!isNaN(allSeries[i].data[j].y)) {
-						tempH = (allSeries[i].data[j].y - yMin) * scalar;
-						canvas.fillRect(w*j+i*w1, 440, w*0.9 / allSeries.length, -tempH);
-					}
+				for (j=0; j<allSeries[i].data.length; j++) {
+					barH = allSeries[i].data[j].y;
+					canvas.fillRect(barW * j, availH - 20 - cumH[j] * h, barW * 0.9, -barH * h); // xywh
+					cumH[j] += barH;
 				}
-				canvas.fill();
-				canvas.stroke();
 			}
-		};
-
-		this.doLine = function(canvas, w, yMin, scalar) {
+			canvas.fill();
+			canvas.stroke();
+		}
+		
+		this.doLine = function(canvas, maxH, availW, availH) {
 			canvas.lineWidth = 2;
-			for (var i=0; i<allSeries.length; i++) {
+			
+			var i, j,
+				barW = (availW - 110) / allSeries[0].data.length,
+				barH,
+				h = (availH - 30) / maxH;
+			
+			for (i=0; i<allSeries.length; i++) {
 				canvas.beginPath();
 				canvas.strokeStyle = allSeries[i].colour;
-				canvas.moveTo(w/2, 440 - (allSeries[i].data[0].y - yMin) * scalar);
-				for (var j=0; j<allSeries[i].data.length; j++) {
-					if (!isNaN(allSeries[i].data[j].y)) {
-						canvas.lineTo(w*j + w/2, 440 - (allSeries[i].data[j].y - yMin) * scalar);
-					}
+				canvas.moveTo(barW / 2, availH - 20 - (allSeries[i].data[0].y * h));
+				for (j=0; j<allSeries[i].data.length; j++) {
+					canvas.lineTo((barW * j) + (barW / 2), availH - 20 - (allSeries[i].data[j].y * h));
 				}
 				canvas.stroke();
 			}
-		};
+		}
+		
+		this.doAxesAndLabels = function(canvas, maxH, availW, availH, txtColour) {
+			// draw x/y axis
+			canvas.strokeStyle = "#000000";
+			canvas.beginPath();
+			canvas.moveTo(0, 10);
+			canvas.lineTo(0, availH - 20 + 5);
+			canvas.moveTo(-5, availH - 20);
+			canvas.lineTo(availW - 110, availH - 20);
+			canvas.stroke();
+			
+			// draw legend
+			for (var i=0; i<allSeries.length; i++) {
+				canvas.fillStyle = allSeries[i].colour;
+				canvas.fillRect(-90, 20 + i * 20, 12, 12); // xywh
+				canvas.fill();
+				canvas.textBaseline = "top";
+				canvas.fillStyle = txtColour;
+				canvas.fillText(allSeries[i].name, -70, 20 + i * 20);
+			}
+			
+			// draw the x labels
+			var	barW = (availW - 110) / allSeries[0].data.length;
+			for (var i=0; i<allSeries[0].data.length; i++) {
+				canvas.fillStyle = txtColour;
+				canvas.textBaseline = "top";
+				var xLength = canvas.measureText(allSeries[0].data[i].x).width;
+				canvas.fillText(allSeries[0].data[i].x, barW * (i + 0.5) - xLength / 2 - 1, availH - 16);
+			}
+			
+			// draw the y labels
+			canvas.fillText(0, -25, availH - 20 - 6);
+			canvas.fillText(maxH, -25, 5);
+		}
 
-		this.doPie = function(canvas) {
-			var hexToRgb = function (hex) {
-				var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-				return result ? {
-					r: parseInt(result[1], 16),
-					g: parseInt(result[2], 16),
-					b: parseInt(result[3], 16)
-				} : null;
-			};
-
+		this.doPie = function(canvas, availW, availH, txtColour) {
+			// build the colour array - convert to rgb to get different shades and then convert back to hex
 			var rgbToHex = function (r, g, b) {
 				return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-			};
-
-			// build the colour array
+			}
+			
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(allSeries[0].colour);
+			var rgb = result ? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			} : null;
+			
 			var colours = [];
-			var rgb = hexToRgb(allSeries[0].colour);
-			for (var i = 0; i < allSeries[0].data.length; i++) {
+			for (var i=0; i<allSeries[0].data.length; i++) {
 				colours.push(rgbToHex(
 					parseInt(rgb.r + i * (255 - rgb.r)/allSeries[0].data.length),
 					parseInt(rgb.g + i * (255 - rgb.g)/allSeries[0].data.length),
 					parseInt(rgb.b + i * (255 - rgb.b)/allSeries[0].data.length)
 				));
 			}
-
-  			var colOff = 100 / allSeries.length;
-			for (var i = 0; i < allSeries[0].data.length; i++) {
-				canvas.strokeStyle = '#000000';
+			
+			// draw legend
+			for (var i=0; i<allSeries[0].data.length; i++) {
 				canvas.fillStyle = colours[i];
-				canvas.lineWidth = 1;
-				canvas.fillRect(-50, 22 + i * 20, 12, 12);
-				canvas.strokeRect(-50, 22 + i * 20, 12, 12);
+				canvas.fillRect(-50, 10 + i * 20, 12, 12); // xywh
 				canvas.fill();
-				canvas.stroke();
 				canvas.textBaseline = "top";
-				canvas.fillStyle = '#000000';
-				canvas.fillText(allSeries[0].data[i].y, -30, 22 + i * 20);
+				canvas.fillStyle = txtColour;
+				canvas.fillText(allSeries[0].data[i].x, -30, 10 + i * 20);
 			}
-
-			///draw chart
-			for (var i = 0; i < 1; i++) { //for first series
-				//get the total for this series
-				var sT = 0;
-				for (j = 0; j < allSeries[i].data.length; j++) {
-					sT += allSeries[i].data[j].y;
-				}
-
-				var theta, exTheta = 0;
-				for (var j = 0; j < allSeries[i].data.length; j++) { //draw each segment...
-					theta = Number(allSeries[i].data[j].y) / sT * 360;
-					this.drawWedge(canvas, 170, 260, 150 - i * (150 / allSeries.length), theta, exTheta, colours[j]);
-					exTheta += theta;
-				}
+			
+			// draw chart
+			var total = 0;
+			for (var i=0; i<allSeries[0].data.length; i++) {
+				total += allSeries[0].data[i].y;
 			}
-		};
-
-        this.drawWedge = function(canvas, x, y, radius, arc, r, colour) {
+			
+			var	theta,
+				exTheta = 0,
+				diameter = Math.min(availW - 70, availH - 20);
+			for (var i=0; i<allSeries[0].data.length; i++) { // draw each segment
+				theta = Number(allSeries[0].data[i].y) / total * 360;
+				this.drawWedge(canvas, diameter / 2, diameter / 2 + 10, diameter / 2, theta, exTheta, colours[i]);
+				exTheta += theta;
+			}
+		}
+		
+        this.drawWedge = function(canvas, x, y, radius, arc, r, colour) { // xy are to centre of circle
         	canvas.save();
 			canvas.translate(x, y);
-			canvas.rotate( -r * Math.PI / 180);
+			canvas.rotate(-r * Math.PI / 180);
 			canvas.fillStyle = colour;
 			canvas.strokeStyle = colour;
 			canvas.beginPath();
@@ -194,7 +331,7 @@
 				ax = Math.cos(0 * Math.PI / 180) * radius;
 				ay = Math.sin(-0 * Math.PI / 180) * radius;
 				canvas.lineTo(ax, ay);
-				for (var i = 0; i < segs; i++) {
+				for (var i=0; i<segs; i++) {
 					angle += theta;
 					angleMid = angle - theta / 2;
 					bx = Math.cos(angle) * radius;
@@ -210,103 +347,7 @@
 			canvas.globalAlpha = 100;
 			canvas.stroke();
 			canvas.restore();
-        };
-
-		this.init = function() {
-            var $pageContents = $("#pageContents");
-            var $textHolder = $("#textHolder");
-            var $panel = $("#pageContents .panel");
-            var $chartTitle = $("#chartTitle");
-            var chartHolder = document.getElementById('chartHolder');
-
-            if (chartHolder.getContext) {
-            	$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				$chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
-
-				allSeries = [];
-				var yMin, yMax;
-				var series = $(x_currentPageXML).children();
-				if (series.length == 0) {
-					// There are no series
-				}
-				else {
-					yMin = 1000000, yMax = 0;
-					$(x_currentPageXML).children().each(function () {
-						var name = this.getAttribute("name");
-						var dataString = this.getAttribute("data");
-						var colour = this.getAttribute("colour");
-						if (colour.substring(0, 2) == '0x') { // hex value
-							colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
-						}
-
-						var dataPair, dataPairs = dataString.split('||');
-						var data = [];
-						for (var i=0; i<dataPairs.length; i++) {
-							dataPair = dataPairs[i].split('|');
-							data.push({"x":dataPair[0], "y":parseInt(dataPair[1])});
-							if (!isNaN(parseInt(dataPair[1]))) {
-								yMax = Math.max(yMax, parseInt(dataPair[1]));
-								yMin = Math.floor(Math.min(yMin, parseInt(dataPair[1])) * 0.9);
-							}
-						}
-						allSeries.push({"name":name, "colour": colour, "data":data});
-					});
-				}
-
-				var hMax = 410 - allSeries.length * 20;
-				var scalar = hMax / (yMax - yMin);
-				var w = 350 / allSeries[0].data.length;
-				var w1 = w * 0.9 / allSeries.length;
-
-				var tempCH, maxCH = 0;
-				//find total column height
-				for (i = 0; i < allSeries[0].data.length; i++) { //for each dimension
-					tempCH = 0;
-					for (j = 0; j < allSeries.length; j++) {
-						tempCH += allSeries[j].data[i].y;
-					}
-					if (tempCH > maxCH) {
-						maxCH = tempCH;
-					}
-				}
-
-				chartHolder.width = 410;
-				chartHolder.height = 460;
-
-				chartHolder.getContext("2d").translate(60, 0);
-
-				switch (x_currentPageXML.getAttribute("chartType")) {
-					case "stacked bar":
-						this.doStackedBar(chartHolder.getContext("2d"), w, hMax, maxCH);
-						break;
-					case "pie":
-						this.doPie(chartHolder.getContext("2d"));
-						break;
-					case "bar":
-						this.doBar(chartHolder.getContext("2d"), w, w1, yMin, scalar);
-						break;
-					case "line":
-						this.doLine(chartHolder.getContext("2d"), w, yMin, scalar);
-				}
-
-				if (x_currentPageXML.getAttribute("chartType") != "pie") {
-					this.doAxesAndLabels(chartHolder.getContext("2d"), w, w1, yMin, yMax, scalar, hMax, maxCH)
-				}
-
-				if (x_currentPageXML.getAttribute("align") != "right") {
-					$panel.addClass("x_floatRight");
-				} else {
-					$panel.addClass("x_floatLeft");
-				}
-			}
-			else {
-				$("#x_pageDiv div").html('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
-				$panel.hide()
-			}
-
-            // call this function in every model once everything's loaded
-            x_pageLoaded();
-        };
+        }
 	};
 
     chart.init();
@@ -314,25 +355,43 @@
 </script>
 
 <style type="text/css">
-
-	#chartTitle {
-		font-weight: bold;
-		text-align: center;
+	
+	#infoHolder .panel {
+		overflow:	auto;
+	}
+	
+	#infoHolder table {
+		margin-left:	auto; 
+		margin-right:	auto;
+	}
+	
+	#infoHolder table tr:first-child {
+		text-align:	center;
+	}
+	
+	#infoHolder table tr {
+		text-align:	right;
+	}
+	
+	#infoHolder table tr td:first-child {
+		text-align:	center;
 	}
 
 </style>
 
 <div id="pageContents">
-
-	<div id="tableHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
-			<div id="chartTitle"></div>
-			<canvas id="chartHolder"></canvas>
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"/>
+		
+		<div id="infoHolder" class="right">
+			<div class="panel">
+				<h3 id="chartTitle" class="centerAlign"></h3>
+				<canvas id="chartHolder"></canvas>
+			</div>
 		</div>
+	
 	</div>
-
-	<div id="textHolder" tabindex="1">
-
-	</div>
-
+	
 </div>
