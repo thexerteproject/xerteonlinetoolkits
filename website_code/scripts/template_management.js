@@ -931,7 +931,7 @@ function remove_this(){
     if(drag_manager.selected_items.length==0){
 
         if(document.getElementById("recyclebin").mainhighlight){
-
+		
             var response = confirm(RECYCLE_EMPTY);
 
             if(response){
