@@ -29,7 +29,7 @@ $query_for_public_templates = "select * from " . $xerte_toolkits_site->database_
 
 $query_public_response = mysql_query($query_for_public_templates);
 
-workspace_menu_create();
+workspace_menu_create(100);
 
 while($row_template_name = mysql_fetch_array($query_public_response)){
 
