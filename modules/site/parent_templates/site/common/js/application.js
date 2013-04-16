@@ -3,13 +3,13 @@ $(document).ready(init);
 
 var data;
 
-function init()
-{	
+function init(){	
+
 	loadContent();
 };
 
-function initMedia()
-{
+function initMedia(){
+
 	$('audio,video').mediaelementplayer();
 }
 
@@ -87,6 +87,7 @@ function parseContent(index){
 	//create the sections
 	page.find('section').each( function(index, value){
 	
+		var sectionIndex = index;	
 				
 		//add a TOC entry
 		$('#toc').append('<li><a href="#section' + index + '">' + $(this).attr('name') + '</a></li>');
@@ -97,7 +98,8 @@ function parseContent(index){
 		//add the section contents
 		$(this).children().each( function(index, value){
 		
-			//for all nodes append the text
+			var itemIndex = index;
+		
 			if (this.nodeName == 'text'){
 				section.append( '<p>' + $(this).text() + '</p>');
 			}
@@ -121,19 +123,19 @@ function parseContent(index){
 			if (this.nodeName == 'navigator'){
 			
 				if ($(this).attr('type') == 'Tabs'){
-					makeTabSet( $(this), section );
+					makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
 				}
 				
 				if ($(this).attr('type') == 'Accordion'){
-					alert("make an accordion");
+					//makeAccordion( $(this), section, sectionIndex, itemIndex );
 				}
 				
 				if ($(this).attr('type') == 'Pills'){
-					alert("make a pill set");
+					makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
 				}
 				
 				if ($(this).attr('type') == 'Carousel'){
-					alert("make a carousel");
+					makeCarousel(  $(this), section, sectionIndex, itemIndex );
 				}
 			}
 
@@ -149,6 +151,7 @@ function parseContent(index){
 	
 	//finish initialising the piece now we have the content loaded
 	initMedia();
+	
 	initSidebar();
 	
 	window.scroll(0,0);
@@ -160,71 +163,200 @@ function parseContent(index){
 	
 	//force facebook / twitter objects to initialise
 	twttr.widgets.load();
+	
 	FB.XFBML.parse(); 
 	
 }
 
-function makeTabSet(node,section){
+function makeNav(node,section,type, sectionIndex, itemIndex){
 
-	var topStr = '<div class="tabbable"><ul class="nav nav-tabs">';
-	var bottomStr = '<div class="tab-content">';
+	var sectionIndex = sectionIndex;
+	
+	var itemIndex = itemIndex;
+
+	var tabDiv = $( '<div class="tabbable"/>' );
+	
+	if (type == 'tabs'){
+		var tabs = $( '<ul class="nav nav-tabs"/>' );
+	}
+	
+	if (type == 'pills'){
+		var tabs = $( '<ul class="nav nav-pills"/>' );
+	}
+		
+	var content = $( '<div class="tab-content"/>' );
+	
 	
 	node.children().each( function(index, value){
 	
-		if (index == 0){
-			topStr += '<li class="active"><a href="#tab' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>';
-			bottomStr += '<div id="tab' + index + '" class="tab-pane active">' + $(this).children().text() + '</div>';
-		} else {
-			topStr += '<li><a href="#tab' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>';
-			bottomStr += '<div id="tab' + index + '" class="tab-pane">' + $(this).children().text() + '</div>';
-		}
+	alert(itemIndex);
 	
+		if (index == 0){
+
+			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
+			
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane"/>')
+			
+		} else {
+		
+			tabs.append( $('<li><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
+			
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane"/>')
+			
+		}
+		
+		$(this).children().each( function(index, value){
+				
+		
+			if (this.nodeName == 'text'){
+				tab.append( '<p>' + $(this).text() + '</p>');
+			}
+			
+			if (this.nodeName == 'image'){
+				tab.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			}
+
+			if (this.nodeName == 'audio'){
+				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+			}
+			
+			if (this.nodeName == 'video'){
+				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+			
+		});
+		
+		content.append(tab);
 	});
 	
-	topStr += '</ul>';
-	bottomStr += '</div></div>';
+	tabDiv.append(tabs);
 	
-	alert(topStr + bottomStr);
+	tabDiv.append(content);
 	
-	section.append(topStr + bottomStr + '</p>');
+	section.append(tabDiv);
 	
-	/*
-<div class="tabbable">
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#tab1" data-toggle="tab">Tab One</a></li>
-		<li><a href="#tab2" data-toggle="tab">Tab Two</a></li>
-		<li><a href="#tab3" data-toggle="tab">Tab Three</a></li>
-		<li><a href="#tab4" data-toggle="tab">Tab Four</a></li>
-	</ul>
+}
 
-	<div class="tab-content">
-		<div id="tab1" class="tab-pane active"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
-		<div id="tab2" class="tab-pane"><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p></div>
-		<div id="tab3" class="tab-pane"><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>										
-		<div id="tab4" class="tab-pane"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>									
-	</div>
-</div>
+function makeAccordion(node,section, sectionIndex, itemIndex){
 
-<div class="tabbable">
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#tab0" data-toggle="tab">Intro</a></li>
-		<li><a href="#tab1" data-toggle="tab">Content</a></li>
-	</ul>
+	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '-' + itemIndex + '">' );
+	
+	node.children().each( function(index, value){
 
-	<div class="tab-content">
-		<div id="#tab0" class="tab-pane active">This si some text</div>
-		<div id="#tab1" class="tab-pane">This is more text here, there is more of it</div>
-	</div>
-</div>
+		var group = $('<div class="accordion-group"/>');
+		
+		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '-' + itemIndex + '" href="#collapse' + index + '">' + $(this).attr('name') + '</a></div>');
+		
+		group.append(header);
+		
+		if (index == 0){
+		
+			var outer = $('<div id="collapse' + index + '" class="accordion-body collapse in"/>');
+			
+		} else {
+		
+			var outer = $('<div id="collapse' + index + '" class="accordion-body collapse"/>');
+			
+		}
+		
+		
+		var inner = $('<div class="accordion-inner">');
+		
+		$(this).children().each( function(index, value){
+						
+			if (this.nodeName == 'text'){
+				inner.append( '<p>' + $(this).text() + '</p>');
+			}
+			
+			if (this.nodeName == 'image'){
+				inner.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			}
 
-
-*/
+			if (this.nodeName == 'audio'){
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+			}
+			
+			if (this.nodeName == 'video'){
+				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+		});
+		
+		outer.append(inner);
+		
+		group.append(outer);
+		
+		accDiv.append(group);
+	});
+	
+	section.append(accDiv);
+	
 }
 
 
+function makeCarousel(node, section, sectionIndex, itemIndex){
 
+	var sectionIndex = sectionIndex;
+	
+	var itemIndex = itemIndex;
+	
+	var carDiv = $('<div id="car' + sectionIndex + '_' + itemIndex + '" class="carousel slide"/>');
+	
+	var indicators = $('<ol class="carousel-indicators"/>');
+	
+	var items = $('<div class="carousel-inner"/>');
+	
+	
+	node.children().each( function(index, value){
+	
+		var pane;
+	
+		if (index == 0){
+		
+			indicators.append( $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '" class="active"></li>') );
+			
+			pane = $('<div class="active item">');
+			
+		} else {
+		
+			indicators.append( $('<li data-target="#car' + sectionIndex + '_'  + itemIndex + '" data-slide-to="' + index + '"></li>') );
+			
+			pane = $('<div class="item">');
+		}
+		
+		$(this).children().each( function(index, value){
+						
+			if (this.nodeName == 'text'){
+				pane.append( '<p>' + $(this).text() + '</p>');
+			}
+			
+			if (this.nodeName == 'image'){
+				pane.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+			}
 
+			if (this.nodeName == 'audio'){
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+			}
+			
+			if (this.nodeName == 'video'){
+				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+			
+		});
+		
+		items.append(pane);
+		
+	});
+	
+	carDiv.append(indicators);
+	
+	carDiv.append(items);
+	
+	carDiv.append( $('<a class="carousel-control left" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="prev">&lsaquo;</a>') );
+	carDiv.append( $('<a class="carousel-control right" href="#car' + sectionIndex + '_'  + itemIndex + '" data-slide="next">&rsaquo;</a>') );
+	
+	section.append(carDiv);
 
+}
 
 
 
