@@ -14,31 +14,35 @@
 
    /**
 	*
-	* Spoof the session in case we are using Firefox
+	* Spoof the session if we are using Firefox
 	* Gets around the Flash Cookie Bug
 	*
 	*/
-	if ($_GET['AUTH'] == 'moodle') {
-		if (!isset($_COOKIE['MoodleSession']) || !isset($_COOKIE['MOODLEID1_'])) {
-			$temp = split('; ', $_GET['COOKIE']);
-			if (!empty($temp)) {
-				$cookie = array();
-				foreach($temp as $key => $value) {
-					$pair = split('=', $value);
-					$cookie[$pair[0]] = $pair[1];
+//$f_start = $_GET['BROWSER'].'_'.$_GET['AUTH'].'_';
+	if ($_GET['BROWSER'] == 'firefox') {
+		if ($_GET['AUTH'] == 'moodle') {
+//file_put_contents($f_start.$_COOKIE['MoodleSession'].'.txt', var_export($_SERVER['QUERY_STRING'], true));
+			if (!isset($_COOKIE['MoodleSession']) || !isset($_COOKIE['MOODLEID1_'])) {
+				$temp = split('; ', $_GET['COOKIE']);
+				if (!empty($temp)) {
+					$cookie = array();
+					foreach($temp as $key => $value) {
+						$pair = split('=', $value);
+						$cookie[$pair[0]] = $pair[1];
+					}
+					$_COOKIE = $cookie; // We want to overwrite all
 				}
-				$_COOKIE = $cookie; // We want to overwrite all
+			}
+		}
+		else {
+//file_put_contents($f_start.$_COOKIE['PHPSESSID'].'.txt', var_export($_SERVER['QUERY_STRING'], true));
+			if (
+				(!isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID'])) ||
+				( isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID']) && ($_COOKIE['PHPSESSID'] != $_GET['PHPSESSID']))) {
+				session_id($_GET['PHPSESSID']);
 			}
 		}
 	}
-	else {
-		if (
-			(!isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID'])) ||
-			( isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID']) && ($_COOKIE['PHPSESSID'] != $_GET['PHPSESSID']))) {
-			session_id($_GET['PHPSESSID']);
-		}
-	}
-
 
 
    /**
@@ -63,7 +67,7 @@
 	*  This is really not very effective - will be replaced by whitelist
 	*    and mimetype detection - feel free to add to this list
 	*/
-	$blacklist = explode(',', 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,js,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
+	$blacklist = explode(',', 'php,php5,htm,html,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,js,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
 	$extension = strtolower(pathinfo($_FILES['Filedata']['name'], PATHINFO_EXTENSION));
 	if (in_array($extension, $blacklist)) {
 		print "Invalid filetype";
