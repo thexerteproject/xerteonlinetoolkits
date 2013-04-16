@@ -82,19 +82,20 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 	function getSessionID(){
 		var id;
+		var auth = '<?php echo strtolower($xerte_toolkits_site->authentication_method); ?>';
+		var browser = (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 'firefox' : 'other';
 
-		//Pass session info (Firefox Flash Cookie Bug) which we are
-		//using for validation that the user is logged in
-		//It first checks fo default, then checks is for Moodle
-		if ((id = document.cookie.match(/PHPSESSID=[^;]+/))) {
-
-			// Its Default authentication so we only need session id
-			return 'AUTH=xerte&' + id;
-		}
-		else if (document.cookie.match(/MoodleSession=[^;]+/)) {
+		//Pass data to upload (Firefox Flash Cookie Bug) which we are
+		//It first checks moodle, then defaults
+		if (auth == 'moodle') {
 
 			//Its Moodle integration so we need the whole cookie
-			return 'AUTH=moodle&COOKIE=' + escape(document.cookie);
+			return 'BROWSER=' + browser + '&AUTH=moodle&COOKIE=' + escape(document.cookie);
+		}
+		else if ((id = document.cookie.match(/PHPSESSID=[^;]+/))) {
+
+			// Its Default authentication so we only need session id
+			return 'BROWSER=' + browser + '&AUTH=xerte&' + id;
 		}
 
 		return null;
