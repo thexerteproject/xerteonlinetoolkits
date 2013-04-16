@@ -28,7 +28,7 @@ $query_for_created_templates = "select * from " . $xerte_toolkits_site->database
 
 $query_created_response = mysql_query($query_for_created_templates);
 
-workspace_menu_create();
+workspace_menu_create(100);
 
 while($row_template_name = mysql_fetch_array($query_created_response)){
 
