@@ -22,7 +22,7 @@ function show_preview_code($row){
 
 	require_once("config.php");
 
-	_load_language_file("/modules/xerte/preview.inc");
+	_load_language_file("/modules/site/preview.inc");
 
 	?>
 
@@ -32,7 +32,7 @@ function show_preview_code($row){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo SITE_PREVIEW_TITLE;  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -155,4 +155,4 @@ function show_preview_code($row){
 
 	}
 
-	?>
+?>
