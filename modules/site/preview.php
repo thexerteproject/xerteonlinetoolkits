@@ -18,11 +18,13 @@ function show_preview_code($row){
 
 	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
-	$template_path_string = "modules/site/parent_templates/" . $row['template_name'];
+	$template_path_string = "modules/xerte/parent_templates/" . $row['template_name'];
 
 	require_once("config.php");
 
-	_load_language_file("/modules/site/preview.inc");
+	_load_language_file("/modules/xerte/preview.inc");
+	
+	$template_path_string = 'modules/site/parent_templates/site';
 
 	?>
 
@@ -32,7 +34,7 @@ function show_preview_code($row){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo SITE_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -132,15 +134,13 @@ function show_preview_code($row){
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
 						
-						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
-						<strong><small>&copy; 2013 The Univeristy of Nottingham</small></strong>
-						
 					</div>
 				</div>
 			</div>
 		</footer>
 		
 		<!--bootstrap script-->
+		
 		<script src="<?PHP echo $template_path_string ?>/common/js/bootstrap.min.js"></script>
 		
 		<!--initialise the application specific code-->
@@ -155,4 +155,4 @@ function show_preview_code($row){
 
 	}
 
-?>
+	?>

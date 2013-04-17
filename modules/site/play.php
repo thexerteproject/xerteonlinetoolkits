@@ -1,16 +1,13 @@
 <?php
-require(dirname(__FILE__) . "/module_functions.php");
+require(dirname(__FILE__) . "module_functions.php");
 
 //Function show_template
 //
 // Version 1.0 University of Nottingham
 // (pl)
 // Set up the preview window for a xerte piece
-
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-
 function show_template($row_play){
-
     global $xerte_toolkits_site;
 
     $string_for_flash = $xerte_toolkits_site-> users_file_area_short . $row_play['template_id'] . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/";
@@ -22,7 +19,7 @@ function show_template($row_play){
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-	$template_path_string = "modules/site/parent_templates/" . $row_play['template_name'];
+	$template_path_string = "modules/xerte/parent_templates/" . $row_play['template_name'];
 
     list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
 
@@ -133,9 +130,6 @@ function show_template($row_play){
 
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
-						
-						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
-						<strong><small>� 2013 The Univeristy of Nottingham</small></strong>
 						
 					</div>
 				</div>
