@@ -58,11 +58,41 @@ function loadContent(){
 			
 			//set the header image, if defined
 			if ($(data).find('learningObject').attr('header') != undefined){
+			
 				$('#overview').css({filter:''}); //for IE8
+				
 				$('#overview').css('background-image', "url(" + eval( $(data).find('learningObject').attr('header'))+ ")");
+			} 
+			
+			if ($(data).find('learningObject').attr('headerColour') != undefined){
+			
+				var col = $(data).find('learningObject').attr('headerColour');
+				
+				//one or two?
+				if (col.substr(',') != -1){
+					col = col.split(',');
+				} else {
+					col = [col,col];
+				}
+				
+				$('#overview').css('background', col[0]);
+				$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
+				$('#overview').css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
+				$('#overview').css('background', '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+				$('#overview').css('background', '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+				$('#overview').css('background', '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+				$('#overview').css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
+				$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+				
 			}
 			
-			//done with one time stuff, now parse the first page
+			if ($(data).find('learningObject').attr('headerTextColour') != undefined){
+			
+				$('#overview').css('color', $(data).find('learningObject').attr('headerTextColour'));
+				
+			}
+			
+			//done with one time stuff, now parse the first page...
 			parseContent(0);
 		}
 		
@@ -177,7 +207,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	var tabDiv = $( '<div class="tabbable"/>' );
 	
 	if (type == 'tabs'){
-		var tabs = $( '<ul class="nav nav-tabs"/>' );
+		var tabs = $( '<ul class="nav nav-tabs id="tabTen"/>' );
 	}
 	
 	if (type == 'pills'){
@@ -189,13 +219,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	node.children().each( function(index, value){
 	
-	alert(itemIndex);
-	
 		if (index == 0){
 
 			tabs.append( $('<li class="active"><a href="#tab' + sectionIndex + '_' + itemIndex + '_' + index + '" data-toggle="tab">' + $(this).attr('name') + '</a></li>') );
 			
-			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane"/>')
+			var tab = $('<div id="tab' + sectionIndex + '_' + itemIndex + '_' + index + '" class="tab-pane active"/>')
 			
 		} else {
 		
@@ -234,6 +262,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	tabDiv.append(content);
 	
 	section.append(tabDiv);
+	
+	$('#tabTen a:first').tab('show');
 	
 }
 
