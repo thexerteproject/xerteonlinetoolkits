@@ -157,7 +157,7 @@ function parseContent(index){
 				}
 				
 				if ($(this).attr('type') == 'Accordion'){
-					//makeAccordion( $(this), section, sectionIndex, itemIndex );
+					makeAccordion( $(this), section, sectionIndex, itemIndex );
 				}
 				
 				if ($(this).attr('type') == 'Pills'){
@@ -269,23 +269,23 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 
 function makeAccordion(node,section, sectionIndex, itemIndex){
 
-	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '-' + itemIndex + '">' );
+	var accDiv = $( '<div class="accordion" id="acc' + sectionIndex + '_' + itemIndex + '">' );
 	
 	node.children().each( function(index, value){
 
 		var group = $('<div class="accordion-group"/>');
 		
-		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '-' + itemIndex + '" href="#collapse' + index + '">' + $(this).attr('name') + '</a></div>');
+		var header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#acc' + sectionIndex + '_' + itemIndex + '" href="#collapse' + sectionIndex + '_' + itemIndex + '_' + index + '">' + $(this).attr('name') + '</a></div>');
 		
 		group.append(header);
 		
 		if (index == 0){
 		
-			var outer = $('<div id="collapse' + index + '" class="accordion-body collapse in"/>');
+			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse in"/>');
 			
 		} else {
 		
-			var outer = $('<div id="collapse' + index + '" class="accordion-body collapse"/>');
+			var outer = $('<div id="collapse' + sectionIndex + '_' + itemIndex + '_' + index + '" class="accordion-body collapse"/>');
 			
 		}
 		
