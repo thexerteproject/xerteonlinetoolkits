@@ -14,9 +14,9 @@ margin-top: 20px;
   background: -ms-linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* IE10+ */
   background: linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-  -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
-     -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
-          box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+  //-webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+     //-moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+         // box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
 }
 .jumbotron h1 {
   font-size: 60px;
@@ -191,7 +191,7 @@ section {
     padding-top: 0;
   }
   .jumbotron {
-    margin-top: -20px; /* Offset bottom margin on .navbar */
+   margin-top: -20px; /* Offset bottom margin on .navbar */
   }
   /* Adjust sidenav width */
   .bs-docs-sidenav {
@@ -208,7 +208,7 @@ section {
     padding-top: 0;
   }
   .jumbotron {
-    padding: 40px 20px;
+   /* padding: 40px 20px;*/
     margin-top:   -20px; /* Offset bottom margin on .navbar */
     margin-right: -20px;
     margin-left:  -20px;

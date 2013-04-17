@@ -5,6 +5,8 @@
   
 		<name type="TextInput" label="Learning Object Title"/>
 		<header type="Media" optional="true" label="Header Image"/>
+		<headerColour type="TextInput" optional="true" label="Header Colour"/>
+		<headerTextColour type="TextInput" optional="true" label="Header Text Colour"/>
 
 		<newNodes>
 			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
