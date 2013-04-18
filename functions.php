@@ -97,7 +97,7 @@ function _load_language_file($file_path)
             if ($development)
             {
                 error_log("Failed to load language file for Xerte - $language/$file_path");
-                return false;
+                //return false;
             }
         }
     }

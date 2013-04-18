@@ -1,5 +1,5 @@
 <?php
-require(dirname(__FILE__) . "module_functions.php");
+require(dirname(__FILE__) . "/module_functions.php");
 
 //Function show_template
 //
@@ -19,11 +19,11 @@ function show_template($row_play){
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-	$template_path_string = "modules/xerte/parent_templates/" . $row_play['template_name'];
+	$template_path_string = "modules/site/parent_templates/" . $row_play['template_name'];
 
     list($x, $y) = explode("~",get_template_screen_size($row_play['template_name'],$row_play['template_framework']));
 
-    _load_language_file("/modules/xerte/preview.inc");
+    _load_language_file("/modules/site/preview.inc");
 
 ?>
 	<!DOCTYPE html>
@@ -31,7 +31,7 @@ function show_template($row_play){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo SITE_PREVIEW_TITLE;  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
