@@ -273,13 +273,16 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 
 #x_glossaryHover {
 	display:			none;
+	max-width:			200px;
+}
+
+.x_tooltip {
 	position:			absolute;
 	border:				1px solid #333;
 	background-color:	#161616;
 	border-radius:		4px;
 	padding:			2px 5px;
 	color:				#fff;
-	max-width:			200px;
 }
 
 

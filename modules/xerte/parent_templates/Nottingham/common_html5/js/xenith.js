@@ -340,7 +340,7 @@ function x_setUp() {
 							myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
 						}
 					}
-					$x_mainHolder.append('<div id="x_glossaryHover">' + myDefinition + '</div>');
+					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
 					$x_glossaryHover = $("#x_glossaryHover");
 					$x_glossaryHover.css({
 						"left"	:$(this).offset().left + 20,
