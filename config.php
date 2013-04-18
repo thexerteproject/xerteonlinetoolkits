@@ -121,9 +121,15 @@ if (!isset($xerte_toolkits_site)) {
 
     // I'm not sure why we allow this path to be set via the DB. It'd make more sense to fix it to dirname(__FILE__), which will cope with the site moving.
     $xerte_toolkits_site->root_file_path = dirname(__FILE__) . '/';
-    foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
+	
+	$learning_objects = new StdClass();
+	
+	foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
+	
         if (preg_match('!/modules/(\w+)/templates/(\w+)/!', $infoFile, $matches)) {
+		
             $attributeName = $matches[1] . '_' . $matches[2];
+			
             $templateProperties = new StdClass();
             $learning_objects->{$attributeName} = $templateProperties;
 
