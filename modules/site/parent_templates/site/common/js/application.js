@@ -207,11 +207,14 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	var tabDiv = $( '<div class="tabbable"/>' );
 	
 	if (type == 'tabs'){
-		var tabs = $( '<ul class="nav nav-tabs id="tabTen"/>' );
+	
+		var tabs = $( '<ul class="nav nav-tabs" id="tab' + sectionIndex + '_' + itemIndex + '"/>' );
+		
 	}
 	
 	if (type == 'pills'){
-		var tabs = $( '<ul class="nav nav-pills"/>' );
+	
+		var tabs = $( '<ul class="nav nav-pills" id="tab' + sectionIndex + '_' + itemIndex + '"/>' );
 	}
 		
 	var content = $( '<div class="tab-content"/>' );
@@ -263,7 +266,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	$('#tabTen a:first').tab('show');
+	setTimeout( function(){ $('#tab' + sectionIndex + '_' + itemIndex + ' a:first').tab('show') }, 0);
 	
 }
 
@@ -387,6 +390,8 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	section.append(carDiv);
 
 }
+
+
 
 
 
