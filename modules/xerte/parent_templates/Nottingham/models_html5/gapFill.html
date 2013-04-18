@@ -119,7 +119,7 @@
 				.on("keypress", function() {
 					var $this = $(this);
 					setTimeout(function() {
-						if ($this.val() == answerData[$targetHolder.find("input").index($this)]) { // correct
+						if ($this.val().toLowerCase() == answerData[$targetHolder.find("input").index($this)].toLowerCase()) { // correct
 							$this.attr("readonly", "readonly");
 							$pageContents.find("#hint").remove();
 							
@@ -130,7 +130,7 @@
 						} else { // wrong - start showing hint after 3 wrong characters entered
 							var wrong = 0;
 							for (i=0; i<$this.val().length; i++) {
-								if ($this.val()[i] != answerData[$targetHolder.find("input").index($this)][i]) {
+								if ($this.val()[i].toLowerCase() != answerData[$targetHolder.find("input").index($this)][i].toLowerCase()) {
 									wrong++;
 								}
 							}
