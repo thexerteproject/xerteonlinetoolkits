@@ -186,7 +186,8 @@ function parseContent(index){
 	
 	window.scroll(0,0);
 	
-	$('body').scrollspy('refresh');
+	//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
+	$('#toc a:first').tab('show');
 	
 	//an event for user defined code to know when loading is done
 	$(document).trigger('contentLoaded');
@@ -195,6 +196,7 @@ function parseContent(index){
 	twttr.widgets.load();
 	
 	FB.XFBML.parse(); 
+	
 	
 }
 
@@ -266,7 +268,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){ $('#tab' + sectionIndex + '_' + itemIndex + ' a:first').tab('show') }, 0);
+	setTimeout( function(){ $('#tab' + sectionIndex + '_' + itemIndex + ' a:first').tab('show'); }, 0);
 	
 }
 
