@@ -5,13 +5,87 @@
 	var videoSynch = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#infoHolder div").hide();
+			$("#infoHolder").children("div").hide();
 			this.loadVideo();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
+			$("#infoHolder .myImg img").css("max-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
+		}
+		
+		this.init = function() {
+			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
 			
+			var	$infoHolder = $("#infoHolder"),
+				captions = new Array();
+			
+			$(x_currentPageXML).children().each(function() {
+				var	$this = $(this),
+					imgStr = "";
+				
+				if ($this.attr("url") != undefined && $this.attr("url") != "") {
+					imgStr += '<div class="myImg"><img src="' + eval($this.attr("url")) + '" ';
+					if ($this.attr("tip") != undefined && $this.attr("tip") != "") {
+						imgStr += 'alt="' + $this.attr("tip") + '" ';
+					}
+					imgStr += ' /></div>';
+				}
+				
+				var $caption = $("<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>")
+					.hide()
+					.data("synch", $this.attr("synch"));
+				
+				$infoHolder.append($caption);
+				captions.push($caption[0]);
+			});
+			$("#pageContents").data("captions", captions);
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+			
+			var $pageVideo = $("#pageVideo"),
+				videoDimensions = [320,240];
+			
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
+			}
+			
+			var videoSrc = x_currentPageXML.getAttribute("url");
+			$pageVideo.data({
+				"src"			:videoSrc,
+				"dimensions"	:videoDimensions
+			});
+			
+			// ** move this code to mediaPlayer.js
+			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
+				var fileInfo = videoSrc.split(".");
+				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
+				if (fileInfo[1] == "flv") {
+					$.ajax({
+						url:	eval(fileInfo[0] + ".mp4'"),
+						type:	"HEAD",
+						success: function() {
+							// mp4 version exists - use this instead
+							videoSrc = fileInfo[0] + ".mp4'";
+							$pageVideo.data("src", videoSrc);
+							videoSynch.loadVideo(true);
+						},
+						error:	function() {
+							// no mp4 version to use
+							videoSynch.loadVideo(true);
+						}
+					});
+				} else {
+					videoSynch.loadVideo(true);
+				}
+			} else {
+				videoSynch.loadVideo(true);
+			}
 		}
 		
 		this.loadVideo = function(firstLoad) {
@@ -33,9 +107,9 @@
 		
 		// function called from mediaPlayer.js when video player has been set up
 		this.mediaFunct = function(mediaElement) {
-			var $captions 	= $($("#pageContents").data("captions"));
-			var pause 		= x_currentPageXML.getAttribute("pause");
-			var erase    	= x_currentPageXML.getAttribute("erase");
+			var $captions 	= $($("#pageContents").data("captions")),
+				pause 		= x_currentPageXML.getAttribute("pause"),
+				erase    	= x_currentPageXML.getAttribute("erase");
 			
 			mediaElement.addEventListener("timeupdate", function(e) {
 				var currentTime = mediaElement.currentTime;
@@ -67,62 +141,6 @@
 				})
 			});
 		}
-		
-		this.init = function() {
-			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
-			
-			var $infoHolder = $("#infoHolder");
-			var captions = new Array();
-			$(x_currentPageXML).children().each(function(){
-				var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>")
-					.hide()
-					.data("synch", $(this).attr("synch"));
-				
-				$infoHolder.append($caption);
-				captions.push($caption[0]);
-			});
-			$("#pageContents").data("captions", captions);
-			
-			var $pageVideo = $("#pageVideo");
-			var videoDimensions = [320,240];
-			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-				if (dimensions[0] != 0 && dimensions[1] != 0) {
-					videoDimensions = dimensions;
-				}
-			}
-			
-			var videoSrc = x_currentPageXML.getAttribute("url");
-			$pageVideo.data({
-				"src"			:videoSrc,
-				"dimensions"	:videoDimensions
-			});
-			
-			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
-				var fileInfo = videoSrc.split(".");
-				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-				if (fileInfo[1] == "flv") {
-					$.ajax({
-						url:	eval(fileInfo[0] + ".mp4'"),
-						type:	"HEAD",
-						success: function() {
-							// mp4 version exists - use this instead
-							videoSrc = fileInfo[0] + ".mp4'";
-							$pageVideo.data("src", videoSrc);
-							videoSynch.loadVideo(true);
-						},
-						error:	function() {
-							// no mp4 version to use
-							videoSynch.loadVideo(true);
-						}
-					});
-				} else {
-					videoSynch.loadVideo(true);
-				}
-			} else {
-				videoSynch.loadVideo(true);
-			}
-		}
 	}
 	
 	videoSynch.init();
@@ -141,6 +159,15 @@
 	
 	#infoHolder div {
 		margin-bottom:	10px;
+	}
+	
+	#infoHolder .myImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#infoHolder .myImg img {
+		max-width:	100%;
 	}
 	
 </style>
