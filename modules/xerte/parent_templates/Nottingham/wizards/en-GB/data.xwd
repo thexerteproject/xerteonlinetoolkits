@@ -446,8 +446,8 @@
     <tip label="Video Tooltip" type="TextInput" optional="true"/>	
     <reset label="Video Reset at End" type="Checkbox" defaultValue="false" optional="true"/>	
 	<windowURL label="URL of External Page" type="TextInput" optional="true"/>
-    <windowWidth label="URL Window Width" type="NumericStepper" min="100" max="980" step="10" defaultValue="550" width="100" optional="true"/>
-    <windowHeight label="URL Window Height" type="NumericStepper" min="100" max="720" step="10" defaultValue="400" width="100" optional="true"/>
+    <windowWidth label="URL Window Width" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
+    <windowHeight label="URL Window Height" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
     <htm label="URL HTML" type="textArea" height="150" optional="true"/>	
     <relNav label="Relative Connection" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true"/>
     <hotspotPopUp label="Text Pop-up" type="TextArea" height="200" optional="true"/>

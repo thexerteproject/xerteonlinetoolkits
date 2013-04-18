@@ -84,18 +84,18 @@
 			if (x_browserInfo.mobile == true) {
 				imgMaxW = 250; // mobile
 				imgMaxH = 250;
-			}
-			
-			// ** ideally needs to be more flexible/responsive than this e.g. respond to window size
-			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = 760;
-				imgMaxH = 476;
-			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-				imgMaxW = 600;
-				imgMaxH = 476;
-			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
-				imgMaxW = 400;
-				imgMaxH = 476;
+			} else {
+				if (x_currentPageXML.getAttribute("textWidth") == "none") {
+					// ** need panel to align itself centrally
+					imgMaxW = 760;
+					imgMaxH = 450;
+				} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
+					imgMaxW = 600;
+					imgMaxH = 450;
+				} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
+					imgMaxW = 400;
+					imgMaxH = 450;
+				}
 			}
 			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, true);
