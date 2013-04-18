@@ -91,6 +91,7 @@ function ScormTrackingState()
     this.lo_type = "pages only";
     this.lo_passed = "-1.0";
     this.lo_completed = "unknown";
+    this.finished = false;
 
     this.interactions = new Array();
     this.find = find;
@@ -525,6 +526,7 @@ function ScormTrackingState()
                 setValue('cmi.suspend_data', currentid + ',' + duration);
             }
         }
+        this.finished = true;
     }
 }
 
@@ -687,18 +689,21 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate()
 {
-    var currentid = "";
-    if (state.currentid)
+    if (!state.finished)
     {
-        currentid = state.currentid;
-        var sit = state.find(currentid);
-        // there is still a page open, close it
-        if (sit != null)
+        var currentid = "";
+        if (state.currentid)
         {
-            state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            currentid = state.currentid;
+            var sit = state.find(currentid);
+            // there is still a page open, close it
+            if (sit != null)
+            {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
         }
-    }
-    state.finishTracking(currentid);
+        state.finishTracking(currentid);
 
-    terminateCommunication();
+        terminateCommunication();
+    }
 }
