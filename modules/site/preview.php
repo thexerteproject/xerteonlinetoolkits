@@ -32,7 +32,7 @@ function show_preview_code($row){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo SITE_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -64,7 +64,7 @@ function show_preview_code($row){
     
 	</head>
 
-	<body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar">
+	<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable">
 		
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
@@ -102,7 +102,8 @@ function show_preview_code($row){
 		<div class="container">
 			<div class="row-fluid">
 				<!--navigation-->
-				<div class="span3 bs-docs-sidebar">
+				<div class="span3 bs-docs-sidebar" id="contentTable">
+				
 					<ul class="nav nav-list bs-docs-sidenav affix" id="toc">
 						<!--<li><a href="#section1ID">Section 1</a></li>-->					
 					</ul>
