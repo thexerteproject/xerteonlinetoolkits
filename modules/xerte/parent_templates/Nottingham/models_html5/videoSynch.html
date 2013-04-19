@@ -18,6 +18,7 @@
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
 			
 			var	$infoHolder = $("#infoHolder"),
+				$pageContents = $("#pageContents");
 				captions = new Array();
 			
 			$(x_currentPageXML).children().each(function() {
@@ -39,7 +40,7 @@
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
 			});
-			$("#pageContents").data("captions", captions);
+			$pageContents.data("captions", captions);
 			
 			if (x_currentPage != 0) {
 				this.sizeChanged();
@@ -61,34 +62,15 @@
 				"dimensions"	:videoDimensions
 			});
 			
-			// ** move this code to mediaPlayer.js
-			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
-				var fileInfo = videoSrc.split(".");
-				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-				if (fileInfo[1] == "flv") {
-					$.ajax({
-						url:	eval(fileInfo[0] + ".mp4'"),
-						type:	"HEAD",
-						success: function() {
-							// mp4 version exists - use this instead
-							videoSrc = fileInfo[0] + ".mp4'";
-							$pageVideo.data("src", videoSrc);
-							videoSynch.loadVideo(true);
-						},
-						error:	function() {
-							// no mp4 version to use
-							videoSynch.loadVideo(true);
-						}
-					});
-				} else {
-					videoSynch.loadVideo(true);
-				}
-			} else {
-				videoSynch.loadVideo(true);
-			}
+			this.loadVideo();
+			
+			$pageContents.css("padding-left", $pageVideo.data("dimensions")[0] + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
+			$("#videoHolder").width($pageContents.css("padding-left"));
+			
+			x_pageLoaded();
 		}
 		
-		this.loadVideo = function(firstLoad) {
+		this.loadVideo = function() {
 			var $video = $("#pageVideo");
 			$video.mediaPlayer({
 				type			:"video",
@@ -97,12 +79,6 @@
 				height			:$video.data("dimensions")[1],
 				pageName		:"videoSynch"
 			});
-			if (firstLoad == true) {
-				var $pageContents = $("#pageContents");
-				$pageContents.css("padding-left", $video.data("dimensions")[0] + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
-				$("#videoHolder").width($pageContents.css("padding-left"));
-				x_pageLoaded(); // call this function in every model once everything's loaded
-			}
 		}
 		
 		// function called from mediaPlayer.js when video player has been set up
