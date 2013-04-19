@@ -55,6 +55,14 @@
 				}
 			}
 
+            // Track the quiz page
+            this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 
 			var $optionHolder = $("#optionHolder");
@@ -65,7 +73,11 @@
 			}
 			var $option = $optionHolder.find("input");
 			var $optionTxt = $optionHolder.find(".optionTxt");
-			$(x_currentPageXML).children()
+            var correctOptions = [];
+            var correctAnswer = [];
+            var correctFeedback = [];
+
+            $(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisOption, $thisOptionTxt;
 					if (i != 0) {
@@ -75,7 +87,13 @@
 						$thisOption = $option;
 						$thisOptionTxt = $optionTxt;
 					}
-
+                    mcq.currNrOptions = i+1;
+                    if (this.getAttribute("correct") == 'true')
+                    {
+                        correctOptions.push(i+1+"");
+                        correctAnswer.push(this.getAttribute("text"));
+                        correctFeedback.push(this.getAttribute("feedback"));
+                    }
 					$thisOption
 						.attr({
 							"value"	:this.getAttribute("text"),
@@ -97,7 +115,7 @@
 						.data("option", $thisOption)
 						.html(this.getAttribute("text"));
 				});
-
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
 			// checkBtnWidth attribute not used as button will be sized automatically
 			// if language attributes aren't in xml will have to use english fall back
 			var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
@@ -116,20 +134,85 @@
 				.attr("disabled", "disabled")
 				.click(function() {
 					var answerFeedback = "";
-					var selected = $("#optionHolder input:checked");
-					for (var i=0; i<selected.length; i++) {
-						answerFeedback += "<p>" + x_addLineBreaks($(x_currentPageXML).children()[$(selected[i]).index()/2].getAttribute("feedback")) + "</p>";
-					}
-					var generalFeedback = "";
-					if (x_currentPageXML.getAttribute("feedback") != undefined) {
-						generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
-					}
+                    var correct=true;
+                    var l_options = [];
+                    var l_answer = [];
+                    var l_feedback = [];
+
+                    var selected = $("#optionHolder input:checked");
+
+                    var generalFeedback = "";
+                    if (x_currentPageXML.getAttribute("feedback") != undefined) {
+                        generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+                    }
+
+                    for (var i=0; i<selected.length; i++) {
+                        var optionIndex = $(selected[i]).index()/2;
+                        var selectedOption = $(x_currentPageXML).children()[optionIndex];
+						answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
+                        if (correct != false && selectedOption.getAttribute("correct") == "true") {
+                            correct = true;
+                        } else {
+                            correct = false;
+                        }
+                        l_options.push(optionIndex+1+"");
+                        l_answer.push(selectedOption.getAttribute("text"));
+                        l_feedback.push(selectedOption.getAttribute("feedback"));
+                    }
+                    generalFeedback += answerFeedback;
+
+                    var singleRight = x_currentPageXML.getAttribute("singleRight");
+                    if (singleRight == undefined) {
+                        singleRight = "Your answer is correct";
+                    }
+                    var singleWrong = x_currentPageXML.getAttribute("singleWrong");
+                    if (singleWrong == undefined) {
+                        singleWrong = "Your answer is incorrect";
+                    }
+                    var multiRight = x_currentPageXML.getAttribute("multiRight");
+                    if (multiRight == undefined) {
+                        multiRight = "You have selected all the correct answers";
+                    }
+                    var multiWrong = x_currentPageXML.getAttribute("multiWrong");
+                    if (multiWrong == undefined) {
+                        multiWrong = "You have not selected the correct combination of answers";
+                    }
+
+                    var rightWrongTxt;
+                    // add correct feedback depending on if question overall has been answered correctly or not
+                    if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+                        if (correct == true) {
+                            rightWrongTxt = '<p><br/>' + multiRight + '</p>';
+                        } else {
+                            rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
+                        }
+                    } else {
+                        if (correct == true) {
+                            rightWrongTxt = '<p><br/>' + singleRight + '</p>';
+                        } else {
+                            rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
+                        }
+                    }
+                    generalFeedback += rightWrongTxt;
 					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
 					if (feedbackLabel == undefined) {
 						feedbackLabel = "Feedback";
 					}
-					$("#feedback").html("<h3>" + feedbackLabel + "</h3>" + answerFeedback + generalFeedback);
-					$(this).hide().show(); // ** hack to take care of IEs inconsistent handling of clicks
+					$("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
+                    $(this).hide().show(); // ** hack to take care of IEs inconsistent handling of clicks
+
+                    XTExitInteraction(x_currentPage, 0, correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
+                    XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
+                    if (XTGetMode() == "tracking")
+                    {
+                        // Disable all options
+                        var i=0;
+                        for (i=0; i<mcq.currNrOptions; i++)
+                        {
+                            $("#option"+i).attr("disabled", "disabled");
+                        }
+                    }
+
 				});
 
 			if (x_currentPage != 0) {

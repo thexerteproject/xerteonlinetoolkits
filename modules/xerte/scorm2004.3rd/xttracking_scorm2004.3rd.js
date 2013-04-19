@@ -58,7 +58,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     function exit()
     {
         this.end = new Date();
-        duration = this.end.getTime() - this.start.getTime();
+        var duration = this.end.getTime() - this.start.getTime();
         this.state = "exited";
         if (duration > 1000)
         {
@@ -83,13 +83,15 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 function ScormTrackingState()
 {
     this.currentid = "";
+    this.currentpageid = "";
     this.trackingmode = "full";
+    this.scoremode = 'last';
     this.nrpages = 0;
     this.pages_visited=0;
     this.start = new Date();
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
-    this.lo_passed = "-1.0";
+    this.lo_passed = -1.0;
     this.lo_completed = "unknown";
     this.finished = false;
 
@@ -122,13 +124,14 @@ function ScormTrackingState()
     function findcreate(page_nr, ia_nr, ia_type, ia_name)
     {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
+        var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].id == tmpid)
                 return this.interactions[i];
         }
         // Not found
-        sit =  new ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
+        var sit =  new ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
         if (ia_type != "page")
         {
             this.lo_type = "interactive";
@@ -144,6 +147,7 @@ function ScormTrackingState()
 
     function find(id)
     {
+        var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].id == id)
@@ -156,6 +160,7 @@ function ScormTrackingState()
     function findPage(page_nr)
     {
         var id = makeId(page_nr, -1, 'page', "");
+        var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].id.indexOf(id) == 0 && this.interactions[i].id.indexOf(id + ':interaction') < 0)
@@ -171,6 +176,7 @@ function ScormTrackingState()
             return this.findPage(page_nr);
         }
         var id = makeId(page_nr, ia_nr, "", "");
+        var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].id.indexOf(id) == 0)
@@ -183,6 +189,7 @@ function ScormTrackingState()
     {
         var count = 0;
         var id = makeId(page_nr, -1, 'page', "");
+        var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
             if (this.interactions[i].id.indexOf(id + ':interaction') == 0)
@@ -203,7 +210,7 @@ function ScormTrackingState()
 
     function exit(page_nr, ia_nr)
     {
-        sit = this.findInteraction(page_nr, ia_nr);
+        var sit = this.findInteraction(page_nr, ia_nr);
         if (sit != null)
         {
             return sit.exit();
@@ -248,6 +255,7 @@ function ScormTrackingState()
     function id_to_interactionidx(id)
     {
         var count = scorm_nr_interactions();
+        var i=0;
         for (i=0; i<count; i++)
         {
             ia_id = getValue('cmi.interactions.' + i + '.id');
@@ -263,8 +271,23 @@ function ScormTrackingState()
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, force)
     {
         var sit = this.findInteraction(page_nr, ia_nr);
+        if (ia_nr <0)
+        {
+            this.currentpageid = "";
+        }
+        else
+        {
+            this.currentid = "";
+        }
         if (sit != null && sit.exit())
         {
+            if (this.scoremode == 'first' && sit.count > 1)
+            {
+                if (sit.ia_nr < 0)
+                    this.pages_visited++;
+                return;
+            }
+
             // Record this action
             var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
             var currnrinteractions = this.scorm_nr_interactions();
@@ -278,7 +301,7 @@ function ScormTrackingState()
 
             if (!this.trackingmode != 'none' && (sit.ia_type == 'page' || this.trackingmode=='full'))
             {
-                res = setValue(interaction + 'id', id);
+                var res = setValue(interaction + 'id', id);
                 res = setValue(interaction + 'timestamp', this.formatDate(sit.start));
                 res = setValue(interaction + 'description', sit.ia_name);
                 res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
@@ -289,37 +312,39 @@ function ScormTrackingState()
                         var psit = this.findPage(sit.page_nr);
                         if (psit != null)
                         {
-                            pweighting = psit.weighting;
-                            nrquestions = psit.nrinteractions;
+                            var pweighting = psit.weighting;
+                            var nrquestions = psit.nrinteractions;
                         }
                         else
                         {
-                            pweighting = 1.0;
-                            nrquestions = 1.0;
+                            var pweighting = 1.0;
+                            var nrquestions = 1.0;
                         }
                         // We have an options as numbers, separated by ';'
                         // and we have corresponding answers strings separated by ';'
                         // Construct answers like a:Answerstring
-                        loptionsArray = learneroptions.split(';');
-                        scormAnswerArray = [];
+                        var loptionsArray = learneroptions.split(';');
+                        var scormAnswerArray = [];
+                        var i=0;
                         for (i=0; i<loptionsArray.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
                             var entry = String.fromCharCode(parseInt(loptionsArray[i])+96);
                             scormAnswerArray.push(entry);
                         }
-                        scorm_lanswer = scormAnswerArray.join('[,]');
+                        var scorm_lanswer = scormAnswerArray.join('[,]');
 
                         // Do the same for the answer pattern
-                        coptionsArray = sit.correctoptions.split(';');
-                        scormCorrectArray = [];
+                        var coptionsArray = sit.correctoptions.split(';');
+                        var scormCorrectArray = [];
+                        var i=0;
                         for (i=0; i<coptionsArray.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
                             var entry = String.fromCharCode(parseInt(coptionsArray[i])+96);
                             scormCorrectArray.push(entry);
                         }
-                        scorm_canswer = scormCorrectArray.join('[,]');
+                        var scorm_canswer = scormCorrectArray.join('[,]');
                         res = setValue(interaction + 'type', 'choice');
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
                         res = setValue(interaction + 'weighting', Math.round(pweighting/nrquestions*100)/100);
@@ -361,7 +386,6 @@ function ScormTrackingState()
             }
             res = persistData();
         }
-        this.currentid = "";
     }
 
     function getCompletionStatus()
@@ -442,6 +466,7 @@ function ScormTrackingState()
             var weight = [];
             var totalweight = 0.0;
             // Walk passed the pages
+            var i=0;
             for (i=0; i<this.nrpages; i++)
             {
                 var sit = this.findPage(i);
@@ -561,6 +586,21 @@ function XTLogin(login, passwd)
 function XTGetMode()
 {
     var result = String(getValue("cmi.mode"));
+    if (result == "normal")
+    {
+        if (state.currentpageid)
+        {
+            var sit=state.find(state.currentpageid);
+            if (sit != null)
+            {
+                if (sit.weighting > 0)
+                    return "tracking";
+                else
+                    return "";
+            }
+        }
+        return "tracking";
+    }
     return result;
 }
 
@@ -583,7 +623,28 @@ function XTSetOption(option, value)
             state.nrpages = value;
             break;
         case "tracking-mode":
-            state.trackingmode = value;
+            switch(value)
+            {
+                case 'full_first':
+                    state.trackingmode = 'full';
+                    state.scoremode = 'first';
+                    break;
+                case 'minimal_first':
+                    state.trackingmode = 'minimal';
+                    state.scoremode = 'first';
+                    break;
+                case 'full':
+                    state.trackingmode = 'full';
+                    state.scoremode = 'last';
+                    break;
+                case 'minimal':
+                    state.trackingmode = 'minimal';
+                    state.scoremode = 'last';
+                    break;
+                case 'none':
+                    state.trackingmode = 'none';
+                    break;
+            }
             break;
         case "completed":
             state.lo_completed = value;
@@ -612,7 +673,7 @@ function XTEnterPage(page_nr, page_name)
         result = setValue(comment + 'timestamp', state.formatDate(new Date()));
         result = persistData();
     }
-    state.currentid = sit.id;
+    state.currentpageid = sit.id;
 }
 
 
@@ -624,13 +685,13 @@ function XTExitPage(page_nr)
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 {
-    sit = state.findPage(page_nr);
+    var sit = state.findPage(page_nr);
     if (sit != null)
     {
         sit.ia_type = page_type;
 
         sit.nrinteractions = nrinteractions;
-        sit.weighting = weighting;
+        sit.weighting = parseInt(weighting);
         if (page_type != 'page')
         {
             state.lo_type = 'interactive';
@@ -640,7 +701,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 function XTSetPageScore(page_nr, score)
 {
-    sit = state.findPage(page_nr);
+    var sit = state.findPage(page_nr);
     if (sit != null)
     {
         sit.score = score;
@@ -653,6 +714,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     sit.correctoptions = correctoptions;
     sit.correctanswer = correctanswer;
     sit.correctfeedback = feedback;
+    sit.currentid = sit.id;
 }
 
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
@@ -691,18 +753,28 @@ function XTTerminate()
 {
     if (!state.finished)
     {
-        var currentid = "";
+        var currentpageid = "";
         if (state.currentid)
         {
-            currentid = state.currentid;
             var sit = state.find(currentid);
-            // there is still a page open, close it
+            // there is still an interaction open, close it
             if (sit != null)
             {
                 state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
             }
         }
-        state.finishTracking(currentid);
+        if (state.currentpageid)
+        {
+            currentpageid = state.currentpageid;
+            var sit = state.find(currentpageid);
+            // there is still an interaction open, close it
+            if (sit != null)
+            {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+
+        }
+        state.finishTracking(currentpageid);
 
         terminateCommunication();
     }
