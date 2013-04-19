@@ -1,5 +1,4 @@
 <script type="text/javascript">
-	// ** DOESN'T WORK ON MOBILES **
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -22,8 +21,8 @@
 		this.sizeChanged = function() {
 			var $canvas = $("#canvas");
 			if ($canvas.length > 0 && $canvas[0].getContext) {
-				var context = $canvas[0].getContext("2d");
-				var highlightColour = context.strokeStyle;
+				var context = $canvas[0].getContext("2d"),
+					highlightColour = context.strokeStyle;
 				$canvas.attr({
 					width	:$x_pageDiv.width(),
 					height	:$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2
@@ -44,22 +43,92 @@
 			}
 		}
 		
+		this.init = function() {
+			$pageContents = $("#pageContents");
+			$imageHolder = $("#imageHolder");
+			$canvas = $("#canvas");
+			$hsHolder = $("#hsHolder");
+			$textContents = $("#textContents");
+			
+			if (x_currentPageXML.getAttribute("align") != "Top") {
+				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
+				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
+			}
+			$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			padding = parseInt($imageHolder.css("padding-left"));
+			$hsHolder.css("margin", padding);
+			
+			if (x_currentPageXML.getAttribute("url").split(".")[1].slice(0, -1) != "swf") {
+				var imgMaxW = 400,	imgMaxH = 450;
+				if (x_browserInfo.mobile == true) {
+					imgMaxW = 250; // mobile
+					imgMaxH = 250;
+				} else if (x_currentPageXML.getAttribute("align") == "Top") {
+					imgMaxW = 600;
+					imgMaxH = 250;
+				}
+				
+				$imageHolder.append('<img onload="x_scaleImg(this, ' + imgMaxW + ', ' + imgMaxH + ', true, true); annotatedDiagram.imgLoaded();" />');
+				$img = $imageHolder.find("img");
+				
+				$img.attr({
+					"src"	:eval(x_currentPageXML.getAttribute("url")),
+					"alt"	:x_currentPageXML.getAttribute("tip")
+				});
+				
+			} else {
+				// have had to add this in I found one old project where a swf was used instead of an image on this page
+				var size = [300,300];
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						size = [Number(dimensions[0]), Number(dimensions[1])];
+					}
+				}
+				
+				$imageHolder.append('<div id="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div>');
+				$img = $("#pageSWF");
+				$img.data("origSize", size);
+				
+				this.imgLoaded();
+				
+				swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+				$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
+			}
+			
+			if (x_currentPage != 0) {
+				this.sizeChanged();
+			}
+		}
+		
 		this.imgLoaded = function() {
+			var	imgW,
+				imgH = $img.height();
+			
+			if ($img.is("div")) {
+				imgW = $img.data("origSize")[0];
+				imgH = $img.data("origSize")[1];
+			} else {
+				imgW = $img.width();
+				imgH = $img.height();
+			}
+			
 			// position text correctly
 			if (x_currentPageXML.getAttribute("align") == "Top") {
-				$textContents.css("margin-top", $img.height() + (padding * 4) + "px");
-				var imgIndent = ($x_pageDiv.width() - ($img.width() + (padding * 4))) / 2;
+				$textContents.css("margin-top", imgH + (padding * 4) + "px");
+				var imgIndent = ($x_pageDiv.width() - (imgW + (padding * 4))) / 2;
 				$imageHolder.css("margin-left", imgIndent);
 				$hsHolder.css("margin-left", imgIndent);
 			} else {
-				$textContents.css("margin-right", $img.width() + (padding * 4) + "px");
+				$textContents.css("margin-right", imgW + (padding * 4) + "px");
 			}
 			
 			// create hotspots - taking scale of image into account
 			$hsHolder
 				.width($imageHolder.width())
 				.height($imageHolder.height());
-			scale = $img.width() / $img.data("origSize")[0];
+			scale = imgW / $img.data("origSize")[0];
 			
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("colour") != undefined && x_currentPageXML.getAttribute("colour") != "") {
@@ -80,8 +149,8 @@
 			}
 			$pageContents.data("shape", shape);
 			
-			var $listItem = $(".listItem:first");
-			var $listHolder = $("#listHolder");
+			var $listItem = $(".listItem:first"),
+				$listHolder = $("#listHolder");
 			$(x_currentPageXML).children()
 				.each(function(i){
 					var $thisItem;
@@ -110,8 +179,8 @@
 									$("#hsHolder .selected").removeClass("selected");
 									$($("#hsHolder").children()[$this.index()]).addClass("selected");
 								} else {
-									var $canvas = $("#canvas");
-									var context = $canvas[0].getContext("2d");
+									var $canvas = $("#canvas"),
+										context = $canvas[0].getContext("2d");
 									context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
 									var $hs = $($("#hsHolder").children()[$this.index()]);
 									if ($hs.hasClass("hsGroup")) {
@@ -127,8 +196,8 @@
 						});
 					
 					if (this.tagName == "hotspotGroup") {
-						var groupXML = this;
-						var $hsGroup = $('<div class="hsGroup"></div>');
+						var groupXML = this,
+							$hsGroup = $('<div class="hsGroup"></div>');
 						$hsHolder.append($hsGroup);
 						$(this).children()
 							.each(function(){
@@ -154,8 +223,8 @@
 		}
 		
 		this.createHotspot = function(hsXML, $parent, $listItem, groupXML) {
-			var $hotspot = $('<a class="hotspot" href="#" />');
-			var hsName = hsXML.getAttribute("name");
+			var $hotspot = $('<a class="hotspot" href="#" />'),
+				hsName = hsXML.getAttribute("name");
 			if (groupXML != undefined) { // hs in a group
 				hsName = groupXML.getAttribute("name");
 			}
@@ -203,41 +272,6 @@
 			}
 			context.stroke();
 		}
-		
-		this.init = function() {
-			$pageContents = $("#pageContents");
-			$imageHolder = $("#imageHolder");
-			$img = $imageHolder.find("img");
-			$canvas = $("#canvas");
-			$hsHolder = $("#hsHolder");
-			$textContents = $("#textContents");
-			
-			if (x_currentPageXML.getAttribute("align") != "Top") {
-				$imageHolder.css("right", $x_pageDiv.css("padding-right"));
-				$hsHolder.css("right", $x_pageDiv.css("padding-right"));
-			}
-			$textContents.find("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
-			padding = parseInt($imageHolder.css("padding-left"));
-			$hsHolder.css("margin", padding);
-			$img.attr({
-				"src"	:eval(x_currentPageXML.getAttribute("url")),
-				"alt"	:x_currentPageXML.getAttribute("tip")
-			});
-			
-			if (x_currentPage != 0) {
-				annotatedDiagram.sizeChanged();
-			}
-		}
-	}
-	
-	var imgMaxW = 400,	imgMaxH = 450;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW = 250; // mobile
-		imgMaxH = 250;
-	} else if (x_currentPageXML.getAttribute("align") == "Top") {
-		imgMaxW = 600;
-		imgMaxH = 250;
 	}
 	
 	annotatedDiagram.init();
@@ -285,9 +319,7 @@
 
 <div id="pageContents">
 	
-	<div id="imageHolder" class="panel inline">
-		<img onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); annotatedDiagram.imgLoaded();" />
-	</div>
+	<div id="imageHolder" class="panel inline"></div>
 	
 	<canvas id="canvas"></canvas>
 	
