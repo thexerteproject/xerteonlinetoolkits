@@ -149,7 +149,7 @@ function show_template($row_play){
 	
 	<?PHP
 	
-	 "</script></body></html>";
+	 echo "</script></body></html>";
 
 	}
 

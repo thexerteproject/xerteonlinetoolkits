@@ -150,7 +150,7 @@ function show_preview_code($row){
 	
 	<?PHP
 	
-	 "</script></body></html>";
+	 echo "</script></body></html>";
 
 	}
 
