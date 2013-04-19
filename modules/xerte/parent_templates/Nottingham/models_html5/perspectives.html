@@ -121,7 +121,7 @@
 							})
 							.attr("disabled", "disabled");
 						
-						perspectives.loadVideo($thisVideo, true);
+						perspectives.loadVideo($thisVideo);
 					}
 				}
 			});
@@ -193,7 +193,7 @@
 									"src"		:thisData.getAttribute("src"),
 									"dimensions":videoDimensions
 								});
-								perspectives.loadVideo($thisVideo, videoDimensions);
+								perspectives.loadVideo($thisVideo);
 							}
 							
 							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn

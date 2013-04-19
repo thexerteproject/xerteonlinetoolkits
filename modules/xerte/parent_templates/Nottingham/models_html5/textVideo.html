@@ -13,7 +13,7 @@
 			
 		}
 		
-		this.loadVideo = function(firstLoad) {
+		this.loadVideo = function() {
 			var $video = $("#pageVideo");
 			$video.mediaPlayer({
 				type			:"video",
@@ -22,9 +22,6 @@
 				height			:Number($video.data("dimensions")[1]),
 				startEndFrame	:$video.data("startEndFrame")
 			});
-			if (firstLoad == true) {
-				x_pageLoaded(); // call this function in every model once everything's loaded
-			}
 		}
 		
 		this.init = function() {
@@ -100,30 +97,8 @@
 				})
 				.attr("title", x_currentPageXML.getAttribute("tip"));
 			
-			if (x_browserInfo.iOS == true) { // iPad / iPhone / iPod - won't play flvs so if flv check alternative file exists
-				var fileInfo = videoSrc.split(".");
-				fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-				if (fileInfo[1] == "flv") {
-					$.ajax({
-						url:	eval(fileInfo[0] + ".mp4'"),
-						type:	"HEAD",
-						success: function() {
-							// mp4 version exists - use this instead
-							videoSrc = fileInfo[0] + ".mp4'";
-							$pageVideo.data("src", videoSrc);
-							textVideo.loadVideo(true);
-						},
-						error:	function() {
-							// no mp4 version to use
-							textVideo.loadVideo(true);
-						}
-					});
-				} else {
-					textVideo.loadVideo(true);
-				}
-			} else {
-				textVideo.loadVideo(true);
-			}
+			this.loadVideo();
+			x_pageLoaded();
 		}
 	}
 	
