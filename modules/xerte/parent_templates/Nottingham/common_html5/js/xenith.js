@@ -148,6 +148,10 @@ $(document).ready(function() {
 			x_getLangData(x_params.language);
             // Setup nr of pages for tracking
             XTSetOption('nrpages', x_pageInfo.length);
+            if (x_params.trackingMode != undefined)
+            {
+                XTSetOption('tracking-mode', x_params.trackingMode);
+            }
 		},
 		error: function() {
 			// can't have translation for this as if it fails to load we don't know what language file to use?

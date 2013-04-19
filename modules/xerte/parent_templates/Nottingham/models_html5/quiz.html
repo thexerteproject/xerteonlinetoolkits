@@ -33,14 +33,29 @@
 			if (this.qNoTxt == undefined) {
 				this.qNoTxt = "Question {i} of {n}";
 			}
-			
+            this.showfeedback = true;
+            if (x_currentPageXML.getAttribute("showfeedback") != undefined)
+            {
+                this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
+            }
+
 			$("#optionHolder").show();
 			$("#restartBtn").hide();
-			$("#nextBtn, #checkBtn")
+			$("#checkBtn")
 				.show()
 				.attr("disabled", "disabled");
-			
-			this.currentQ = 0;
+
+            if (this.showfeedback)
+            {
+                $("#nextBtn")
+                        .show()
+                        .attr("disabled", "disabled");
+            }
+            else
+            {
+                $("#nextBtn").hide();
+            }
+            this.currentQ = 0;
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
 			var numQs = $(x_currentPageXML).children().length;
@@ -66,7 +81,12 @@
 				}
 			}
 			// Track the quiz page
-            XTSetPageType(x_currentPage, 'numeric', numQs, 1.0);
+            this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
 		}
@@ -115,6 +135,7 @@
 						$thisOption = $option;
 						$thisOptionTxt = $optionTxt;
 					}
+                    quiz.currNrOptions = i+1;
 					if (this.getAttribute("correct") == 'true')
                     {
                         correctOptions.push(i+1+"");
@@ -145,7 +166,36 @@
 				});
             XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
 		}
-		
+
+        this.showResults = function() {
+
+            // last question answered - show results
+            var $pageContents = $("#pageContents");
+            $("#qNo").html($pageContents.data("onCompletionText"));
+            var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+
+            var myScore = 0;
+            for (var i=0; i<quiz.myProgress.length; i++) {
+                if (quiz.myProgress[i] == true) {
+                    myScore++;
+                }
+            }
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
+            }
+
+            $("#qTxt").html(fbTxt);
+            $("#optionHolder, #nextBtn, #checkBtn").hide();
+            if (XTGetMode() != "tracking")
+            {
+                $("#restartBtn").show();
+            }
+            $("#feedback").html("");
+
+            var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
+            XTSetPageScore(x_currentPage, scormScore);
+        }
+
 		this.loadVideo = function() {
 			var $video = $("#pageVideo");
 			var videoDimensions = $video.data("dimensions");
@@ -231,11 +281,6 @@
 			if (restartBtnText == undefined) {
 				restartBtnText = "Restart";
 			}
-			var feedbackTxt = x_currentPageXML.getAttribute("feedbackLabel");
-			if (feedbackTxt == undefined) {
-				feedbackTxt = "Feedback";
-			}
-			feedbackTxt = '<h3>' + feedbackTxt + '</h3><p>{A}</p>{B}';
 			var singleRight = x_currentPageXML.getAttribute("singleRight");
 			if (singleRight == undefined) {
 				singleRight = "Your answer is correct";
@@ -260,9 +305,13 @@
 			if (scoreText == undefined) {
 				scoreText = "You scored {i} / {n}";
 			}
-			
-			$("#pageContents").data({
-				"feedbackTxt"		:feedbackTxt,
+            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+            if (feedbackLabel == undefined) {
+                feedbackLabel = "Feedback";
+            }
+
+            $("#pageContents").data({
+            "feedbackLabel"         :feedbackLabel,
 				"singleRight"		:singleRight,
 				"singleWrong"		:singleWrong,
 				"multiRight"		:multiRight,
@@ -281,18 +330,21 @@
 					
 					var selected = $("#optionHolder input:checked");
 					var optionFeedback = "";
-					var correct;
+					var correct = true;
                     var l_options = [];
                     var l_answer = [];
                     var l_feedback = [];
-					// get feedback for selected options and check if they are correct
+
+                    var generalFeedback = "";
+                    if (x_currentPageXML.getAttribute("feedback") != undefined) {
+                        generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+                    }
+
+                        // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).index()/2;
 						var selectedOption = $(currentQuestion).children()[optionIndex];
-						optionFeedback += x_addLineBreaks(selectedOption.getAttribute("feedback"));
-						if (i < selected.length - 1) {
-							optionFeedback += "<br/><br/>";
-						}
+						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback"))  + "</p>";
 						if (correct != false && selectedOption.getAttribute("correct") == "true") {
 							correct = true;
 						} else {
@@ -302,6 +354,7 @@
                         l_answer.push(selectedOption.getAttribute("text"));
                         l_feedback.push(selectedOption.getAttribute("feedback"));
 					}
+                    generalFeedback += optionFeedback;
 					var rightWrongTxt = "";
 					if (x_currentPageXML.getAttribute("judge") != "false") {
 						// if all selected are correct - check that none of the unselected options should have been
@@ -332,17 +385,36 @@
                         XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
 						quiz.myProgress.splice(quiz.currentQ, 1, correct);
 					}
-					var answerFeedback = "";
-					if (optionFeedback == "") {
-						answerFeedback = rightWrongTxt;
-					} else {
-						answerFeedback = $("#pageContents").data("feedbackTxt").replace("{A}", optionFeedback).replace("{B}", rightWrongTxt);
-					}
-					$("#feedback").html(answerFeedback);
-					
-					$("#nextBtn").removeAttr("disabled");
-					$(this).attr("disabled", "disabled");
-					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+                    generalFeedback += rightWrongTxt;
+                    var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
+                    if (XTGetMode() == "tracking")
+                    {
+                        // Disable all options
+                        var i=0;
+                        for (i=0; i<quiz.currNrOptions; i++)
+                        {
+                            $("#option"+i).attr("disabled", "disabled");
+                        }
+                    }
+                    if (quiz.showfeedback)
+                    {
+					    $("#feedback").html(answerFeedback);
+
+					    $("#nextBtn").removeAttr("disabled");
+					    $(this).attr("disabled", "disabled");
+					    $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+                    }
+                    else
+                    {
+                        // Continue to next question
+                        quiz.currentQ++;
+                        if (quiz.currentQ == quiz.questions.length) {
+                            // last question answered - show results
+                            quiz.showResults();
+                        } else {
+                            quiz.loadQ();
+                        }
+                    }
 				});
 			
 			$("#nextBtn")
@@ -354,29 +426,8 @@
 					$(this).attr("disabled", "disabled");
 					quiz.currentQ++;
 					if (quiz.currentQ == quiz.questions.length) {
-						// last question answered - show results
-						var $pageContents = $("#pageContents");
-						$("#qNo").html($pageContents.data("onCompletionText"));
-						var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
-						
-						var myScore = 0;
-						for (var i=0; i<quiz.myProgress.length; i++) {
-							if (quiz.myProgress[i] == true) {
-								myScore++;
-							}
-						}
-						if (x_currentPageXML.getAttribute("judge") != "false") {
-							fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
-						}
-						
-						$("#qTxt").html(fbTxt);
-						$("#optionHolder, #nextBtn, #checkBtn").hide();
-						$("#restartBtn").show();
-						$("#feedback").html("");
-						
-						var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
-                        XTSetPageScore(x_currentPage, scormScore);
-
+                        // last question answered - show results
+                        quiz.showResults();
 					} else {
 						quiz.loadQ();
 					}
@@ -433,7 +484,7 @@
 		float:			right;
 	}
 
-	#feedback, #buttonHolder {
+	#feedbackHolder, #feedback, #buttonHolder {
 		clear:		both;
 	}
 	
@@ -463,10 +514,12 @@
 				<div id="optionHolder"></div>
 				<div id="buttonHolder">
 					<button id="checkBtn"></button>
-					<button id="nextBtn"></button>
 					<button id="restartBtn"></button>
 				</div>
-				<div id="feedback"></div>
+				<div id="feedbackHolder">
+                    <div id="feedback"></div>
+                    <button id="nextBtn"></button>
+				</div>
 			</div>
 		</div>
 
