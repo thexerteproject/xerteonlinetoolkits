@@ -16,8 +16,10 @@
 	define("DISPLAY_EXAMPLE", "See example");
 	
 	define("DISPLAY_CREATE", "Create");
-	
-	define("DISPLAY_NAME", "Enter a name for this project");
+
+    define("DISPLAY_BUTTON_PROJECT_CREATE", "Create Project");
+
+    define("DISPLAY_NAME", "Enter a name for this project");
 	
 	define("DISPLAY_ERROR", "An error has occured and as such you cannot edit at present");
 	
