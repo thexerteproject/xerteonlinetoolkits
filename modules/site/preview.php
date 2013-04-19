@@ -32,7 +32,7 @@ function show_preview_code($row){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo SITE_PREVIEW_TITLE;  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
