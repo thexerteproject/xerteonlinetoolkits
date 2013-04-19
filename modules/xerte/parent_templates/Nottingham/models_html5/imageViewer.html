@@ -115,9 +115,7 @@
 			var $textHolder		= $("#textHolder");
 			var $panel			= $("#mainPanel");
 			
-			$imgCover
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')") /* without a bg the div won't respond to mouse events in IE */
-				.disableSelection(); // select area control won't work without coverImg
+			$imgCover.disableSelection(); // select area control won't work without coverImg
 			
 			
 			// text align
@@ -611,7 +609,7 @@
 				
 				<img id="pageImg" tabindex="2" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); imageViewer.imgLoaded();" />
 				
-				<div id="imgCover"/>
+				<div id="imgCover" class="transparent" />
 				
 				<div id="controlPanel" class="panel">
 					<input  id="move" type="checkbox" tabindex="3" /><label for="move"></label>

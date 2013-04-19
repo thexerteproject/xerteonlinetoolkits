@@ -215,7 +215,7 @@
 			
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')"); /* without the text having a bg the labels strangely aren't selectable in IE */
+				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var $feedback = $("#feedback")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
@@ -399,8 +399,13 @@
 		background-repeat:		no-repeat;
 	}
 	
+	#targetHolder .target.bg {
+		background-color:	rgb(220, 220, 220); /* fallback */
+		background-color:	rgba(0, 0, 0, 0.1);
+	}
+	
 	#targetHolder .target.focus {
-		background-color:	rgb(205, 205, 205); /* fallback */ 
+		background-color:	rgb(205, 205, 205); /* fallback - can't use an image instead as the arrow's already the bg on these divs */ 
 		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
@@ -429,7 +434,7 @@
 		<div id="textHolder" tabindex="1"></div>
 		
 		<div id="targetHolder">
-			<div class="target highlight">
+			<div class="target bg">
 				<h3></h3>
 			</div>
 		</div>

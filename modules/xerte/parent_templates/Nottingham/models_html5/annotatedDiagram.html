@@ -193,7 +193,7 @@
 									}
 								}
 							}
-						});
+						})
 					
 					if (this.tagName == "hotspotGroup") {
 						var groupXML = this,
@@ -216,7 +216,7 @@
 			} else if (shape == "Rectangle") {
 				$hotspot.css("border-color", highlightColour);
 			}
-			$hotspot.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png" + "')");
+			$hotspot.addClass("transparent");
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -240,7 +240,23 @@
 					})
 				.click(function() {
 					$(this).data("listItem").trigger("click");
-					});
+					})
+				.focusin(function() {
+					$(this)
+						.removeClass("transparent")
+						.addClass("highlight");
+					})
+				.focusout(function() {
+					$(this)
+						.removeClass("highlight")
+						.addClass("transparent");
+					})
+				.keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						$(this).trigger("click");
+					}
+				});
 			$parent.append($hotspot);
 		}
 		

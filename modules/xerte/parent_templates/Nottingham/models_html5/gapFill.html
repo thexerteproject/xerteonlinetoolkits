@@ -227,7 +227,6 @@
 				.width(maxW) // make targets fit longest word before clearing text from them
 				.height($targetHolder.find(".target").height())
 				.html("")
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')") /* without a bg the hotspots aren't selectable in IE */
 				.droppable({
 					drop:	function(event, ui) {
 						gapFill.dropLabel($(this), ui.draggable); // target, label
@@ -235,7 +234,7 @@
 					})
 				.focusin(function(e) {
 					var $this = $(this);
-					$this.addClass("focus");
+					$this.addClass("highlightDark");
 					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 						$this.attr("title", targetTxt1 + " " + ($this.data("index") + 1) + " - " + targetTxt2);
 					}
@@ -243,7 +242,7 @@
 				.focusout(function() {
 					var $this = $(this);
 					$this
-						.removeClass("focus")
+						.removeClass("highlightDark")
 						.attr("title", targetTxt1 + " " + ($this.data("index") + 1));
 					})
 				.keypress(function(e) {
@@ -302,12 +301,13 @@
 							$pageContents.data("selectedLabel").attr("title", labelTxt1);
 							$pageContents.data("selectedLabel", "");
 						}
-						var targetInFocus = $("#targetHolder .target.focus");
+						var targetInFocus = $("#targetHolder .target.highlightDark");
 						if (targetInFocus.length > 0) {
 							targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
 						}
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
+						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 					}
 					})
 				// set up events used when keyboard rather than mouse is used
@@ -366,7 +366,7 @@
 			
 			$thisTarget
 				.removeAttr("title")
-				.removeClass("highlight focus")
+				.removeClass("highlight highlightDark")
 				.addClass("correct")
 				.html($thisLabel.html())
 				.off("keypress focusin focusout");
@@ -396,11 +396,6 @@
 		vertical-align:	middle;
 		padding:		5px;
 		margin:			3px 0 5px 0;
-	}
-	
-	#targetHolder .target.focus {
-		background-color:	rgb(205, 205, 205); /* fallback */ 
-		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
 	#targetHolder input {

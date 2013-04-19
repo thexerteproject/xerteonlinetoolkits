@@ -80,12 +80,13 @@
 						$pageContents.data("selectedLabel").attr("title", labelTxt1);
 						$pageContents.data("selectedLabel", "");
 					}
-					var targetInFocus = $("#dragDropHolder .category.focus");
+					var targetInFocus = $("#dragDropHolder .category.highlightDark");
 					if (targetInFocus.length > 0) {
 						targetInFocus.attr("title", targetTxt1 + " " + targetInFocus.find("h3").html());
 					}
 					$("#dragDropHolder .selected").removeClass("selected");
 					$("#dragDropHolder .focus").removeClass("focus");
+					$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 					
 					$("#feedback").hide();
 					$("#dragDropHolder .tick").remove();
@@ -142,7 +143,7 @@
 			
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')"); /* without the text having a bg the labels strangely aren't selectable in IE */
+				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var $feedback = $("#feedback");
 			if (x_currentPageXML.getAttribute("feedback") == undefined || x_currentPageXML.getAttribute("feedback") == "") {
@@ -212,7 +213,7 @@
 			$("#categoryHolder .category")
 				.focusin(function(e) {
 					if ($(e.target).hasClass("category")) {
-						$(this).addClass("focus");
+						$(this).addClass("highlightDark");
 						var $pageContents = $("#pageContents");
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 							$(this).attr("title", targetTxt1 + " " + $(this).find("h3").html() + " - " + targetTxt2);
@@ -222,7 +223,7 @@
 				.focusout(function() {
 					var $pageContents = $("#pageContents");
 					$(this)
-						.removeClass("focus")
+						.removeClass("highlightDark")
 						.attr("title", targetTxt1 + " " + $(this).find("h3").html());
 					})
 				.keypress(function(e) {
@@ -319,11 +320,6 @@
 	#categoryHolder .category {
 		padding:			1%;
 		float:				left;
-	}
-	
-	#categoryHolder .category.focus {
-		background-color:	rgb(205, 205, 205); /* fallback */ 
-		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
 	#categoryHolder .category .label {

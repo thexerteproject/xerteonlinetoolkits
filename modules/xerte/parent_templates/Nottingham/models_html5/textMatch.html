@@ -103,12 +103,13 @@
 							$pageContents.data("selectedLabel").attr("title", labelTxt1);
 							$pageContents.data("selectedLabel", "");
 						}
-						var targetInFocus = $("#targetHolder .target.focus");
+						var targetInFocus = $("#targetHolder .target.highlightDark");
 						if (targetInFocus.length > 0) {
 							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + "'");
 						}
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
+						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 						
 						$("#feedback").hide();
 						$("#dragDropHolder .tick, #targetHolder .hint").remove();
@@ -221,7 +222,7 @@
 			
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')"); /* without the text having a bg the labels strangely aren't selectable in IE */
+				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
 			var feedbackTxt = x_currentPageXML.getAttribute("correctMessage");
 			if (feedbackTxt == undefined) {
@@ -327,7 +328,7 @@
 					})
 				.focusin(function(e) {
 					if ($(e.target).hasClass("target")) {
-						$(this).addClass("focus");
+						$(this).addClass("highlightDark");
 						var $pageContents = $("#pageContents");
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 							$(this).attr("title", targetTxt1 + " '" + $(this).data("name") + "' - " + targetTxt2);
@@ -337,7 +338,7 @@
 				.focusout(function() {
 					var $pageContents = $("#pageContents");
 					$(this)
-						.removeClass("focus")
+						.removeClass("highlightDark")
 						.attr("title", targetTxt1 + " '" + $(this).data("name") + "'");
 					})
 				.keypress(function(e) {
@@ -425,11 +426,6 @@
 		padding:		1%;
 		margin-top:		10px;
 		margin-bottom:	10px;
-	}
-	
-	#targetHolder .target.focus {
-		background-color:	rgb(205, 205, 205); /* fallback */ 
-		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
 	#targetHolder h3 {

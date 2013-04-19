@@ -1,4 +1,6 @@
 <script type="text/javascript">
+
+	// ** change so it's not split screen anymore but inline panel - so it stays the width of the image
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -124,12 +126,13 @@
 							$pageContents.data("selectedLabel").attr("title", labelTxt1);
 							$pageContents.data("selectedLabel", "");
 						}
-						var targetInFocus = $("#targetHolder .target.focus");
+						var targetInFocus = $("#targetHolder .target.highlight");
 						if (targetInFocus.length > 0) {
 							targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
 						}
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
+						$("#dragDropHolder .highlight").addClass("transparent").removeClass("highlight");
 						
 						$("#infoHolder").html("");
 					},
@@ -231,7 +234,7 @@
 					xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
 					
 					// create target and position it
-					$('<div class="target"></div>')
+					$('<div class="target transparent"></div>')
 						.appendTo($targetHolder)
 						.attr("title", targetTxt1 + " " + (i + 1))
 						.data("text", this.getAttribute("text"))
@@ -250,7 +253,7 @@
 			var $targets = $("#targetHolder .target");
 			
 			// add border to targets
-			if (x_currentPageXML.getAttribute("showHighlight") == "true") {
+			if (x_currentPageXML.getAttribute("showHighlight") != "false") {
 				var highlightColour = "yellow";
 				if (x_currentPageXML.getAttribute("highlightColour") != undefined && x_currentPageXML.getAttribute("highlightColour") != "") {
 					highlightColour = "#" + x_currentPageXML.getAttribute("highlightColour").substr(2, 6);
@@ -261,7 +264,6 @@
 			}
 			
 			$targets
-				.css("background-image", "url('" + x_templateLocation + "common_html5/transparent.png')") /* without a bg the hotspots aren't selectable in IE */
 				.droppable({
 					drop:	function(event, ui) {
 						dragDropLabel.dropLabel($(this), ui.draggable); // target, label
@@ -269,7 +271,9 @@
 					}
 					})
 				.focusin(function(e) {
-					$(this).addClass("focus");
+					$(this)
+						.addClass("highlight")
+						.removeClass("transparent");
 					var $pageContents = $("#pageContents");
 					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 						$(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
@@ -278,7 +282,8 @@
 				.focusout(function() {
 					var $pageContents = $("#pageContents");
 					$(this)
-						.removeClass("focus")
+						.addClass("transparent")
+						.removeClass("highlight")
 						.attr("title", targetTxt1 + " " + ($(this).index() + 1));
 					})
 				.keypress(function(e) {
@@ -333,8 +338,8 @@
 				.css({
 					"opacity"	:1,
 					"position"	:"absolute",
-					"top"		:$thisTarget.position().top + 10,
-					"left"		:$thisTarget.position().left + 10
+					"top"		:$thisTarget.position().top + 2,
+					"left"		:$thisTarget.position().left + 2
 				})
 				.off("keypress focusin focusout")	
 				.click(function() {
@@ -413,11 +418,6 @@
 	
 	#targetHolder .target.border {
 		border:	1px solid;
-	}
-	
-	#targetHolder .target.focus {
-		background-color:	rgb(205, 205, 205); /* fallback */ 
-		background-color:	rgba(0, 0, 0, 0.2);
 	}
 	
 </style>

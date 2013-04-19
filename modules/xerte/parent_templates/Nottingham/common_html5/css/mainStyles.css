@@ -332,9 +332,15 @@ audio {
 }
 
 .highlight {
-	background-color:	rgb(220, 220, 220); /* fallback */
-	background-color:	rgba(0, 0, 0, 0.1);
-	text-decoration:	none;
+	background-image:	url("../highlight.png");
+}
+
+.highlightDark {
+	background-image:	url("../highlight_dark.png");
+}
+
+.transparent {
+	background-image:	url("../transparent.png");
 }
 
 .hidden {

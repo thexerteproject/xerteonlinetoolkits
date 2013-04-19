@@ -191,7 +191,7 @@
 					
 					if (hsType != undefined) {
 						var _this = this,
-							$hotspot = $('<a class="hotspot" href="#" />');
+							$hotspot = $('<a class="hotspot transparent" href="#" />');
 						
 						$hotspot
 							.attr({
@@ -202,8 +202,7 @@
 								width	:Math.round(this.getAttribute("w") * scale) + "px",
 								height	:Math.round(this.getAttribute("h") * scale) + "px",
 								left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
-								top		:Math.round(this.getAttribute("y") * scale) + padding + "px",
-								"background-image"	:"url('" + x_templateLocation + "common_html5/transparent.png')" /* without a bg the hotspots aren't selectable in IE */
+								top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
 							})
 							.click(function() {
 								$(".x_popupDialog").parent().detach(); // remove any open dialogs
