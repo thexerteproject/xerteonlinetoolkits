@@ -5,12 +5,19 @@
  * - The database server is accessible on localhost, port 3306 with no password (user=root)
  * - The database to be created is called toolkits_data
  *
- */
+ */ 
+ 
 echo file_get_contents("page_top");
 
 $mysql_connect_id = mysql_connect("localhost", "root", "");
 
 // Check for connection and error if failed
+
+if(file_exists("../database.php")){
+
+	die("<p>You've already installed toolkits</p><p>Please go to <a href='http://" . $_SERVER['HTTP_HOST'] . str_replace("setup/xampp.php", "", $_SERVER['PHP_SELF']) . "'>Xerte Online Toolkits Install</a></p>");
+
+}
 
 if(!$mysql_connect_id){
 
@@ -78,7 +85,6 @@ while($x!=count($temp)){
 
 }
 
-
 $temp = file_get_contents("xampp.txt"); 
 
 $query_2 = substr($temp,3);
@@ -128,11 +134,23 @@ $db_import_path = mysql_real_escape_string($home . DIRECTORY_SEPARATOR . 'import
 mysql_query("UPDATE sitedetails SET root_file_path = '$db_root_file_path/' WHERE site_id = 1");
 mysql_query("UPDATE sitedetails SET import_path = '$db_import_path/' WHERE site_id = 1");
 
+$password = "password_" . time();
+
+mysql_query("UPDATE sitedetails SET admin_username = 'admin' WHERE site_id = 1");
+mysql_query("UPDATE sitedetails SET admin_password = '" . $password . "' WHERE site_id = 1");
+
 ?>
         <h2 style="margin-top:15px">
         Toolkits has been installed.</h2><p> Please go to <a href="<?php echo $site_url; ?>"><?php echo $site_url; ?></a> </p>
         <p>
             Please see the Xerte site at <a href="http://www.nottingham.ac.uk/xerte" target="new">http://www.nottingham.ac.uk/xerte</a> and please consider joining the mailing list.
         </p>
+		<p>
+			Your admin username for the Admin Panel (management.php) 
+			<ul>
+				<li>Username : <strong>admin</strong></li>
+				<li>Password : <strong><?PHP echo $password; ?></strong></li>
+			</ul>
+		</p>
 </body>
 </html>
