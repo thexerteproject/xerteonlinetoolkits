@@ -167,7 +167,7 @@ MySQL Database Account Set up page
 Your Xerte Online Toolkits database has been successfully created. When users are creating work on the site, the PHP will need a MySQL username with select,insert,update and delete privleges.
 </p>
 <p>
-<form action="page3.php" method="post" enctype="multipart/form-data">
+<form action="page_password.php" method="post" enctype="multipart/form-data">
     <label for="account">Database account name for users of the site. People following the XAMPP path / or testing locally should type in root.</label><br /><br /><input type="text" width="100" name="account" id="account" /><br /><br />
     <label for="password">Database password for the account above. People following the XAMPP path / or testing locally should leave this field blank.</label><br /><br /><input type="password" width="100" name="password" id="password"/><br /><br />
     <input type="image" src="next.gif" />

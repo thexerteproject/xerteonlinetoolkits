@@ -2,22 +2,6 @@
 
 echo file_get_contents("page_top");
 
-$buffer = file_get_contents("database.txt");
-
-$buffer = str_replace("DATABASE_USERNAME",$_POST['account'],$buffer);
-$buffer = str_replace("DATABASE_PASSWORD",$_POST['password'],$buffer);
-$file_handle = fopen("../database.php",'w');
-
-if($file_handle){
-    if(fwrite($file_handle,$buffer,strlen($buffer))){
-        fclose($file_handle);
-    }else{
-        die("database.php could not be written to");
-    }
-}else{
-    die("database.php could not be created");
-}
-
 ?>
 
         <h2 style="margin-top:15px">
@@ -68,9 +52,9 @@ echo "<p>The PHP session name (you do not need to change this unless integrating
     </p>";	
 echo "<p>The integration config path (for use if integrating with other systems is)<textarea name=\"integration_config_path\"></textarea></p>";
 
-echo "<p>The admin username is <textarea name=\"admin_username\"></textarea></p>";
+echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
 
-echo "<p>The admin password is <textarea name=\"admin_password\"></textarea></p>";	
+echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";	
 
 echo "<p>The allowed upload types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,application/msword,application/x-shockwave-flash,image/jpeg,image/pjpeg,image/png,image/gif,image/x-png,audio/mpeg,application/vnd.ms-excel,application/pdf,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation</textarea>
     </p>";	

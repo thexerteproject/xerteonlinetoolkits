@@ -20,6 +20,14 @@ ini_set('error_reporting', E_ALL);
 
 echo file_get_contents("page_top");
 
+$res = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
+
+if(isset($res[0]['site_id'])){
+
+die("<p>You appear to have already created a database and so do not need to install again</p>");
+
+}
+
 $res = db_query("DELETE FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 if(!$res) {
     die("Error running SQL query " . mysql_error());
