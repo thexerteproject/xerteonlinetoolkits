@@ -11,33 +11,17 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $infoHolder = $("#infoHolder");
+				var $infoHolder = $("#infoHolder"),
+					$paneHolder = $("#paneHolder");
+				
 				$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10);
 				$infoHolder.tabs("resize");
-				var $paneHolder = $("#paneHolder")
 				$paneHolder.height($infoHolder.height() - $("#tabList").height() - parseInt($paneHolder.css("padding-top")) * 2 - 5);
 			}
 			
 			var $pageContents = $("#pageContents");
 			$pageContents.data("count", $pageContents.data("count") + 1);
 			tabNav.scaleImages();
-		}
-		
-		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
-		this.scaleImages = function() {
-			var $pageContents = $("#pageContents");
-			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
-			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
-				var $img = $("#infoHolder .paneImg img:visible");
-				var firstScale = false;
-				if ($img.data("count") == undefined) {
-					firstScale = true;
-				}
-				$img.data("count", $pageContents.data("count"));
-				
-				var $paneHolder = $("#paneHolder")
-				x_scaleImg($img, $paneHolder.width() - 10, $paneHolder.height() - 10, true, firstScale);
-			}
 		}
 		
 		this.init = function() {
@@ -57,8 +41,8 @@
 				}
 			}
 			
-			var $tabHeader =	$("#pageContents .tabHeader");
-			var $paneInfo =		$("#pageContents .paneInfo");
+			var $tabHeader =	$("#pageContents .tabHeader"),
+				$paneInfo =		$("#pageContents .paneInfo");
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisHeader, $thisContents;
@@ -69,6 +53,7 @@
 						$thisHeader = $tabHeader;
 						$thisContents = $paneInfo;
 					}
+					
 					var $thisHeaderLink = $thisHeader.find("a");
 					$thisHeaderLink
 						.attr("href", "#tab" + i)
@@ -101,10 +86,16 @@
 						.attr("id", "tab" + i)
 						.html(infoString);
 					
+					var size = [300,300];
+					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+						var dimensions = this.getAttribute("movieSize").split(",");
+						if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+							size = [Number(dimensions[0]), Number(dimensions[1])];
+						}
+					}
+					
 					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-						// ** need to add functionality for initObject and interactivity optional properties **
-						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 				});
@@ -120,6 +111,25 @@
 				tabNav.sizeChanged();
 			}
 			x_pageLoaded();
+		}
+		
+		
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
+			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
+				var $img = $("#infoHolder .paneImg img:visible"),
+					firstScale = false;
+				
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				var $paneHolder = $("#paneHolder")
+				x_scaleImg($img, $paneHolder.width() - 10, $paneHolder.height() - 10, true, firstScale);
+			}
 		}
 	}
 	
