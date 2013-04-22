@@ -5,6 +5,7 @@
 require_once("../../../config.php");
 require_once("../template_library.php");
 
+_load_language_file("/website_code/php/properties/publish.inc");
 _load_language_file("/website_code/php/properties/properties_library.inc");
 
 function xml_template_display($xerte_toolkits_site,$change){
@@ -86,7 +87,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
 	include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-	display_links($change,$msgtype);
+    display_property_engines($change,$msgtype);
 
     if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!='Private'){
 
@@ -126,6 +127,89 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 function properties_display_fail(){
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+
+}
+
+function publish_display($template_id)
+{
+    $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
+
+    // User has to have some rights to do this
+
+    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+
+        echo "<p class=\"header\"><span>" . PUBLISH_TITLE . "</span></p>";
+
+        $query_for_names = "select td.template_name, td.date_created, td.date_modified, otd.template_framework from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd where td.template_id=\"". $template_id . "\" and td.template_type_id = otd.template_type_id";
+
+        $query_names_response = mysql_query($query_for_names);
+
+        $row = mysql_fetch_array($query_names_response);
+
+        echo "<p>" . PUBLISH_DESCRIPTION . "</p>";
+
+        $template_access = template_access_settings(mysql_real_escape_string($template_id));
+
+        echo "<p><b>" . PUBLISH_ACCESS . "</b><br>" . PUBLISH_ACCESS_DESCRIPTION . "</p>";
+
+        if($template_access=="Private"){
+
+            echo "<p><img src=\"website_code/images/bullet_error.gif\" align=\"absmiddle\" /><b>" . PUBLISH_ACCESS_STATUS . "</b></p>";
+
+        }else{
+
+            echo "<p>" . PUBLISH_ACCESS_IS . " " . $template_access . ".</p>";
+
+        }
+
+        echo "<p><b>" . PUBLISH_RSS . "</b><br>" . PUBLISH_RSS_DESCRIPTION . "</p>";
+
+        if(!is_template_rss(mysql_real_escape_string($_POST['template_id']))){
+
+            echo "<p><b>" . PUBLISH_RSS_NOT_INCLUDE . "</b></p>";
+
+        }else{
+
+            echo "<p>" . PUBLISH_RSS_INCLUDE . "</p>";
+
+        }
+
+        include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
+
+        display_publish_engine();
+
+        echo "<p><b>" . PUBLISH_SYNDICATION . "</b><br>" . PUBLISH_SYNDICATION_DESCRIPTION . "</p>";
+
+        if(!is_template_syndicated(mysql_real_escape_string($template_id))){
+
+            echo "<p><b>" . PUBLISH_SYNDICATION_STATUS_OFF . "</b></p>";
+
+        }else{
+
+            echo "<p>" . PUBLISH_SYNDICATION_STATUS_ON . "</p>";
+
+        }
+
+        if($template_access!=""){
+
+            /**
+             *
+             * This section using $_SESSION['webct'] is for people using the integration option for webct. If you integration option has the ability to post back a URL then you would modify this code to allow for your systems working methods.
+             *
+             **/
+
+            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"publish_project(window.name);\">" . PUBLISH_BUTTON_LABEL . "</button></p>";
+
+            echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($template_id)) . "'>" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($template_id)) . "</a></p>";
+
+
+        }
+
+    }else{
+
+        echo "<p><img src=\"website_code/images/Bttn_PublishDis.gif\" /></p>";
+
+    }
 
 }
 

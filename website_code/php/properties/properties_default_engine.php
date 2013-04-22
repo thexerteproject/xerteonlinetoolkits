@@ -52,7 +52,14 @@ if(is_numeric($_POST['template_id'])){
 
     if(mysql_query($query)){
 
-        properties_display($xerte_toolkits_site,$template_id,true,"engine");
+        if ($_REQUEST['page']=='properties')
+        {
+            properties_display($xerte_toolkits_site,$template_id,true,"engine");
+        }
+        else
+        {
+            publish_display($template_id);
+        }
 
     }else{
 
