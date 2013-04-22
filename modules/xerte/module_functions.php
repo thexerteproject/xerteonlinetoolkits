@@ -10,19 +10,19 @@ require_once(dirname(__FILE__) . '/../../config.php');
  * @package
  */
 
-function display_links($change,$msgtype){
+function display_property_engines($change,$msgtype){
 
 	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
 
     if (get_default_engine($_POST['template_id']) == 'flash')
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
     }
     else
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
-        echo "<p><img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
     }
     if($change && $msgtype=="engine"){
 
@@ -32,11 +32,28 @@ function display_links($change,$msgtype){
 
 }
 
+function display_publish_engine(){
+    echo "<p><b>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . "</b><br>";
+    echo PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+
+    if (get_default_engine($_POST['template_id']) == 'flash')
+    {
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:publish_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:publish_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    }
+    else
+    {
+        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:publish_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:publish_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    }
+}
+
 function dont_show_template($optional=''){
 
     _load_language_file("/modules/xerte/module_functions.inc");
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <script src="modules/Xerte/js/swfobject.js"></script>

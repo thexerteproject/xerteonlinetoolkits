@@ -38,8 +38,10 @@
 	define("PUBLISH_SYNDICATION_STATUS_OFF","Your project is not currently syndicated.");
 	
 	define("PUBLISH_SYNDICATION_STATUS_ON","Your project is currently syndicated");
-	
-	define("PUBLISH_WEB_ADDRESS","The web address for this resource is");
+
+    define ("PUBLISH_BUTTON_LABEL", "Publish");
+
+    define("PUBLISH_WEB_ADDRESS","The web address for this resource is");
 	
 	define("PUBLISH_FAIL","Sorry you do not have rights to this template");
 	

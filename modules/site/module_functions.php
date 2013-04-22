@@ -10,7 +10,11 @@ require_once(dirname(__FILE__) . '/../../config.php');
  * @package
  */
 
-function display_links($change,$msgtype){
+function display_property_engines($change,$msgtype){
+
+}
+
+function display_publish_engines(){
 
 }
 

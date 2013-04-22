@@ -733,13 +733,29 @@ function default_engine_toggle(tag, engine1, engine2)
 
     if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
     {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2);
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2 + '&page=properties');
     }
     else
     {
-        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1);
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1 + '&page=properties');
     }
 }
+
+function publish_engine_toggle(tag, engine1, engine2)
+{
+    var url="properties_default_engine.php";
+    properties_ajax_send_prepare(url);
+
+    if(document.getElementById(tag).src.indexOf("TickBoxOn.gif") >0 )
+    {
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine2 + '&page=publish');
+    }
+    else
+    {
+        xmlHttp.send('template_id=' + window.name + '&engine=' + engine1  + '&page=publish');
+    }
+}
+
      /**
 	 * 
 	 * Function name template ********** OBSOLETE ***************

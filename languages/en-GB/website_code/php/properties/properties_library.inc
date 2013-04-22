@@ -47,6 +47,8 @@
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE", "What is the default engine to use for this project?");
 
+    define("PROPERTIES_LIBRARY_PUBLISH_ENGINE", "Default engine");
+
     define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "Javascript (a.k.a. HTML5)");
 
     define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
