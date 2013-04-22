@@ -707,6 +707,8 @@ function x_loadPage(response, status, xhr) {
 	} else {
 		x_pageInfo[x_currentPage].built = $("#x_pageDiv div:first");
 	}
+    // Queue reparsing of MathJax
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 	x_setUpPage();
 }
 
