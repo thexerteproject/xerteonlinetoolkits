@@ -555,11 +555,18 @@ div#folder_workspace, div#recyclebin{
 
 .error {
     color: red;
+    font-weight:bold;
     display: inline;
 }
 
-.ok {
+.info {
     color: blue;
+    font-weight:bold;
     display: inline;
 }
 
+.ok  {
+    color: green;
+    font-weight:bold;
+    display: inline;
+}
