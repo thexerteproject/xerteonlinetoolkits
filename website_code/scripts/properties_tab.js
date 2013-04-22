@@ -1363,9 +1363,16 @@ function property_tab_download(id,html5_tag, flash_tag, url)
     ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
 }
 
+
+function property_tab_file_download(id, url)
+{
+    var ifrm = document.getElementById(id);
+    ifrm.src = url;
+}
+
 function setup_download_link(path, buttonlbl, file)
 {
-    var button = '<button type="button" class="xerte_button" onclick="property_tab_download(\'download_frame\', \'getfile.php?file=' + path + '\')">' + buttonlbl +  '</button>';
+    var button = '<button type="button" class="xerte_button" onclick="property_tab_file_download(\'download_frame\', \'getfile.php?file=' + file + '\')">' + buttonlbl +  '</button>';
     document.getElementById('linktext').value=path;
     document.getElementById('download_link').innerHTML=button;
 }
