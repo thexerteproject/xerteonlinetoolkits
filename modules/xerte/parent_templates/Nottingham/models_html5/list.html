@@ -22,27 +22,10 @@
 			list.scaleImages();
 		}
 		
-		// function scales image
-		this.scaleImages = function() {
-			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
-			var $pageContents = $("#pageContents");
-			var $img = $("#infoHolder .paneImg img");
-			if ($img.length > 0) {
-				if ($img.data("maxWH") == undefined || ($pageContents.data("maxWH")[0] != $img.data("maxWH")[0] || $pageContents.data("maxWH")[1] != $img.data("maxWH")[1])) {
-					var firstScale = false;
-					if ($img.data("maxWH") == undefined) {
-						firstScale = true;
-					}
-					$img.data("maxWH", $pageContents.data("maxWH"));
-					
-					x_scaleImg($img, $img.data("maxWH")[0], $img.data("maxWH")[1], true, firstScale);
-				}
-			}
-		}
-		
 		this.init = function() {
-			var $listHolder = $("#listHolder");
-			var $infoHolder = $("#infoHolder");
+			var $listHolder = $("#listHolder"),
+				$infoHolder = $("#infoHolder");
+			
 			$infoHolder.hide();
 			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -64,7 +47,8 @@
 							"name"	:this.getAttribute("name"),
 							"text"	:this.getAttribute("text"),
 							"url"	:eval(this.getAttribute("url")),
-							"tip"	:this.getAttribute("tip")
+							"tip"	:this.getAttribute("tip"),
+							"movieSize"	:this.getAttribute("movieSize")
 							})
 						.bind("click", function() {
 							var $this = $(this);
@@ -94,10 +78,16 @@
 									list.sizeChanged();
 								}
 								
+								var size = [300,300];
+								if ($this.data("movieSize") != "" && $this.data("movieSize") != undefined) {
+									var dimensions = $this.data("movieSize").split(",");
+									if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+										size = [Number(dimensions[0]), Number(dimensions[1])];
+									}
+								}
+								
 								if (url != undefined && url != "" && url.split('.').pop() == "swf") {
-									// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-									// ** need to add functionality for initObject and interactivity optional properties **
-									swfobject.embedSWF(url, "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+									swfobject.embedSWF(url, "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 									$("#pageSWF" + i).attr("title", $this.data("tip"));
 								}
 								list.scaleImages();
@@ -106,6 +96,25 @@
 				});
 			
 			x_pageLoaded();
+		}
+		
+		// function scales image
+		this.scaleImages = function() {
+			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
+			var $pageContents = $("#pageContents"),
+				$img = $("#infoHolder .paneImg img");
+			
+			if ($img.length > 0) {
+				if ($img.data("maxWH") == undefined || ($pageContents.data("maxWH")[0] != $img.data("maxWH")[0] || $pageContents.data("maxWH")[1] != $img.data("maxWH")[1])) {
+					var firstScale = false;
+					if ($img.data("maxWH") == undefined) {
+						firstScale = true;
+					}
+					$img.data("maxWH", $pageContents.data("maxWH"));
+					
+					x_scaleImg($img, $img.data("maxWH")[0], $img.data("maxWH")[1], true, firstScale);
+				}
+			}
 		}
 	}
 	

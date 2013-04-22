@@ -11,8 +11,9 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				var $btnHolder = $("#btnHolder");
+				var $panel = $("#pageContents .panel"),
+					$btnHolder = $("#btnHolder");
+				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
 			}
@@ -22,49 +23,10 @@
 			slideshow.scaleImages();
 		}
 		
-		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
-		this.scaleImages = function() {
-			var $pageContents = $("#pageContents");
-			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
-			if ($("#infoHolder .pageImg img:visible").length > 0 && $("#infoHolder .pageImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
-				var $img = $("#infoHolder .pageImg img:visible");
-				var $infoHolder = $("#infoHolder");
-				
-				var firstScale = false;
-				if ($img.data("count") == undefined) {
-					firstScale = true;
-				}
-				$img.data("count", $pageContents.data("count"));
-				
-				x_scaleImg($img, $infoHolder.width(), $infoHolder.height(), true, firstScale);
-			}
-		}
-		
-		this.panelChange = function(newPage) {
-			var $pageContents = $("#pageContents");
-			var $prevBtn = $("#prevBtn");
-			var $nextBtn = $("#nextBtn");
-			$pageContents.data("currentPage", newPage);
-			$("#infoHolder").scrollTop(0);
-			$("#infoHolder .panelPage:visible").hide();
-			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
-			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
-			slideshow.scaleImages();
-			if (newPage == 0) {
-				$prevBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
-				$nextBtn.button("enable");
-			} else if (newPage + 1 == $pageContents.data("totalPages")) {
-				$prevBtn.button("enable");
-				$nextBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
-			} else {
-				$prevBtn.button("enable");
-				$nextBtn.button("enable");
-			}
-		}
-		
 		this.init = function() {
-			var $pageContents = $("#pageContents");
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var $pageContents = $("#pageContents"),
+				panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
@@ -117,10 +79,16 @@
 						.html(infoString)
 						.hide();
 					
+					var size = [300,300];
+					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+						var dimensions = this.getAttribute("movieSize").split(",");
+						if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+							size = [Number(dimensions[0]), Number(dimensions[1])];
+						}
+					}
+					
 					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-						// ** need to add functionality for initObject and interactivity optional properties **
-						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 				});
@@ -179,6 +147,49 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
+			if ($("#infoHolder .pageImg img:visible").length > 0 && $("#infoHolder .pageImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
+				var $img = $("#infoHolder .pageImg img:visible"),
+					$infoHolder = $("#infoHolder"),
+					firstScale = false;
+				
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				x_scaleImg($img, $infoHolder.width(), $infoHolder.height(), true, firstScale);
+			}
+		}
+		
+		this.panelChange = function(newPage) {
+			var $pageContents = $("#pageContents"),
+				$prevBtn = $("#prevBtn"),
+				$nextBtn = $("#nextBtn");
+			
+			$pageContents.data("currentPage", newPage);
+			$("#infoHolder").scrollTop(0);
+			$("#infoHolder .panelPage:visible").hide();
+			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
+			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
+			
+			slideshow.scaleImages();
+			
+			if (newPage == 0) {
+				$prevBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+				$nextBtn.button("enable");
+			} else if (newPage + 1 == $pageContents.data("totalPages")) {
+				$prevBtn.button("enable");
+				$nextBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
+			} else {
+				$prevBtn.button("enable");
+				$nextBtn.button("enable");
+			}
 		}
 	}
 	

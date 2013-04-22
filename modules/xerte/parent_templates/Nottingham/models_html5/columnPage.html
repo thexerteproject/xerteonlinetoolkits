@@ -17,17 +17,6 @@
 			})
 		}
 		
-		// function manually scales images - can't use max values in css as it doesn't work on every browser
-		this.scaleImages = function($img) {
-			var firstScale = false;
-			if ($img.data("loaded") == undefined) {
-				firstScale = true;
-				$img.data("loaded", true);
-			}
-			
-			x_scaleImg($img, $img.parents(".column").width(), $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2), true, firstScale);
-		}
-		
 		this.init = function() {
 			if (x_currentPageXML.getAttribute("header") != undefined && x_currentPageXML.getAttribute("header") != "") {
 				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("header")));
@@ -45,8 +34,8 @@
 						$thisColumn = $column;
 					}
 					
-					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
-					var url = this.getAttribute("url");
+					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
+						url = this.getAttribute("url");
 					if (url != undefined && url != "") {
 						var newString = "";
 						if (url.split('.').pop().slice(0, -1) == "swf") {
@@ -67,19 +56,26 @@
 					
 					$thisColumn.html(infoString);
 					
+					var size = [300,300];
+					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+						var dimensions = this.getAttribute("movieSize").split(",");
+						if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+							size = [Number(dimensions[0]), Number(dimensions[1])];
+						}
+					}
+					
 					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-						// ** need to add functionality for initObject and interactivity optional properties **
-						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 				});
 			
 			if (x_browserInfo.mobile == false) {
-				var numColumns = $(x_currentPageXML).children().length;
-				var spacerWidth = (numColumns - 1) * 2; // 2% gap between columns
-				var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
-				var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+				var numColumns = $(x_currentPageXML).children().length,
+					spacerWidth = (numColumns - 1) * 2, // 2% gap between columns
+					columnWidth = Math.floor((100 - spacerWidth) / numColumns),
+					edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+				
 				$("#columnHolder .column")
 					.addClass("x_floatLeft")
 					.css({
@@ -98,6 +94,17 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		// function manually scales images - can't use max values in css as it doesn't work on every browser
+		this.scaleImages = function($img) {
+			var firstScale = false;
+			if ($img.data("loaded") == undefined) {
+				firstScale = true;
+				$img.data("loaded", true);
+			}
+			
+			x_scaleImg($img, $img.parents(".column").width(), $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2), true, firstScale);
 		}
 	}
 	

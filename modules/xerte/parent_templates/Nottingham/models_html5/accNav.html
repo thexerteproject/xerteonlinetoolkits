@@ -14,37 +14,11 @@
 				$("#infoHolder")
 					.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
 					.accordion("resize");
-			} else {
-				// ** need to look at this - possibly change the way mobile pages are laid out so that the css is easier to do **
-				//$x_pageDiv.height($x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 1);
 			}
 			
 			var $pageContents = $("#pageContents");
 			$pageContents.data("count", $pageContents.data("count") + 1);
 			accNav.scaleImages();
-		}
-		
-		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
-		this.scaleImages = function() {
-			var $pageContents = $("#pageContents");
-			// is there an image on current panel?  Has it loaded?  Has it already been scaled to fit this?
-			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
-				var $img = $("#infoHolder .paneImg img:visible");
-				var $infoHolder = $("#infoHolder");
-				
-				var firstScale = false;
-				if ($img.data("count") == undefined) {
-					firstScale = true;
-				}
-				$img.data("count", $pageContents.data("count"));
-				
-				var num = 0;
-				$("#infoHolder .paneHeader").each(function() {
-					num += $(this).height() + 4;
-				});
-				
-				x_scaleImg($img, $infoHolder.width(), $infoHolder.height() - num, true, firstScale);
-			}
 		}
 		
 		this.init = function() {
@@ -64,9 +38,9 @@
 				}
 			}
 			
-			var $infoHolder = $("#infoHolder");
-			var $paneHeader = $("#infoHolder .paneHeader");
-			var $paneContents = $("#infoHolder .paneContents");
+			var $infoHolder = $("#infoHolder"),
+				$paneHeader = $("#infoHolder .paneHeader"),
+				$paneContents = $("#infoHolder .paneContents");
 			
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -80,8 +54,8 @@
 					}
 					$thisHeader.find("a").html(this.getAttribute("name"));
 					
-					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
-					var url = this.getAttribute("url");
+					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
+						url = this.getAttribute("url");
 					if (url != undefined && url != "") {
 						var newString = "";
 						if (url.split('.').pop().slice(0, -1) == "swf") {
@@ -104,10 +78,16 @@
 					}
 					$thisContents.html(infoString);
 					
+					var size = [300,300];
+					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+						var dimensions = this.getAttribute("movieSize").split(",");
+						if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+							size = [Number(dimensions[0]), Number(dimensions[1])];
+						}
+					}
+					
 					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-						// ** need to add field into wizard so you can enter swf dimensions rather than use 100% **
-						// ** need to add functionality for initObject and interactivity optional properties **
-						swfobject.embedSWF(eval(url), "pageSWF" + i, "300", "300", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 				});
@@ -132,6 +112,29 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents");
+			// is there an image on current panel?  Has it loaded?  Has it already been scaled to fit this?
+			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
+				var $img = $("#infoHolder .paneImg img:visible"),
+					$infoHolder = $("#infoHolder"),
+					firstScale = false;
+				
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				var num = 0;
+				$("#infoHolder .paneHeader").each(function() {
+					num += $(this).height() + 4;
+				});
+				
+				x_scaleImg($img, $infoHolder.width(), $infoHolder.height() - num, true, firstScale);
+			}
 		}
 	}
 	
