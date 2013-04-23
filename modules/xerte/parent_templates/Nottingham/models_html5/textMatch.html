@@ -1,4 +1,5 @@
 <script type="text/javascript">
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textMatch = new function() {
@@ -25,8 +26,8 @@
 			var $target = $("#targetHolder .target");
 			$target.css("height", "auto");
 			
-			var $labels = $("#labelHolder .label");
-			var tallestLabel = 0;
+			var $labels = $("#labelHolder .label"),
+				tallestLabel = 0;
 			
 			$labels.each(function() {
 				var $this = $(this);
@@ -40,8 +41,8 @@
 				.width($labels.width())
 				.height(tallestLabel);
 			
-			var newH = tallestLabel + parseInt($target.css("padding-top")) - 5;
-			var tallestTarget = 0;
+			var newH = tallestLabel + parseInt($target.css("padding-top")) - 5,
+				tallestTarget = 0;
 			
 			$target.each(function() {
 				var $this = $(this);
@@ -67,149 +68,6 @@
 					});
 				}
 			});
-		}
-		
-		this.createLabels = function() {
-			// randomise order and create labels
-			var $pageContents = $("#pageContents");
-			var labels = [];
-			var tempLabels = $pageContents.data("labels").slice(0);
-			for (var i=0; i<$pageContents.data("labels").length; i++) {
-				var labelNum = Math.floor(Math.random() * tempLabels.length);
-				labels.push(tempLabels[labelNum]);
-				tempLabels.splice(labelNum, 1);
-			}
-			for (var i=0; i<labels.length; i++) {
-				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
-				var $thisLabel = $("#label" + i);
-				$thisLabel.data("target", labels[i].correct);
-				
-				if (i != 0) {
-					$thisLabel.hide();
-				}
-			}
-			
-			$("#dragDropHolder .label")
-				.draggable({
-					containment:	"#dragDropHolder",
-					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
-					revert:			"invalid", // snap back to original position if not dropped on target
-					start:			function() {
-						// remove any focus/selection highlights made by tabbing to labels/targets
-						var $pageContents = $("#pageContents");
-						if ($("#labelHolder .label.focus").length > 0) {
-							$("#labelHolder .label.focus").attr("title", labelTxt1);
-						} else if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel").attr("title", labelTxt1);
-							$pageContents.data("selectedLabel", "");
-						}
-						var targetInFocus = $("#targetHolder .target.highlightDark");
-						if (targetInFocus.length > 0) {
-							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + "'");
-						}
-						$("#dragDropHolder .selected").removeClass("selected");
-						$("#dragDropHolder .focus").removeClass("focus");
-						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
-						
-						$("#feedback").hide();
-						$("#dragDropHolder .tick, #targetHolder .hint").remove();
-					}
-					})
-				// set up events used when keyboard rather than mouse is used
-				// these highlight selected labels / targets and set the title attr which the screen readers will use
-				.focusin(function() {
-					var $this = $(this);
-					if ($this.is($pageContents.data("selectedLabel")) == false) {
-						$this
-							.addClass("focus")
-							.attr("title", labelTxt1 + " - " + labelTxt3);
-					}
-					})
-				.focusout(function() {
-					var $this = $(this);
-					$this.removeClass("focus");
-					if ($this.is($pageContents.data("selectedLabel")) == false) {
-						$this.attr("title", labelTxt1);
-					}
-					})
-				.keypress(function(e) {
-					var charCode = e.charCode || e.keyCode;
-					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
-						
-						$("#feedback").hide();
-						$("#dragDropHolder .tick, #targetHolder .hint").remove();
-					}
-					})
-				.css("position", "absolute")
-				.data("currentTarget", "")
-				.disableSelection();
-		}
-		
-		// function called when label dropped on target - by mouse or keyboard
-		this.dropLabel = function($thisTarget, $thisLabel) {
-			var prevLabel = $thisTarget.data("currentLabel");
-			var prevTarget = $thisLabel.data("currentTarget");
-			
-			// label hasn't been dropped on target it was already on
-			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
-				$thisTarget.data("currentLabel", $thisLabel);
-				$thisLabel
-					.data("currentTarget", $thisTarget)
-					.attr("tabindex", $thisTarget.attr("tabindex") + 1);
-				
-				// if there's already a label on the target, move it off
-				if (prevLabel != "") {
-					prevLabel
-						.css({
-							"top"	:"auto",
-							"left"	:"auto"
-							})
-						.data("currentTarget", "")
-						.attr("tabindex", Number(prevLabel.attr("id").replace("label","")) + 2);
-					
-					$("#dragDropHolder .label").each(function() {
-						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
-							$(this).hide();
-						}
-					});
-				}
-				
-				// show next label if wasn't on a target before
-				if (prevTarget == "") {
-					$("#dragDropHolder .label").each(function() {
-						if ($(this).data("currentTarget") == "") {
-							$(this).show();
-							return false;
-						}
-					});
-				} else {
-					prevTarget.data("currentLabel", "");
-				}
-				
-				$("#pageContents").data("selectedLabel", "");
-			}
-			
-			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + "'");
-			
-			$thisLabel
-				.attr("title", labelTxt1)
-				.removeClass("selected")
-				.css({
-					"top"	:$thisTarget.find("h3").position().top,
-					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
-				});
 		}
 		
 		this.init = function() {
@@ -290,9 +148,10 @@
 				});
 			
 			// create targets
-			var $targetHolder = $("#targetHolder");
-			var $firstTarget = $targetHolder.find(".target");
-			var labels = [];
+			var $targetHolder = $("#targetHolder"),
+				$firstTarget = $targetHolder.find(".target"),
+				labels = [];
+			
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisTarget;
@@ -376,6 +235,151 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		this.createLabels = function() {
+			// randomise order and create labels
+			var $pageContents = $("#pageContents"),
+				labels = [],
+				tempLabels = $pageContents.data("labels").slice(0),
+				i;
+			
+			for (i=0; i<$pageContents.data("labels").length; i++) {
+				var labelNum = Math.floor(Math.random() * tempLabels.length);
+				labels.push(tempLabels[labelNum]);
+				tempLabels.splice(labelNum, 1);
+			}
+			for (i=0; i<labels.length; i++) {
+				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
+				var $thisLabel = $("#label" + i);
+				$thisLabel.data("target", labels[i].correct);
+				
+				if (i != 0) {
+					$thisLabel.hide();
+				}
+			}
+			
+			$("#dragDropHolder .label")
+				.draggable({
+					containment:	"#dragDropHolder",
+					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
+					revert:			"invalid", // snap back to original position if not dropped on target
+					start:			function() {
+						// remove any focus/selection highlights made by tabbing to labels/targets
+						var $pageContents = $("#pageContents");
+						if ($("#labelHolder .label.focus").length > 0) {
+							$("#labelHolder .label.focus").attr("title", labelTxt1);
+						} else if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+							$pageContents.data("selectedLabel").attr("title", labelTxt1);
+							$pageContents.data("selectedLabel", "");
+						}
+						var targetInFocus = $("#targetHolder .target.highlightDark");
+						if (targetInFocus.length > 0) {
+							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + "'");
+						}
+						$("#dragDropHolder .selected").removeClass("selected");
+						$("#dragDropHolder .focus").removeClass("focus");
+						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
+						
+						$("#feedback").hide();
+						$("#dragDropHolder .tick, #targetHolder .hint").remove();
+					}
+					})
+				// set up events used when keyboard rather than mouse is used
+				// these highlight selected labels / targets and set the title attr which the screen readers will use
+				.focusin(function() {
+					var $this = $(this);
+					if ($this.is($pageContents.data("selectedLabel")) == false) {
+						$this
+							.addClass("focus")
+							.attr("title", labelTxt1 + " - " + labelTxt3);
+					}
+					})
+				.focusout(function() {
+					var $this = $(this);
+					$this.removeClass("focus");
+					if ($this.is($pageContents.data("selectedLabel")) == false) {
+						$this.attr("title", labelTxt1);
+					}
+					})
+				.keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						var $pageContents = $("#pageContents");
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+							$pageContents.data("selectedLabel")
+								.removeClass("selected")
+								.attr("title", labelTxt1);
+						}
+						var $this = $(this);
+						$this
+							.removeClass("focus")
+							.addClass("selected")
+							.attr("title", labelTxt1 + ' - ' + labelTxt2);
+						$pageContents.data("selectedLabel", $this);
+						
+						$("#feedback").hide();
+						$("#dragDropHolder .tick, #targetHolder .hint").remove();
+					}
+					})
+				.css("position", "absolute")
+				.data("currentTarget", "")
+				.disableSelection();
+		}
+		
+		// function called when label dropped on target - by mouse or keyboard
+		this.dropLabel = function($thisTarget, $thisLabel) {
+			var prevLabel = $thisTarget.data("currentLabel"),
+				prevTarget = $thisLabel.data("currentTarget");
+			
+			// label hasn't been dropped on target it was already on
+			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
+				$thisTarget.data("currentLabel", $thisLabel);
+				$thisLabel
+					.data("currentTarget", $thisTarget)
+					.attr("tabindex", $thisTarget.attr("tabindex") + 1);
+				
+				// if there's already a label on the target, move it off
+				if (prevLabel != "") {
+					prevLabel
+						.css({
+							"top"	:"auto",
+							"left"	:"auto"
+							})
+						.data("currentTarget", "")
+						.attr("tabindex", Number(prevLabel.attr("id").replace("label","")) + 2);
+					
+					$("#dragDropHolder .label").each(function() {
+						if ($(this).data("currentTarget") == "" && $(this).is(prevLabel) == false) {
+							$(this).hide();
+						}
+					});
+				}
+				
+				// show next label if wasn't on a target before
+				if (prevTarget == "") {
+					$("#dragDropHolder .label").each(function() {
+						if ($(this).data("currentTarget") == "") {
+							$(this).show();
+							return false;
+						}
+					});
+				} else {
+					prevTarget.data("currentLabel", "");
+				}
+				
+				$("#pageContents").data("selectedLabel", "");
+			}
+			
+			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + "'");
+			
+			$thisLabel
+				.attr("title", labelTxt1)
+				.removeClass("selected")
+				.css({
+					"top"	:$thisTarget.find("h3").position().top,
+					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
+				});
 		}
 	}
 	

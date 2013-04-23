@@ -13,80 +13,6 @@
 			
 		}
 		
-		this.setUpBg = function(firstLoad) {
-			if (x_currentPageXML.getAttribute("bgImage") != undefined) {
-				var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain");
-				var hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain");
-				
-				var alpha = 100;
-				if (x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "") {
-					alpha = x_currentPageXML.getAttribute("bgImageAlpha");
-				}
-				
-				var $pageBg = $('<img id="pageBg"/>');
-				$pageBg
-					.attr("src", eval(x_currentPageXML.getAttribute("bgImage")))
-					.css({
-						"opacity"		:Number(alpha/100),
-						"filter"		:"alpha(opacity=" + alpha + ")",
-						"visibility"	:"hidden"
-						})
-					.hide()
-					.load(function() {
-						var $this = $(this);
-						if (vConstrain != undefined || hConstrain != undefined) {
-							var imgMaxW = 800;
-							var imgMaxH = 500;
-							if (hConstrain != undefined) {
-								imgMaxW = hConstrain;
-							}
-							if (vConstrain != undefined) {
-								imgMaxH = vConstrain;
-							}
-							x_scaleImg(this, imgMaxW, imgMaxH, true, false, true);
-							
-							var vAlign = x_currentPageXML.getAttribute("bgImageVAlign");
-							var hAlign = x_currentPageXML.getAttribute("bgImageHAlign");
-							if (vAlign == "middle" || vAlign == "bottom") {
-								var topValue = "50%"
-								var topMargin = 0 - Math.round($this.height() / 2);
-								if (vAlign == "bottom") {
-									topValue = "100%"
-									topMargin = 0 - $this.height();
-								}
-								$this.css({
-									"top"			:topValue,
-									"margin-top"	:topMargin
-								})
-							}
-							if (hAlign == "centre" || hAlign == "right") {
-								var leftValue = "50%"
-								var leftMargin = 0 - Math.round($this.width() / 2);
-								if (hAlign == "right") {
-									leftValue = "100%"
-									leftMargin = 0 - $this.width();
-								}
-								$this.css({
-									"left"			:leftValue,
-									"margin-left"	:leftMargin
-								})
-							}
-						} else {
-							$this.css("visibility", "visible");
-						}
-						});
-				
-				$x_background.append($pageBg);
-				$pageBg.fadeIn();
-				
-				if (firstLoad == true) {
-					x_pageLoaded();
-				}
-			} else if (firstLoad == true) {
-				x_pageLoaded();
-			}
-		}
-		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
 			$pageContents
@@ -124,6 +50,84 @@
 			}
 			
 			title.setUpBg(true);
+		}
+		
+		this.setUpBg = function(firstLoad) {
+			if (x_currentPageXML.getAttribute("bgImage") != undefined) {
+				var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain"),
+					hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
+					alpha = 100;
+				
+				if (x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "") {
+					alpha = x_currentPageXML.getAttribute("bgImageAlpha");
+				}
+				
+				var $pageBg = $('<img id="pageBg"/>');
+				$pageBg
+					.attr("src", eval(x_currentPageXML.getAttribute("bgImage")))
+					.css({
+						"opacity"		:Number(alpha/100),
+						"filter"		:"alpha(opacity=" + alpha + ")",
+						"visibility"	:"hidden"
+						})
+					.hide()
+					.load(function() {
+						var $this = $(this);
+						if (vConstrain != undefined || hConstrain != undefined) {
+							var imgMaxW = 800,
+								imgMaxH = 500;
+							
+							if (hConstrain != undefined) {
+								imgMaxW = hConstrain;
+							}
+							if (vConstrain != undefined) {
+								imgMaxH = vConstrain;
+							}
+							x_scaleImg(this, imgMaxW, imgMaxH, true, false, true);
+							
+							var vAlign = x_currentPageXML.getAttribute("bgImageVAlign"),
+								hAlign = x_currentPageXML.getAttribute("bgImageHAlign");
+							
+							if (vAlign == "middle" || vAlign == "bottom") {
+								var topValue = "50%",
+									topMargin = 0 - Math.round($this.height() / 2);
+								
+								if (vAlign == "bottom") {
+									topValue = "100%"
+									topMargin = 0 - $this.height();
+								}
+								$this.css({
+									"top"			:topValue,
+									"margin-top"	:topMargin
+								})
+							}
+							if (hAlign == "centre" || hAlign == "right") {
+								var leftValue = "50%",
+									leftMargin = 0 - Math.round($this.width() / 2);
+								
+								if (hAlign == "right") {
+									leftValue = "100%"
+									leftMargin = 0 - $this.width();
+								}
+								$this.css({
+									"left"			:leftValue,
+									"margin-left"	:leftMargin
+								})
+							}
+						} else {
+							$this.css("visibility", "visible");
+						}
+						});
+				
+				$x_background.append($pageBg);
+				$pageBg.fadeIn();
+				
+				if (firstLoad == true) {
+					x_pageLoaded();
+				}
+			} else if (firstLoad == true) {
+				x_pageLoaded();
+			}
 		}
 	}
 	

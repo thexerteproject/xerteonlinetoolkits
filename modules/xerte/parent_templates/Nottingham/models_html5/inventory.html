@@ -79,8 +79,8 @@
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
-						var $this = $(this);
-						var selectedOptionData = $(currentQuestion).children()[$this.index()/2];
+						var $this = $(this),
+							selectedOptionData = $(currentQuestion).children()[$this.index()/2];
 						// calculate and store new score for this option's class based on it's previous score and this option's weight
 						$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
 						
@@ -162,28 +162,29 @@
 			var questions = [],
 				scores = [],
 				totals = [],
-				numQs = $(x_currentPageXML).children().length;
+				numQs = $(x_currentPageXML).children().length,
+				i;
 			
 			// get list of the order questions will be shown
 			if (x_currentPageXML.getAttribute("order") == "random") {
 				var qNums = [];
-				for (var i=0; i<numQs; i++) {
+				for (i=0; i<numQs; i++) {
 					qNums.push(i);
 				}
-				for (var i=0; i<numQs; i++) {
+				for (i=0; i<numQs; i++) {
 					var qNum = Math.floor(Math.random() * qNums.length);
 					questions.push(qNums[qNum]);
 					qNums.splice(qNum, 1);
 				}
 				
 			} else { // sequence
-				for (var i=0; i<numQs; i++) {
+				for (i=0; i<numQs; i++) {
 					questions.push(i);
 				}
 			}
 			
 			// reset stored scores
-			for (var i=0; i<$pageContents.data("classes").length; i++) {
+			for (i=0; i<$pageContents.data("classes").length; i++) {
 				scores.push(0);
 				totals.push(0);
 			}

@@ -16,6 +16,40 @@
 			
 		}
 		
+		this.init = function() {
+			// get & store card data
+			var cards = [];
+			$(x_currentPageXML).children().each(function(i){
+				cards.push({type:"text", data:this.getAttribute("name"), match:i});
+				cards.push({type:"img",  data:this.getAttribute("url"),  match:i, name:this.getAttribute("name")});
+			});
+			
+			$("#pageContents").data({
+				"cardData"		:cards,
+				"currentCard"	:""
+			});
+			
+			var resetBtnTxt = x_currentPageXML.getAttribute("resetBtnTxt");
+			if (resetBtnTxt == undefined) {
+				resetBtnTxt = "Shuffle Cards";
+			}
+			
+			$("#button")
+				.button({
+					label:	resetBtnTxt
+					})
+				.click(function() {
+					$("#pageContents").data("currentCard", "");
+					$(this).hide();
+					memory.createCards();
+					})
+				.hide();
+			
+			this.createCards();
+			
+			x_pageLoaded();
+		}
+		
 		this.createCards = function() {
 			var $pageContents		= $("#pageContents"),
 				$cardTopHolder		= $("#cardTopHolder"),
@@ -25,16 +59,17 @@
 			$cardTopHolder.add($cardBottomHolder).empty();
 			
 			// randomise order and create new cards
-			var cards = [];
-			var tempCards = $pageContents.data("cardData").slice(0);
+			var cards = [],
+				tempCards = $pageContents.data("cardData").slice(0),
+				i;
 			
-			for (var i=0; i<$pageContents.data("cardData").length; i++) {
+			for (i=0; i<$pageContents.data("cardData").length; i++) {
 				var cardNum = Math.floor(Math.random() * tempCards.length);
 				cards.push(tempCards[cardNum]);
 				tempCards.splice(cardNum, 1);
 			}
 			
-			for (var i=0; i<cards.length; i++) {
+			for (i=0; i<cards.length; i++) {
 				// create top of cards
 				$('<div class="card"></div>')
 					.css("background-image", 'url("' + x_templateLocation + 'common_html5/card.png' + '")')
@@ -51,8 +86,8 @@
 						} else { // 2nd card revealed - does it match?
 							if ($this.is($pageContents.data("currentCard")) == false) {
 								$this.animate({opacity: 0}, 500);
-								var $card1 = $($cardBottomHolder.children()[$this.index()]);
-								var $card2 = $($cardBottomHolder.children()[$pageContents.data("currentCard").index()]);
+								var $card1 = $($cardBottomHolder.children()[$this.index()]),
+									$card2 = $($cardBottomHolder.children()[$pageContents.data("currentCard").index()]);
 								
 								if (parseInt($card1.data("match")) == parseInt($card2.data("match"))) { // match - short delay and then add label to image card
 									$this.add($pageContents.data("currentCard")).addClass("correct");
@@ -112,40 +147,6 @@
 						.find(".label").css("opacity", 0);
 				}
 			}
-		}
-		
-		this.init = function() {
-			// get & store card data
-			var cards = [];
-			$(x_currentPageXML).children().each(function(i){
-				cards.push({type:"text", data:this.getAttribute("name"), match:i});
-				cards.push({type:"img",  data:this.getAttribute("url"),  match:i, name:this.getAttribute("name")});
-			});
-			
-			$("#pageContents").data({
-				"cardData"		:cards,
-				"currentCard"	:""
-			});
-			
-			var resetBtnTxt = x_currentPageXML.getAttribute("resetBtnTxt");
-			if (resetBtnTxt == undefined) {
-				resetBtnTxt = "Shuffle Cards";
-			}
-			
-			$("#button")
-				.button({
-					label:	resetBtnTxt
-					})
-				.click(function() {
-					$("#pageContents").data("currentCard", "");
-					$(this).hide();
-					memory.createCards();
-					})
-				.hide();
-			
-			this.createCards();
-			
-			x_pageLoaded();
 		}
 	}
 	

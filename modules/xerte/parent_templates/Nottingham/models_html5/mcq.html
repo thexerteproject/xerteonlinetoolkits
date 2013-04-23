@@ -199,7 +199,7 @@
 						feedbackLabel = "Feedback";
 					}
 					$("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
-                    $(this).hide().show(); // ** hack to take care of IEs inconsistent handling of clicks
+                    $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 
                     XTExitInteraction(x_currentPage, 0, correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
                     XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));

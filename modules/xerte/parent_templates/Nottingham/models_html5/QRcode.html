@@ -16,23 +16,9 @@
 			
 		}
 		
-		this.loadAudio = function(firstLoad) {
-			var soundFile = x_currentPageXML.getAttribute("sound");
-			if (soundFile != undefined && soundFile != "") {
-				$("#pageAudio").mediaPlayer({
-					type		:"audio",
-					source		:soundFile,
-					width		:$("#pageImg").width()
-				});
-			}
-			if (firstLoad == true) {
-				x_pageLoaded();
-			}
-		}
-		
 		this.init = function() {
-			var pastedurl	= x_currentPageXML.getAttribute("url");
-			var shorturl = "rss_proxy.php?rss=http://is.gd/api.php?longurl=" + pastedurl;
+			var pastedurl	= x_currentPageXML.getAttribute("url"),
+				shorturl = "rss_proxy.php?rss=http://is.gd/api.php?longurl=" + pastedurl;
 			
 			$.ajax({
 				url: shorturl,
@@ -70,6 +56,20 @@
 				"src":	"http://splashurl.net/qr.png?q=" + pastedurl + "&s=12",
 				"alt":	x_currentPageXML.getAttribute("tip")
 				});
+		}
+		
+		this.loadAudio = function(firstLoad) {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			if (soundFile != undefined && soundFile != "") {
+				$("#pageAudio").mediaPlayer({
+					type		:"audio",
+					source		:soundFile,
+					width		:$("#pageImg").width()
+				});
+			}
+			if (firstLoad == true) {
+				x_pageLoaded();
+			}
 		}
 	}
 	

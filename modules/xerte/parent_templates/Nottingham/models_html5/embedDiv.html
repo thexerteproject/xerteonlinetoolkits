@@ -13,19 +13,10 @@
 			$("#iFrame").height(embedDiv.calcHeight());
 		}
 		
-		this.calcHeight = function() {
-			var frameHeight;
-			if (x_browserInfo.mobile == false) {
-				frameHeight = $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 3;
-			} else {
-				frameHeight = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-			}
-			return frameHeight;
-		}
-		
 		this.init = function() {
-			var $pageContents = $("#pageContents");
-			var $iFrameHolder = $pageContents;
+			var $pageContents = $("#pageContents"),
+				$iFrameHolder = $pageContents;
+			
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
 				$pageContents.html('<div class="splitScreen"><div class="left" tabindex="1">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
 				$iFrameHolder = $pageContents.find(".right");
@@ -41,6 +32,16 @@
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+		}
+		
+		this.calcHeight = function() {
+			var frameHeight;
+			if (x_browserInfo.mobile == false) {
+				frameHeight = $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 3;
+			} else {
+				frameHeight = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
+			}
+			return frameHeight;
 		}
 	}
 	

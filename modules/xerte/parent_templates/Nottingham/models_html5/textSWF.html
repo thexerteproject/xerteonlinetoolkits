@@ -26,8 +26,8 @@
 		}
 
 		this.init = function() {
-			var $textHolder	= $("#textHolder");
-			var $panel		= $("#pageContents .panel");
+			var $textHolder	= $("#textHolder"),
+				$panel		= $("#pageContents .panel");
 
 			// text align
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
@@ -41,7 +41,6 @@
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
 
-			// ** change this play button to a proper control bar like the mediaelement one
 			if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
 				var $controls = $('<button id="playBtn"></button>');
 				$controls
@@ -59,8 +58,9 @@
 						text:			false
 						})
 					.bind("click", function() {
-						var flashMovie = $("#pageContents").data("swf");
-						var $this = $(this);
+						var flashMovie = $("#pageContents").data("swf"),
+							$this = $(this);
+						
 						if ($this.data("state") == "play") {
 							flashMovie.Play();
 							$this.data("state", "pause");
@@ -68,6 +68,7 @@
 							flashMovie.StopPlay();
 							$this.data("state", "play");
 						}
+						
 						var state = $this.data("state");
 						$this.button({
 							icons: {
@@ -107,9 +108,7 @@
 					
 					$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 
-					// ** calling init() and passing initObject not working **
-					//var swf = e.ref;
-					//swf.init("Function called from page"); // ** this is not working to call the function in swf - possibly to do with swfObject **
+					// need to add code for calling init function in swf
 					
 				} else { // no Flash
 					$("#playBtn").remove();

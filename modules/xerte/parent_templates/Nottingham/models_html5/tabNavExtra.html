@@ -24,8 +24,9 @@
 			
 			// __CREATE TOPICS__
 			// have to clone topics / tabs / pages in seperate functions as otherwise it clones the data from previous topic
-			var $topic =		$("#pageContents .topic");
-			var $infoHolder =	$("#pageContents .infoHolder");
+			var $topic =		$("#pageContents .topic"),
+				$infoHolder =	$("#pageContents .infoHolder");
+			
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisTopic,	$thisInfoHolder;
@@ -46,16 +47,21 @@
 								$("#pageContents .topic.highlight").removeClass("highlight");
 								$("#pageContents .infoHolder:visible").hide();
 								$this.addClass("highlight");
+								
 								var $thisHolder = $("#pageContents .infoHolder:eq(" + $this.index() + ")");
 								$thisHolder.show();
+								
 								if (x_currentPageXML.getAttribute("rememberTab") == "true") {
 									// auto select same tab / nested page as that viewed in previous topic
-									var $pageContents = $("#pageContents");
-									var $currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
+									var $pageContents = $("#pageContents"),
+										$currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
+									
 									if ($currentTab.length != 0) {
 										$currentTab.trigger("click");
-										var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")");
-										var $currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
+										
+										var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")"),
+											$currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
+											
 										if ($currentPane.length != 0) {
 											$currentPane.trigger("click");
 										} else {
@@ -79,9 +85,10 @@
 			// __CREATE TABS__
 			$(x_currentPageXML).children()
 				.each(function(i) {
-					var $infoHolder =	$("#pageContents .infoHolder:eq(" + i + ")");
-					var $tabHeader =	$infoHolder.find(".tabHeader");
-					var $paneHolder =	$infoHolder.find(".paneHolder");
+					var $infoHolder =	$("#pageContents .infoHolder:eq(" + i + ")"),
+						$tabHeader =	$infoHolder.find(".tabHeader"),
+						$paneHolder =	$infoHolder.find(".paneHolder");
+					
 					$(this).children()
 						.each(function(j) {
 							var $thisTabHeader,	$thisPaneHolder;
@@ -104,10 +111,11 @@
 				.each(function(i) {
 					$(this).children()
 						.each(function(j) {
-							var $paneHolder =	$("#pageContents .infoHolder:eq(" + i + ") .paneHolder:eq(" + j + ")");
-							var $paneList =		$paneHolder.find(".paneList");
-							var $paneInfo =		$paneHolder.find(".paneInfo");
-							var $link =			$paneList.find("a");
+							var $paneHolder =	$("#pageContents .infoHolder:eq(" + i + ") .paneHolder:eq(" + j + ")"),
+								$paneList =		$paneHolder.find(".paneList"),
+								$paneInfo =		$paneHolder.find(".paneInfo"),
+								$link =			$paneList.find("a");
+							
 							$(this).children()
 								.each(function(k) {
 									var $thisLink,	$thisPaneInfo;
@@ -170,8 +178,9 @@
 					.tabs({
 						show: function(event, ui) {
 							if (firstLoad != true) {
-								var $pageContents = $("#pageContents");
-								var $panel = $(ui.panel);
+								var $pageContents = $("#pageContents"),
+									$panel = $(ui.panel);
+								
 								$pageContents.data("currentTab", $panel.parent().find(".tabList .tabHeader:eq(" + ui.index + ") a").html());
 								if ($pageContents.data("currentTopic") != $panel.parents(".infoHolder").index()) {
 									$pageContents.data("currentTopic", $panel.parents(".infoHolder").index());

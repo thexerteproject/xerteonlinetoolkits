@@ -20,30 +20,6 @@
 
 		};
 
-		this.showLinks = function(data) {
-			clearTimeout(x_timer);
-			$("#loadingSpinner").hide();
-
-			// if language attributes aren't in xml will have to use english fall back
-			var headerTxt = x_currentPageXML.getAttribute("headerTxt");
-			if (headerTxt == undefined) {
-				headerTxt = "Delicious bookmarks for";
-			}
-
-			var resultsString = "";
-			$pageContents.find("#headerHolder").html("<h3>" + headerTxt + " " + deliciousSearch + " '" + deliciousTerm + "'</h3>");
-			if (data.length == 0) {
-				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-			} else {
-				$.each(data, function (index, value) {
-					resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
-				});
-			}
-			$resultsHolder
-				.html(resultsString)
-				.find("div:even").addClass("shadedDiv");
-		};
-
 		this.init = function() {
 			$pageContents = $("#pageContents");
 			$textHolder = $("#textHolder");
@@ -89,7 +65,31 @@
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
-		}
+		};
+		
+		this.showLinks = function(data) {
+			clearTimeout(x_timer);
+			$("#loadingSpinner").hide();
+
+			// if language attributes aren't in xml will have to use english fall back
+			var headerTxt = x_currentPageXML.getAttribute("headerTxt");
+			if (headerTxt == undefined) {
+				headerTxt = "Delicious bookmarks for";
+			}
+
+			var resultsString = "";
+			$pageContents.find("#headerHolder").html("<h3>" + headerTxt + " " + deliciousSearch + " '" + deliciousTerm + "'</h3>");
+			if (data.length == 0) {
+				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
+			} else {
+				$.each(data, function (index, value) {
+					resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
+				});
+			}
+			$resultsHolder
+				.html(resultsString)
+				.find("div:even").addClass("shadedDiv");
+		};
 	};
 
 	delicious.init();
@@ -123,8 +123,8 @@
 	}
 
 	#loadingSpinner {
-		margin-left: auto ;
-  		margin-right: auto ;
+		margin-left: auto;
+  		margin-right: auto;
 		width:180px;
 	}
 

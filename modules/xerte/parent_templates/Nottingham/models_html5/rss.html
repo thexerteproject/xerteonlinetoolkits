@@ -18,36 +18,7 @@
 		this.sizeChanged = function() {
 
 		};
-
-		this.listFeed = function(data) {
-			clearTimeout(x_timer);
-			if (data.responseStatus == 200) {
-				$("#loadingSpinner").hide();
-
-				var resultsString = "";
-				if (data.responseData.feed.entries == 0) {
-					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
-				} else {
-					$pageContents.find("#headerHolder").html("<h3>" + data.responseData.feed.description + "</h3>");
-					$.each(data.responseData.feed.entries, function (index, item) {
-						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
-					});
-				}
-				$resultsHolder
-					.html(resultsString)
-					.find("div:even").addClass("shadedDiv");
-			}
-			else {
-				this.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
-			}
-		};
-
-		this.errorLoading = function(msg) {
-			$("#loadingSpinner").hide();
-			$resultsHolder
-				.html('<div><p>' + msg + '</p></div>');
-		};
-
+		
 		this.init = function() {
 			rssURL = x_currentPageXML.getAttribute("url");
 			var googleFeedURL = document.location.protocol + "//ajax.googleapis.com/ajax/services/feed/load";
@@ -88,6 +59,35 @@
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+		};
+
+		this.listFeed = function(data) {
+			clearTimeout(x_timer);
+			if (data.responseStatus == 200) {
+				$("#loadingSpinner").hide();
+
+				var resultsString = "";
+				if (data.responseData.feed.entries == 0) {
+					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
+				} else {
+					$pageContents.find("#headerHolder").html("<h3>" + data.responseData.feed.description + "</h3>");
+					$.each(data.responseData.feed.entries, function (index, item) {
+						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
+					});
+				}
+				$resultsHolder
+					.html(resultsString)
+					.find("div:even").addClass("shadedDiv");
+			}
+			else {
+				this.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
+			}
+		};
+
+		this.errorLoading = function(msg) {
+			$("#loadingSpinner").hide();
+			$resultsHolder
+				.html('<div><p>' + msg + '</p></div>');
 		};
 	};
 

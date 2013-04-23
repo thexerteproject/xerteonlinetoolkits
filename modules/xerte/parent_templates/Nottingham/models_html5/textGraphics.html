@@ -10,9 +10,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $pageContents = $("#pageContents");
-			var firstLoad = $pageContents.data("firstLoad");
-			var $pageImg = $("#pageImg");
+			var $pageContents = $("#pageContents"),
+				firstLoad = $pageContents.data("firstLoad"),
+				$pageImg = $("#pageImg");
 			
 			if (x_currentPageXML.getAttribute("imagesize") == "full screen") { // set image size for full screen
 				var hidePanel = $pageContents.data("hidePanel");
@@ -53,61 +53,9 @@
 			}
 		}
 		
-		this.imgLoaded = function() {
-			var $pageImg = $("#pageImg");
-			if ($("#transcriptHolder").length > 0) {
-				$("#transcript").width($pageImg.width());
-			}
-			textGraphics.setUpMagnifier();
-			textGraphics.loadAudio();
-			x_pageLoaded(); // call this function in every model once everything's loaded
-		}
-		
-		this.loadAudio = function() {
-			var soundFile = x_currentPageXML.getAttribute("sound");
-			if (soundFile != undefined && soundFile != "") {
-				$("#pageAudio").mediaPlayer({
-					type		:"audio",
-					source		:soundFile,
-					width		:$("#pageImg").width()
-				});
-			}
-		}
-		
-		this.calculateOffset = function() {
-			// calculates available space when image is full screen
-			var offset = [20, 20];
-			if ($pageContents.data("hidePanel") != "true") {
-				var $panel = $(".panel");
-				offset.splice(0, 1, offset[0] + parseInt($panel.css("padding-left")) + 20 * 2);
-				offset.splice(1, 1, offset[1] + parseInt($panel.css("padding-top")) + 20 * 2);
-			}
-			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
-				offset.splice(1, 1, offset[1] + x_audioBarH);
-				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != "") {
-					offset.splice(1, 1, offset[1] + 35);
-				}
-			}
-			return offset;
-		}
-		
-		// ** magnifier doesn't move with image when page scrolled **
-		this.setUpMagnifier = function() {
-			if (x_currentPageXML.getAttribute("magnifier") == "true" && x_browserInfo.touchScreen != true) {
-				$(".magnifier").remove();
-				$(".magnifiedImg").remove();
-				
-				var $pageImg = $("#pageImg");
-				if ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8) {
-					// don't magnify if not scaled to less that 80% of original image
-					$pageImg.imageLens();
-				}
-			}
-		}
-		
 		this.init = function() {
-			var $textHolder		= $("#textHolder");
-			var $panel			= $("#pageContents .panel");
+			var $textHolder	= $("#textHolder"),
+				$panel		= $("#pageContents .panel");
 			
 			// text align
 			if (x_currentPageXML.getAttribute("imagesize") != "full screen") {
@@ -172,25 +120,78 @@
 				"alt":	x_currentPageXML.getAttribute("tip")
 				});
 		}
+		
+		this.imgLoaded = function() {
+			var $pageImg = $("#pageImg");
+			if ($("#transcriptHolder").length > 0) {
+				$("#transcript").width($pageImg.width());
+			}
+			textGraphics.setUpMagnifier();
+			textGraphics.loadAudio();
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.loadAudio = function() {
+			var soundFile = x_currentPageXML.getAttribute("sound");
+			if (soundFile != undefined && soundFile != "") {
+				$("#pageAudio").mediaPlayer({
+					type		:"audio",
+					source		:soundFile,
+					width		:$("#pageImg").width()
+				});
+			}
+		}
+		
+		this.calculateOffset = function() {
+			// calculates available space when image is full screen
+			var offset = [20, 20];
+			if ($pageContents.data("hidePanel") != "true") {
+				var $panel = $(".panel");
+				offset.splice(0, 1, offset[0] + parseInt($panel.css("padding-left")) + 20 * 2);
+				offset.splice(1, 1, offset[1] + parseInt($panel.css("padding-top")) + 20 * 2);
+			}
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				offset.splice(1, 1, offset[1] + x_audioBarH);
+				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != "") {
+					offset.splice(1, 1, offset[1] + 35);
+				}
+			}
+			return offset;
+		}
+		
+		this.setUpMagnifier = function() {
+			if (x_currentPageXML.getAttribute("magnifier") == "true" && x_browserInfo.touchScreen != true) {
+				$(".magnifier").remove();
+				$(".magnifiedImg").remove();
+				
+				var $pageImg = $("#pageImg");
+				if ($pageImg.data("origSize") != undefined && $pageImg.width() / $pageImg.data("origSize")[0] < 0.8) {
+					// don't magnify if not scaled to less that 80% of original image
+					$pageImg.imageLens();
+				}
+			}
+		}
 	}
 	
 	var $pageContents = $("#pageContents");
 	
 	// image scaling
-	var imageSize = x_currentPageXML.getAttribute("imagesize"); // auto|actual size|full screen
+	var imageSize = x_currentPageXML.getAttribute("imagesize"), // auto|actual size|full screen
+		hidePanel = x_currentPageXML.getAttribute("hidePanel"),
+		transcriptTxt = x_currentPageXML.getAttribute("transcript");
 	
-	var hidePanel = x_currentPageXML.getAttribute("hidePanel");
-	var transcriptTxt = x_currentPageXML.getAttribute("transcript");
 	if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
 		hidePanel = "false";
 	}
+	
 	$pageContents.data({
 		"firstLoad":	true,
 		"hidePanel":	hidePanel
 	});
 	
-	var scale = true;
-	var imgMaxW,	imgMaxH;
+	var scale = true,
+		imgMaxW,	imgMaxH;
+	
 	if (imageSize == "actual size") {
 		scale = false;
 	} else if (imageSize == "full screen") {

@@ -83,7 +83,7 @@ h3 {
 	background:		-webkit-gradient(linear, left top, left bottom, from(#434343), to(#010101)); /* for webkit browsers */
 	background:		-moz-linear-gradient(top,  #434343,  #010101); /* for firefox 3.6+ */
 	background-image:	-o-linear-gradient(#434343, #010101); /* for Opera */
-	z-index:		10; /* ** changed from -2 to fix mobile problem - has this broken anything in desktop version? ** */
+	z-index:		10;
 }
 
 #x_footerBg {

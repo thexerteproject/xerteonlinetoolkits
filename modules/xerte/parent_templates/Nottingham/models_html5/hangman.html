@@ -24,22 +24,57 @@
 			}
 		}
 		
-		this.createQuiz = function() {
-			this.qNoTxt = x_currentPageXML.getAttribute("quesCount");
-			if (this.qNoTxt == undefined) {
-				this.qNoTxt = "Exercise {i} of {n}";
+		this.init = function() {
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
+			if (nextBtnTxt == undefined) {
+				nextBtnTxt = "Next";
 			}
 			
-			this.currentWord = 0;
-			this.words = [];
+			$("#nextBtn")
+				.button({
+					label:	nextBtnTxt
+					})
+				.hide()
+				.click(function() {
+					currentWord++;
+					hangman.loadWord();
+				});
+			
+			// need hidden input for touchscreen otherwise you can't access keyboard to enter letters
+			if (x_browserInfo.touchScreen == true) {
+				$("<input/>")
+					.appendTo("#textHolder")
+					.css("opacity", 0);
+			}
+			
+			this.createQuiz();
+			
+			if (x_currentPage != 0) {
+				hangman.sizeChanged();
+			}
+			
+			x_pageLoaded();
+		}
+		
+		this.createQuiz = function() {
+			qNoTxt = x_currentPageXML.getAttribute("quesCount");
+			if (qNoTxt == undefined) {
+				qNoTxt = "Exercise {i} of {n}";
+			}
+			
+			currentWord = 0;
+			words = [];
 			
 			// randomise word order
-			var tempWords = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
-			var noWords = tempWords.length;
+			var tempWords = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n"),
+				noWords = tempWords.length,
+				i;
 			
-			for (var i=0; i<noWords; i++) {
+			for (i=0; i<noWords; i++) {
 				var wordNum = Math.floor(Math.random() * tempWords.length);
-				this.words.push(tempWords[wordNum]);
+				words.push(tempWords[wordNum]);
 				tempWords.splice(wordNum, 1);
 			}
 			
@@ -47,7 +82,7 @@
 		}
 		
 		this.loadWord = function() {
-			this.attemptCount = 0;
+			attemptCount = 0;
 			
 			var	$clue = 	$("#clue"),
 				$letters =	$("#letters"),
@@ -60,14 +95,15 @@
 			$clue.add($letters).add($qCount).empty();
 			$img.css({
 				"background-image"		:'url("' + x_templateLocation + 'common_html5/hangman.png' + '")',
-				"background-position"	:-245 * this.attemptCount + "px 0px"
+				"background-position"	:-245 * attemptCount + "px 0px"
 			});
 			
 			$nextBtn.hide();
-			var thisWord = this.words[this.currentWord];
 			
-			var $holderDiv = $clue;
-			var space = thisWord.indexOf(" ");
+			var thisWord = words[currentWord],
+				$holderDiv = $clue,
+				space = thisWord.indexOf(" ");
+			
 			if (space != -1) {
 				$holderDiv = $('<div class="subWord"></div>').appendTo($clue);
 			}
@@ -81,7 +117,7 @@
 				}
 			}
 			
-			$qCount.html(this.qNoTxt.replace("{i}", this.currentWord + 1).replace("{n}", this.words.length));
+			$qCount.html(qNoTxt.replace("{i}", currentWord + 1).replace("{n}", words.length));
 			
 			$(document).bind("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
 				var charCode = e.charCode || e.keyCode;
@@ -97,7 +133,7 @@
 						
 						// has the word been completed?
 						if ($clue.find(".dash").filter(function() {return $(this).html() == "";}).length == 0) {
-							if (hangman.currentWord < hangman.words.length - 1) {
+							if (currentWord < words.length - 1) {
 								$nextBtn.show();
 							}
 							$(this).unbind("keypress.pageEvent");
@@ -107,18 +143,18 @@
 						
 					} else { // incorrect
 						if ($letters.html().indexOf(char) == -1) { // new guess
-							hangman.attemptCount++;
+							attemptCount++;
 							
-							if (hangman.attemptCount != 1) {
+							if (attemptCount != 1) {
 								$letters.html($letters.html() + " " + char);
 							} else {
 								$letters.html(char);
 							}
-							$img.css("background-position", -245 * hangman.attemptCount + "px 0px");
+							$img.css("background-position", -245 * attemptCount + "px 0px");
 							
 							// max no. wrong attempts reached?
-							if (hangman.attemptCount == 10) {
-								if (hangman.currentWord < hangman.words.length - 1) {
+							if (attemptCount == 10) {
+								if (currentWord < words.length - 1) {
 									$nextBtn.show();
 								}
 								
@@ -142,40 +178,6 @@
 					$("#textHolder input").focus();
 				});
 			}
-		}
-		
-		this.init = function() {
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
-			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
-			if (nextBtnTxt == undefined) {
-				nextBtnTxt = "Next";
-			}
-			
-			$("#nextBtn")
-				.button({
-					label:	nextBtnTxt
-					})
-				.hide()
-				.click(function() {
-					hangman.currentWord++;
-					hangman.loadWord();
-				});
-			
-			// need hidden input for touchscreen otherwise you can't access keyboard to enter letters
-			if (x_browserInfo.touchScreen == true) {
-				$("<input/>")
-					.appendTo("#textHolder")
-					.css("opacity", 0);
-			}
-			
-			this.createQuiz();
-			
-			if (x_currentPage != 0) {
-				hangman.sizeChanged();
-			}
-			
-			x_pageLoaded();
 		}
 	}
 	

@@ -16,8 +16,9 @@
 		}
 		
 		this.init = function() {
-			var size = ["100%", $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3];
-			var $pageContents = $("#pageContents");
+			var size = ["100%", $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3],
+				$pageContents = $("#pageContents");
+			
 			$pageContents.data("resize", true);
 			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
