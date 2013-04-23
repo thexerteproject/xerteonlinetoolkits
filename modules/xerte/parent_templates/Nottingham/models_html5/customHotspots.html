@@ -1,8 +1,4 @@
 <script type="text/javascript">
-	
-	// ** need to test properly when canvas not supported - should it just fail completely or only fail completely if not fullySupported?
-	// ** fullySupported fail should immediately stop everything loading and show error message - no point in carying on drawing stuff for it to later be deleted
-	
 	// -----------------------------------------------------------------------------------------
 	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
 	// -----------------------------------------------------------------------------------------
@@ -10,7 +6,6 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var customHotspots = new function() {
-		
 		var	fullySupported,	// false if canvas isn't supported and shapes are needed that can't be drawn in another way
 			canvasSupported,
 			jobQueue,
@@ -398,17 +393,17 @@
 						var $hsHolder = $("#hsHolder");
 						
 						// get xy pos of click relative to position of canvas
-						var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))];
-						var xyCoords = [e.pageX - offset[0], e.pageY - offset[1]];
-						var hit = false;
+						var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
+							xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
+							hit = false;
 						
 						// check each hotspot canvas to see if a non-alpha pixel in it has been hit
 						$hsHolder.find("canvas").each(function() {
 							var $this = $(this);
 							
 							// get pixel data from the whole canvas - and then from pixel clicked
-							var pix = $this[0].getContext("2d").getImageData(0, 0, $this.width(), $this.height());
-							var dataPos = ((xyCoords[1] * $this.width()) + xyCoords[0]) * 4;
+							var pix = $this[0].getContext("2d").getImageData(0, 0, $this.width(), $this.height()),
+								dataPos = ((xyCoords[1] * $this.width()) + xyCoords[0]) * 4;
 							
 							if (pix.data[dataPos+3] > 0) { // is it transparent?
 								$hsHolder.find("canvas.visible").removeClass("visible");
@@ -596,13 +591,13 @@
 							var $hsHolder = $("#hsHolder");
 							
 							// get xy pos of drop relative to position of canvas
-							var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))];
-							var xyCoords = [e.pageX - offset[0], e.pageY - offset[1]];
-							var $thisHSCanvas = ui.draggable.data("correct");
+							var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
+								xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
+								$thisHSCanvas = ui.draggable.data("correct");
 							
 							// get pixel data from the whole canvas - and then from pixel dropped on
-							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
-							var dataPos = ((xyCoords[1] * $thisHSCanvas.width()) + xyCoords[0]) * 4;
+							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height()),
+								dataPos = ((xyCoords[1] * $thisHSCanvas.width()) + xyCoords[0]) * 4;
 							
 							if (pix.data[dataPos+3] > 0) { // is it transparent?
 								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
@@ -935,8 +930,8 @@
 				
 				if (canvasSupported == true) {
 					// position $pin on 1st non-transparent pixel on canvas
-					var $thisHSCanvas = $target;
-					var $hsHolder = $target.parent();
+					var $thisHSCanvas = $target,
+						$hsHolder = $target.parent();
 					
 					// get pixel data from the whole canvas
 					var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
@@ -1025,10 +1020,11 @@
 			
 			var options = [], // array of options to use (index)
 				numShapes = $pageContents.data("mcqData").questions.length,
-				shapeNums = [];
+				shapeNums = [],
+				i;
 			
 			// get max 3 random wrong answer options
-			for (var i=0; i<numShapes; i++) {
+			for (i=0; i<numShapes; i++) {
 				if (i != correctShape) {
 					shapeNums.push(i);
 				}
@@ -1037,7 +1033,7 @@
 			if (numOptions > 3) {
 				numOptions = 3;
 			}
-			for (var i=0; i<numOptions; i++) {
+			for (i=0; i<numOptions; i++) {
 				var shapeNum = Math.floor(Math.random() * shapeNums.length);
 				options.push(shapeNums[shapeNum]);
 				shapeNums.splice(shapeNum, 1);
@@ -1052,12 +1048,12 @@
 			
 			// create answer option radio buttons
 			var $optionHolder = $("#optionHolder")
-				.empty()
-				.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+					.empty()
+					.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
 			
 			var	$option = $optionHolder.find("input"),
 				$optionTxt = $optionHolder.find(".optionTxt");
-			for (var i=0; i<options.length; i++) {
+			for (i=0; i<options.length; i++) {
 				var $thisOption, $thisOptionTxt;
 				if (i != 0) {
 					$thisOption = $option.clone().appendTo($optionHolder);
@@ -1198,9 +1194,11 @@
         };
 		
 		this.drawFreehand = function (canvas, attr) {
-			var points = attr.p.split('~');
-			var coords = [];
-			for (var i=0; i<points.length; i++) {
+			var points = attr.p.split('~'),
+				coords = [],
+				i;
+			
+			for (i=0; i<points.length; i++) {
 				coords.push(points[i].split(','));
 			}
 			
@@ -1209,7 +1207,7 @@
                 canvas.rotate(attr.r * Math.PI / 180);
                 canvas.beginPath();
                 canvas.moveTo(0, 0);
-				for (var i=0; i<coords.length; i++) {
+				for (i=0; i<coords.length; i++) {
                     canvas.lineTo(parseInt(coords[i][0]), parseInt(coords[i][1]));
 				}
                 canvas.globalAlpha = attr.la / 100;
@@ -1217,11 +1215,12 @@
 			}
 			else {
 				fullySupported = false;
-				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
-				var pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3),
+					pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				
 				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
 				var pixels = '', maxX = 0, maxY = 0;
-				for (var i=0; i<coords.length; i++) {
+				for (i=0; i<coords.length; i++) {
 					pixels += '<div class="p_' + pixelHash + '" style="left:' + (attr.x + parseInt(coords[i][0])) + 'px;top:'+ (attr.y + parseInt(coords[i][1])) + 'px"></div>';
 					maxX = Math.max(maxX, attr.x + parseInt(coords[i][0]) + attr.lw + 1);
 					maxY = Math.max(maxY, attr.y + parseInt(coords[i][1]) + attr.lw + 1);
@@ -1234,14 +1233,14 @@
 		
         this.drawOval = function(canvas, attr) {
             if (canvasSupported == true) {
-                var radiusX = attr.x2;
-                var radiusY = attr.y2;
-                var xPos, yPos;
+                var radiusX = attr.x2,
+					radiusY = attr.y2,
+					xPos, yPos, i;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
                 canvas.beginPath();
-                for (var i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
+                for (i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
                     xPos = radiusY * Math.sin(i) * Math.sin(0 * Math.PI) + radiusX * Math.cos(i) * Math.cos(0 * Math.PI);
                     yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
                     if (i == 0) {
@@ -1290,9 +1289,9 @@
         this.drawBurst = function(canvas, attr) {
             if (canvasSupported == true) {
                 if (attr.n > 2) {
-                    var outerRadius = attr.y2;
-                    var innerRadius = attr.x2;
-                    var step, hStep, qStep, i, dx, dy, cx, cy;
+                    var outerRadius = attr.y2,
+						innerRadius = attr.x2,
+						step, hStep, qStep, i, dx, dy, cx, cy;
                     step = 2 * Math.PI / attr.n ;
                     hStep = step/2;
                     qStep = step/4;
@@ -1326,8 +1325,8 @@
 		
         this.drawArrow = function(canvas, attr) {
             if (canvasSupported == true) {
-                var w = attr.x2;
-                var h = attr.y2;
+                var w = attr.x2,
+					h = attr.y2;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -1358,8 +1357,8 @@
 		
         this.drawStar = function(canvas, attr) {
             if (canvasSupported == true) {
-                var outerRadius = attr.x2;
-                var innerRadius = attr.y2;
+                var outerRadius = attr.x2,
+					innerRadius = attr.y2;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate((180 - attr.r) * Math.PI / 180);
@@ -1369,7 +1368,7 @@
                     hStep = step / 2;
                     canvas.beginPath();
                     canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
-                    for (var i = 1; i <= attr.n; i++) {
+                    for (i = 1; i <= attr.n; i++) {
                         dx = Math.cos(step * i - hStep) * innerRadius;
                         dy = -Math.sin(step * i - hStep) * innerRadius;
                         canvas.lineTo(dx, dy);
@@ -1390,8 +1389,8 @@
 		
         this.drawNgon = function(canvas, attr) {
             if (canvasSupported == true) {
-                var p = attr.p.split('~');
-                var i, coords;
+                var p = attr.p.split('~'),
+					i, coords;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -1418,8 +1417,8 @@
 		
         this.drawWedge = function(canvas, attr) {
             if (canvasSupported == true) {
-                var radius = attr.x2;
-                var arc = attr.y2;
+                var radius = attr.x2,
+					arc = attr.y2;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -1460,8 +1459,8 @@
 		
         this.drawGear = function(canvas, attr) {
             if (canvasSupported == true) {
-                var outerRadius = attr.x2;
-                var innerRadius = attr.y2;
+                var outerRadius = attr.x2,
+					innerRadius = attr.y2;
 				
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate((180 - attr.r) * Math.PI / 180);

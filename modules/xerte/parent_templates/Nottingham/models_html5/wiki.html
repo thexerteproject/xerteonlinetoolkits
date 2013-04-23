@@ -3,7 +3,6 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var wiki = new function() {
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.init();
@@ -11,15 +10,17 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			$("#pageContents .panel iframe").attr("width", ($("#pageContents .panel").width()-5) + "px");
-			$("#pageContents .panel iframe").attr("height", ($("#x_pageHolder").height() - $("#x_headerBlock").height() - $("#x_footerBlock").height() + 10) + "px");
+			$("#pageContents .panel iframe")
+				.width(($("#pageContents .panel").width()-5) + "px")
+				.height(($("#x_pageHolder").height() - $("#x_headerBlock").height() - $("#x_footerBlock").height() + 10) + "px");
 		};
 
 		this.init = function() {
-			var $pageContents = $("#pageContents");
-			var $textHolder = $("#textHolder");
-			var $panel = $("#pageContents .panel");
-			var textAlign = x_currentPageXML.getAttribute("align");
+			var $pageContents = $("#pageContents")
+				$textHolder = $("#textHolder")
+				$panel = $("#pageContents .panel")
+				textAlign = x_currentPageXML.getAttribute("align");
+			
 			$panel.addClass("width60");
 
 			var url = x_currentPageXML.getAttribute("url");

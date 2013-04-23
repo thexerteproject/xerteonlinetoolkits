@@ -103,14 +103,16 @@
 		
 		this.makeTable = function(tableData, csv) {
 			var tableString = "",
-				seperator = "|";
+				seperator = "|",
+				i, j;
+			
 			if (csv == true) {
 				seperator = ",";
 			}
-			for (var i=0; i<tableData.length; i++) {
+			for (i=0; i<tableData.length; i++) {
 				tableString += "<tr>";
 				var rowData = tableData[i].split(seperator);
-				for (var j=0; j<rowData.length; j++) {
+				for (j=0; j<rowData.length; j++) {
 					tableString += "<td>" + rowData[j] + "</td>";
 				}
 				tableString += "</tr>";

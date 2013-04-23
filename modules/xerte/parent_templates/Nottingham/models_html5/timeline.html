@@ -26,8 +26,8 @@
 			var $target = $("#targetHolder .target");
 			$target.css("height", "auto");
 			
-			var $labels = $("#labelHolder .label");
-			var tallestLabel = 0;
+			var $labels = $("#labelHolder .label"),
+				tallestLabel = 0;
 			
 			$labels.each(function() {
 				var $this = $(this);
@@ -63,17 +63,162 @@
 			});
 		}
 		
+		this.init = function() {
+			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
+			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
+			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
+			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
+			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
+			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+			
+			$("#textHolder")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
+				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
+			
+			var $feedback = $("#feedback")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+				.hide();
+			
+			// checkBtnWidth attribute not used as button will be sized automatically
+			var buttonLabel = x_currentPageXML.getAttribute("checkBtnTxt");
+			if (buttonLabel == undefined) {
+				buttonLabel = "Check Answers";
+			}
+			
+			var $button = $("#button")
+				.button({
+					label:	buttonLabel
+				})
+				.click(function() { // mark labels and show feedback
+					$("#dragDropHolder .tick").remove();
+					$("#feedback").show();
+					$("#labelHolder .label").each(function() {
+						var $this = $(this);
+						if ($this.data("target").is($this.data("currentTarget"))) {
+							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+						}
+					});
+				});
+			
+			// create targets
+			var $targetHolder = $("#targetHolder"),
+				$firstTarget = $targetHolder.find(".target"),
+				labels = [];
+			
+			$(x_currentPageXML).children()
+				.each(function(i) {
+					var $thisTarget;
+					if (i != 0) {
+						$thisTarget = $firstTarget.clone().appendTo($targetHolder);
+					} else {
+						$thisTarget = $firstTarget;
+					}
+					$thisTarget
+						.attr("title", targetTxt1 + " " + this.getAttribute("text"))
+						.find("h3").html(this.getAttribute("name"));
+					labels.push({text:this.getAttribute("text"), correct:$thisTarget});
+				});
+			
+			var $pageContents = $("#pageContents");
+			$pageContents.data({
+				"labels"		:labels,
+				"selectedLabel"	:""
+			});
+			
+			// style targets
+			var numColumns = 4, // max targets on row
+				spacerWidth = ((numColumns - 1) * 2) + (numColumns * 2), // 2% gap between targets & 1% left & 1% right padding inside targets
+				columnWidth = Math.floor((100 - spacerWidth) / numColumns),
+				edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
+			
+			$("#targetHolder .target, #labelHolder")
+				.css({
+					width			:columnWidth + "%",
+					"margin-left"	:"2%"
+				});
+			$("#targetHolder .target").each(function(i) {
+				if (i % numColumns == 0) {
+					$(this).addClass("first");
+				}
+			});
+			$("#targetHolder .target.first").css("margin-left", edgeWidth + "%");
+			
+			$("#targetHolder .target")
+				.droppable({
+					accept:	"#dragDropHolder .label",
+					drop:	function(event, ui) {
+						timeline.dropLabel($(this), ui.draggable); // target, label
+					}
+					})
+				.focusin(function(e) {
+					if ($(e.target).hasClass("target")) {
+						$(this).addClass("focus");
+						var $pageContents = $("#pageContents");
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+							$(this).attr("title", targetTxt1 + " " + $(this).find("h3").html() + " - " + targetTxt2);
+						}
+					}
+					})
+				.focusout(function() {
+					var $pageContents = $("#pageContents");
+					$(this)
+						.removeClass("focus")
+						.attr("title", targetTxt1 + " " + $(this).find("h3").html());
+					})
+				.keypress(function(e) {
+					if ($(e.target).hasClass("target")) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32) {
+							var $selectedLabel = $("#pageContents").data("selectedLabel");
+							if ($selectedLabel != undefined && $selectedLabel != "") {
+								timeline.dropLabel($(this), $selectedLabel); // target, label
+							}
+						}
+					}
+					})
+				.data("currentLabel", "");
+			
+			// set tab index for targets - leaving space between them for a label to be put on it
+			var tabIndex = 1;
+			tabIndex += $pageContents.data("labels").length;
+			$targetHolder.find(".target").each(function() {
+				tabIndex++;
+				var $this = $(this);
+				$this.attr({
+					"tabindex"	:tabIndex,
+					"title"		:targetTxt1 + " " + $this.find("h3").html()
+				});
+				tabIndex++;
+			});
+			$button.attr("tabindex", tabIndex + 1);
+			$feedback.attr("tabindex", tabIndex + 2);
+			
+			this.createLabels();
+			
+			if (x_currentPageXML.getAttribute("interactivity") == "Timeline") {
+				$targetHolder.find(".target").css("background-image", "url('" + x_templateLocation + "common_html5/arrow.png')");
+			}
+			
+			if (x_currentPage != 0) {
+				timeline.sizeChanged();
+			}
+			
+			x_pageLoaded();
+		}
+		
 		this.createLabels = function() {
 			// randomise order and create labels
-			var $pageContents = $("#pageContents");
-			var labels = [];
-			var tempLabels = $pageContents.data("labels").slice(0);
-			for (var i=0; i<$pageContents.data("labels").length; i++) {
+			var $pageContents = $("#pageContents"),
+				labels = [],
+				tempLabels = $pageContents.data("labels").slice(0),
+				i;
+			
+			for (i=0; i<$pageContents.data("labels").length; i++) {
 				var labelNum = Math.floor(Math.random() * tempLabels.length);
 				labels.push(tempLabels[labelNum]);
 				tempLabels.splice(labelNum, 1);
 			}
-			for (var i=0; i<labels.length; i++) {
+			for (i=0; i<labels.length; i++) {
 				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
@@ -152,8 +297,8 @@
 		
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
-			var prevLabel = $thisTarget.data("currentLabel");
-			var prevTarget = $thisLabel.data("currentTarget");
+			var prevLabel = $thisTarget.data("currentLabel"),
+				prevTarget = $thisLabel.data("currentTarget");
 			
 			// label hasn't been dropped on target it was already on
 			if ((prevLabel == "" || prevLabel.is($thisLabel) == false) && (prevTarget == "" || prevTarget.is($thisTarget) == false)) {
@@ -203,147 +348,6 @@
 					"top"	:$thisTarget.find("h3").position().top + $thisTarget.find("h3").height() + parseInt($thisTarget.css("padding-top")),
 					"left"	:$thisTarget.position().left + parseInt($thisTarget.css("margin-left")) + parseInt($thisTarget.css("padding-left"))
 				});
-		}
-		
-		this.init = function() {
-			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
-			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
-			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
-			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
-			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
-			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
-			
-			$("#textHolder")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
-				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
-			
-			var $feedback = $("#feedback")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-				.hide();
-			
-			// checkBtnWidth attribute not used as button will be sized automatically
-			var buttonLabel = x_currentPageXML.getAttribute("checkBtnTxt");
-			if (buttonLabel == undefined) {
-				buttonLabel = "Check Answers";
-			}
-			
-			var $button = $("#button")
-				.button({
-					label:	buttonLabel
-				})
-				.click(function() { // mark labels and show feedback
-					$("#dragDropHolder .tick").remove();
-					$("#feedback").show();
-					$("#labelHolder .label").each(function() {
-						var $this = $(this);
-						if ($this.data("target").is($this.data("currentTarget"))) {
-							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-						}
-					});
-				});
-			
-			// create targets
-			var $targetHolder = $("#targetHolder");
-			var $firstTarget = $targetHolder.find(".target");
-			var labels = [];
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var $thisTarget;
-					if (i != 0) {
-						$thisTarget = $firstTarget.clone().appendTo($targetHolder);
-					} else {
-						$thisTarget = $firstTarget;
-					}
-					$thisTarget
-						.attr("title", targetTxt1 + " " + this.getAttribute("text"))
-						.find("h3").html(this.getAttribute("name"));
-					labels.push({text:this.getAttribute("text"), correct:$thisTarget});
-				});
-			
-			var $pageContents = $("#pageContents");
-			$pageContents.data({
-				"labels"		:labels,
-				"selectedLabel"	:""
-			});
-			
-			// style targets
-			var numColumns = 4; // max targets on row
-			var spacerWidth = ((numColumns - 1) * 2) + (numColumns * 2); // 2% gap between targets & 1% left & 1% right padding inside targets
-			var columnWidth = Math.floor((100 - spacerWidth) / numColumns);
-			var edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
-			$("#targetHolder .target, #labelHolder")
-				.css({
-					width			:columnWidth + "%",
-					"margin-left"	:"2%"
-				});
-			$("#targetHolder .target").each(function(i) {
-				if (i % numColumns == 0) {
-					$(this).addClass("first");
-				}
-			});
-			$("#targetHolder .target.first").css("margin-left", edgeWidth + "%");
-			
-			$("#targetHolder .target")
-				.droppable({
-					accept:	"#dragDropHolder .label",
-					drop:	function(event, ui) {
-						timeline.dropLabel($(this), ui.draggable); // target, label
-					}
-					})
-				.focusin(function(e) {
-					if ($(e.target).hasClass("target")) {
-						$(this).addClass("focus");
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$(this).attr("title", targetTxt1 + " " + $(this).find("h3").html() + " - " + targetTxt2);
-						}
-					}
-					})
-				.focusout(function() {
-					var $pageContents = $("#pageContents");
-					$(this)
-						.removeClass("focus")
-						.attr("title", targetTxt1 + " " + $(this).find("h3").html());
-					})
-				.keypress(function(e) {
-					if ($(e.target).hasClass("target")) {
-						var charCode = e.charCode || e.keyCode;
-						if (charCode == 32) {
-							var $selectedLabel = $("#pageContents").data("selectedLabel");
-							if ($selectedLabel != undefined && $selectedLabel != "") {
-								timeline.dropLabel($(this), $selectedLabel); // target, label
-							}
-						}
-					}
-					})
-				.data("currentLabel", "");
-			
-			// set tab index for targets - leaving space between them for a label to be put on it
-			var tabIndex = 1;
-			tabIndex += $pageContents.data("labels").length;
-			$targetHolder.find(".target").each(function() {
-				tabIndex++;
-				var $this = $(this);
-				$this.attr({
-					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " " + $this.find("h3").html()
-				});
-				tabIndex++;
-			});
-			$button.attr("tabindex", tabIndex + 1);
-			$feedback.attr("tabindex", tabIndex + 2);
-			
-			this.createLabels();
-			
-			if (x_currentPageXML.getAttribute("interactivity") == "Timeline") {
-				$targetHolder.find(".target").css("background-image", "url('" + x_templateLocation + "common_html5/arrow.png')");
-			}
-			
-			if (x_currentPage != 0) {
-				timeline.sizeChanged();
-			}
-			
-			x_pageLoaded();
 		}
 	}
 	

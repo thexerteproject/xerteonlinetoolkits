@@ -1,6 +1,4 @@
 <script type="text/javascript">
-
-	// ** change so it's not split screen anymore but inline panel - so it stays the width of the image
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -29,8 +27,8 @@
 				this.createLabels();
 			} else {
 				// resize image to max that will fit space
-				var $image = $("#image");
-				var prevW = $image.width();
+				var $image = $("#image"),
+					prevW = $image.width();
 				x_scaleImg($image, $panel.width(), $panel.height() - $("#labelHolder").height());
 				
 				this.createLabels();

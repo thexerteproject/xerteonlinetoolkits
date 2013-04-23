@@ -16,11 +16,10 @@
 		}
 		
 		this.init = function() {
-			var src = x_currentPageXML.getAttribute("src");
-			var mapUrl = src.substring(src.indexOf('src="') + 5, src.indexOf('"', src.indexOf('src="') + 5));
+			var src = x_currentPageXML.getAttribute("src"),
+				mapUrl = src.substring(src.indexOf('src="') + 5, src.indexOf('"', src.indexOf('src="') + 5)),
+				description = "";
 			
-			// ** need to add this to xwd - description for contents of iframe for screen readers
-			var description = "";
 			if (x_currentPageXML.getAttribute("description") != "" && x_currentPageXML.getAttribute("description") != undefined) {
 				description = 'title="' + x_currentPageXML.getAttribute("description") + '"';
 			}

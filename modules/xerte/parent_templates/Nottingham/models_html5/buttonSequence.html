@@ -18,9 +18,10 @@
 		
 		this.init = function() {
 			// buttonWidth attribute not used as button will be sized automatically
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			var $splitScreen = $("#pageContents .splitScreen");
-			var $textHolder = $("#textHolder");
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder = $("#textHolder");
+			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -53,8 +54,9 @@
 				}
 			}
 			
-			var $panel = $("#infoHolder .panel");
-			var $infoGroup = $(".infoGroup:first");
+			var $panel = $("#infoHolder .panel"),
+				$infoGroup = $(".infoGroup:first");
+			
 			$infoGroup.find("p").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
 			
 			$(x_currentPageXML).children()

@@ -44,62 +44,6 @@
 			}
 		}
 		
-		this.imgLoaded = function() {
-			$cropImg
-				.width($pageImg.width())
-				.height($pageImg.height());
-			
-			$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
-			
-			x_pageLoaded(); // call this function in every model once everything's loaded
-		}
-		
-		this.animate = function(newW, newL, newT) {
-			if ($pageImg.filter(":animated").length > 0) {
-				$pageImg.stop();
-			}
-			$pageImg.animate({
-				width	:newW,
-				left	:newL + "px",
-				top		:newT + "px"
-			}, {
-				duration	:500,
-				//easing		:"easeInOutQuad",
-				complete	:imageViewer.calculateDragArea
-			});
-		}
-		
-		this.setFullScreenWH = function() {
-			var $panel = $("#mainPanel");
-			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			
-			$pageImg.width($panel.width());
-			
-			// is $panel too tall now $pageImg has been scaled to fill its width?
-			if ($panel.height() > $pageImg.height()) {
-				$panel.height($pageImg.height());
-			}
-			
-			$cropImg
-				.width($panel.width())
-				.height($panel.height());
-		}
-		
-		this.calculateDragArea = function() {
-			// calculate drag constraints
-			if ($pageImg.hasClass("ui-draggable")) {
-				$pageImg.draggable({
-					containment:	[($cropImg.offset().left + $cropImg.width()) - $pageImg.width(), ($cropImg.offset().top + $cropImg.height()) - $pageImg.height(), $cropImg.offset().left, $cropImg.offset().top]
-				});
-			}
-			
-			if ($pageImg.width() == $cropImg.width()) {
-				$zoomOutBtn.button("disable");
-			} else {
-				$zoomOutBtn.button("enable");
-			}
-		}
-		
 		this.init = function() {
 			$pageImg 		= $("#pageImg");
 			$cropImg 		= $("#cropImg");
@@ -112,8 +56,8 @@
 			$resetBtn		= $controlPanel.find("#resetImage");
 			$fullBtn		= $controlPanel.find("#toggleScreen");
 			
-			var $textHolder		= $("#textHolder");
-			var $panel			= $("#mainPanel");
+			var $textHolder		= $("#textHolder"),
+				$panel			= $("#mainPanel");
 			
 			$imgCover.disableSelection(); // select area control won't work without coverImg
 			
@@ -141,8 +85,8 @@
 			// set up control panel & buttons
 			$controlPanel.draggable({containment:	"parent"});
 			
-			var attr	= ["move", "zoomIn", "zoomOut", "selectArea", "resetImage", "toggleScreen"];
-			var btnTip	= ["Move", "Zoom In", "Zoom Out", "Select Area", "Reset Image", "Toggle Full Screen"];
+			var attr	= ["move", "zoomIn", "zoomOut", "selectArea", "resetImage", "toggleScreen"],
+				btnTip	= ["Move", "Zoom In", "Zoom Out", "Select Area", "Reset Image", "Toggle Full Screen"];
 			
 			for (var i=0; i<attr.length; i++) {
 				var xmlTxt = x_currentPageXML.getAttribute(attr[i] + "Tip");
@@ -181,8 +125,8 @@
 						// move image around using arrow keys
 						var charCode = e.charCode || e.keyCode;
 						if (charCode >= 37 && charCode <= 40) {
-							var oldXY = [$pageImg.position().left, $pageImg.position().top];
-							var newXY = [$pageImg.position().left, $pageImg.position().top];
+							var oldXY = [$pageImg.position().left, $pageImg.position().top],
+								newXY = [$pageImg.position().left, $pageImg.position().top];
 							
 							if (charCode == 37) { // move img right
 								if ($pageImg.position().left < 0) { // there's space to move the image over
@@ -480,8 +424,8 @@
 					$("#textHolder").show();
 					$("#imgHolder").removeClass("fullScreen");
 					
-					var $panel = $("#mainPanel");
-					var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+					var $panel = $("#mainPanel"),
+						textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
 					if (textAlign == "Right") {
 						$panel.addClass("x_floatLeft");
 					} else if (textAlign != "Top" && textAlign != "Bottom") {
@@ -509,10 +453,66 @@
 			
 			$pageImg.attr("src", eval(x_currentPageXML.getAttribute("url"))); // set image src - imgLoaded function will be called when it's loaded
 		}
+		
+		this.imgLoaded = function() {
+			$cropImg
+				.width($pageImg.width())
+				.height($pageImg.height());
+			
+			$pageImg.data("scaledSize", [$pageImg.width(), $pageImg.height()]);
+			
+			x_pageLoaded(); // call this function in every model once everything's loaded
+		}
+		
+		this.animate = function(newW, newL, newT) {
+			if ($pageImg.filter(":animated").length > 0) {
+				$pageImg.stop();
+			}
+			$pageImg.animate({
+				width	:newW,
+				left	:newL + "px",
+				top		:newT + "px"
+			}, {
+				duration	:500,
+				//easing		:"easeInOutQuad",
+				complete	:imageViewer.calculateDragArea
+			});
+		}
+		
+		this.setFullScreenWH = function() {
+			var $panel = $("#mainPanel");
+			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			
+			$pageImg.width($panel.width());
+			
+			// is $panel too tall now $pageImg has been scaled to fill its width?
+			if ($panel.height() > $pageImg.height()) {
+				$panel.height($pageImg.height());
+			}
+			
+			$cropImg
+				.width($panel.width())
+				.height($panel.height());
+		}
+		
+		this.calculateDragArea = function() {
+			// calculate drag constraints
+			if ($pageImg.hasClass("ui-draggable")) {
+				$pageImg.draggable({
+					containment:	[($cropImg.offset().left + $cropImg.width()) - $pageImg.width(), ($cropImg.offset().top + $cropImg.height()) - $pageImg.height(), $cropImg.offset().left, $cropImg.offset().top]
+				});
+			}
+			
+			if ($pageImg.width() == $cropImg.width()) {
+				$zoomOutBtn.button("disable");
+			} else {
+				$zoomOutBtn.button("enable");
+			}
+		}
 	}
 	
-	var imgMaxW = 500; // desktop / tablet
-	var imgMaxH = 400;
+	var imgMaxW = 500, // desktop / tablet
+		imgMaxH = 400;
 	if (x_browserInfo.mobile == true) {
 		imgMaxW = 250; // mobile
 		imgMaxH = 250;

@@ -13,17 +13,6 @@
 			
 		}
 		
-		this.loadVideo = function() {
-			var $video = $("#pageVideo");
-			$video.mediaPlayer({
-				type			:"video",
-				source			:$video.data("src"),
-				width			:Number($video.data("dimensions")[0]),
-				height			:Number($video.data("dimensions")[1]),
-				startEndFrame	:$video.data("startEndFrame")
-			});
-		}
-		
 		this.init = function() {
 			// text align
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
@@ -49,8 +38,9 @@
 					.hide()
 					.html(x_addLineBreaks(transcriptTxt));
 				
-				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt");
-				var btnTip = x_currentPageXML.getAttribute("transcriptTabTip");
+				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt"),
+					btnTip = x_currentPageXML.getAttribute("transcriptTabTip");
+				
 				if (btnLabel == undefined) {
 					btnLabel = "Transcript";
 					btnTip = "Transcript";
@@ -79,8 +69,9 @@
 				$("#transcriptHolder").remove();
 			}
 			
-			var $pageVideo = $("#pageVideo");
-			var videoDimensions = [320,240];
+			var $pageVideo = $("#pageVideo"),
+				videoDimensions = [320,240];
+			
 			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 				if (dimensions[0] != 0 && dimensions[1] != 0) {
@@ -99,6 +90,17 @@
 			
 			this.loadVideo();
 			x_pageLoaded();
+		}
+		
+		this.loadVideo = function() {
+			var $video = $("#pageVideo");
+			$video.mediaPlayer({
+				type			:"video",
+				source			:$video.data("src"),
+				width			:Number($video.data("dimensions")[0]),
+				height			:Number($video.data("dimensions")[1]),
+				startEndFrame	:$video.data("startEndFrame")
+			});
 		}
 	}
 	

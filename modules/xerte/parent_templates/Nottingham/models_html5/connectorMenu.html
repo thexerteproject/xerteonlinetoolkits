@@ -1,7 +1,6 @@
 <script type="text/javascript">
-	
-	// ** HTML5 version currently ignores these optional properties:	itemHeight, menuOverLineCol, menuLineCol, menuOverFillCol, menuFillCol, itemSpacingX
-	// ** listToClip optional property doesn't do anything either (and therefore reportTitle, pageLabel, titleLabel, idLabel)
+	// HTML5 version currently ignores these optional properties:	itemHeight, menuOverLineCol, menuLineCol, menuOverFillCol, menuFillCol, itemSpacingX
+	// listToClip optional property doesn't do anything either (and therefore reportTitle, pageLabel, titleLabel, idLabel)
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -70,8 +69,9 @@
 				}
 			}
 			
-			var $menuItems = $("#subMenuItems");
-			var $menuItem = $menuItems.find(".subMenuItem:first");
+			var $menuItems = $("#subMenuItems"),
+				$menuItem = $menuItems.find(".subMenuItem:first");
+			
 			for (var i=0; i<menuItems.length; i++) {
 				var $thisItem;
 				if (i != 0) {

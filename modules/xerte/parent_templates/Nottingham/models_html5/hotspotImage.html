@@ -109,8 +109,9 @@
 							var $this = $(this);
 							$this.addClass("selected");
 							if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
-								var nextHS = $("#nextHS");
-								var prevHS = $("#prevHS");
+								var nextHS = $("#nextHS"),
+									prevHS = $("#prevHS");
+								
 								if ($this.index() + 1 == $("#pageContents .hotspot").length) {
 									nextHS.button("disable");
 									prevHS.button("enable");

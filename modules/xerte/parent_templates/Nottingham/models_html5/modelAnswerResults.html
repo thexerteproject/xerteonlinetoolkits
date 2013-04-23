@@ -16,23 +16,6 @@
 			}
 		}
 		
-		// function gets saved data about all modelAnswer pages in the project
-		this.getData = function() {
-			var dataString = "";
-			for (var i=0; i<x_pageInfo.length; i++) {
-				var thisObject = x_pageInfo[i];
-				if (thisObject.type == "modelAnswer") {
-					if (thisObject.savedData != undefined) { // ignores skipped pages
-						if (dataString != "") {
-							dataString += '<br/><hr/><br/>';
-						}
-						dataString += '<p>' + x_addLineBreaks(thisObject.savedData) + '</p>';
-					}
-				}
-			}
-			return dataString;
-		}
-		
 		this.init = function() {
 			// copyBtnTip & copyBtnWidth attributes not used - button will be sized automatically
 			$("#leftTxt").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
@@ -48,9 +31,7 @@
 					label:	copyBtnTxt
 				})
 				.click(function() {
-					// ** need to copy text to clipboard - no easy way to do this without flash because of browser security **
-					// ** possibly use a work around like this which displays text and selects it so you can just Ctrl-C but instructions in xwd would need changing **
-					window.prompt ("Copy to clipboard: Ctrl+C", modelAnswerResults.getData());
+					// ** need to copy to clipboard
 				});
 			*/
 			
@@ -61,6 +42,23 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		// function gets saved data about all modelAnswer pages in the project
+		this.getData = function() {
+			var dataString = "";
+			for (var i=0; i<x_pageInfo.length; i++) {
+				var thisObject = x_pageInfo[i];
+				if (thisObject.type == "modelAnswer") {
+					if (thisObject.savedData != undefined) { // ignores skipped pages
+						if (dataString != "") {
+							dataString += '<br/><hr/><br/>';
+						}
+						dataString += '<p>' + x_addLineBreaks(thisObject.savedData) + '</p>';
+					}
+				}
+			}
+			return dataString;
 		}
 	}
 	

@@ -13,7 +13,6 @@
 			jobQueueIndex,
 			imageLoading,
 			imageTimer,
-			canvasSize,
 			fullySupported;
 
 		// function called every time the page is viewed after it has initially loaded
@@ -25,6 +24,66 @@
 		this.sizeChanged = function() {
 
 		};
+		
+		this.init = function() {
+            var $pageContents = $("#pageContents"),
+				$textHolder = $("#textHolder"),
+				$panel = $("#pageContents .panel");
+
+            $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("desc")));
+            $textHolder.css('font-size', parseInt(x_currentPageXML.getAttribute("size")) + "pt");
+
+            if (x_currentPageXML.getAttribute("align") != "right") {
+                $panel.addClass("x_floatRight");
+            }
+            else {
+                $panel.addClass("x_floatLeft");
+            }
+
+            canvasHolder = document.getElementById('canvasHolder');
+
+            // Lets start by assuming the pagetype will be supported
+            fullySupported = true;
+
+
+            // Setup the drawing area
+            if (canvasHolder.getContext) {
+                $drawingArea = canvasHolder.getContext("2d");
+                canvasSupported = true;
+            }
+            else {
+                $("#canvasHolder").css("height", 0);
+                $drawingArea = $("#divHolder");
+                $drawingArea.attr("style", "position:relative");
+                canvasSupported = false;
+            }
+
+			// Setup queue
+			jobQueue = [];
+			jobQueueIndex = 0;
+
+			//loop through shape data and save in jobQueue
+			this.processShapeData();
+
+			if (canvasSupported == true) {
+				// Set initial size as measureCanvas will resize
+				canvasHolder.width = 1000;
+				canvasHolder.height = 1000;
+
+				//add measureCanvas to jobQueue
+				jobQueue.push({"type":"measure", "data":{w:200,h:200}});
+
+				//loop through shape data and save in jobQueue
+				this.processShapeData();
+			}
+
+			//add job for x_pageLoaded() to jobQueue
+			jobQueue.push({"type":"finished", "data":null});
+
+            // Begin processing jobQueue
+            imageTimer = 0;
+            this.doJobFromQueue();
+        };
 
         // Parse and substitute attributes and return as object
         this.parseAttributes = function(xml) {
@@ -45,12 +104,12 @@
         };
 
 		this.drawRectangle = function(canvas, attr) {
-			if (this.canvasSupported == true) {
+			if (canvasSupported == true) {
                 var w = attr.x2, h = attr.y2;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
-                this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]); //$drawingArea.fillRect(x, y, w, h); // *** should try to use this
+                this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]);
                 canvas.fill();
                 canvas.globalAlpha = attr.la / 100;
                 canvas.stroke();
@@ -62,12 +121,12 @@
 					canvas.height(Math.max(canvas.height(), attr.y + attr.y2 + 10));
                 }
                 else {
-                	this.fullySupported = false;
+                	fullySupported = false;
                 }
 			}
 		};
 
-        // *** Helper function NOT the Poly shape handler, although called from it
+        // this is a helper function NOT the Poly shape handler, although called from it
         this.drawPolygon = function (canvas, coords) {
             canvas.beginPath();
             canvas.moveTo(coords[0], coords[1]);
@@ -80,7 +139,7 @@
 		this.drawText = function (canvas, attr) {
             var fontWeight = (attr.b == "1") ? "bold" : "normal";
 
-			if (this.canvasSupported == true) {
+			if (canvasSupported == true) {
                 canvas.textBaseline = "top";
                 canvas.fillStyle = attr.lc;
                 canvas.font = fontWeight + " " + attr.s + "px " + attr.f;
@@ -115,20 +174,21 @@
 		this.drawPicture = function (canvas, attr) {
 			var p = FileLocation + attr.p;
 
-			if (this.canvasSupported == true) {
-				var img = new Image();
-				var that = this;
+			if (canvasSupported == true) {
+				var img = new Image(),
+					that = this;
+				
 				img.onload = function() {
 					canvas.save();
 					canvas.translate(attr.x, attr.y);
 					canvas.rotate(attr.r * Math.PI / 180);
 					canvas.drawImage(img, 0, 0);
 					canvas.restore();
-					that.imageTimer = 0;
+					imageTimer = 0;
 				};
 				img.src = p;
-				this.imageLoading = img;
-				that.imageTimer = 25;
+				imageLoading = img;
+				imageTimer = 25;
 			}
 			else {
                 if (attr.r == 0) {
@@ -141,13 +201,13 @@
                 	img.src = p;
                 }
                 else {
-                    this.fullySupported = false;
+                    fullySupported = false;
                 }
 			}
 		};
 
         this.drawPen = function (canvas, attr) {
-            if (this.canvasSupported == true) {
+            if (canvasSupported == true) {
                 var coords, points = attr.p.split('~');
 
                 canvas.translate(attr.x, attr.y);
@@ -163,18 +223,19 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
 		this.drawFreehand = function (canvas, attr) {
-			var points = attr.p.split('~');
-			var coords = [];
+			var points = attr.p.split('~'),
+				coords = [];
+			
 			for (var i=0; i<points.length; i++) {
 				coords.push(points[i].split(','));
 			}
 
-			if (this.canvasSupported == true) {
+			if (canvasSupported == true) {
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
                 canvas.beginPath();
@@ -186,9 +247,10 @@
                 canvas.stroke();
 			}
 			else {
-				this.fullySupported = false;
-				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
-				var pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				fullySupported = false;
+				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3),
+					pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
+				
 				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
 				var pixels = '', maxX = 0, maxY = 0;
 				for (var i=0; i<coords.length; i++) {
@@ -203,10 +265,10 @@
 		};
 
         this.drawOval = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var radiusX = attr.x2;
-                var radiusY = attr.y2;
-                var xPos, yPos;
+            if (canvasSupported == true) {
+                var radiusX = attr.x2,
+					radiusY = attr.y2,
+					xPos, yPos;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -227,12 +289,12 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawPoly = function(canvas, attr) {
-            if (this.canvasSupported == true) {
+            if (canvasSupported == true) {
                 var radius = attr.x2;
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -253,16 +315,17 @@
                 }
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawBurst = function(canvas, attr) {
-            if (this.canvasSupported == true) {
+            if (canvasSupported == true) {
                 if (attr.n > 2) {
-                    var outerRadius = attr.y2;
-                    var innerRadius = attr.x2;
-                    var step, hStep, qStep, i, dx, dy, cx, cy;
+                    var outerRadius = attr.y2,
+						innerRadius = attr.x2,
+						step, hStep, qStep, i, dx, dy, cx, cy;
+					
                     step = 2 * Math.PI / attr.n ;
                     hStep = step/2;
                     qStep = step/4;
@@ -290,14 +353,14 @@
                 }
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawArrow = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var w = attr.x2;
-                var h = attr.y2;
+            if (canvasSupported == true) {
+                var w = attr.x2,
+					h = attr.y2;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -307,12 +370,12 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawLine = function(canvas, attr) {
-            if (this.canvasSupported == true) {
+            if (canvasSupported == true) {
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
                 canvas.beginPath();
@@ -322,14 +385,14 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         }
 
         this.drawStar = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var outerRadius = attr.x2;
-                var innerRadius = attr.y2;
+            if (canvasSupported == true) {
+                var outerRadius = attr.x2,
+					innerRadius = attr.y2;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate((180 - attr.r) * Math.PI / 180);
@@ -354,14 +417,14 @@
                 }
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawNgon = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var p = attr.p.split('~');
-                var i, coords;
+            if (canvasSupported == true) {
+                var p = attr.p.split('~'),
+					i, coords;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -382,14 +445,14 @@
                 }
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawWedge = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var radius = attr.x2;
-                var arc = attr.y2;
+            if (canvasSupported == true) {
+                var radius = attr.x2,
+					arc = attr.y2;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
@@ -424,14 +487,14 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawGear = function(canvas, attr) {
-            if (this.canvasSupported == true) {
-                var outerRadius = attr.x2;
-                var innerRadius = attr.y2;
+            if (canvasSupported == true) {
+                var outerRadius = attr.x2,
+					innerRadius = attr.y2;
 
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate((180 - attr.r) * Math.PI / 180);
@@ -463,12 +526,12 @@
                 }
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawCurve = function(canvas, attr) {
-            if (this.canvasSupported == true) {
+            if (canvasSupported == true) {
                 canvas.translate(attr.x, attr.y);
                 canvas.rotate(attr.r * Math.PI / 180);
                 canvas.beginPath();
@@ -478,13 +541,13 @@
                 canvas.stroke();
             }
             else {
-                this.fullySupported = false;
+                fullySupported = false;
             }
         };
 
         this.drawShape = function(attr) {
-        	var canvas = this.$drawingArea;
-        	if (this.canvasSupported == true) {
+        	var canvas = $drawingArea;
+        	if (canvasSupported == true) {
 				canvas.save(); // Save context so we start afresh each time
 				canvas.fillStyle = attr.fc;
 				canvas.lineWidth = attr.lw;
@@ -509,14 +572,14 @@
 				case "gear" : textDrawing.drawGear(canvas, attr); break;
 				case "curve" : textDrawing.drawCurve(canvas, attr); break;
 			}
-			if (this.canvasSupported == true) {
+			if (canvasSupported == true) {
 				canvas.restore();
 			}
         };
 
         this.measureSize = function (minSize) {
-			var canvasContext = this.$drawingArea,
-				canvas = this.canvasHolder,
+			var canvasContext = $drawingArea,
+				canvas = canvasHolder,
 				imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height),
 				data = imageData.data,
 
@@ -572,7 +635,7 @@
 					.find("shape")
 					.each(function () {
 						var attr = that.parseAttributes($(this));
-						that.jobQueue.push({"type":"shape", "data":attr});
+						jobQueue.push({"type":"shape", "data":attr});
 					});
 			}
         };
@@ -585,7 +648,7 @@
 				}, 20);
 			}
         	else {
-        		var getJob = this.jobQueue[this.jobQueueIndex++];
+        		var getJob = jobQueue[jobQueueIndex++];
         		switch (getJob.type) {
         			case "shape":
         				this.drawShape(getJob.data);
@@ -594,88 +657,28 @@
         				this.measureSize(getJob.data);
         			break;
         			case "finished":
-        				if (this.fullySupported == false) {
+        				if (fullySupported == false) {
         					$("#textHolder").prepend('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
         				}
         				x_pageLoaded();
         			break;
         		}
-        		if (this.jobQueueIndex < this.jobQueue.length) {
+        		if (jobQueueIndex < jobQueue.length) {
         			this.doJobFromQueue();
         		}
         	}
         };
 
         this.weNeedToWait = function() {
-        	if (this.imageTimer <= 0) {
-        		this.imageTimer = 0;
-        		if (this.imageLoading) this.imageLoading.onload = function(){ };
+        	if (imageTimer <= 0) {
+        		imageTimer = 0;
+        		if (imageLoading) imageLoading.onload = function(){ };
         		return false;
         	}
         	else {
-        		this.imageTimer -= 0.02;
+        		imageTimer -= 0.02;
         		return true;
         	}
-        };
-
-        this.init = function() {
-            var $pageContents = $("#pageContents");
-            var $textHolder = $("#textHolder");
-            var $panel = $("#pageContents .panel");
-
-            $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("desc")));
-            $textHolder.css('font-size', parseInt(x_currentPageXML.getAttribute("size")) + "pt");
-
-            if (x_currentPageXML.getAttribute("align") != "right") {
-                $panel.addClass("x_floatRight");
-            }
-            else {
-                $panel.addClass("x_floatLeft");
-            }
-
-            this.canvasHolder = document.getElementById('canvasHolder');
-
-            // Lets start by assuming the pagetype will be supported
-            this.fullySupported = true;
-
-
-            // Setup the drawing area
-            if (this.canvasHolder.getContext) {
-                this.$drawingArea = this.canvasHolder.getContext("2d");
-                this.canvasSupported = true;
-            }
-            else {
-                $("#canvasHolder").css("height", 0);
-                this.$drawingArea = $("#divHolder");
-                this.$drawingArea.attr("style", "position:relative");
-                this.canvasSupported = false;
-            }
-
-			// Setup queue
-			this.jobQueue = [];
-			this.jobQueueIndex = 0;
-
-			//loop through shape data and save in jobQueue
-			this.processShapeData();
-
-			if (this.canvasSupported == true) {
-				// Set initial size as measureCanvas will resize
-				this.canvasHolder.width = 1000;
-				this.canvasHolder.height = 1000;
-
-				//add measureCanvas to jobQueue
-				this.jobQueue.push({"type":"measure", "data":{w:200,h:200}});
-
-				//loop through shape data and save in jobQueue
-				this.processShapeData();
-			}
-
-			//add job for x_pageLoaded() to jobQueue
-			this.jobQueue.push({"type":"finished", "data":null});
-
-            // Begin processing jobQueue
-            this.imageTimer = 0;
-            this.doJobFromQueue();
         };
 	};
 

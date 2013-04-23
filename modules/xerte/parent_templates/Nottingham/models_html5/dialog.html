@@ -106,13 +106,15 @@
 				.click(function() {
 					var $this = $(this);
 					if ($this.data("click") == true) {
-						var $pageContents = $("#pageContents");
-						var $feedback = $("#feedback");
+						var $pageContents = $("#pageContents"),
+							$feedback = $("#feedback");
+						
 						if ($this.data("state") == 0) { // mark answer
-							var qNo = $pageContents.data("currentQ");
-							var $thisInput = $("#pageContents .question:eq(" + qNo + ") input");
-							var isCorrect = false;
-							var correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase();
+							var qNo = $pageContents.data("currentQ"),
+								$thisInput = $("#pageContents .question:eq(" + qNo + ") input"),
+								isCorrect = false,
+								correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase();
+							
 							if (correctAnswer.indexOf(answerDelimeter) != -1) {
 								var splitAnswers = correctAnswer.split(answerDelimeter);
 								for (var i=0; i<splitAnswers.length; i++) {
@@ -121,8 +123,7 @@
 										break;
 									}
 								}
-							}
-							else {
+							} else {
 								if ($.trim($thisInput.val().toLowerCase()) == correctAnswer) {
 									isCorrect = true;
 								}
@@ -132,6 +133,7 @@
 								$thisInput
 									.val($.trim($thisInput.val().toLowerCase()))
 									.prop("readonly", true);
+								
 								$thisInput.parent().find("img").removeClass("hidden");
 								$feedback.html("");
 								$this.focus();
@@ -142,10 +144,12 @@
 								} else {
 									$this.hide();
 								}
+								
 							} else { // incorrect
 								$this.data("attempt", $this.data("attempt") + 1);
-								var currentAttempt = $this.data("attempt");
-								var allowedAttempts = x_currentPageXML.getAttribute("attempts");
+								var currentAttempt = $this.data("attempt"),
+									allowedAttempts = x_currentPageXML.getAttribute("attempts");
+								
 								if (allowedAttempts == undefined) {
 									allowedAttempts = 0;
 								}
@@ -184,6 +188,7 @@
 									"state":	0
 									})
 								.button({label:	$("#pageContents").data("submitTxt")});
+							
 							var qNo = $pageContents.data("currentQ");
 							$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
 							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();

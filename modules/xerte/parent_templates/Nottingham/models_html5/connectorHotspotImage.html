@@ -1,7 +1,6 @@
 <script type="text/javascript">
-	
-	// ** HTML5 version currently ignores imageTransition optional property
-	// ** These properties are currently ignored as they're for desktop Xerte only:	reportTitle, pageLabel, titleLabel, idLabel
+	// HTML5 version currently ignores imageTransition optional property
+	// These properties are currently ignored as they're for desktop Xerte only:	reportTitle, pageLabel, titleLabel, idLabel
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -87,7 +86,6 @@
 				imgMaxH = 250;
 			} else {
 				if (x_currentPageXML.getAttribute("textWidth") == "none") {
-					// ** need panel to align itself centrally
 					imgMaxW = 760;
 					imgMaxH = 450;
 				} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
@@ -115,8 +113,8 @@
 			
 			
 			// get feedback text if authorSupport is on
-			var $feedback = $("#feedback");
-			var notFoundTxt;
+			var $feedback = $("#feedback"),
+				notFoundTxt;
 			if (x_params.authorSupport == "true") {
 				notFoundTxt = x_currentPageXML.getAttribute("notFoundMessage");
 				if (notFoundTxt == undefined) {

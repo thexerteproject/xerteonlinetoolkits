@@ -29,19 +29,6 @@
 			}
 		}
 		
-		this.timer = function() {
-			var currentBullet = 0;
-			clearInterval(x_timer); // cancels timers from other bullets pages that might still be running
-			currentBullet++;
-			x_timer =  setInterval(function() {
-				$(".bullet:eq(" + currentBullet + ")").fadeIn();
-				currentBullet++;
-				if (currentBullet >= $(".bullet").length) {
-					clearInterval(x_timer);
-				}
-			}, x_currentPageXML.getAttribute("delaySecs") * 1000);
-		}
-		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
 			firstLoad = true;
@@ -61,12 +48,12 @@
 				} // else full width
 			}
 			
-			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
-			var bulletArray = text.split("<br />");
+			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue),
+				bulletArray = text.split("<br />"),
+				contentsStr = "",
+				startTag = '<p class="bullet">',
+				endTag = "</p>";
 			
-			var contentsStr = "";
-			var startTag = '<p class="bullet">';
-			var endTag = "</p>";
 			if (x_currentPageXML.getAttribute("showBullets") != 0) {
 				contentsStr += "<ul>";
 				startTag = '<li class="bullet">';
@@ -94,6 +81,19 @@
 			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+		}
+		
+		this.timer = function() {
+			var currentBullet = 0;
+			clearInterval(x_timer); // cancels timers from other bullets pages that might still be running
+			currentBullet++;
+			x_timer =  setInterval(function() {
+				$(".bullet:eq(" + currentBullet + ")").fadeIn();
+				currentBullet++;
+				if (currentBullet >= $(".bullet").length) {
+					clearInterval(x_timer);
+				}
+			}, x_currentPageXML.getAttribute("delaySecs") * 1000);
 		}
 	}
 	
