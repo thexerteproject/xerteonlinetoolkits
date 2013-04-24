@@ -10,7 +10,7 @@
 	 * @package
 	 */
 	 
-	define("FEEDBACK_TITLE","Welcome to Xerte Web Toolkits");
+	define("FEEDBACK_TITLE","Welcome to Xerte Online Toolkits");
 	define("FEEDBACK_RESPONSE","Thank you for your feedback");
 	define("FEEDBACK_EMAIL_TITLE","Xerte Online Feedback");
 	define("FEEDBACK_GIVER","Name ");
