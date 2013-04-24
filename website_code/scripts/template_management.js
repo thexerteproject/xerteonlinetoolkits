@@ -453,12 +453,14 @@ function preview_window(admin){
 					size = drag_manager.selected_items[x].getAttribute("preview_size").split(",");
 					
 					if(size.length!=1){
+					
 
 						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
 						
 					}else{
+					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id);
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes");
 						
 					}
 
