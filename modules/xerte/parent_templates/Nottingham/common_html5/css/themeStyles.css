@@ -1,0 +1,105 @@
+/* change this file to rebrand your version of Xerte Online Toolkits */
+
+body {
+	font-family:	Arial, sans-serif;
+}
+
+#x_mainHolder {
+	border:		1px solid #010101;
+}
+
+#x_headerBlock {
+	color:			#FFFFFF;
+	background:		#434343; /* for non-css3 browsers */
+	filter:			progid:DXImageTransform.Microsoft.gradient(startColorstr="#010101", endColorstr="#434343"); /* for IE */
+	background:		-webkit-gradient(linear, left top, left bottom, from(#010101), to(#434343)); /* for webkit browsers */
+	background:		-moz-linear-gradient(top,  #010101,  #434343); /* for firefox 3.6+ */
+	background-image:	-o-linear-gradient(#010101, #434343); /* for Opera */
+}
+
+#x_footerBlock {
+	font-size:		1em;
+	color:			#FFFFFF;
+	background:		#434343; /* for non-css3 browsers */
+	filter:			progid:DXImageTransform.Microsoft.gradient(startColorstr="#434343", endColorstr="#010101"); /* for IE */
+	background:		-webkit-gradient(linear, left top, left bottom, from(#434343), to(#010101)); /* for webkit browsers */
+	background:		-moz-linear-gradient(top,  #434343,  #010101); /* for firefox 3.6+ */
+	background-image:	-o-linear-gradient(#434343, #010101); /* for Opera */
+}
+
+#x_footerBg {
+	background-image:	url("../dots.png");
+	background-repeat:	repeat-x;
+}
+
+#x_pageNo {
+	background:	black;
+}
+
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0px 0px;
+}
+
+h3 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+/* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
+/* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
+
+.ui-button .ui-icon.x_help {					background-image: url("../help.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_help {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_info {					background-image: url("../info.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_home {					background-image: url("../home.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_home {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_glossary {				background-image: url("../glossary.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_glossary {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_maximise {				background-image: url("../maximise.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_maximise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_minimise {				background-image: url("../minimise.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_minimise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_media {					background-image: url("../media.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_media {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_next {					background-image: url("../next.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_next {		background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_next {		background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_next {	background-position: -88px 0px; }
+
+.ui-button .ui-icon.x_prev {					background-image: url("../previous.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev {		background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev {	background-position: -88px 0px; }
+
+.ui-button .ui-icon.x_prev_hist {					background-image: url("../previous_hist.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -44px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }

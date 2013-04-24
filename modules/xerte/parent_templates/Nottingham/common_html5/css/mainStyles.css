@@ -1,8 +1,8 @@
 /* MAIN CSS DOCUMENT */
-/* don't change styles that start with x_ in page models as they will change interface css */
+/* styles we recommend changing to rebrand your version of Xerte Online Toolkits are in themeStyles.css */
+/* changing other styles in this file may cause problems in functionality */
 
 body {
-	font-family:	Arial, sans-serif;
 	margin:			0px;
 }
 
@@ -10,7 +10,6 @@ body {
 	width:		800px;
 	height:		600px;
 	position:	absolute;
-	border:		1px solid #010101;
 	z-index:	-3;
 }
 
@@ -19,31 +18,10 @@ body {
 	height:			auto;
 	position:		absolute;
 	top:			0px;
-	color:			#FFFFFF;
-	background:		#434343; /* for non-css3 browsers */
-	filter:			progid:DXImageTransform.Microsoft.gradient(startColorstr="#010101", endColorstr="#434343"); /* for IE */
-	background:		-webkit-gradient(linear, left top, left bottom, from(#010101), to(#434343)); /* for webkit browsers */
-	background:		-moz-linear-gradient(top,  #010101,  #434343); /* for firefox 3.6+ */
-	background-image:	-o-linear-gradient(#010101, #434343); /* for Opera */
 }
 
 #x_headerBlock div, #x_pageDiv {
 	padding:	10px;
-}
-
-h1 {
-	font-size:	1em;
-	margin:		0px;
-}
-
-h2 {
-	font-size:	1.2em;
-	margin:		5px 0px 0px;
-}
-
-h3 {
-	font-size:	1em;
-	margin:		0px;
 }
 
 #x_pageHolder {
@@ -76,13 +54,6 @@ h3 {
 	width:			100%;
 	position:		absolute;
 	bottom:			0px;
-	font-size:		1em;
-	color:			#FFFFFF;
-	background:		#434343; /* for non-css3 browsers */
-	filter:			progid:DXImageTransform.Microsoft.gradient(startColorstr="#434343", endColorstr="#010101"); /* for IE */
-	background:		-webkit-gradient(linear, left top, left bottom, from(#434343), to(#010101)); /* for webkit browsers */
-	background:		-moz-linear-gradient(top,  #434343,  #010101); /* for firefox 3.6+ */
-	background-image:	-o-linear-gradient(#434343, #010101); /* for Opera */
 	z-index:		10;
 }
 
@@ -90,8 +61,6 @@ h3 {
 	position:			absolute;
 	width:				100%;
 	height:				100%;
-	background-image:	url("../dots.png");
-	background-repeat:	repeat-x;
 	z-index:			-1;
 }
 
@@ -143,7 +112,6 @@ h3 {
 	vertical-align:	top;
 	text-align:		center;
 	display:		inline-block;
-	background:		black;
 	padding:		10px 5px 0px;
 	margin-right:	-5px;
 	height:			30px;
@@ -167,56 +135,6 @@ h3 {
 .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
 	width:	43px;
 }
-
-.ui-button .ui-icon.x_help {					background-image: url("../help.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_help {		background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_help {	background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_info {					background-image: url("../info.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_info {		background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_home {					background-image: url("../home.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_home {	background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_glossary {				background-image: url("../glossary.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_glossary {	background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_glossary {	background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_glossary {background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_maximise {				background-image: url("../maximise.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_maximise {	background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_maximise {	background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_maximise {background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_minimise {				background-image: url("../minimise.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_minimise {	background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_minimise {	background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_minimise {background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_media {					background-image: url("../media.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_media {	background-position: -42px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_media {	background-position: -42px 0px; }
-.ui-button.ui-state-active .ui-icon.x_media {	background-position: -84px 0px; }
-
-.ui-button .ui-icon.x_next {					background-image: url("../next.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_next {		background-position: -44px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_next {		background-position: -44px 0px; }
-.ui-button.ui-state-active .ui-icon.x_next {	background-position: -88px 0px; }
-
-.ui-button .ui-icon.x_prev {					background-image: url("../previous.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_prev {		background-position: -44px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -44px 0px; }
-.ui-button.ui-state-active .ui-icon.x_prev {	background-position: -88px 0px; }
-
-.ui-button .ui-icon.x_prev_hist {					background-image: url("../previous_hist.png"); background-position: 0px 0px; }
-.ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -44px 0px; }
-.ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
-.ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }
 
 .spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
 
@@ -287,6 +205,7 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 
 
 /* STYLES FOR PAGE MODEL CONTENTS */
+/* don't change styles that start with x_ in page models as they will change interface css */
 
 .leftAlign {
 	text-align:	left;
