@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
@@ -20,9 +20,10 @@
 
 		this.init = function() {
 			// correct attribute on option also not used as it doesn't mark correct/incorrect - only gives feedback for each answer
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			var $splitScreen = $("#pageContents .splitScreen");
-			var $textHolder = $("#textHolder");
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder = $("#textHolder");
+			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -71,51 +72,63 @@
 			} else {
 				$optionHolder.find("input[type='checkbox']").remove();
 			}
-			var $option = $optionHolder.find("input");
-			var $optionTxt = $optionHolder.find(".optionTxt");
-            var correctOptions = [];
-            var correctAnswer = [];
-            var correctFeedback = [];
+			
+			var $optionGroup = $optionHolder.find(".optionGroup"),
+				//$option = $optionHolder.find("input"),
+				//$optionTxt = $optionHolder.find(".optionTxt"),
+				correctOptions = [],
+				correctAnswer = [],
+				correctFeedback = [];
 
             $(x_currentPageXML).children()
 				.each(function(i) {
-					var $thisOption, $thisOptionTxt;
+					var $thisOptionGroup, $thisOption, $thisOptionTxt;
 					if (i != 0) {
-						$thisOption = $option.clone().appendTo($optionHolder);
-						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+						$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 					} else {
-						$thisOption = $option;
-						$thisOptionTxt = $optionTxt;
+						$thisOptionGroup = $optionGroup;
 					}
+					$thisOption = $thisOptionGroup.find("input");
+					$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
+					
                     mcq.currNrOptions = i+1;
-                    if (this.getAttribute("correct") == 'true')
-                    {
+                    if (this.getAttribute("correct") == 'true') {
                         correctOptions.push(i+1+"");
                         correctAnswer.push(this.getAttribute("text"));
                         correctFeedback.push(this.getAttribute("feedback"));
                     }
+					
 					$thisOption
 						.attr({
-							"value"	:this.getAttribute("text"),
-							"id"	:"option" + i
+							"value"		:this.getAttribute("text"),
+							"id"		:"option" + i
 							})
 						.change(function() {
 							$("#feedback").html("");
-							var $checkBtn = $("#checkBtn");
-							var $selected = $("#optionHolder input:checked");
+							var $checkBtn = $("#checkBtn"),
+								$selected = $("#optionHolder input:checked");
+							
 							if ($checkBtn.attr("disabled") != "disabled" && $selected.length == 0) {
 								$checkBtn.attr("disabled", "disabled");
 							} else if ($checkBtn.attr("disabled") == "disabled" && $selected.length > 0) {
 								$checkBtn.removeAttr("disabled");
 							}
+						})
+						.focusin(function() {
+							$thisOptionGroup.addClass("highlight");
+						})
+						.focusout(function() {
+							$thisOptionGroup.removeClass("highlight");
 						});
-
+					
 					$thisOptionTxt
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
 						.html(this.getAttribute("text"));
 				});
+			
             XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+			
 			// checkBtnWidth attribute not used as button will be sized automatically
 			// if language attributes aren't in xml will have to use english fall back
 			var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
@@ -133,22 +146,22 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var answerFeedback = "";
-                    var correct=true;
-                    var l_options = [];
-                    var l_answer = [];
-                    var l_feedback = [];
-
-                    var selected = $("#optionHolder input:checked");
-
-                    var generalFeedback = "";
+					var answerFeedback = "",
+						correct = true,
+						l_options = [],
+						l_answer = [],
+						l_feedback = [],
+						selected = $("#optionHolder input:checked"),
+						generalFeedback = "";
+					
                     if (x_currentPageXML.getAttribute("feedback") != undefined) {
                         generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
                     }
 
                     for (var i=0; i<selected.length; i++) {
-                        var optionIndex = $(selected[i]).index()/2;
-                        var selectedOption = $(x_currentPageXML).children()[optionIndex];
+                        var optionIndex = $(selected[i]).parent().index(),
+							selectedOption = $(x_currentPageXML).children()[optionIndex];
+						
 						answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
                         if (correct != false && selectedOption.getAttribute("correct") == "true") {
                             correct = true;
@@ -241,12 +254,16 @@
 		float:		left;
 		display:	block;
 	}
+	
+	#optionHolder .optionGroup {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
 
 	#pageContents .optionTxt {
 		cursor:			pointer;
 		position:		relative;
 		margin-left:	30px;
-		margin-bottom:	10px;
 		display:		block;
 	}
 
@@ -271,9 +288,11 @@
 			<div class="panel">
 				<h3 id="question"></h3>
 				<div id="optionHolder">
-					<input type="radio" name="option" />
-					<input type="checkbox" name="option" />
-					<label class="optionTxt"></label>
+					<div class="optionGroup">
+						<input type="radio" name="option" />
+						<input type="checkbox" name="option" />
+						<label class="optionTxt"></label>
+					</div>
 				</div>
 				<button id="checkBtn"></button>
 				<div id="feedback"></div>

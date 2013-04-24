@@ -6,8 +6,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var customHotspots = new function() {
-		var	fullySupported,	// false if canvas isn't supported and shapes are needed that can't be drawn in another way
-			canvasSupported,
+		var	canvasSupported,
 			jobQueue,
 			jobQueueIndex,
 			tempCanvas,
@@ -23,105 +22,99 @@
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$pageContents	= $("#pageContents");
-			$hsInfoLabel	= $("#textHolder #hsInfo #label");
-			$hsInfoTxt		= $("#textHolder #hsInfo #info");
-			
-			if ($("#mainCanvas").height() == 0) {
+			if ($("#labelHolder").length == 0) {
 				canvasSupported = false;
+				
 			} else {
 				canvasSupported = true;
-			}
-			
-			// reset interactivity
-			$hsInfoLabel.html("");
-			$hsInfoTxt.html("");
-			
-			$("#hsHolder canvas, #hsHolder div").removeClass("visible");
-			
-			if ($pageContents.data("intType") == "Show Me") {
-				$pageContents.data("counter", 0);
-				$("#nextBtn").button("enable");
-				$("#prevBtn").button("disable");
 				
-			} else if ($pageContents.data("intType") == "MCQ") {
-				this.createQuiz();
+				$pageContents	= $("#pageContents");
+				$hsInfoLabel	= $("#textHolder #hsInfo #label");
+				$hsInfoTxt		= $("#textHolder #hsInfo #info");
+				
+				// reset interactivity
+				$hsInfoLabel.html("");
+				$hsInfoTxt.html("");
+				
+				$("#hsHolder canvas, #hsHolder div").removeClass("visible");
+				
+				if ($pageContents.data("intType") == "Show Me") {
+					$pageContents.data("counter", 0);
+					$("#nextBtn").button("enable");
+					$("#prevBtn").button("disable");
+					
+				} else if ($pageContents.data("intType") == "MCQ") {
+					this.createQuiz();
+				}
+				// nothing to reset for hotspots and labels interactivity types
 			}
-			// nothing to reset for hotspots and labels interactivity types
 		};
 		
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if ($pageContents.data("intType") == "Labels") {
-				// reset labels (positions won't be right any more)
-				if ($("#pinHolder").children().length > 0) {
-					$("#pinHolder").empty();
-					$("#labelHolder .pinImg").addClass("visible");
-					
-					$("#hsHolder canvas, #hsHolder div").removeClass("visible");
-					$hsInfoLabel.html("");
-					$hsInfoTxt.html("");
-					
-					$("#labelHolder .label")
-						.removeData("success")
-						.off("click")
-						.draggable("enable");
-					
-					$pageContents.removeData("selectedLabel");
+			if (canvasSupported == true) {
+				if ($pageContents.data("intType") == "Labels") {
+					// reset labels (positions won't be right any more)
+					if ($("#pinHolder").children().length > 0) {
+						$("#pinHolder").empty();
+						$("#labelHolder .pinImg").addClass("visible");
+						
+						$("#hsHolder canvas, #hsHolder div").removeClass("visible");
+						$hsInfoLabel.html("");
+						$hsInfoTxt.html("");
+						
+						$("#labelHolder .label")
+							.removeData("success")
+							.off("click")
+							.draggable("enable");
+						
+						$pageContents.removeData("selectedLabel");
+					}
 				}
 			}
 		};
 		
 		
         this.init = function() {
-			$pageContents	= $("#pageContents");
-			$hsInfoLabel	= $("#textHolder #hsInfo #label");
-			$hsInfoTxt		= $("#textHolder #hsInfo #info");
+			$mainCanvas = $("#mainCanvas");
 			
 			$("#textHolder").prepend(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			
-			// store highlight style info
-			var colour = x_currentPageXML.getAttribute("highlightColour").substring(2);
-			while (colour.length < 6) {
-				colour = "0" + colour;
-			}
-			
-			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#" + colour);
-			var rgba = result ? {
-				r: parseInt(result[1], 16),
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16),
-				a: 0.5
-			} : null;
-			
-			highlightStyle = {};
-			highlightStyle.fill	= "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")"; // have to convert to rgb so alpha can be added
-			highlightStyle.lineW	= x_currentPageXML.getAttribute("lineWidth");
-			highlightStyle.stroke	= "#" + colour;
-			
-			
-			// draw everything on canvas - predominately John Smith's code
-			$mainCanvas = $("#mainCanvas");
-            fullySupported = true;
-			
-            // Setup the drawing area
+			// Only get info for diagram if canvas is supported
             if ($mainCanvas[0].getContext) {
-                $drawingArea = $mainCanvas[0].getContext("2d");
+                $drawingArea = $mainCanvas[0].getContext("2d"); // Setup the drawing area
                 canvasSupported = true;
-            } else {
-                $mainCanvas.css("height", 0);
-                $drawingArea = $("#fallbackDiv");
-                $drawingArea.attr("style", "position:relative");
-                canvasSupported = false;
-            }
-			
-			// Setup queue
-			jobQueue = [];
-			jobQueueIndex = 0;
-			
-			if (canvasSupported == true) {
+				
+				$pageContents	= $("#pageContents");
+				$hsInfoLabel	= $("#textHolder #hsInfo #label");
+				$hsInfoTxt		= $("#textHolder #hsInfo #info");
+				
+				// store highlight style info
+				var colour = x_currentPageXML.getAttribute("highlightColour").substring(2);
+				while (colour.length < 6) {
+					colour = "0" + colour;
+				}
+				
+				var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#" + colour);
+				var rgba = result ? {
+					r: parseInt(result[1], 16),
+					g: parseInt(result[2], 16),
+					b: parseInt(result[3], 16),
+					a: 0.5
+				} : null;
+				
+				highlightStyle = {};
+				highlightStyle.fill	= "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")"; // have to convert to rgb so alpha can be added
+				highlightStyle.lineW	= x_currentPageXML.getAttribute("lineWidth");
+				highlightStyle.stroke	= "#" + colour;
+				
+				
+				// draw everything on canvas - predominately John Smith's code
+				// Setup queue
+				jobQueue = [];
+				jobQueueIndex = 0;
+				
 				//loop through shape data and save in jobQueue
 				this.processShapeData();
 				var tempQueue = jobQueue.slice(0);
@@ -137,18 +130,21 @@
 				jobQueue = jobQueue.concat(tempQueue); 
 				tempCanvas = true; // stops hotspots being created until after measureCanvas is called
 				
-			} else {
-				//loop through shape data and save in jobQueue
-				this.processShapeData();
+				//add job for x_pageLoaded() to jobQueue
+				jobQueue.push({"type":"finished", "data":null});
+				
+				// Begin processing jobQueue
+				imageTimer = 0;
+				this.doJobFromQueue();
+				
+            } else { // canvas not supported - show error message
+                canvasSupported = false;
+				$("#pageContents .mobileAlign, #labelHolder, #hsInfo").remove();
+				$("#textHolder").prepend('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
+				
+				x_pageLoaded();
 			}
-			
-			//add job for x_pageLoaded() to jobQueue
-			jobQueue.push({"type":"finished", "data":null});
-			
-            // Begin processing jobQueue
-            imageTimer = 0;
-            this.doJobFromQueue();
-        };
+		};
 		
 		
         this.processShapeData = function() {
@@ -212,10 +208,6 @@
 						tempCanvas = false;
         			break;
         			case "finished":
-        				if (fullySupported == false) {
-							$("#pageContents .mobileAlign").remove();
-        					$("#textHolder").prepend('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
-        				}
 						this.setUpInteraction();
         				x_pageLoaded();
         			break;
@@ -249,50 +241,34 @@
 					hs = true;
 					var canvas = $("#hsHolder");
 					
-					if (canvasSupported == true) {
-						var newCanvas = $('<canvas width="' + $mainCanvas.width() + '" height="' + $mainCanvas.height() + '"></canvas>')
-											.appendTo(canvas)
-											.data({
-												"label"	:attr.label,
-												"info"	:x_addLineBreaks(attr.info)
-											});
-						canvas = newCanvas[0].getContext("2d");
-						
-						canvas.fillStyle	= highlightStyle.fill;
-						canvas.lineWidth	= highlightStyle.lineW;
-						canvas.strokeStyle	= highlightStyle.stroke;
-						
-						this.callShapeFunc(canvas, attr);
-						canvas.restore();
-						
-					} else {
-						// use highlightColour / lineWidth attributes instead of shape data
-						var hsAttr = attr;
-						hsAttr.fc = highlightStyle.stroke;
-						hsAttr.lw = highlightStyle.lineW;
-						hsAttr.lc = highlightStyle.stroke;
-						
-						this.callShapeFunc(canvas, hsAttr);
-					}
+					var newCanvas = $('<canvas width="' + $mainCanvas.width() + '" height="' + $mainCanvas.height() + '"></canvas>')
+										.appendTo(canvas)
+										.data({
+											"label"	:attr.label,
+											"info"	:x_addLineBreaks(attr.info)
+										});
+					canvas = newCanvas[0].getContext("2d");
+					
+					canvas.fillStyle	= highlightStyle.fill;
+					canvas.lineWidth	= highlightStyle.lineW;
+					canvas.strokeStyle	= highlightStyle.stroke;
+					
+					this.callShapeFunc(canvas, attr);
+					canvas.restore();
 				}
 			}
 			
 			// shape either isn't a hotspot or is but showShapes is on - draw on main canvas
 			if (hs != true || x_currentPageXML.getAttribute("showShapes") != "false") {
 				var canvas = $drawingArea;
-				if (canvasSupported == true) {
-					canvas.save(); // Save context so we start afresh each time
-					canvas.fillStyle = attr.fc;
-					canvas.lineWidth = attr.lw;
-					canvas.strokeStyle = attr.lc;
-					canvas.globalAlpha = attr.fa / 100;
-					
-					this.callShapeFunc(canvas, attr);
-					canvas.restore();
-					
-				} else {
-					this.callShapeFunc(canvas, attr);
-				}
+				canvas.save(); // Save context so we start afresh each time
+				canvas.fillStyle = attr.fc;
+				canvas.lineWidth = attr.lw;
+				canvas.strokeStyle = attr.lc;
+				canvas.globalAlpha = attr.fa / 100;
+				
+				this.callShapeFunc(canvas, attr);
+				canvas.restore();
 			}
         };
 		
@@ -382,59 +358,43 @@
 				}
 				$("#instructions").html(instructions);
 				
-				// on click check all canvases/divs in hsHolder to see if any shapes have been hit
-				if (canvasSupported == true) {
+				// on click check all canvases in hsHolder to see if any shapes have been hit
+				$("#hsHolder canvas").each(function(i) {
+					$(this).attr("tabindex", 2 + i);
+				});
+				
+				$("#diagramHolder, #hsHolder canvas").click(function(e) {
+					var $hsHolder = $("#hsHolder");
 					
-					$("#hsHolder canvas").each(function(i) {
-						$(this).attr("tabindex", 2 + i);
-					});
+					// get xy pos of click relative to position of canvas
+					var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
+						xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
+						hit = false;
 					
-					$("#diagramHolder, #hsHolder canvas").click(function(e) {
-						var $hsHolder = $("#hsHolder");
-						
-						// get xy pos of click relative to position of canvas
-						var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
-							xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
-							hit = false;
-						
-						// check each hotspot canvas to see if a non-alpha pixel in it has been hit
-						$hsHolder.find("canvas").each(function() {
-							var $this = $(this);
-							
-							// get pixel data from the whole canvas - and then from pixel clicked
-							var pix = $this[0].getContext("2d").getImageData(0, 0, $this.width(), $this.height()),
-								dataPos = ((xyCoords[1] * $this.width()) + xyCoords[0]) * 4;
-							
-							if (pix.data[dataPos+3] > 0) { // is it transparent?
-								$hsHolder.find("canvas.visible").removeClass("visible");
-								$this.addClass("visible");
-								$hsInfoLabel.html($this.data("label"));
-								$hsInfoTxt.html($this.data("info"));
-								hit = true;
-							} else {
-								$this.removeClass("visible");
-							}
-							
-							if (hit == false) { // no hotspot hit - hide info
-								$hsInfoLabel.html("");
-								$hsInfoTxt.html("");
-							}
-						});
-					});
-					
-				} else {
-					$("#hsHolder div").click(function() {
+					// check each hotspot canvas to see if a non-alpha pixel in it has been hit
+					$hsHolder.find("canvas").each(function() {
 						var $this = $(this);
-						$("#hsHolder div.visible").removeClass("visible");
-						$this.addClass("visible");
-						$hsInfoLabel.html($this.data("label"));
-						$hsInfoTxt.html($this.data("info"));
+						
+						// get pixel data from the whole canvas - and then from pixel clicked
+						var pix = $this[0].getContext("2d").getImageData(0, 0, $this.width(), $this.height()),
+							dataPos = ((xyCoords[1] * $this.width()) + xyCoords[0]) * 4;
+						
+						if (pix.data[dataPos+3] > 0) { // is it transparent?
+							$hsHolder.find("canvas.visible").removeClass("visible");
+							$this.addClass("visible");
+							$hsInfoLabel.html($this.data("label"));
+							$hsInfoTxt.html($this.data("info"));
+							hit = true;
+						} else {
+							$this.removeClass("visible");
+						}
+						
+						if (hit == false) { // no hotspot hit - hide info
+							$hsInfoLabel.html("");
+							$hsInfoTxt.html("");
+						}
 					});
-					
-					$("#diagramHolder").click(function(e) {
-						$("#hsHolder div.visible").removeClass("visible");
-					});
-				}
+				});
 				
 				// you can tab through hotspots to highlight them instead of clicking on them
 				$("#hsHolder canvas, #hsHolder div")
@@ -833,20 +793,18 @@
 							
 							// tint wrong answer canvas/div green
 							var	$myAnswerCanvas = $("#hsHolder canvas, #hsHolder div").filter(function() { return $(this).data("label") && $(this).data("label") == myAnswer; });
-							if (canvasSupported == true) {
-								var	ctx = $myAnswerCanvas[0].getContext("2d"),
-									canvasImage = ctx.getImageData(0, 0, $myAnswerCanvas.width(), $myAnswerCanvas.height()),
-									pixelData = canvasImage.data,
-									idx, i;
-								for (var i=1; i<(pixelData.length/4); i++) {
-									idx = i * 4;
-									pixelData[idx] = 0;			// red
-									pixelData[idx + 1] = 255;	// green
-									pixelData[idx + 2] = 0;		// blue
-								}
-								ctx.putImageData(canvasImage, 0, 0);
-								
+							
+							var	ctx = $myAnswerCanvas[0].getContext("2d"),
+								canvasImage = ctx.getImageData(0, 0, $myAnswerCanvas.width(), $myAnswerCanvas.height()),
+								pixelData = canvasImage.data,
+								idx, i;
+							for (var i=1; i<(pixelData.length/4); i++) {
+								idx = i * 4;
+								pixelData[idx] = 0;			// red
+								pixelData[idx + 1] = 255;	// green
+								pixelData[idx + 2] = 0;		// blue
 							}
+							ctx.putImageData(canvasImage, 0, 0);
 							
 							$myAnswerCanvas
 								.addClass("greenTint")
@@ -880,22 +838,20 @@
 						if ($("#hsHolder .greenTint").length > 0) {
 							// remove green tint on canvas/div
 							var	$greenCanvas = $("#hsHolder .greenTint");
-							if (canvasSupported == true) {
-								var	ctx = $greenCanvas[0].getContext("2d"),
-									canvasImage = ctx.getImageData(0, 0, $greenCanvas.width(), $greenCanvas.height()),
-									pixelData = canvasImage.data,
-									idx, i;
-								
-								var rgba = highlightStyle.fill.substring(5).split(",");
-								
-								for (var i=1; i<(pixelData.length/4); i++) {
-									idx = i * 4;
-									pixelData[idx]		= rgba[0];
-									pixelData[idx + 1]	= rgba[1];
-									pixelData[idx + 2]	= rgba[2];
-								}
-								ctx.putImageData(canvasImage, 0, 0);
+							var	ctx = $greenCanvas[0].getContext("2d"),
+								canvasImage = ctx.getImageData(0, 0, $greenCanvas.width(), $greenCanvas.height()),
+								pixelData = canvasImage.data,
+								idx, i;
+							
+							var rgba = highlightStyle.fill.substring(5).split(",");
+							
+							for (var i=1; i<(pixelData.length/4); i++) {
+								idx = i * 4;
+								pixelData[idx]		= rgba[0];
+								pixelData[idx + 1]	= rgba[1];
+								pixelData[idx + 2]	= rgba[2];
 							}
+							ctx.putImageData(canvasImage, 0, 0);
 							
 							$greenCanvas.removeClass("greenTint");
 						}
@@ -928,32 +884,24 @@
 				// create new pin
 				$pin = $('<div class="helper"><img class="pinImg" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + ($target.index() + 1) + '</div>');
 				
-				if (canvasSupported == true) {
-					// position $pin on 1st non-transparent pixel on canvas
-					var $thisHSCanvas = $target,
-						$hsHolder = $target.parent();
-					
-					// get pixel data from the whole canvas
-					var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
-					for (var i=0; i<pix.data.length/4; i++) {
-						// find 1st non-transparent pixel
-						if (pix.data[(i * 4) + 3] > 0) {
-							var	y = Math.floor(i / $thisHSCanvas.width()),
-								x = i - (y * $thisHSCanvas.width());
-							
-							$pin.css({
-								left:	x + $hsHolder.position().left - 8,
-								top:	y + $hsHolder.position().top - 15
-							});
-							break;
-						}
+				// position $pin on 1st non-transparent pixel on canvas
+				var $thisHSCanvas = $target,
+					$hsHolder = $target.parent();
+				
+				// get pixel data from the whole canvas
+				var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height());
+				for (var i=0; i<pix.data.length/4; i++) {
+					// find 1st non-transparent pixel
+					if (pix.data[(i * 4) + 3] > 0) {
+						var	y = Math.floor(i / $thisHSCanvas.width()),
+							x = i - (y * $thisHSCanvas.width());
+						
+						$pin.css({
+							left:	x + $hsHolder.position().left - 8,
+							top:	y + $hsHolder.position().top - 15
+						});
+						break;
 					}
-				} else {
-					// position $pin in centre of div
-					$pin.css({
-						left:	$target.css("left") + ($target.width() / 2),
-						top:	$target.css("top") + ($target.height() / 2)
-					});
 				}
 				
 				$label.find(".pinImg").removeClass("visible");
@@ -1083,43 +1031,22 @@
 		// --- FUNCTIONS TO DRAW SHAPES ON CANVAS ---
 		
 		this.drawRectangle = function(canvas, attr) {
-			if (canvasSupported == true) {
-				var w = attr.x2, h = attr.y2;
-				canvas.translate(attr.x, attr.y);
-				canvas.rotate(attr.r * Math.PI / 180);
-				this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]);
-				canvas.fill();
-				canvas.globalAlpha = attr.la / 100;
-				canvas.stroke();
-			}
-			else {
-				if (attr.r == 0) { // Draw rectangle using div ONLY IF not rotated
-					canvas.append('<div style="position:absolute;left:' + (attr.x - Math.round(attr.lw / 2)) + 'px;top:' + (attr.y - Math.round(attr.lw / 2)) + 'px;width:' + (attr.x2 - attr.lw) + 'px;height:' + (attr.y2 - attr.lw) + 'px;background-color:' + attr.fc + ';border:' + attr.lw + 'px solid ' + attr.lc + ';"></div>');
-					canvas.width(Math.max(canvas.width(), attr.x + attr.x2 + 10));
-					canvas.height(Math.max(canvas.height(), attr.y + attr.y2 + 10));
-				}
-				else {
-					fullySupported = false;
-				}
-			}
+			var w = attr.x2, h = attr.y2;
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			this.drawPolygon(canvas, [0,0,w,0,w,h,0,h,0,0]);
+			canvas.fill();
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
 		};
 		
 		this.drawText = function (canvas, attr) {
             var fontWeight = (attr.b == "1") ? "bold" : "normal";
 			
-			if (canvasSupported == true) {
-                canvas.textBaseline = "top";
-                canvas.fillStyle = attr.lc;
-                canvas.font = fontWeight + " " + attr.s + "px " + attr.f;
-                this.wrapText(canvas, attr.t, attr.x, attr.y, attr.x2, 20);
-			}
-			else {
-				var idHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3);
-                canvas.append('<div id="txt_' + idHash + '" style="position:absolute;left:' + attr.x + 'px;top:' + attr.y + 'px;width:' + attr.x2 + 'px;color:' + attr.lc + ';font-size:' + attr.s + 'px;font-weight:' + fontWeight + '">' + attr.t + '</div>');
-				var div = canvas.find("#txt_" + idHash);
-				canvas.width(Math.max(canvas.width(), attr.x + attr.x2));
-				canvas.height(Math.max(canvas.height(), attr.y + div.height()));
-			}
+			canvas.textBaseline = "top";
+			canvas.fillStyle = attr.lc;
+			canvas.font = fontWeight + " " + attr.s + "px " + attr.f;
+			this.wrapText(canvas, attr.t, attr.x, attr.y, attr.x2, 20);
 		};
 		
         this.wrapText = function (canvas, t, x, y, maxWidth, lineHeight) {
@@ -1142,55 +1069,34 @@
 		this.drawPicture = function (canvas, attr) {
 			var p = FileLocation + attr.p;
 			
-			if (canvasSupported == true) {
-				var img = new Image();
-				img.onload = function() {
-					canvas.save();
-					canvas.translate(attr.x, attr.y);
-					canvas.rotate(attr.r * Math.PI / 180);
-					canvas.drawImage(img, 0, 0);
-					canvas.restore();
-					imageTimer = 0;
-				};
-				img.src = p;
-				imageLoading = img;
-				imageTimer = 25;
-			}
-			else {
-                if (attr.r == 0) {
-                    canvas.append('<img style="position:relative;left:' + attr.x + 'px;top:' + attr.y + 'px;" src="' + p + '" alt="' + attr.label + '" />');
-                	var img = new Image();
-                	img.onload = function() {
-						canvas.width(Math.max(canvas.width(), attr.x + this.width));
-						canvas.height(Math.max(canvas.height(), attr.y + this.height));
-                	}
-                	img.src = p;
-                }
-                else {
-                    fullySupported = false;
-                }
-			}
+			var img = new Image();
+			img.onload = function() {
+				canvas.save();
+				canvas.translate(attr.x, attr.y);
+				canvas.rotate(attr.r * Math.PI / 180);
+				canvas.drawImage(img, 0, 0);
+				canvas.restore();
+				imageTimer = 0;
+			};
+			img.src = p;
+			imageLoading = img;
+			imageTimer = 25;
 		};
 		
         this.drawPen = function (canvas, attr) {
-            if (canvasSupported == true) {
-                var coords, points = attr.p.split('~');
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.moveTo(0,0);
-                for (var i = 0; i < points.length - 1; i++) {
-                    coords = points[i].split(',');
-                    canvas.quadraticCurveTo(coords[2], coords[3], coords[0], coords[1]);
-                }
-                canvas.closePath();
-                canvas.fill();
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			var coords, points = attr.p.split('~');
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.moveTo(0,0);
+			for (var i = 0; i < points.length - 1; i++) {
+				coords = points[i].split(',');
+				canvas.quadraticCurveTo(coords[2], coords[3], coords[0], coords[1]);
+			}
+			canvas.closePath();
+			canvas.fill();
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         };
 		
 		this.drawFreehand = function (canvas, attr) {
@@ -1202,313 +1108,245 @@
 				coords.push(points[i].split(','));
 			}
 			
-			if (canvasSupported == true) {
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.beginPath();
-                canvas.moveTo(0, 0);
-				for (i=0; i<coords.length; i++) {
-                    canvas.lineTo(parseInt(coords[i][0]), parseInt(coords[i][1]));
-				}
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.beginPath();
+			canvas.moveTo(0, 0);
+			for (i=0; i<coords.length; i++) {
+				canvas.lineTo(parseInt(coords[i][0]), parseInt(coords[i][1]));
 			}
-			else {
-				fullySupported = false;
-				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3),
-					pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
-				
-				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
-				var pixels = '', maxX = 0, maxY = 0;
-				for (i=0; i<coords.length; i++) {
-					pixels += '<div class="p_' + pixelHash + '" style="left:' + (attr.x + parseInt(coords[i][0])) + 'px;top:'+ (attr.y + parseInt(coords[i][1])) + 'px"></div>';
-					maxX = Math.max(maxX, attr.x + parseInt(coords[i][0]) + attr.lw + 1);
-					maxY = Math.max(maxY, attr.y + parseInt(coords[i][1]) + attr.lw + 1);
-				}
-                canvas.append(pixels);
-                canvas.width(Math.max(canvas.width(), maxX));
-				canvas.height(Math.max(canvas.height(), maxY));
-			}
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
 		};
 		
         this.drawOval = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var radiusX = attr.x2,
-					radiusY = attr.y2,
-					xPos, yPos, i;
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.beginPath();
-                for (i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
-                    xPos = radiusY * Math.sin(i) * Math.sin(0 * Math.PI) + radiusX * Math.cos(i) * Math.cos(0 * Math.PI);
-                    yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
-                    if (i == 0) {
-                        canvas.moveTo(xPos, yPos);
-                    }
-                    else {
-                        canvas.lineTo(xPos, yPos);
-                    }
-                }
-                canvas.closePath();
-                canvas.fill();
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			var radiusX = attr.x2,
+				radiusY = attr.y2,
+				xPos, yPos, i;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.beginPath();
+			for (i = 0 * Math.PI; i <= 2 * Math.PI; i += Math.PI/50 ) {
+				xPos = radiusY * Math.sin(i) * Math.sin(0 * Math.PI) + radiusX * Math.cos(i) * Math.cos(0 * Math.PI);
+				yPos = -radiusX * Math.cos(i) * Math.sin(0 * Math.PI) + radiusY * Math.sin(i) * Math.cos(0 * Math.PI);
+				if (i == 0) {
+					canvas.moveTo(xPos, yPos);
+				}
+				else {
+					canvas.lineTo(xPos, yPos);
+				}
+			}
+			canvas.closePath();
+			canvas.fill();
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         };
 		
         this.drawPoly = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var radius = attr.x2;
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-				
-                if (attr.n > 2) {
-                    var step, start, dx, dy, coords = [];
-                    step = 2 * Math.PI / attr.n;
-                    coords.push(Math.cos(0) * radius);
-                    coords.push(- Math.sin(0) * radius);
-                    for (var i = 1; i <= attr.n; i++) {
-                        coords.push(Math.cos(step * i) * radius);
-                        coords.push(- Math.sin(step * i) * radius);
-                    }
-                    this.drawPolygon(canvas, coords);
-                    canvas.fill();
-                    canvas.globalAlpha = attr.la / 100;
-                    canvas.stroke();
-                }
-            }
-            else {
-                fullySupported = false;
-            }
+			var radius = attr.x2;
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			
+			if (attr.n > 2) {
+				var step, start, dx, dy, coords = [];
+				step = 2 * Math.PI / attr.n;
+				coords.push(Math.cos(0) * radius);
+				coords.push(- Math.sin(0) * radius);
+				for (var i = 1; i <= attr.n; i++) {
+					coords.push(Math.cos(step * i) * radius);
+					coords.push(- Math.sin(step * i) * radius);
+				}
+				this.drawPolygon(canvas, coords);
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
         };
 		
         this.drawBurst = function(canvas, attr) {
-            if (canvasSupported == true) {
-                if (attr.n > 2) {
-                    var outerRadius = attr.y2,
-						innerRadius = attr.x2,
-						step, hStep, qStep, i, dx, dy, cx, cy;
-                    step = 2 * Math.PI / attr.n ;
-                    hStep = step/2;
-                    qStep = step/4;
-					
-                    canvas.translate(attr.x, attr.y);
-                    canvas.rotate(attr.r * Math.PI / 180);
-                    canvas.beginPath();
-                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
-                    for (i = 1; i <= attr.n; i++) {
-                        cx = Math.cos(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
-                        cy = -Math.sin(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
-                        dx = Math.cos(step * i - hStep) * innerRadius;
-                        dy = -Math.sin(step * i - hStep) * innerRadius;
-                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
-                        cx = Math.cos(step * i - qStep) * innerRadius / Math.cos(qStep);
-                        cy = -Math.sin(step * i - qStep) * innerRadius / Math.cos(qStep);
-                        dx = Math.cos(step * i) * outerRadius;
-                        dy = -Math.sin(step * i) * outerRadius;
-                        canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
-                    }
-                    canvas.closePath();
-                    canvas.fill();
-                    canvas.globalAlpha = attr.la / 100;
-                    canvas.stroke();
-                }
-            }
-            else {
-                fullySupported = false;
-            }
+			if (attr.n > 2) {
+				var outerRadius = attr.y2,
+					innerRadius = attr.x2,
+					step, hStep, qStep, i, dx, dy, cx, cy;
+				step = 2 * Math.PI / attr.n ;
+				hStep = step/2;
+				qStep = step/4;
+				
+				canvas.translate(attr.x, attr.y);
+				canvas.rotate(attr.r * Math.PI / 180);
+				canvas.beginPath();
+				canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+				for (i = 1; i <= attr.n; i++) {
+					cx = Math.cos(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+					cy = -Math.sin(step * i - qStep * 3) * innerRadius / Math.cos(qStep);
+					dx = Math.cos(step * i - hStep) * innerRadius;
+					dy = -Math.sin(step * i - hStep) * innerRadius;
+					canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+					cx = Math.cos(step * i - qStep) * innerRadius / Math.cos(qStep);
+					cy = -Math.sin(step * i - qStep) * innerRadius / Math.cos(qStep);
+					dx = Math.cos(step * i) * outerRadius;
+					dy = -Math.sin(step * i) * outerRadius;
+					canvas.quadraticCurveTo(cx, cy, dx, dy, 0, 0);
+				}
+				canvas.closePath();
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
         };
 		
         this.drawArrow = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var w = attr.x2,
-					h = attr.y2;
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                this.drawPolygon(canvas, [0,h/4,w/2,h/4,w/2,0,w,h/2,w/2,h,w/2,3*h/4,0,3*h/4,0,h/4]);
-                canvas.fill();
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			var w = attr.x2,
+				h = attr.y2;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			this.drawPolygon(canvas, [0,h/4,w/2,h/4,w/2,0,w,h/2,w/2,h,w/2,3*h/4,0,3*h/4,0,h/4]);
+			canvas.fill();
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         };
 		
         this.drawLine = function(canvas, attr) {
-            if (canvasSupported == true) {
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.beginPath();
-                canvas.moveTo(0, 0);
-                canvas.lineTo(attr.x2, attr.y2);
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.beginPath();
+			canvas.moveTo(0, 0);
+			canvas.lineTo(attr.x2, attr.y2);
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         }
 		
         this.drawStar = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var outerRadius = attr.x2,
-					innerRadius = attr.y2;
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate((180 - attr.r) * Math.PI / 180);
-                if (attr.n > 2) {
-                    var step, hStep, i, dx, dy;
-                    step = 2 * Math.PI / attr.n;
-                    hStep = step / 2;
-                    canvas.beginPath();
-                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
-                    for (i = 1; i <= attr.n; i++) {
-                        dx = Math.cos(step * i - hStep) * innerRadius;
-                        dy = -Math.sin(step * i - hStep) * innerRadius;
-                        canvas.lineTo(dx, dy);
-                        dx = Math.cos(step * i) * outerRadius;
-                        dy = -Math.sin(step * i) * outerRadius;
-                        canvas.lineTo(dx, dy);
-                    }
-                    canvas.closePath();
-                    canvas.fill();
-                    canvas.globalAlpha = attr.la / 100;
-                    canvas.stroke();
-                }
-            }
-            else {
-                fullySupported = false;
-            }
+			var outerRadius = attr.x2,
+				innerRadius = attr.y2;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate((180 - attr.r) * Math.PI / 180);
+			if (attr.n > 2) {
+				var step, hStep, i, dx, dy;
+				step = 2 * Math.PI / attr.n;
+				hStep = step / 2;
+				canvas.beginPath();
+				canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+				for (i = 1; i <= attr.n; i++) {
+					dx = Math.cos(step * i - hStep) * innerRadius;
+					dy = -Math.sin(step * i - hStep) * innerRadius;
+					canvas.lineTo(dx, dy);
+					dx = Math.cos(step * i) * outerRadius;
+					dy = -Math.sin(step * i) * outerRadius;
+					canvas.lineTo(dx, dy);
+				}
+				canvas.closePath();
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
         };
 		
         this.drawNgon = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var p = attr.p.split('~'),
-					i, coords;
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                if (p.length > 1) {
-                    canvas.beginPath();
-                    for (i = 0; i < p.length; i++) {
-                        coords = p[i].split(',');
-                        if (i == 0) {
-                            canvas.moveTo(parseInt(coords[0]), parseInt(coords[1]));
-                        } else {
-                            canvas.lineTo(parseInt(coords[0]), parseInt(coords[1]));
-                        }
-                    }
-                    canvas.closePath();
-                    canvas.fill();
-                    canvas.globalAlpha = attr.la / 100;
-                    canvas.stroke();
-                }
-            }
-            else {
-                fullySupported = false;
-            }
+			var p = attr.p.split('~'),
+				i, coords;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			if (p.length > 1) {
+				canvas.beginPath();
+				for (i = 0; i < p.length; i++) {
+					coords = p[i].split(',');
+					if (i == 0) {
+						canvas.moveTo(parseInt(coords[0]), parseInt(coords[1]));
+					} else {
+						canvas.lineTo(parseInt(coords[0]), parseInt(coords[1]));
+					}
+				}
+				canvas.closePath();
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
         };
 		
         this.drawWedge = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var radius = attr.x2,
-					arc = attr.y2;
-				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.beginPath();
-                canvas.moveTo(0, 0);
-                var segAngle, theta, angle, angleMid, segs, ax, ay, bx, by, cx, cy;
-                if (Math.abs(arc) > 360) {
-                    arc = 360;
-                }
-                segs = Math.ceil(Math.abs(arc) / 45);
-                segAngle = arc / segs;
-                theta = - Math.PI * segAngle / 180;
-                angle = - Math.PI * 0 / 180;
-                if (segs > 0) {
-                    ax = Math.cos(0 * Math.PI / 180) * radius;
-                    ay = Math.sin(-0 * Math.PI / 180) * radius;
-                    canvas.lineTo(ax, ay);
-                    for (var i = 0; i < segs; i++) {
-                        angle += theta;
-                        angleMid = angle - theta / 2;
-                        bx = Math.cos(angle) * radius;
-                        by = Math.sin(angle) * radius;
-                        cx = Math.cos(angleMid) * radius / Math.cos(theta / 2);
-                        cy = Math.sin(angleMid) * radius / Math.cos(theta / 2);
-                        canvas.quadraticCurveTo(cx, cy, bx, by);
-                    }
-                    canvas.lineTo(0, 0);
-                }
-                canvas.closePath();
-                canvas.fill();
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			var radius = attr.x2,
+				arc = attr.y2;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.beginPath();
+			canvas.moveTo(0, 0);
+			var segAngle, theta, angle, angleMid, segs, ax, ay, bx, by, cx, cy;
+			if (Math.abs(arc) > 360) {
+				arc = 360;
+			}
+			segs = Math.ceil(Math.abs(arc) / 45);
+			segAngle = arc / segs;
+			theta = - Math.PI * segAngle / 180;
+			angle = - Math.PI * 0 / 180;
+			if (segs > 0) {
+				ax = Math.cos(0 * Math.PI / 180) * radius;
+				ay = Math.sin(-0 * Math.PI / 180) * radius;
+				canvas.lineTo(ax, ay);
+				for (var i = 0; i < segs; i++) {
+					angle += theta;
+					angleMid = angle - theta / 2;
+					bx = Math.cos(angle) * radius;
+					by = Math.sin(angle) * radius;
+					cx = Math.cos(angleMid) * radius / Math.cos(theta / 2);
+					cy = Math.sin(angleMid) * radius / Math.cos(theta / 2);
+					canvas.quadraticCurveTo(cx, cy, bx, by);
+				}
+				canvas.lineTo(0, 0);
+			}
+			canvas.closePath();
+			canvas.fill();
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         };
 		
         this.drawGear = function(canvas, attr) {
-            if (canvasSupported == true) {
-                var outerRadius = attr.x2,
-					innerRadius = attr.y2;
+			var outerRadius = attr.x2,
+				innerRadius = attr.y2;
+			
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate((180 - attr.r) * Math.PI / 180);
+			if (attr.n > 2) {
+				var step, qStep, start, i, dx, dy;
+				step = 2 * Math.PI / attr.n;
+				qStep = step / 4;
 				
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate((180 - attr.r) * Math.PI / 180);
-                if (attr.n > 2) {
-                    var step, qStep, start, i, dx, dy;
-                    step = 2 * Math.PI / attr.n;
-                    qStep = step / 4;
-					
-                    canvas.beginPath();
-                    canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
-                    for (i = 1; i <= attr.n; i++) {
-                        dx = Math.cos(step * i - qStep * 3) * innerRadius;
-                        dy = -Math.sin(step * i - qStep * 3) * innerRadius;
-                        canvas.lineTo(dx, dy);
-                        dx = Math.cos(step * i - qStep * 2) * innerRadius;
-                        dy = -Math.sin(step * i - qStep * 2) * innerRadius;
-                        canvas.lineTo(dx, dy);
-                        dx = Math.cos(step * i - qStep) * outerRadius;
-                        dy = -Math.sin(step * i - qStep) * outerRadius;
-                        canvas.lineTo(dx, dy);
-                        dx = Math.cos(step * i) * outerRadius;
-                        dy = -Math.sin(step * i) * outerRadius;
-                        canvas.lineTo(dx, dy);
-                    }
-                    canvas.closePath();
-                    canvas.fill();
-                    canvas.globalAlpha = attr.la / 100;
-                    canvas.stroke();
-                }
-            }
-            else {
-                fullySupported = false;
-            }
+				canvas.beginPath();
+				canvas.moveTo(Math.cos(0) * outerRadius, -Math.sin(0) * outerRadius);
+				for (i = 1; i <= attr.n; i++) {
+					dx = Math.cos(step * i - qStep * 3) * innerRadius;
+					dy = -Math.sin(step * i - qStep * 3) * innerRadius;
+					canvas.lineTo(dx, dy);
+					dx = Math.cos(step * i - qStep * 2) * innerRadius;
+					dy = -Math.sin(step * i - qStep * 2) * innerRadius;
+					canvas.lineTo(dx, dy);
+					dx = Math.cos(step * i - qStep) * outerRadius;
+					dy = -Math.sin(step * i - qStep) * outerRadius;
+					canvas.lineTo(dx, dy);
+					dx = Math.cos(step * i) * outerRadius;
+					dy = -Math.sin(step * i) * outerRadius;
+					canvas.lineTo(dx, dy);
+				}
+				canvas.closePath();
+				canvas.fill();
+				canvas.globalAlpha = attr.la / 100;
+				canvas.stroke();
+			}
         };
 		
         this.drawCurve = function(canvas, attr) {
-            if (canvasSupported == true) {
-                canvas.translate(attr.x, attr.y);
-                canvas.rotate(attr.r * Math.PI / 180);
-                canvas.beginPath();
-                canvas.moveTo(0, 0);
-                canvas.quadraticCurveTo(attr.x3, attr.y3, attr.x2, attr.y2);
-                canvas.globalAlpha = attr.la / 100;
-                canvas.stroke();
-            }
-            else {
-                fullySupported = false;
-            }
+			canvas.translate(attr.x, attr.y);
+			canvas.rotate(attr.r * Math.PI / 180);
+			canvas.beginPath();
+			canvas.moveTo(0, 0);
+			canvas.quadraticCurveTo(attr.x3, attr.y3, attr.x2, attr.y2);
+			canvas.globalAlpha = attr.la / 100;
+			canvas.stroke();
         };
 		
 		// Helper function NOT the Poly shape handler, although called from it

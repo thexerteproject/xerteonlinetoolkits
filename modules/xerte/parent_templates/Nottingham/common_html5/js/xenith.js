@@ -1,23 +1,22 @@
 // all elements, variables and functions for interface are called "x_id" - do not make new id's prefixed with "x_" in page models
-var x_languageData	= [];
-var x_params		= new Object(); // all attributes of learningObject that aren't undefined
-var x_pages;		// xml info about all pages in this LO
-var x_pageInfo		= [];	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
-var x_currentPage	= -1;
-var x_currentPageXML;
-var x_glossary		= [];
-var x_specialChars	= [];
-var x_inputFocus	= false;
-var x_dialogInfo	= []; // (type, built)
-var x_browserInfo	= {iOS:false, touchScreen:false, mobile:false, orientation:"portrait"}; // holds info about browser/device
-var x_pageHistory	= []; // keeps track of pages visited for historic navigation
-
-var x_firstLoad		= true;
-var x_fillWindow	= false;
-var x_volume		= 1;
-var x_audioBarH		= 30;
-var x_mediaText		= [];
-var x_timer;		// use as reference to any timers in page models - they are cancelled on page change
+var x_languageData	= [],
+	x_params		= new Object(), // all attributes of learningObject that aren't undefined
+	x_pages,		// xml info about all pages in this LO
+	x_pageInfo		= [],	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
+	x_currentPage	= -1,
+	x_currentPageXML,
+	x_glossary		= [],
+	x_specialChars	= [],
+	x_inputFocus	= false,
+	x_dialogInfo	= [], // (type, built)
+	x_browserInfo	= {iOS:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
+	x_pageHistory	= [], // keeps track of pages visited for historic navigation
+	x_firstLoad		= true,
+	x_fillWindow	= false,
+	x_volume		= 1,
+	x_audioBarH		= 30,
+	x_mediaText		= [],
+	x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
@@ -407,11 +406,7 @@ function x_setUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 				
-				var mediaFile = x_params.media;
-				var mediaTranscript = x_params.mediaTranscript;
-				var mediaImage = x_params.mediaImage;
-				// ** TO DO - ADD MEDIA/TRANSCRIPT PLAYER **
-				alert("open media window " + mediaFile + " " + mediaTranscript + " " + mediaImage);
+				window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage));
 			});
 	}
 	
@@ -539,7 +534,7 @@ function x_setUp() {
 		x_updateCss(true);
 	});
 	
-	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities **
+	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
 	if (x_browserInfo.touchScreen == true) {
 		/*
 		var numTouches = 0;
@@ -642,7 +637,7 @@ function x_changePage(x_gotoPage) {
 	}
 	
 	if ($x_pageDiv.children().length > 0) {
-		// ** TO DO - this causes problems where swfs fill the whole page and the page size changes - I can't work out why **
+		// ** TO DO - this causes problems where swfs fill the whole page and the page size changes - I can't work out why
 		// stop any swfs on old page before detaching it so that any audio stops playing
 		/*if ($x_pageDiv.find("object").length > 0) {
 			var $obj = $x_pageDiv.find("object");
@@ -876,7 +871,7 @@ function x_updateCss(updatePage) {
 		$("audio,video").each(function() {
 			var $this = $(this);
 			if ($this.is(":hidden")) { // flash
-				// ** TO FIX ** - need to pause audio but mediaElement errors "this.pluginApi.pauseMedia is not a function"
+				// ** TO FIX - need to pause audio but mediaElement errors "this.pluginApi.pauseMedia is not a function"
 				//$this.parents(".mejs-inner").find(".mejs-pause button").trigger("click");
 			}
 		});
