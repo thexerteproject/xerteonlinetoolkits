@@ -250,7 +250,7 @@ function x_setUp() {
 	}
 	
 	if (x_params.stylesheet != undefined) {
-		x_insertCSS(x_params.stylesheet);
+		x_insertCSS(eval(x_params.stylesheet));
 	}
 	
 	if (x_pageInfo[0].type == "menu") {
