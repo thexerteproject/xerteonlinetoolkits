@@ -48,7 +48,7 @@ require_once("../config.php");
      *	Else display the page
      */
 
-		echo "<div class=\"title\"><p>Welcome to Xerte on-line Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below. Thank you, the IS Learning Team.</div><div style=\"width:50%; float:left; position:relative;\">";
+		echo "<div class=\"title\"><p>Welcome to Xerte Online Toolkits Feedback page</p></div><div style=\"width:45%; float:left; position:relative; margin-right:20px;\">Please leave your feedback here. All feedback is anonymous, unless you would like a response, and if you do, please leave your name opposite and some contact details in the box below.</div><div style=\"width:50%; float:left; position:relative;\">";
 
 		echo "<form action=\"\" method=\"post\">Name<textarea name=\"name\" style=\"width:100%;\" rows=\"1\"></textarea>Feedback<textarea name=\"feedback\" style=\"width:100%;\" rows=\"25\"></textarea><input type=\"submit\" value=\"Send Feedback\"></form>";
 
