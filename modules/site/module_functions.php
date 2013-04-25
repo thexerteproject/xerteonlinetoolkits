@@ -14,7 +14,7 @@ function display_property_engines($change,$msgtype){
 
 }
 
-function display_publish_engines(){
+function display_publish_engine(){
 
 }
 
