@@ -974,6 +974,7 @@
 
     <name label="Label" type="TextInput"/>
     <url label="Image" type="Media"/>
+	<url2 label="Label Image" type="Media" optional="true"/>
 
   </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interation, with feedback and option to paste response to clipboard" icon="icComment" thumb="thumbs/modelAnswer.jpg" remove="true">
 

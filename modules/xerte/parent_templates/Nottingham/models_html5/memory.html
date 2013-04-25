@@ -20,8 +20,17 @@
 			// get & store card data
 			var cards = [];
 			$(x_currentPageXML).children().each(function(i){
-				cards.push({type:"text", data:this.getAttribute("name"), match:i});
-				cards.push({type:"img",  data:this.getAttribute("url"),  match:i, name:this.getAttribute("name")});
+				var card0Type;
+				if (this.getAttribute("url2") != undefined && this.getAttribute("url2") != "") { // image on both cards
+					cards.push({ref:0, type:"img", data:this.getAttribute("url2"), match:i, name:this.getAttribute("name")});
+					card0Type = "img";
+					
+				} else { // text on one card
+					cards.push({ref:0, type:"text", data:this.getAttribute("name"), match:i});
+					card0Type = "text";
+				}
+				
+				cards.push({ref:1, type:"img",  data:this.getAttribute("url"),  match:i, matchType:card0Type, name:this.getAttribute("name")});
 			});
 			
 			$("#pageContents").data({
@@ -94,12 +103,14 @@
 									
 									clearInterval(x_timer);
 									x_timer =  setInterval(function() {
-										if ($card1.find(".label").length == 0) {
+										if ($card1.find(".answer").length == 0) {
+											$card2.find(".answer .imgLabel").css("background-image", $card1.css("background-image"));
 											$card1.animate({opacity: 0}, 500);
 										} else {
+											$card1.find(".answer .imgLabel").css("background-image", $card2.css("background-image"));
 											$card2.animate({opacity: 0}, 500);
 										}
-										$card1.add($card2).find(".label").animate({opacity: 1}, 500);
+										$card1.add($card2).find(".answer").animate({opacity: 1}, 500);
 										
 										if ($pageContents.find(".correct").length == $pageContents.data("cardData").length) { // all matched
 											$("#button").show();
@@ -140,11 +151,30 @@
 						.data("match", cards[i].match);
 					
 				} else {
-					$('<div class="card" ><div class="label">' + cards[i].name + '</div></div>')
+					var div = "";
+					if (cards[i].ref == 1) { // when matched correctly this card will stay in place and the matching card will appear on top
+						div += '<div class="answer">';
+						if (cards[i].matchType == "text") {
+							div += '<div class="label">' + cards[i].name + '</div>';
+						} else {
+							div += '<div class="imgLabel">';
+							if (cards[i].name != undefined && cards[i].name != "") {
+								div += '<div class="label">' + cards[i].name + '</div>';
+							}
+							div += '</div>';
+						}
+						div += '</div>';
+					} else {
+						if (cards[i].name != undefined && cards[i].name != "") {
+							div += '<div class="label">' + cards[i].name + '</div>';
+						}
+					}
+					
+					$('<div class="card" >' + div + '</div>')
 						.appendTo($cardBottomHolder)
 						.css("background-image", 'url("' + eval(cards[i].data) + '")')
 						.data("match", cards[i].match)
-						.find(".label").css("opacity", 0);
+						.find(".answer").css("opacity", 0);
 				}
 			}
 		}
@@ -192,6 +222,14 @@
 		background-color:	white;
 		border:				1px solid black;
 		width:				82px;
+		padding:			5px;
+	}
+	
+	#cardBottomHolder .card .imgLabel {
+		border:				1px solid black;
+		background-size:	100% 100%;
+		width:				92px;
+		height:				126px;
 		padding:			5px;
 	}
 	
