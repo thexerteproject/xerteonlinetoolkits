@@ -637,8 +637,7 @@ function x_changePage(x_gotoPage) {
 	}
 	
 	if ($x_pageDiv.children().length > 0) {
-		// ** TO DO - this causes problems where swfs fill the whole page and the page size changes - I can't work out why
-		// stop any swfs on old page before detaching it so that any audio stops playing
+		// ** stop any swfs on old page before detaching it so that any audio stops playing
 		/*if ($x_pageDiv.find("object").length > 0) {
 			var $obj = $x_pageDiv.find("object");
 			var flashMovie = x_getSWFRef($obj.attr("id"));
@@ -871,7 +870,7 @@ function x_updateCss(updatePage) {
 		$("audio,video").each(function() {
 			var $this = $(this);
 			if ($this.is(":hidden")) { // flash
-				// ** TO FIX - need to pause audio but mediaElement errors "this.pluginApi.pauseMedia is not a function"
+				// **
 				//$this.parents(".mejs-inner").find(".mejs-pause button").trigger("click");
 			}
 		});
