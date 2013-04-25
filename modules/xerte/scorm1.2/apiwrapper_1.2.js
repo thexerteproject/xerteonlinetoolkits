@@ -385,9 +385,9 @@ function ErrorHandler()
          errDescription += api.LMSGetDiagnostic(null);
          // by passing null to LMSGetDiagnostic, we get any available diagnostics
          // on the previous error.
+         alert(errDescription);
       }
 
-      alert(errDescription);
    }
 
    return errCode;
