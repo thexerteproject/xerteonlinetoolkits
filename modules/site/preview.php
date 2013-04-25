@@ -48,7 +48,7 @@ function show_preview_code($row){
 		<link href="<?PHP echo $template_path_string ?>/common/css/custom.css" rel="stylesheet">
 				
 		<!--support for IE < 6-8 -->
-		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script src="<?PHP echo $template_path_string ?>/common/js/html5shiv.js"></script>
 		
 		<!--media element and initialisation-->
 		<script src="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelement-and-player.min.js"></script>
