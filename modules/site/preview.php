@@ -68,7 +68,7 @@ function show_preview_code($row){
 		
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
-		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";		  fjs.parentNode.insertBefore(js, fjs);		}(document, 'script', 'facebook-jssdk'));</script>
+		<script src="<?PHP echo $template_path_string ?>/common/js/initFB.js" defer></script>
 	    
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
