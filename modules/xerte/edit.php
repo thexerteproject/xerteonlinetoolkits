@@ -21,12 +21,14 @@
  * @version 1.0
  * @author Patrick Lockley
  */
+ 
+
 
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
 
     require_once("config.php");
 
-    _load_language_file("/modules/xerte/edit.inc");
+    _load_language_file("/modules/site/edit.inc");
 
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
@@ -71,34 +73,34 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    <script src="modules/xerte/js/swfobject.js"></script>
+    <script src="modules/site/js/swfobject.js"></script>
     <script src="website_code/scripts/opencloseedit.js"></script>
     <script src="website_code/scripts/template_management.js"></script>
     <script src="website_code/scripts/ajax_management.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?PHP echo XERTE_EDIT_TITLE; ?></title>
+    <title><?PHP echo SITE_EDIT_TITLE; ?></title>
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <script type="text/javascript" language="javascript">
 
 	function getSessionID(){
-		var id;
-		var auth = '<?php echo strtolower($xerte_toolkits_site->authentication_method); ?>';
-		var browser = (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 'firefox' : 'other';
+			var id;
+			var auth = '<?php echo strtolower($xerte_toolkits_site->authentication_method); ?>';
+			var browser = (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 'firefox' : 'other';
 
-		//Pass data to upload (Firefox Flash Cookie Bug) which we are
-		//It first checks moodle, then defaults
-		if (auth == 'moodle') {
+			//Pass data to upload (Firefox Flash Cookie Bug) which we are
+			//It first checks moodle, then defaults
+			if (auth == 'moodle') {
 
-			//Its Moodle integration so we need the whole cookie
-			return 'BROWSER=' + browser + '&AUTH=moodle&COOKIE=' + escape(document.cookie);
-		}
-		else if ((id = document.cookie.match(/PHPSESSID=[^;]+/))) {
+				//Its Moodle integration so we need the whole cookie
+				return 'BROWSER=' + browser + '&AUTH=moodle&COOKIE=' + escape(document.cookie);
+			}
+			else if ((id = document.cookie.match(/PHPSESSID=[^;]+/))) {
 
-			// Its Default authentication so we only need session id
-			return 'BROWSER=' + browser + '&AUTH=xerte&' + id;
-		}
+				// Its Default authentication so we only need session id
+				return 'BROWSER=' + browser + '&AUTH=xerte&' + id;
+			}
 
-		return null;
+			return null;
 	}
 
     function setunload(){
@@ -109,7 +111,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     function hideunload(){
 
-        window.onbeforeunload = null;
+        window.onbeforeunload = function(){};
     }
 
     window.onbeforeunload = bunload;
@@ -155,7 +157,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         </div>
     </center>
     <script type="text/javascript">
-    var so = new SWFObject("modules/xerte/engine/wizard.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
+    var so = new SWFObject("modules/site/engine/wizard.swf", "mymovie", "800", "600", "8,0,0,0", "#e0e0e0");
     so.addParam("quality", "high");<?PHP
 
     /**

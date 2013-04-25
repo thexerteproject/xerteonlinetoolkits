@@ -111,7 +111,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     function hideunload(){
 
-        window.onbeforeunload = null;
+        window.onbeforeunload = function(){};
     }
 
     window.onbeforeunload = bunload;
