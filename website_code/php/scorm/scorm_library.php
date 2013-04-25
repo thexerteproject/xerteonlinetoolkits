@@ -203,7 +203,7 @@ function basic_html5_page_create($type, $lo_name){
     $buffer = str_replace("%XMLPATH%","",$buffer);
     $buffer = str_replace("%XMLFILE%","template.xml",$buffer);
 
-    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"js/xttracking_noop.js\"></script>", $buffer);
+    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
 
     $file_handle = fopen($dir_path . "index.htm", 'w');
 
