@@ -131,7 +131,7 @@ function show_preview_code($row){
 						</div>
 
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
-						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
+						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" defer></script>
 						
 					</div>
 				</div>
