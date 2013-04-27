@@ -593,7 +593,7 @@ function x_setUp() {
 		});
 	}
 	
-	if (x_params.background != undefined) {
+	if (x_params.background != undefined && x_params.background != "") {
 		var alpha = 30;
 		if (x_params.backgroundopacity != undefined) {
 			alpha = x_params.backgroundopacity;
