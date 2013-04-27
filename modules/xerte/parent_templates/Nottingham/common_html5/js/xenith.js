@@ -691,6 +691,30 @@ function x_changePage(x_gotoPage) {
 
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
+	
+	x_updateHash();
+}
+
+function x_updateHash() {
+
+	if (x_params.resume === "true") {
+		window.location.hash = "#resume=" + (x_currentPage+1);
+	}
+	else {
+		if (window.location.href.indexOf('#') > -1) {
+			if ("pushState" in history) {
+				history.pushState("", document.title, window.location.pathname + window.location.search);
+			}
+			else {
+				var tempV = document.body.scrollTop;
+				var tempH = document.body.scrollLeft; 
+				window.location.hash = "";
+				//window.location.href = window.location.href.split('#')[0];
+				document.body.scrollTop = tempV;
+				document.body.scrollLeft = tempH;
+			}
+		}
+	}
 }
 
 // function called on page model load
@@ -1056,7 +1080,10 @@ function x_insertText(node) {
 
 function x_navigateToPage(force, pageInfo) { // {type, ID}
     var page;
-    if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+    if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
+        x_changePage(parseInt(pageInfo.ID) - 1);
+    }
+    else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
         page = x_lookupPage(pageInfo.type, pageInfo.ID);
         if (page != null)
         {
