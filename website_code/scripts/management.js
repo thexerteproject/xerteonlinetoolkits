@@ -404,8 +404,9 @@ function update_site(){
 					 '&site_logo=' + document.getElementById("site_logo").value + 
 					 '&organisational_logo=' + document.getElementById("organisational_logo").value + 
 					 '&welcome_message=' + document.getElementById("welcome_message").value + 
-					 '&site_text=' + document.getElementById("site_text").value + 
-					 '&news_text=' + document.getElementById("news_text").value + 
+					 '&site_text=' + document.getElementById("site_text").value +
+                     '&tutorial_text=' + document.getElementById("tutorial_text").value +
+                     '&news_text=' + document.getElementById("news_text").value +
 					 '&pod_one=' + document.getElementById("pod_one").value + 
 					 '&pod_two=' + document.getElementById("pod_two").value + 
 					 '&copyright=' + document.getElementById("copyright").value + 

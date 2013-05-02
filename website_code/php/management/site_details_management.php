@@ -12,6 +12,8 @@ if(is_user_admin()){
 
     $copyright = str_replace("AAA","&copy;",$_POST['copyright']);
 
+    $site_texts = $_POST['site_text'] . "~~~" . $_POST['tutorial_text'];
+
     $query="update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
         site_text=? ,news_text=? ,pod_one=? , pod_two= ? ,copyright=? ,demonstration_page=? ,form_string= ? ,peer_form_string=?,feedback_list=?,
         rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?, 
@@ -19,7 +21,7 @@ if(is_user_admin()){
         headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?,import_path=? ,
         apache=?, mimetypes=?, LDAP_preference=? ,LDAP_filter=? , integration_config_path=?, admin_username=? ,admin_password=? ";
 		
-    $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $_POST['site_text'], base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])), 
+    $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
     base64_encode(stripcslashes($_POST['peer_form_string'])) , $_POST['feedback_list'] ,  $_POST['rss_title'] , $_POST['module_path'] ,  $_POST['website_code_path'] ,  $_POST['users_file_area_short'] ,
     $_POST['php_library_path'] ,  str_replace("\\","/",$_POST['root_file_path']) , base64_encode(stripcslashes($_POST['play_edit_preview_query'])) ,  $_POST['email_error_list'] ,  $_POST['error_log_message'] ,
     $_POST['error_email_message'] , $_POST['ldap_host']	, $_POST['ldap_port'] , $_POST['bind_pwd'] , $_POST['base_dn'] , $_POST['bind_dn'] , $_POST['flash_save_path'], $_POST['flash_upload_path'] ,  

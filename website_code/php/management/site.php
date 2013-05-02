@@ -19,6 +19,18 @@ if(is_user_admin()){
 
     $row = mysql_fetch_array($query_response);
 
+    $site_texts = explode("~~~", $row['site_text']);
+    if (count($site_texts) > 1)
+    {
+        $site_text = $site_texts[0];
+        $tutorial_text=$site_texts[1];
+    }
+    else
+    {
+        $site_text = $site_texts[0];
+        $tutorial_text="";
+    }
+
     echo "<div class=\"template\" id=\"sitedetails\"><p>" . MANAGEMENT_SITE_TITLE . " <button type=\"button\" class=\"xerte_button\" id=\"sitedetails_btn\" onclick=\"javascript:templates_display('sitedetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sitedetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_URL . "<form><textarea id=\"site_url\">" . $row['site_url'] . "</textarea></form></p>";
@@ -33,9 +45,11 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_WELCOME . "<form><textarea id=\"welcome_message\">" . $row['welcome_message'] . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_TEXT . "<form><textarea id=\"site_text\">" . $row['site_text'] . "</textarea></form></p>";
+    echo "<p>" . MANAGEMENT_SITE_TEXT . "<form><textarea id=\"site_text\">" . $site_text . "</textarea></form></p>";
 
-    echo "<p>" . MANAGEMENT_SITE_NEWS . "<form><textarea id=\"news_text\">" . base64_decode($row['news_text']) . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_TUTORIAL_TEXT . "<form><textarea id=\"tutorial_text\">" . $tutorial_text . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_NEWS . "<form><textarea id=\"news_text\">" . base64_decode($row['news_text']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_POD_ONE . "<form><textarea id=\"pod_one\">" . base64_decode($row['pod_one']) . "</textarea></form></p>";	
 
