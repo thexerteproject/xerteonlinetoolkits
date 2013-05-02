@@ -114,10 +114,10 @@ _include_javascript_file("website_code/scripts/import.js");
         </div>
 
         <div class="topbar">
-            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
                 <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo INDEX_BUTTON_LOGOUT; ?></button></p>
             </div>
-            <img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+            <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
         </div>
 
         <!--
