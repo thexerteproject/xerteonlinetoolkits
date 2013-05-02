@@ -65,6 +65,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
 
+    $edit_site_logo = $xerte_toolkits_site->site_logo;
+    $pos = strrpos($edit_site_logo, '/') + 1;
+    $edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
+
+    $edit_organisational_logo = $xerte_toolkits_site->organisational_logo;
+    $pos = strrpos($edit_organisational_logo, '/') + 1;
+    $edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
+
     /**
      * set up the onunload function used in version control
      */
@@ -147,8 +155,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <div style="margin:0 auto; width:800px">
         <div class="edit_topbar" style="width:800px">
-            <img src="website_code/images/edit_xerteLogo.jpg" style="margin-left:10px; float:left" />
-            <img src="website_code/images/edit_UofNLogo.jpg" style="margin-right:10px; float:right" />
+            <img src="<?php echo $edit_site_logo;?>" style="margin-left:10px; float:left" />
+            <img src="<?php echo $edit_organisational_logo;?>" style="margin-right:10px; float:right" />
         </div>
     </div>
     <center>
