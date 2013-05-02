@@ -239,7 +239,9 @@ function login_form($messages, $xerte_toolkits_site)
 
         </div>
         <div class="mainbody_left">
-            <div class="tutorials">      </div>
+            <div class="tutorials">
+                <?PHP echo $xerte_toolkits_site->tutorial_text; ?>
+            </div>
         </div>
         <div class="mainbody_div">
             <p class="intro">
