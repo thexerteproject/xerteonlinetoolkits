@@ -11,7 +11,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
+				var $panel = $("#myPanel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
@@ -20,10 +20,11 @@
 			// buttonWidth attribute not used as button will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
+				$textHolder = $("#textHolder"),
+				$panel = $("#myPanel");
 			
 			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
+				$panel.appendTo($("#pageContents"));
 				$splitScreen.remove();
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -54,8 +55,7 @@
 				}
 			}
 			
-			var $panel = $("#infoHolder .panel"),
-				$infoGroup = $(".infoGroup:first");
+			var $infoGroup = $(".infoGroup:first");
 			
 			$infoGroup.find("p").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
 			
@@ -102,7 +102,7 @@
 
 <style type="text/css">
 	
-	#pageContents .panel {
+	#myPanel {
 		overflow:	auto;
 	}
 	
@@ -120,7 +120,7 @@
 		<div id="textHolder" class="left" tabindex="1"></div>
 		
 		<div id="infoHolder" class="right">
-			<div class="panel">
+			<div id="myPanel" class="panel">
 				<div class="infoGroup">
 					<p></p>
 					<button></button>
