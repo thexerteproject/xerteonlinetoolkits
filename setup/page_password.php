@@ -4,6 +4,11 @@ echo file_get_contents("page_top");
 
 $buffer = file_get_contents("database.txt");
 
+session_start();
+
+$buffer = str_replace("DATABASE_HOST", $_SESSION['DATABASE_HOST'],$buffer);
+$buffer = str_replace("DATABASE_NAME", $_SESSION['DATABASE_NAME'],$buffer);
+$buffer = str_replace("DATABASE_PREFIX", $_SESSION['DATABASE_PREFIX'],$buffer);
 $buffer = str_replace("DATABASE_USERNAME",$_POST['account'],$buffer);
 $buffer = str_replace("DATABASE_PASSWORD",$_POST['password'],$buffer);
 $file_handle = fopen("../database.php",'w');

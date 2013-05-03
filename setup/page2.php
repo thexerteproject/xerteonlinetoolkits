@@ -67,95 +67,11 @@ if(!isset($_POST['database_file'])) {
 <?php 
         }
     }
+    session_start();
 
-    $buffer = file_get_contents("database.txt");
-
-    $buffer = str_replace("DATABASE_HOST",$_POST['host'],$buffer);
-    $buffer = str_replace("DATABASE_NAME",$_POST['database_name'],$buffer);
-    $buffer = str_replace("DATABASE_PREFIX",$_POST['database_prefix'],$buffer);
-
-    $file_handle = fopen("database.txt",'w');
-
-    $work = true;
-
-    if(!$file_handle){
-        $work = false;
-?>
-    <p>The file /setup/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
-<?php
-    }
-
-    if(!fwrite($file_handle,$buffer,strlen($buffer))){
-        $work = false;
-?>
-    <p>The file /setup/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
-<?php
-    }
-
-    if(!$work) 
-    {
-?>
-                <p>Edit the file to add in the database host, database name and prefix</p>
-                <form action="page2.php" method="POST">
-                <input type="hidden" value="datafileonly" name="databasefile" />
-                <input type="submit" value="Try again" />
-                </form>
-<?php
-    }
-
-    fclose($file_handle);
-    @chmod("database.txt",0777);
-
-}else{
-
-    $buffer = file_get_contents("database.txt");
-
-    $buffer = str_replace("DATABASE_HOST",$_POST['host'],$buffer);
-    $buffer = str_replace("DATABASE_NAME",$_POST['database_name'],$buffer);
-    $buffer = str_replace("DATABASE_PREFIX",$_POST['database_prefix'],$buffer);
-
-    $file_handle = fopen("database.txt",'w');
-
-    $work = true;
-
-    if(!$file_handle){
-
-        $work = false;
-
-?>
-                    <p>The file /setup/database.txt was not set to be writable - this means future pages will not work. Please edit this file before continuing.
-<?PHP
-
-    }
-
-
-    if(!fwrite($file_handle,$buffer,strlen($buffer))){
-
-        $work = false;
-
-?>
-                    <p>The file /setup/database.txt could not be written too - this means future pages will not work. Please edit this file before continuing.
-<?PHP		
-
-    }
-
-    if(!$work){
-
-?>
-                <p>Edit the file to add in the database host, database name and prefix</p>
-                <form action="page2.php" method="POST">
-                <input type="hidden" value="datafileonly" name="databasefile" />
-                <input type="submit" value="Try again" />
-                </form>
-<?PHP		
-
-    }
-
-
-    fclose($file_handle);
-    @chmod("database.txt",0777);
-
-
+    $_SESSION['DATABASE_HOST'] = $_POST['host'];
+    $_SESSION['DATABASE_NAME'] = $_POST['database_name'];
+    $_SESSION['DATABASE_PREFIX'] = $_POST['database_prefix'];
 }
 
 ?>
@@ -164,7 +80,7 @@ if(!isset($_POST['database_file'])) {
 MySQL Database Account Set up page
 </h2>
 <p>
-Your Xerte Online Toolkits database has been successfully created. When users are creating work on the site, the PHP will need a MySQL username with select,insert,update and delete privleges.
+Your Xerte Online Toolkits database has been successfully created. When users are creating work on the site, the PHP will need a MySQL username with select,insert,update and delete privileges.
 </p>
 <p>
 <form action="page_password.php" method="post" enctype="multipart/form-data">
