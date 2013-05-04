@@ -43,6 +43,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
     public function check()
     {
+        global $xerte_toolkits_site;
         if (!function_exists('mysql_query')) {
             $this->addError("MySQL not available?");
             return false;
@@ -65,6 +66,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
     public function login($username, $password)
     {
+        global $xerte_toolkits_site;
         $spassword = $this->_hashAndSalt($username, $password);
         $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ? AND password = ?", array($username, $spassword));
         if (!empty($row)) {
@@ -103,6 +105,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
      */
     public function getUserList($changed, $mesg)
     {
+        global $xerte_toolkits_site;
         $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user order by surname,firstname,username");
 
         //_include_javascript_file("library/Xerte/Authentication/Db.js");
@@ -132,6 +135,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
     public function addUser($username, $firstname, $surname, $passwd)
     {
+        global $xerte_toolkits_site;
         // Check if user exists
         $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ?", array($username));
         if (!empty($row))
@@ -152,6 +156,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
     public function delUser($username)
     {
+        global $xerte_toolkits_site;
         $query="delete from {$xerte_toolkits_site->database_table_prefix}user where username=?";
         $params = array($username);
         $res = db_query($query, $params);
@@ -164,6 +169,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
     public function changePassword($username, $newpassword)
     {
+        global $xerte_toolkits_site;
         $spassword = $this->_hashAndSalt($username, $newpassword);
         $query="update {$xerte_toolkits_site->database_table_prefix}user set password=? where username=?";
         $params = array($spassword, $username);
