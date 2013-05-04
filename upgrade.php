@@ -290,8 +290,11 @@ function upgrade_4()
     $table = table_by_key('originaltemplatesdetails');
     $error3 = _upgrade_db_query("UPDATE `$table`  set `template_framework`='site' where `template_name`='site'");
 
+    $table = table_by_key('sitedetails');
+    $error4 = _upgrade_db_query("ALTER TABLE `$table` CHANGE COLUMN `site_text` `site_text` TEXT NULL DEFAULT NULL");
+
     $error_returned=true;
-    if (($error1 === false) || ($error2 === false) || ($error3 === false))
+    if (($error1 === false) || ($error2 === false) || ($error3 === false) || ($error4 === false))
     {
         $error_returned=false;
         // echo "creating lti tables FAILED";
@@ -300,3 +303,5 @@ function upgrade_4()
     return "Creating default engine flag - ok ? " . ( $error_returned ? 'true' : 'false' );
 
 }
+
+?>

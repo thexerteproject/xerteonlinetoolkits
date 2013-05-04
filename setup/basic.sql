@@ -98,7 +98,7 @@ CREATE TABLE `$sitedetails` (
   `site_logo` char(255) DEFAULT NULL,
   `organisational_logo` char(255) DEFAULT NULL,
   `welcome_message` char(255) DEFAULT NULL,
-  `site_text` char(255) DEFAULT NULL,
+  `site_text` text DEFAULT NULL,
   `news_text` text,
   `pod_one` text,
   `pod_two` text,
