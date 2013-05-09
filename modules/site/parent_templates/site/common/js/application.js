@@ -188,6 +188,8 @@ function parseContent(index){
 	
 	window.scroll(0,0);
 	
+	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	
 	//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
 	$('#toc a:first').tab('show');
 	
