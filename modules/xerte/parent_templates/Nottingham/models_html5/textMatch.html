@@ -229,11 +229,7 @@
 			$feedback.attr("tabindex", tabIndex + 2);
 			
 			this.createLabels();
-			
-			if (x_currentPage != 0) {
-				textMatch.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		

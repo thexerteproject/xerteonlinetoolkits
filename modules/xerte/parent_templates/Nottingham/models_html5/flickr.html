@@ -13,54 +13,42 @@
 			this.$pageContents = $("#pageContents");
 			this.$panel = $("#pageContents .panel");
 			
-			this.maxImageWidth = $("#flickrHolder").width();
-			this.maxImageHeight = $("#flickrHolder").height();
+			this.setMaxSizes();
 		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (this.$pageContents.data("firstLoad") == 1 && x_currentPage == 0) {
-				this.$pageContents.data("firstLoad", 0);
-				this.setPanelSize(1);
-				this.callAjax();
-				
-			} else {
-				var currentImg = $("#pictureHolder img");
-				currentImg
-					.width("0px")
-					.height("0px");
-				
-				this.setPanelSize();
-				this.setMaxSizes();
-				
-				// set origSize data so scale function knows to scale by original img size, not resized version
-				currentImg.data("origSize", [x_pageInfo[x_currentPage].savedData.pictureStore[x_pageInfo[x_currentPage].savedData.pictureIndex].size.width, x_pageInfo[x_currentPage].savedData.pictureStore[x_pageInfo[x_currentPage].savedData.pictureIndex].size.height]);
-				x_scaleImg(currentImg[0], this.maxImageWidth, this.maxImageHeight, true, false, true);
-			}
+			var currentImg = $("#pictureHolder img");
+			currentImg
+				.width("0px")
+				.height("0px");
+			
+			this.setPanelSize();
+			this.setMaxSizes();
+			
+			x_scaleImg(currentImg[0], this.maxImageWidth, this.maxImageHeight, true, false, true);
 		};
 		
-		this.setPanelSize = function(num) {
+		this.setPanelSize = function(firstLoad) {
 			this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt(this.$panel.css("padding-top")) * 2 - 5);
 			
 			var $btnHolder = $("#btnHolder");
 			$("#flickrHolder").height(this.$panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
 			
-			if (num == 1) {
+			if (firstLoad == 1) {
 				$btnHolder.hide();
 			}
 		}
 		
 		this.setMaxSizes = function() {
 			this.maxImageWidth = $("#flickrHolder").width();
-			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").height() - $("#footerHolder").height() - $("#licenseHolder").height();
+			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").height() - $("#licenseHolder").height() - 10;
 		}
 		
 		
 		this.init = function() {
 			this.$pageContents = $("#pageContents");
 			this.$panel = $("#pageContents .panel");
-			
-			this.$pageContents.data("firstLoad", 1);
 
 			x_pageInfo[x_currentPage].savedData = {
 				pictureFeed  : undefined,
@@ -108,10 +96,8 @@
 			$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
-			if (x_currentPage != 0) {
-				this.setPanelSize(1);
-				this.callAjax();
-			}
+			this.setPanelSize(1);
+			this.callAjax();
 			
 			
 			// call this function in every model once everything is loaded
@@ -287,7 +273,7 @@
 				.on("load", function() {
 					$("#pictureHolder").html($(this));
 					
-					x_scaleImg(this, flickr.maxImageWidth, flickr.maxImageHeight, true, false, true);
+					x_scaleImg(this, flickr.maxImageWidth, flickr.maxImageHeight, true, true, true);
 					$("#loadingSpinner").remove();
 				})
 				.attr("src", source);
@@ -307,7 +293,11 @@
 </script>
 
 <style type="text/css">
-
+	
+	#pageContents .right .panel {
+		overflow:	hidden;
+	}
+	
 	#flickrHolder {
 		width:		100%;
 	}
@@ -315,6 +305,10 @@
 	#headerHolder {
 		text-align: 	left;
 		margin-bottom: 	10px;
+	}
+	
+	#licenseHolder {
+		margin-top: 	10px;
 	}
 
 	#pictureHolder {
@@ -327,14 +321,10 @@
   		margin-right: 	auto;
 	}
 
-	#footerHolder {
-		position: 	relative;
-	}
-
 	#loadingSpinner {
 		margin-left: 	auto;
   		margin-right: 	auto;
-		width:180px;
+		width:			180px;
 	}
 
 	.spinner {
@@ -372,7 +362,6 @@
 						<div id="pictureHolder">
 							<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
 						</div>
-						<div id="footerHolder"></div>
 						<div id="licenseHolder"></div>
 					</div>
 				</div>

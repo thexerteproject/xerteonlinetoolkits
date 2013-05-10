@@ -57,7 +57,7 @@
 						description:	$controls.data("pause"),
 						text:			false
 						})
-					.bind("click", function() {
+					.on("click", function() {
 						var flashMovie = $("#pageContents").data("swf"),
 							$this = $(this);
 						
@@ -78,8 +78,8 @@
 							description:	$this.data(state)
 							})
 						})
-					.load(function() {
-						})
+					.load(function() { });
+				
 				$panel.append($controls);
 			}
 
@@ -93,11 +93,8 @@
 
 			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
 				if (e.success == true) {
-					$("#pageContents").data({
-						"swf"			:x_getSWFRef("pageSWF"),  // reference to swf
-						"initObject"	:x_sortInitObject(x_currentPageXML.getAttribute("initObject")) // initObject data
-					});
-
+					$("#pageContents").data("swf", x_getSWFRef("pageSWF")); // reference to swf
+					
 					// if using the control bar make sure swf is paused initially
 					if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
 						// swf is supposed to be loaded by now but this won't work without slight delay?
@@ -107,7 +104,7 @@
 					}
 					
 					$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
-
+					
 					// need to add code for calling init function in swf
 					
 				} else { // no Flash

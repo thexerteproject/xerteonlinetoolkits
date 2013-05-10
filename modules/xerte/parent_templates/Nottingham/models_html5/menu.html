@@ -3,6 +3,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var menu = new function() {
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear" && x_params.menuImageProperties == "Full Screen") {
@@ -15,30 +16,17 @@
 			
 		}
 		
-		// function sets up full screen bg image
-		this.setUpBg = function(firstLoad) {
-			var $pageBg = $('<img id="pageBg"/>');
-			$pageBg
-				.attr("src", eval(x_params.menuImage))
-				.hide()
-				.load(function() {
-					$(this).fadeIn();
-					if (firstLoad == true) {
-						x_pageLoaded();
-					}
-				});
-			$x_background.append($pageBg);
-		}
-		
 		this.init = function() {
 			var numOffset = 0;
-			if (x_params.navigation != "Linear") {
+			if (x_params.navigation != "Linear" && x_params.navigation != "Historic") { // 1st page is menu page - ignore this when making page list
 				numOffset = 1;
 			}
 			
-			var $menuItems = $("#menuItems");
-			var $menuItem = $menuItems.find(".menuItem:first");
-			for (var i=0; i<x_pages.length-numOffset; i++) {
+			var $menuItems = $("#menuItems"),
+				$menuItem = $menuItems.find(".menuItem:first"),
+				i;
+			
+			for (i=0; i<x_pages.length-numOffset; i++) {
 				var $thisItem;
 				if (i != 0) {
 					$thisItem = $menuItem.clone().appendTo($menuItems);
@@ -49,7 +37,7 @@
 				$thisItem.html(x_pages[i+numOffset].getAttribute("name"));
 			}
 			
-			$(".menuItem")
+			$("#menuItems .menuItem")
 				.button()
 				.click(function() {
 					$this = $(this);
@@ -58,43 +46,74 @@
 					x_changePage($this.index() + numOffset);
 				});
 			
-			if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear") {
-				if (x_params.menuImageProperties != "Full Screen") { // use panel
-					var imgMaxW;
-					if (x_browserInfo.mobile == false) {
-						imgMaxW = $(".right").width() - 80;
-					} else {
-						imgMaxW = $x_mobileScroll.width() - 40;
-					}
-					var imgMaxH = 450;
-					$(".right").append('<img/>');
-					$(".right img")
-						.css("visibility", "hidden")
-						.addClass("panel centre")
-						.bind("load", function() {
-							x_scaleImg(this, imgMaxW, imgMaxH)
+			if (x_params.navigation != "Linear" && x_params.navigation != "Historic") { // 1st page is menu page
+				
+				if (x_params.menuImage != undefined && x_params.menuImage != "") {
+					
+					if (x_params.menuImageProperties != "Full Screen") { // use panel
+						var imgMaxW;
+						if (x_browserInfo.mobile == false) {
+							imgMaxW = $("#menuHolder .right").width() - 80;
+						} else {
+							imgMaxW = $x_mobileScroll.width() - 40;
+						}
+						var imgMaxH = 450;
+						
+						$("#menuHolder .right").append('<img class="panel centre" />');
+						
+						$("#menuHolder .right img")
+							.css("visibility", "hidden")
+							.one("load", function() {
+								x_scaleImg(this, imgMaxW, imgMaxH);
+								x_pageLoaded();
 							})
-						.attr({
-							"id":"pageImg",
-							"src":eval(x_params.menuImage)
+							.attr({
+								"id":"pageImg",
+								"src":eval(x_params.menuImage)
 							})
-						.load(function() {
-							// call this function in every model once everything's loaded
-							x_pageLoaded();
+							.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+								if (this.complete) {
+									$(this).trigger("load");
+								}
 							});
-				} else {
-					menu.setUpBg(true);
+						
+					} else { // bg image
+						this.setUpBg(true);
+						x_pageLoaded();
+					}
+					
+				} else { // no image
+					$("#menuHolder").removeClass("splitScreen");
+					if (x_browserInfo.mobile == false) {
+						$menuItems.width("70%");
+					}
+					x_pageLoaded();
 				}
-			} else {
+				
+			} else { // menu is in dialog
 				$("#menuHolder").removeClass("splitScreen");
-				if (x_browserInfo.mobile == false && x_params.navigation != "Linear" && x_params.navigation != undefined) {
-					$menuItems.width("70%");
-				}
 			}
+		}
+		
+		// function sets up full screen bg image
+		this.setUpBg = function(firstLoad) {
+			var $pageBg = $('<img id="pageBg"/>');
+			$pageBg
+				.hide()
+				.one("load", function() {
+					$(this).fadeIn();
+					if (firstLoad == true) {
+						x_pageLoaded();
+					}
+				})
+				.attr("src", eval(x_params.menuImage))
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
+				});
 			
-			if (x_params.navigation != "Linear" && (x_params.menuImage == undefined || x_params.menuImage == "")) {
-				x_pageLoaded();
-			}
+			$x_background.append($pageBg);
 		}
 	}
 	

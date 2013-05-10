@@ -10,7 +10,7 @@
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
+		this.sizeChanged = function(firstLoad) {
 			if (x_browserInfo.mobile == false) {
 				var $infoHolder = $("#infoHolder");
 				$infoHolder.height($x_pageHolder.height() - $("#pageContents .splitScreen").position().top - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($infoHolder.css("padding-top")) * 2);
@@ -19,16 +19,21 @@
 			$("#pageContents").data({
 				"maxWH"	:[$infoHolder.width(), $infoHolder.height()]
 			});
-			list.scaleImages();
+			
+			if (firstLoad != true) {
+				this.scaleImages();
+			}
+			
 		}
 		
 		this.init = function() {
 			var $listHolder = $("#listHolder"),
 				$infoHolder = $("#infoHolder");
 			
-			$infoHolder.hide();
-			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			list.sizeChanged(true);
+			$infoHolder.hide();
 			
 			var $listItem = $(".listItem:first");
 			$(x_currentPageXML).children()
@@ -50,16 +55,16 @@
 							"tip"	:this.getAttribute("tip"),
 							"movieSize"	:this.getAttribute("movieSize")
 							})
-						.bind("click", function() {
+						.on("click", function() {
 							var $this = $(this);
 							if ($this != $(".listItem.highlight")) {
 								var infoString = "<h3>" + $this.data("name") + "</h3>" + "<p>" + x_addLineBreaks($this.data("text")) + "</p>";
 								var url = $this.data("url");
 								if (url != undefined && url != "") {
 									if (url.split('.').pop() == "swf") {
-										infoString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+										infoString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 									} else {
-										infoString += '<div class="paneImg"><img src="' + url + '" ';
+										infoString += '<div class="paneImg"><img ';
 										if ($this.data("tip") != undefined && $this.data("tip") != "") {
 											infoString += 'alt="' + $this.data("tip") + '" ';
 										}
@@ -73,24 +78,38 @@
 								$infoHolder
 									.html(infoString)
 									.scrollTop(0);
-								if ($("#infoHolder:hidden").length > 0) {
+								
+								// first click on a link - show panel
+								if ($("#infoHolder:visible").length == 0) {
 									$infoHolder.fadeIn();
-									list.sizeChanged();
 								}
 								
-								var size = [300,300];
-								if ($this.data("movieSize") != "" && $this.data("movieSize") != undefined) {
-									var dimensions = $this.data("movieSize").split(",");
-									if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
-										size = [Number(dimensions[0]), Number(dimensions[1])];
+								if ($infoHolder.find(".paneImg").length > 0) {
+									$infoHolder.find(".paneImg img")
+										.one("load", function() {
+											list.scaleImages();
+										})
+										.attr("src", url)
+										.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+											if (this.complete) {
+												$(this).trigger("load");
+											}
+										});
+									
+								} else if ($infoHolder.find(".paneSWF").length > 0) {
+									var size = [300,300];
+									if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+										var dimensions = this.getAttribute("movieSize").split(",");
+										if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+											size = [Number(dimensions[0]), Number(dimensions[1])];
+										}
+									}
+									
+									swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+									if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+										$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 									}
 								}
-								
-								if (url != undefined && url != "" && url.split('.').pop() == "swf") {
-									swfobject.embedSWF(url, "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
-									$("#pageSWF" + i).attr("title", $this.data("tip"));
-								}
-								list.scaleImages();
 							}
 						});
 				});
@@ -100,20 +119,23 @@
 		
 		// function scales image
 		this.scaleImages = function() {
-			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
 			var $pageContents = $("#pageContents"),
-				$img = $("#infoHolder .paneImg img");
+				$img = $("#infoHolder .paneImg img:visible");
 			
+			// is there an image?  Has it loaded?  Has it already been scaled to fit this?
 			if ($img.length > 0) {
-				if ($img.data("maxWH") == undefined || ($pageContents.data("maxWH")[0] != $img.data("maxWH")[0] || $pageContents.data("maxWH")[1] != $img.data("maxWH")[1])) {
-					var firstScale = false;
-					if ($img.data("maxWH") == undefined) {
-						firstScale = true;
-					}
-					$img.data("maxWH", $pageContents.data("maxWH"));
-					
-					x_scaleImg($img, $img.data("maxWH")[0], $img.data("maxWH")[1], true, firstScale);
+				var firstScale = false;
+				if ($img.data("origSize") == undefined) {
+					firstScale = true;
 				}
+				
+				var maxW = Math.min($("#infoHolder .paneImg").width(), $pageContents.data("maxWH")[0]);
+				x_scaleImg($img, maxW, $pageContents.data("maxWH")[1], true, firstScale);
+				
+				$img.css({
+					"opacity"	:1,
+					"filter"	:'alpha(opacity=100)'
+				});
 			}
 		}
 	}
@@ -142,6 +164,11 @@
 	#infoHolder .paneImg {
 		text-align:		center;
 		padding-top:	10px;
+	}
+	
+	#infoHolder .paneImg img {
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 </style>

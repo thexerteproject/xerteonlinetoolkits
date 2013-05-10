@@ -64,6 +64,10 @@
 			}
 			
 			$img
+				.css({ // stops flicker on 1st load of image
+						"opacity"	:0,
+						"filter"	:'alpha(opacity=0)'
+				})
 				.one("load", function() {
 					connectorHotspotImage.imgLoaded();
 				})
@@ -98,6 +102,11 @@
 			}
 			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, true);
+			
+			$img.css({
+				"opacity"	:1,
+				"filter"	:'alpha(opacity=100)'
+			});
 			
 			
 			// position text
@@ -203,9 +212,16 @@
 								top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
 							})
 							.click(function() {
+								// when audio dialogs are closed because another dialog has been opened - stop flash audio playing first
+								if ($("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id") != undefined) {
+									var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
+									$("body div#me_flash_" + audioRefNum + "_container").remove();
+								}
+								
 								$(".x_popupDialog").parent().detach(); // remove any open dialogs
 								$("#pageContents .selected").removeClass("selected");
 								$("#pageContents .highlighted").removeClass("highlighted");
+								
 								$(this).addClass("selected");
 								$feedback.html("");
 								
@@ -272,6 +288,14 @@
 									}
 									
 									x_openDialog("connectorHotspotImage", "", continueBtnTxt, dialogPos, dialogHtml);
+									
+									// when audio dialogs are closed with dialog x button - stop flash audio playing first
+									if (hsInfo == "sound") {
+										var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
+										$("#x_connectorHotspotImage").parent().on("dialogclose", function() {
+											$("body div#me_flash_" + audioRefNum + "_container").remove();
+										});
+									}
 								
 								// open new window
 								} else if (hsType == "newWindow") {

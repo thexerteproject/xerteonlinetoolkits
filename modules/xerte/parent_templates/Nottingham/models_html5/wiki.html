@@ -13,7 +13,6 @@
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#pageContents .panel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				
 				$panel.find("iframe").height($panel.height() - $("#headerHolder").height() - 10);
 			}
 		};
@@ -34,24 +33,18 @@
 				$textHolder
 					.removeClass("left")
 					.addClass("right")
-					.appendTo($("#splitScreen"));
+					.appendTo($("#pageContents .splitScreen"));
 				$("#infoHolder")
 					.removeClass("right")
 					.addClass("left");
 			}
 			
 			var iframe = '<iframe width="100%" scrolling="auto" src="' + url + '"></iframe>';
-			this.sizeChanged();
-			
 			$("#iframeHolder").html(iframe);
 			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-			if (x_currentPage != 0) {
-				this.sizeChanged();
-			}
-			
-			// call this function in every model once everything's loaded
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 	};

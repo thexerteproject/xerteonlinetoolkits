@@ -55,11 +55,7 @@
 				$panel.append('<img src="http://maps.google.com/maps/api/staticmap?sensor=false&format=png&size=' + maxWH[0] + 'x' + maxWH[1] + '&center=' + ll + '&zoom=' + z + '&maptype=' + x_currentPageXML.getAttribute("maptype") + '" alt="' + x_currentPageXML.getAttribute("tooltip") + '"/>');
 			}
 			
-			if (x_currentPage != 0) {
-				this.sizeChanged();
-			}
-			
-			// call this function in every model once everything's loaded
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 	}

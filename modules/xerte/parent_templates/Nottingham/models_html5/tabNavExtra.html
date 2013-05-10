@@ -3,6 +3,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var tabNavExtra = new function() {
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			
@@ -11,12 +12,22 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $infoHolder = $("#pageContents .infoHolder");
+				var	$infoHolder = $("#pageContents .infoHolder"),
+					$paneHolder = $("#pageContents .paneHolder");
+				
 				$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10);
 				$infoHolder.tabs("resize");
-				var $paneHolder = $("#pageContents .paneHolder");
 				$paneHolder.height($infoHolder.height()-$("#pageContents .tabList:visible").height() - parseInt($paneHolder.css("padding-top")) * 2 - 5);
 			}
+			
+			var $pageContents = $("#pageContents");
+			if ($pageContents.data("count") != 0) {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+				this.scaleImages();
+			} else {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+			}
+			
 		}
 		
 		this.init = function() {
@@ -25,7 +36,10 @@
 			// __CREATE TOPICS__
 			// have to clone topics / tabs / pages in seperate functions as otherwise it clones the data from previous topic
 			var $topic =		$("#pageContents .topic"),
-				$infoHolder =	$("#pageContents .infoHolder");
+				$infoHolder =	$("#pageContents .infoHolder"),
+				$img1;
+			
+			$("#pageContents").data("count", 0);
 			
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -77,6 +91,8 @@
 									$thisHolder.find(".tabHeader:eq(0) a").trigger("click");
 									$thisHolder.find(".paneHolder:eq(0) .paneList a:eq(0)").trigger("click");
 								}
+								
+								tabNavExtra.scaleImages();
 							}
 						});
 				});
@@ -142,22 +158,61 @@
 													$this.addClass("selected");
 													$this.parents(".paneHolder").find(".paneInfo:eq(" + $this.index() + ")").show();
 													$("#pageContents").data("currentPane", $this.html());
+													
+													tabNavExtra.scaleImages();
 												}
 											});
 									} else {
 										$paneList.addClass("delete");
 									}
 									
-									var infoString = "";
-									if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
-										infoString += '<div class="paneImg"><img src="' + eval(this.getAttribute("url")) + '" ';
-										if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-											infoString += 'alt="' + this.getAttribute("tip") + '" ';
+									var	infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
+										url = this.getAttribute("url");
+									
+									if (url != undefined && url != "") {
+										var newString = "";
+										if (url.split('.').pop().slice(0, -1) == "swf") {
+											newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+										} else {
+											newString += '<div class="paneImg"><img ';
+											if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+												newString += 'alt="' + this.getAttribute("tip") + '" ';
+											}
+											newString += ' /></div>';
 										}
-										infoString += ' /></div>';
+										if (this.getAttribute("align") == "Top") {
+											infoString += newString;
+										} else {
+											infoString = newString + infoString;
+										}
 									}
-									infoString += x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>');
+									
 									$thisPaneInfo.html(infoString);
+									
+									if ($thisPaneInfo.find(".paneImg").length > 0) {
+										var $img = $thisPaneInfo.find(".paneImg img");
+										if (i + j + k == 0) {
+											// don't set src of image that's visible until later as panels needs to be fully set up for image scaling to work correctly
+											$img.data("src", eval(url));
+											$img1 = $img;
+										} else {
+											$img.attr("src", eval(url));
+										}
+										
+									} else if ($thisPaneInfo.find(".paneSWF").length > 0) {
+										var size = [300,300];
+										if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+											var dimensions = this.getAttribute("movieSize").split(",");
+											if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+												size = [Number(dimensions[0]), Number(dimensions[1])];
+											}
+										}
+										
+										swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+										if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+											$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+										}
+									}
 									
 								});
 							$link.addClass("selected");
@@ -174,35 +229,75 @@
 			
 			var firstLoad = true;
 			if (x_currentPageXML.getAttribute("rememberTab") == "true") {
-				$("#pageContents .infoHolder")
-					.tabs({
-						show: function(event, ui) {
-							if (firstLoad != true) {
-								var $pageContents = $("#pageContents"),
-									$panel = $(ui.panel);
-								
-								$pageContents.data("currentTab", $panel.parent().find(".tabList .tabHeader:eq(" + ui.index + ") a").html());
-								if ($pageContents.data("currentTopic") != $panel.parents(".infoHolder").index()) {
-									$pageContents.data("currentTopic", $panel.parents(".infoHolder").index());
-								} else {
-									$pageContents.data("currentPane", $panel.parent().find(".paneHolder:eq(" + ui.index + ") .paneList a:first").html());
-									if ($panel.find(".paneInfo").length > 1) {
-										$panel.find(".paneList a:eq(0)").trigger("click");
-									}
+				$("#pageContents .infoHolder").tabs({
+					show: function(event, ui) {
+						if (firstLoad != true) {
+							var $pageContents = $("#pageContents"),
+								$panel = $(ui.panel);
+							
+							$pageContents.data("currentTab", $panel.parent().find(".tabList .tabHeader:eq(" + ui.index + ") a").html());
+							if ($pageContents.data("currentTopic") != $panel.parents(".infoHolder").index()) {
+								$pageContents.data("currentTopic", $panel.parents(".infoHolder").index());
+							} else {
+								$pageContents.data("currentPane", $panel.parent().find(".paneHolder:eq(" + ui.index + ") .paneList a:first").html());
+								if ($panel.find(".paneInfo").length > 1) {
+									$panel.find(".paneList a:eq(0)").trigger("click");
 								}
 							}
+							tabNavExtra.scaleImages();
 						}
-					});
+					}
+				});
+				
 			} else {
-				$("#pageContents .infoHolder").tabs();
+				$("#pageContents .infoHolder").tabs({
+					show: function(event, ui) {
+						if (firstLoad != true) {
+							tabNavExtra.scaleImages();
+						}
+					}
+				});
 			}
 			firstLoad = false;
+			this.sizeChanged();
 			
-			if (x_currentPage != 0) {
-				tabNavExtra.sizeChanged();
+			// everything's now set up so image on current pane can be loaded now
+			if ($img1 != undefined) {
+				$img1
+					.one("load", function() {
+						tabNavExtra.scaleImages();
+					})
+					.attr("src", $img1.data("src"))
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
 			}
 			
 			x_pageLoaded();
+		}
+		
+		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
+		this.scaleImages = function() {
+			var $pageContents = $("#pageContents"),
+				$img = $pageContents.find(".paneImg:visible img");
+			
+			// is there an image currently visible?  Has it already been scaled to fit this?
+			if ($img.length > 0 && $pageContents.data("count") != $img.data("count")) {
+				var firstScale = false;
+				
+				if ($img.data("count") == undefined) {
+					firstScale = true;
+				}
+				$img.data("count", $pageContents.data("count"));
+				
+				x_scaleImg($img, $img.parent().width(), $pageContents.find(".infoHolder:visible .paneHolder:visible").height() - 10, true, firstScale);
+				$img.css({
+					"opacity"	:1,
+					"filter"	:'alpha(opacity=100)'
+				});
+			}
 		}
 	}
 	
@@ -244,8 +339,8 @@
 	}
 	
 	#pageContents .paneImg img {
-		max-width:	100%;
-		max-height:	100%;
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 	#pageContents .paneHolder {
