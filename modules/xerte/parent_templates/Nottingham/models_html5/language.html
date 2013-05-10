@@ -11,11 +11,11 @@
 		
 		this.init = function() {
 			// get language strings for dialog text
-			langStrings.on = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "on", "*ON");
-			langStrings.off = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "off", "*OFF");
-			langStrings.caps = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "caps", "*Caps");
+			langStrings.on = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "on", "ON");
+			langStrings.off = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "off", "OFF");
+			langStrings.caps = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "caps", "Caps");
 			
-			$charsFooter.html("<p>" + x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "instruction", "*Use CAPS and SHIFT") + "</p>");
+			$charsFooter.html("<p>" + x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "instruction", "Use CAPS and SHIFT") + "</p>");
 			$capsButton = $specChar.clone().removeClass("specChar").appendTo($charsFooter).html(langStrings.caps + ": <strong>" + langStrings.off + "</strong>");
 			
 			for (var i=0; i<x_specialChars.length; i++) {
