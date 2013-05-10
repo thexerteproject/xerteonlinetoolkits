@@ -168,7 +168,6 @@
 		}
 
         this.showResults = function() {
-
             // last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
@@ -337,9 +336,6 @@
 						l_feedback = [];
 					
                     var generalFeedback = "";
-                    if (x_currentPageXML.getAttribute("feedback") != undefined) {
-                        generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
-                    }
 					
                         // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {

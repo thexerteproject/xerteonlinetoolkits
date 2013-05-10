@@ -78,7 +78,8 @@
 				//$optionTxt = $optionHolder.find(".optionTxt"),
 				correctOptions = [],
 				correctAnswer = [],
-				correctFeedback = [];
+				correctFeedback = [],
+				correctOption = false; // is there a correct answer for the question?
 
             $(x_currentPageXML).children()
 				.each(function(i) {
@@ -96,6 +97,7 @@
                         correctOptions.push(i+1+"");
                         correctAnswer.push(this.getAttribute("text"));
                         correctFeedback.push(this.getAttribute("feedback"));
+						correctOption = true;
                     }
 					
 					$thisOption
@@ -191,20 +193,24 @@
                         multiWrong = "You have not selected the correct combination of answers";
                     }
 
-                    var rightWrongTxt;
+                    var rightWrongTxt = "";
                     // add correct feedback depending on if question overall has been answered correctly or not
                     if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-                        if (correct == true) {
-                            rightWrongTxt = '<p><br/>' + multiRight + '</p>';
-                        } else {
-                            rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
-                        }
+						if (correctOption == true) { // there is a correct answer for question
+							if (correct == true) {
+								rightWrongTxt = '<p><br/>' + multiRight + '</p>';
+							} else {
+								rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
+							}
+						}
                     } else {
-                        if (correct == true) {
-                            rightWrongTxt = '<p><br/>' + singleRight + '</p>';
-                        } else {
-                            rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
-                        }
+						if (correctOption == true) { // there is a correct answer for question
+							if (correct == true) {
+								rightWrongTxt = '<p><br/>' + singleRight + '</p>';
+							} else {
+								rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
+							}
+						}
                     }
                     generalFeedback += rightWrongTxt;
 					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
