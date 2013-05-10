@@ -23,15 +23,18 @@
 			if ($canvas.length > 0 && $canvas[0].getContext) {
 				var context = $canvas[0].getContext("2d"),
 					highlightColour = context.strokeStyle;
+				
 				$canvas.attr({
 					width	:$x_pageDiv.width(),
 					height	:$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2
 				});
+				
 				context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
 				context.strokeStyle = highlightColour;
 				context.fillStyle = highlightColour;
 				context.lineWidth = 2;
 			}
+			
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlight").removeClass("highlight");
 			$("#infoHolder").html("");
@@ -69,13 +72,31 @@
 					imgMaxH = 250;
 				}
 				
-				$imageHolder.append('<img onload="x_scaleImg(this, ' + imgMaxW + ', ' + imgMaxH + ', true, true); annotatedDiagram.imgLoaded();" />');
+				$imageHolder.append('<img />');
 				$img = $imageHolder.find("img");
 				
-				$img.attr({
-					"src"	:eval(x_currentPageXML.getAttribute("url")),
-					"alt"	:x_currentPageXML.getAttribute("tip")
-				});
+				$img
+					.css({ // stops flicker on 1st load of image
+						"opacity"	:0,
+						"filter"	:'alpha(opacity=0)'
+					})
+					.one("load", function() {
+						x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+						$(this).css({
+							"opacity"	:1,
+							"filter"	:'alpha(opacity=100)'
+						})
+						annotatedDiagram.imgLoaded();
+					})
+					.attr({
+						"src"	:eval(x_currentPageXML.getAttribute("url")),
+						"alt"	:x_currentPageXML.getAttribute("tip")
+					})
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
 				
 			} else {
 				// have had to add this in I found one old project where a swf was used instead of an image on this page
@@ -97,9 +118,7 @@
 				$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 			}
 			
-			if (x_currentPage != 0) {
-				this.sizeChanged();
-			}
+			this.sizeChanged();
 		}
 		
 		this.imgLoaded = function() {

@@ -37,10 +37,7 @@
 			
 			$("#panelTxt").html(modelAnswerResults.getData());
 			
-			if (x_currentPage != 0) {
-				modelAnswerResults.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		

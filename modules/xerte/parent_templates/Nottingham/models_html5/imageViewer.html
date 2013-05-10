@@ -235,7 +235,7 @@
 			
 			// zoom in/out also works on scrolling mouse wheel
 			if (x_browserInfo.touchScreen == false) {
-				$("#pageImg, #imgCover").bind("mousewheel DOMMouseScroll", function(e) {
+				$("#pageImg, #imgCover").on("mousewheel DOMMouseScroll", function(e) {
 					// has wheel scrolled up or down? different browsers show this in e.originalEvent in different ways
 					if (e.originalEvent.detail == -3 || e.originalEvent.wheelDelta == 120) { // up
 						$zoomInBtn.trigger("click");
@@ -450,8 +450,27 @@
 				}
 			);
 			
-			
-			$pageImg.attr("src", eval(x_currentPageXML.getAttribute("url"))); // set image src - imgLoaded function will be called when it's loaded
+			$pageImg
+				.one("load", function() {
+					var imgMaxW = 500, // desktop / tablet
+						imgMaxH = 400;
+					if (x_browserInfo.mobile == true) {
+						imgMaxW = 250; // mobile
+						imgMaxH = 250;
+					}
+					
+					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					imageViewer.imgLoaded();
+				})
+				.attr({
+					"src"	:eval(x_currentPageXML.getAttribute("url")),
+					"alt"	:x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
+				});
 		}
 		
 		this.imgLoaded = function() {
@@ -509,13 +528,6 @@
 				$zoomOutBtn.button("enable");
 			}
 		}
-	}
-	
-	var imgMaxW = 500, // desktop / tablet
-		imgMaxH = 400;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW = 250; // mobile
-		imgMaxH = 250;
 	}
 	
 	imageViewer.init();
@@ -607,7 +619,7 @@
 			
 			<div id="cropImg">
 				
-				<img id="pageImg" tabindex="2" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); imageViewer.imgLoaded();" />
+				<img id="pageImg" tabindex="2" style="visibility: hidden" />
 				
 				<div id="imgCover" class="transparent" />
 				

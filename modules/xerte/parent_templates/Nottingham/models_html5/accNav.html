@@ -18,7 +18,7 @@
 			
 			var $pageContents = $("#pageContents");
 			$pageContents.data("count", $pageContents.data("count") + 1);
-			accNav.scaleImages();
+			this.scaleImages();
 		}
 		
 		this.init = function() {
@@ -38,46 +38,59 @@
 				}
 			}
 			
+			this.sizeChanged();
+			
 			var $infoHolder = $("#infoHolder"),
 				$paneHeader = $("#infoHolder .paneHeader"),
-				$paneContents = $("#infoHolder .paneContents");
+				$paneContents = $("#infoHolder .paneContents"),
+				$img1;
 			
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var $thisHeader, $thisContents;
-					if (i != 0) {
-						$thisHeader = $paneHeader.clone().appendTo($infoHolder);
-						$thisContents = $paneContents.clone().appendTo($infoHolder);
+			// set up accordian contents
+			$(x_currentPageXML).children().each(function(i) {
+				var $thisHeader, $thisContents;
+				if (i != 0) {
+					$thisHeader = $paneHeader.clone().appendTo($infoHolder);
+					$thisContents = $paneContents.clone().appendTo($infoHolder);
+				} else {
+					$thisHeader = $paneHeader;
+					$thisContents = $paneContents;
+				}
+				$thisHeader.find("a").html(this.getAttribute("name"));
+				
+				var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
+					url = this.getAttribute("url");
+				
+				if (url != undefined && url != "") {
+					var newString = "";
+					if (url.split('.').pop().slice(0, -1) == "swf") {
+						newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 					} else {
-						$thisHeader = $paneHeader;
-						$thisContents = $paneContents;
-					}
-					$thisHeader.find("a").html(this.getAttribute("name"));
-					
-					var infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
-						url = this.getAttribute("url");
-					if (url != undefined && url != "") {
-						var newString = "";
-						if (url.split('.').pop().slice(0, -1) == "swf") {
-							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
-						} else {
-							newString += '<div class="paneImg"><img src="' + eval(url) + '" ';
-							if (i == 0) {
-								newString += 'onload="accNav.scaleImages();" ';
-							}
-							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-								newString += 'alt="' + this.getAttribute("tip") + '" ';
-							}
-							newString += ' /></div>';
+						newString += '<div class="paneImg"><img ';
+						if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+							newString += 'alt="' + this.getAttribute("tip") + '" ';
 						}
-						if (this.getAttribute("align") == "Top") {
-							infoString += newString;
-						} else {
-							infoString = newString + infoString;
-						}
+						newString += ' /></div>';
 					}
-					$thisContents.html(infoString);
+					if (this.getAttribute("align") == "Top") {
+						infoString += newString;
+					} else {
+						infoString = newString + infoString;
+					}
+				}
+				
+				$thisContents.html(infoString);
+				
+				if ($thisContents.find(".paneImg").length > 0) {
+					var $img = $thisContents.find(".paneImg img");
+					if (i == 0) {
+						// don't set src of image that's visible until later as accordian needs to be fully set up for image scaling to work correctly
+						$img.data("src", eval(url));
+						$img1 = $img;
+					} else {
+						$img.attr("src", eval(url));
+					}
 					
+				} else if ($thisContents.find(".paneSWF").length > 0) {
 					var size = [300,300];
 					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
 						var dimensions = this.getAttribute("movieSize").split(",");
@@ -86,11 +99,13 @@
 						}
 					}
 					
-					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+					swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
-				});
+				}
+			});
+			
 			
 			$infoHolder.accordion({
 				fillSpace:	true,
@@ -107,8 +122,19 @@
 				$(this).attr("tabindex", ($(this).index() / 2) + 1);
 			})
 			
-			if (x_currentPage != 0) {
-				accNav.sizeChanged();
+			
+			// everything's now set up so image on current pane can be loaded now
+			if ($img1 != undefined) {
+				$img1
+					.one("load", function() {
+						accNav.scaleImages();
+					})
+					.attr("src", $img1.data("src"))
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
 			}
 			
 			x_pageLoaded();
@@ -117,8 +143,8 @@
 		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
 		this.scaleImages = function() {
 			var $pageContents = $("#pageContents");
-			// is there an image on current panel?  Has it loaded?  Has it already been scaled to fit this?
-			if ($("#infoHolder .paneImg img:visible").length > 0 && $("#infoHolder .paneImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
+			// is there an image on current panel?  Has it already been scaled to fit this?
+			if ($("#infoHolder .paneImg img:visible").length > 0 && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
 				var $img = $("#infoHolder .paneImg img:visible"),
 					$infoHolder = $("#infoHolder"),
 					firstScale = false;
@@ -129,11 +155,16 @@
 				$img.data("count", $pageContents.data("count"));
 				
 				var num = 0;
-				$("#infoHolder .paneHeader").each(function() {
-					num += $(this).height() + 4;
+				$("#infoHolder .paneHeader").each(function(i) {
+					num += $("#infoHolder .paneHeader").height() + 4;
 				});
 				
-				x_scaleImg($img, $infoHolder.width(), $infoHolder.height() - num, true, firstScale);
+				x_scaleImg($img, $img.parent().width(), $infoHolder.height() - num, true, firstScale);
+				
+				$img.css({
+					"opacity"	:1,
+					"filter"	:'alpha(opacity=100)'
+				});
 			}
 		}
 	}
@@ -151,6 +182,11 @@
 	#infoHolder .paneImg {
 		text-align:		center;
 		padding-top:	10px;
+	}
+	
+	#infoHolder .paneImg img {
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 </style>

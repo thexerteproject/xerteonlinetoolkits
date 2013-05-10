@@ -19,8 +19,12 @@
 			}
 			
 			var $pageContents = $("#pageContents");
-			$pageContents.data("count", $pageContents.data("count") + 1);
-			buttonNav.scaleImages();
+			if ($pageContents.data("count") != 0) {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+				this.scaleImages();
+			} else {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+			}
 		}
 		
 		this.init = function() {
@@ -45,8 +49,10 @@
 			var $panelBtn = $("#btnHolder .panelBtn:first"),
 				$panelBtnLabel = $("#btnHolder .panelBtnLabel:first"),
 				$panelPage = $("#pageContents .panelPage"),
-				$btnHolder = $("#btnHolder");
+				$btnHolder = $("#btnHolder"),
+				$img1;
 			
+			// set up buttons and panel contents
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisBtn, $thisBtnLabel, $thisPanelPage;
@@ -63,7 +69,7 @@
 					$thisBtn
 						.attr("id", "btn" + i)
 						.data({"screen"	:$thisPanelPage})
-						.bind("click", function() {
+						.on("click", function() {
 							var $thisPanelPage = $(this).data("screen");
 							if ($thisPanelPage.is(":hidden")) {
 								$("#infoHolder .panelPage:visible").hide();
@@ -92,12 +98,9 @@
 					if (url != undefined && url != "") {
 						var newString = "";
 						if (url.split('.').pop().slice(0, -1) == "swf") {
-							newString += '<div class="centerAlign"><div id="pageSWF' + i + '"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+							newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 						} else {
-							newString += '<div class="pageImg"><img src="' + eval(url) + '" ';
-							if (i == 0) {
-								newString += 'onload="buttonNav.scaleImages();" ';
-							}
+							newString += '<div class="pageImg"><img ';
 							if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 								newString += 'alt="' + this.getAttribute("tip") + '" ';
 							}
@@ -112,32 +115,60 @@
 					
 					$thisPanelPage
 						.html(infoString)
-						.attr("tabindex", 2)
-						.hide();
+						.attr("tabindex", 2);
 					
-					var size = [300,300];
-					if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
-						var dimensions = this.getAttribute("movieSize").split(",");
-						if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
-							size = [Number(dimensions[0]), Number(dimensions[1])];
-						}
+					if (i != 0) {
+						$thisPanelPage.hide();
 					}
 					
-					if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
+					if ($thisPanelPage.find(".pageImg").length > 0) {
+						var $img = $thisPanelPage.find(".pageImg img");
+						if (i == 0) {
+							// don't set src of image that's visible until later as panel needs to be fully set up for image scaling to work correctly
+							$img.data("src", eval(url));
+							$img1 = $img;
+						} else {
+							$img.attr("src", eval(url));
+						}
+						
+					} else if ($thisPanelPage.find(".pageSWF").length > 0) {
+						var size = [300,300];
+						if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
+							var dimensions = this.getAttribute("movieSize").split(",");
+							if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+								size = [Number(dimensions[0]), Number(dimensions[1])];
+							}
+						}
+						
 						swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
-						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+						if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+							$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
+						}
 					}
 				});
 			
-			$panelBtn.trigger("click");
-			$btnHolder.buttonset();
-			
-			if (x_currentPage != 0) {
-				buttonNav.sizeChanged();
-			}
 			
 			if (x_browserInfo.mobile == true) {
 				$("#pageContents .panel").prepend($btnHolder);
+			}
+			
+			$btnHolder.buttonset();
+			this.sizeChanged();
+			$panelBtn.attr("checked","checked").button('refresh');
+			
+			
+			// everything's now set up so image on current page can be loaded now
+			if ($img1 != undefined) {
+				$img1
+					.one("load", function() {
+						buttonNav.scaleImages();
+					})
+					.attr("src", $img1.data("src"))
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
 			}
 			
 			x_pageLoaded();
@@ -147,7 +178,7 @@
 		this.scaleImages = function() {
 			var $pageContents = $("#pageContents");
 			// is there an image currently visible?  Has it loaded?  Has it already been scaled to fit this?
-			if ($("#infoHolder .pageImg img:visible").length > 0 && $("#infoHolder .pageImg img:visible")[0].complete == true && $pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
+			if ($("#infoHolder .pageImg img:visible").length > 0 && $pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
 				var $img = $("#infoHolder .pageImg img:visible"),
 					$infoHolder = $("#infoHolder"),
 					firstScale = false;
@@ -157,7 +188,12 @@
 				}
 				$img.data("count", $pageContents.data("count"));
 				
-				x_scaleImg($img, $infoHolder.width(), $infoHolder.height(), true, firstScale);
+				x_scaleImg($img, $img.parent().width(), $infoHolder.height(), true, firstScale);
+				
+				$img.css({
+					"opacity"	:1,
+					"filter"	:'alpha(opacity=100)'
+				});
 			}
 		}
 	}
@@ -179,6 +215,11 @@
 	#pageContents .pageImg {
 		text-align:		center;
 		padding-top:	10px;
+	}
+	
+	#infoHolder .pageImg img {
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 	#btnHolder {

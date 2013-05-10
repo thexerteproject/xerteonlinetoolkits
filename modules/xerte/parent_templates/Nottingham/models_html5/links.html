@@ -10,27 +10,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-			var numCols = x_currentPageXML.getAttribute("cols");;
-			if (numCols < 1) {
-				numCols = 3;
-			}
-			var offset = 0;
-			if ($x_pageHolder.get(0).scrollHeight > $x_pageHolder.height() && x_browserInfo.mobile != true) {
-				offset += 25;
-			}
-			var colWidth;
-			if (x_browserInfo.mobile == false) {
-				colWidth = Math.round(($x_pageHolder.width() - 40 - offset - (numCols * 22) - ((numCols - 1) * 20)) / numCols);
-				//$x_pageHolder width - $x_pageHolder padding - scrollBar width - padding in whiteBorder divs - margin between whiteBorder divs / number of columns
-			} else {
-				colWidth = $x_pageHolder.width() - 40 - 22;
-			}
-			$(".linkBlock").width(colWidth);
 			
-			if (firstLoad == true) {
-				// call this function in every model once everything's loaded
-				x_pageLoaded();
-			}
 		}
 		
 		this.init = function() {
@@ -42,28 +22,42 @@
 			}
 			
 			var $linkBlock = $(".linkBlock:first");
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var $thisLink;
-					if (i != 0) {
-						$thisLink = $linkBlock.clone().appendTo($linkHolder);
-					} else {
-						$thisLink = $linkHolder;
-					}
-					$thisLink.find("h3").html(this.getAttribute("name"));
-					$thisLink.find("p").html(x_addLineBreaks(this.getAttribute("text")));
-					$thisLink.find("a")
-						.html(this.getAttribute("url"))
-						.attr({
-							"href"		:this.getAttribute("url"),
-							"target"	:"_blank"
-							});
-					if (i % numCols == 0) {
-						$thisLink.addClass("clear");
-					}
-				});
+			$(x_currentPageXML).children().each(function(i) {
+				var $thisLink;
+				if (i != 0) {
+					$thisLink = $linkBlock.clone().appendTo($linkHolder);
+				} else {
+					$thisLink = $linkHolder;
+				}
+				$thisLink.find("h3").html(this.getAttribute("name"));
+				$thisLink.find("p").html(x_addLineBreaks(this.getAttribute("text")));
+				$thisLink.find("a")
+					.html(this.getAttribute("url"))
+					.attr({
+						"href"		:this.getAttribute("url"),
+						"target"	:"_blank"
+						});
+				if (i % numCols == 0) {
+					$thisLink.addClass("clear");
+				}
+			});
 			
-			links.sizeChanged(true); // set initial linkBlock width
+			// set column widths
+			if (x_browserInfo.mobile == false) {
+				var numColumns = Number(x_currentPageXML.getAttribute("cols")),
+					spacerWidth = (numColumns + 1) * 2,	// 2% gap between columns
+					paddingWidth = numColumns * 2,		// 1% padding inside panel
+					columnWidth = Math.floor((100 - spacerWidth - paddingWidth) / numColumns);
+				
+				$("#linkHolder .linkBlock")
+					.css({
+						width			:columnWidth + "%",
+						"padding"		:"1%",
+						"margin-left"	:"2%"
+					});
+			}
+			
+			x_pageLoaded();
 		}
 	}
 	
@@ -78,8 +72,8 @@
 		margin-top:	20px;
 	}
 	
-	.panel.linkBlock {
-		margin:		0 10px 20px;
+	#linkHolder .panel.linkBlock {
+		margin:		0 0 20px 0;
 		float:		left;
 	}
 	

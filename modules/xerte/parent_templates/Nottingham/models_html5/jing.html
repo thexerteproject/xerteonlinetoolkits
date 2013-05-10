@@ -10,24 +10,19 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if ($("#pageContents").data("resize") == true) {
+			if (x_currentPageXML.getAttribute("movieSize") == "" || x_currentPageXML.getAttribute("movieSize") == undefined) {
 				$("#pageSWF").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3);
 			}
 		}
 		
 		this.init = function() {
-			var size = ["100%", $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3],
-				$pageContents = $("#pageContents");
+			var size = ["100%", $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3];
 			
-			$pageContents.data("resize", true);
 			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 				if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
 					size = [Number(dimensions[0]), Number(dimensions[1])];
 				}
-				$pageContents.data("resize", false);
-			} else if (x_currentPage == 0) {
-				size = ["100%", 500];
 			}
 			
 			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");

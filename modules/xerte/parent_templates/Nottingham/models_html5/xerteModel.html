@@ -15,9 +15,8 @@
 		
 		this.init = function() {
 			if (x_currentPageXML.getAttribute("modelFile").toLowerCase().indexOf(".html") >= 0) {
-				$("#pageContents")
-					.data("initObject", x_sortInitObject(x_currentPageXML.getAttribute("initObject")))
-					.load(eval(x_currentPageXML.getAttribute("modelFile")));
+				$("#pageContents").load(eval(x_currentPageXML.getAttribute("modelFile")));
+				
 			} else {
 				// if language attributes aren't in xml will have to use english fall back
 				var errorTxt = x_currentPageXML.getAttribute("errorTxt");

@@ -1,96 +1,112 @@
 <script type="text/javascript">
-	// Variable to keep track of the state of Caps and Shift (Caps may be different from system Caps - no way around)
-	var shiftDown = false;
-	var capsOn = false;
+	
+	// ** fixed english text strings needs replacing - is the way John's done this the best way?
+	
+	var language = new function() {
+		var shiftDown = false, // variables to keep track of the state of Caps and Shift (Caps may be different from system Caps - no way around)
+			capsOn = false,
+			$charsHolder = $("#charsHolder"),
+			$specChar = $charsHolder.find(".specChar:first"),
+			$capsButton = $specChar.clone().removeClass("specChar").appendTo($("#charsFooter")).html("Caps: <strong>OFF</strong>");
+		
+		this.init = function() {
+			for (var i=0; i<x_specialChars.length; i++) {
+				var $thisChar;
+				if (i != 0) {
+					$thisChar = $specChar.clone().appendTo($charsHolder);
+				} else {
+					$thisChar = $specChar;
+				}
+				$thisChar.html(x_specialChars[i].lower);
+			}
 
-	var $charsHolder = $("#charsHolder");
-	var $specChar = $charsHolder.find(".specChar:first");
-	var $capsButton = $specChar.clone().removeClass("specChar").appendTo($("#charsFooter")).html("Caps: <strong>OFF</strong>");
-	for (var i=0; i<x_specialChars.length; i++) {
-		var $thisChar;
-		if (i != 0) {
-			$thisChar = $specChar.clone().appendTo($charsHolder);
-		} else {
-			$thisChar = $specChar;
+			$(".specChar")
+				.button()
+				.click(function() {
+					if (x_inputFocus != false) {
+						var textArea = x_inputFocus;
+						
+						// Attempt at handling upper/lower case - SHIFT and CAPS LOCK
+						// Short form of Boolean XOR [(A && !B) || (!A && B)]
+						var specChar	= (shiftDown ? !capsOn : capsOn)
+										? x_specialChars[$(this).index()].upper
+										: x_specialChars[$(this).index()].lower;
+						
+						if (document.selection) {
+							textArea.focus();
+							var sel = document.selection.createRange();
+							sel.text = specChar;
+							textArea.focus();
+						}
+						else if (textArea.selectionStart || textArea.selectionStart === 0) {
+							var startPos = textArea.selectionStart,
+								endPos = textArea.selectionEnd,
+								scrollTop = textArea.scrollTop;
+							
+							textArea.value = textArea.value.substring(0, startPos) + specChar + textArea.value.substring(endPos, textArea.value.length);
+							textArea.focus();
+							textArea.selectionStart = startPos + specChar.length;
+							textArea.selectionEnd = startPos + specChar.length;
+							textArea.scrollTop = scrollTop;
+						}
+						else {
+							textArea.value += specChar;
+							textArea.focus();
+						}
+					}
+				});
+
+			$capsButton
+				.button()
+				.click(function() {
+					language.toggleCaps();
+					language.toggleButtons(capsOn ? !shiftDown : shiftDown);
+				});
+
+			// Event handlers to deal with SHIFT key
+			this.turnOnKeyEvents();
+			
+			$charsHolder.parent().on('dialogclose', function(e) {
+				$(document).off('.language');
+			});
 		}
-		$thisChar.html(x_specialChars[i].lower);
-	}
-
-	$(".specChar")
-		.button()
-		.click(function() {
-			if (x_inputFocus != false) {
-				var textArea = x_inputFocus;
-
-				// Attempt at handling upper/lower case - SHIFT and CAPS LOCK
-				// Short form of Boolean XOR [(A && !B) || (!A && B)]
-				var specChar	= (shiftDown ? !capsOn : capsOn)
-								? x_specialChars[$(this).index()].upper
-								: x_specialChars[$(this).index()].lower;
-
-				if (document.selection) {
-					textArea.focus();
-					var sel = document.selection.createRange();
-					sel.text = specChar;
-					textArea.focus();
-				}
-				else if (textArea.selectionStart || textArea.selectionStart === 0) {
-					var startPos = textArea.selectionStart;
-					var endPos = textArea.selectionEnd;
-					var scrollTop = textArea.scrollTop;
-					textArea.value = textArea.value.substring(0, startPos) + specChar + textArea.value.substring(endPos, textArea.value.length);
-					textArea.focus();
-					textArea.selectionStart = startPos + specChar.length;
-					textArea.selectionEnd = startPos + specChar.length;
-					textArea.scrollTop = scrollTop;
-				}
-				else {
-					textArea.value += specChar;
-					textArea.focus();
+		
+		this.turnOnKeyEvents = function() {
+			// called from xenith.js when dialog reopened
+			$(document).on('keyup.language keydown.language', language.keypressHandler);
+		}
+		
+		this.keypressHandler = function(e) {
+			if (shiftDown != e.shiftKey) {
+				shiftDown = e.shiftKey;
+				language.toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
+			}
+			if (e.keyCode == 20) {
+				if (e.type == "keyup") {
+					language.toggleCaps();
 				}
 			}
-		});
-
-	$capsButton
-		.button()
-		.click(function() {
-			toggleCaps();
-			toggleButtons(capsOn ? !shiftDown : shiftDown);
-	});
-
-	// Event handlers to deal with SHIFT key
-	$(document).bind('keyup keydown', keypressHandler);
-	$charsHolder.parent().bind('dialogclose', function(e) {
-		// Cant unbind until we figure out how to bind again on second opening
-		//$(document).unbind('keyup keydown', keypressHandler);
- 	});
-
-	function keypressHandler(e) {
-		if (shiftDown != e.shiftKey) {
-			shiftDown = e.shiftKey;
-			toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
 		}
-		if (e.keyCode == 20) {
-			if (e.type == "keyup") {
-				toggleCaps();
-			}
+		
+		this.toggleCaps = function() {
+			capsOn = !capsOn;
+			language.toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
+			$capsButton.find("span").html("Caps: <strong>" + (capsOn ? "ON" : "OFF") + "</strong>");
 		}
+		
+		this.toggleButtons = function(uppercase) {
+			$charsHolder.children().each(function () {
+				var charIndex = $(this).index(),
+					$char = $(this).find("span");
+				
+				$char.html(uppercase ? x_specialChars[charIndex].upper : x_specialChars[charIndex].lower);
+			});
+		}
+		
 	}
-
-	function toggleCaps() {
-		capsOn = !capsOn;
-		toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
-		$capsButton.find("span").html("Caps: <strong>" + (capsOn ? "ON" : "OFF") + "</strong>");
-	}
-
-	function toggleButtons(uppercase) {
-		$charsHolder.children().each(function () {
-			var charIndex = $(this).index();
-			var $char = $(this).find("span");
-		    $char.html(uppercase ? x_specialChars[charIndex].upper : x_specialChars[charIndex].lower);
-		});
-	}
-
+	
+	language.init();
+	
 </script>
 
 <style type="text/css">
@@ -117,4 +133,7 @@
 <div id="charsHolder">
 	<button class="specChar"/>
 </div>
-<div id="charsFooter"><p>Use CAPS and SHIFT</p></div>
+
+<div id="charsFooter">
+	<p>Use CAPS and SHIFT</p>
+</div>

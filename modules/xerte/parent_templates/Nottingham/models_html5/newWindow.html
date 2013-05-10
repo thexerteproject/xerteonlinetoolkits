@@ -16,12 +16,29 @@
 		this.init = function() {
 			$("#textHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</p><p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
 			
-			$("#pageImg").attr({
-				"src":	eval(x_currentPageXML.getAttribute("previewImage")),
-				"alt":	x_currentPageXML.getAttribute("tip")
+			$("#pageImg")
+				.one("load", function() {
+					var imgMaxW = 500, // desktop / tablet
+						imgMaxH = 400;
+					if (x_browserInfo.mobile == true) {
+						imgMaxW = 250; // mobile
+						imgMaxH = 250;
+					}
+					
+					x_scaleImg(this, imgMaxW, imgMaxH);
+					x_pageLoaded();
+				})
+				.attr({
+					"src": eval(x_currentPageXML.getAttribute("previewImage")),
+					"alt":	x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
 				});
 			
-			$("#pageContents .newWindowLink").bind("click", function() {
+			$("#pageContents .newWindowLink").on("click", function() {
 				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
 					var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
 					popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
@@ -32,13 +49,6 @@
 				}
 			});
 		}
-	}
-	
-	var imgMaxW = 500, // desktop / tablet
-		imgMaxH = 400;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW = 250; // mobile
-		imgMaxH = 250;
 	}
 	
 	newWindow.init();
@@ -62,7 +72,7 @@
 	<div class="mobileAlign">
 		<div id="imgHolder" class="panel inline x_floatRight">
 			<a class="newWindowLink">
-				<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH); x_pageLoaded();" />
+				<img id="pageImg" style="visibility: hidden" />
 			</a>
 		</div>
 	</div>
