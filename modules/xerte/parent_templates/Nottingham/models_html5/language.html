@@ -1,15 +1,23 @@
 <script type="text/javascript">
 	
-	// ** fixed english text strings needs replacing - is the way John's done this the best way?
-	
 	var language = new function() {
 		var shiftDown = false, // variables to keep track of the state of Caps and Shift (Caps may be different from system Caps - no way around)
 			capsOn = false,
+			langStrings = new Object(),
 			$charsHolder = $("#charsHolder"),
 			$specChar = $charsHolder.find(".specChar:first"),
-			$capsButton = $specChar.clone().removeClass("specChar").appendTo($("#charsFooter")).html("Caps: <strong>OFF</strong>");
+			$capsButton,
+			$charsFooter = $("#charsFooter");
 		
 		this.init = function() {
+			// get language strings for dialog text
+			langStrings.on = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "on", "*ON");
+			langStrings.off = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "off", "*OFF");
+			langStrings.caps = x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "caps", "*Caps");
+			
+			$charsFooter.html("<p>" + x_getLangInfo(x_languageData.find("kbLanguage").find("dialog")[0], "instruction", "*Use CAPS and SHIFT") + "</p>");
+			$capsButton = $specChar.clone().removeClass("specChar").appendTo($charsFooter).html(langStrings.caps + ": <strong>" + langStrings.off + "</strong>");
+			
 			for (var i=0; i<x_specialChars.length; i++) {
 				var $thisChar;
 				if (i != 0) {
@@ -91,7 +99,7 @@
 		this.toggleCaps = function() {
 			capsOn = !capsOn;
 			language.toggleButtons(capsOn ? !shiftDown : shiftDown); // Boolean XOR again
-			$capsButton.find("span").html("Caps: <strong>" + (capsOn ? "ON" : "OFF") + "</strong>");
+			$capsButton.find("span").html(langStrings.caps + ": <strong>" + (capsOn ? langStrings.on : langStrings.off) + "</strong>");
 		}
 		
 		this.toggleButtons = function(uppercase) {
@@ -134,6 +142,4 @@
 	<button class="specChar"/>
 </div>
 
-<div id="charsFooter">
-	<p>Use CAPS and SHIFT</p>
-</div>
+<div id="charsFooter"></div>
