@@ -62,11 +62,11 @@ function show_preview_code($row){
 
 		</script>
 		
-		<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>
-    
+		<!--<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>-->
+	
 	</head>
 
-	<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable">
+	<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable" onunload="window.opener.innerWidth +=2;window.opener.innerWidth -=2;">
 		
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
@@ -84,7 +84,7 @@ function show_preview_code($row){
 					</button>
 
 					<div class="nav-collapse collapse">
-						<ul class="nav"id="nav">
+						<ul class="nav" id="nav">
 							<!--<li class=""><a href="./index.html">Home</a></li>-->
 						</ul>
 					</div>
@@ -147,7 +147,7 @@ function show_preview_code($row){
 		<!--initialise the application specific code-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/application.js"></script>
 		
-	<script type="text/javascript" language="JavaScript">
+	<script type="text/javascript">
 	
 	
 	<?PHP
