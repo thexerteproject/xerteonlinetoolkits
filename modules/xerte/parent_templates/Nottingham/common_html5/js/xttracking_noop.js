@@ -99,5 +99,6 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate()
 {
-
+    window.opener.innerWidth+=3;
+    window.opener.innerWidth-=3;
 }
