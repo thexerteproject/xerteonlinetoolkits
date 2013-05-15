@@ -51,10 +51,7 @@
 			
 			this.createQuiz();
 			
-			if (x_currentPage != 0) {
-				hangman.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
@@ -119,7 +116,7 @@
 			
 			$qCount.html(qNoTxt.replace("{i}", currentWord + 1).replace("{n}", words.length));
 			
-			$(document).bind("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
+			$(document).on("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
 				var charCode = e.charCode || e.keyCode;
 				var char = String.fromCharCode(charCode).toLowerCase();
 				
@@ -136,8 +133,8 @@
 							if (currentWord < words.length - 1) {
 								$nextBtn.show();
 							}
-							$(this).unbind("keypress.pageEvent");
-							$x_pageHolder.unbind("touchend.pageEvent");
+							$(this).off("keypress.pageEvent");
+							$x_pageHolder.off("touchend.pageEvent");
 							$("#textHolder input").val("").blur();
 						}
 						
@@ -158,8 +155,8 @@
 									$nextBtn.show();
 								}
 								
-								$(this).unbind("keypress.pageEvent");
-								$x_pageHolder.unbind("touchend.pageEvent");
+								$(this).off("keypress.pageEvent");
+								$x_pageHolder.off("touchend.pageEvent");
 								$("#textHolder input").val("").blur();
 								
 								$clue.find(".dash, .space").each(function(i) {
@@ -174,7 +171,7 @@
 			});
 			
 			if (x_browserInfo.touchScreen == true) {
-				$x_pageHolder.bind("touchend.pageEvent", function() {
+				$x_pageHolder.on("touchend.pageEvent", function() {
 					$("#textHolder input").focus();
 				});
 			}

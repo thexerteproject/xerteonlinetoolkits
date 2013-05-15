@@ -136,9 +136,7 @@
 					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 				});
 			
-			if (x_currentPage != 0) {
-				cMcq.sizeChanged();
-			}
+			this.sizeChanged();
 			
 			if (x_params.authorSupport != "true") {
 				$("#feedback").remove();

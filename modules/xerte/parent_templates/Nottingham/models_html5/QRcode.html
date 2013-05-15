@@ -3,8 +3,6 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var QRcode = new function() {
-		var	imgMaxW,
-			imgMaxH;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -40,21 +38,31 @@
 				}
 			}
 			
-			// image scaling
-			this.imgMaxW = 500; // desktop / tablet
-			this.imgMaxH = 400;
-			if (x_browserInfo.mobile == true) {
-				this.imgMaxW = 250; // mobile
-				this.imgMaxH = 250;
-			}
-			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
-				this.imgMaxH -= x_audioBarH;
-			}
 			
-			$pageImg = $("#pageImg");
-			$pageImg.attr({
-				"src":	"http://splashurl.net/qr.png?q=" + pastedurl + "&s=12",
-				"alt":	x_currentPageXML.getAttribute("tip")
+			$("#pageImg")
+				.one("load", function() {
+					// image scaling
+					var imgMaxW = 500, // desktop / tablet
+						imgMaxH = 400;
+					if (x_browserInfo.mobile == true) {
+						imgMaxW = 250; // mobile
+						imgMaxH = 250;
+					}
+					if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+						imgMaxH -= x_audioBarH;
+					}
+					
+					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					QRcode.loadAudio(true);
+				})
+				.attr({
+					"src":	"http://splashurl.net/qr.png?q=" + pastedurl + "&s=12",
+					"alt":	x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
 				});
 		}
 		
@@ -96,7 +104,7 @@
 	<div id="imgHolder" class="mobileAlign">
 		<div class="panel inline">
             <div id="shorturltodisplay"></div>
-			<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, QRcode.imgMaxW, QRcode.imgMaxH, true, true); QRcode.loadAudio(true);" />
+			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
 		</div>
 	</div>

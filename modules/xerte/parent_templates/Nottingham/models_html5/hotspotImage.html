@@ -32,9 +32,34 @@
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
 			$img
+				.css({ // stops flicker on 1st load of image
+						"opacity"	:0,
+						"filter"	:'alpha(opacity=0)'
+				})
+				.one("load", function() {
+					var imgMaxW = 400,	imgMaxH = 450;
+					if (x_browserInfo.mobile == true) {
+						imgMaxW = 250; // mobile
+						imgMaxH = 250;
+					}
+					
+					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					
+					$(this).css({ // stops flicker on 1st load of image
+						"opacity"	:1,
+						"filter"	:'alpha(opacity=100)'
+					});
+					
+					hotspotImage.imgLoaded();
+				})
 				.attr({
 					"src"	:eval(x_currentPageXML.getAttribute("url")),
 					"alt"	:x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
 				});
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
@@ -79,7 +104,6 @@
 		
 		this.imgLoaded = function() {
 			// position text correctly
-			//var padding = parseInt($("#image").parent().css("padding-left"));
 			var marginW = $img.width() + (padding * 4);
 			if (x_currentPageXML.getAttribute("align") == "Left") {
 				$("#textContents").css("margin-right", marginW + "px");
@@ -171,12 +195,6 @@
 		}
 	}
 	
-	var imgMaxW = 400,	imgMaxH = 450;
-	if (x_browserInfo.mobile == true) {
-		imgMaxW = 250; // mobile
-		imgMaxH = 250;
-	}
-	
 	hotspotImage.init();
 	
 </script>
@@ -223,7 +241,7 @@
 <div id="pageContents">
 	
 	<div id="imageHolder" class="panel inline">
-		<img id="image" onload="x_scaleImg(this, imgMaxW, imgMaxH, true, true); hotspotImage.imgLoaded();" />
+		<img id="image" />
 		<div id="hsHolder"></div>
 		<div id="btns">
 			<button id="prevHS"></button>

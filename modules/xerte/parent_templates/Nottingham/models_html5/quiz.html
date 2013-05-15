@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var quiz = new function() {
@@ -7,7 +7,7 @@
 			currentQ,
 			qNoTxt,
 			myProgress;
-	
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.startQs();
@@ -168,7 +168,6 @@
 		}
 
         this.showResults = function() {
-
             // last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
@@ -215,9 +214,10 @@
 		}
 		
 		this.init = function() {
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			var $splitScreen = $("#pageContents .splitScreen");
-			var $textHolder = $("#textHolder");
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder = $("#textHolder");
+			
 			if (panelWidth == "Full") {
 				$("#infoHolder .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -252,8 +252,8 @@
 			
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				$textHolder.append('<div class="panel inline"><div id="pageVideo"></div></div>');
-				var $pageVideo = $("#pageVideo");
-				var videoDimensions = [320,240]; // default video size
+				var $pageVideo = $("#pageVideo"),
+					videoDimensions = [320,240]; // default video size
 				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 					if (dimensions[0] != 0 && dimensions[1] != 0) {
@@ -328,22 +328,20 @@
 				.click(function() {
 					var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 					
-					var selected = $("#optionHolder input:checked");
-					var optionFeedback = "";
-					var correct = true;
-                    var l_options = [];
-                    var l_answer = [];
-                    var l_feedback = [];
-
+					var selected = $("#optionHolder input:checked"),
+						optionFeedback = "",
+						correct = true,
+						l_options = [],
+						l_answer = [],
+						l_feedback = [];
+					
                     var generalFeedback = "";
-                    if (x_currentPageXML.getAttribute("feedback") != undefined) {
-                        generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
-                    }
-
+					
                         // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
-                        var optionIndex = $(selected[i]).index()/2;
-						var selectedOption = $(currentQuestion).children()[optionIndex];
+                        var optionIndex = $(selected[i]).index()/2,
+							selectedOption = $(currentQuestion).children()[optionIndex];
+						
 						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback"))  + "</p>";
 						if (correct != false && selectedOption.getAttribute("correct") == "true") {
 							correct = true;
@@ -443,11 +441,7 @@
 				});
 			
 			this.startQs();
-			
-			if (x_currentPage != 0) {
-				this.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 	}

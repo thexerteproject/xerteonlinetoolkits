@@ -16,7 +16,10 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
 		};
 		
 		this.init = function() {
@@ -53,12 +56,9 @@
 				timeout: 5000
 			});
 
-			$panel.addClass("x_floatRight");
-			$panel.addClass("width60");
-
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-			// call this function in every model once everything's loaded
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 
@@ -139,21 +139,27 @@
 	#loadingSpinner p {
 		font-weight:	bold;
 	}
+	
+	#youtuberssHolder .panel {
+		overflow:	auto;
+	}
 
 </style>
 
 <div id="pageContents">
-
-	<div id="youtuberssHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
-			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-			<div id="headerHolder"></div>
-			<div id="resultsHolder"></div>
+	
+	<div class="splitScreen medium">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div id="youtuberssHolder" class="right">
+			<div class="panel">
+				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+				<div id="headerHolder"></div>
+				<div id="resultsHolder"></div>
+			</div>
 		</div>
-	</div>
-
-	<div id="textHolder">
-
+		
 	</div>
 
 </div>

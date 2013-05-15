@@ -73,10 +73,7 @@
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
 				.hide();
 			
-			if (x_currentPage != 0) {
-				buttonQuestion.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 	}

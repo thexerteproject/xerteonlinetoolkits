@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
@@ -53,7 +53,9 @@
 			// feedbackBtnWidth attribute not used as button will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
+				$textHolder = $("#textHolder"),
+				$prompt = $("#prompt");
+			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -92,14 +94,27 @@
 				if (url.split('.').pop().slice(0, -1) == "swf") {
 					promptString += '<div class="centerAlign"><div id="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 				} else {
-					promptString += '<div class="panelImg"><img src="' + eval(url) + '" onload="x_scaleImg(this, 200, 200, true, true);" ';
+					promptString += '<div class="panelImg"><img ';
 					if (x_currentPageXML.getAttribute("tooltip") != undefined && x_currentPageXML.getAttribute("tooltip") != "") {
 						promptString += 'alt="' + x_currentPageXML.getAttribute("tooltip") + '" ';
 					}
 					promptString += '/></div>';
 				}
 			}
-			$("#prompt").html(promptString);
+			$prompt.html(promptString);
+			
+			if ($prompt.find(".panelImg").length > 0) {
+				$prompt.find(".panelImg img")
+					.one("load", function() {
+						x_scaleImg(this, 200, 200, true, true);
+					})
+					.attr("src", eval(url))
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
+			}
 			
 			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
 				swfobject.embedSWF(eval(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
@@ -139,11 +154,8 @@
 				modelAnswer.saveData();
 			});
 			
-			if (x_currentPage != 0) {
-				modelAnswer.sizeChanged();
-			}
-			
-			modelAnswer.saveData();
+			this.sizeChanged();
+			this.saveData();
 			x_pageLoaded();
 		}
 		

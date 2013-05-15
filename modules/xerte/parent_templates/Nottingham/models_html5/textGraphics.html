@@ -3,36 +3,25 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textGraphics = new function() {
+		var $pageContents;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
 			this.loadAudio();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $pageContents = $("#pageContents"),
-				firstLoad = $pageContents.data("firstLoad"),
-				$pageImg = $("#pageImg");
+			var $pageImg = $("#pageImg");
 			
 			if (x_currentPageXML.getAttribute("imagesize") == "full screen") { // set image size for full screen
 				var hidePanel = $pageContents.data("hidePanel");
-				if ($("#pageContents").data("firstLoad") == true && x_currentPage == 0) {
-					if (hidePanel == "true") {
-						imgMaxW = $x_pageHolder.width() - 20;
-						imgMaxH = $x_pageHolder.height() - 20;
-					} else {
-						var offset = this.calculateOffset();
-						imgMaxW = $x_pageHolder.width() - offset[0];
-						imgMaxH = $x_pageHolder.height() - offset[1];
-					}
+				if (hidePanel == "true") {
+					x_scaleImg($pageImg, $x_pageHolder.width() - 20, $x_pageHolder.height() - 20, true, false);
 				} else {
-					if (hidePanel == "true") {
-						x_scaleImg($pageImg, $x_pageHolder.width() - 20, $x_pageHolder.height() - 20, true, false);
-					} else {
-						var offset = this.calculateOffset();
-						x_scaleImg($pageImg, $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
-					}
-					
+					var offset = this.calculateOffset();
+					x_scaleImg($pageImg, $x_pageHolder.width() - offset[0], $x_pageHolder.height() - offset[1], true, false);
 				}
 				if ($("#transcriptHolder").length > 0) {
 					$("#transcript").width($pageImg.width());
@@ -45,20 +34,26 @@
 				}
 			}
 			
-			if (firstLoad != true) {
-				// reload magnifier
-				textGraphics.setUpMagnifier();
-			} else {
-				$pageContents.data("firstLoad", false);
-			}
+			textGraphics.setUpMagnifier(); // reload magnifier
 		}
 		
 		this.init = function() {
+			$pageContents = $("#pageContents");
+			
 			var $textHolder	= $("#textHolder"),
-				$panel		= $("#pageContents .panel");
+				$panel		= $("#pageContents .panel"),
+				imageSize	= x_currentPageXML.getAttribute("imagesize"),
+				transcriptTxt = x_currentPageXML.getAttribute("transcript"),
+				hidePanel	= x_currentPageXML.getAttribute("hidePanel");
+				
+			if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
+				hidePanel = "false";
+			}
+			$pageContents.data("hidePanel", hidePanel);
+			
 			
 			// text align
-			if (x_currentPageXML.getAttribute("imagesize") != "full screen") {
+			if (imageSize != "full screen") {
 				var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
 				if (textAlign == "Top" || textAlign == "Bottom") {
 					if (textAlign == "Top") {
@@ -74,6 +69,7 @@
 				$("#imgHolder").addClass("centerAlign");
 				$textHolder.remove();
 			}
+			
 			
 			// transcript stuff
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
@@ -115,9 +111,48 @@
 			}
 			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			$("#pageImg").attr({
-				"src":	eval(x_currentPageXML.getAttribute("url")),
-				"alt":	x_currentPageXML.getAttribute("tip")
+			
+			
+			// image scaling
+			var scale = true,
+				imgMaxW,
+				imgMaxH;
+			
+			if (imageSize == "actual size") {
+				scale = false;
+			} else if (imageSize == "full screen") {
+				if (parseInt($x_pageHolder.css("margin-top")) != 0) {
+					if (hidePanel == "true") {
+						imgMaxW = $x_pageHolder.width() - 20;
+						imgMaxH = $x_pageHolder.height() - 20;
+					} else {
+						var offset = textGraphics.calculateOffset();
+						imgMaxW = $x_pageHolder.width() - offset[0];
+						imgMaxH = $x_pageHolder.height() - offset[1];
+					}
+				}
+			} else { // auto
+				imgMaxW = 500; // desktop / tablet
+				imgMaxH = 400;
+				if (x_browserInfo.mobile == true) {
+					imgMaxW = 250; // mobile
+					imgMaxH = 250;
+				}
+			}
+			
+			$("#pageImg")
+				.one("load", function() {
+					x_scaleImg(this, imgMaxW, imgMaxH, scale, true);
+					textGraphics.imgLoaded();
+				})
+				.attr({
+					"src":	eval(x_currentPageXML.getAttribute("url")),
+					"alt":	x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+					if (this.complete) {
+						$(this).trigger("load");
+					}
 				});
 		}
 		
@@ -173,47 +208,6 @@
 		}
 	}
 	
-	var $pageContents = $("#pageContents");
-	
-	// image scaling
-	var imageSize = x_currentPageXML.getAttribute("imagesize"), // auto|actual size|full screen
-		hidePanel = x_currentPageXML.getAttribute("hidePanel"),
-		transcriptTxt = x_currentPageXML.getAttribute("transcript");
-	
-	if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
-		hidePanel = "false";
-	}
-	
-	$pageContents.data({
-		"firstLoad":	true,
-		"hidePanel":	hidePanel
-	});
-	
-	var scale = true,
-		imgMaxW,	imgMaxH;
-	
-	if (imageSize == "actual size") {
-		scale = false;
-	} else if (imageSize == "full screen") {
-		if (parseInt($x_pageHolder.css("margin-top")) != 0) {
-			if (hidePanel == "true") {
-				imgMaxW = $x_pageHolder.width() - 20;
-				imgMaxH = $x_pageHolder.height() - 20;
-			} else {
-				var offset = textGraphics.calculateOffset();
-				imgMaxW = $x_pageHolder.width() - offset[0];
-				imgMaxH = $x_pageHolder.height() - offset[1];
-			}
-		}
-	} else { // auto
-		imgMaxW = 500; // desktop / tablet
-		imgMaxH = 400;
-		if (x_browserInfo.mobile == true) {
-			imgMaxW = 250; // mobile
-			imgMaxH = 250;
-		}
-	}
-	
 	textGraphics.init();
 	
 </script>
@@ -248,7 +242,7 @@
 	
 	<div id="imgHolder" class="mobileAlign">
 		<div class="panel inline">
-			<img id="pageImg" style="visibility: hidden" onload="x_scaleImg(this, imgMaxW, imgMaxH, scale, true); textGraphics.imgLoaded();" />
+			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
 			<div id="transcriptHolder">
 				<div id="transcript"></div>

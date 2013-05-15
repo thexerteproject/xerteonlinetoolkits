@@ -199,10 +199,7 @@
 				$targetHolder.find(".target").css("background-image", "url('" + x_templateLocation + "common_html5/arrow.png')");
 			}
 			
-			if (x_currentPage != 0) {
-				timeline.sizeChanged();
-			}
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		

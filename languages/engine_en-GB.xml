@@ -30,6 +30,7 @@
   
   <kbLanguage label="Special Characters" description="A list of buttons which add special characters to text areas">
 	  <closeButton label="" description="Close special character list button"/>
+	  <dialog instruction="Use CAPS and SHIFT" on="ON" off="OFF" caps="Caps"/>
   </kbLanguage>
   
   <textToSpeech label="null" description="Text to Speech"/>

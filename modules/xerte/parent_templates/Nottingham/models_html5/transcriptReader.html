@@ -3,10 +3,16 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var transcriptReader = new function() {
+		var $pageContents,
+			$infoHolder;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#infoHolder").scrollTop(0);
-			$("#infoHolder .highlight").removeClass("highlight");
+			$pageContents	= $("#pageContents");
+			$infoHolder		= $("#infoHolder");
+			
+			$infoHolder.scrollTop(0);
+			$infoHolder.find(".highlight").removeClass("highlight");
 			this.loadAudio();
 		}
 		
@@ -15,10 +21,11 @@
 			if (x_browserInfo.mobile == false) {
 				var $panel = $("#pageContents .panel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#infoHolder").height($panel.height() - x_audioBarH);
+				$infoHolder.height($panel.height() - x_audioBarH);
 			}
-			$("#infoHolder").scrollTop(0);
-			$("#infoHolder div").each(function() {
+			
+			$infoHolder.scrollTop(0);
+			$infoHolder.find("div").each(function() {
 				var $caption = $(this);
 				$caption.data("scrollPos", $caption.position().top);
 			});
@@ -26,9 +33,15 @@
 		}
 		
 		this.init = function() {
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			$pageContents = $("#pageContents");
+			$infoHolder = $("#infoHolder");
+			
+			var captions = new Array(),
+				panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			
+			
 			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
+				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
 			} else {
 				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -41,22 +54,27 @@
 				} 
 			}
 			
-			var $infoHolder = $("#infoHolder"),
-				captions = new Array();
-			
 			$(x_currentPageXML).children().each(function(){
 				var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>").data("synch", $(this).attr("synch"));
 				$infoHolder.append($caption);
-				//$caption.data("scrollPos", $caption.position().top);
+				
+				$caption.click(function() {
+					$infoHolder.find(".highlight").removeClass("highlight");
+					
+					var $this = $(this);
+					$this.addClass("highlight");
+					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+					$pageContents.data("mediaElement").setCurrentTime($this.data("synch"));
+				});
+				
 				captions.push($caption[0]);
 			});
-			$("#pageContents").data("captions", captions);
 			
-			if (x_currentPage != 0) {
-				setTimeout(function () { // audio won't load properly without a delay here
-					transcriptReader.sizeChanged();
-				},1);
-			}
+			$pageContents.data("captions", captions);
+			
+			setTimeout(function() { // audio won't load properly without a delay here
+				transcriptReader.sizeChanged();
+			}, 1);
 		}
 		
 		this.loadAudio = function() {
@@ -66,15 +84,18 @@
 				source		:soundFile,
 				pageName	:"transcriptReader"
 			});
-			if ($("#pageContents").data("loaded") != true) {
-				$("#pageContents").data("loaded", true);
+			if ($pageContents.data("loaded") != true) {
+				$pageContents.data("loaded", true);
 				x_pageLoaded(); // call this function in every model once everything's loaded
 			}
 		}
 		
 		// function called from mediaPlayer.js when audio player has been set up
 		this.mediaFunct = function(mediaElement) {
-			var $captions = $($("#pageContents").data("captions"));
+			var $captions = $($pageContents.data("captions"));
+			
+			$pageContents.data("mediaElement", mediaElement);
+			
 			mediaElement.addEventListener("timeupdate", function(e) {
 				var currentTime = mediaElement.currentTime;
 				$captions.each(function(){
@@ -82,7 +103,7 @@
 					if (currentTime > $thisCaption.data("synch")) {
 						$("#infoHolder .highlight").removeClass("highlight");
 						$thisCaption.addClass("highlight");
-						$("#infoHolder").scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+						$infoHolder.scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					} else {
 						$thisCaption.removeClass("highlight");
 					}

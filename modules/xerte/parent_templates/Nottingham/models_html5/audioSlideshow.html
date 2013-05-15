@@ -64,9 +64,7 @@
 			
 			// erase attribute not used - old slides are always hidden
 			
-			if (x_currentPage != 0) { // if it's the 1st page this is called by xenith.js after size of x_pageHolder is set
-				this.sizeChanged();
-			}
+			this.sizeChanged();
 		}
 		
 		this.createSlides = function() {
@@ -135,10 +133,10 @@
 			
 			// has img already been scaled to fit this size screen?
 			if ($pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
-				var $img = $("#infoHolder .pageImg img:visible");
-				var $infoHolder = $("#infoHolder");
+				var $img = $("#infoHolder .pageImg img:visible"),
+					$infoHolder = $("#infoHolder"),
+					firstScale = false;
 				
-				var firstScale = false;
 				if ($img.data("count") == undefined) {
 					firstScale = true;
 				}
@@ -170,8 +168,9 @@
 		this.mediaFunct = function(mediaElement) {
 			var $slides = $("#infoHolder .slide");
 			mediaElement.addEventListener("timeupdate", function(e) {
-				var currentTime = mediaElement.currentTime;
-				var $visibleSlide;
+				var currentTime = mediaElement.currentTime,
+					$visibleSlide;
+				
 				$slides.each(function(){
 					var $thisSlide = $(this);
 					if (currentTime > $thisSlide.data("synch")) {

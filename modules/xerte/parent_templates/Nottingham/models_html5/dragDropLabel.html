@@ -7,8 +7,7 @@
 			labelTxt2,
 			labelTxt3,
 			targetTxt1,
-			targetTxt2,
-			firstLoad;
+			targetTxt2;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -16,7 +15,7 @@
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
+		this.sizeChanged = function(firstLoad) {
 			var $panel = $("#mainPanel");
 			if (x_browserInfo.mobile == false) {
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
@@ -55,8 +54,6 @@
 			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
 			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 			
-			firstLoad = true;
-			
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
 			var tryTxt = x_currentPageXML.getAttribute("tryAgainTxt");
@@ -66,6 +63,8 @@
 			$("#pageContents").data("tryTxt", tryTxt);
 			
 			if (x_currentPageXML.getAttribute("align") == "Right") {
+				var $splitScreen = $("#pageContents .splitScreen");
+				
 				$("#textHolder")
 					.removeClass("left")
 					.addClass("right")
@@ -73,14 +72,12 @@
 				$("#dragDropHolder")
 					.removeClass("right")
 					.addClass("left");
-				$("#pageContents .splitScreen")
+				$splitScreen
 					.removeClass("medium")
 					.addClass("large");
 			}
 			
-			if (x_currentPage != 0) {
-				this.sizeChanged();
-			}
+			this.sizeChanged(true);
 		}
 		
 		this.createLabels = function() {
@@ -108,7 +105,7 @@
 					tempData.splice(labelNum, 1);
 				});
 			
-			// set up drag events (mouse and keybaord controlled)
+			// set up drag events (mouse and keyboard controlled)
 			$("#dragDropHolder .label")
 				.draggable({
 					containment:	"#dragDropHolder",
@@ -178,15 +175,24 @@
 					})
 				.disableSelection();
 			
-			// image can load now as we know what its max dimensions are
 			if ($("#image").attr("src") == undefined) {
-				$("#image").attr({
-					"src"	:eval(x_currentPageXML.getAttribute("url")),
-					"alt"	:x_currentPageXML.getAttribute("tip")
-				});
-			
-			// labels are being reset - make sure targets will still accept them being dropped
+				// image can load now as we know what its max dimensions are
+				$("#image")
+					.one("load", function() {
+						dragDropLabel.imgLoaded();
+					})
+					.attr({
+						"src"	:eval(x_currentPageXML.getAttribute("url")),
+						"alt"	:x_currentPageXML.getAttribute("tip")
+					})
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
+				
 			} else {
+				// labels are being reset - make sure targets will still accept them being dropped
 				$("#targetHolder .target")
 					.each(function() {
 						var $this = $(this);
@@ -380,7 +386,7 @@
 		border-top:		1px solid gray;
 	}
 	
-	#dragDropHolder {
+	#mainPanel {
 		position:	relative;
 	}
 	
@@ -431,7 +437,7 @@
 		
 		<div id="dragDropHolder" class="right">
 			<div id="mainPanel" class="panel">
-				<img id="image" onload="dragDropLabel.imgLoaded();" />
+				<img id="image" />
 				<div id="targetHolder"></div>
 				<div id="labelHolder"></div>
 			</div>
