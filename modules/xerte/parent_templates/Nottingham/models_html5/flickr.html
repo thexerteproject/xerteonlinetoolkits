@@ -261,6 +261,9 @@
 
         this.displayPicture = function(source, info, size) {
 			var imageTxt = x_currentPageXML.getAttribute("imageTxt");
+			if (imageTxt == undefined) {
+				imageTxt = "Image {i} of {n} images";
+			}
             imageTxt = imageTxt.replace("{i}", x_pageInfo[x_currentPage].savedData.pictureIndex + 1);
             imageTxt = imageTxt.replace("{n}", x_pageInfo[x_currentPage].savedData.pictureFeed.length);
             $("#headerHolder").html(imageTxt);
