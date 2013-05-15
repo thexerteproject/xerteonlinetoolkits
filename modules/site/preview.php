@@ -62,8 +62,8 @@ function show_preview_code($row){
 
 		</script>
 		
-		<!--<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>-->
-	
+		<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>
+		
 	</head>
 
 	<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable" onunload="window.opener.innerWidth +=2;window.opener.innerWidth -=2;">
