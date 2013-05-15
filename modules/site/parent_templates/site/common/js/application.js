@@ -5,8 +5,6 @@ var data;
 
 function init(){	
 
-	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
 	loadContent();
 };
 
