@@ -48,7 +48,7 @@ if(is_numeric($_POST['template_id'])){
 
         //$row_root = mysql_fetch_array($query_for_root_folder_response); 
 
-        $query_for_template_type_id = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id  AND template_id = '" .  mysql_real_escape_string($_POST['template_id']) . "'";
+        $query_for_template_type_id = "select otd.template_type_id, otd.template_name, otd.template_framework, td.extra_flags from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td where otd.template_type_id = td.template_type_id  AND td.template_id = '" .  mysql_real_escape_string($_POST['template_id']) . "'";
 
         $query_for_template_type_id_response = mysql_query($query_for_template_type_id);	
 
@@ -58,7 +58,7 @@ if(is_numeric($_POST['template_id'])){
          * create the new template record in the database
          */
 
-        $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"Copy of " . mysql_real_escape_string($_POST['template_name']) . "\")";
+        $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"Copy of " . mysql_real_escape_string($_POST['template_name']) . "\", \"" . mysql_real_escape_string($row_template_type['extra_flags']) . "\")";
 
         if(mysql_query($query_for_new_template)){
 
