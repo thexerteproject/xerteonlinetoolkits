@@ -13,7 +13,7 @@ if(is_user_admin()){
     {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($authmech->canManageUser($jsscript))
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
         echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
         echo "<div id=\"manage_auth_users\">";
