@@ -1,12 +1,12 @@
 <?php
 /**
  * Requires a db table called user which contains fields called firstname, surname, password and username.
- * 
+ *
  * CREATE TABLE user ( id int(11) primary key auto_increment, username varchar(50) not null, password varchar(50) not null, firstname varchar(50) not null, surname varchar(50) not null) ;
- * 
+ *
  * Pass attention to the _hashAndSalt() method below - if you add any users into the above database, you will need to either use the same salt as defined below, or modify this code.
  * Furthermore you will need to ensure your passwords in the DB are hashed using the same mechanism (currently sha1).
- * 
+ *
  * @see Xerte_Authentication_Abstract
  */
 
@@ -32,7 +32,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         return null;
     }
 
-    
+
     public function getSurname()
     {
         if (isset($this->_record['surname'])) {
@@ -52,7 +52,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
         if (empty($x)) {
             // Create the user table
-            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  PRIMARY KEY (`iduser`) )");
+            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
                 $this->addError("Does the user table exist?");
