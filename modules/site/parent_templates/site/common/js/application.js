@@ -78,7 +78,7 @@ function loadLibraries(){
 		for (var i = 0; i< libCount; i++){
 		
 			$.getScript(libs[i], function(){
-				
+			
 				loaded++;
 				
 				if (loaded == libs.length){
@@ -187,6 +187,7 @@ function parseContent(index){
 			}
 			
 			if (this.nodeName == 'script'){
+			
 				section.append( '<script>' + $(this).text() + '</script>');
 			}
 			
