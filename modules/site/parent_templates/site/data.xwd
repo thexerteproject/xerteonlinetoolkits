@@ -7,7 +7,9 @@
 		<header type="Media" optional="true" label="Header Image"/>
 		<headerColour type="TextInput" optional="true" label="Header Colour"/>
 		<headerTextColour type="TextInput" optional="true" label="Header Text Colour"/>
-
+		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="200" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
+		<stylesheet type="Media" optional="true" label="Stylesheet"/>
+		
 		<newNodes>
 			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
 		</newNodes>
@@ -48,7 +50,7 @@
 		
 	</text>
 	
-	<script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" taskList="false">
+	<script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" divider="true">
 	
 		<name type="TextInput" label="Name"/>
 		
