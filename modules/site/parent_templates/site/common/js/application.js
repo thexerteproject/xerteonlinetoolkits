@@ -49,56 +49,108 @@ function loadContent(){
 				
 			}
 			
-			//add all the pages to the pages menu: this links bak to the same page
-			$(data).find('page').each( function(index, value){
-			
-				$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
+			//step one - libraries?
+			loadLibraries();
+						
+		}
+	
+	});
+
+}
+
+function loadLibraries(){
+
+	//load stylesheet and libraries...
+	
+	if ( $(data).find('learningObject').attr('stylesheet') != undefined){
+	
+		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
+	
+	}
+
+	if ( $(data).find('learningObject').attr('libs') != undefined){
+	
+		var libs = $(data).find('learningObject').attr('libs').split('||');
+		
+		var libCount = libs.length;
+		var loaded = 0;
+		
+		for (var i = 0; i< libCount; i++){
+		
+			$.getScript(libs[i], function(){
 				
-			});
-			
-			//set the header image, if defined
-			if ($(data).find('learningObject').attr('header') != undefined){
-			
-				$('#overview').css({filter:''}); //for IE8
+				loaded++;
 				
-				$('#overview').css('background-image', "url(" + eval( $(data).find('learningObject').attr('header'))+ ")");
-			} 
-			
-			if ($(data).find('learningObject').attr('headerColour') != undefined){
-			
-				var col = $(data).find('learningObject').attr('headerColour');
-				
-				//one or two?
-				if (col.substr(',') != -1){
-					col = col.split(',');
-				} else {
-					col = [col,col];
+				if (loaded == libs.length){
+					
+					//step two
+					setup();
+					//step three
+					parseContent(0);
+					
 				}
 				
-				$('#overview').css('background', col[0]);
-				$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-				$('#overview').css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-				$('#overview').css('background', '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-				$('#overview').css('background', '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-				$('#overview').css('background', '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-				$('#overview').css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
-				$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
-				
-			}
-			
-			if ($(data).find('learningObject').attr('headerTextColour') != undefined){
-			
-				$('#overview').css('color', $(data).find('learningObject').attr('headerTextColour'));
-				
-			}
-			
-			//done with one time stuff, now parse the first page...
-			parseContent(0);
+			});
+		
 		}
+		
+	} else {
+		
+		setup();
+
+		parseContent(0);
+		
+	}
+
+}
+
+function setup(){
+
+	//add all the pages to the pages menu: this links bak to the same page
+	$(data).find('page').each( function(index, value){
+	
+		$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
 		
 	});
 	
+	//set the header image, if defined
+	if ($(data).find('learningObject').attr('header') != undefined){
+	
+		$('#overview').css({filter:''}); //for IE8
+		
+		$('#overview').css('background-image', "url(" + eval( $(data).find('learningObject').attr('header'))+ ")");
+	} 
+	
+	if ($(data).find('learningObject').attr('headerColour') != undefined){
+	
+		var col = $(data).find('learningObject').attr('headerColour');
+		
+		//one or two?
+		if (col.substr(',') != -1){
+			col = col.split(',');
+		} else {
+			col = [col,col];
+		}
+		
+		$('#overview').css('background', col[0]);
+		$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
+		$('#overview').css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
+		$('#overview').css('background', '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
+		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
+		
+	}
+	
+	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
+	
+		$('#overview').css('color', $(data).find('learningObject').attr('headerTextColour'));
+		
+	}
+	
 }
+	
 
 function parseContent(index){
 
