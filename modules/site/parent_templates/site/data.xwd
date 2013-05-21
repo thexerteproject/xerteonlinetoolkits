@@ -7,8 +7,9 @@
 		<header type="Media" optional="true" label="Header Image"/>
 		<headerColour type="TextInput" optional="true" label="Header Colour"/>
 		<headerTextColour type="TextInput" optional="true" label="Header Text Colour"/>
-		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="200" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
+		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
+		<styles type="TextArea" height="200" optional="true" label="Styles"/>
 		
 		<newNodes>
 			<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page>
@@ -32,7 +33,8 @@
 		<name type="TextInput" label="Section Title"/>
 		
 		<newNodes>
-		
+			<markup><![CDATA[<markup name="Name">Enter HTML Code</markup>]]></markup>
+			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
 			<navigator><![CDATA[<navigator name="Name" type="Tabs"/>]]></navigator>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
@@ -44,13 +46,30 @@
 		
 	</section>
 	
+	<markup icon="icTag" type="text" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
+	
+		<name type="TextInput" label="Name"/>
+		
+	</markup>
+	
 	<text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		
 	</text>
 	
-	<script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" divider="true">
+	<canvas icon="icPallette" menuItem="Canvas" label="Canvas" remove="true" advanced="true">
+	
+		<name type="TextInput" label="Name"/>
+		<id type="TextInput" label="ID"/>
+		<width type="TextInput" label="Width"/>
+		<height type="TextInput" label="Height"/>
+		<class type="TextInput" label="Class" optional="true"/>
+		<style type="TextInput" label="Style" optional="true"/>
+		
+	</canvas>
+	
+	<script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" divider="true" advanced="true">
 	
 		<name type="TextInput" label="Name"/>
 		
