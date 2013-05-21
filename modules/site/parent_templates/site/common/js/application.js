@@ -67,6 +67,12 @@ function loadLibraries(){
 		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
 	
 	}
+	
+	if ( $(data).find('learningObject').attr('styles') != undefined){
+	
+		$('head').append('<style type="text/css">' +  $(data).find('learningObject').attr('styles') + '</style>');
+	
+	}
 
 	if ( $(data).find('learningObject').attr('libs') != undefined){
 	
@@ -77,7 +83,7 @@ function loadLibraries(){
 		
 		for (var i = 0; i< libCount; i++){
 		
-			$.getScript(libs[i], function(){
+			$.getScript(libs[i], function(data, success, jqxhr){
 			
 				loaded++;
 				
@@ -189,6 +195,41 @@ function parseContent(index){
 			if (this.nodeName == 'script'){
 			
 				section.append( '<script>' + $(this).text() + '</script>');
+			}
+			
+			if (this.nodeName == 'markup'){
+			
+				section.append( $(this).text() );
+			}
+			
+			if (this.nodeName == 'canvas'){
+			
+				var style;
+				
+				if ( $(this).attr('style') != undefined){
+				
+					style = ' style="' + $(this).attr('style') + '" ';
+				
+				} else {
+				
+					style = '';
+					
+				}
+				
+				var cls;
+				
+				if ( $(this).attr('class') != undefined){
+				
+					cls = ' class="' + $(this).attr('class') + '" ';
+				
+				} else {
+				
+					cls = '';
+					
+				}
+				
+				section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+				
 			}
 			
 			if (this.nodeName == 'image'){
@@ -447,27 +488,3 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	section.append(carDiv);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
