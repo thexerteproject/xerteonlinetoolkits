@@ -46,7 +46,7 @@
 		
 	</section>
 	
-	<markup icon="icTag" type="text" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
+	<markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 	
 		<name type="TextInput" label="Name"/>
 		
