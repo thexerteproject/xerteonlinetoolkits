@@ -2,7 +2,7 @@
 <tt>
   <head>
     <caption timing="previous" position="below"/>
-    <styling textColour="0x000000" textAlign="left" highlight="false" highlightColour="0xFFFF00"/>
+    <styling textColour="0x000000" textAlign="left" highlight="true" highlightColour="0xFFFF00"/>
   </head>
   <body>
     <div>
