@@ -2,7 +2,7 @@
 var x_languageData	= [],
 	x_params		= new Object(), // all attributes of learningObject that aren't undefined
 	x_pages,		// xml info about all pages in this LO
-	x_pageInfo		= [],	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages
+	x_pageInfo		= [],	// holds info about pages (type, built, linkID, pageID, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
 	x_currentPage	= -1,
 	x_currentPageXML,
 	x_glossary		= [],
@@ -423,7 +423,7 @@ function x_setUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 				
-				window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage));
+				window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage), "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
 			});
 	}
 	
@@ -768,6 +768,10 @@ function x_changePage(x_gotoPage) {
 		} else {
 			eval(x_pageInfo[x_currentPage].type).pageChanged();
 		}
+		// calls function in any customHTML that's been loaded into page
+		if ($(".customHTMLHolder").length > 0) {
+			try { customHTML.pageChanged(); } catch(e) {};
+		}
 		
 		// checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
 		var prevSize = builtPage.data("size");
@@ -776,6 +780,10 @@ function x_changePage(x_gotoPage) {
 				simpleText.sizeChanged();
 			} else {
 				eval(x_pageInfo[x_currentPage].type).sizeChanged();
+			}
+			// calls function in any customHTML that's been loaded into page
+			if ($(".customHTMLHolder").length > 0) {
+				try { customHTML.sizeChanged(); } catch(e) {};
 			}
 		}
 		
@@ -995,6 +1003,11 @@ function x_updateCss(updatePage) {
 			}
 		}
 		catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
+		
+		// calls function in any customHTML that's been loaded into page
+		if ($(".customHTMLHolder").length > 0) {
+			try { customHTML.sizeChanged(); } catch(e) {};
+		}
 	}
 	
 	$(".x_popupDialog").parent().detach();
@@ -1316,4 +1329,24 @@ function x_getSWFRef(swfID) {
 		flashMovie = document.getElementById(swfID);
 	}
 	return flashMovie;
+}
+
+
+// function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)		
+function x_sortInitObject(initObj) {
+	var initObject;
+	if (initObj != undefined && initObj != "") {
+		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work
+			var	temp = initObj.replace("{", "").replace("}", "").split(","),
+				initObject = new Object();
+			for (var i=0; i<temp.length; i++) {
+				initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+			}
+		} else {
+			initObject = initObj;
+		}
+	} else {
+		initObject = undefined;
+	}
+	return initObject;
 }
