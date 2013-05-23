@@ -59,10 +59,15 @@ function loadContent(){
 	});
 	
 	startHash = window.location.hash;
+	
 	if (startHash.substring(1,5) == "page") {
+	
 		startPage = parseInt(startHash.substring(5, 6), 10) - 1;
+		
 	}
+	
 	console.log(startPage);
+	
 	console.log(startHash);
 }
 
@@ -208,6 +213,24 @@ function parseContent(pageIndex){
 			if (this.nodeName == 'markup'){
 			
 				section.append( $(this).text() );
+			}
+			
+			if (this.nodeName == 'link'){
+			
+				var url = $(this).attr('url');
+				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+				var options = '';
+				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+				
+				section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				
 			}
 			
 			if (this.nodeName == 'canvas'){
@@ -500,3 +523,4 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 	section.append(carDiv);
 
 }
+
