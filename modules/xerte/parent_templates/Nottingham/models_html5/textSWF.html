@@ -22,7 +22,7 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+			
 		}
 
 		this.init = function() {
@@ -38,82 +38,106 @@
 			}
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
-			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
-			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+			if (x_currentPageXML.getAttribute("url").toLowerCase().indexOf(".html") >= 0) {
+				// there's a html file to load instead of a swf
+				x_pageInfo[x_currentPage].savedData = new Object();
+				if (x_currentPageXML.getAttribute("initObject") != undefined && x_currentPageXML.getAttribute("initObject") != "") {
+					x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
+				}
+				
+				$("#pageSWF").remove();
+				
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						$panel
+							.width(Number(dimensions[0]))
+							.height(Number(dimensions[1]))
+							.css("overflow", "auto");
+					}
+				}
+				
+				$panel.append('<div class="customHTMLHolder"></div>');
+				x_pageInfo[x_currentPage].savedData.customHTMLHolder = $panel.find(".customHTMLHolder");
+				$panel.find(".customHTMLHolder").load(eval(x_currentPageXML.getAttribute("url")), x_pageLoaded());
+				
+			} else {
+				$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+				$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
 
-			if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
-				var $controls = $('<button id="playBtn"></button>');
-				$controls
-					.data({
-						"state"	:"pause",
-						"play"	:x_getLangInfo(x_languageData.find("movieController").find("playButton")[0], "label", "Play Button"),
-						"pause"	:x_getLangInfo(x_languageData.find("movieController").find("pauseButton")[0], "label", "Pause Button")
-						})
-					.button({
-						icons: {
-							primary: "ui-icon-pause"
-						},
-						label:			$controls.data("pause"),
-						description:	$controls.data("pause"),
-						text:			false
-						})
-					.on("click", function() {
-						var flashMovie = $("#pageContents").data("swf"),
-							$this = $(this);
+				if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+					var $controls = $('<button id="playBtn"></button>');
+					$controls
+						.data({
+							"state"	:"pause",
+							"play"	:x_getLangInfo(x_languageData.find("movieController").find("playButton")[0], "label", "Play Button"),
+							"pause"	:x_getLangInfo(x_languageData.find("movieController").find("pauseButton")[0], "label", "Pause Button")
+							})
+						.button({
+							icons: {
+								primary: "ui-icon-pause"
+							},
+							label:			$controls.data("pause"),
+							description:	$controls.data("pause"),
+							text:			false
+							})
+						.on("click", function() {
+							var flashMovie = $("#pageContents").data("swf"),
+								$this = $(this);
+							
+							if ($this.data("state") == "play") {
+								flashMovie.Play();
+								$this.data("state", "pause");
+							} else {
+								flashMovie.StopPlay();
+								$this.data("state", "play");
+							}
+							
+							var state = $this.data("state");
+							$this.button({
+								icons: {
+									primary: "ui-icon-" + state
+								},
+								label:			$this.data(state),
+								description:	$this.data(state)
+								})
+							})
+						.load(function() { });
+					
+					$panel.append($controls);
+				}
+				
+				var size = [320,240];
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						size = [Number(dimensions[0]), Number(dimensions[1])];
+					}
+				}
+				
+				swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
+					if (e.success == true) {
+						$("#pageContents").data("swf", x_getSWFRef("pageSWF")); // reference to swf
 						
-						if ($this.data("state") == "play") {
-							flashMovie.Play();
-							$this.data("state", "pause");
-						} else {
-							flashMovie.StopPlay();
-							$this.data("state", "play");
+						// if using the control bar make sure swf is paused initially
+						if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+							// swf is supposed to be loaded by now but this won't work without slight delay?
+							setTimeout(function () {
+								$("#playBtn").trigger("click");
+							},100);
 						}
 						
-						var state = $this.data("state");
-						$this.button({
-							icons: {
-								primary: "ui-icon-" + state
-							},
-							label:			$this.data(state),
-							description:	$this.data(state)
-							})
-						})
-					.load(function() { });
-				
-				$panel.append($controls);
-			}
-
-			var size = [320,240];
-			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-				if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
-					size = [Number(dimensions[0]), Number(dimensions[1])];
-				}
-			}
-
-			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
-				if (e.success == true) {
-					$("#pageContents").data("swf", x_getSWFRef("pageSWF")); // reference to swf
-					
-					// if using the control bar make sure swf is paused initially
-					if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
-						// swf is supposed to be loaded by now but this won't work without slight delay?
-						setTimeout(function () {
-							$("#playBtn").trigger("click");
-						},100);
+						$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
+						
+						// need to add code for calling init function in swf
+						
+					} else { // no Flash
+						$("#playBtn").remove();
 					}
 					
-					$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
-					
-					// need to add code for calling init function in swf
-					
-				} else { // no Flash
-					$("#playBtn").remove();
-				}
-
-				// call this function in every model once everything's loaded
-				x_pageLoaded();
-			});
+					x_pageLoaded();
+				});
+			}
 		}
 	}
 
