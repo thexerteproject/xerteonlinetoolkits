@@ -2,6 +2,8 @@
 $(document).ready(init);
 
 var data;
+var startPage = 0;
+var startHash = "";
 
 function init(){	
 
@@ -55,7 +57,13 @@ function loadContent(){
 		}
 	
 	});
-
+	
+	startHash = window.location.hash;
+	if (startHash.substring(1,5) == "page") {
+		startPage = parseInt(startHash.substring(5, 6), 10) - 1;
+	}
+	console.log(startPage);
+	console.log(startHash);
 }
 
 function loadLibraries(){
@@ -92,7 +100,7 @@ function loadLibraries(){
 					//step two
 					setup();
 					//step three
-					parseContent(0);
+					parseContent(startPage);
 					
 				}
 				
@@ -104,9 +112,10 @@ function loadLibraries(){
 		
 		setup();
 
-		parseContent(0);
+		parseContent(startPage);
 		
 	}
+	
 
 }
 
@@ -158,19 +167,18 @@ function setup(){
 }
 	
 
-function parseContent(index){
+function parseContent(pageIndex){
 
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
 
 	//which page is this from the document?
-	var page = $(data).find('page').eq(index);
+	var page = $(data).find('page').eq(pageIndex);
 	
 	//set the main page title and subtitle			
 	$('#pageTitle').text( page.attr('name') );
 	$('#pageSubTitle').text( page.attr('subtitle') );
-	
 	
 	//create the sections
 	page.find('section').each( function(index, value){
@@ -178,10 +186,10 @@ function parseContent(index){
 		var sectionIndex = index;	
 				
 		//add a TOC entry
-		$('#toc').append('<li><a href="#section' + index + '">' + $(this).attr('name') + '</a></li>');
+		$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
 		
 		//add the section header
-		var section = $('<section id="section' + index + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
+		var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
 
 		//add the section contents
 		$(this).children().each( function(index, value){
@@ -278,7 +286,11 @@ function parseContent(index){
 	
 	initSidebar();
 	
-	window.scroll(0,0);
+	if (startHash == "")
+		window.scroll(0,0);
+	else
+		location.href = startHash;
+		
 	
 	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 	
