@@ -423,7 +423,22 @@ function x_setUp() {
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 				
-				window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage), "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+				// get info about how to display captions - if none are found the code in the mediaViewer folder will look for details in tt file - otherwise it will use defaults
+				var	captionDetails = "",
+					nodeNames = ["mediaTiming", "mediaPosition", "mediaAlign", "mediaColour", "mediaHighlight", "mediaHighlightColour"];
+				for (var i=0; i<nodeNames.length; i++) {
+					if (x_params[nodeNames[i]] != undefined) {
+						if (captionDetails != "") {
+							captionDetails += ";";
+						}
+						captionDetails += nodeNames[i] + "=" + x_params[nodeNames[i]];
+					}
+				}
+				if (captionDetails == "") {
+					captionDetails = undefined;
+				}
+				
+				window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
 			});
 	}
 	
