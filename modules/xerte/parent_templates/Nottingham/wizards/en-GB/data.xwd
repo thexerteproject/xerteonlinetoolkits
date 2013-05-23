@@ -12,9 +12,17 @@
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" data="default,full screen,fill window" label="Display Mode" width="100"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page title size" defaultValue="24"/>
-    <mediaImage optional="true" type="media" label="Media Image"/>
+    
+	<media optional="true" type="media" label="Media File"/>
+	<mediaImage optional="true" type="media" label="Media Image"/>
     <mediaTranscript optional="true" type="media" label="Media Transcript"/>
-    <media optional="true" type="media" label="Media File"/>
+	<mediaTiming optional="true" type="ComboBox" options="Current caption only,Keep previous captions,Show all captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
+	<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Media Caption Position" defaultValue="below" width="175"/>
+	<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Media Caption Align" defaultValue="left" width="100"/>
+	<mediaColour optional="true" type="ColourPicker" label="Media Caption Colour" defaultValue="0x000000"/>
+	<mediaHighlight optional="true" type="CheckBox" label="Media Caption Highlight" defaultValue="true"/>
+	<mediaHighlightColour optional="true" type="ColourPicker" label="Media Caption Highlight Colour" defaultValue="0xFFFF00"/>
+	
     <menuImageProperties optional="true" type="ComboBox" label="Menu Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100"/>
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
