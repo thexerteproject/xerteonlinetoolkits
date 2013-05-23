@@ -36,6 +36,7 @@
 			<markup><![CDATA[<markup name="Name">Enter HTML Code</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
+			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
 			<navigator><![CDATA[<navigator name="Name" type="Tabs"/>]]></navigator>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
@@ -45,6 +46,25 @@
 		</newNodes>
 		
 	</section>
+	
+	<link icon="icLink" menuItem="Link" remove="true">
+	
+		<name type="TextInput" label="Name"/>
+		<url type="TextInput" label="URL"/>
+		
+		<width label="Width" type="textInput" optional="true" default="800"/>
+		<height label="Height" type="textInput" optional="true" default="600"/>
+		
+		<scrollbars type="ComboBox" width="80" options="yes,no" data="yes,no" label="Scrollbars" optional="true"/>
+		<location type="ComboBox" width="80" options="yes,no" data="yes,no" label="Location" optional="true"/>
+		<status type="ComboBox" width="80" options="yes,no" data="yes,no" label="Status" optional="true"/>
+		<titlebar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Titlebar" optional="true"/>
+		<toolbar type="ComboBox" width="80" options="yes,no" data="yes,no" label="Toolbar" optional="true"/>
+		<resizable type="ComboBox" width="80" options="yes,no" data="yes,no" label="Resizable" optional="true"/>
+		
+		<windowName type="TextInput" label="Window Name" optional="true"/>
+		
+	</link>
 	
 	<markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 	
