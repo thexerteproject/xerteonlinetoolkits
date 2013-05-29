@@ -18,9 +18,28 @@
 				$iFrameHolder = $pageContents;
 			
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
-				$pageContents.html('<div class="splitScreen"><div class="left" tabindex="1">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
-				$iFrameHolder = $pageContents.find(".right");
+				if (x_currentPageXML.getAttribute("align") != "Right") {
+					$pageContents.html('<div class="splitScreen"><div class="left" tabindex="1">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div class="right"></div></div>');
+					$iFrameHolder = $pageContents.find(".right");
+					
+					if (x_currentPageXML.getAttribute("windowWidth") == "Small") {
+						$("#pageContents .splitScreen").addClass("large");
+					} else if (x_currentPageXML.getAttribute("windowWidth") == "Large") {
+						$("#pageContents .splitScreen").addClass("small");
+					}
+					
+				} else {
+					$pageContents.html('<div class="splitScreen"><div class="left"></div><div class="right" tabindex="1">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div></div>');
+					$iFrameHolder = $pageContents.find(".left");
+					
+					if (x_currentPageXML.getAttribute("windowWidth") == "Small") {
+						$("#pageContents .splitScreen").addClass("medium");
+					} else if (x_currentPageXML.getAttribute("windowWidth") == "Large") {
+						$("#pageContents .splitScreen").addClass("xlarge");
+					}
+				}
 			}
+			
 			var pageSrc = x_currentPageXML.getAttribute("src");
 			if (pageSrc.substr(0, 1) == "<") { // insert html directly
 				$iFrameHolder.html(pageSrc);
