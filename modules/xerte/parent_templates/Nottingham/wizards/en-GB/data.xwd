@@ -618,6 +618,8 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <text label="Text" type="TextArea" height="150" optional="true"/>
+	<windowWidth label="Window Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
 
   </embedDiv><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
 
