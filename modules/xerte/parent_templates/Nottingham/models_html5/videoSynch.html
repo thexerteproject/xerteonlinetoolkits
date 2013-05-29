@@ -17,13 +17,53 @@
 		this.init = function() {
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
 			
+			var	captionInfo = new Array();
+			
+			// uses data from timedText file if there is one - otherwise use nested page info
+			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
+				$.ajax({
+					type: "GET",
+					url: eval(x_currentPageXML.getAttribute("timedText")),
+					dataType: "xml",
+					success: function(xml) {
+						$(xml).find("P, p").each(function() {
+							var	$this = $(this);
+							captionInfo.push({text:$this.text(), synch:$this.attr("begin"), end:$this.attr("end")});
+						});
+						
+						videoSynch.createCaptions(captionInfo);
+					},
+					
+					error: function () {
+						// see if there are any captions in xml to use instead
+						$(x_currentPageXML).children().each(function() {
+							var	$this = $(this);
+							captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
+						});
+						
+						videoSynch.createCaptions(captionInfo);
+					}
+				});
+				
+			} else {
+				$(x_currentPageXML).children().each(function() {
+					var	$this = $(this);
+					captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
+				});
+				
+				videoSynch.createCaptions(captionInfo);
+			}
+		}
+		
+		this.createCaptions = function(captionInfo) {
 			var	$infoHolder = $("#infoHolder"),
-				$pageContents = $("#pageContents");
+				$pageContents = $("#pageContents"),
 				captions = new Array();
 			
-			$(x_currentPageXML).children().each(function() {
+			$(captionInfo).each(function() {
 				var	$this = $(this),
-					imgStr = "";
+					imgStr = "",
+					divString = "";
 				
 				if ($this.attr("url") != undefined && $this.attr("url") != "") {
 					imgStr += '<div class="myImg"><img src="' + eval($this.attr("url")) + '" ';
@@ -33,16 +73,28 @@
 					imgStr += ' /></div>';
 				}
 				
-				var $caption = $("<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>")
+				if ($this.attr("align") == "Bottom") {
+					divString = "<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>"
+				} else {
+					divString = "<div>"  + imgStr + x_addLineBreaks($this.attr("text")) + "</div>"
+				}
+				
+				var $caption = $(divString)
 						.hide()
 						.data("synch", $this.attr("synch"));
 				
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
 			});
+			
 			$pageContents.data("captions", captions);
 			
+			$(captions).click(function() {
+				$("#pageContents").data("mediaElement").setCurrentTime($(this).data("synch"));
+			});
+			
 			this.sizeChanged();
+			
 			
 			var $pageVideo = $("#pageVideo"),
 				videoDimensions = [320,240];
@@ -65,6 +117,7 @@
 			$pageContents.css("padding-left", $pageVideo.data("dimensions")[0] + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
 			$("#videoHolder").width($pageContents.css("padding-left"));
 			
+			
 			x_pageLoaded();
 		}
 		
@@ -85,8 +138,11 @@
 				pause 		= x_currentPageXML.getAttribute("pause"),
 				erase    	= x_currentPageXML.getAttribute("erase");
 			
+			$("#pageContents").data("mediaElement", mediaElement);
+			
 			mediaElement.addEventListener("timeupdate", function(e) {
 				var currentTime = mediaElement.currentTime;
+				
 				$captions.each(function(){
 					var $thisCaption = $(this);
 					if (erase == "False") {
@@ -132,6 +188,7 @@
 	}
 	
 	#infoHolder div {
+		cursor:			pointer;
 		margin-bottom:	10px;
 	}
 	
