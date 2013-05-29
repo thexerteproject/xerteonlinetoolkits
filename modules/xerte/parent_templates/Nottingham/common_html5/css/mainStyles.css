@@ -169,6 +169,10 @@ body {
 	overflow-x:	hidden;
 }
 
+.ui-dialog-titlebar-close {
+	background: 	#dadada url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+}
+
 /* standard link style - overrides the way links are styled on tab navigator */
 .ui-tabs-panel a:link, .ui-accordion-content a:link			{ color:	#0000FF; }
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited	{ color:	#800080; }
