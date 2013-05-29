@@ -36,9 +36,8 @@
 			$pageContents = $("#pageContents");
 			$infoHolder = $("#infoHolder");
 			
-			var captions = new Array(),
+			var captionInfo = new Array(),
 				panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			
 			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($pageContents);
@@ -54,23 +53,65 @@
 				} 
 			}
 			
-			$(x_currentPageXML).children().each(function(){
-				var $caption = $("<div>" + x_addLineBreaks($(this).attr("text")) + "</div>").data("synch", $(this).attr("synch"));
-				$infoHolder.append($caption);
-				
-				$caption.click(function() {
-					$infoHolder.find(".highlight").removeClass("highlight");
+			// uses data from timedText file if there is one - otherwise use nested page info
+			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
+				$.ajax({
+					type: "GET",
+					url: eval(x_currentPageXML.getAttribute("timedText")),
+					dataType: "xml",
+					success: function(xml) {
+						$(xml).find("P, p").each(function() {
+							var	$this = $(this);
+							captionInfo.push({text:$this.text(), synch:$this.attr("begin"), end:$this.attr("end")});
+						});
+						
+						transcriptReader.createCaptions(captionInfo);
+					},
 					
-					var $this = $(this);
-					$this.addClass("highlight");
-					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
-					$pageContents.data("mediaElement").setCurrentTime($this.data("synch"));
+					error: function () {
+						// see if there are any captions in xml to use instead
+						$(x_currentPageXML).children().each(function() {
+							var	$this = $(this);
+							captionInfo.push({text:$this.attr("text"), synch:$this.attr("synch")});
+						});
+						
+						transcriptReader.createCaptions(captionInfo);
+					}
 				});
 				
+			} else {
+				$(x_currentPageXML).children().each(function() {
+					var	$this = $(this);
+					captionInfo.push({text:$this.attr("text"), synch:$this.attr("synch")});
+				});
+				
+				transcriptReader.createCaptions(captionInfo);
+			}
+		}
+		
+		this.createCaptions = function(captionInfo) {
+			var	captions = new Array();
+			
+			$(captionInfo).each(function() {
+				var	$this = $(this);
+				
+				var $caption = $("<div>" + x_addLineBreaks($this.attr("text")) + "</div>")
+					.data("synch", $this.attr("synch"));
+				
+				$infoHolder.append($caption);
 				captions.push($caption[0]);
 			});
 			
 			$pageContents.data("captions", captions);
+			
+			$(captions).click(function() {
+				$infoHolder.find(".highlight").removeClass("highlight");
+				
+				var $this = $(this);
+				$this.addClass("highlight");
+				$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+				$pageContents.data("mediaElement").setCurrentTime($this.data("synch"));
+			});
 			
 			setTimeout(function() { // audio won't load properly without a delay here
 				transcriptReader.sizeChanged();
