@@ -28,9 +28,7 @@
 
 	define("MANAGEMENT_SITE_WELCOME", "The Welcome message is (The text above the tools on index.php)");
 
-	define("MANAGEMENT_SITE_TEXT", "The site text is (The text below the tools on index.php)");
-
-    define("MANAGEMENT_TUTORIAL_TEXT", "The tutorial text is (The text to the right of the tools on index.php)");
+	define("MANAGEMENT_SITE_TEXT", "The site text is (The text to the right of the tools on index.php)");
 
 	define("MANAGEMENT_SITE_NEWS", "The news text is (The second pod under the login pod on index.php)");
 

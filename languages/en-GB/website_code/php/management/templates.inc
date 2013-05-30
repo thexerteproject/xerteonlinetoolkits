@@ -23,6 +23,10 @@
 	define("TEMPLATE_MANAGE", "Manage Existing templates");
 
 	define("TEMPLATE_TYPE", "This template is of type");
+	
+	define("TEMPLATE_INSTALL", " This template relies on the module ");
+	
+	define("TEMPLATE_INSTALL_INST", " Please install ");
 
 	define("TEMPLATE_VERSION", "This template is version number"); 
 
