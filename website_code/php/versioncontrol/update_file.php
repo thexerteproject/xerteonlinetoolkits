@@ -60,7 +60,15 @@ if(isset($_POST['template_id'])){
 		
 			if(!isset($xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->preview_file)){
 				
-				require("../../../modules/" . $temp_array[2] . "/publish.php");
+				if(file_exists("../../../modules/" . $temp_array[2] . "/publish.php")){
+				
+					require("../../../modules/" . $temp_array[2] . "/publish.php");
+				
+				}else{
+				
+					require("../../../modules/" . $xerte_toolkits_site->learning_objects->{$temp_array[3] . "_" . $temp_array[2]}->requires . "/publish.php");
+				
+				}
 				
 				publish($row_play, $_POST['template_id']);
 				
