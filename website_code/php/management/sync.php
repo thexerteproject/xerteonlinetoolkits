@@ -41,26 +41,55 @@ if(is_user_admin()){
 							
 								case "display name" : $template_object['display_name'] = trim($attr_data[1]); break;
 								case "description" : $template_object['description'] = trim($attr_data[1]); break;
+								case "requires" : $template_object['requires'] = trim($attr_data[1]); break;
 							
 							}
 						
 						}
 						
-						$row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_framework=? and template_name=?", array($folder, $inner_folder));
+						if(isset($template_object['requires'])){
 						
-						if(isset($row)){
+							$row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_framework=?", array($template_object['requires']));
 						
-							if(is_array($row)){
-						
-								db_query("update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set display_name=?, description=? where template_type_id=?", array($template_object['display_name'],$template_object['description'], $row['template_type_id']));
-								echo "<p>" . $folder . " / " . $inner_folder . " " . SYNC_UPDATE . "</p>";
+							if(isset($row)){
+							
+								$continue = true;
+							
+							}else{
+							
+								$continue = false;
 							
 							}
 						
 						}else{
+						
+							$continue = true;
+						
+						}
+						
+						if($continue){
+						
+							$row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_framework=? and template_name=?", array($folder, $inner_folder));
 							
-							db_query("insert into {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails (template_framework,template_name,display_name,description,date_uploaded)values(?,?,?,?,?)", array($folder, $inner_folder,$template_object['display_name'],$template_object['description'],date("Y-m-d",time())));
-							echo "<p>" . $folder . " / " . $inner_folder . " " . SYNC_INSTALL . "</p>";
+							if(isset($row)){
+							
+								if(is_array($row)){
+							
+									db_query("update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set display_name=?, description=? where template_type_id=?", array($template_object['display_name'],$template_object['description'], $row['template_type_id']));
+									echo "<p>" . $folder . " / " . $inner_folder . " " . SYNC_UPDATE . "</p>";
+								
+								}
+							
+							}else{
+								
+								db_query("insert into {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails (template_framework,template_name,display_name,description,date_uploaded)values(?,?,?,?,?)", array($folder, $inner_folder,$template_object['display_name'],$template_object['description'],date("Y-m-d",time())));
+								echo "<p>" . $folder . " / " . $inner_folder . " " . SYNC_INSTALL . "</p>";
+							
+							}
+							
+						}else{
+						
+							echo "<p>" . $folder . " / " . $inner_folder . " <span style='color:#f00'>" . SYNC_REQUIRES . "</span> <strong>" . $template_object['requires'] . "</strong></p>";
 						
 						}
 						
