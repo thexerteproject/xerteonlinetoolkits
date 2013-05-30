@@ -77,15 +77,6 @@ if(!empty($query_for_peer_response)) {
              *  Output the code
              */
 
-            require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
-
-            // should the $ really be escaped with \ ?
-            //$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
-
-            //$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
-
-
-
             show_peer_template($row_play, $retouremail);
         }else{
             show_peer_login_form(PEER_LOGON_FAIL);
