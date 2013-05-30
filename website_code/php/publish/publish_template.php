@@ -56,16 +56,12 @@ if(is_numeric(mysql_real_escape_string($_POST['template_id']))){
 
     if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])){
 
-        $file = file_get_contents($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $safe_template_id . "-" . $row_publish['username'] . "-" . $row_publish['template_name'] . "/preview.xml");
-
-        $fh = fopen($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $safe_template_id . "-" . $row_publish['username'] . "-" . $row_publish['template_name'] . "/data.xml", 'w');
-
-        fwrite($fh,$file);
-
-        fclose($fh);
-
-        echo template_access_settings($safe_template_id);			
-
+        require("../../../modules/" . $temp_array[2] . "/publish.php");
+			
+		publish($row_play, $_POST['template_id']);
+			
+		echo UPDATE_SUCCESS;
+		
     }
 
 }else{
