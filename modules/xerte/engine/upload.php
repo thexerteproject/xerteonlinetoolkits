@@ -119,6 +119,10 @@
 			if ($moovrelocator->setOutput($new_file_name) == true) {
 				if (!(($result = $moovrelocator->fix()) === true)) {
 					file_put_contents('moovrelocator_error.txt', $result, true);
+					if(!copy($moov_temp_file_name, $new_file_name)) {
+						file_put_contents('error.txt', "Copy temp file failed" . error_get_last(), true);
+						exit();
+					}
 				}
 			}
 		}
