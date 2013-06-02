@@ -165,6 +165,7 @@
 						.html(x_addLineBreaks(this.getAttribute("text")));
 				});
             XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+
 		}
 
         this.showResults = function() {
@@ -412,6 +413,7 @@
                         } else {
                             quiz.loadQ();
                         }
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                     }
 				});
 			
@@ -429,6 +431,7 @@
 					} else {
 						quiz.loadQ();
 					}
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 				});
 			
 			$("#restartBtn")
