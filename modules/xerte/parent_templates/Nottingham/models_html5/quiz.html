@@ -412,6 +412,7 @@
                         } else {
                             quiz.loadQ();
                         }
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                     }
 				});
 			
@@ -429,6 +430,7 @@
 					} else {
 						quiz.loadQ();
 					}
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 				});
 			
 			$("#restartBtn")
