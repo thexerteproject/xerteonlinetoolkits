@@ -481,7 +481,7 @@ function preview_window(admin){
         var url="website_code/php/properties/screen_size_template.php";
 
         xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=screensize_stateChanged;
+        xmlHttp.onreadystatechange=example_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('tutorial_id=' + admin); 
 
