@@ -388,6 +388,24 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 			}
 			
+			if (this.nodeName == 'link'){
+			
+				var url = $(this).attr('url');
+				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+				var options = '';
+				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+				
+				tab.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				
+			}
+			
 		});
 		
 		content.append(tab);
@@ -444,6 +462,24 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'video'){
 				inner.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+			
+			if (this.nodeName == 'link'){
+			
+				var url = $(this).attr('url');
+				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+				var options = '';
+				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+				
+				inner.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				
 			}
 		});
 		
@@ -505,6 +541,24 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'video'){
 				pane.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+			}
+			
+			if (this.nodeName == 'link'){
+			
+				var url = $(this).attr('url');
+				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+				var options = '';
+				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+				
+				pane.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				
 			}
 			
 		});
