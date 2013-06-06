@@ -136,6 +136,7 @@
 		
 		<newNodes>
 		
+			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
 			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text"/>]]></image>
