@@ -1,4 +1,4 @@
-/**	
+size/**	
  * 
  * template management, javascript for the management of the templates in the file area and their creation
  *
@@ -478,12 +478,7 @@ function preview_window(admin){
 
     }else{
 
-        var url="website_code/php/properties/screen_size_template.php";
-
-        xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=example_stateChanged;
-        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlHttp.send('tutorial_id=' + admin); 
+        var PreviewWindow = window.open(site_url + url_return("preview", 1), "previewwindow" + 1, "scrollbars=yes");
 
     }
 

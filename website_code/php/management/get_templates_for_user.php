@@ -77,7 +77,7 @@ if(is_user_admin()){
             echo "</table>";
             echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:edit_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_EDIT . "</button>";
             echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:preview_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PREVIEW . "</button>";
-            echo " - <button type=\"button\" class=\"xerte_button\" onclick==\"javascript:properties_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</button></p>";
+            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:properties_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</button></p>";
 
             echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
