@@ -659,7 +659,8 @@
     <feedback label="Feedback" type="TextArea" height="50"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
-    <noise label="Distractors" type="TextArea" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>    
+    <noise label="Distractors" type="TextArea" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>
+	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
