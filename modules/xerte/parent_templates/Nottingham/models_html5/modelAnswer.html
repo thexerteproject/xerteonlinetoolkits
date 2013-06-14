@@ -25,7 +25,7 @@
 			}
 			var instructB = x_currentPageXML.getAttribute("instructHeaderBTxt");
 			if (instructB == undefined) {
-				instructB = "was"
+				instructB = "was:"
 			}
 			var responseTxt = x_currentPageXML.getAttribute("responseHeaderTxt");
 			if (responseTxt == undefined) {
@@ -45,10 +45,10 @@
 			}
 			
 			$("#pageContents").data({
-				"savedData"		:undefined,
-				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '\n' + x_currentPageXML.getAttribute("prompt") + '\n\n' + responseTxt + '\n' + '{A}' + '\n\n' + exampleTxt + '\n' + x_currentPageXML.getAttribute("feedback"),
+				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '</br></br>' + x_addLineBreaks(responseTxt) + '</br>' + '{A}' + '</br></br>' + x_addLineBreaks(exampleTxt) + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
 				"noAnswerTxt"	:noAnswerTxt
 			})
+			
 			
 			// feedbackBtnWidth attribute not used as button will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
@@ -88,6 +88,7 @@
 				}
 			}
 			
+			
 			var promptString = x_addLineBreaks('<p>' + x_currentPageXML.getAttribute("prompt") + '</p>'),
 				url = x_currentPageXML.getAttribute("image");
 			if (url != undefined && url != "") {
@@ -120,12 +121,24 @@
 				swfobject.embedSWF(eval(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
 			}
 			
+			
 			var feedbackString = x_addLineBreaks('<p>' + x_currentPageXML.getAttribute("feedback") + '</p>'),
-				copyTxt = x_currentPageXML.getAttribute("copypasteinfo");
-			if (copyTxt != undefined && copyTxt != "") {
-				// ** removed until there's a way of copying to clipboard
-				//feedbackString += x_addLineBreaks('<p id="copyTxt">' + copyTxt + '</p>');
+				copyTxt = x_currentPageXML.getAttribute("copypasteinfo2"),
+				copyTxtFlash = x_currentPageXML.getAttribute("copypasteinfo"),
+				copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel");
+			
+			// should instructions about copying & pasting answer be shown?
+			if ((copyTxt != undefined && copyTxt != "") || (copyTxtFlash != undefined && copyTxtFlash != "")) {
+				if (copyTxt == undefined || copyTxt == "") {
+					// the only copy text is for Flash version - the instructions need to be different for HTML version so am forced to use English fall back
+					copyTxt = "Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
+				}
+				if (copyBtnLabel == undefined) {
+					copyBtnLabel = "Select Text";
+				}
+				feedbackString += '<p id="copyTxt">' + copyTxt + '</p><button id="copyBtn">' + copyBtnLabel + '</button>';
 			}
+			
 			$("#answer")
 				.html(feedbackString)
 				.hide();
@@ -154,6 +167,34 @@
 				modelAnswer.saveData();
 			});
 			
+			
+			var copyShortcutTxt = x_currentPageXML.getAttribute("copyShortcutTxt");
+			if (copyShortcutTxt == undefined) {
+				copyShortcutTxt = "Press Ctrl + C to copy"
+			}
+			var closeBtnTxt = x_currentPageXML.getAttribute("closeBtnTxt");
+			if (closeBtnTxt == undefined) {
+				closeBtnTxt = "close"
+			}
+			
+			$("#copyBtn").click(function() {
+				// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
+				$(".x_popupDialog").parent().detach(); // removes any dialogs already open
+				var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
+				
+				$thisDialog.dialog({
+					closeOnEscape:	true,
+					title:			copyShortcutTxt,
+					closeText:		closeBtnTxt,
+					close: function() {$thisDialog.parent().detach();}
+				});
+				
+				$thisDialog.html(x_pageInfo[x_currentPage].savedData);
+				x_setDialogSize($thisDialog);
+				
+				x_selectText("modelAnswerDialog");
+			});
+			
 			this.sizeChanged();
 			this.saveData();
 			x_pageLoaded();
@@ -167,8 +208,7 @@
 			if (answerTxt == "") {
 				answerTxt = $pageContents.data("noAnswerTxt");
 			}
-			stringToSave = stringToSave.replace("{A}", answerTxt);
-			$pageContents.data("savedData", stringToSave);
+			stringToSave = stringToSave.replace("{A}", x_addLineBreaks(answerTxt));
 			x_pageInfo[x_currentPage].savedData = stringToSave;
 		}
 	}
@@ -216,6 +256,8 @@
 	<div class="splitScreen">
 		
 		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div id="textToCopy"></div>
 		
 		<div id="infoHolder" class="right">
 			<div class="panel">

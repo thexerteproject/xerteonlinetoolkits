@@ -89,9 +89,12 @@
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" checkBtnTip="Check Answer" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
-	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was" responseHeaderTxt="Your response was:"
-	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
-	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" copyBtnTxt="Copy to clipboard" copyBtnTip="Copy to clipboard" copyBtnWidth="130">Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"
+	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
+	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:" copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" closeBtnTxt="close"
+	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" copyBtnTxt="Copy to clipboard" copyBtnTip="Copy to clipboard" copyBtnWidth="130"
+	  copyBtnLabel="Select Text" 
+	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
+	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter tooltip for image 1" url2="Select Image" tip2="Enter tooltip for image 2" zoomSpeed="3" buttonLabel="Zoom" zoomBtnTip="Feedback" zoomBtnWidth="80"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter Tool Tip" windowWidth="550" windowHeight="400"/>]]></newWindow><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
@@ -1004,9 +1007,13 @@
     <instructHeaderBTxt label="Instruction Header (b)" type="textInput" language="true"/>
     <responseHeaderTxt label="Response Header" type="textInput" language="true"/>
     <noAnswerHeaderTxt label="No Answer Header" type="textInput" language="true"/>
-    <exampleHeaderTxt label="Example Header" type="textInput" language="true"/>	
+    <exampleHeaderTxt label="Example Header" type="textInput" language="true"/>
+	<copyBtnLabel label="Select Button Label" type="textInput" language="true"/>
+    <copyShortcutTxt label="Copy Shortcut Text" type="textInput" language="true"/>
+	<closeBtnTxt label="Close Button Label" type="textInput" language="true"/>
 
-    <copypasteinfo label="Copy and paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+    <copypasteinfo label="Copy & paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+	<copypasteinfo2 label="Copy & paste info (HTML)" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" optional="true"/>
     <image label="Image" type="media" optional="true"/>	
     <tooltip label="Image Tooltip" type="TextInput" optional="true"/>	
@@ -1023,6 +1030,8 @@
     <copyBtnTxt label="Copy Button Label" type="textInput" divider="true" language="true"/>
     <copyBtnTip label="Copy Button Tip" type="textInput" language="true"/>	
     <copyBtnWidth label="Copy Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="130" language="true"/>
+	<copyBtnLabel label="Select Button Label" type="textInput" language="true"/>
+	<copypasteinfo label="Copy & Paste Info" type="TextArea" height="50" language="true"/>
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
