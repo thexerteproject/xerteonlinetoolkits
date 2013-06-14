@@ -177,23 +177,27 @@
 				closeBtnTxt = "close"
 			}
 			
-			$("#copyBtn").click(function() {
-				// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
-				$(".x_popupDialog").parent().detach(); // removes any dialogs already open
-				var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
-				
-				$thisDialog.dialog({
-					closeOnEscape:	true,
-					title:			copyShortcutTxt,
-					closeText:		closeBtnTxt,
-					close: function() {$thisDialog.parent().detach();}
+			$("#copyBtn")
+				.button({
+					label:	copyBtnLabel
+				})
+				.click(function() {
+					// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
+					$(".x_popupDialog").parent().detach(); // removes any dialogs already open
+					var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
+					
+					$thisDialog.dialog({
+						closeOnEscape:	true,
+						title:			copyShortcutTxt,
+						closeText:		closeBtnTxt,
+						close: function() {$thisDialog.parent().detach();}
+					});
+					
+					$thisDialog.html(x_pageInfo[x_currentPage].savedData);
+					x_setDialogSize($thisDialog);
+					
+					x_selectText("modelAnswerDialog");
 				});
-				
-				$thisDialog.html(x_pageInfo[x_currentPage].savedData);
-				x_setDialogSize($thisDialog);
-				
-				x_selectText("modelAnswerDialog");
-			});
 			
 			this.sizeChanged();
 			this.saveData();
