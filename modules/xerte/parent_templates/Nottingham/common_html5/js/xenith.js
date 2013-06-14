@@ -141,15 +141,22 @@ $(document).ready(function() {
 				x_pageInfo.push(page);
 			});
 			
-			if (x_params.navigation == undefined) {
-				x_params.navigation = "Linear";
-			}
-			if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
-				x_pages.splice(0, 0, "menu");
-				var page = new Object();
-				page.type = "menu";
-				page.built = false;
-				x_pageInfo.splice(0, 0, page);
+			
+			if (x_pages.length < 2) {
+				// don't show navigation options if there's only one page 
+				$("#x_footerBlock .x_floatRight").remove();
+				
+			} else {
+				if (x_params.navigation == undefined) {
+					x_params.navigation = "Linear";
+				}
+				if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
+					x_pages.splice(0, 0, "menu");
+					var page = new Object();
+					page.type = "menu";
+					page.built = false;
+					x_pageInfo.splice(0, 0, page);
+				}
 			}
 			
 			x_getLangData(x_params.language);
