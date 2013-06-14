@@ -135,7 +135,7 @@ $(document).ready(function() {
                 if (linkID != undefined) {
 					page.linkID = linkID;
 				}
-                if (pageID != undefined && pageID != "Unique ID for this page") { // ** this shouldn't use fixed english string
+                if (pageID != undefined && pageID != "Unique ID for this page") { // ** this shouldn't use fixed english string but how else to do it as it's not something for main language file?
 					page.pageID = pageID;
 				}
 				x_pageInfo.push(page);
@@ -154,14 +154,14 @@ $(document).ready(function() {
 			
 			x_getLangData(x_params.language);
 			
-            // Setup nr of pages for tracking
-            XTSetOption('nrpages', x_pageInfo.length);
-            if (x_params.trackingMode != undefined) {
-                XTSetOption('tracking-mode', x_params.trackingMode);
-            }
+			// Setup nr of pages for tracking
+			XTSetOption('nrpages', x_pageInfo.length);
+			if (x_params.trackingMode != undefined) {
+				XTSetOption('tracking-mode', x_params.trackingMode);
+			}
 		},
 		error: function() {
-			// can't have translation for this as if it fails to load we don't know what language file to use?
+			// can't have translation for this as if it fails to load we don't know what language file to use
 			$("body").append("<p>The project data has not loaded.</p>");
 		}
 	});
@@ -1370,4 +1370,23 @@ function x_sortInitObject(initObj) {
 		initObject = undefined;
 	}
 	return initObject;
+}
+
+
+// function selects text (e.g. when users are to be prompted to copy text on screen)
+function x_selectText(element) {
+	var text = document.getElementById(element),
+		range;
+	
+	if (document.body.createTextRange) {
+		range = document.body.createTextRange();
+		range.moveToElementText(text);
+		range.select();
+	} else if (window.getSelection) {
+		var selection = window.getSelection();        
+		range = document.createRange();
+		range.selectNodeContents(text);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
 }

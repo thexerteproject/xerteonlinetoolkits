@@ -17,23 +17,25 @@
 		}
 		
 		this.init = function() {
-			// copyBtnTip & copyBtnWidth attributes not used - button will be sized automatically
-			$("#leftTxt").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			
 			// if language attributes aren't in xml will have to use english fall back
-			var copyBtnTxt = x_currentPageXML.getAttribute("copyBtnTxt");
-			if (copyBtnTxt == undefined) {
-				copyBtnTxt = "Copy to clipboard"
+			var copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel");
+			if (copyBtnLabel == undefined) {
+				copyBtnLabel = "Select Text";
 			}
-			/*
-			$("#button")
+			var copyTxt = x_currentPageXML.getAttribute("copypasteinfo");
+			if (copyTxt == undefined) {
+				copyTxt = "Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
+			}
+			
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue) + '<hr/><p id="copyTxt">' + copyTxt + '</p><button id="copyBtn">' + copyBtnLabel + '</button>');
+			
+			$("#copyBtn")
 				.button({
-					label:	copyBtnTxt
+					label:	copyBtnLabel
 				})
 				.click(function() {
-					// ** need to copy to clipboard
+					x_selectText("panelTxt");
 				});
-			*/
 			
 			$("#panelTxt").html(modelAnswerResults.getData());
 			
@@ -51,7 +53,7 @@
 						if (dataString != "") {
 							dataString += '<br/><hr/><br/>';
 						}
-						dataString += '<p>' + x_addLineBreaks(thisObject.savedData) + '</p>';
+						dataString += '<p>' + thisObject.savedData + '</p>';
 					}
 				}
 			}
@@ -73,16 +75,23 @@
 		margin-top:	10px;
 	}
 	
+	#copyTxt {
+		color:		red;
+		font-size:	0.8em;
+	}
+	
+	#textHolder hr {
+		margin-top:		20px;
+		margin-bottom:	20px;
+	}
+	
 </style>
 
 <div id="pageContents">
 	
 	<div class="splitScreen medium">
 		
-		<div id="textHolder" class="left" tabindex="1">
-			<div id="leftTxt"></div>
-			<!--<button id="button"></button>-->
-		</div>
+		<div id="textHolder" class="left" tabindex="1"></div>
 		
 		<div id="infoHolder" class="right">
 			<div class="panel">
