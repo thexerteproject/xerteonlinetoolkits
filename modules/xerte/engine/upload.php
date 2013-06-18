@@ -18,7 +18,7 @@
 	* Gets around the Flash Cookie Bug
 	*
 	*/
-	if ($_GET['BROWSER'] == 'firefox') {
+	if ($_GET['BROWSER'] == 'firefox' || $_GET['BROWSER'] == 'safari') {
 		if ($_GET['AUTH'] == 'moodle') {
 			if (!isset($_COOKIE['MoodleSession']) || !isset($_COOKIE['MOODLEID1_'])) {
 				$temp = split('; ', $_GET['COOKIE']);

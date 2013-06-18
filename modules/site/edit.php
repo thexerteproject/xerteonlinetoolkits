@@ -21,7 +21,7 @@
  * @version 1.0
  * @author Patrick Lockley
  */
- 
+
 
 
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
@@ -92,7 +92,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 	function getSessionID(){
 			var id;
 			var auth = '<?php echo strtolower($xerte_toolkits_site->authentication_method); ?>';
-			var browser = (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 'firefox' : 'other';
+			var browser =	(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) ? 'firefox' :
+							((navigator.userAgent.toLowerCase().indexOf('safari') > -1) ? 'safari' :
+							'other');
 
 			//Pass data to upload (Firefox Flash Cookie Bug) which we are
 			//It first checks moodle, then defaults
