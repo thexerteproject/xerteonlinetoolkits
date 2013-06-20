@@ -39,10 +39,14 @@
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
 			if (x_currentPageXML.getAttribute("url").toLowerCase().indexOf(".html") >= 0) {
-				// there's a html file to load instead of a swf
-				x_pageInfo[x_currentPage].savedData = new Object();
+				// sets up savedData - it can contain the initObject and any additionally saved data for this customHTML file
+				if (x_pageInfo[x_currentPage].savedData == undefined) {
+					x_pageInfo[x_currentPage].savedData = [];
+				}
+				x_pageInfo[x_currentPage].savedData.push(new Object());
+				
 				if (x_currentPageXML.getAttribute("initObject") != undefined && x_currentPageXML.getAttribute("initObject") != "") {
-					x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
+					x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
 				}
 				
 				$("#pageSWF").remove();
@@ -57,8 +61,8 @@
 					}
 				}
 				
-				$panel.append('<div class="customHTMLHolder"></div>');
-				x_pageInfo[x_currentPage].savedData.customHTMLHolder = $panel.find(".customHTMLHolder");
+				$panel.append('<div class="jsHolder"><div class="customHTMLHolder"></div></div>');
+				$panel.find(".jsHolder").data("savedDataIndex", 0);
 				$panel.find(".customHTMLHolder").load(eval(x_currentPageXML.getAttribute("url")), x_pageLoaded());
 				
 			} else {
