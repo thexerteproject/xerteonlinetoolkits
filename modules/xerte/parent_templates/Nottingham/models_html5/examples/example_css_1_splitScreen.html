@@ -1,0 +1,61 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF LAYOUT WITH PAGE SPLIT IN TWO - TEXT AND PANEL
+	// ---------------------------------------------------------
+	// this layout can be used without the panel class to create two columns of normal text - just have two divs (with left or right class) inside splitScreen div
+	
+	var pageName = new function() {
+		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			// area available for page contents between title and footer bars can be got with:
+			var	width = $x_pageDiv.width(),
+				height = $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2; // taking padding into account
+			// if the page contents is taller than this the whole centre section will scroll
+			
+			// manually set height of panel so it fits size of page rather than contents (can't do this just with css)
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height(height - parseInt($panel.css("padding-top")) * 2 - 5); // taking padding and shadow on panel into account
+			}
+		}
+		
+		this.init = function() {
+			$("#textHolder").html("Add content for outside the panel here.");
+			$("#pageContents .panel").html("Add contents of panel here.");
+			
+			x_pageLoaded();
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+	<!-- include this if you want the panel to scroll separate from the rest of the page -->
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+</style>
+
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div id="infoHolder" class="right">
+			<div class="panel"></div>
+		</div>
+		
+	</div>
+	
+</div>

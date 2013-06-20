@@ -1,0 +1,99 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF LAYOUT WITH PAGE SPLIT IN TWO - TEXT AND PANEL
+	// ---------------------------------------------------------
+	// showing how panel size & alignment can be changed by adding a size class to the splitScreen div and using the left / right classes on the two divs inside it
+	// this is used on several of the navigators
+	
+	var pageName = new function() {		
+		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			// manually set height of panel so it fits size of page rather than contents (can't do this just with css)
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel");
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+		}
+		
+		this.init = function() {
+			$("#textHolder").html("Add content for outside the panel here.");
+			$("#pageContents .panel").html("Add contents of panel here.");
+			
+			var panelWidth   = x_currentPageXML.getAttribute("panelWidth"),
+				textAlign    = x_currentPageXML.getAttribute("align"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder  = $("#textHolder");
+			
+			if (panelWidth == "Full") {
+				// if panel is full screen then there's no need for splitScreen
+				$("#pageContents .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+				
+			} else {
+				if (textAlign != "Right") {
+					// size class applied to splitScreen sets width for column on left - column on right fills the rest of the available space
+					// see common_html5/css/desktopStyles.css for details of the small/medium/large etc. styles
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+					
+				} else {
+					// swap over classes on textHolder & infoHolder so they are reversed on screen
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+			
+			x_pageLoaded();
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+	<!-- include this if you want the panel to scroll separate from the rest of the page -->
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+</style>
+
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div id="infoHolder" class="right">
+			<div class="panel"></div>
+		</div>
+		
+	</div>
+	
+</div>

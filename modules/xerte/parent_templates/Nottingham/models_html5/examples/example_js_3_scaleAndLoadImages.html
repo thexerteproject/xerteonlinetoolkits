@@ -1,0 +1,68 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF HOW TO ADD AN IMAGE TO THE PAGE & SCALE IT
+	// -----------------------------------------------------
+	
+	var pageName = new function() {		
+		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			// you might want image to be resized if LO size is changed
+			x_scaleImg(this, 600, 600, true, false);
+		}
+		
+		this.init = function() {
+			$("#textHolder").html(x_currentPageXML.getAttribute("text"));
+			
+			// use this code to set the src attribute on img tags so the load will always be called correctly
+			// in some browsers load on its own is not consistently called if image is cached
+			$("#pageImg")
+				.one("load", function() {
+					// call global function to scale image
+					x_scaleImg(this, 500, 500, true, true); // params are (img, maxW, maxH, scale, firstScale)
+					// if firstScale is true then the original dimensions will be stored as img.data("origSize") so if it's resized later it won't be scaled larger than original
+					
+					x_pageLoaded();
+				})
+				.attr({
+					"src":	eval(x_currentPageXML.getAttribute("url")),
+					"alt":	x_currentPageXML.getAttribute("tip")
+				})
+				.each(function() {
+					if (this.complete) { // loaded from cache
+						$(this).trigger("load");
+					}
+				});
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+	<!-- hide until resized to avoid flicker of larger image -->
+	#pageImg {
+		visibility:	hidden;
+	}
+	
+</style>
+
+
+<div id="pageContents">
+	
+	<div id="imgHolder" class="mobileAlign">
+		<!-- mobileAlign class makes panel appear centred rather than inline on smaller devices -->
+		<div class="panel inline">
+			<img id="pageImg" />
+		</div>
+	</div>
+	
+	<div id="textHolder" />
+	
+</div>
