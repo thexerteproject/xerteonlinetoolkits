@@ -1,0 +1,54 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF HOW TO USE CUSTOM FUNCTIONS & VARIABLES
+	// --------------------------------------------------
+	
+	var pageName = new function() {
+		// create vars here if you need them to be used in more than one function in the page model
+		// WARNING - if there's more than one page of this type in a project this may be overridden (see example_js_1.html for how you can save data between page changes)
+		var pageVar = "I exist on all pages of this type";
+		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			var initVar = "I only exist inside this function";
+			
+			// avoid creating global vars from page models:
+			globalVar = "I now exist globally and can be accessed from any page in the project";
+			
+			// avoid changing global attributes prefixed with "x_" (created in xenith.js) unless you know what you are doing
+			// e.g. x_currentPage
+			
+			
+			// call custom functions within the page model as either:
+			this.customFunction(); // or:
+			pageName.customFunction();
+			
+			x_pageLoaded();
+		}
+		
+		// create custom functions using the same structure as init()
+		this.customFunction = function() {
+			console.log("I am a customFunction – call me whatever you like");
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+</style>
+
+
+<div id="pageContents">
+	
+</div>
