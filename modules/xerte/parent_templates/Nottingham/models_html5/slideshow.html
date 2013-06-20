@@ -41,8 +41,7 @@
 				} 
 			}
 			
-			var	$panelPage = $("#pageContents .panelPage"),
-				$img1;
+			var	$panelPage = $("#pageContents .panelPage");
 			
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -61,11 +60,16 @@
 							newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 							
 						} else if (url.split('.').pop().slice(0, -1) == "html") {
-							x_pageInfo[x_currentPage].savedData = new Object();
-							if (this.getAttribute("initObject") != undefined && this.getAttribute("initObject") != "") {
-								x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject(this.getAttribute("initObject"));
+							// sets up savedData for current page as an array so it can contain the initObject and any additionally saved data for this customHTML file
+							if (x_pageInfo[x_currentPage].savedData == undefined) {
+								x_pageInfo[x_currentPage].savedData = [];
 							}
-							newString += '<div class="customHTMLHolder"></div>';
+							x_pageInfo[x_currentPage].savedData.push(new Object());
+							
+							if (this.getAttribute("initObject") != undefined && this.getAttribute("initObject") != "") {
+								x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(this.getAttribute("initObject"));
+							}
+							newString += '<div class="jsHolder"></div>';
 							
 						} else {
 							newString += '<div class="pageImg"><img ';
@@ -91,7 +95,6 @@
 						if (i == 0) {
 							// don't set src of image that's visible until later as panels needs to be fully set up for image scaling to work correctly
 							$img.data("src", eval(url));
-							$img1 = $img;
 						} else {
 							$img.attr("src", eval(url));
 						}
@@ -110,10 +113,12 @@
 							$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 						}
 						
-					} else if ($thisPanelPage.find(".customHTMLHolder").length > 0) {
-						var $customHTMLHolder = $thisPanelPage.find(".customHTMLHolder");
-						x_pageInfo[x_currentPage].savedData.customHTMLHolder = $customHTMLHolder;
-						$customHTMLHolder.load(eval(url));
+					} else if ($thisPanelPage.find(".jsHolder").length > 0) {
+						$thisPanelPage.find(".jsHolder").data({
+							"savedDataIndex"	:x_pageInfo[x_currentPage].savedData.length - 1,
+							"built"				:false,
+							"url"				:eval(url)
+						});
 					}
 				});
 			
@@ -166,19 +171,23 @@
 				$("#pageContents .panel").prepend($("#btnHolder"));
 			}
 			
-			// everything's now set up so image on current page can be loaded now
-			if ($img1 != undefined) {
-				$img1
+			if ($panelPage.find(".pageImg img").length > 0) {
+				// there's an image on 1st pane - load it now everything's set up
+				$panelPage.find(".pageImg img")
 					.one("load", function() {
 						slideshow.sizeChanged();
 					})
-					.attr("src", $img1.data("src"))
+					.attr("src", $panelPage.find(".pageImg img").data("src"))
 					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 						if (this.complete) {
 							$(this).trigger("load");
 						}
 					});
+				
 			} else {
+				if ($panelPage.find(".jsHolder").length > 0) {
+					this.loadCustomHTML();
+				}
 				this.sizeChanged();
 			}
 			
@@ -207,6 +216,28 @@
 			}
 		}
 		
+		this.loadCustomHTML = function() {
+			if ($("#infoHolder .panelPage:visible .jsHolder").length > 0) {
+				// there's some custom html to be loaded
+				var	$thisJsHolder = $("#infoHolder .panelPage:visible .jsHolder"),
+					$thisCustomHTMLHolder;
+				
+				if ($thisJsHolder.data("built") != false) {
+					// this pane has already been viewed - reload the customHTML previously used
+					$thisCustomHTMLHolder = $thisJsHolder.data("built").appendTo($thisJsHolder);
+					
+					customHTML.pageChanged();
+					
+				} else {
+					// customHTML hasn't loaded here before - load it from file
+					$thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($thisJsHolder);
+					$thisJsHolder.data("built", $thisCustomHTMLHolder);
+					
+					$thisCustomHTMLHolder.load($thisJsHolder.data("url"));
+				}
+			}
+		}
+		
 		this.panelChange = function(newPage) {
 			var $pageContents = $("#pageContents"),
 				$prevBtn = $("#prevBtn"),
@@ -219,8 +250,12 @@
 			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
 			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
 			
+			// remove any custom HTML so it doesn't mess up any custom HTML that might be loaded on another pane
+			$(".customHTMLHolder").detach();
+			
 			if (prevPage != -1) {
 				slideshow.scaleImages();
+				slideshow.loadCustomHTML();
 			}
 			
 			if (newPage == 0) {

@@ -53,7 +53,8 @@
 							"url"	:this.getAttribute("url"),
 							"obj"	:this.getAttribute("initObject"),
 							"tip"	:this.getAttribute("tip"),
-							"movieSize"	:this.getAttribute("movieSize")
+							"movieSize"	:this.getAttribute("movieSize"),
+							"built"	:false
 							})
 						.on("click", function() {
 							var $this = $(this);
@@ -65,11 +66,21 @@
 										infoString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 										
 									} else if (url.split('.').pop().slice(0, -1) == "html") {
-										x_pageInfo[x_currentPage].savedData = new Object();
-										if ($this.data("obj") != undefined && $this.data("obj") != "") {
-											x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject($this.data("obj"));
+										if ($this.data("built") == false) {
+											// sets up savedData for current page as an array so it can contain the initObject and any additionally saved data for this customHTML file
+											if (x_pageInfo[x_currentPage].savedData == undefined) {
+												x_pageInfo[x_currentPage].savedData = [];
+											}
+											x_pageInfo[x_currentPage].savedData.push(new Object());
+											$this.data("savedDataIndex", x_pageInfo[x_currentPage].savedData.length - 1);
+											
+											if ($this.data("obj") != undefined && $this.data("obj") != "") {
+												x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject($this.data("obj"));
+											}
 										}
-										infoString += '<div class="customHTMLHolder"></div>';
+										
+										infoString += '<div class="jsHolder"></div>';
+										
 									} else {
 										infoString += '<div class="paneImg"><img ';
 										if ($this.data("tip") != undefined && $this.data("tip") != "") {
@@ -81,6 +92,9 @@
 								
 								$(".listItem.highlight").removeClass("highlight");
 								$this.addClass("highlight");
+								
+								// remove any custom HTML so on previous pane so it can be added back in again later
+								$(".customHTMLHolder").detach();
 								
 								var $infoHolder = $("#infoHolder");
 								$infoHolder
@@ -118,10 +132,19 @@
 										$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 									}
 									
-								} else if ($infoHolder.find(".customHTMLHolder").length > 0) {
-									var $customHTMLHolder = $infoHolder.find(".customHTMLHolder");
-									x_pageInfo[x_currentPage].savedData.customHTMLHolder = $customHTMLHolder;
-									$customHTMLHolder.load(eval(url));
+								} else if ($infoHolder.find(".jsHolder").length > 0) {
+									$infoHolder.find(".jsHolder").data("savedDataIndex", $this.data("savedDataIndex"));
+									if ($this.data("built") != false) {
+										// this has already been viewed - reload the customHTML previously used
+										$this.data("built").appendTo($infoHolder.find(".jsHolder"));
+										customHTML.pageChanged();
+										
+									} else {
+										// customHTML hasn't loaded here before - load it from file
+										var $thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($infoHolder.find(".jsHolder"));
+										$this.data("built", $thisCustomHTMLHolder);
+										$thisCustomHTMLHolder.load(eval(url));
+									}
 								}
 							}
 						});
