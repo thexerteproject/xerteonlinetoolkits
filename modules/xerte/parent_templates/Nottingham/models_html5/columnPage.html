@@ -59,11 +59,17 @@
 						newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 						
 					} else if (url.split('.').pop().slice(0, -1) == "html") {
-						x_pageInfo[x_currentPage].savedData = new Object();
-						if (this.getAttribute("initObject") != undefined && this.getAttribute("initObject") != "") {
-							x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject(this.getAttribute("initObject"));
+						// sets up savedData - it can contain the initObject and any additionally saved data for this customHTML file
+						if (x_pageInfo[x_currentPage].savedData == undefined) {
+							x_pageInfo[x_currentPage].savedData = [];
 						}
-						newString += '<div class="customHTMLHolder"></div>';
+						x_pageInfo[x_currentPage].savedData.push(new Object());
+						
+						if (this.getAttribute("initObject") != undefined && this.getAttribute("initObject") != "") {
+							x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(this.getAttribute("initObject"));
+						}
+						
+						newString += '<div class="jsHolder"><div class="customHTMLHolder"></div></div>';
 						
 					} else {
 						newString += '<div class="pageImg"><img style="visibility: hidden"  ';
@@ -107,10 +113,9 @@
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 					
-				} else if ($thisColumn.find(".customHTMLHolder").length > 0) {
-					var $customHTMLHolder = $thisColumn.find(".customHTMLHolder");
-					x_pageInfo[x_currentPage].savedData.customHTMLHolder = $customHTMLHolder;
-					$customHTMLHolder.load(eval(url));
+				} else if ($thisColumn.find(".jsHolder").length > 0) {
+					$thisColumn.find(".jsHolder").data("savedDataIndex", x_pageInfo[x_currentPage].savedData.length - 1);
+					$thisColumn.find(".customHTMLHolder").load(eval(url));
 				}
 			});
 			

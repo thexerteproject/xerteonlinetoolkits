@@ -15,13 +15,19 @@
 		
 		this.init = function() {
 			if (x_currentPageXML.getAttribute("modelFile").toLowerCase().indexOf(".html") >= 0) {
-				x_pageInfo[x_currentPage].savedData = new Object();
-				if (x_currentPageXML.getAttribute("initObject") != undefined && x_currentPageXML.getAttribute("initObject") != "") {
-					x_pageInfo[x_currentPage].savedData.initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
+				// sets up savedData - it can contain the initObject and any additionally saved data for this customHTML file
+				if (x_pageInfo[x_currentPage].savedData == undefined) {
+					x_pageInfo[x_currentPage].savedData = [];
 				}
-				$("#pageContents").append('<div class="customHTMLHolder"></div>');
-				x_pageInfo[x_currentPage].savedData.customHTMLHolder = $("#pageContents .customHTMLHolder");
-				$(".customHTMLHolder").load(eval(x_currentPageXML.getAttribute("modelFile")));
+				x_pageInfo[x_currentPage].savedData.push(new Object());
+				
+				if (x_currentPageXML.getAttribute("initObject") != undefined && x_currentPageXML.getAttribute("initObject") != "") {
+					x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
+				}
+				
+				$("#pageContents").append('<div class="jsHolder"><div class="customHTMLHolder"></div></div>');
+				$("#pageContents .jsHolder").data("savedDataIndex", 0);
+				$("#pageContents .customHTMLHolder").load(eval(x_currentPageXML.getAttribute("modelFile")));
 				
 			} else {
 				// if language attributes aren't in xml will have to use english fall back
