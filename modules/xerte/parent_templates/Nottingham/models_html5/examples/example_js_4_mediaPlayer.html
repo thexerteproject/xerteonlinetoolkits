@@ -1,0 +1,70 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF HOW TO ADD A MEDIA PLAYER TO THE PAGE
+	// ------------------------------------------------
+	
+	var pageName = new function() {		
+		
+		this.pageChanged = function() {
+			// audio / video players need to be reloaded everytime the page is viewed - some browsers won't play them consistently without doing this
+			this.loadAudio();
+			this.loadVideo();
+		}
+		
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			this.loadAudio();
+			this.loadVideo();
+			
+			x_pageLoaded();
+		}
+		
+		this.loadAudio = function() {
+			$("#pageAudio").mediaPlayer({
+				type		:"audio",
+				source		:x_currentPageXML.getAttribute("sound"),
+				width		:200,		// optional - by default it will use the width of the parent element (in this case $("#pageAudio"))
+				pageName	:"pageName"	// optional - must match the name of this page model
+			});
+		}
+		
+		this.loadVideo = function() {
+			$("#pageVideo").mediaPlayer({
+				type			:"video",
+				source			:x_currentPageXML.getAttribute("video"),
+				width			:500,
+				height			:300
+				//pageName		:"pageName"	// optional - must match the name of this page model
+			});
+		}
+		
+		// if you include the optional pageName property when setting up your mediaPlayer this function will be called when the media player has been set up
+		// this gives you a reference to the mediaElement so you can add listeners to its events, e.g. timeupdates shown below
+		this.mediaFunct = function(mediaElement) {
+			mediaElement.addEventListener("timeupdate", function(e) {
+				console.log("Time: " + mediaElement.currentTime);
+			});
+			// see model_html5/transcriptReader.html for real example of this
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+</style>
+
+
+<div id="pageContents">
+	
+	<div id="pageAudio"></div>
+	
+	<div id="pageVideo"></div>
+	
+</div>

@@ -1,0 +1,40 @@
+<script type="text/javascript">
+	
+	// NEW PAGE MODELS SHOULD BE BASED ON THIS TEMPLATE
+	// ------------------------------------------------
+	// change lines 10 and 28 below so that "pageName" matches the unique name of the page in the xwd
+	// save this file to models_html5 as pageName.html
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var pageName = new function() {		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+</style>
+
+
+<div id="pageContents">
+	
+</div>
