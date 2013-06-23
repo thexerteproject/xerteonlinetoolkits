@@ -278,3 +278,27 @@ function import_templates_template(){
 	document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_IMPORT + '</span></p><p><form target="upload_iframe" method="post" onsubmit="javascript:iframe_check_initialise();" enctype="multipart/form-data" id="importpopup" name="importform" action="website_code/php/import/import.php" ><input name="filenameuploaded" type="file" /><br /><br />' + WORKSPACE_NEW_PROJECTNAME + '<br /><br /><input name="templatename" type="text" onkeyup="new_template_name()" /><br /><span id="namewrong"></span><br /><button id="submitbutton" type="submit" name="submitBtn" onsubmit="javascript:iframe_check_initialise();" class="xerte_button">' + WORKSPACE_UPLOAD + '</button></form></p>';
 
 }
+
+/**
+	 * 
+	 * Function API template
+ 	 * This function displays the API options
+	 * @version 1.0
+	 * @author John Smith
+	 */
+
+function api_template(){
+
+	//document.getElementById("dynamic_area").innerHTML = '<p class="header"><span>' + WORKSPACE_API + '</span></p><p></p>';
+	
+	if(setup_ajax()!=false){
+    
+		var url="api_template.php";
+
+		workspace_ajax_send_prepare(url);
+
+		xmlHttp.send('details=null');
+
+	}
+
+}
