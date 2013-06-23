@@ -1,4 +1,4 @@
-size/**	
+/**	
  * 
  * template management, javascript for the management of the templates in the file area and their creation
  *
