@@ -11,11 +11,11 @@ _load_language_file("/workspaceproperties.inc");
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title><?PHP echo WORKSPACE_PROPERTIES_TITLE; ?></title>
 
-<!-- 
+<!--
 
 University of Nottingham Xerte Online Toolkits
 
-Workspace properties HTML page 
+Workspace properties HTML page
 Version 1.0
 
 -->
@@ -68,7 +68,7 @@ Hidden Iframe to allow for ajax file uploads
             <div class="main_area">
                 <div>
                     <span id="title">
-                        <img src="website_code/images/folder_workspace.gif" style="vertical-align:middle; padding-left:10px;" /> 
+                        <img src="website_code/images/folder_workspace.gif" style="vertical-align:middle; padding-left:10px;" />
                         <?PHP echo WORKSPACE_PROPERTIES_DISPLAY_TITLE; ?>
                     </span>
                 </div>
@@ -95,57 +95,66 @@ Hidden Iframe to allow for ajax file uploads
                         -->
 
                         <div id="menu_tabs">
-                            <div class="tab_spacer" style="height:35px;">							
+                            <div class="tab_spacer" style="height:35px;">
                             </div>
                             <div id="tab1-1" class="tab_right_pad" style="height:38px;">
                             </div>
                             <div id="tab1" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('1');my_properties_template()">
                                     <?PHP echo WORKSPACE_PROPERTIES_TAB_DETAILS; ?>
-                                </p>									
+                                </p>
                             </div>
-                            <div class="tab_spacer">							
+                            <div class="tab_spacer">
                             </div>
-                            <div id="tab2-1" class="tab_right_pad" style="height:38px;">										
+                            <div id="tab2-1" class="tab_right_pad" style="height:38px;">
                             </div>
                             <div id="tab2" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('2'); workspace_templates_template()">
                                     <?PHP echo WORKSPACE_PROPERTIES_TAB_PROJECTS; ?>
-                                </p>									
+                                </p>
                             </div>
-                            <div class="tab_spacer">							
+                            <div class="tab_spacer">
                             </div>
-                            <div id="tab3-1" class="tab_right_pad" style="height:38px;">										
+                            <div id="tab3-1" class="tab_right_pad" style="height:38px;">
                             </div>
                             <div id="tab3" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('3'); folder_rss_templates_template()">
                                     <?PHP echo WORKSPACE_PROPERTIES_TAB_FEEDS; ?>
-                                </p>									
+                                </p>
                             </div>
-                            <div class="tab_spacer">							
+                            <div class="tab_spacer">
                             </div>
-                            <div id="tab4-1" class="tab_right_pad" style="height:38px;">										
+                            <div id="tab4-1" class="tab_right_pad" style="height:38px;">
                             </div>
                             <div id="tab4" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('4');import_templates_template()">
                                     <?PHP echo WORKSPACE_PROPERTIES_TAB_IMPORT; ?>
-                                </p>									
+                                </p>
                             </div>
-                            <div class="tab_spacer">							
+                            <div class="tab_spacer">
                             </div>
-                            <!-- 
+                            <div id="tab5-1" class="tab_right_pad" style="height:38px;">
+                            </div>
+                            <div id="tab5" class="tab" style="width:146px; height:38px;">
+                                <p onclick="javascript:tab_highlight('5');api_template()">
+                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_API; ?>
+                                </p>
+                            </div>
+                            <div class="tab_spacer">
+                            </div>
+                            <!--
 
                                 Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
 
                             -->
 
-                            <div class="tab_spacer" style="height:315px;">							
+                            <div class="tab_spacer" style="height:315px;">
                             </div>
-                        </div>						
-                </div>									
-            </div>		
+                        </div>
+                </div>
+            </div>
         </div>
-    </div>	
+    </div>
     <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
     </div>
     <div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
