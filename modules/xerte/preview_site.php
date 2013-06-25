@@ -33,48 +33,50 @@ function show_preview_code($row, $row_username){
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
 		<title><?PHP echo XERTE_PREVIEW_TITLE;  ?></title>
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
-		
+
 		<!--jquery-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/jquery.js"></script>
 
 		<!--styles -->
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap.css" rel="stylesheet">
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap-responsive.css" rel="stylesheet">
-		
+
 		<!--custom styles for this template-->
 		<link href="<?PHP echo $template_path_string ?>/common/css/custom.css" rel="stylesheet">
-				
+
 		<!--support for IE < 6-8 -->
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		
+
 		<!--media element and initialisation-->
 		<script src="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelement-and-player.min.js"></script>
 		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelementplayer.min.css" />
-		
+
 		<script type="text/javascript">
-		
+
 			var FileLocation = "<?PHP echo $string_for_flash ?>";
 			var templateLocation = "<?PHP echo $template_path_string ?>/";
 			var projectXML = "<?PHP echo $string_for_flash_xml ?>/"; //this is the file to read, not the xml
 
 		</script>
-    
+
 	</head>
 
 	<body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar">
-		
+
 		<!--facebookAPI-->
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";		  fjs.parentNode.insertBefore(js, fjs);		}(document, 'script', 'facebook-jssdk'));</script>
-	    
+
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
-			  
+
 				<div class="container">
-				
+
 					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -89,7 +91,7 @@ function show_preview_code($row, $row_username){
 				</div>
 			</div>
 		</div>
-	
+
 		<!--Learning Object Title-->
 		<header class="jumbotron" id="overview">
 			<div class="container">
@@ -104,10 +106,10 @@ function show_preview_code($row, $row_username){
 				<!--navigation-->
 				<div class="span3 bs-docs-sidebar">
 					<ul class="nav nav-list bs-docs-sidenav affix" id="toc">
-						<!--<li><a href="#section1ID">Section 1</a></li>-->					
+						<!--<li><a href="#section1ID">Section 1</a></li>-->
 					</ul>
 				</div>
-				
+
 				<!--content-->
 				<div class="span9" id="mainContent">
 
@@ -119,11 +121,11 @@ function show_preview_code($row, $row_username){
 			<div class="container">
 				<div class="row-fluid">
 					<div class="span12">
-					
+
 						<div class="addthis_toolbox addthis_default_style ">
 							<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
 							<a class="addthis_button_tweet"></a>
-							<a class="addthis_button_google_plusone"></a>  
+							<a class="addthis_button_google_plusone"></a>
 							<a class="addthis_button_linkedin_counter"></a>
 							<a class="addthis_button_pinterest_pinit"></a>
 							<a class="addthis_counter addthis_pill_style"></a>
@@ -131,26 +133,26 @@ function show_preview_code($row, $row_username){
 
 						<!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
 						<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5"></script>
-						
+
 						<img src="<?PHP echo $template_path_string ?>/common/footer/cc-by-nc-sa.png">
 						<strong><small>© 2013 The Univeristy of Nottingham</small></strong>
-						
+
 					</div>
 				</div>
 			</div>
 		</footer>
-		
+
 		<!--bootstrap script-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/bootstrap.min.js"></script>
-		
+
 		<!--initialise the application specific code-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/application.js"></script>
-		
+
 	<script type="text/javascript" language="JavaScript">
-	
-	
+
+
 	<?PHP
-	
+
 	 "</script></body></html>";
 
 	}

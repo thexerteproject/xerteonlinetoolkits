@@ -1,7 +1,7 @@
 <?php
 
 // Load the plugin files and fire a startup action
-require_once(dirname(__FILE__) . "/plugins.php"); 
+require_once(dirname(__FILE__) . "/plugins.php");
 
 startup();
 
@@ -48,7 +48,8 @@ recycle_bin();
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
-
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
