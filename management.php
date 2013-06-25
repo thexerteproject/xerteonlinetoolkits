@@ -20,6 +20,8 @@ function mgt_page($xerte_toolkits_site, $extra)
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+            <link rel="icon" href="favicon.ico" type="image/x-icon" />
+            <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <?PHP
     echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
 
