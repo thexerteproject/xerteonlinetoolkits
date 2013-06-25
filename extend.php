@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . "/config.php");
 _load_language_file("/extend.inc");
 
 /**
- * 
+ *
  * Login page, self posts to become extend page
  *
  * @author Patrick Lockley
@@ -20,6 +20,8 @@ function mgt_page($xerte_toolkits_site, $extra)
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
+			<link rel="icon" href="favicon.ico" type="image/x-icon" />
+			<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <?PHP
     echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
 
@@ -33,7 +35,7 @@ function mgt_page($xerte_toolkits_site, $extra)
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
             <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 
-            <!-- 
+            <!--
 
             University of Nottingham Xerte Online Toolkits
 
@@ -57,7 +59,7 @@ function mgt_page($xerte_toolkits_site, $extra)
                     <p>
     <?PHP echo $xerte_toolkits_site->welcome_message; ?>
                     </p>
-                </div>		
+                </div>
                 <div class="mainbody_holder">
                     <div class="mainbody_div_2">
                         <div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
@@ -71,7 +73,7 @@ function mgt_page($xerte_toolkits_site, $extra)
                                             <form method="post" enctype="application/x-www-form-urlencoded" action="extend.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button" style="float:right" ><?php echo EXTEND_BUTTON_LOGIN; ?></button></p></form>
 
 
-                                            <!-- 
+                                            <!--
 
                                                 After this, the login form is handled by the php
 
@@ -89,13 +91,13 @@ function mgt_page($xerte_toolkits_site, $extra)
                         <div class="border"></div>
                     </div>
                     <div class="mainbody_left">
-                        <div class="tutorials">								
+                        <div class="tutorials">
                         </div>
-                    </div>		
-                    <div class="mainbody_div">	
+                    </div>
+                    <div class="mainbody_div">
 
                     </div>
-                </div>		
+                </div>
             </div>
             <div class="border">
             </div>
@@ -168,7 +170,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";
         ?></script>
 
-                <!-- 
+                <!--
 
                 University of Nottingham Xerte Online Toolkits
 
@@ -199,10 +201,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 <iframe id="upload_iframe" name="upload_iframe" src="#" style="width:0px;height:0px; display:none;"></iframe>
 
-                <!-- 
-                
+                <!--
+
                 Folder popup is the div that appears when creating a new folder
-                
+
                 -->
                 <div class="topbar">
                     <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
@@ -211,10 +213,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                     <img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
                 </div>
 
-                <!-- 
-            
+                <!--
+
                     Main part of the page
-            
+
                 -->
 
                 <div class="pagecontainer">
@@ -224,7 +226,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                             <div class="top_left sign_in_TL m_b_d_2_child">
                                 <div class="top_right sign_in_TR m_b_d_2_child">
                                     <p class="heading">
-        <?PHP echo EXTEND_TITLE; ?>					
+        <?PHP echo EXTEND_TITLE; ?>
                                     </p>
                                 </div>
                             </div>
@@ -233,12 +235,12 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         <div class="admin_mgt_area_middle">
                             <div class="admin_mgt_area_middle_button">
 
-                                <!-- 
-            
+                                <!--
+
                                     admin area menu
-            
+
                                 -->
-					
+
                                 <div id="admin_area">
 
         <?PHP
@@ -273,6 +275,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
     }
 }
-?>	
+?>
                             </body>
                             </html>
