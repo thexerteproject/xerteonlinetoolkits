@@ -80,13 +80,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+    <title><?PHP echo SITE_EDIT_TITLE; ?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+	<link rel="icon" href="favicon_edit.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="favicon_edit.ico" type="image/x-icon" />
     <script src="modules/site/js/swfobject.js"></script>
     <script src="website_code/scripts/opencloseedit.js"></script>
     <script src="website_code/scripts/template_management.js"></script>
     <script src="website_code/scripts/ajax_management.js"></script>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?PHP echo SITE_EDIT_TITLE; ?></title>
-    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
     <script type="text/javascript" language="javascript">
 
 	function getSessionID(){
