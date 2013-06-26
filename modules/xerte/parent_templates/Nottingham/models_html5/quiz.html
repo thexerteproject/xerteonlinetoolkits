@@ -89,6 +89,8 @@
             XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
+			
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 		}
 		
 		this.loadQ = function() {
@@ -165,6 +167,7 @@
 						.html(x_addLineBreaks(this.getAttribute("text")));
 				});
             XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+
 		}
 
         this.showResults = function() {
