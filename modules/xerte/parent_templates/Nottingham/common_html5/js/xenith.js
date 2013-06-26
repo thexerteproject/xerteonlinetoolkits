@@ -809,6 +809,8 @@ function x_changePage(x_gotoPage) {
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
 	
+	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	
 	x_updateHash();
 }
 
