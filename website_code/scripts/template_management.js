@@ -211,16 +211,18 @@ function edit_window(admin){
                     window_id = "editwindow" + drag_manager.selected_items[x].id;
 
                     window_open = false;
+					if (typeof(edit_window_open) != 'undefined') {
 
-                    for(z=0;z<edit_window_open.length;z++){
+						for(z=0;z<edit_window_open.length;z++){
 
-                        if(("editwindow" + edit_window_open[z])==window_id){
+								if(("editwindow" + edit_window_open[z])==window_id){
 
-                            window_open = true;
+										window_open = true;
 
-                        }
+								}
 
-                    }
+						}
+					}
 
                     if(!window_open){
 

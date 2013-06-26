@@ -9,7 +9,7 @@
 		var mediaFile = str.split(',')[0].split('media=')[1];
 		var transcriptFile = str.split(',')[1].split('transcript=')[1];
 		var imageFile = str.split(',')[2].split('img=')[1];
-		var captionDetails = str.split(',')[3].split('caption=')[1];
+		var captionDetails = '';if (typeof(str.split(',')[3]) != 'undefined') captionDetails = str.split(',')[3].split('caption=')[1];
 		var flashvars = {
 			media: mediaFile,
 			transcript: transcriptFile,
