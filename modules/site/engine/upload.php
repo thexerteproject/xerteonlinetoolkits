@@ -5,7 +5,7 @@
 	* upload page, used by xerte to upload a file
 	*
 	* @author Patrick Lockley, tweaked by John Smith, GCU
-	* @version 1.1
+	* @version 1.2
 	* @copyright Copyright (c) 2008,2009 University of Nottingham
 	* @package
 	*/
@@ -18,10 +18,8 @@
 	* Gets around the Flash Cookie Bug
 	*
 	*/
-//$f_start = $_GET['BROWSER'].'_'.$_GET['AUTH'].'_';
-	if ($_GET['BROWSER'] == 'firefox') {
+	if ($_GET['BROWSER'] == 'firefox' || $_GET['BROWSER'] == 'safari') {
 		if ($_GET['AUTH'] == 'moodle') {
-//file_put_contents($f_start.$_COOKIE['MoodleSession'].'.txt', var_export($_SERVER['QUERY_STRING'], true));
 			if (!isset($_COOKIE['MoodleSession']) || !isset($_COOKIE['MOODLEID1_'])) {
 				$temp = split('; ', $_GET['COOKIE']);
 				if (!empty($temp)) {
@@ -35,7 +33,6 @@
 			}
 		}
 		else {
-//file_put_contents($f_start.$_COOKIE['PHPSESSID'].'.txt', var_export($_SERVER['QUERY_STRING'], true));
 			if (
 				(!isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID'])) ||
 				( isset($_COOKIE['PHPSESSID']) && isset($_GET['PHPSESSID']) && ($_COOKIE['PHPSESSID'] != $_GET['PHPSESSID']))) {
@@ -56,7 +53,7 @@
 	*	Now we check that the session has a valid, logged in user
 	*/
 	if(!isset($_SESSION['toolkits_logon_username'])) {
-		print "You are not logged in";
+		file_put_contents('error.txt', "You are not logged in", true);
 		exit();
 	}
 
@@ -67,10 +64,10 @@
 	*  This is really not very effective - will be replaced by whitelist
 	*    and mimetype detection - feel free to add to this list
 	*/
-	$blacklist = explode(',', 'php,php5,htm,html,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,js,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
+	$blacklist = explode(',', 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
 	$extension = strtolower(pathinfo($_FILES['Filedata']['name'], PATHINFO_EXTENSION));
 	if (in_array($extension, $blacklist)) {
-		print "Invalid filetype";
+		file_put_contents('error.txt', "Invalid filetype", true);
 		exit();
 	}
 
@@ -84,20 +81,49 @@
 	if (strpos($_FILES['Filedata']['name'], '...') !== false) $pass = false;
 
 	if ($pass === false){
-	  print "Invalid filename";
+	  file_put_contents('error.txt', "Invalid filename", true);
 	  exit();
 	}
-
 
 
    /**
 	*  Passed all the checks so lets try to write the file
 	*/
-	$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
-	if(move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)){
-		// OK!!
+	$moov_temp_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . 'process_moov.temp';
+	if ($extension == 'mp4' || $extension == 'm4v') {
+		$new_file_name = $moov_temp_file_name;
 	}
 	else {
-		print "Save file failed";
+		if (!@unlink($moov_temp_file_name)) {
+			file_put_contents('error.txt', error_get_last(), true);
+		}
+		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
+	}
+	if(!move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)) {
+		file_put_contents('error.txt', "Save file failed" . error_get_last(), true);
 		exit();
+	}
+
+
+
+   /**
+	*  Relocate moov atom if file is .mp4/m4v to support progressive download
+	*/
+	if ($extension == 'mp4' || $extension == 'm4v') {
+		require_once 'tools/moovrelocator/Moovrelocator.class.php';
+
+		$moovrelocator = Moovrelocator::getInstance();
+
+		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
+		if ($moovrelocator->setInput($moov_temp_file_name) == true) {
+			if ($moovrelocator->setOutput($new_file_name) == true) {
+				if (!(($result = $moovrelocator->fix()) === true)) {
+					file_put_contents('moovrelocator_error.txt', $result, true);
+					if(!copy($moov_temp_file_name, $new_file_name)) {
+						file_put_contents('error.txt', "Copy temp file failed" . error_get_last(), true);
+						exit();
+					}
+				}
+			}
+		}
 	}
