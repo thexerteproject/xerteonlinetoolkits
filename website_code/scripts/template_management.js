@@ -480,7 +480,7 @@ function preview_window(admin){
 
     }else{
 
-        var PreviewWindow = window.open(site_url + url_return("preview", 1), "previewwindow" + 1, "scrollbars=yes");
+        var PreviewWindow = window.open(site_url + url_return("preview", admin), "previewwindow" + admin, "scrollbars=yes");
 
     }
 
