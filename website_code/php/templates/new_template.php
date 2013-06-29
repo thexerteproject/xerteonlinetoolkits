@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * new_templates, allows the site to create a new user
  *
  * @author Patrick Lockley
@@ -41,9 +41,9 @@ if ($row_template_type['template_framework'] == 'xerte')
 {
     $extraflags = "engine=javascript";
 }
-$query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
+$query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), 0, "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
 
 if($ok) {
     _debug("Created new template entry in db");
