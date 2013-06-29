@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * Play page, displays the template to the end user
  *
  * @author Patrick Lockley
@@ -25,11 +25,11 @@ require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 //ini_set(display_errors,"ON");
 
 /**
- * 
+ *
  * Function check_host
  * This function checks http security settings
  * @param string $hostname = should be the $SERVER referrer
- * @param string $setting = what the security setting in play_security_details is 
+ * @param string $setting = what the security setting in play_security_details is
  * @return bool True or False if two params match
  * @version 1.0
  * @author Patrick Lockley
@@ -45,11 +45,11 @@ function check_host($hostname, $setting)
 }
 
 /**
- * 
+ *
  * Function check_ip
  * This function checks IP security settings
  * @param string $hostname = should be the $_SERVER REMOTE_ADDR
- * @param string $setting = what the security setting in play_security_details is 
+ * @param string $setting = what the security setting in play_security_details is
  * @return bool True or False if two params match
  * @version 1.0
  * @author Patrick Lockley
@@ -110,10 +110,10 @@ function check_ip($ip_address, $security_settings)
 }
 
 /**
- * 
+ *
  * Function check_security_type
  * This function checks database settings to see if non standard play security options have been met
- * @param string $security_setting = the value taken from security_setting in play_security_details 
+ * @param string $security_setting = the value taken from security_setting in play_security_details
  * @return bool True or False if two params match
  * @version 1.0
  * @author Patrick Lockley
@@ -204,17 +204,17 @@ if ($row_play['access_to_whom'] == "Private") {
      */
 
     dont_show_template();
-	
+
 } else if ($row_play['access_to_whom'] == "Public") {
 
     /*
      * Public - Increment the number of users and show the template
      */
 
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
 
     show_template($row_play);
-	
+
 } else if ($row_play['access_to_whom'] == "Password") {
 
     /*
@@ -262,7 +262,7 @@ if($lti->valid) {
 
   if ($success && empty($errors)) {
     //sucessfull authentication
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
 
     show_template($row_play);
   } else {
@@ -280,12 +280,12 @@ if($lti->valid) {
              * Update uses and display the template
              *-/
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
             show_template($row_play);
-			
+
         } else {
 
             /*
@@ -320,10 +320,10 @@ if($lti->valid) {
 
         if (strpos($_SERVER['HTTP_REFERER'], $test_string) == 0) {
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
 
             show_template($row_play);
-			
+
         } else {
             dont_show_template('Doesnt Match Referer:' . $_SERVER['HTTP_REFERER']);
         }
@@ -353,7 +353,7 @@ if($lti->valid) {
                 $flag = true;
 
                 break;
-				
+
             } else {
 
                 $flag == false;
