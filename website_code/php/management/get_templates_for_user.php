@@ -72,7 +72,7 @@ if(is_user_admin()){
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_CREATED . "</td><td>" . $row_templates['date_created']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_MODIFIED . "</td><td>" . $row_templates['date_modified']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ACCESSED . "</td><td>" . $row_templates['date_accessed']  . "</td></tr>";
-            echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_PLAYS . "</td><td>" . $row_templates['number_of_uses']  . "</td></tr>";
+            echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_PLAYS . "</td><td>" . (isset($row_templates['number_of_uses']) ? $row_templates['number_of_uses'] : 0)  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ACCESS . "</td><td>" . $row_templates['access_to_whom']  . "</td></tr>";
             echo "</table>";
             echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:edit_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_EDIT . "</button>";
