@@ -193,6 +193,13 @@ require_once $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 */
 require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
+
+/*
+ * Fix for NULL number_of_uses
+ */
+db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses = 0 WHERE ISNULL(number_of_uses)");
+
+
 /*
  * Start to check the access_to_whom settings from templatedetails for this template
  */
@@ -211,7 +218,7 @@ if ($row_play['access_to_whom'] == "Private") {
      * Public - Increment the number of users and show the template
      */
 
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
     show_template($row_play);
 
@@ -262,7 +269,7 @@ if($lti->valid) {
 
   if ($success && empty($errors)) {
     //sucessfull authentication
-    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
     show_template($row_play);
   } else {
@@ -280,7 +287,7 @@ if($lti->valid) {
              * Update uses and display the template
              *-/
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
             require $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
 
@@ -320,7 +327,7 @@ if($lti->valid) {
 
         if (strpos($_SERVER['HTTP_REFERER'], $test_string) == 0) {
 
-            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=COALESCE(number_of_uses+1,1) WHERE template_id=?", array($safe_template_id));
+            db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET number_of_uses=number_of_uses+1 WHERE template_id=?", array($safe_template_id));
 
             show_template($row_play);
 
