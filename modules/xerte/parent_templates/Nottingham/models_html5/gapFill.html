@@ -25,8 +25,11 @@
 		this.sizeChanged = function() {
 			var $panel = $("#mainPanel");
 			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+        $panel.height(Math.max(
+					$("#targetHolder").height() + $("#labelHolder").height(),
+					$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5
+				));
+      }
 			
 			$pageContents.find("#hint").remove();
 		}
