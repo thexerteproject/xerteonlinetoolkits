@@ -123,7 +123,7 @@
 							val = val.replace('?rel=0', '');
 						}
 						val = val.replace('?rel=1', '');
-						var s = val.indexOf('http://www.youtube.com/embed/') + 29;
+						var s = val.indexOf('//www.youtube.com/embed/') + 24;
 						var f = val.indexOf('"', s+1);
 						params.code = val.substring(s, f);
 					}
