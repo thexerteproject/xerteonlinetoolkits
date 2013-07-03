@@ -135,7 +135,7 @@ $(document).ready(function() {
                 if (linkID != undefined) {
 					page.linkID = linkID;
 				}
-                if (pageID != undefined && pageID != "Unique ID for this page") { // ** this shouldn't use fixed english string but how else to do it as it's not something for main language file?
+                if (pageID != undefined && pageID != "Unique ID for this page") { // *** this shouldn't use fixed english string but how else to do it as it's not something for main language file? (FC) *** We should detect that the pageID is the CORRECT format - I.E. PGxxxxxx or whatever that is (JS) ***
 					page.pageID = pageID;
 				}
 				x_pageInfo.push(page);
