@@ -235,6 +235,12 @@ function x_setUp() {
 					text:	false
 				})
 				.click(function() {
+
+					// Post flag to containing page for iframe resizing
+					if (window && window.parent && window.parent.postMessage) {
+						window.parent.postMessage((String)(!x_fillWindow), "*");
+					}
+
 					if (x_fillWindow == false) {
 						x_setFillWindow();
 					} else {
