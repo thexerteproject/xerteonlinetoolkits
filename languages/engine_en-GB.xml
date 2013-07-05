@@ -39,7 +39,7 @@
   
   <errorPage label="No template is currently available for this page type."/>
   
-  <errorBrowser label="Your browser does not support this page type."/>
+  <errorBrowser label="Your browser does not fully support this page type."/>
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
   
