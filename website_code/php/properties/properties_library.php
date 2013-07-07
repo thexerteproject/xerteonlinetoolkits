@@ -90,7 +90,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 	if(function_exists("display_property_engines")){
 
 		display_property_engines($change,$msgtype);
-		
+
 	}
 
     if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!='Private'){
@@ -117,28 +117,28 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
         $query_name_response = mysql_query($query_for_template_name);
 
         $row_name = mysql_fetch_array($query_name_response);
-		
+
 		if(isset($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size)){
-		
+
 			if($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size!="*"){
-		
+
 				$temp_string = $xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size;
-			
+
 			}else{
-			
+
 				$temp_string = "100%,100%";
-			
+
 			}
-		
+
 		}else{
-		
+
 			$temp_string = "100%,100%";
-		
+
 		}
-		
+
         $temp_array = explode(",",$temp_string);
 
-        echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src='"  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "' width='" . $temp_array[0] . "' height='" . $temp_array[1] . "' frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
+        echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
 
     }
 
