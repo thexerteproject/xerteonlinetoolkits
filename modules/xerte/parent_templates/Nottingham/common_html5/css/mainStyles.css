@@ -367,3 +367,13 @@ table.header.simple tr:first-child {
 table.footer.simple tr:last-child {
 	border-top:	1px solid #333333;
 }
+
+/* SPECIFIC IE FIXES */
+
+.lt-ie8 #x_pageNo {
+    display:inline;
+}
+
+.lt-ie8 #x_pageControls {
+    display:inline;
+}

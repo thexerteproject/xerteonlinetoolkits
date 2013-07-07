@@ -1,31 +1,73 @@
 <!DOCTYPE html>
-<html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7 ie6 ie5"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8 ie7"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9 ie8"><![endif]-->
+<!--[if IE 9]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
+	<script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><!--http://bit.ly/17XnmNe-->
 
-    <title>%TITLE%</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<title>%TITLE%</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
 
-
-    <link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css" type="text/css" />
 	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/themeStyles.css" type="text/css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css" type="text/css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css" />
+</head>
 
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery-1.7.1.min.js"></script>
+<body onload = "XTInitialise();" onbeforeunload = "XTTerminate();" onunload = "XTTerminate();">
+	<div id="x_mainHolder">
+
+		<div id="x_mobileScroll">
+			<div id="x_headerBlock" role="banner">
+				<div>
+					<h1> </h1>
+					<h2> </h2>
+				</div>
+			</div>
+
+			<div id="x_pageHolder" role="main">
+				<div id="x_pageDiv">
+
+				</div>
+			</div>
+		</div>
+
+		<div id="x_footerBlock" role="navigation">
+			<div id="x_footerBg"></div>
+			<div class="x_floatLeft"></div>
+			<div id="x_footerRight" class="x_floatRight">
+				<button id="x_menuBtn"></button>
+				<div id="x_pageControls">
+					<button id="x_prevBtn"></button>
+					<div id="x_pageNo"></div>
+					<button id="x_nextBtn"></button>
+				</div>
+			</div>
+		</div>
+
+		<div id="x_background"></div>
+
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="%TEMPLATEPATH%common_html5/js/jquery-1.7.1.min.js"><\/script>')</script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery-ui-1.8.18.custom.min.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery.ui.touch-punch.min.js"></script>			<!-- allows jQuery components to work on touchscreen devices -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/imageLens.js"></script>							<!-- for creating magnifiers on images -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaelement-and-player.js"></script>	<!-- for audio & video players -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaPlayer.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/swfobject.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js"></script>
     %TRACKING_SUPPORT%
-
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
-
     <script type="text/javascript">
         function getUrlVars() {
             var vars = [], hash;
@@ -61,47 +103,5 @@
         }
 
     </script>
-
-</head>
-
-<body onload = "XTInitialise();" onbeforeunload = "XTTerminate();" onunload = "XTTerminate();">
-
-<script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js"></script>
-
-<div id="x_mainHolder">
-
-    <div id="x_mobileScroll">
-        <div id="x_headerBlock" role="banner">
-            <div>
-                <h1> </h1>
-                <h2> </h2>
-            </div>
-        </div>
-
-        <div id="x_pageHolder" role="main">
-            <div id="x_pageDiv">
-
-            </div>
-        </div>
-    </div>
-
-    <div id="x_footerBlock" role="navigation">
-        <div id="x_footerBg"></div>
-        <div class="x_floatLeft"></div>
-        <div class="x_floatRight">
-            <button id="x_menuBtn"></button>
-            <div id="x_pageControls">
-                <button id="x_prevBtn"></button>
-                <div id="x_pageNo"></div>
-                <button id="x_nextBtn"></button>
-            </div>
-        </div>
-    </div>
-
-    <div id="x_background"></div>
-
-</div>
-
-<script type="text/javascript" language="JavaScript"></script>
 </body>
 </html>
