@@ -578,3 +578,33 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 
 }
 
+function findAnchor(name){
+
+	var anchorID = name;
+	var pIndex;
+	var sIndex;
+	
+	$(data).find('page').each( function(index, value, name){
+	
+		pIndex = index;
+
+		$(this).find('section').each( function(index,value, name){
+
+			if ( $(this).text().indexOf('<a id="' + anchorID) != -1){
+			
+				sIndex = index;
+				
+				window.location.hash = 'page' + (pIndex + 1) + 'section' + (sIndex + 1);
+				
+				startHash = window.location.hash;
+				
+				parseContent(pIndex);
+						
+			}
+					
+		});
+	
+	});
+	
+}
+
