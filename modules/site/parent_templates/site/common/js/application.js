@@ -1,4 +1,3 @@
-
 $(document).ready(init);
 
 var data;
@@ -590,7 +589,7 @@ function findAnchor(name){
 
 		$(this).find('section').each( function(index,value, name){
 
-			if ( $(this).text().indexOf('<a id="' + anchorID) != -1){
+			if ( $(this).text().indexOf('<a id="' + anchorID + '"') != -1){
 			
 				sIndex = index;
 				
