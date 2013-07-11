@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
@@ -23,7 +23,7 @@
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
-			
+
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -72,7 +72,7 @@
 			} else {
 				$optionHolder.find("input[type='checkbox']").remove();
 			}
-			
+
 			var $optionGroup = $optionHolder.find(".optionGroup"),
 				//$option = $optionHolder.find("input"),
 				//$optionTxt = $optionHolder.find(".optionTxt"),
@@ -91,7 +91,7 @@
 					}
 					$thisOption = $thisOptionGroup.find("input");
 					$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
-					
+
                     mcq.currNrOptions = i+1;
                     if (this.getAttribute("correct") == 'true') {
                         correctOptions.push(i+1+"");
@@ -99,7 +99,7 @@
                         correctFeedback.push(this.getAttribute("feedback"));
 						correctOption = true;
                     }
-					
+
 					$thisOption
 						.attr({
 							"value"		:this.getAttribute("text"),
@@ -109,7 +109,7 @@
 							$("#feedback").html("");
 							var $checkBtn = $("#checkBtn"),
 								$selected = $("#optionHolder input:checked");
-							
+
 							if ($checkBtn.attr("disabled") != "disabled" && $selected.length == 0) {
 								$checkBtn.attr("disabled", "disabled");
 							} else if ($checkBtn.attr("disabled") == "disabled" && $selected.length > 0) {
@@ -122,15 +122,15 @@
 						.focusout(function() {
 							$thisOptionGroup.removeClass("highlight");
 						});
-					
+
 					$thisOptionTxt
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
 						.html(this.getAttribute("text"));
 				});
-			
+
             XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
-			
+
 			// checkBtnWidth attribute not used as button will be sized automatically
 			// if language attributes aren't in xml will have to use english fall back
 			var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
@@ -153,9 +153,9 @@
 						l_options = [],
 						l_answer = [],
 						l_feedback = [],
-						selected = $("#optionHolder input:checked"),
+						selected = $("#optionHolder input"),
 						generalFeedback = "";
-					
+
                     if (x_currentPageXML.getAttribute("feedback") != undefined) {
                         generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
                     }
@@ -163,13 +163,10 @@
                     for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).parent().index(),
 							selectedOption = $(x_currentPageXML).children()[optionIndex];
-						
 						answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
-                        if (correct != false && selectedOption.getAttribute("correct") == "true") {
-                            correct = true;
-                        } else {
-                            correct = false;
-                        }
+
+						correct = correct && (	(selectedOption.getAttribute("correct") == "true" && $(selected[i]).is(':checked')) ||
+												(selectedOption.getAttribute("correct") == "false" && !$(selected[i]).is(':checked')));
                         l_options.push(optionIndex+1+"");
                         l_answer.push(selectedOption.getAttribute("text"));
                         l_feedback.push(selectedOption.getAttribute("feedback"));
@@ -257,7 +254,7 @@
 		float:		left;
 		display:	block;
 	}
-	
+
 	#optionHolder .optionGroup {
 		padding-top:	5px;
 		padding-bottom:	5px;
