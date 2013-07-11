@@ -135,7 +135,8 @@
 			$("#thumbHolder .thumbBox")
 				.click(function() {
 					var $this = $(this);
-					
+					//tweak to stop thumbnail from playing after clicking on it
+					$this.find("video")[0].pause(); 
 					if ($mainInfoHolder.find("audio,video").length > 0) {
 						// if there's an audio / video file playing in flash, pause it before changing info - otherwise it continues playing in background
 						$mainInfoHolder.find("audio,video").each(function() {
@@ -280,6 +281,22 @@
 				height	:Number($video.data("dimensions")[1])
 			});
 		}
+	}
+	
+	//tweak for outscaled thumbnails when returned from video-full-screen for mp4
+	MediaElementPlayer.prototype.exitFullScreen_org = MediaElementPlayer.prototype.exitFullScreen;
+	MediaElementPlayer.prototype.exitFullScreen = function() {
+		$("#thumbHolder .thumbVideo video").each(function() {
+			var tmp_width = $(this.parentElement.parentElement.parentElement.parentElement).width();
+			var tmp_height = $(this.parentElement.parentElement.parentElement.parentElement).height();
+			var tmp_elem = this;
+			for (var i = 0; i < 5; i++) {
+				$(tmp_elem).width(tmp_width);
+				$(tmp_elem).height(tmp_height);
+				tmp_elem = tmp_elem.parentElement;
+			}			
+		});
+		this.exitFullScreen_org();
 	}
 	
 	perspectives.init();
