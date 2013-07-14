@@ -126,16 +126,16 @@ $(document).ready(function() {
 			
 			x_pages = xmlData.children();
 			x_pages.each(function() {
-                var linkID = $(this)[0].getAttribute("linkID"),
+				var 	linkID = $(this)[0].getAttribute("linkID"),
 					pageID = $(this)[0].getAttribute("pageID"),
 					page = new Object();
 				
 				page.type = $(this)[0].nodeName;
 				page.built = false;
-                if (linkID != undefined) {
+				if (linkID != undefined) {
 					page.linkID = linkID;
 				}
-                if (pageID != undefined && pageID != "Unique ID for this page") { // *** this shouldn't use fixed english string but how else to do it as it's not something for main language file? (FC) *** We should detect that the pageID is the CORRECT format - I.E. PGxxxxxx or whatever that is (JS) ***
+				if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
 					page.pageID = pageID;
 				}
 				x_pageInfo.push(page);
@@ -1221,9 +1221,13 @@ function x_insertText(node) {
 	}
 	
 	// check text for page links - if found convert to xenith compatible link
-    var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
-    tempText = tempText.replace(regExp, 'href="#" onclick="x_navigateToPage(false, {type : \'linkID\', ID : \'$1\'});return false;">');
-	
+	var regExp = new RegExp('href="asfunction:_level0\.engine\.rootIcon\.pageLink,([A-Za-z0-9]+)">','ig');
+	tempText = tempText.replace(regExp, function (str, p1, offset, s) {
+		if (!isNaN(parseFloat(p1)) && isFinite(p1))
+			return 'href="#" onclick="x_navigateToPage(false,{type:\'page\',ID:\'' + p1 + '\'});return false;">';
+		else
+			return 'href="#" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\''+ p1 +'\'});return false;">';
+	});
 	node.nodeValue = tempText;
 }
 
