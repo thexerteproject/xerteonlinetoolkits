@@ -1182,8 +1182,10 @@
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
 
+    <img label="Image" type="media" optional="true"/>
+		<imgSize label="Image Size" type="textInput" defaultValue="320,240" optional="true"/>
     <video label="Video" type="media" optional="true"/>
-	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+		<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
