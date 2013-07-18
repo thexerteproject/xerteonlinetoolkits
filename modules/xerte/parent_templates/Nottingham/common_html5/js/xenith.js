@@ -1151,7 +1151,7 @@ function x_openMediaWindow() {
 		captionDetails = undefined;
 	}
 	
-	window.open("mediaViewer/media.htm?media=../" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+	window.open("mediaViewer/mediaHTML5.htm?media=" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
 }
 
 
