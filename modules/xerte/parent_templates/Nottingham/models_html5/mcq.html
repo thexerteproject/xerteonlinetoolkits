@@ -163,13 +163,16 @@
                     for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).parent().index(),
 							selectedOption = $(x_currentPageXML).children()[optionIndex];
-						answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
 
 						correct = correct && (	(selectedOption.getAttribute("correct") == "true" && $(selected[i]).is(':checked')) ||
 												(selectedOption.getAttribute("correct") == "false" && !$(selected[i]).is(':checked')));
-                        l_options.push(optionIndex+1+"");
-                        l_answer.push(selectedOption.getAttribute("text"));
-                        l_feedback.push(selectedOption.getAttribute("feedback"));
+                        if ($(selected[i]).is(':checked')) {
+                        	answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
+
+							l_options.push(optionIndex+1+"");
+							l_answer.push(selectedOption.getAttribute("text"));
+							l_feedback.push(selectedOption.getAttribute("feedback"));
+						}
                     }
                     generalFeedback += answerFeedback;
 
