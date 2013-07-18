@@ -136,7 +136,7 @@
 				.click(function() {
 					var $this = $(this);
 					//tweak to stop thumbnail from playing after clicking on it
-					$this.find("video")[0].pause(); 
+					if ($this.find("video").length>0) $this.find("video")[0].pause(); 
 					if ($mainInfoHolder.find("audio,video").length > 0) {
 						// if there's an audio / video file playing in flash, pause it before changing info - otherwise it continues playing in background
 						$mainInfoHolder.find("audio,video").each(function() {
@@ -299,6 +299,19 @@
 		this.exitFullScreen_org();
 	}
 	
+	//tweak for swf player for flv having full screen button active in thumbnails
+	$(window).load(function () {
+		
+		$("#thumbHolder .thumbMedia").append('<div class="thumbCover"></div>');
+		$("#thumbHolder .thumbCover").css({'position':'absolute','z-index':'1'});
+		$("#thumbHolder .thumbVideo").css({'position':'absolute','z-index':'0'})
+		$('#thumbHolder embed').attr({'wmode':'opaque'});
+
+		$("#thumbHolder .thumbCover").each(function() {
+			$(this).width($(this).prev().width());
+			$(this).height($(this).prev().height());
+		});
+	});
 	perspectives.init();
 	
 </script>
