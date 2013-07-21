@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var quiz = new function() {
@@ -7,7 +7,7 @@
 			currentQ,
 			qNoTxt,
 			myProgress;
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.startQs();
@@ -15,7 +15,7 @@
 				this.loadVideo();
 			}
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
@@ -26,7 +26,7 @@
 				this.loadVideo();
 			}
 		}
-		
+
 		this.startQs = function() {
 			// if language attributes aren't in xml will have to use english fall back
 			this.qNoTxt = x_currentPageXML.getAttribute("quesCount");
@@ -62,7 +62,7 @@
 			if (x_currentPageXML.getAttribute("numQuestions") != "All" && x_currentPageXML.getAttribute("numQuestions") != undefined && Number(x_currentPageXML.getAttribute("numQuestions")) < numQs) {
 				numQs = Number(x_currentPageXML.getAttribute("numQuestions"));
 			}
-			
+
 			if (x_currentPageXML.getAttribute("order") == "random") {
 				var qNums = [];
 				for (var i=0; i<$(x_currentPageXML).children().length; i++) {
@@ -89,15 +89,15 @@
             XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
-			
+
 			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 		}
-		
+
 		this.loadQ = function() {
 			var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
-			
+
 			$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
-			
+
 			var infoString = $thisQ.getAttribute("prompt");
 
 			var url = $thisQ.getAttribute("image");
@@ -111,9 +111,9 @@
 				infoString = newString + infoString;
 			}
 			$("#qTxt").html(x_addLineBreaks(infoString));
-			
+
 			$("#feedback").html("");
-			
+
 			var $optionHolder = $("#optionHolder");
 			if ($thisQ.getAttribute("type") == "Multiple Answer") {
 				$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
@@ -160,7 +160,7 @@
 							}
 							$("#nextBtn").attr("disabled", "disabled");
 						});
-					
+
 					$thisOptionTxt
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
@@ -207,7 +207,7 @@
 				var scale = maxW / videoDimensions[0];
 				videoDimensions = [videoDimensions[0] * scale, videoDimensions[1] * scale];
 			}
-			
+
 			$video.mediaPlayer({
 				type			:"video",
 				source			:$video.data("src"),
@@ -215,12 +215,12 @@
 				height			:Number(videoDimensions[1])
 			});
 		}
-		
+
 		this.init = function() {
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
-			
+
 			if (panelWidth == "Full") {
 				$("#infoHolder .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -252,7 +252,7 @@
 					}
 				}
 			}
-			
+
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				$textHolder.append('<div class="panel inline"><div id="pageVideo"></div></div>');
 				var $pageVideo = $("#pageVideo"),
@@ -269,15 +269,16 @@
 				});
 				quiz.loadVideo();
 			}
-			
+
 			var imgSize = '';
-			if (x_currentPageXML.getAttribute("imgSize").indexOf(',')>-1) {
+			if (x_currentPageXML.getAttribute("imgSize") != undefined && x_currentPageXML.getAttribute("imgSize").indexOf(',')>-1) {
 				var size_tmp = x_currentPageXML.getAttribute("imgSize").split(',');
 				imgSize = ' width="'+size_tmp[0]+'px" height="'+size_tmp[1]+'px"';
 			}
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
 				$textHolder.append('<img src="' + eval(x_currentPageXML.getAttribute("img")) + '"' + imgSize +'>');
 			}
+
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
 			// if language attributes aren't in xml will have to use english fall back
 			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
@@ -330,7 +331,7 @@
 				"onCompletionText"	:onCompletionText,
 				"scoreText"			:scoreText
 			});
-			
+
 			$("#checkBtn")
 				.button({
 					label:	submitBtnText
@@ -338,21 +339,21 @@
 				.attr("disabled", "disabled")
 				.click(function() {
 					var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
-					
+
 					var selected = $("#optionHolder input:checked"),
 						optionFeedback = "",
 						correct = true,
 						l_options = [],
 						l_answer = [],
 						l_feedback = [];
-					
+
                     var generalFeedback = "";
-					
+
                         // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).index()/2,
 							selectedOption = $(currentQuestion).children()[optionIndex];
-						
+
 						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback"))  + "</p>";
 						if (correct != false && selectedOption.getAttribute("correct") == "true") {
 							correct = true;
@@ -426,7 +427,7 @@
                     }
                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                     });
-			
+
 			$("#nextBtn")
 				.button({
 					label:	nextBtnText
@@ -443,7 +444,7 @@
 					}
                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 				});
-			
+
 			$("#restartBtn")
 				.button({
 					label:	restartBtnText
@@ -452,7 +453,7 @@
 				.click(function() {
 					quiz.startQs();
 				});
-			
+
 			this.startQs();
 			this.sizeChanged();
 			x_pageLoaded();
@@ -494,14 +495,14 @@
 	#feedbackHolder, #feedback, #buttonHolder {
 		clear:		both;
 	}
-	
+
 	#pageContents .quizImg {
 		padding:	5px;
 		float:		right;
 		max-width:	50%;
 		height:		auto;
 	}
-	
+
 	#textHolder p:first-child {
 		margin-top:	0px;
 	}
