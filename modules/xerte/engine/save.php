@@ -36,6 +36,13 @@ if (function_exists(get_magic_quotes_gpc) && get_magic_quotes_gpc())
     $unescaped_data = stripslashes($_POST['filedata']);
 }
 
+/**
+ * Remove Ascii Chr(1) as it seems to break the XML later on...
+ */
+if (strpos($unescaped_data, chr(1))>0) {
+	$unescaped_data = str_replace(chr(1), '', $unescaped_data);
+}
+
 $filedata = apply_filters("editor_save_data", $unescaped_data);
 
 /**
