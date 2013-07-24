@@ -16,12 +16,13 @@ var x_languageData	= [],
 	x_volume		= 1,
 	x_audioBarH		= 30,
 	x_mediaText		= [],
+	x_startTime,
 	x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
-
 $(document).ready(function() {
+
 	$x_mainHolder = $("#x_mainHolder");
 	$x_mainHolder.css("visibility", "hidden");
 	
@@ -87,7 +88,7 @@ $(document).ready(function() {
 			pos = text.indexOf('"');
 			while(pos > -1) {
 				var attribute = true;
-				for (i=0; i<indexCData.length; i++) {
+				for (i=0, len=indexCData.length; i<len; i++) {
 					if (indexCData[i].start < pos && indexCData[i].end > pos) {
 						attribute = false; // ignore as in CDATA
 					}
@@ -95,9 +96,7 @@ $(document).ready(function() {
 				if (attribute == true) {
 					if (start == true) {
 						start = false;
-						var attr = new Object();
-						attr.start = pos;
-						indexAttr.push(attr);
+						indexAttr.push({start:pos});
 					} else {
 						start = true;
 						indexAttr[indexAttr.length-1].end = pos;
@@ -107,7 +106,7 @@ $(document).ready(function() {
 			}
 			
 			var newString = "";
-			for (i=0; i<indexAttr.length; i++) {
+			for (i=0, len=indexAttr.length; i<len; i++) {
 				if (i == 0) {
 					newString += text.substring(0, indexAttr[i].start);
 				} else {
@@ -120,7 +119,7 @@ $(document).ready(function() {
 			}
 			
 			var xmlData = $($.parseXML(newString)).find("learningObject");
-			for (i=0; i<xmlData[0].attributes.length; i++) {
+			for (i=0, len=xmlData[0].attributes.length; i<len; i++) {
 				x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
 			}
 			
@@ -128,10 +127,7 @@ $(document).ready(function() {
 			x_pages.each(function() {
 				var 	linkID = $(this)[0].getAttribute("linkID"),
 					pageID = $(this)[0].getAttribute("pageID"),
-					page = new Object();
-				
-				page.type = $(this)[0].nodeName;
-				page.built = false;
+					page = {type:$(this)[0].nodeName, built:false};
 				if (linkID != undefined) {
 					page.linkID = linkID;
 				}
@@ -152,10 +148,7 @@ $(document).ready(function() {
 				}
 				if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
 					x_pages.splice(0, 0, "menu");
-					var page = new Object();
-					page.type = "menu";
-					page.built = false;
-					x_pageInfo.splice(0, 0, page);
+					x_pageInfo.splice(0, 0, {type:'menu', built:false});
 				}
 			}
 			
@@ -288,10 +281,7 @@ function x_setUp() {
 	} else if (x_params.navigation == "Historic") {
 		$x_pageNo.hide();
 	} else {
-		var dialog = new Object();
-		dialog.type = "menu";
-		dialog.built = false;
-		x_dialogInfo.push(dialog);
+		x_dialogInfo.push({type:'menu', built:false});
 	}
 	
 	
@@ -316,24 +306,21 @@ function x_setUp() {
 	
 	
 	if (x_params.glossary != undefined) {
-		var dialog = new Object();
-		dialog.type = "glossary";
-		dialog.built = false;
-		x_dialogInfo.push(dialog);
+		x_dialogInfo.push({type:'glossary', built:false});
 		
 		var items = x_params.glossary.split("||");
-		for (var i=0; i<items.length; i++) {
+		for (var i=0, len=items.length; i<len; i++) {
 			var	item = items[i].split("|"),
-				word = new Object();
-			word.word = item[0];
-			word.definition = item[1];
+				word = {word:item[0], definition:item[1]};
+
 			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
 		if (x_glossary.length > 0) {
 			x_glossary.sort(function(a, b){ // sort alphabetically
-				var word1 = a.word.toLowerCase(), word2 = b.word.toLowerCase();
+				var 	word1 = a.word.toLowerCase(),
+					word2 = b.word.toLowerCase();
 				if (word1 < word2) {
 					return -1;
 				} else if (word1 > word2) {
@@ -366,7 +353,7 @@ function x_setUp() {
 						myText = $this.text(),
 						myDefinition;
 					
-					for (var i=0; i<x_glossary.length; i++) {
+					for (var i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
 						}
@@ -387,7 +374,7 @@ function x_setUp() {
 					$x_glossaryHover.remove();
 				})
 				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
+					var 	leftPos,
 						topPos = e.pageY + 20;
 					
 					if (x_browserInfo.mobile == false) {
@@ -526,20 +513,14 @@ function x_setUp() {
 			url: x_templateLocation + "common_html5/charPad.xml",
 			dataType: "xml",
 			success: function(xml) {
-				var dialog = new Object();
-				dialog.type = "language";
-				dialog.built = false;
-				x_dialogInfo.push(dialog);
+				x_dialogInfo.push({type:'language', built:false});
 				
 				var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
 					specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
 					specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
 				
-				for (var i=0; i<specCharsLower.length; i++) {
-					var specChar = new Object();
-					specChar.lower = specCharsLower[i];
-					specChar.upper = specCharsUpper[i];
-					x_specialChars.push(specChar);
+				for (var i=0, len=specCharsLower.length; i<len; i++) {
+					x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
 				}
 				
 				$x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
@@ -651,13 +632,12 @@ function x_setUp() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
 	
-	for (var i=0; i<mediaElementText.length; i++) {
-		var mediaTextObj = new Object();
-		mediaTextObj.label = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]);
-		mediaTextObj.description = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0]);
-		x_mediaText.push(mediaTextObj);
+	for (var i=0, len=mediaElementText.length; i<len; i++) {
+		x_mediaText.push({
+			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
+			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
+		});
 	}
-	
 	
     x_navigateToPage(true, x_startPage);
 }
@@ -690,10 +670,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
 // function returns page no. of page with matching linkID / pageID
 function x_lookupPage(pageType, pageID) {
-    var i, len = x_pageInfo.length;
-    for (i=0; i<len; i++) {
-        if ((pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)) {
+    for (var i=0, len = x_pageInfo.length; i<len; i++) {
+        if (	(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+		(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
+		) {
             break;
         }
     }
@@ -1032,7 +1012,7 @@ function x_updateCss(updatePage) {
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
 function x_openDialog(type, title, close, position, load) {
 	var index = -1;
-	for (var i=0; i<x_dialogInfo.length; i++) {
+	for (var i=0, len=x_dialogInfo.length; i<len; i++) {
 		if (x_dialogInfo[i].type == type) {
 			index = i;
 			break;
@@ -1139,7 +1119,7 @@ function x_openMediaWindow() {
 	// get info about how to display captions - if none are found the code in the mediaViewer folder will look for details in tt file - otherwise it will use defaults
 	var	captionDetails = "",
 		nodeNames = ["mediaTiming", "mediaPosition", "mediaAlign", "mediaColour", "mediaHighlight", "mediaHighlightColour"];
-	for (var i=0; i<nodeNames.length; i++) {
+	for (var i=0, len=nodeNames.length; i<len; i++) {
 		if (x_params[nodeNames[i]] != undefined) {
 			if (captionDetails != "") {
 				captionDetails += ";";
@@ -1172,10 +1152,12 @@ function x_getLangInfo(node, attribute, fallBack) {
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
 	var	attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"],
-		i, j;
-	
-	for (i=0; i<pageXML.attributes.length; i++) {
-		for (j=0; j<attrToCheck.length; j++) {
+		i,
+		j,
+		iLen = pageXML.attributes.length,
+		jLen = attrToCheck.length;
+	for (i=0; i<iLen; i++) {
+		for (j=0; j<jLen; j++) {
 			if (pageXML.attributes[i].name == attrToCheck[j]) {
 				x_insertText(pageXML.attributes[i]);
 				break;
@@ -1183,7 +1165,7 @@ function x_findText(pageXML) {
 		}
 	}
 	
-	for (i=0; i<pageXML.childNodes.length; i++) {
+	for (i=0, len=pageXML.childNodes.length; i<len; i++) {
 		if (pageXML.childNodes[i].nodeValue == null) {
 			x_findText(pageXML.childNodes[i]); // it's a child node of node - check through this too
 		} else {
@@ -1201,7 +1183,7 @@ function x_insertText(node) {
 	
 	// check text for glossary words - if found replace with a link
 	if (x_glossary.length > 0) {
-		for (var k=0; k<x_glossary.length; k++) {
+		for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
 		}
@@ -1379,7 +1361,7 @@ function x_sortInitObject(initObj) {
 		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work
 			var	temp = initObj.replace("{", "").replace("}", "").split(","),
 				initObject = new Object();
-			for (var i=0; i<temp.length; i++) {
+			for (var i=0, len=temp.length; i<len; i++) {
 				initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
 			}
 		} else {
