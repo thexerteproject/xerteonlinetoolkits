@@ -90,7 +90,6 @@ $(document).ready(function() {
 			if (x_pages.length < 2) {
 				// don't show navigation options if there's only one page 
 				$("#x_footerBlock .x_floatRight").remove();
-				
 			} else {
 				if (x_params.navigation == undefined) {
 					x_params.navigation = "Linear";
@@ -801,8 +800,8 @@ function x_loadPage(response, status, xhr) {
 		x_pageLoaded();
 	}
 	
-    // Queue reparsing of MathJax
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    	// Queue reparsing of MathJax
+    	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 	
 	x_setUpPage();
 }
@@ -932,7 +931,7 @@ function x_addCountdownTimer() {
 		$("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
 		x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
 		$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
-		x_timer = window.setInterval(x_countdownTicker, 1000);
+		x_timer = setInterval(x_countdownTicker, 1000);
 	}
 }
 
@@ -982,51 +981,47 @@ function x_updateCss(updatePage) {
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
 function x_openDialog(type, title, close, position, load) {
-	var index = -1;
 	for (var i=0, len=x_dialogInfo.length; i<len; i++) {
 		if (x_dialogInfo[i].type == type) {
-			index = i;
+			$(".x_popupDialog").parent().detach();
+			if (x_dialogInfo[i].built != false) {
+				$x_body.append(x_dialogInfo[i].built);
+
+				if (load != undefined) {
+					x_dialogInfo[i].built.children(".x_popupDialog").html(load);
+				}
+
+				if (type != "language") {
+					x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
+				} else {
+					x_dialogInfo[i].built.show(); // don't reset size / position for language dialogs
+					language.turnOnKeyEvents();
+				}
+
+			} else {
+				$x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
+
+				var $x_popupDialog = $("#x_" + type);
+				$x_popupDialog
+					.dialog({
+						closeOnEscape:	true,
+						title:			title,
+						closeText:		close,
+						close: function() {$x_popupDialog.parent().detach();}
+						})
+					.parent().hide();
+
+				if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
+					$x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
+
+				} else {
+					$x_popupDialog.html(load);
+					x_setDialogSize($x_popupDialog, position);
+				}
+
+				x_dialogInfo[i].built = $x_popupDialog.parent();
+			}
 			break;
-		}
-	}
-	if (index != -1) {
-		$(".x_popupDialog").parent().detach();
-		if (x_dialogInfo[index].built != false) {
-			$x_body.append(x_dialogInfo[index].built);
-			
-			if (load != undefined) {
-				x_dialogInfo[index].built.children(".x_popupDialog").html(load);
-			}
-			
-			if (type != "language") {
-				x_setDialogSize(x_dialogInfo[index].built.children(".x_popupDialog"), position);
-			} else {
-				x_dialogInfo[index].built.show(); // don't reset size / position for language dialogs
-				language.turnOnKeyEvents();
-			}
-			
-		} else {
-			$x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
-			
-			var $x_popupDialog = $("#x_" + type);
-			$x_popupDialog
-				.dialog({
-					closeOnEscape:	true,
-					title:			title,
-					closeText:		close,
-					close: function() {$x_popupDialog.parent().detach();}
-					})
-				.parent().hide();
-			
-			if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
-				$x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
-				
-			} else {
-				$x_popupDialog.html(load);
-				x_setDialogSize($x_popupDialog, position);
-			}
-			
-			x_dialogInfo[index].built = $x_popupDialog.parent();
 		}
 	}
 }
@@ -1123,16 +1118,11 @@ function x_getLangInfo(node, attribute, fallBack) {
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
 	var	attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"],
-		i,
-		j,
-		iLen = pageXML.attributes.length,
-		jLen = attrToCheck.length;
-	for (i=0; i<iLen; i++) {
-		for (j=0; j<jLen; j++) {
-			if (pageXML.attributes[i].name == attrToCheck[j]) {
-				x_insertText(pageXML.attributes[i]);
-				break;
-			}
+		i, j, len;
+
+	for (i=0, len = pageXML.attributes.length; i<len; i++) {
+		if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
+			x_insertText(pageXML.attributes[i]);
 		}
 	}
 	
@@ -1213,7 +1203,6 @@ function x_insertCSS(href) {
 	css.type = "text/css";
 	document.getElementsByTagName("head")[0].appendChild(css);
 }
-
 
 
 // ___ FUNCTIONS CALLED FROM PAGE MODELS ___
@@ -1347,7 +1336,7 @@ function x_sortInitObject(initObj) {
 
 // function selects text (e.g. when users are to be prompted to copy text on screen)
 function x_selectText(element) {
-	var text = document.getElementById(element),
+	var 	text = document.getElementById(element),
 		range;
 	
 	if (document.body.createTextRange) {
