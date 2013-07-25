@@ -119,58 +119,25 @@ $(document).ready(function() {
 
 // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
 function x_fixLineBreaks(text) {
-	var 	indexAttr = [],	 // contains objects [startIndex, endIndex] of attributes
-		indexCData = [], // contains objects [startIndex, endIndex] of CDATA
-		start = true,
-		pos = text.indexOf('<![CDATA['),
-		i, len;
-
-	while(pos > -1) { // find all CDATA and ignore them when searching for attributes
-		if (start == true) {
-			indexCData.push({start:pos});
-			start = false;
-			pos = text.indexOf(']]>', pos+1);
+	var 	split_up = text.split(/<\!\[CDATA\[|\]\]>/),
+		temp, i, j, len, len2;
+	
+	for (i=0, len=split_up.length; i<len; i+=2) {
+		temp = split_up[i].split('"');
+		for (j=1, len2=temp.length; j<len2; j+=2) {
+			temp[j] = temp[j].replace(/(\n|\r|\r\n)/g, "&#10;");
 		}
-		else {
-			indexCData[indexCData.length - 1].end = pos;
-			start = true;
-			pos = text.indexOf('<![CDATA[', pos+1);
-		}
+		split_up[i] = temp.join('"');
 	}
-	start = true;
-	pos = text.indexOf('"');
-	while(pos > -1) {
-		var attribute = true;
-		for (i=0, len=indexCData.length; i<len; i++) {
-			if (indexCData[i].start < pos && indexCData[i].end > pos) {
-				attribute = false; // ignore as in CDATA
-			}
-		}
-		if (attribute == true) {
-			if (start == true) {
-				start = false;
-				indexAttr.push({start:pos});
-			} else {
-				start = true;
-				indexAttr[indexAttr.length-1].end = pos;
-			}
-		}
-		pos = text.indexOf('"', pos+1);
+	
+	// Put the CDATA blocks back...
+	temp = [];
+	for (i=0, len=split_up.length-1; i<len; i+=2) {
+		temp.push(split_up[i] + "<![CDATA[" + split_up[i+1]);
 	}
-
-	var newString = "";
-	for (i=0, len=indexAttr.length; i<len; i++) {
-		if (i == 0) {
-			newString += text.substring(0, indexAttr[i].start);
-		} else {
-			newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
-		}
-		newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
-		if (i == indexAttr.length - 1) {
-			newString += text.substring(indexAttr[i].end, text.length);
-		}
-	}
-	return newString;
+	temp.push(split_up[i]);
+	
+	return temp.join("]]>");
 }
 
 // function gets data from language file
