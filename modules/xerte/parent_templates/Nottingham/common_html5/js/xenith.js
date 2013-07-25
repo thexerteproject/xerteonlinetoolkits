@@ -64,59 +64,8 @@ $(document).ready(function() {
 		url: x_projectXML,
 		dataType: "text",
 		success: function(text) {
-			// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
-			var indexAttr = [],	 // contains objects [startIndex, endIndex] of attributes
-				indexCData = [], // contains objects [startIndex, endIndex] of CDATA
-				start = true,
-				pos = text.indexOf('<![CDATA['),
-				i;
-			
-			while(pos > -1) { // find all CDATA and ignore them when searching for attributes
-				if (start == true) {
-					var cData = new Object();
-					cData.start = pos;
-					indexCData.push(cData);
-					start = false;
-					pos = text.indexOf(']]>', pos+1);
-				} else {
-					indexCData[indexCData.length - 1].end = pos;
-					start = true;
-					pos = text.indexOf('<![CDATA[', pos+1);
-				}
-			}
-			start = true;
-			pos = text.indexOf('"');
-			while(pos > -1) {
-				var attribute = true;
-				for (i=0, len=indexCData.length; i<len; i++) {
-					if (indexCData[i].start < pos && indexCData[i].end > pos) {
-						attribute = false; // ignore as in CDATA
-					}
-				}
-				if (attribute == true) {
-					if (start == true) {
-						start = false;
-						indexAttr.push({start:pos});
-					} else {
-						start = true;
-						indexAttr[indexAttr.length-1].end = pos;
-					}
-				}
-				pos = text.indexOf('"', pos+1);
-			}
-			
-			var newString = "";
-			for (i=0, len=indexAttr.length; i<len; i++) {
-				if (i == 0) {
-					newString += text.substring(0, indexAttr[i].start);
-				} else {
-					newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
-				}
-				newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
-				if (i == indexAttr.length - 1) {
-					newString += text.substring(indexAttr[i].end, text.length);
-				}
-			}
+
+			var newString = x_fixLineBreaks(text);
 			
 			var xmlData = $($.parseXML(newString)).find("learningObject");
 			for (i=0, len=xmlData[0].attributes.length; i<len; i++) {
@@ -168,6 +117,61 @@ $(document).ready(function() {
 
 });
 
+// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
+function x_fixLineBreaks(text) {
+	var 	indexAttr = [],	 // contains objects [startIndex, endIndex] of attributes
+		indexCData = [], // contains objects [startIndex, endIndex] of CDATA
+		start = true,
+		pos = text.indexOf('<![CDATA['),
+		i, len;
+
+	while(pos > -1) { // find all CDATA and ignore them when searching for attributes
+		if (start == true) {
+			indexCData.push({start:pos});
+			start = false;
+			pos = text.indexOf(']]>', pos+1);
+		}
+		else {
+			indexCData[indexCData.length - 1].end = pos;
+			start = true;
+			pos = text.indexOf('<![CDATA[', pos+1);
+		}
+	}
+	start = true;
+	pos = text.indexOf('"');
+	while(pos > -1) {
+		var attribute = true;
+		for (i=0, len=indexCData.length; i<len; i++) {
+			if (indexCData[i].start < pos && indexCData[i].end > pos) {
+				attribute = false; // ignore as in CDATA
+			}
+		}
+		if (attribute == true) {
+			if (start == true) {
+				start = false;
+				indexAttr.push({start:pos});
+			} else {
+				start = true;
+				indexAttr[indexAttr.length-1].end = pos;
+			}
+		}
+		pos = text.indexOf('"', pos+1);
+	}
+
+	var newString = "";
+	for (i=0, len=indexAttr.length; i<len; i++) {
+		if (i == 0) {
+			newString += text.substring(0, indexAttr[i].start);
+		} else {
+			newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
+		}
+		newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
+		if (i == indexAttr.length - 1) {
+			newString += text.substring(indexAttr[i].end, text.length);
+		}
+	}
+	return newString;
+}
 
 // function gets data from language file
 function x_getLangData(lang) {
