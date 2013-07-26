@@ -1318,17 +1318,25 @@ function x_getSWFRef(swfID) {
 function x_sortInitObject(initObj) {
 	var initObject;
 	if (initObj != undefined && initObj != "") {
-		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work
-			var	temp = initObj.replace("{", "").replace("}", "").split(","),
-				initObject = new Object();
-			for (var i=0, len=temp.length; i<len; i++) {
-				initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work.
+		
+		
+			//add try ... ...catch to try the JSON parser first, which will work with valid JSON strings, else fallback to Fay's method if an error occurs.
+			try {
+				initObject = $.parseJSON(initObj);
 			}
-		} else {
-			initObject = initObj;
-		}
+			catch(e){
+				var	temp = initObj.replace("{", "").replace("}", "").split(","),
+					initObject = new Object();
+				for (var i=0; i<temp.length; i++) {
+					initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+				}
+			}
+			
 	} else {
+	
 		initObject = undefined;
+		
 	}
 	return initObject;
 }
