@@ -16,12 +16,13 @@ var x_languageData	= [],
 	x_volume		= 1,
 	x_audioBarH		= 30,
 	x_mediaText		= [],
+	x_startTime,
 	x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
-
 $(document).ready(function() {
+
 	$x_mainHolder = $("#x_mainHolder");
 	$x_mainHolder.css("visibility", "hidden");
 	
@@ -63,64 +64,11 @@ $(document).ready(function() {
 		url: x_projectXML,
 		dataType: "text",
 		success: function(text) {
-			// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
-			var indexAttr = [],	 // contains objects [startIndex, endIndex] of attributes
-				indexCData = [], // contains objects [startIndex, endIndex] of CDATA
-				start = true,
-				pos = text.indexOf('<![CDATA['),
-				i;
-			
-			while(pos > -1) { // find all CDATA and ignore them when searching for attributes
-				if (start == true) {
-					var cData = new Object();
-					cData.start = pos;
-					indexCData.push(cData);
-					start = false;
-					pos = text.indexOf(']]>', pos+1);
-				} else {
-					indexCData[indexCData.length - 1].end = pos;
-					start = true;
-					pos = text.indexOf('<![CDATA[', pos+1);
-				}
-			}
-			start = true;
-			pos = text.indexOf('"');
-			while(pos > -1) {
-				var attribute = true;
-				for (i=0; i<indexCData.length; i++) {
-					if (indexCData[i].start < pos && indexCData[i].end > pos) {
-						attribute = false; // ignore as in CDATA
-					}
-				}
-				if (attribute == true) {
-					if (start == true) {
-						start = false;
-						var attr = new Object();
-						attr.start = pos;
-						indexAttr.push(attr);
-					} else {
-						start = true;
-						indexAttr[indexAttr.length-1].end = pos;
-					}
-				}
-				pos = text.indexOf('"', pos+1);
-			}
-			
-			var newString = "";
-			for (i=0; i<indexAttr.length; i++) {
-				if (i == 0) {
-					newString += text.substring(0, indexAttr[i].start);
-				} else {
-					newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
-				}
-				newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
-				if (i == indexAttr.length - 1) {
-					newString += text.substring(indexAttr[i].end, text.length);
-				}
-			}
+
+			var newString = x_fixLineBreaks(text);
 			
 			var xmlData = $($.parseXML(newString)).find("learningObject");
-			for (i=0; i<xmlData[0].attributes.length; i++) {
+			for (i=0, len=xmlData[0].attributes.length; i<len; i++) {
 				x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
 			}
 			
@@ -128,10 +76,7 @@ $(document).ready(function() {
 			x_pages.each(function() {
 				var 	linkID = $(this)[0].getAttribute("linkID"),
 					pageID = $(this)[0].getAttribute("pageID"),
-					page = new Object();
-				
-				page.type = $(this)[0].nodeName;
-				page.built = false;
+					page = {type:$(this)[0].nodeName, built:false};
 				if (linkID != undefined) {
 					page.linkID = linkID;
 				}
@@ -145,17 +90,13 @@ $(document).ready(function() {
 			if (x_pages.length < 2) {
 				// don't show navigation options if there's only one page 
 				$("#x_footerBlock .x_floatRight").remove();
-				
 			} else {
 				if (x_params.navigation == undefined) {
 					x_params.navigation = "Linear";
 				}
 				if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
 					x_pages.splice(0, 0, "menu");
-					var page = new Object();
-					page.type = "menu";
-					page.built = false;
-					x_pageInfo.splice(0, 0, page);
+					x_pageInfo.splice(0, 0, {type:'menu', built:false});
 				}
 			}
 			
@@ -175,6 +116,28 @@ $(document).ready(function() {
 
 });
 
+// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
+function x_fixLineBreaks(text) {
+	var 	split_up = text.split(/<\!\[CDATA\[|\]\]>/),
+		temp, i, j, len, len2;
+	
+	for (i=0, len=split_up.length; i<len; i+=2) {
+		temp = split_up[i].split('"');
+		for (j=1, len2=temp.length; j<len2; j+=2) {
+			temp[j] = temp[j].replace(/(\n|\r|\r\n)/g, "&#10;");
+		}
+		split_up[i] = temp.join('"');
+	}
+	
+	// Put the CDATA blocks back...
+	temp = [];
+	for (i=0, len=split_up.length-1; i<len; i+=2) {
+		temp.push(split_up[i] + "<![CDATA[" + split_up[i+1]);
+	}
+	temp.push(split_up[i]);
+	
+	return temp.join("]]>");
+}
 
 // function gets data from language file
 function x_getLangData(lang) {
@@ -236,6 +199,11 @@ function x_setUp() {
 				})
 				.click(function() {
 
+					// Post flag to containing page for iframe resizing
+					if (window && window.parent && window.parent.postMessage) {
+						window.parent.postMessage((String)(!x_fillWindow), "*");
+					}
+
 					if (x_fillWindow == false) {
 						x_setFillWindow();
 					} else {
@@ -283,10 +251,7 @@ function x_setUp() {
 	} else if (x_params.navigation == "Historic") {
 		$x_pageNo.hide();
 	} else {
-		var dialog = new Object();
-		dialog.type = "menu";
-		dialog.built = false;
-		x_dialogInfo.push(dialog);
+		x_dialogInfo.push({type:'menu', built:false});
 	}
 	
 	
@@ -311,24 +276,21 @@ function x_setUp() {
 	
 	
 	if (x_params.glossary != undefined) {
-		var dialog = new Object();
-		dialog.type = "glossary";
-		dialog.built = false;
-		x_dialogInfo.push(dialog);
+		x_dialogInfo.push({type:'glossary', built:false});
 		
 		var items = x_params.glossary.split("||");
-		for (var i=0; i<items.length; i++) {
+		for (var i=0, len=items.length; i<len; i++) {
 			var	item = items[i].split("|"),
-				word = new Object();
-			word.word = item[0];
-			word.definition = item[1];
+				word = {word:item[0], definition:item[1]};
+
 			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
 				x_glossary.push(word);
 			}
 		}
 		if (x_glossary.length > 0) {
 			x_glossary.sort(function(a, b){ // sort alphabetically
-				var word1 = a.word.toLowerCase(), word2 = b.word.toLowerCase();
+				var 	word1 = a.word.toLowerCase(),
+					word2 = b.word.toLowerCase();
 				if (word1 < word2) {
 					return -1;
 				} else if (word1 > word2) {
@@ -361,7 +323,7 @@ function x_setUp() {
 						myText = $this.text(),
 						myDefinition;
 					
-					for (var i=0; i<x_glossary.length; i++) {
+					for (var i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
 						}
@@ -382,7 +344,7 @@ function x_setUp() {
 					$x_glossaryHover.remove();
 				})
 				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
+					var 	leftPos,
 						topPos = e.pageY + 20;
 					
 					if (x_browserInfo.mobile == false) {
@@ -521,20 +483,14 @@ function x_setUp() {
 			url: x_templateLocation + "common_html5/charPad.xml",
 			dataType: "xml",
 			success: function(xml) {
-				var dialog = new Object();
-				dialog.type = "language";
-				dialog.built = false;
-				x_dialogInfo.push(dialog);
+				x_dialogInfo.push({type:'language', built:false});
 				
 				var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
 					specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
 					specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
 				
-				for (var i=0; i<specCharsLower.length; i++) {
-					var specChar = new Object();
-					specChar.lower = specCharsLower[i];
-					specChar.upper = specCharsUpper[i];
-					x_specialChars.push(specChar);
+				for (var i=0, len=specCharsLower.length; i<len; i++) {
+					x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
 				}
 				
 				$x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
@@ -646,13 +602,12 @@ function x_setUp() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
 	
-	for (var i=0; i<mediaElementText.length; i++) {
-		var mediaTextObj = new Object();
-		mediaTextObj.label = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]);
-		mediaTextObj.description = x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0]);
-		x_mediaText.push(mediaTextObj);
+	for (var i=0, len=mediaElementText.length; i<len; i++) {
+		x_mediaText.push({
+			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
+			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
+		});
 	}
-	
 	
     x_navigateToPage(true, x_startPage);
 }
@@ -685,10 +640,10 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
 // function returns page no. of page with matching linkID / pageID
 function x_lookupPage(pageType, pageID) {
-    var i, len = x_pageInfo.length;
-    for (i=0; i<len; i++) {
-        if ((pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)) {
+    for (var i=0, len = x_pageInfo.length; i<len; i++) {
+        if (	(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+		(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
+		) {
             break;
         }
     }
@@ -845,8 +800,8 @@ function x_loadPage(response, status, xhr) {
 		x_pageLoaded();
 	}
 	
-    // Queue reparsing of MathJax
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    	// Queue reparsing of MathJax
+    	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 	
 	x_setUpPage();
 }
@@ -976,7 +931,7 @@ function x_addCountdownTimer() {
 		$("#x_footerBlock div:first").before('<div id="x_pageTimer"></div>');
 		x_countdownTimer = parseInt(x_currentPageXML.getAttribute("timer"));
 		$("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
-		x_timer = window.setInterval(x_countdownTicker, 1000);
+		x_timer = setInterval(x_countdownTicker, 1000);
 	}
 }
 
@@ -1026,51 +981,47 @@ function x_updateCss(updatePage) {
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
 function x_openDialog(type, title, close, position, load) {
-	var index = -1;
-	for (var i=0; i<x_dialogInfo.length; i++) {
+	for (var i=0, len=x_dialogInfo.length; i<len; i++) {
 		if (x_dialogInfo[i].type == type) {
-			index = i;
+			$(".x_popupDialog").parent().detach();
+			if (x_dialogInfo[i].built != false) {
+				$x_body.append(x_dialogInfo[i].built);
+
+				if (load != undefined) {
+					x_dialogInfo[i].built.children(".x_popupDialog").html(load);
+				}
+
+				if (type != "language") {
+					x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
+				} else {
+					x_dialogInfo[i].built.show(); // don't reset size / position for language dialogs
+					language.turnOnKeyEvents();
+				}
+
+			} else {
+				$x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
+
+				var $x_popupDialog = $("#x_" + type);
+				$x_popupDialog
+					.dialog({
+						closeOnEscape:	true,
+						title:			title,
+						closeText:		close,
+						close: function() {$x_popupDialog.parent().detach();}
+						})
+					.parent().hide();
+
+				if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
+					$x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
+
+				} else {
+					$x_popupDialog.html(load);
+					x_setDialogSize($x_popupDialog, position);
+				}
+
+				x_dialogInfo[i].built = $x_popupDialog.parent();
+			}
 			break;
-		}
-	}
-	if (index != -1) {
-		$(".x_popupDialog").parent().detach();
-		if (x_dialogInfo[index].built != false) {
-			$x_body.append(x_dialogInfo[index].built);
-			
-			if (load != undefined) {
-				x_dialogInfo[index].built.children(".x_popupDialog").html(load);
-			}
-			
-			if (type != "language") {
-				x_setDialogSize(x_dialogInfo[index].built.children(".x_popupDialog"), position);
-			} else {
-				x_dialogInfo[index].built.show(); // don't reset size / position for language dialogs
-				language.turnOnKeyEvents();
-			}
-			
-		} else {
-			$x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
-			
-			var $x_popupDialog = $("#x_" + type);
-			$x_popupDialog
-				.dialog({
-					closeOnEscape:	true,
-					title:			title,
-					closeText:		close,
-					close: function() {$x_popupDialog.parent().detach();}
-					})
-				.parent().hide();
-			
-			if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
-				$x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
-				
-			} else {
-				$x_popupDialog.html(load);
-				x_setDialogSize($x_popupDialog, position);
-			}
-			
-			x_dialogInfo[index].built = $x_popupDialog.parent();
 		}
 	}
 }
@@ -1134,7 +1085,7 @@ function x_openMediaWindow() {
 	// get info about how to display captions - if none are found the code in the mediaViewer folder will look for details in tt file - otherwise it will use defaults
 	var	captionDetails = "",
 		nodeNames = ["mediaTiming", "mediaPosition", "mediaAlign", "mediaColour", "mediaHighlight", "mediaHighlightColour"];
-	for (var i=0; i<nodeNames.length; i++) {
+	for (var i=0, len=nodeNames.length; i<len; i++) {
 		if (x_params[nodeNames[i]] != undefined) {
 			if (captionDetails != "") {
 				captionDetails += ";";
@@ -1167,18 +1118,15 @@ function x_getLangInfo(node, attribute, fallBack) {
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
 	var	attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"],
-		i, j;
-	
-	for (i=0; i<pageXML.attributes.length; i++) {
-		for (j=0; j<attrToCheck.length; j++) {
-			if (pageXML.attributes[i].name == attrToCheck[j]) {
-				x_insertText(pageXML.attributes[i]);
-				break;
-			}
+		i, j, len;
+
+	for (i=0, len = pageXML.attributes.length; i<len; i++) {
+		if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
+			x_insertText(pageXML.attributes[i]);
 		}
 	}
 	
-	for (i=0; i<pageXML.childNodes.length; i++) {
+	for (i=0, len=pageXML.childNodes.length; i<len; i++) {
 		if (pageXML.childNodes[i].nodeValue == null) {
 			x_findText(pageXML.childNodes[i]); // it's a child node of node - check through this too
 		} else {
@@ -1196,7 +1144,7 @@ function x_insertText(node) {
 	
 	// check text for glossary words - if found replace with a link
 	if (x_glossary.length > 0) {
-		for (var k=0; k<x_glossary.length; k++) {
+		for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
 		}
@@ -1255,7 +1203,6 @@ function x_insertCSS(href) {
 	css.type = "text/css";
 	document.getElementsByTagName("head")[0].appendChild(css);
 }
-
 
 
 // ___ FUNCTIONS CALLED FROM PAGE MODELS ___
@@ -1371,17 +1318,25 @@ function x_getSWFRef(swfID) {
 function x_sortInitObject(initObj) {
 	var initObject;
 	if (initObj != undefined && initObj != "") {
-		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work
-			var	temp = initObj.replace("{", "").replace("}", "").split(","),
-				initObject = new Object();
-			for (var i=0; i<temp.length; i++) {
-				initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work.
+		
+		
+			//add try ... ...catch to try the JSON parser first, which will work with valid JSON strings, else fallback to Fay's method if an error occurs.
+			try {
+				initObject = $.parseJSON(initObj);
 			}
-		} else {
-			initObject = initObj;
-		}
+			catch(e){
+				var	temp = initObj.replace("{", "").replace("}", "").split(","),
+					initObject = new Object();
+				for (var i=0; i<temp.length; i++) {
+					initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+				}
+			}
+			
 	} else {
+	
 		initObject = undefined;
+		
 	}
 	return initObject;
 }
@@ -1389,7 +1344,7 @@ function x_sortInitObject(initObj) {
 
 // function selects text (e.g. when users are to be prompted to copy text on screen)
 function x_selectText(element) {
-	var text = document.getElementById(element),
+	var 	text = document.getElementById(element),
 		range;
 	
 	if (document.body.createTextRange) {
