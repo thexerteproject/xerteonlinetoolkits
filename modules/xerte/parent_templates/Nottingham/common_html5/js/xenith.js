@@ -16,7 +16,6 @@ var x_languageData	= [],
 	x_volume		= 1,
 	x_audioBarH		= 30,
 	x_mediaText		= [],
-	x_startTime,
 	x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
@@ -1319,25 +1318,22 @@ function x_sortInitObject(initObj) {
 	var initObject;
 	if (initObj != undefined && initObj != "") {
 		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work.
-		
-		
 			//add try ... ...catch to try the JSON parser first, which will work with valid JSON strings, else fallback to Fay's method if an error occurs.
 			try {
 				initObject = $.parseJSON(initObj);
 			}
 			catch(e){
 				var	temp = initObj.replace("{", "").replace("}", "").split(","),
-					initObject = new Object();
+                initObject = {};
 				for (var i=0; i<temp.length; i++) {
 					initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
 				}
 			}
-			
+		}
 	} else {
-	
 		initObject = undefined;
-		
 	}
+  
 	return initObject;
 }
 
