@@ -107,6 +107,7 @@ function create_new_template($folder_name_id,$parent_template_name){
             return false;
         }
     }else{
+        _debug("Can't create $path");
         receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to create parent folder for template", "Failed to create parent folder " . $path);
         return false;
     }
