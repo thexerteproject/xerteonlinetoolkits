@@ -106,24 +106,4 @@
 
 
 
-   /**
-	*  Relocate moov atom if file is .mp4/m4v to support progressive download
-	*/
-	if ($extension == 'mp4' || $extension == 'm4v') {
-		require_once 'tools/moovrelocator/Moovrelocator.class.php';
-
-		$moovrelocator = Moovrelocator::getInstance();
-
-		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
-		if ($moovrelocator->setInput($moov_temp_file_name) == true) {
-			if ($moovrelocator->setOutput($new_file_name) == true) {
-				if (!(($result = $moovrelocator->fix()) === true)) {
-					file_put_contents('moovrelocator_error.txt', $result, true);
-					if(!copy($moov_temp_file_name, $new_file_name)) {
-						file_put_contents('error.txt', "Copy temp file failed" . error_get_last(), true);
-						exit();
-					}
-				}
-			}
-		}
-	}
+   
