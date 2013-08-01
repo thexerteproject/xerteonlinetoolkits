@@ -61,7 +61,7 @@ if(is_numeric($_POST['template_id'])){
 
                         }else{
 
-                            echo "<img src=\"website_code/images/TickBox0ff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_EDITOR;
+                            echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('editor', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_EDITOR;
 
                         }
 
@@ -74,9 +74,11 @@ if(is_numeric($_POST['template_id'])){
                             echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('read-only', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_READONLY;
                         }
 
-                        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" >" . SHARING_REMOVE . "</button>";
-
                         echo "</p>";
+
+                        echo "<p>" . SHARING_REMOVE_DESCRIPTION . "</p>";
+
+                        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" >" . SHARING_REMOVE . "</button>";
 
                         echo "<p class=\"share_border\"></p>";
 
