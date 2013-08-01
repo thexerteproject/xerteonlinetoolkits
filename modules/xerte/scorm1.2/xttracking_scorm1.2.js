@@ -543,10 +543,6 @@ function ScormTrackingState()
             setValue('cmi.core.session_time', this.formatDuration(duration));
             setValue('cmi.core.total_time', this.formatDuration(this.duration_previous_attempts + duration));
 
-            if (String(getValue('cmi.core.exit')) == 'suspend')
-            {
-                setValue('cmi.core.lesson_location', currentid);
-            }
         }
         this.finished = true;
     }
