@@ -20,6 +20,8 @@
 
 	define("SHARING_READONLY","Read only");
 
+    define("SHARING_REMOVE_DESCRIPTION", "Press the button below to remove any sharing rights");
+
     define("SHARING_REMOVE", "Remove");
 
 	define("SHARING_STOP","Click to stop sharing this file");
