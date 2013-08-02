@@ -63,10 +63,10 @@ $(document).ready(function() {
 		url: x_projectXML,
 		dataType: "text",
 		success: function(text) {
+			var 	newString = x_fixLineBreaks(text),
+				xmlData = $($.parseXML(newString)).find("learningObject"),
+				i, len;
 
-			var newString = x_fixLineBreaks(text);
-			
-			var xmlData = $($.parseXML(newString)).find("learningObject");
 			for (i=0, len=xmlData[0].attributes.length; i<len; i++) {
 				x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
 			}
@@ -279,24 +279,15 @@ function x_setUp() {
 		
 		var items = x_params.glossary.split("||");
 		for (var i=0, len=items.length; i<len; i++) {
-			var	item = items[i].split("|"),
-				word = {word:item[0], definition:item[1]};
+			var item = items[i].split("|");
 
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push(word);
+			if (item[0].replace(/^\s+|\s+$/g, "") != "" && item[1].replace(/^\s+|\s+$/g, "") != "") {
+				x_glossary.push({word:item[0], definition:item[1]});
 			}
 		}
 		if (x_glossary.length > 0) {
 			x_glossary.sort(function(a, b){ // sort alphabetically
-				var 	word1 = a.word.toLowerCase(),
-					word2 = b.word.toLowerCase();
-				if (word1 < word2) {
-					return -1;
-				} else if (word1 > word2) {
-					return 1;
-				} else {
-					return 0;
-				}
+				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
 			});
 			
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
@@ -320,9 +311,9 @@ function x_setUp() {
 				.on("mouseenter", ".x_glossary", function(e) {
 					var $this = $(this),
 						myText = $this.text(),
-						myDefinition;
+						myDefinition, i, len;
 					
-					for (var i=0, len=x_glossary.length; i<len; i++) {
+					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
 						}
@@ -1315,24 +1306,26 @@ function x_getSWFRef(swfID) {
 
 // function sorts initObject data for any pages where swfs or custom html can be added (e.g. textSWF, xerteModel, navigators)		
 function x_sortInitObject(initObj) {
-	var initObject;
+	var initObject, i, len, pair, pairs;
+
 	if (initObj != undefined && initObj != "") {
 		if (initObj.substring(0,1) == "{") { // object - just doing eval or parseJSON won't work.
+
 			//add try ... ...catch to try the JSON parser first, which will work with valid JSON strings, else fallback to Fay's method if an error occurs.
 			try {
 				initObject = $.parseJSON(initObj);
 			}
-			catch(e){
-				var	temp = initObj.replace("{", "").replace("}", "").split(","),
-                initObject = {};
-				for (var i=0; i<temp.length; i++) {
-					initObject[$.trim(temp[i].split(":")[0])] = eval($.trim(temp[i].split(":")[1]));
+			catch (e) {
+				pairs = initObj.replace("{", "").replace("}", "").split(","),
+				initObject = {};
+				for (i=0, len=pairs.length; i<len; i++) {
+					pair = temp[i].split(":");
+					initObject[$.trim(pair[0])] = eval($.trim(pair[1]));
 				}
 			}
 		}
-	} else {
-		initObject = undefined;
-	}
+
+	} // else { initObject already is undefined }
   
 	return initObject;
 }
