@@ -23,6 +23,8 @@ class XerteXMLInspector
     private function fixXmlFile($name)
     {
         $xmlcontents = file_get_contents($name);
+
+        //A. Issue 1: previously unescaped '&'
         //_debug("1. " . $xmlcontents);
         // Ok replace known escape sequences to something without an '&'
         $xmlcontents = str_replace('&lt;', '%%%lt;', $xmlcontents);
@@ -48,8 +50,18 @@ class XerteXMLInspector
             $res = file_put_contents($name, $xmlcontents);
             return true;
         }
+
+        //B. Issue 2: Spurious Alt-B characters (still NO idea where they come from.
+        $xmlcontents = str_replace(chr(11), ' ', $xmlcontents);
+        //_debug("4. ". $xmlcontents);
+        if ($this->isValidXml($xmlcontents)) {
+            _debug("We were able to fixup the file : $name");
+            $res = file_put_contents($name, $xmlcontents);
+            return true;
+        }
+
         return false;
-        //_debug("4. " . $res);
+        //_debug("5. " . $res);
     }
 
     /**
@@ -62,7 +74,11 @@ class XerteXMLInspector
 
         $orig_error_setting = libxml_use_internal_errors(true);
         // See security note elsewhere in this file and http://php.net/manual/en/function.libxml-disable-entity-loader.php
-        $original_el_setting = libxml_disable_entity_loader(false);
+        // Supported from 5.2.11, so allow for older versions to work as well.
+        if (function_exists('libxml_disable_entity_loader'))
+        {
+            $original_el_setting = libxml_disable_entity_loader(false);
+        }
 
         // Suppress anything PHP might moan about.
         $temp = @simplexml_load_string($string);
@@ -78,7 +94,10 @@ class XerteXMLInspector
         } else {
             $ok = true;
         }
-        libxml_disable_entity_loader($original_el_setting);
+        if (function_exists('libxml_disable_entity_loader'))
+        {
+            libxml_disable_entity_loader($original_el_setting);
+        }
         libxml_use_internal_errors($orig_error_setting);
         return $ok;
     }
@@ -90,8 +109,12 @@ class XerteXMLInspector
 
         // We don't really want to load external entities into our XML; but have no choice here. Make sure it's enabled (revert it later on).
         // This can be a security issue - see .e.g http://php.net/manual/en/function.libxml-disable-entity-loader.php
+        // Supported from 5.2.11, so allow for older versions to work as well.
         $orig_error_setting = libxml_use_internal_errors(true);
-        $original_el_setting = libxml_disable_entity_loader(false);
+        if (function_exists('libxml_disable_entity_loader'))
+        {
+            $original_el_setting = libxml_disable_entity_loader(false);
+        }
 
         if (!file_exists($name)) {
             _debug("Can't load : $name - it's not there!");
@@ -128,8 +151,10 @@ class XerteXMLInspector
         if (strlen($str) > 0) {
             $this->mediaIsUsed = true;
         }
-
-        libxml_disable_entity_loader($original_el_setting);
+        if (function_exists('libxml_disable_entity_loader'))
+        {
+            libxml_disable_entity_loader($original_el_setting);
+        }
         libxml_use_internal_errors($orig_error_setting);
     }
 
