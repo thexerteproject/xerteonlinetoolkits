@@ -116,17 +116,17 @@ END;
 	</style>
         </head>
         <body>
-
-        <div class="topbar">
-            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">
 END;
+
+    echo '<div class="topbar">';
+    echo '<div style="width:50%; height:100%; float:right; position:relative; background-image:url(' . $xerte_toolkits_site->organisational_logo . '); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">';
+    echo '     <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">';
   //     echo INDEX_LOG_OUT;
+    echo '      </a></p>';
+    echo '  </div>';
+    echo '  <img src="' . $xerte_toolkits_site->site_logo . '" style="margin-left:10px; float:left" />';
+    echo '</div>';
   print <<<END
-                </a></p>
-            </div>
-            <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
-        </div>
 
         <!--
 
