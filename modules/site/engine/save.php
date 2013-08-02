@@ -31,7 +31,7 @@ if(strlen($_POST['filedata'])!=strlen($_POST['filesize'])){
 }
 
 $unescaped_data = $_POST['filedata'];
-if (function_exists(get_magic_quotes_gpc) && get_magic_quotes_gpc())
+if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 {
     $unescaped_data = stripslashes($_POST['filedata']);
 }
