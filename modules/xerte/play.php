@@ -119,5 +119,3 @@ function show_template($row)
     echo show_template_page($row);
 }
 
-?>
-
