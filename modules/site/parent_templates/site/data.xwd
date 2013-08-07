@@ -69,6 +69,7 @@
 	<markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 	
 		<name type="TextInput" label="Name"/>
+		<url type="Media" label="HTML File" optional="true" default="Select HTML File..."/>
 		
 	</markup>
 	
