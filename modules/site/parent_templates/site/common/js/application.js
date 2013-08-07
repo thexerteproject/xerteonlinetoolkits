@@ -1,3 +1,4 @@
+
 $(document).ready(init);
 
 var data;
@@ -211,7 +212,15 @@ function parseContent(pageIndex){
 			
 			if (this.nodeName == 'markup'){
 			
-				section.append( $(this).text() );
+				if ( $(this).attr('url') != undefined ){
+				
+					section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+				
+				} else {
+				
+					section.append( $(this).text() );
+				}
+				
 			}
 			
 			if (this.nodeName == 'link'){
@@ -589,7 +598,7 @@ function findAnchor(name){
 
 		$(this).find('section').each( function(index,value, name){
 
-			if ( $(this).text().indexOf('<a id="' + anchorID + '"') != -1){
+			if ( $(this).text().indexOf('<a id="' + anchorID) != -1){
 			
 				sIndex = index;
 				
