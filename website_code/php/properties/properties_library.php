@@ -132,6 +132,8 @@ function properties_display_fail(){
 
 function publish_display($template_id)
 {
+    global $xerte_toolkits_site;
+
     $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
     // User has to have some rights to do this
