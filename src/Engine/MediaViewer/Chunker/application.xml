@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<application xmlns="http://ns.adobe.com/air/application/2.0"> 
+	
+	<id>TranscriptTool</id> 
+	<version>1.0</version> 
+	<filename>TranscriptTool</filename> 
+	
+	<name>Transcript Tool</name> 
+	<description>An AIR application to create timed transcript files that display captions for video and audio files in Xerte Toolkits</description> 
+	<copyright></copyright> 
+	
+	<initialWindow> 
+		<title>Transcript tool</title> 
+		<content>Transcripttool.swf</content> 
+		<systemChrome>standard</systemChrome> 
+		<transparent>false</transparent> 
+		<visible>true</visible> 
+		<minimizable>true</minimizable> 
+		<maximizable>false</maximizable> 
+		<resizable>false</resizable> 
+	</initialWindow> 
+	
+	<!-- 
+	More options:
+	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
+	-->
+</application>

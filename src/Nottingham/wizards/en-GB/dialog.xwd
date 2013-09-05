@@ -1,0 +1,47 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog>
+    </newNodes>
+  </pageWizard>
+
+  <!-- DIALOG INTERACTION================================= -->
+  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icSCript" thumb="thumbs/dialog.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput"/>    
+    <text  label="Text" type="TextArea" height="100"/>
+    <attempts label="Attempts before hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
+
+    <tryTxt label="Try Again Text" type="TextInput" divider="true" language="true"/> 
+    <correctTxt label="Correct Text" type="TextInput" language="true"/> 
+    <moveOnTxt label="Move On Text" type="TextInput" language="true"/>
+	<submitBtnTxt label="Submit Button Text" type="textInput" language="true" />	
+	<nextBtnTxt label="Next Button Text" type="textInput" language="true" />	
+    <answerDelimeter label="Answer delimeter" type="textInput" defaultValue="," optional="true"/>
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
+
+    <newNodes>
+      <dialogStep><![CDATA[<dialogStep name="question" question="Write your question here." answer="Enter Answer" hint="Enter a hint"/>]]></dialogStep>
+    </newNodes>
+
+  </dialog>
+
+
+  <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
+
+    <question label="Question" type="TextArea" height="100"/> 
+    <answer label="Answer" type="TextInput"/> 
+    <commentary label="Commentary" type="TextArea" height="100"/> 
+    <hint label="Hint" type="TextInput"/> 
+
+  </dialogStep>
+
+
+
+</wizard>

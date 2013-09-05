@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application layout="absolute" xmlns:mx="http://www.adobe.com/2006/mxml">
+
+<mx:Script><![CDATA[
+	import mx.controls.dataGridClasses.DataGridColumn;
+	import r1.deval.D;
+
+	protected function showData(row:Object, col:DataGridColumn):String {
+		return String(D.eval(col.dataField, row));
+	}	
+]]></mx:Script>
+
+	<mx:XML id="order">
+		<order>
+			<item id="1">
+				<menuName>burger</menuName>			
+				<criticalInfo>
+					<vegetarian>false</vegetarian>
+					<containsPeanuts>false</containsPeanuts>
+				</criticalInfo>
+				<salesInfo>
+					<quantity>3</quantity>
+					<price>3.95</price>
+				</salesInfo>
+			</item>
+			<item id="2">
+				<menuName>fries</menuName>
+				<criticalInfo>
+					<vegetarian>true</vegetarian>
+					<containsPeanuts>false</containsPeanuts>
+				</criticalInfo>
+				<salesInfo>
+					<quantity>4</quantity>
+					<price>1.45</price>
+				</salesInfo>
+			</item>
+		</order>
+	</mx:XML>
+
+	<mx:DataGrid dataProvider="{order.item}" width="450">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name"
+				dataField="menuName" labelFunction="showData"/>
+			<mx:DataGridColumn headerText="Vegetarian"
+				dataField="criticalInfo.vegetarian" labelFunction="showData"/>
+			<mx:DataGridColumn headerText="Peanuts"
+				dataField="criticalInfo.containsPeanuts" labelFunction="showData"/>
+			<mx:DataGridColumn headerText="Quantity"
+				dataField="salesInfo.quantity" labelFunction="showData"/>
+			<mx:DataGridColumn headerText="Price"
+				dataField="salesInfo.price" labelFunction="showData"/>
+			<mx:DataGridColumn headerText="Line Total"
+				dataField="salesInfo.price * salesInfo.quantity" labelFunction="showData"/>
+		</mx:columns>
+	</mx:DataGrid>
+
+</mx:Application>

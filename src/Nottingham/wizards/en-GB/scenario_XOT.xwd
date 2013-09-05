@@ -1,0 +1,213 @@
+<wizard menus="Connectors" restrict="template" modelFile="scenario">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+	  <scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+       imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
+	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
+	   actionTitle="Actions you can take..." scoresTitle="Scores"
+	   scoresDebugMessage="Please open this page's Wizard Form and add the Configure Scores section, to define what scores you wish to display"
+	   reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" notFoundMessage="could not be found in this project."
+	   notSetMessage="A destination page has not been set for this Connection"><gameSetup name="Score Configuration"
+	   score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min"
+	   score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score1WinEndID="" score1LoseEndID=""
+	   score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min"
+	   score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
+	   score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
+	   score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID=""
+	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario>
+	</newNodes>  
+  </pageWizard>
+  
+  <!-- SCENARIO PAGE============================== -->
+  <scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true">
+	<name label="Scenario Name" type="TextInput" width="200"/>
+	<title label="Scenario Title" type="TextInput" width="200"/>	
+	<description label="Description" type="textArea" height="120"/>
+
+	<imageButtonShow label="Show Media Button" type="TextInput" width="200" divider="true" language="true" />	
+	<imageButtonHide label="Hide Media Button" type="TextInput" width="200" language="true" />	
+	<imageButtonWidth label="Media Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="0" language="true" />
+	<continueButtonLabel label="Continue Button" type="TextInput" width="200" language="true" />	
+	<continueButtonWidth label="Continue Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="0" language="true" />
+	<scenarioPropsTitle label="Scenario Props Title" type="TextInput" width="200" language="true" />
+	<scenarioPropsName label="Scenario Props Name" type="TextInput" width="200" language="true" />	
+	<inventoryEmpty label="Inventory Empty Text" type="TextInput" width="200" language="true" />
+	<inventoryTitle label="Inventory Title" type="TextInput" width="200" language="true" />
+	<inventoryItemName label="Inventory Item Name" type="TextInput" width="200" language="true" />	
+	<actionTitle label="Action Title" type="TextInput" width="200" language="true" />
+	<scoresTitle label="Scores Title" type="TextInput" width="200" language="true" />	
+    <scoresDebugMessage label="Score debug message" type="TextArea" height="60" language="true"/>
+    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
+    <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
+
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
+    <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1"  optional="true"/>
+    <url label="FLV, SWF or Image File" type="media" optional="true" />
+    <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
+    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" />
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+    <initObject label="Init Object" type="TextArea" height="60" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
+
+	<newNodes>
+		<gameSetup><![CDATA[<gameSetup name="Score Configuration" score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min"
+		score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score1WinEndID="" score1LoseEndID=""
+		score2Use="1" score2Label="Label for Score 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min"
+		score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
+		score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
+		score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID="" score3LoseEndID="" />]]></gameSetup>
+		<scenarioActions><![CDATA[<scenarioActions name="List of scenario actions" />]]></scenarioActions>
+		<propList><![CDATA[<propList name="List of props in scenario" />]]></propList>
+	</newNodes>
+	
+  </scenario>
+
+  <gameSetup menuItem="Configure Scores" remove="true" max="1">
+	<name label="Scenario set up" type="TextInput" width="200" />	
+
+    <score1Use label="Display Score 1" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />
+	<score1Label label="Score 1 Label" type="TextInput" width="200" />	
+	<score1Min label="Score 1 Min" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0" />
+	<score1Max label="Score 1 Max" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100" />
+	<score1Start label="Score 1 Start at" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0" />
+    <score1ProgressBar label="Display Progress Bar" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />
+    <score1BarColour label="Progress Bar Colour" type="ColourPicker" defaultValue="0x6699CC"/>	
+    <score1Win label="Score to Win" options="Max,Min,None" type="ComboBox" defaultValue="max" data="max,min,none" width="100" />
+	<score1Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100" />
+    <score1WinMessage label="Score 1 Win Message" type="TextArea" height="60"/>	
+    <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>
+	<score1WinEndID label="Score 1 Win go to" type="pageList" default=""/>	
+	<score1LoseEndID label="Score 1 Lose go to" type="pageList" default=""/>	
+	
+    <score2Use label="Display Score 2" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />
+	<score2Label label="Score 2 Label" type="TextInput" width="200" />	
+	<score2Min label="Score 2 Min" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0" />
+	<score2Max label="Score 2 Max" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100" />
+	<score2Start label="Score 2 Start at" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0" />
+    <score2ProgressBar label="Display Progress Bar" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />
+    <score2BarColour label="Progress Bar Colour" type="ColourPicker" defaultValue="0x6699CC"/>
+    <score2Win label="Score to Win" options="Max,Min,None" type="ComboBox" defaultValue="max" data="max,min,none" width="100" />
+	<score2Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100" />	
+    <score2WinMessage label="Score 2 Win Message" type="TextArea" height="60"/>	
+    <score2LoseMessage label="Score 2 Lose Message" type="TextArea" height="60"/>		
+	<score2WinEndID label="Score 2 Win go to" type="pageList" default=""/>	
+	<score2LoseEndID label="Score 2 Lose go to" type="pageList" default=""/>
+	
+    <score3Use label="Display Score 3" type="ComboBox" options="Yes,No" defaultValue="0" data="1,0" width="100" />
+	<score3Label label="Score 3 Label" type="TextInput" width="200" />	
+	<score3Min label="Score 3 Min" width="100" type="NumericStepper" min="0" max="500" step="10" defaultValue="0" />
+	<score3Max label="Score 3 Max" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100" />
+	<score3Start label="Score 3 Start at" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0" />
+    <score3ProgressBar label="Display Progress Bar" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />	
+    <score3BarColour label="Progress Bar Colour" type="ColourPicker" defaultValue="0x6699CC"/>
+    <score3Win label="Score to Win" options="Max,Min,None" type="ComboBox" defaultValue="max" data="max,min,none" width="100" />
+	<score3Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100" />	
+    <score3WinMessage label="Score 3 Win Message" type="TextArea" height="60"/>	
+    <score3LoseMessage label="Score 3 Lose Message" type="TextArea" height="60"/>
+	<score3WinEndID label="Score 3 Win go to" type="pageList" default=""/>	
+	<score3LoseEndID label="Score 3 Lose go to" type="pageList" default=""/>
+	
+    <winEffect label="Win Sound File" type="media" optional="true"/>
+    <loseEffect label="Lose Sound File" type="media" optional="true"/>		
+	
+  </gameSetup>
+  
+  <propList menuItem="List of Props in scenario" remove="true" max="1">
+	<name label="Props in this scenario" type="TextInput" width="200"/>	
+
+	<newNodes>  
+  	  <prop><![CDATA[<prop name="Prop ID" title="Prop title" description="Prop description" state="visible" />]]></prop>
+	</newNodes>  
+  </propList>
+
+  <prop menuItem="Prop" remove="true">
+   	<name label="Prop unique ID" type="TextInput" width="200"/>
+	<title label="Prop title" type="TextInput" width="200"/>
+	<description label="Description" type="textArea" height="200"/>	
+    <state label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" />
+  	<info><![CDATA[<li>Click on <b>New User Action</b> to add an action for this property</li><li>You may add as many actions as you wish</li><li>Actions generally include a verb and a noun e.g. "Take the sword", "Tickle the lion"</li>]]></info>
+	
+	<newNodes>  
+  	  <userAction><![CDATA[<userAction name="Action" title="Action Title" actionText="Action taken or description of effect" actionType="action"/>]]></userAction>
+	</newNodes>	
+  </prop>    
+
+  <scenarioActions menuItem="List of scenario Actions" remove="true" max="1">
+	<name label="Actions at this scenario" type="TextInput" width="200"/>	
+  	<info><![CDATA[<li>Click on "<b>New User Action</b>" to add an action for this scenario</li><li>Add as many actions as you wish</li>]]></info>
+
+	<newNodes>  
+  	  <userAction><![CDATA[<userAction name="Action" title="Action Title" actionText="Action taken or description of effect" actionType="action"/>]]></userAction>
+	</newNodes>    
+  </scenarioActions>
+  
+  <userAction menuItem="User Action" remove="true">
+   	<name label="Unique Action ID" type="TextInput" width="200" />
+	<title label="Action title" type="TextInput" width="200"/>		
+	<actionText label="What happens" type="textArea" height="200" />
+	<actionType label="Action Type" options="Action,Effect" type="ComboBox" defaultValue="action" data="action,effect" width="100" />
+  	<info><![CDATA[<li>Click on "<b>New Condition</b>" to add a condition to this action</li><li>Actions are only displayed to the user if the condition is true</li><li>Click on "<b>New Outcome</b>" to add an outcome to this action</li><li>Outcomes result when an action is selected by the user</li>]]></info>
+
+	<newNodes>  
+  	  <actionCondition><![CDATA[<actionCondition name="Action Condition"  />]]></actionCondition>
+  	  <actionOutcome><![CDATA[<actionOutcome name="Action Outcome" outcomeText="Result of action of effect" />]]></actionOutcome>
+    </newNodes>		
+  </userAction>
+  
+  <actionCondition menuItem="Action Condition" remove="true">
+   	<name label="Condition Name" type="TextInput" width="200" />
+
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true" />
+    <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true" />
+    <propLoc label="Prop Location" options="On Stage,Carried,Off Stage,Not On Stage,Not Carried,In Scene" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true" />
+
+	<scenarioID label="Scenario Page ID" type="TextInput" width="200" optional="true"/>
+    <scenarioState label="Scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+    <scoreNumber label="Score or Counter" options="One,Two,Three,Items Carried" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
+	<scoreVal label="Score / Counter Value" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true" />
+	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
+	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5" />
+
+	
+	</actionCondition>
+
+  <actionOutcome menuItem="Action Outcome" remove="true">
+   	<name label="Outcome Title" type="TextInput" width="200" />
+	<outcomeText label="Outcome text" type="textArea" height="120"/>	
+
+	<score1Inc label="Change Score 1" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true" />	
+	<score2Inc label="Change Score 2" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true" />	
+	<score3Inc label="Change Score 3" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true" /> 
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true" />
+    <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true" />
+    <propAction label="Prop Action" options="Carry,Drop,Send to Specified Location,Destroy" type="ComboBox" defaultValue="carry" data="carry,drop,specified,destroy" width="200" optional="true" />
+	<specifiedLoc label="Prop Destination Page ID" type="TextInput" width="200" optional="true" />
+	<destination label="Destination Page" type="pageList" default="" optional="true" />
+    <soundEffect label="Sound File" type="media" optional="true"/>	
+ 
+	<newNodes>  
+  	  <outcomeCondition><![CDATA[<outcomeCondition name="Outcome Condition"  />]]></outcomeCondition>
+    </newNodes>		
+	
+  </actionOutcome>
+
+   <outcomeCondition menuItem="Outcome Condition" remove="true">
+   	<name label="Condition Name" type="TextInput" width="200" />
+
+	<propName label="Prop Unique ID" type="TextInput" width="200" optional="true" />
+    <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true" />
+    <propLoc label="Prop Location" options="On Stage,Carried,Off Stage,Not On Stage,Not Carried,In Scene" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true" />
+
+	<scenarioID label="Scenario Page" type="pageList" default="" optional="true"/>
+    <scenarioState label="Scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+    <scoreNumber label="Score or Counter" options="One,Two,Three,Items Carried" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
+	<scoreVal label="Score / Counter Value" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true" />
+	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
+	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5" />
+
+	</outcomeCondition> 
+  
+  </wizard>
+  

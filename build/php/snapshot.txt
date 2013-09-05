@@ -1,0 +1,127 @@
+This snapshot was automatically generated on
+Thu, 06 Jan 2011 17:38:26 +0000
+
+Version: 5.2.17
+Branch: HEAD
+Build: Release
+
+Built-in Extensions
+===========================
+bcmath
+calendar
+com_dotnet
+ctype
+date
+filter
+ftp
+hash
+iconv
+json
+odbc
+pcre
+Reflection
+session
+libxml
+standard
+tokenizer
+zlib
+SimpleXML
+dom
+SPL
+wddx
+xml
+xmlreader
+xmlwriter
+
+
+Dependency information:
+Module: php5apache2_2_filter.dll
+===========================
+	libapr-1.dll
+	libaprutil-1.dll
+
+Module: php5apache2_2.dll
+===========================
+	libapr-1.dll
+	libaprutil-1.dll
+
+Module: php_curl.dll
+===========================
+	libeay32.dll
+	ssleay32.dll
+	wldap32.dll
+
+Module: php_fdf.dll
+===========================
+	fdftk.dll
+
+Module: php_imap.dll
+===========================
+	crypt32.dll
+
+Module: php_interbase.dll
+===========================
+	gds32.dll
+
+Module: php_ldap.dll
+===========================
+	ssleay32.dll
+	libeay32.dll
+
+Module: php_mcrypt.dll
+===========================
+	libmcrypt.dll
+
+Module: php_mhash.dll
+===========================
+	libmhash.dll
+
+Module: php_msql.dll
+===========================
+	msql.dll
+
+Module: php_mssql.dll
+===========================
+	ntwdblib.dll
+
+Module: php_mysql.dll
+===========================
+	libmysql.dll
+
+Module: php_mysqli.dll
+===========================
+	libmysql.dll
+
+Module: php_openssl.dll
+===========================
+	ssleay32.dll
+	libeay32.dll
+
+Module: php_pgsql.dll
+===========================
+	libpq.dll
+
+Module: php_pspell.dll
+===========================
+	aspell-15.dll
+
+Module: php_pdo_mssql.dll
+===========================
+	ntwdblib.dll
+
+Module: php_pdo_firebird.dll
+===========================
+	gds32.dll
+
+Module: php_pdo_mysql.dll
+===========================
+	libmysql.dll
+
+Module: php_pdo_pgsql.dll
+===========================
+	libpq.dll
+
+Module: php_pdo_sqlite_external.dll
+===========================
+	sqlite3.dll
+

@@ -1,0 +1,27 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" launchvideo="Launch Video">Enter Embed Code Here</youtube>]]></youtube>
+    </newNodes>
+  </pageWizard>
+
+  <youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
+
+    <name type="TextInput" label="Page Title"/>
+    <text type="textArea" label="Instructions" height="300"/>
+
+    <autoplay type="Checkbox" label="Autoplay" optional="true"/>
+	<toggle type="Checkbox" label="Toggle full screen" optional="true"/>
+    <videoSize type="TextInput" label="Video Size" optional="true"/>
+
+    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
+    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
+    <narration type="media" label="Narration" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />	
+    <launchvideo label="Launch Video link" type="textInput" divider="true" language="true" /> 
+
+  </youtube>
+
+
+</wizard>

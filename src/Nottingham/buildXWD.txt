@@ -1,0 +1,42 @@
+Open a command prompt
+change directory to build folder of your xerte installation e.g. c:\xerte\build
+
+at the command prompt enter
+
+rebuildNottingham.bat (on Windows)
+rebuildNottingham.sh (on Linux)
+
+The new data.xwd file is created in the c:\xerte\modules\xerte\parent_temples\Nottingham\wizards\en-GB folder.
+
+I look at the convert.log file in Flash Develop
+
+Error messages are preceded with a line such as
+
+xwd:12
+
+which indicates the error is on line 12
+
+sample error messages include
+
+
+attributes construct error
+- probably a missing space between two definitions of items
+e.g. <text label="Text"type="TextArea"
+
+correct is <text label="Text" type="TextArea"
+
+parser error : xmlParseEntityRef: no name
+- has been caused by use of "&" - solution replace with "and"
+
+parser error : Premature end of data in tag wizard line 1
+- caused by missing closing </wizard> tag.
+
+parser error : Comment not terminated
+- caused by inclusion of original --------- rather than =========
+
+parser error : Attribute height redefined
+- an attribute has been defined twice - in this example "height"
+
+Kind regards
+
+Johnathan

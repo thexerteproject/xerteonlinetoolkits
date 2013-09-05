@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="100%" height="100%" creationComplete="D.setTextControlOutput(stdout)">
+
+<mx:Script><![CDATA[
+	import r1.util.TextComponentLogger;
+	import r1.deval.D;
+
+	[Bindable] private var rules:Array = [  // { name, cond, action }'s.
+		{ name: 'Young',  cond: 'age < 40', action: '"Is young."' },
+		{ name: 'Mid-Age', cond: 'age >= 40 and age < 60', action: '"Is middle-aged."' },
+		{ name: 'Old', cond: 'age >= 60', action: '"Is old."' }		
+	];
+
+	[Bindable] private var attrs:Array = [ // { attr, value }'s.
+		{ attr: 'age',  value: 40, type: 'number' }
+	];
+
+	private function setCurrentRule():void {
+		var rule:Object = rulesList.selectedItem;
+		ruleName.text = rule.name;
+		ruleCond.text = rule.cond;
+		ruleAction.text = rule.action;
+	}
+
+	private function updateRule(asNew:Boolean=false):void {
+		var rule:Object = {
+			name: ruleName.text,
+			cond: ruleCond.text,
+			action: ruleAction.text
+		}
+
+		var a:Array = rules == null ? [] : rules;
+		if (asNew)
+			a.push(rule)
+		else
+			a[rulesList.selectedIndex] = rule;
+
+		rules = null;
+		rules = a;
+	}
+
+	private function addAttr():void {
+		var a:Array = (attrs == null) ? [] : attrs;
+		a.push({ attr: "(EDIT THIS)", type: "number", value: "(EDIT THIS)" });
+		attrs = null;
+		attrs = a;
+	}
+
+	private function evaluate():void {
+		// Collect all attributes and set it to x:
+		var x:Object = {};
+		var o:Object;
+		D.display("Attributes:");
+		for each(o in attrs) {
+			if (o.attr != '' && o.attr != '(EDIT THIS)') {
+				D.display("  " + o.attr + " = " + o.value);
+				switch(o.type) {
+				case 'number':  x[o.attr] = Number(o.value); break;
+				case 'boolean': x[o.attr] = Boolean(o.value); break;
+				case 'string':  x[o.attr] = String(o.value); break;
+				default:        x[o.attr] = o.value; break;
+				}
+			}
+		}
+
+		for each(o in rules) {
+			if (D.evalToBoolean(o.cond, x)) {
+				D.display('\n[Match: "' + o.name + '"]');
+				var result:Object = D.eval(o.action, x);
+				if (result != null)
+					D.display("  Returned: " + result);
+			}
+		}
+		D.display("\n---------------------------------\n");
+	}
+]]></mx:Script>
+
+	<mx:TabNavigator width="100%" height="100%" selectedIndex="1">
+
+		<mx:HBox label="Define Rules" width="100%" height="100%">
+			<mx:List id="rulesList" labelField="name" width="40%" height="100%"
+				dataProvider="{rules}" change="setCurrentRule()" />
+			<mx:Form label="Production Rule Details" width="60%" height="100%">
+				<mx:FormItem label="Name:" width="100%">
+					<mx:TextInput id="ruleName" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="Condition:" width="100%">
+					<mx:TextArea id="ruleCond" width="100%" height="100"/>
+				</mx:FormItem>
+				<mx:FormItem label="Action:" width="100%">
+					<mx:TextArea id="ruleAction" width="100%" height="100"/>
+				</mx:FormItem>
+				<mx:FormItem direction="horizontal">
+					<mx:Button label="Update" click="updateRule()"
+						enabled="{rulesList.selectedIndex >= 0}" />
+					<mx:Button label="Add As New" click="updateRule(true)"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:HBox>
+
+		<mx:HBox label="Apply Knowledge" width="100%" height="100%">
+			<mx:VBox width="60%" height="100%">
+				<mx:HBox width="100%" paddingLeft="10" paddingRight="10">
+					<mx:Label text="Attributes:"/>
+					<mx:Spacer width="100%"/>
+					<mx:Button label="New Attribute" click="addAttr()"/>
+				</mx:HBox>
+				<mx:DataGrid id="attributes" width="100%" height="100%"
+					dataProvider="{attrs}" editable="true">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Attribute" rendererIsEditor="true"
+						itemRenderer="mx.controls.TextInput"
+						dataField="attr" editorDataField="text"/>
+					<mx:DataGridColumn headerText="Type" rendererIsEditor="true"
+						dataField="type" editorDataField="selectedItem" width="90">
+						<mx:itemRenderer>
+							<mx:Component>
+								<mx:ComboBox>
+									<mx:Array>
+										<mx:String>number</mx:String>
+										<mx:String>boolean</mx:String>
+										<mx:String>string</mx:String>
+									</mx:Array>
+								</mx:ComboBox>
+							</mx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+					<mx:DataGridColumn headerText="Value"
+						itemRenderer="mx.controls.TextInput" rendererIsEditor="true"
+						dataField="value" editorDataField="text"/>
+				</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+			<mx:VBox width="40%" height="100%">
+				<mx:Button label="Evaluate" click="evaluate()" />
+				<mx:TextArea id="stdout" width="100%" height="100%" />
+			</mx:VBox>
+		</mx:HBox>
+
+	</mx:TabNavigator>
+
+</mx:Application>

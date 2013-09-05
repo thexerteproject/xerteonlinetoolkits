@@ -1,0 +1,1150 @@
+
+
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="D.eval,eval(),ActionScript eval()" />
+    <title>The D.eval API and Language User's Guide</title>
+ <link rel="stylesheet" href="../images/more.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../images/article.css" type="text/css" media="screen" />
+ 	<link rel="stylesheet" href="../images/general.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../images/pages.css" type="text/css" media="screen" />
+	<!--[if IE]>
+    <style type="text/css">
+	#content { margin-bottom: 0px; }
+    .sub-level #content #column-main { width: 472px; }
+    .sub-level #content #column-full { width: 710px; margin-right: -40px; }
+    .sub-level #content #column-text { margin-right: -40px; }
+    </style>
+	<![endif]-->
+<script type="text/javascript">
+  var pageID = "deval";
+</script>
+
+  </head>
+  <body id='products' class='sub-level us'
+>
+
+<table border=0 width=710><tr><td><a href="http://www.riaone.com"><img src="../images/riaone-logo.gif" border=0></a></td>
+<td nowrap=true align=right valign=bottom>
+D.eval API: Documentation | <a href="http://www.riaone.com/products/deval/">Product Home</a></td></tr>
+<tr height=5><td colspan=2><img src="../images/spacer.gif" border=0 height=5></td></tr>
+</table>
+
+
+<div id="content">
+
+<div id="column-full"><div class="top"></div><h1>The D.eval API and Language User's Guide</h1><div id="hr"></div>
+<h2>Table of Content</h2>
+<blockquote>
+<a href="#intro"><b>Introduction</b></a><br>
+&nbsp; &nbsp; <a href="#intro_1">Background</a><br>
+&nbsp; &nbsp; <a href="#intro_2">The Software and Resources</a><br>
+&nbsp; &nbsp; <a href="#intro_3">Introduction to the Supported Language</a><br>
+&nbsp; &nbsp; <a href="#intro_4">Getting Started</a><br>
+<a href="#lang"><b>The Language</b></a><br>
+&nbsp; &nbsp; <a href="#lang_1">Variables</a><br>
+&nbsp; &nbsp; <a href="#lang_2">Expressions</a><br>
+&nbsp; &nbsp; <a href="#lang_3">Extended Logical Operator Keywords</a><br>
+&nbsp; &nbsp; <a href="#lang_4">Using ActionScript 3 Classes</a><br>
+&nbsp; &nbsp; <a href="#lang_5">Statements</a><br>
+&nbsp; &nbsp; <a href="#lang_6">User-Defined Functions</a><br>
+&nbsp; &nbsp; <a href="#lang_7">Using Flash Top-Level Classes and Functions</a><br>
+&nbsp; &nbsp; <a href="#lang_8">Built-In Functions</a><br>
+<a href="#api"><b>The Runtime Environment and the API</b></a><br>
+&nbsp; &nbsp; <a href="#api_1">Using the D.eval API</a><br>
+&nbsp; &nbsp; <a href="#api_2">The Runtime Context</a><br>
+&nbsp; &nbsp; <a href="#api_3">Pre-Parse Dynamic Code and Libraries</a><br>
+&nbsp; &nbsp; <a href="#api_4">Logging and Program Output</a><br>
+&nbsp; &nbsp; <a href="#api_5">Pre-Importing Global Objects</a><br>
+<a href="#examples"><b>Examples</b></a><br>
+&nbsp; &nbsp; <a href="#examples_1">Simple Examples</a><br>
+&nbsp; &nbsp; <a href="#examples_2">Display XML and Complex Data In DataGrid</a><br>
+&nbsp; &nbsp; <a href="#examples_3">An "Expert System"</a><br>
+&nbsp; &nbsp; <a href="#examples_4">Arbitrary Signal Generator</a><br>
+<a href="#flash"><b>Using D.eval API in Flash Programs</b></a><br>
+<a href="#conclusions"><b>Final Words</b></a>
+</blockquote>
+
+
+<hr size=4><!-- == == == == == == == == == == == == == == == == == == == -->
+
+<a name="intro"><h2>Introduction</h2></a>
+
+<a name="intro_1"><h3>Background</h3></a>
+
+<p>The <code>eval()</code> function in JavaScript and earlier versions of
+ActionScript&trade; was used to execute textual dynamic code at runtime.
+ActionScript&trade; 3 chooses to break away from this backward compatibility
+and deprecated <code>eval()</code>. Yet, some programmers and designers
+still feel strongly about its needs, including the following applications:</p>
+
+<ol>
+<li><em>Expression-driven</em> programming.</li>
+<li>End-user scriptable environment.</li>
+<li>End-user defined conditions and actions.</li>
+</ol>
+
+<p>Examples in this guide will illustrate such use cases.</p>
+
+<p>Expression-driven programming is to treat executable code as data.
+Executable code can be passed to function calls, loaded from and saved to
+database tables, or entered by end users. Expression-driven programming can
+greatly simplify coding in some situations, and can do things impossible
+without. Let us see some use cases.</p>
+
+<p>Use case 1: provide a single <em>labelFunction</em> for one or more
+<code>DataGridColumn</code>'s, and use their <code>dataField</code>
+properties as expressions to access parts, aggregated or calculated value
+of the data.</p>
+
+<p>Use case 2: a production-rule based expert system with end-user specified
+executable conditions and actions.</p>
+
+<p>Use case 3: a end-user scriptable environment, such as a DOM system
+within a Flex&trade; application.</p>
+
+<p>These use cases show that, dynamic code execution not only provides
+convenience to certain programming situations, but also opens up new
+architectural and design possibilities. The D.eval API fills this need for
+ActionScript&trade; 3. You simply invoke <code>D.eval()</code> in AS3 (hence
+the name of the API) as you would with <code>eval()</code> in JavaScript.
+The API is apparently straightforwad, and it supports a powerful language.</p>
+
+
+<a name="intro_2"><h3>The Software and Resources</h3></a>
+
+<p>The D.eval API software is freeware. It consists of a 70K-byte pure-AS3
+library, <code>D.eval-<em>?.?</em>.swc</code>, where <code><em>?.?</em></code>
+is the version number, along with documentation and examples. The software is
+tested working with Adobe Flex&grade; 3 and Flash CS3&trade;.</p>
+
+<p>The <a href="../../samples/TestRunner/index.html" target="demo">TestRunner</a>
+program, also included along with examples, is the unit testing platform
+for the D.eval API itself. The test cases are grouped into a number
+of categories; they are all compiled into a Flex module, so that more test
+cases can be compiled in without changing the tester program itself. You
+can run the test cases, and copy any of them into the code-runner section
+to edit and try out.</p>
+
+<p>Most examples are for Flex programs, except the
+<a href="../../samples/flash_test/Deval_Flash_Test.html">Deval Flash Tester</a>
+application that is for Flash CS3
+(<a href="../../samples/flash_test/Deval_Flash_Test.fla">source</a>).
+The <a href="../../samples/SimpleTester/index.html" target="demo">SimpleTester</a>
+example (<a href="../../samples/src/SimpleTester.mxml" target="source">source</a>)
+is great for experiementing with arbitrary dynamic code. The
+<a href="../../samples/UseDynamicCodeLibrary/index.html" target="demo">UseDynamicCodeLibrary</a>
+example (<a href="../../samples/src/UseDynamicCodeLibrary.mxml" target="source">source</a>)
+is very similar to SimpleTester, except that it can take user-defined functions
+and use them in evaluating separately entered dynamic code. This mimics the
+use (or reuse) of user-defined dynamic code library.</p>
+
+<p>Other examples demonstrate major usages of this library. The
+<a href="../../samples/DevalDataGrid/index.html" target="demo">DevalDataGrid</a>
+example (<a href="../../samples/src/DevalDataGrid.mxml" target="source">source</a>)
+shows how to use expressions for <code>DataGridColumn</code>'s <code>dataField</code>.
+For some reason, Adobe's MXML compiler does not accept expressions for
+<code>DataGridColumn.dataField</code>; to display a calculated value, you have
+to either provide a custome <code>labelFunction</code> for each calculation,
+or pre-calculate them in the data object; neither solution is satisfactory.
+The D.eval API solves this dilemma gracefully. The
+<a href="../../samples/SignalGenerator/index.html" target="demo">SignalGenerator</a>
+example (<a href="../../samples/src/SignalGenerator.mxml" target="source">source</a>)
+is an interesting one. The program creates a data set to display in a chart by
+looping through angular (or time) increments; the user provides a function to
+calculate the amplitude for each point in time. This constitutes an arbitrary
+signal generator. A number of predefined functions are provided as examples. The
+<a href="../../samples/ExpertSystem/index.html" target="demo">ExpertSystem</a>
+example (<a href="../../samples/src/ExpertSystem.mxml" target="source">source</a>)
+is perfect for using dynamic code, because user can provide executable conditions
+and actions for production rules. Not surprisingly, the "inference engine" in
+this example is extremely simple: it just does a one-pass scan of all conditions
+and fire matched rules; but the point is well made.</p>
+
+<p>Some of these examples will be examined in this User's Guide in detail.</p>
+
+
+<a name="intro_2"><h3>Introduction to the Supported Language</h3></a>
+
+<p>The D.eval API supports a powerful language, which is essentially a full
+JavaScript with some minor differences. The following list shows its major
+<a name="lang_features">features</a>:</p>
+
+<ol>
+<li>Supports all the operators and flow control statements of JavaScript/AS3.</li>
+<li>Supports all E4X operators and operations.</li>
+<li>Supports user <code>function</code> declaration.</li>
+<li>Supports the syntax of AS3-style type declarations for <code>var</code> and
+    function return values and parameters. Type, however, is simply discarded.</li>
+<li>Supports <code>import</code> statement to import AS3 classes so that they
+    can be used to <code>new</code> instances or call its static methods.</li>
+<li>All Flash top-level functions are available to dynamic code, and a
+    number of built-in functions, including <code>printf()</code>,
+    <code>importFunction()</code> and <code>importStaticMethods()</code>.</li>
+<li>Provides comprehensive interaction with the hosting AS3 environment,
+   	with support at both the language and the API levels.</li>
+<li>Does not support JavaScript object-orientation afterthoughts such as
+    <code>prototype</code> and JavaScript-style object constructors. In other
+    words, the language does not support defining classes in any ways.
+    Object usage, i.e., the dot-notation, is supported.</li>
+<li>Extended keyword support of <code>and</code>, <code>or</code>,
+    <code>not</code>, <code>xor</code>, <code>nand</code>, and <code>nor</code>,
+    useful for taking end-user input with more English-like logical expressions.</li>
+</ol>
+
+
+<a name="intro_3"><h3>Getting Started</h3></a>
+
+<p>To use the D.eval API, all you have to do is import the <code>r1.deval.D</code>
+class and call <code>D.eval(codeString)</code>.</p>
+
+<p>Let us build a simple
+<a href="../../samples/SimpleTester/index.html" target="demo">test run application</a>
+that takes and executes user code. From there, we can experiment with the
+supported language. Its source code is listed below.</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Application layout="absolute" xmlns:mx="http://www.adobe.com/2006/mxml"
+  creationComplete="D.setTextControlOutput(stdout)"&gt;
+
+&lt;mx:Script&gt;&lt;![CDATA[
+  import r1.deval.D;
+
+  private function doRun():void {
+    var result:Object = D.eval(srcCode.text);
+    D.display("D.eval RESULT: " + result);
+  }
+]]&gt;&lt;/mx:Script&gt;
+
+  &lt;mx:HDividedBox width="100%" height="100%"&gt;
+    &lt;mx:TextArea id="stdout" width="40%" height="100%" /&gt;
+    &lt;mx:VBox width="60%" height="100%"&gt;
+      &lt;mx:TextArea id="srcCode" width="100%" height="100%"&gt;
+&lt;mx:text&gt;&lt;![CDATA[// sample code
+arr = [ "a", 9, new Date ];
+for each (x in arr)
+  printf(x)
+]]&gt;&lt;/mx:text&gt;
+      &lt;/mx:TextArea&gt;
+      &lt;mx:Button label="Run" click="doRun()" /&gt;
+    &lt;/mx:VBox&gt;
+  &lt;/mx:HDividedBox&gt;
+
+&lt;/mx:Application&gt;
+</pre>
+
+<p>This is the typical way of using the D.eval API: prior to using
+<code>D.eval</code>, set the output destination to
+receive parse and runtime output. Then, when the user dynamic code is
+available, call <code>D.eval()</code>. In this example, we do not have too
+much to pass to and from the dynamic code, so the call is as simple as it
+gets. A screenshot is shown here:</p>
+
+<p><img src="SimpleTester.gif"></p>
+
+
+<hr><!-- == == == == == == == == == == == == == == == == == == == -->
+
+<a name="lang"><h2>The Language</h2></a>
+
+<p>The language supported by the D.eval API is essentially a full
+JavaScript with some minor differences. Its major features are listed
+<a href="#lang_features">before</a>. This chapter explains the language
+features in detail.</p>
+
+
+<a name="lang_1"><h3>Variables</h3></a>
+
+<p>Variables do not have to be declared with <code>var</code> before use.
+All variables are dynamically typed; you can specify a type for a variable
+in <code>var</code> but that type is ignored.</p>
+
+
+<a name="lang_2"><h3>Expressions</h3></a>
+
+<p>All AS3's expressions are supported, including literals and E4X
+expressions.</p>
+
+<p>Literal syntax includes <code>null</code>, <code>this</code>, boolean,
+integer, number, string, object, array and E4X objects. The <code>this</code>
+references the "this" object as the second parameter passed from the
+<code>D.eval(codeString, context, thisObject)</code>. The <code>super</code>
+keyword in AS3 is not supported.</p>
+
+
+<a name="lang_3"><h3>Extended Logical Operator Keywords</h3></a>
+
+<p>In addition to JavaScript/AS3 operators, the dynamic language supports
+these extended logical operator keywords: <code>and</code>, <code>or</code>,
+<code>not</code>, <code>nand</code>, <code>nor</code>, and <code>xor</code>.
+They are useful for taking end-user input with more English-like logical
+expressions:</p>
+
+<pre>
+var sick = false;
+var young = true;
+
+if (young and not sick)
+  premium = "low";
+</pre>
+
+
+<a name="lang_4"><h3>Using ActionScript 3 Classes</h3></a>
+
+<p>Like in AS3, a class must first be imported via the <code>import</code>
+statement before it can be used. Unlike AS3, only fully qualified class
+names are accepted; no wildcard characters are allowed. Also, the AS3
+classes to be used by the dynamic code must be present at runtime. You can
+import multiple classes in a single statement.</p>
+
+<p>Once a class is imported, it can be used just like in AS3. The class name
+without the package part is used; classes can be assigned to variables; you
+can create instances of a class, and call static methods of that class. For
+instance:</p>
+
+<pre>
+import flash.display.Sprite, mx.utils.StringUtil;
+
+var mySprite:Sprite = new Sprite;
+
+printf( StringUtil.trim('   abc   ') );
+</pre>
+
+
+<a name="lang_5"><h3>Statements</h3></a>
+
+<p>All AS3 statements are supported in the dynamic language with a handful of
+exceptions. The following table lists supported statements and directives.</p>
+
+
+<table class="MYTABLE" cellpadding=5 cellspacing=0>
+<tr><th class="MYTABLE">ActionScript 3</th>
+<th class="MYTABLE">Dynamic Language</th>
+<th class="MYTABLE">Comment</th></tr>
+
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>break</code></td>
+<td class=MYTABLE><code>break</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>case</code></td>
+<td class=MYTABLE><code>case</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>continue</code></td>
+<td class=MYTABLE><code>continue</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>default</code></td>
+<td class=MYTABLE><code>default</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>do..while</code></td>
+<td class=MYTABLE><code>do..while</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>else</code></td>
+<td class=MYTABLE><code>else</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>for</code></td>
+<td class=MYTABLE><code>for</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>for..in</code></td>
+<td class=MYTABLE><code>for..in</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>for each..in</code></td>
+<td class=MYTABLE><code>for each..in</code></td><td class=MYTABLE>Same as AS3 except that, when <code>var</code> is used to declare the variable, type is not allowed; this is different from the rest of the language.</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>if</code></td>
+<td class=MYTABLE><code>if</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>return</code></td>
+<td class=MYTABLE><code>return</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>switch</code></td>
+<td class=MYTABLE><code>switch</code></td><td class=MYTABLE>Same as AS3 and JavaScript; the <code>case</code> values can be any expressions and are not necessarily constants.</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>throw</code></td>
+<td class=MYTABLE><code>throw</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>try..catch..finally</code></td>
+<td class=MYTABLE><code>&nbsp;</code></td><td class=MYTABLE>Not supported (but may be supported in the future.)</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>while</code></td>
+<td class=MYTABLE><code>while</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>with</code></td>
+<td class=MYTABLE><code>&nbsp;</code></td><td class=MYTABLE>Not supported.</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>default xml namespace</code></td>
+<td class=MYTABLE><code>default xml namespace</code></td><td class=MYTABLE>Same as AS3</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>import</code></td>
+<td class=MYTABLE><code>import</code></td><td class=MYTABLE>Supported to import AS3 classes that are avaiable at the time of running.</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>include</code></td>
+<td class=MYTABLE><code>&nbsp;</code></td><td class=MYTABLE>Not supported.</td></tr>
+<tr class=MYTABLE><td class=MYTABLE nowrap><code>use namespace</code></td>
+<td class=MYTABLE><code>&nbsp;</code></td><td class=MYTABLE>N/A</td></tr>
+</table>
+<p>&nbsp;</p>
+
+<a name="lang_5"><h3>User-Defined Functions</h3></a>
+
+<p>Functions can be defined dynamically, too. The syntax is exactly the same
+as in AS3, but the type information for parameters and return type is simply
+discarded. But notice! These functions are not the same as AS3 functions!
+Therefore, they can not be returned to the calling AS3 code nor be passed as
+parameters to imported AS3 functions (see below). User-defined functions can
+be assigned to variables or passed as parameters to other user-defined
+functions, like so:</p>
+
+<pre>
+function inc(x) {
+  return x+1
+}
+function dec(x) {
+  return x-1
+}
+function delegate(x:int, f:Function):int {
+  return f(x)
+}
+
+delegate(5, dec)
+</pre>
+
+
+<a name="lang_7"><h3>Using Flash Top-Level Classes and Functions</h3></a>
+
+<p>Flash top-level classes and functions can be used exactly like in AS3.
+For example,</p>
+
+<pre>
+var date = new Date(1987, 3, 5);
+
+var value = escape('cond=age&lt;50 and age&gt;30');
+
+var num = Number('1234');
+
+trace('TRACE from dynamic code.');
+</pre>
+
+
+<a name="lang_8"><h3>Built-In Functions</h3></a>
+
+<p>The dynamic language includes a few built-in functions.</p>
+
+<p><u><code>function printf(msg_fmt, ...):void</code></u></p>
+
+<p>This function prints the message to the system's output display.
+See <a href="#api_4">Logging and Program Output</a> for more discussion.
+The first parameter can be a string containing parameter indicators like
+<code>{0}</code>, <code>{1}</code>, etc.; they are replaced by values of
+the following parameters.</p>
+
+<p><u><code>function importFunction(name, theFunction):void</code></u></p>
+
+<p>This function imports a function, typically a class static method,
+to be globally invokable. For instance:</p>
+
+<pre>
+import mx.utils.StringUtil;
+importFunction('trim', StringUtil.trim);
+
+printf( trim('    abc    ') ); // call the imported function
+</pre>
+
+<p><u><code>function importStaticMethods(cls, criteria:*=null):void</code></u></p>
+
+<p>This function imports all the static methods of <code>cls</code>, a class
+object, that match the <code>criteria</code>. If <code>criteria</code> is
+<code>null</code>, all static methods are returned; otherwise, the
+<code>criteria</code> can be either a RegExp object or an array of strings.
+For instance:</p>
+
+<pre>
+importStaticMethod(Math, [ 'sin', 'cos' ]);
+
+printf( sin(0.12) ); // call the imported function
+</pre>
+
+
+<hr><!-- == == == == == == == == == == == == == == == == == == == -->
+
+<a name="api"><h2>The Runtime Environment and the API</h2></a>
+
+
+<a name="api_1"><h3>Using the D.eval API</h3></a>
+
+<p>The API consists of just one class, <code>r1.deval.D</code>; all of its
+methods are static. The <a href="../apidoc/r1/deval/D.html">class documentation</a>
+is the most accurate. In this section, we discuss a few specific points.</p>
+
+
+<a name="api_2"><h3>The Runtime Context</h3></a>
+
+<p>The <code>D.eval(program, context, thisObject)</code> method is the
+centerpiece of the API. Its <em>program</em> parameter normally is a
+String of program code, but can also be an executable object returned
+by the <code>D.parseProgram()</code> method. The return value of
+<code>D.eval()</code> is that of either a <code>return</code> statement
+or the last expression executed.</p>
+
+<p>In the language, variables, classes and functions are all named entities.
+When retrieving a named entity, the order of their resolution is: local
+scope chain, <code>this</code> object (if present), the context object and
+finally, the global context. The global context keeps global objects such as
+system functions, classes and imported objects like classes and functions.
+When setting a variable with an unqualified name, the same resolution chain
+is followed; if a settable value is found, the value is set therein;
+otherwise, a new variable is created in the current (local) scope.</p>
+
+<p>The variable declaration with the keyword <code>var</code> declares a
+variable in the current scope. The top level scope is the context object
+passed in to the <code>D.eval(program, context, thisObject)</code> call.</p>
+
+<p>The <em>thisObject</em> and <em>context</em> parameters provides more
+sophisticated communication between the dynamic code and the hosting
+environment. The <em>thisObject</em> is referenced by the <code>this</code>.
+The context object can hold prepolulated values as named variables accessible
+by the dynamic code. Often times, the <em>context</em> is omitted and
+<em>thisObject</em> is to pass a value object on entry. The top-level
+variables in the dynamic code are stored in the <em>context</em> object.
+To set new values in <em>thisObject</em>, use the <code>this</code>. On
+exit, values set in either object can be used by the calling AS3 code.</p>
+
+<p>So why we need these two parameters rather than a single one? The
+<em>context</em> is needed when <em>a)</em> the <em>thisObject</em> is not a
+dynamic AS3 class instance, and <em>b)</em> you intend to use the values set
+by the dynamic code. This is probably not happening very often, but it may.</p>
+
+<p>Let us see some examples. The following code passes a values to the
+dynamic code as variable named "fruit", "price", and "count".</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;Application xmlns="http://www.adobe.com/2006/mxml"
+  creationComplete="test()"&gt;
+&lt;Script&gt;&lt;![CDATA[
+import r1.deval.D;
+
+function test():void {
+  var code:String =
+    'switch(fruit) {\n' +
+    '  case "apple": return "sweet";\n' +
+    '  case "lemon": return "sour";\n' +
+    '  default:      return "unknown";\n' +
+    '}';
+  var taste:String = D.eval(code, { fruit:'apple' });
+
+  var purchase:Object = { price:3.95, count:12 };
+  var cost:Number = D.evalToNumber('price * count', purchase);
+}
+]]&gt;&lt;/Script&gt;
+&lt;/Application&gt;
+</pre>
+
+<p>We will use this program structure for other simple tests, where only
+the <code>test()</code> function code will be present.</p>
+
+<p>The next example demonstrates receiving values from the dynamic code
+and use them in the hosting environment.</p>
+
+<pre>
+function test():void {
+  var code:String =
+    'this.name = "Ron";\n' +
+    'this.age=50;\n' +
+    'var strategy = "plan A";\n' +
+    'var premium = 2000;';
+
+  var thisObj:Object = {};
+  var context:Object = {};
+
+  D.eval(code, context, thisObj);
+
+  trace("this.name:        " + thisObj.name);
+  trace("this.age:         " + thisObj.age);
+  trace("context.strategy: " + context.strategy);
+  trace("context.premium:  " + context.premium);
+}
+</pre>
+
+
+<a name="api_3"><h3>Pre-Parse Dynamic Code and Libraries</h3></a>
+
+<p>If a piece of dynamic code is repeatedly used, it makes good sense to
+pre-parse it, because parsing is a computationally intensive process and
+there is no point to parse the same code again and again. The first
+parameter of <code>D.eval()</code> can be an executable code object
+produced by the <code>D.parseProgram()</code> call.</p>
+
+<p>By default, for small programs, the D.eval API caches the parsed executable
+object. You can call <code>D.useCache()</code> to change this behavior.</p>
+
+<p>Functions declared in the dynamic code are stored like named variables
+within the context object. You can retrieve them by <em>a)</em> explicitly
+passing a context object to the <code>eval()</code> call, and <em>b)</em> on
+exit, call the helper method, <code>D.collectUserFunctions()</code>, to
+cleanse non-function data in the context object. You can reuse these functions
+by passing that object as context to the following <code>eval()</code> calls.
+This effectively enables a library mechanism of dynamically declared functions.
+You can also call the <code>D.parseFunctions()</code> to simply retrieve the
+function declarations, as in this example:</p>
+
+<pre>
+function test():void {
+  // Compile the user library:
+  var libCode:String =
+    'function sum(data:Array):Number {\n' +
+    '  var ret:Number = 0;\n' +
+    '  for each(var x in data) ret += x;\n' +
+    '  return ret;\n' +
+    '}\n\n' +
+    'function avg(data:Array):Number {\n' +
+    '  return (data == null) ? 0 : (sum(data) / data.length);\n' +
+    '}';
+  var userlib:Object = D.parseFunctions(libCode);
+
+  // Use the library to execute dynamic code:
+  var prog:String =
+    'var data = [ 1, 3, 5, 7 ];\n' +
+    'printf("Sum is:     {0}", sum(data));\n' +
+    'printf("Average is: {0}", avg(data));\n';
+  D.eval(prog, null, userlib);
+}
+</pre>
+
+
+<a name="api_4"><h3>Logging and Program Output</h3></a>
+
+<p>The D.eval API parser and runtime engine may print out error and warning
+messages. The dynamic language includes a built-in function, <code>printf()</code>,
+allowing the dynamic code to print out user messages as well. The D.eval API
+uses a user-function, assigned via <code>D.setOutput(f:Function)</code>.
+By default, that destination is <code>trace()</code>. The <code>D</code> provides
+a convenience method to use a text control (such as <code>&lt;mx:TextArea&gt;</code>) 
+to write out multiple lines of messages, via the
+<code>D.setTextControlOutput(host:Object, prop:String, limit:int)</code> method call.
+The following is a typical setup for D.eval:</p>
+
+<pre>
+import r1.deval.D;
+
+// creationComplete handler.
+private function init():void {
+  // stdout is a &lt;mx:TextArea&gt;
+  D.setTextControlOutput(stdout);
+}
+</pre>
+
+
+<a name="api_5"><h3>Pre-Importing Global Objects</h3></a>
+
+<p>The <code>D.importClass()</code>, <code>D.importFunction()</code> and
+<code>D.importStaticMethods()</code> methods allow you to programmatically
+import these objects into the global scope for Deval execution. In the
+dynamic code, the <code>import</code> statement and <code>importFunction()</code>
+and <code>importStaticMethods()</code> functions simply invoke those methods
+and behave the same way.</p>
+
+<p>Because all global objects share the same namespace, name collisions can
+happen. You can use the <code>setOverrideGlobalOption()</code> function with
+constants <code>OVERRIDE_GLOBAL_OVERRIDE</code>, <code>OVERRIDE_GLOBAL_WARN</code>
+or <code>OVERRIDE_GLOBAL_ERROR</code> to indicate name collision resolution.
+By default it is <code>OVERRIDE_GLOBAL_OVERRIDE</code>.</p>
+
+<hr><!-- == == == == == == == == == == == == == == == == == == == -->
+
+
+<a name="examples"><h2>Examples</h2></a>
+
+<p>Let us see some examples of using the D.eval API.</p>
+
+
+<a name="examples_1"><h3>Simple Examples</h3></a>
+
+<p><u>Run simple expressions</u>.
+<code>D.eval</code> returns the value of the last expression execution if no
+<code>return</code> statement is run; hence, running simple expressions can not
+be easier:</p>
+
+<pre>
+var six:int = D.eval('1 + 5') as int;
+</pre>
+
+<p><u>Run expressions with parameters</u>.
+By setting values to a this/context object, you can achieve parameterized expressions:</p>
+
+<pre>
+function dynaExpr(x:*, y:*, expr:String):* {
+  return D.eval(expr, {x:x, y:y});
+}
+
+// Use it:
+trace( dynaExpr(1, 5, 'x + y') );
+</pre>
+
+<p><u>Import classes through API</u>.
+AS3 classes can be used in dynamic code to create new instances or invoke
+their static methods. Before AS3 classes can be used, they must first be
+imported. There are two ways to import classes, programmatically through
+the API and use the <code>import</code> statement in the dynamic code.
+If all possible, import through API to ensure the used AS3 classes are
+indeed linked in to the executable swf file. The AS3 compiler may not
+include classes not explicitly used in the code; when you use the
+<code>import</code> directive in the dynamic code to load AS3 classes
+that are not embedded or loaded, you will get runtime errors. The
+following example AS3 code uses API to import classes.</p>
+
+<pre>
+import my.invention.MyClass;
+
+D.importClass(MyClass);
+
+var obj:MyClass = D.eval('new MyClass(1, 2, 3)') as MyClass;
+</pre>
+
+<p><u>Import classes in the dynamic code</u>.
+Assuming your class is available at runtime, you can dynamically import
+that class like so:</p>
+
+<pre>
+var prog:String = 'import my.invention.MyClass;\n' +
+                  'new MyClass(1, 2, 3)';
+var obj:MyClass = D.eval(prog) as MyClass;
+</pre>
+
+<p><u>Import functions through API</u>.
+<p>AS3 functions can be called from the dynamic code, but they must be
+imported first either through the API or dynamically in the code. Flash
+top-level functions, however, can be used directly. The following AS3
+code uses the API to import classes.</p>
+
+<pre>
+import mx.utils.StringUtil;
+
+D.importFunction('trim', StringUtil.trim);
+
+trace( D.evalToString('trim("   abc  ")') );
+</pre>
+
+<p>You can import all the static methods of a class with a single call:</p>
+
+<pre>
+import mx.utils.StringUtil;
+
+D.importStaticMethods(StringUtil);
+
+trace( D.evalToString( 'trim("   abc  ")' ) );
+trace( D.evalToString( 'substitute("Hello, {0}!", "World")' ) );
+</pre>
+
+<p><u>Import functions in dynamic code</u>.
+The following example AS3 code dynamically imports and uses functions:</p>
+
+<pre>
+var prog:String =
+  'import mx.utils.StringUtil;\n' +
+  'importStaticMethods(StringUtil);\n' +
+  'trim("    abc  ");\n' +
+  'substitute("Hello, {0}!", "World")';
+trace( D.evalToString(prog) );
+</pre>
+
+
+<a name="examples_2"><h3>Display XML and Complex Data In DataGrid</h3></a>
+
+<p>This is the case where DataGrid can use D.eval API to gracefully
+display calculated or manipulated values. The crux of the issue is that,
+for some reason, Adobe's MXML compiler does not accept expressions for
+<code>DataGridColumn.dataField</code>; to display a calculated value, you
+have to either provide a custome <code>labelFunction</code> for each
+calculation, or pre-calculate them in the data object; neither solution
+is satisfactory. With D.eval API, all you have to do is create and use a
+generic label function like this in those <code>DataGridColumn</code>'s:</p>
+
+<pre>
+protected function showData(row:Object, col:DataGridColumn):String {
+  return String(D.eval(col.dataField, row));
+}
+</pre>
+
+<p>A generic <code>DataGridColumn</code>-derived class can be developed.
+This class is thin and easy. Why the D.eval API does not define such a
+class? Only because the D.eval API is intended as a pure AS3 library
+without any bearing on the Flex framework. The following is a complete
+<a href="../../samples/DevalDataGrid/index.html" target="demo">example</a>
+using this technique.</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Application layout="absolute"
+  xmlns:mx="http://www.adobe.com/2006/mxml"&gt;
+
+&lt;mx:XML id="order"&gt;
+  &lt;order&gt;
+    &lt;item id='1'&gt;
+      &lt;menuName&gt;burger&lt;/menuName&gt;			
+      &lt;criticalInfo&gt;
+        &lt;vegetarian&gt;false&lt;/vegetarian&gt;
+        &lt;containsPeanuts&gt;false&lt;/containsPeanuts&gt;
+      &lt;/criticalInfo&gt;
+      &lt;salesInfo&gt;
+        &lt;quantity&gt;3&lt;/quantity&gt;
+        &lt;price&gt;3.95&lt;/price&gt;
+      &lt;/salesInfo&gt;
+    &lt;/item&gt;
+    &lt;item id='2'&gt;
+      &lt;menuName&gt;fries&lt;/menuName&gt;
+      &lt;criticalInfo&gt;
+        &lt;vegetarian&gt;true&lt;/vegetarian&gt;
+        &lt;containsPeanuts&gt;false&lt;/containsPeanuts&gt;
+      &lt;/criticalInfo&gt;
+      &lt;salesInfo&gt;
+        &lt;quantity&gt;4&lt;/quantity&gt;
+        &lt;price&gt;1.45&lt;/price&gt;
+      &lt;/salesInfo&gt;
+    &lt;/item&gt;
+  &lt;/order&gt;
+&lt;/mx:XML&gt;
+
+&lt;mx:Script&gt;&lt;![CDATA[
+  import mx.controls.dataGridClasses.DataGridColumn;
+  import r1.deval.D;
+
+  protected function showData(row:Object, col:DataGridColumn):String {
+    return String(D.eval(col.dataField, row));
+  }
+]]&gt;&lt;/mx:Script&gt;
+
+&lt;mx:DataGrid dataProvider="{order.item}" width="450"&gt;
+  &lt;mx:columns&gt;
+    &lt;mx:DataGridColumn headerText="Name"
+      dataField="menuName" labelFunction="showData"/&gt;
+    &lt;mx:DataGridColumn headerText="Vegetarian"
+      dataField="criticalInfo.vegetarian" labelFunction="showData"/&gt;
+    &lt;mx:DataGridColumn headerText="Peanuts"
+      dataField="criticalInfo.containsPeanuts" labelFunction="showData"/&gt;
+    &lt;mx:DataGridColumn headerText="Quantity"
+      dataField="salesInfo.quantity" labelFunction="showData"/&gt;
+    &lt;mx:DataGridColumn headerText="Price"
+      dataField="salesInfo.price" labelFunction="showData"/&gt;
+    &lt;mx:DataGridColumn headerText="Line Total"
+      dataField="salesInfo.price * salesInfo.quantity" labelFunction="showData"/&gt;
+  &lt;/mx:columns&gt;
+&lt;/mx:DataGrid&gt;
+
+&lt;/mx:Application&gt;
+</pre>
+
+<p><img src="DevalDataGrid.gif"></p>
+
+
+<a name="examples_3"><h3>An "Expert System"</h3></a>
+
+<p>Production-rule-based expert systems store human knowledge in the form
+of <em>if-then</em> rules, and produces "intelligent" results for given
+input using its innate inference engine. The <em>if</em>-conditions are
+boolean expressions, and the <em>then</em>-actions can be anything from
+a piece of message that is understood by machine or human to fully
+executable programs. What a perfect use case for the D.eval API! In
+addition, the conditions would be a perfect place to use the
+<a href="#lang_3">extended logical operator keywords</a> like
+<code>and</code>, <code>or</code>, <code>not</code>, etc.</p>
+
+<p>The <a href="../../samples/ExpertSystem/index.html" target="demo">example</a>
+only reflects the condition and action aspect of a real expert system;
+its inference engine does not quite live up to its name yet &mdash; it
+only does a one-pass scan of all rule conditions and fire the matched
+rules. The UI has two parts: the first one allows user to edit the
+knowledge base of conditions and actions; the second takes user input
+and applies the knowledge. The following screenshots show both.</p>
+
+<p><img src="ExpertSystem1.gif"></p>
+<p><img src="ExpertSystem2.gif"></p>
+
+<p>The source code follows.</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+  width="100%" height="100%" creationComplete="D.setTextControlOutput(stdout)"&gt;
+
+&lt;mx:Script&gt;&lt;![CDATA[
+  import r1.deval.D;
+
+  [Bindable] private var rules:Array = [  // { name, cond, action }'s.
+    { name: 'Young',  cond: 'age &lt; 40', action: '"Is young."' },
+    { name: 'Mid-Age', cond: 'age &gt;= 40 and age &lt; 60', action: '"Is middle-aged."' },
+    { name: 'Old', cond: 'age &gt;= 60', action: '"Is old."' }    
+  ];
+
+  [Bindable] private var attrs:Array = [ // { attr, value }'s.
+    { attr: 'age',  value: 40, type: 'number' }
+  ];
+
+  private function setCurrentRule():void {
+    var rule:Object = rulesList.selectedItem;
+    ruleName.text = rule.name;
+    ruleCond.text = rule.cond;
+    ruleAction.text = rule.action;
+  }
+
+  private function updateRule(asNew:Boolean=false):void {
+    var rule:Object = {
+      name: ruleName.text,
+      cond: ruleCond.text,
+      action: ruleAction.text
+    }
+
+    var a:Array = rules == null ? [] : rules;
+    if (asNew)
+      a.push(rule)
+    else
+      a[rulesList.selectedIndex] = rule;
+
+    rules = null;
+    rules = a;
+  }
+
+  private function addAttr():void {
+    var a:Array = (attrs == null) ? [] : attrs;
+    a.push({ attr: "(EDIT THIS)", type: "number", value: "(EDIT THIS)" });
+    attrs = null;
+    attrs = a;
+  }
+
+  private function evaluate():void {
+    // Collect all attributes and set it to x:
+    var x:Object = {};
+    var o:Object;
+    D.display("Attributes:");
+    for each(o in attrs) {
+      if (o.attr != '' && o.attr != '(EDIT THIS)') {
+        D.display("  " + o.attr + " = " + o.value);
+        switch(o.type) {
+        case 'number':  x[o.attr] = Number(o.value); break;
+        case 'boolean': x[o.attr] = Boolean(o.value); break;
+        case 'string':  x[o.attr] = String(o.value); break;
+        default:        x[o.attr] = o.value; break;
+        }
+      }
+    }
+
+    for each(o in rules) {
+      if (D.evalToBoolean(o.cond, x)) {
+        D.display('\n[Match: "' + o.name + '"]');
+        var result:Object = D.eval(o.action, x);
+        if (result != null)
+          D.display("  Returned: " + result);
+      }
+    }
+    D.display("\n---------------------------------\n");
+  }
+]]&gt;&lt;/mx:Script&gt;
+
+  &lt;mx:TabNavigator width="100%" height="100%" selectedIndex="1"&gt;
+
+    &lt;mx:HBox label="Define Rules" width="100%" height="100%"&gt;
+      &lt;mx:List id="rulesList" labelField="name" width="40%" height="100%"
+        dataProvider="{rules}" change="setCurrentRule()" /&gt;
+      &lt;mx:Form label="Production Rule Details" width="60%" height="100%"&gt;
+        &lt;mx:FormItem label="Name:" width="100%"&gt;
+          &lt;mx:TextInput id="ruleName" width="100%"/&gt;
+        &lt;/mx:FormItem&gt;
+        &lt;mx:FormItem label="Condition:" width="100%"&gt;
+          &lt;mx:TextArea id="ruleCond" width="100%" height="100"/&gt;
+        &lt;/mx:FormItem&gt;
+        &lt;mx:FormItem label="Action:" width="100%"&gt;
+          &lt;mx:TextArea id="ruleAction" width="100%" height="100"/&gt;
+        &lt;/mx:FormItem&gt;
+        &lt;mx:FormItem direction="horizontal"&gt;
+          &lt;mx:Button label="Update" click="updateRule()"
+            enabled="{rulesList.selectedIndex &gt;= 0}" /&gt;
+          &lt;mx:Button label="Add As New" click="updateRule(true)"/&gt;
+        &lt;/mx:FormItem&gt;
+      &lt;/mx:Form&gt;
+    &lt;/mx:HBox&gt;
+
+    &lt;mx:HBox label="Apply Knowledge" width="100%" height="100%"&gt;
+      &lt;mx:VBox width="60%" height="100%"&gt;
+        &lt;mx:HBox width="100%" paddingLeft="10" paddingRight="10"&gt;
+          &lt;mx:Label text="Attributes:"/&gt;
+          &lt;mx:Spacer width="100%"/&gt;
+          &lt;mx:Button label="New Attribute" click="addAttr()"/&gt;
+        &lt;/mx:HBox&gt;
+        &lt;mx:DataGrid id="attributes" width="100%" height="100%"
+          dataProvider="{attrs}" editable="true"&gt;
+        &lt;mx:columns&gt;
+          &lt;mx:DataGridColumn headerText="Attribute" rendererIsEditor="true"
+            itemRenderer="mx.controls.TextInput"
+            dataField="attr" editorDataField="text"/&gt;
+          &lt;mx:DataGridColumn headerText="Type" rendererIsEditor="true"
+            dataField="type" editorDataField="selectedItem" width="90"&gt;
+            &lt;mx:itemRenderer&gt;
+              &lt;mx:Component&gt;
+                &lt;mx:ComboBox&gt;
+                  &lt;mx:Array&gt;
+                    &lt;mx:String&gt;number&lt;/mx:String&gt;
+                    &lt;mx:String&gt;boolean&lt;/mx:String&gt;
+                    &lt;mx:String&gt;string&lt;/mx:String&gt;
+                  &lt;/mx:Array&gt;
+                &lt;/mx:ComboBox&gt;
+              &lt;/mx:Component&gt;
+            &lt;/mx:itemRenderer&gt;
+          &lt;/mx:DataGridColumn&gt;
+          &lt;mx:DataGridColumn headerText="Value"
+            itemRenderer="mx.controls.TextInput" rendererIsEditor="true"
+            dataField="value" editorDataField="text"/&gt;
+        &lt;/mx:columns&gt;
+        &lt;/mx:DataGrid&gt;
+      &lt;/mx:VBox&gt;
+      &lt;mx:VBox width="40%" height="100%"&gt;
+        &lt;mx:Button label="Evaluate" click="evaluate()" /&gt;
+        &lt;mx:TextArea id="stdout" width="100%" height="100%" /&gt;
+      &lt;/mx:VBox&gt;
+    &lt;/mx:HBox&gt;
+
+  &lt;/mx:TabNavigator&gt;
+
+&lt;/mx:Application&gt;
+</pre>
+
+
+<a name="examples_4"><h3>Arbitrary Signal Generator</h3></a>
+
+<p>Let us do something more fun. We will create an <em>arbitrary signal
+generator</em> in Flex! It looks like:</p>
+
+<p><img src="SignalGenerator.gif"></p>
+
+<p>This signal generator takes the function code that you enter and your
+samples/step selections and creates an array of numbers which is set to
+the chart's dataProvider. Your code is responsible for generating the
+signal sample value at a particular moment which is represented in degrees.
+A number of sample functions are provided in the drop-down list.</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+  layout="absolute" backgroundColor="#FFFFFF" creationComplete="init()"&gt;
+
+&lt;mx:Script&gt;&lt;![CDATA[
+  import r1.deval.D;
+
+  private function init():void {
+    examples.dataProvider = [
+      { label: 'sinusoidal',
+        code:  'importStaticMethods(Math, ["sin", "cos"]);\n\n' +
+               'r = degrees * Math.PI/180;\n' +
+               '1.5 * sin(r) + 0.6 * cos(r*3)'
+      },
+      { label: 'noise',
+        code:  'Math.random() * 2 - 1'
+      }, 
+      { label: 'triangular',
+        code:  'period = 64;\n' +
+               'period_4 = period / 4;\n' +
+               'period_3_4 = period - period_4;\n\n' +
+               'x = degrees % period;\n' +
+               'if (x &lt; period_4) return x;\n' +
+               'if (x &lt; period_3_4) return period/2 - x;\n' +
+               'return x - period;'
+      },
+      { label: 'square',
+        code:  'period = 64;\n' +
+               'period_2 = period / 2;\n\n' +
+               'x = degrees % period;\n' +
+               'return (x &lt; period_2) ? 1 : -1;'
+      }
+    ];
+    examples.selectedIndex = 0;
+    pickExample();
+  }
+
+  private function pickExample():void {
+    fxn.text = examples.selectedItem.code;
+    doGen();
+  }
+
+  private function doGen():void {
+    var _samples:int = samples.selectedItem as int;
+    var _step:int = step.selectedItem as int;
+    var prog:Object = D.parseProgram(fxn.text);
+
+    // Generate the signal sample values:
+    var signal:Array = [];
+    for (var i:int=0; i&lt;_samples; ++i)
+      signal.push(Number(D.eval(prog, {degrees:i*_step})));
+
+    // Display them:
+    oscilloscope.dataProvider = signal;
+  }
+]]&gt;&lt;/mx:Script&gt;
+
+  &lt;mx:HBox width="100%" height="100%"&gt;
+    &lt;mx:VBox width="50%" height="100%" paddingLeft="10"
+      paddingRight="10" paddingTop="10" paddingBottom="10"&gt;
+      &lt;mx:Label text="Arbitrary Signal Generator" fontSize="16" fontWeight="bold"/&gt;
+      &lt;mx:HBox&gt;
+        &lt;mx:Label text="Samples:"/&gt;
+        &lt;mx:ComboBox id="samples" selectedIndex="1"
+          dataProvider="{ [90,180,360,720] }" change="doGen()"/&gt;
+        &lt;mx:Label text=" Step:"/&gt;
+        &lt;mx:ComboBox id="step" selectedIndex="1"
+          dataProvider="{ [1,2,4,8] }" change="doGen()"/&gt;
+      &lt;/mx:HBox&gt;
+      &lt;mx:HBox width="100%"&gt;
+        &lt;mx:Label text="Function: (Use 'degrees' as input)"/&gt;
+        &lt;mx:ComboBox id="examples" change="pickExample()"/&gt;
+      &lt;/mx:HBox&gt;
+      &lt;mx:TextArea id="fxn" width="100%" height="100%"/&gt;
+    &lt;/mx:VBox&gt;
+    
+    &lt;mx:VBox width="50%" height="100%"&gt;
+      &lt;mx:AreaChart id="oscilloscope" width="350" height="250" paddingRight="10"&gt;
+        &lt;mx:series&gt;&lt;mx:AreaSeries/&gt;&lt;/mx:series&gt;
+      &lt;/mx:AreaChart&gt;
+      &lt;mx:Button label="Refresh" click="doGen()"/&gt;
+    &lt;/mx:VBox&gt;
+  &lt;/mx:HBox&gt;
+
+&lt;/mx:Application&gt;
+</pre>
+
+<hr><!-- == == == == == == == == == == == == == == == == == == == -->
+
+
+<a name="flash"><h2>Using D.eval API in Flash Programs</h2></a>
+
+<p>The D.eval API version 1.1 is made a pure ActionScript 3 library and works with
+both Adobe Flex and Flash programming. To use it in Flash CS3, the development
+environment for making Flash programs, you need to drop the D.eval API SWC file
+into Flash CS3's components directory; on Windows, this directory is
+<code>C:\Documents and Settings\<em>username</em>\Local Settings\Application Data\Adobe\Flash CS3\en\Configuration\Components\</code>. Then, within Flash CS3, a component named
+<code>D</code> will show up in the <em>components</em> panel. Drag an instance
+into the stage to make it available to your <code>.fla</code> file. The rest of
+thethe  programming is the same as described above.</p>
+
+<p>A sample <code>.fla</code> is included in the <code>samples/flash_test/</code>
+directory, as well as its executable <code>.swf</code> file. It looks like this:
+
+<p><img src="Deval_Flash_Tester.jpg"></p>
+
+<p>In this program, the two multi-line text boxes are named <code>input_txt</code>
+and <code>output_txt</code>, respectively. The relevant code is like this:
+
+<pre>
+import r1.deval.D;
+
+D.setTextControlOutput(output_txt);
+
+run_btn.addEventListener(MouseEvent.CLICK,
+   function(e:Event):void { D.eval(input_txt.text) });
+</pre>
+
+
+<hr><!-- == == == == == == == == == == == == == == == == == == == -->
+
+
+<a name="conclusions"><h2>Final Words</h2></a>
+
+<p>The goal of the D.eval API is straightforward: to dynamically execute
+AS3 expressions and algorithms. However, the API's design and implementation
+go beyond that &mdash; it sports a full-blown embedded JavaScript language
+within ActionScript&trade; 3, supporting all JavaScript/AS3 expressions,
+flow-control statements and user-defined functions.</p>
+
+<p>The D.eval API and the supported dynamic language work hand-in-hand
+for executing dynamic code at runtime, allow sophisticated data exchange
+between custom dynamic code and the hosting AS3 environment.</p>
+
+<p>The capability to do dynamic programming opens a whole new world to
+your Flex&trade; 3 and Flash&trade; application design and development!</p>
+
+<div class="clear"></div><div class="buffer30"></div><div class="bottom"></div></div>﻿</div><!-- end content -->
+
+
+<div class="clear"></div><div class="buffer20"></div><p style="width:710px" align=center>Copyright 2007,2008 RiaOne Company. All Rights Reserved.</p>
+
+</body></html>

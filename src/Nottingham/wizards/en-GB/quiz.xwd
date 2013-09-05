@@ -1,0 +1,82 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <quiz><![CDATA[<quiz name="Enter page title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
+	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
+	  multiWrong="You have not selected the correct combination of answers" 
+	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
+	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
+	  nextBtnText="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
+	  restartBtnText="Restart" restartBtnTip="Restart Quiz" restartBtnWidth="100"
+	  />]]></quiz>      
+    </newNodes>
+  </pageWizard>
+
+  <!-- QUIZ=============================== -->  
+    <quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
+    <name label="Quiz Title" type="textInput" />    
+	<order label="Question Order" options="sequence,random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+    <numQuestions label="Number of Questions (*=All)" type="TextInput"  width="120"/>
+    <align label="Alignment" options="left,right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
+    <instructions label="Instructions" type="textArea"  height="120"/>
+    <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
+	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
+    <feedback label="Feedback" type="textArea"  height="120"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
+	
+    <quesCount label="{i} of {n} questions" type="textInput" divider="true" language="true" />
+    <feedbackLabel label="Feedback Label" type="textInput" language="true" /> 
+    <singleRight label="Single Answer Correct" type="textInput" language="true" />     
+	<singleWrong label="Single Answer Wrong" type="textInput" language="true" />
+    <multiRight label="Multi Answer Correct" type="textInput" language="true" />    
+    <multiWrong label="Multi Answer Wrong" type="textInput" language="true" />    
+    <onCompletion label="Completion Text" type="textInput" language="true" />    
+    <score label="You scored {i} out of {n} marks" type="textInput" language="true" />
+    <submitBtnText label="Submit Button Label" type="textInput" language="true" />
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" />	
+    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
+    <nextBtnText label="Next Button Label" type="textInput" language="true" />
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" />	
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
+    <restartBtnText label="Restart Button Label" type="textInput" language="true" />
+    <restartBtnTip label="Restart Button Tip" type="textInput" language="true" />
+    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
+
+    <video label="Video" type="media"  optional="true"/>
+	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true" />
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
+
+    <newNodes>
+      <question><![CDATA[<question  prompt="Here is a prompt" type="Single Answer" />]]></question>
+	</newNodes>
+	
+  </quiz>
+
+  <question menuItem="Question">
+
+    <prompt label="Prompt" type="TextArea"  height="100"/>
+    <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
+    <image label="Image" type="Media" optional="true" />
+    <tip label="Image Tooltip" type="TextInput" optional="true" />
+
+    <newNodes>
+      <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
+    </newNodes>
+
+  </question>
+
+  <option menuItem="Option">
+
+    <text label="Option" type="TextArea"  height="100"/>
+    <feedback label="Feedback" type="TextArea"  height="100"/>
+    <correct label="Correct" options="true,false" type="ComboBox"  data="true,false" defaultValue="false" width="100" />
+
+  </option>
+</wizard>

@@ -1,0 +1,114 @@
+<wizard restrict="develop">
+
+  <learningObject  icon="icPackage" remove="false" duplicate="false">
+
+    <name label="Learning Object Title" type="TextInput"/>
+    <textSize label="Default Text Size" options="10,12,14,16,18,24,36" type="ComboBox" data="10,12,14,16,18,24,36" width="100"/>
+
+    <kblanguage label="Keyboard Language" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" type="ComboBox" data="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" defaultValue="English" width="120"/>
+    <displayMode label="Display Mode" options="default,full screen,fill window" type="ComboBox" data="default,full screen,fill window" defaultValue="" width="100"/>
+    <navigation type="ComboBox" options="Linear,Historic" data="Linear,Historic" label="Navigation" width="170"/>
+
+    <mediaImage optional="true" type="media" label="Media Image"/>
+    <mediaTranscript optional="true" type="media" label="Media Transcript"/>
+    <media optional="true" type="media" label="Media File"/>
+	
+    <nfo label="Help File" type="media" optional="true"/>
+    <glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+    <controller label="Custom Interface" type="media" optional="true"/>
+    <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+
+	
+    <info><![CDATA[<li>For greater control over the project layout select Insert / Advanced Display.</li>]]></info>	
+
+<newNodes>
+    <projDisplay><![CDATA[<projDisplay 
+	name="Advance Display"
+	stylesheet="FileLocation + 'media/styles.css'"
+	borderWidth="2"
+	borderColour="0x456287"
+	logoUrl=""
+    backgroundImage=""
+    backgroundAlpha=""
+	textTitles="1"
+	titleBarHeight="50"
+	titleBarColour="0x84A2C6"
+	titleBarAlpha="100"
+	titleBarVisible="1"
+	titleBannerHeight="14"
+	titleBannerColour="0x456287"
+	titleBannerAlpha="100"
+	titleBannerVisible="1"
+	statusBarHeight="20"
+	statusBarColour="0x456287"
+	statusBarAlpha="100"
+	statusBarVisible="1"
+	fillColour="0xD6E0EC"
+	fillAlpha="100"
+	buttonTextColour="0xFFFFFF"
+	buttonFillColour="0x456287"
+	buttonAnchor="top"
+	buttonYPos="5"
+	contAnchor="bottom"
+	contYPos="3"
+	progBtnVisible="1"
+	showThemeMenu="1"
+	showScreenSizeMenu="1"
+	showFontMenu="1"
+	showTxtSizeMenu="1"
+	showVolControl="1"
+	anchorMenus="1"
+	/>]]></projDisplay>	
+	</newNodes>
+
+  </learningObject>
+
+  <projDisplay menuItem="Advanced Display" max="1" remove="true">
+    <name type="TextInput" label="Display Settings"/>
+    <stylesheet type="Media" label="Stylesheet"/>	
+	<borderWidth type="NumericStepper" min="0" max="10" step="1" label="Border Width" width="100" defaultValue="2"  />
+	<borderColour type="ColourPicker" label="Border Colour" defaultValue="0x456287" />
+
+    <logoUrl type="media" label="Logo Image File" defaultValue="" />
+    <backgroundImage  type="media" label="Background Image" defaultValue="" />
+    <backgroundAlpha type="NumericStepper" min="0" max="100" step="1" label="Background Opacity" defaultValue="15"/>
+    
+	<textTitles type="ComboBox" options="Both Titles,Project Title Only,Page Title Only,No Titles" defaultValue="1" data="1,2,3,4" label="Display Titles" width="150" />		
+	<titleBarHeight type="NumericStepper" min="0" max="300" step="1" label="Title Bar Height" width="100" defaultValue="50"  />
+	<titleBarColour type="ColourPicker" label="Title Bar Colour" defaultValue="0x84A2C6" />
+	<titleBarAlpha type="NumericStepper" min="0" max="100" step="1" label="Title Bar Opacity" width="100" defaultValue="100"  />
+    <titleBarVisible type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Title Bar Visible" width="100" />		
+
+	<titleBannerHeight type="NumericStepper" min="0" max="100" step="1" label="Title Banner Height" width="100" defaultValue="14"  />
+	<titleBannerColour type="ColourPicker" label="Title Banner Colour" defaultValue="0x456287" />
+	<titleBannerAlpha type="NumericStepper" min="0" max="100" step="1" label="Title Banner Opacity" width="100" defaultValue="100"  />
+    <titleBannerVisible type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Title Banner Visible" width="100" />		
+
+	<statusBarHeight type="NumericStepper" min="0" max="300" step="1" label="Status Bar Height" width="100" defaultValue="20"  />
+	<statusBarColour type="ColourPicker" label="Status Bar Colour" defaultValue="0x456287" />
+	<statusBarAlpha type="NumericStepper" min="0" max="100" step="1" label="Status Bar Opacity" width="100" defaultValue="100"  />
+    <statusBarVisible type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Status Bar Visible" width="100" />		
+	
+	<fillColour type="ColourPicker" label="Background Colour" defaultValue="0xD6E0EC" />
+	<fillAlpha type="NumericStepper" min="0" max="100" step="1" label="Background Opacity" width="100" defaultValue="100"  />
+
+	
+	<buttonTextColour type="ColourPicker" label="Button Text Colour" defaultValue="0xFFFFFF" />
+	<buttonFillColour type="ColourPicker" label="Button Fill Colour" defaultValue="0x456287" />
+    <buttonAnchor type="ComboBox" label="Anchor buttons to" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100"/>
+	<buttonYPos type="NumericStepper" min="1" max="100" step="1" label="Button Anchor Distance" width="100" defaultValue="5"  />
+    <contAnchor type="ComboBox" label="Continue Button Anchor" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
+	<contYPos type="NumericStepper" min="1" max="100" step="1" label="Continue Anchor Distance" width="100" defaultValue="3"  />
+	<progBtnVisible type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Progress Btn Visible" width="100" />
+	
+	<showThemeMenu type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Show Themes Menu" width="100" />	
+    <showScreenSizeMenu type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Show Screens Menu" width="100" />	
+    <showFontMenu type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Show Fonts Menu" width="100" />	
+    <showTxtSizeMenu type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Show Text Size Menu" width="100" />		
+    <showVolControl type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Show Volume Control" width="100" />		
+    <anchorMenus type="ComboBox" options="Yes,No" defaultValue="1" data="1,0" label="Anchor menus / volume to Status Bar" width="100" />
+	
+  </projDisplay>
+  
+  
+</wizard>

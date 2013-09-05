@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	percentWidth="100">
+	
+	<fx:Script>
+		<![CDATA[
+		
+		import mx.collections.ArrayCollection;
+		import spark.events.DropDownEvent;
+		
+		[Bindable] private var defaultValues:Array = new Array(0, 0, 0, "0x000000", false, "0xFFFF00");
+		
+		[Bindable] private var timingOptions:ArrayCollection = new ArrayCollection(
+			[	{ label:"Current caption only",		data:"current"	},
+				{ label:"Keep previous captions",	data:"previous"	},
+				{ label:"Show all captions",		data:"all"		}
+			]);
+		
+		private var allPositionOptions:ArrayCollection = new ArrayCollection(
+			[	{ label:"Below",				data:"below"	},
+				{ label:"Right",				data:"right"	},
+				{ label:"Subtitle - Top",		data:"top"		},
+				{ label:"Subtitle - Bottom",	data:"bottom"	}
+			]);
+		
+		[Bindable] private var positionOptions:ArrayCollection = new ArrayCollection();
+		
+		[Bindable] private var alignOptions:ArrayCollection = new ArrayCollection(
+			[	{ label:"Left",		data:"left"		},
+				{ label:"Centre",	data:"center"	},
+				{ label:"Right",	data:"right"	}
+			]);
+		
+		// function puts relevant options into position comboBox - depending on mediaType
+		public function setUp():void {
+			var oldSelection:String;
+			if (position.selectedIndex != defaultValues[1]) {
+				oldSelection = positionOptions[position.selectedIndex].data;
+			}
+			positionOptions.removeAll();
+			positionOptions.addItem(allPositionOptions[0]);
+			positionOptions.addItem(allPositionOptions[1]);
+			if (parentDocument.mediaType == "video") {
+				positionOptions.addItem(allPositionOptions[2]);
+				positionOptions.addItem(allPositionOptions[3]);
+			}
+			if (oldSelection != null) {
+				var selectionFound:Boolean = false;
+				var i:Number;
+				for (i = 0; i < positionOptions.length; i++) {
+					if (oldSelection == positionOptions[i].data) {
+						position.selectedIndex = i;
+						selectionFound = true;
+						break;
+					}
+				}
+				if (selectionFound == false) {
+					position.selectedIndex = defaultValues[1];
+					position.dispatchEvent(new DropDownEvent(DropDownEvent.CLOSE));
+				}
+			} else {
+				position.selectedIndex = defaultValues[1];
+			}
+		}
+		
+		public function setValues():void {
+			timing.selectedIndex = defaultValues[0];
+			position.selectedIndex = defaultValues[1];
+			textAlign.selectedIndex = defaultValues[2];
+			textColour.selectedColor = defaultValues[3];
+			highlight.selected = defaultValues[4];
+			highlightColour.selectedColor = defaultValues[5];
+		}
+		
+		]]>
+	</fx:Script>
+	
+	<s:Panel id="createHolder"
+		percentWidth="100" percentHeight="100"
+		title="Create Content:"
+		dropShadowVisible="false">
+		
+		<s:HGroup id="createBtnBar"
+			y="{createHolder.y-27}"
+			width="{createHolder.width-7}"
+			horizontalAlign="right">
+			
+			<mx:Button id="previewBtn"
+				width="20"
+				icon="@Embed(source='../buttons/film.png')"
+				toolTip="Preview Media with Captions"
+				click="parentDocument.preview();"
+			/>
+			
+			<!--<mx:Button id="createBtn"
+				width="20"
+				icon="@Embed(source='../buttons/package_add.png')"
+				toolTip="Package Content"
+				click="parentDocument.create();"
+			/>-->
+		
+		</s:HGroup>
+		
+		<s:VGroup
+			paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10"
+			percentWidth="100">
+			
+			<s:HGroup id="HGroup0"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup0.width*0.4}">
+					<s:Label text="Timing:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:HGroup>
+					
+					<s:ComboBox id="timing"
+						dataProvider="{timingOptions}"
+						close="parentDocument.captionSettingChg(event);"
+						width="155"
+						selectedIndex="{defaultValues.getElementAt(0)}"
+					/>
+					
+					<s:Label id="timingError"
+						text="*"
+						color="0xCC0000"
+						visible="false"
+					/>
+					
+				</s:HGroup>
+				
+			</s:HGroup>
+			
+			<s:HGroup id="HGroup1"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup1.width*0.4}">
+					<s:Label text="Position:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:HGroup>
+					
+					<s:ComboBox id="position"
+						dataProvider="{positionOptions}"
+						close="parentDocument.captionSettingChg(event);"
+						width="155"
+						selectedIndex="{defaultValues.getElementAt(1)}"
+					/>
+					
+					<s:Label id="positionError"
+						text="*"
+						color="0xCC0000"
+						visible="false"
+					/>
+					
+				</s:HGroup>
+				
+			</s:HGroup>
+			
+			<s:HGroup id="HGroup2"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup2.width*0.4}">
+					<s:Label text="Alignment:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:Group>
+					<s:ComboBox id="textAlign"
+						dataProvider="{alignOptions}"
+						close="parentDocument.captionSettingChg(event);"
+						width="100"
+						selectedIndex="{defaultValues.getElementAt(2)}"
+					/>
+				</s:Group>
+				
+			</s:HGroup>
+			
+			<s:HGroup id="HGroup3"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup3.width*0.4}">
+					<s:Label text="Text colour:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:Group>
+					<mx:ColorPicker id="textColour"
+						selectedColor="{defaultValues.getElementAt(3)}"
+						change="parentDocument.captionSettingChg(event);"
+					/>
+				</s:Group>
+				
+			</s:HGroup>
+			
+			<s:HGroup id="HGroup4"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup4.width*0.4}">
+					<s:Label text="Highlight current caption:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:Group>
+					<s:CheckBox id="highlight"
+					change="parentDocument.captionSettingChg(event);"
+					selected="{defaultValues.getElementAt(4)}"
+				/>
+				</s:Group>
+				
+			</s:HGroup>
+			
+			<s:HGroup id="HGroup5"
+				percentWidth="100">
+				
+				<s:Group width="{HGroup5.width*0.4}">
+					<s:Label text="Highlight colour:"
+						paddingTop="6"
+					/>
+				</s:Group>
+				
+				<s:Group>
+					<mx:ColorPicker id="highlightColour"
+						selectedColor="{defaultValues.getElementAt(5)}"
+						change="parentDocument.captionSettingChg(event);"
+					/>
+				</s:Group>
+				
+			</s:HGroup>
+			
+			<s:Label id="error"
+				color="0xCC0000"
+				fontSize="11"
+				paddingTop="5"
+			/>
+			
+		</s:VGroup>
+		
+	</s:Panel>
+	
+</s:Group>

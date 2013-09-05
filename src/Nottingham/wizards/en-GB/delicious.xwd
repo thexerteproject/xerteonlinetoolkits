@@ -1,0 +1,29 @@
+<wizard menus="Misc">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="recent" term="Enter Tags" results="20"
+	  headerTxt="Delicious bookmarks for" />]]></delicious>
+    </newNodes>
+  </pageWizard>
+
+  <!-- DELICIOUS============================ -->
+  <delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your presentation." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
+
+    <name label="Page Title" type="TextInput"/>
+    <text label="Instructions" type="textArea" height="300"/>
+    <term label="Search Term" type="textInput"/>
+    <search label="Search in" options="recent,popular,user" type="ComboBox" data="recent,popular,user" defaultValue="recent" width="100"/>
+    <results label="Number of Results" type="NumericStepper" min="5" max="100" step="1" defaultValue="20"/>
+	
+	<headerTxt label="Results Text" type="textInput" divider="true" language="true" />	
+
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </delicious>
+
+
+</wizard>
