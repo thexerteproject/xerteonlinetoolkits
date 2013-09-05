@@ -1,0 +1,937 @@
+
+
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="D,r1.deval.D,OVERRIDE_GLOBAL_ERROR,OVERRIDE_GLOBAL_IGNORE,OVERRIDE_GLOBAL_OVERRIDE,OVERRIDE_GLOBAL_WARN,collectUserFunctions,display,eval,evalToBoolean,evalToInt,evalToNumber,evalToString,importClass,importFunction,importStaticMethods,parseFunctions,parseProgram,setOutput,setOverrideGlobalOption,setTextControlOutput,useCache" />
+    <title>[AS3] Class r1.deval.D</title>
+ <link rel="stylesheet" href="../../../images/more.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../../../images/asdoc-style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../../../images/general.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../../../images/pages.css" type="text/css" media="screen" />
+	<!--[if IE]>
+    <style type="text/css">
+	#content { margin-bottom: 0px; }
+    .sub-level #content #column-main { width: 472px; }
+    .sub-level #content #column-full { width: 710px; margin-right: -40px; }
+    .sub-level #content #column-text { margin-right: -40px; }
+    </style>
+	<![endif]-->
+<script type="text/javascript">
+  var pageID = "deval";
+</script>
+
+  </head>
+  <body id='products' class='sub-level us'
+>
+
+<table border=0 width=710><tr><td><a href="http://www.riaone.com"><img src="../../../images/riaone-logo.gif" border=0></a></td>
+<td nowrap=true align=right valign=bottom>
+D.eval API: <a href="../../../index.html">Documentation</a> | <a href="http://www.riaone.com/../products/deval/">Product Home</a></td></tr>
+<tr height=5><td colspan=2><img src="../../../images/spacer.gif" border=0 height=5></td></tr>
+</table>
+
+
+<div id="content">
+
+<div id="column-full"><div class="top"></div><h1>[AS3] Class r1.deval.D</h1><div id="hr"></div><div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td>r1.deval</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class D</td>
+</tr>
+</table>
+<p></p>
+ <p>This is the only class in the D.eval API for using the <code>eval()</code>
+ functionality in Adobe<sup>&reg;</sup> ActionScript&trade; 3.</p>
+   <h3>Background</h3>
+  <p>The <code>eval()</code> function in JavaScript is used to execute
+ textual dynamic code at runtime. ActionScript 3 chooses to break away
+ from this backward compatibility and deprecated <code>eval()</code>.
+ Yet, some programmers and designers still feel strongly about its need.
+ Hence, this D.eval API, where basically all you need to do is invoke
+ <code>D.eval()</code> in AS3 as you would with <code>eval()</code> in
+ JavaScript. The interface is simple enough; what is intriguing is the
+ language actually supported by D.eval.</p>
+   <h3>The D.eval <em>Dynamic Language</em> in a Nutshell</h3>
+  <p>The language supported by D.eval is essentially a full JavaScript with
+ some minor differences. The following summarizes its major features:</p>
+ <ol>
+ <li>Supports all the operators and flow control statements of JavaScript/AS3.</li>
+ <li>Supports all E4X operators and operations.</li>
+ <li>Supports user <code>function</code> declaration.</li>
+ <li>Supports the syntax of AS3-style type declarations for <code>var</code> and
+     function return values and parameters. Type, however, is simply discarded.</li>
+ <li>Supports <code>import</code> statement to import AS3 classes; they can be
+     used to either create a new instance via the <code>new</code> operator or
+     call their static methods.</li>
+ <li>All Flash top-level functions are available to dynamic code.</li>
+ <li>A number of built-in functions, including <code>printf()</code>,
+     <code>importFunction()</code> and <code>importStaticMethods()</code>.</li>
+ <li>Provides interaction with the hosting AS3 environment, with supports
+     from the built-in language functions and programmatic support of this
+     <code>D</code> class.</li>
+ <li>Does not support JavaScript object-orientation afterthoughts, such as
+     <code>prototype</code> and JavaScript-style object constructors. In
+     other words, the language does not support defining classes in any ways.
+     Object usage, i.e., the dot-notation, is supported.</li>
+ <li>Extended keyword support of <code>and</code>, <code>or</code>,
+     <code>not</code>, <code>xor</code>, <code>nand</code>, and <code>nor</code>.
+     They are useful for taking end-user input with more English-like logical
+     expressions.</li>
+ </ol>
+   <h3>Executing Dynamic Code</h3>
+  <p>The <code><a href="#eval()">eval(program, context, thisObject)</a></code>
+ is the key method; in fact, it is part of the <em>D.eval</em> name itself!
+ Its <em>program</em> parameter normally is a String of textual program code,
+ but can also be an executable object returned by the
+ <code><a href="#parseProgram()">parseProgram()</a></code> method. The return
+ value is either that of a <code>return</code> statement, or, if no
+ <code>return</code> is present, that of the last expression in the code.</p>
+  <p>The <em>context</em> and <em>thisObject</em> parameters provides more
+ sophisticated communication between the dynamic code and the hosting
+ environment. The <em>thisObject</em> is referenced by the <code>this</code>.
+ The context object can hold prepolulated values as named variables accessible
+ by the dynamic code. Often times, the <em>context</em> is omitted and
+ <em>thisObject</em> is used to pass a value object. The top-level variables
+ in the dynamic code are stored in the <em>context</em> object; or you can use
+ <code>this</code> to set values to <em>thisObject</em>, so on exit, values
+ set in either objects can be used by the calling AS3 code.</p>
+  <p>So why we need these two parameters rather than a single one? The
+ <em>context</em> is needed when a) the <em>thisObject</em> is not a dynamic
+ AS3 class instance, and b) you intend to use the values set by the dynamic
+ code. This is probably not happening very often, but it may.</p>
+  <p>The following is an example.</p>
+  <p></p>
+<br>
+<span class="label">Example</span>
+<br> <div class='listing'><pre>
+ import r1.deval.D;
+ // example 1
+ var code:String =
+   '   switch(fruit) {\n' +
+   '     case "apple": return "sweet";\n' +
+   '     case "lemon": return "sour";\n' +
+   '     default:      return "unknown";\n' +
+   '   }';
+ var taste:String = D.eval(code, { fruit:'apple' });
+ // example 2
+ var purchase:Object = { price:3.95, count:12 };
+ var cost:Number = D.evalToNumber('price count', purchase);</pre></div>
+   <h3>Pre-Import AS3 Resources for Dynamic Code to Use</h3>
+  <p>If you know the AS3 classes to be used by the dynamic code, you can pre-import
+ them via the <code><a href="#importClass()">importClass()</a></code> method
+ before calling <code>eval()</code>. This method does exactly what the
+ <code>import</code> statement does from within the dynamic code.</p>
+  <p>If you have AS3 functions to be used by the dynamic code, you can pre-import
+ them via the <code><a href="#importFunction()">importFunction()</a></code> method.
+ This method does exactly the same as the name-sake built-in function from within
+ the dynamic code.</p>
+  <p>You can also pre-import a AS3 class's static methods as simple functions with
+ the <code><a href="#importStaticMethods()">importStaticMethods()</a></code> method.
+ This method does exactly the same as the name-sake built-in function from within
+ the dynamic code.</p>
+   <h3>Dynamically Defined User Functions</h3>
+  <p>Functions declared in the dynamic code are stored like a named variable
+ within the context object. You can retrieve them by a) explicitly passing a
+ context object to the <code>eval()</code> call, and b) on exit, call the helper
+ method, <code><a href="#collectUserFunctions()">collectUserFunctions()</a></code>,
+ to cleanse non-function data in the context object. You can pass that object
+ as a context object to following <code>eval()</code> calls to reuse those user
+ functions. This enables a library mechanism of dynamically declared functions.</p>
+  <p>You can also call the <code><a href="#parseFunctions()">parseFunctions()</a></code>
+ to simply retrieve the function declarations, as in this example:</p>
+  <p></p> <div class='listing'><pre>
+ import r1.deval.D;
+ // Compile the user library:
+ var libCode:String =
+   'function sum(data:Array):Number {\n' +
+   '  var ret:Number = 0;\n' +
+   '  for each(var x in data) ret += x;\n' +
+   '  return ret;\n' +
+   '}\n\n' +
+   'function avg(data:Array):Number {\n' +
+   '  return (data == null) ? 0 : (sum(data) / data.length);\n' +
+   '}';
+ var userlib:Object = D.parseFunctions(libCode);
+ // Use the library to execute dynamic code:
+ var prog:String =
+   'var data = [ 1, 3, 5, 7 ];\n' +
+   'printf("Sum is:     {0}", sum(data));\n' +
+   'printf("Average is: {0}", avg(data));\n';
+ D.eval(prog, userlib);</pre></div>
+   <h3>Logging and Output</h3>
+  <p>The D.eval API output, including that of the output of the built-in function,
+ <code>printf()</code>, is written to a destination. The default destination is
+ <code>trace()</code>. You can set a function or a "receiver", which is an array
+ containing the host and the property name, via the <code>setOutput()</code>
+ static method.</p>
+  <p></p> <div class='listing'><pre>
+ &lt;mx:Script&gt;&lt;![CDATA[
+   import r1.util.TextComponentLogger;
+   import r1.deval.D;
+   // creationComplete handler.
+   private function init():void {
+     // stdout is a &lt;mx:TextArea&gt;.
+     var logger:TextComponentLogger = new TextComponentLogger(stdout);
+     logger.includeCategory = logger.includeDate = logger.includeTime = false;
+     D.setOutput(logger);
+   }
+ ]]&gt;&lt;/mx:Script&gt;</pre></div>
+   <h3>Optimization</h3>
+  <p>Parsing is fairly computationally intensive. This API optimizes by caching
+ the dynamic code if its length does not exceed a limit. You can control this
+ behavior via the <code><a href="#useCache()">useCache()</a></code> method.</p>
+   <h3>More Information</h3>
+  <p>For more information, please refer to
+ <a href="../../../user-guide/ug.html" target="_top">The D.eval API User's Guide</a>,
+ the ultimate reference for the API, the dynamic language and their usages.</p>
+  <p></p>
+<br>
+<hr>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#collectUserFunctions()">collectUserFunctions</a>(context:Object):Object</div>
+<div class="summaryTableDescription">[static]
+  Collects all the user functions in the context object returned from
+  the previous <code>eval()</code> call in order to use them in subsequent
+  <code>eval()</code> calls.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#display()">display</a>(msg:String):void</div>
+<div class="summaryTableDescription">[static]
+  Prints out a message exactly the same as calling the built-in
+  <code>printf()</code> function from within the dynamic program.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#eval()">eval</a>(program:*, context:Object = null, thisObj:Object = null):Object</div>
+<div class="summaryTableDescription">[static]
+  Evaluates the dynamic program.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#evalToBoolean()">evalToBoolean</a>(program:*, context:Object = null, thisObj:Object = null):Boolean</div>
+<div class="summaryTableDescription">[static]
+  This is a convenience method for <code>eval()</code> that casts the return value to Boolean.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#evalToInt()">evalToInt</a>(program:*, context:Object = null, thisObj:Object = null):int</div>
+<div class="summaryTableDescription">[static]
+  This is a convenience method for <code>eval()</code> that casts the return value to int.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#evalToNumber()">evalToNumber</a>(program:*, context:Object = null, thisObj:Object = null):Number</div>
+<div class="summaryTableDescription">[static]
+  This is a convenience method for <code>eval()</code> that casts the return value to Number.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#evalToString()">evalToString</a>(program:*, context:Object = null, thisObj:Object = null):String</div>
+<div class="summaryTableDescription">[static]
+  This is a convenience method for <code>eval()</code> that casts the return value to String.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#importClass()">importClass</a>(cls:Class):void</div>
+<div class="summaryTableDescription">[static]
+  Imports the AS3 class to be used in the dynamic program.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#importFunction()">importFunction</a>(name:String, f:Function):void</div>
+<div class="summaryTableDescription">[static]
+  Imports the AS3 function to be used in the dynamic program.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#importStaticMethods()">importStaticMethods</a>(cls:Class, criteria:* = null):void</div>
+<div class="summaryTableDescription">[static]
+  Imports the AS3 class's static methods as functions to be used in the
+  dynamic program.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#parseFunctions()">parseFunctions</a>(code:String):Object</div>
+<div class="summaryTableDescription">[static]
+  Parses functions in the dynamic code for later uses.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#parseProgram()">parseProgram</a>(program:String):Object</div>
+<div class="summaryTableDescription">[static]
+  Parses the code verbiage into an executable object for the language engine to execute.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setOutput()">setOutput</a>(receiver:Function):void</div>
+<div class="summaryTableDescription">[static]
+  Sets the output destination for internal messages and the
+  <code>printf()</code> built-in function.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setOverrideGlobalOption()">setOverrideGlobalOption</a>(option:int):void</div>
+<div class="summaryTableDescription">[static]
+  To set the flag that controls the language engine's runtime behavior
+  when a global variable is being overridden.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setTextControlOutput()">setTextControlOutput</a>(host:Object, prop:String = "text", limit:int = 2048):void</div>
+<div class="summaryTableDescription">[static]
+  Creates a function to be set via <code>setOutput()</code>,
+  which writes multiple lines into a text control.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#useCache()">useCache</a>(b:Boolean = true, programSizeLimit:int = -1):void</div>
+<div class="summaryTableDescription">[static]
+  Sets the option for caching dynamic programs.</div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+</table>
+</div>
+<a name="constantSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Constants</div>
+<table id="summaryTableConstant" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Constant</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#OVERRIDE_GLOBAL_ERROR">OVERRIDE_GLOBAL_ERROR</a> : int = 3<div class="summaryTableDescription">[static]
+  </div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#OVERRIDE_GLOBAL_IGNORE">OVERRIDE_GLOBAL_IGNORE</a> : int = 0<div class="summaryTableDescription">[static]
+  </div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#OVERRIDE_GLOBAL_OVERRIDE">OVERRIDE_GLOBAL_OVERRIDE</a> : int = 1<div class="summaryTableDescription">[static]
+  </div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#OVERRIDE_GLOBAL_WARN">OVERRIDE_GLOBAL_WARN</a> : int = 2<div class="summaryTableDescription">[static]
+  </div>
+</td><td class="summaryTableOwnerCol">D</td>
+</tr>
+</table>
+</div>
+<div class="MainContent">
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="collectUserFunctions()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">collectUserFunctions</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function collectUserFunctions(context:Object):Object</code><p>
+  Collects all the user functions in the context object returned from
+  the previous <code>eval()</code> call in order to use them in subsequent
+  <code>eval()</code> calls.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Object</code> &mdash; a new object holding all user functions.
+  </td>
+</tr>
+</table>
+</div>
+<a name="display()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">display</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function display(msg:String):void</code><p>
+  Prints out a message exactly the same as calling the built-in
+  <code>printf()</code> function from within the dynamic program.
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">msg</span>:String</code></td>
+</tr>
+</table>
+</div>
+<a name="eval()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">eval</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function eval(program:*, context:Object = null, thisObj:Object = null):Object</code><p>
+  Evaluates the dynamic program.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:*</code> &mdash;  the program code.
+         This can either be a String of the code code verbiage, or an
+         executable object returned by the <code>parseProgram</code> method.
+  </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code> (default = <code>null</code>)<code></code> &mdash; the context object.
+         If this is null, a default context object is created.
+         Top-level variables in the dynamic code are set to this context object.
+  </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">thisObj</span>:Object</code> (default = <code>null</code>)<code></code> &mdash;  the <code>this</code> object in the dynamic code.
+    </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Object</code> &mdash; the execution result. The result is either the value in a
+          <code>return</code> or the value of the last expression evaluated.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#parseProgram()" target="">parseProgram()</a>
+</div>
+</div>
+<a name="evalToBoolean()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">evalToBoolean</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function evalToBoolean(program:*, context:Object = null, thisObj:Object = null):Boolean</code><p>
+  This is a convenience method for <code>eval()</code> that casts the return value to Boolean.
+  
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:*</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">thisObj</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Boolean</code> &mdash; the execution result as an Boolean. The result is either the value in
+          a <code>return</code> or the value of the last expression evaluated.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="evalToInt()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">evalToInt</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function evalToInt(program:*, context:Object = null, thisObj:Object = null):int</code><p>
+  This is a convenience method for <code>eval()</code> that casts the return value to int.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:*</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">thisObj</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>int</code> &mdash; the execution result as an int. The result is either the value in
+          a <code>return</code> or the value of the last expression evaluated.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="evalToNumber()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">evalToNumber</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function evalToNumber(program:*, context:Object = null, thisObj:Object = null):Number</code><p>
+  This is a convenience method for <code>eval()</code> that casts the return value to Number.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:*</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">thisObj</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code> &mdash; the execution result as a Number. The result is either the value in
+          a <code>return</code> or the value of the last expression evaluated.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="evalToString()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">evalToString</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function evalToString(program:*, context:Object = null, thisObj:Object = null):String</code><p>
+  This is a convenience method for <code>eval()</code> that casts the return value to String.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:*</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">thisObj</span>:Object</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>String</code> &mdash; the execution result as a String. The result is either the value in
+          a <code>return</code> or the value of the last expression evaluated.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="importClass()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">importClass</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function importClass(cls:Class):void</code><p>
+  Imports the AS3 class to be used in the dynamic program.
+  This is equivalent to the <code>import</code> statement but can be
+  called to pre-import classes programmatically.
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">cls</span>:Class</code></td>
+</tr>
+</table>
+</div>
+<a name="importFunction()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">importFunction</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function importFunction(name:String, f:Function):void</code><p>
+  Imports the AS3 function to be used in the dynamic program.
+  This is equivalent to the name-sake built-in function in the dynamic
+  language but can be called to pre-import functions programmatically.
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">name</span>:String</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">f</span>:Function</code></td>
+</tr>
+</table>
+</div>
+<a name="importStaticMethods()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">importStaticMethods</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function importStaticMethods(cls:Class, criteria:* = null):void</code><p>
+  Imports the AS3 class's static methods as functions to be used in the
+  dynamic program. This is equivalent to the name-sake built-in function
+  in the dynamic language but can be called to pre-import such methods
+  programmatically.
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">cls</span>:Class</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">criteria</span>:*</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="parseFunctions()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">parseFunctions</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function parseFunctions(code:String):Object</code><p>
+  Parses functions in the dynamic code for later uses.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">code</span>:String</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Object</code> &mdash; an object holding all user functions that can be used by subsequent
+          <code>eval()</code> calls.
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="parseProgram()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">parseProgram</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function parseProgram(program:String):Object</code><p>
+  Parses the code verbiage into an executable object for the language engine to execute.
+  It always parses the code without consulting the internal cache.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">program</span>:String</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Object</code> &mdash; an executable object that can be passed as the first parameter of the
+          <code>eval()</code> (or any of its variations).
+  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#eval()" target="">eval()</a>
+</div>
+</div>
+<a name="setOutput()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setOutput</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function setOutput(receiver:Function):void</code><p>
+  Sets the output destination for internal messages and the
+  <code>printf()</code> built-in function.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">receiver</span>:Function</code> &mdash; signature is: <code>function(v:String):void {}</code>
+  </td>
+</tr>
+</table>
+</div>
+<a name="setOverrideGlobalOption()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setOverrideGlobalOption</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function setOverrideGlobalOption(option:int):void</code><p>
+  To set the flag that controls the language engine's runtime behavior
+  when a global variable is being overridden.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">option</span>:int</code> &mdash; one of these constants:
+    <code>OVERRIDE_GLOBAL_IGNORE</code>,
+    <code>OVERRIDE_GLOBAL_OVERRIDE</code>,
+    <code>OVERRIDE_GLOBAL_WARN</code>, and
+    <code>OVERRIDE_GLOBAL_ERROR</code>.
+  </td>
+</tr>
+</table>
+</div>
+<a name="setTextControlOutput()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setTextControlOutput</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function setTextControlOutput(host:Object, prop:String = "text", limit:int = 2048):void</code><p>
+  Creates a function to be set via <code>setOutput()</code>,
+  which writes multiple lines into a text control.
+  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">host</span>:Object</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">prop</span>:String</code> (default = "<code>text</code>")<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">limit</span>:int</code> (default = <code>2048</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="useCache()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">useCache</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static function useCache(b:Boolean = true, programSizeLimit:int = -1):void</code><p>
+  Sets the option for caching dynamic programs. By default, the D.eval
+  engine caches dynamic program code that not longer than 512 bytes.
+  You can either disable this caching or change the code length limit.
+    </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">b</span>:Boolean</code> (default = <code>true</code>)<code></code> &mdash; a boolean indicating whether cache should be used or not.
+  </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">programSizeLimit</span>:int</code> (default = <code>-1</code>)<code></code> &mdash; the new program size limit.
+         If less than 0, the limit is not changed.
+  </td>
+</tr>
+</table>
+</div>
+<a name="constantDetail"></a>
+<div class="detailSectionHeader">Constant detail</div>
+<a name="OVERRIDE_GLOBAL_ERROR"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">OVERRIDE_GLOBAL_ERROR</td><td class="detailHeaderType">constant</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const OVERRIDE_GLOBAL_ERROR:int = 3</code><p>
+  </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#setOverrideGlobalOption()" target="">setOverrideGlobalOption()</a>
+</div>
+</div>
+<a name="OVERRIDE_GLOBAL_IGNORE"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">OVERRIDE_GLOBAL_IGNORE</td><td class="detailHeaderType">constant</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const OVERRIDE_GLOBAL_IGNORE:int = 0</code><p>
+  </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#setOverrideGlobalOption()" target="">setOverrideGlobalOption()</a>
+</div>
+</div>
+<a name="OVERRIDE_GLOBAL_OVERRIDE"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">OVERRIDE_GLOBAL_OVERRIDE</td><td class="detailHeaderType">constant</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const OVERRIDE_GLOBAL_OVERRIDE:int = 1</code><p>
+  </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#setOverrideGlobalOption()" target="">setOverrideGlobalOption()</a>
+</div>
+</div>
+<a name="OVERRIDE_GLOBAL_WARN"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">OVERRIDE_GLOBAL_WARN</td><td class="detailHeaderType">constant</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public static const OVERRIDE_GLOBAL_WARN:int = 2</code><p>
+  </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../deval/D.html#setOverrideGlobalOption()" target="">setOverrideGlobalOption()</a>
+</div>
+</div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+</div>
+<div class="clear"></div><div class="buffer30"></div><div class="bottom"></div></div>﻿</div><!-- end content -->
+
+
+<div class="clear"></div><div class="buffer20"></div><p style="width:710px" align=center>Copyright 2007,2008 RiaOne Company. All Rights Reserved.</p>
+
+</body></html>

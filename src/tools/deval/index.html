@@ -1,0 +1,150 @@
+
+
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="D.eval,eval(),ActionScript eval()" />
+    <title>The D.eval API</title>
+ <link rel="stylesheet" href="docs/images//more.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="docs/images//article.css" type="text/css" media="screen" />
+ 	<link rel="stylesheet" href="docs/images//general.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="docs/images//pages.css" type="text/css" media="screen" />
+	<!--[if IE]>
+    <style type="text/css">
+	#content { margin-bottom: 0px; }
+    .sub-level #content #column-main { width: 472px; }
+    .sub-level #content #column-full { width: 710px; margin-right: -40px; }
+    .sub-level #content #column-text { margin-right: -40px; }
+    </style>
+	<![endif]-->
+<script type="text/javascript">
+  var pageID = "deval";
+</script>
+
+  </head>
+  <body id='products' class='sub-level us'
+>
+
+<table border=0 width=710><tr><td><a href="http://www.riaone.com"><img src="docs/images//riaone-logo.gif" border=0></a></td>
+<td nowrap=true align=right valign=bottom>
+D.eval API: Documentation | <a href="http://www.riaone.com/products/deval/">Product Home</a></td></tr>
+<tr height=5><td colspan=2><img src="docs/images//spacer.gif" border=0 height=5></td></tr>
+</table>
+
+
+<div id="content">
+
+<div id="column-full"><div class="top"></div><table width="100%" border=0 cellpadding=0><tr><td><h1>The D.eval API</h1></td>
+<td align=right valign=top><b>Version 1.1</b></td></tr></table>
+<div id="hr"></div>
+<style type="text/css">
+td { font-size: 76%; color: #252525; font-family:  Arial, Helvetica, sans-serif }
+</style>
+
+
+<h3>What is D.eval?</h3>
+
+<p>The D.eval API brings the <code>eval()</code> functionality to ActionScript&trade; 3
+(AS3) programming. It is an AS3 library for Adobe Flex&trade; 3 and Flash&trade;
+programs to execute text strings of dynamic AS3 expressions and programs like this:</p>
+
+<pre>
+import r1.deval.D;
+var six:int;
+six = D.eval("4 + 2") as int;
+six = D.evalToInt("var x=0; for(i=1;i&lt;=3;++i)x+=i;return x");
+six = D.evalToInt("a * b", {a:2, b:3});
+six = D.evalToInt("f(5)", {f:function(x:int):int{return x+1}});
+six = D.evalToInt("xml.@size*2", {xml:&lt;shoe size="3"/&gt;});
+six = D.evalToInt('xml=&lt;shoe size="3"/&gt;; return xml.@size*2');
+</pre>
+
+<p>The API itself is concise, easy-to-use and robust. The supported
+dynamic language sports all the AS3 operators, expressions and flow-control
+statements. It even supports user-defined functions. It is practically a
+complete JavaScript language plus AS3 typed variable and parameter
+declarations; it does not support defining classes in any ways.</p>
+
+<hr>
+
+
+<h3>The D.eval API Version 1.1 Release</h3>
+
+<p>This release includes the software libraries, complete
+<a href="docs/index.html">documentation</a>, and fully runnable
+<a href="#samples">sample applications</a>. The software is districuted as
+freeware; it can be freely used by any projects and products, commercial or
+otherwise.</p>
+
+<hr>
+
+
+<h3>Download The D.eval API</h3>
+
+<p>Get the software at the <a href="http://www.riaone.com/download/">download page</a>.</p>
+
+<hr>
+
+
+
+<h3><a name="samples"></a>Samples</h3>
+
+<p>Before you can run the samples, make sure the necessary RSLs have been copied
+to the correct location. See <a href="samples/index.html">this document</a> for
+detailed instructions.</p>
+
+<table border=0 cellpadding=2>
+<tr><td valign=top>SimpleTester</td>
+<td nowrap valign=top>(<a href="samples/SimpleTester/index.html">run</a>|<a href="samples/src/SimpleTester.mxml">source</a>)</td>
+<td valign=top>A simple but typical program that executes user-entered text as dynamic code.</td></tr>
+
+<tr><td valign=top>DevalDataGrid</td>
+<td nowrap valign=top>(<a href="samples/DevalDataGrid/index.html">run</a>|<a href="samples/src/DevalDataGrid.mxml">source</a>)</td>
+<td valign=top>Demonstrates to use expressions in <code>DataGridColumn</code>'s <code>dataField</code> to display calculated column data.</td></tr>
+
+<tr><td valign=top>ExpertSystem</td>
+<td nowrap valign=top>(<a href="samples/ExpertSystem/index.html">run</a>|<a href="samples/src/ExpertSystem.mxml">source</a>)</td>
+<td valign=top>This example is a rudimentary "expert system" with an inference engine
+that only does a one-pass scan of all the conditions.</td></tr>
+
+<tr><td valign=top>SignalGenerator</td>
+<td nowrap valign=top>(<a href="samples/SignalGenerator/index.html">run</a>|<a href="samples/src/SignalGenerator.mxml">source</a>)</td>
+<td valign=top>A fun program that allows users to enter an arbitrary "signal generation"
+function to generate a series of data points displayed in a chart.</td></tr>
+
+<tr><td valign=top>UseDynamicCodeLibrary</td>
+<td nowrap valign=top>(<a href="samples/UseDynamicCodeLibrary/index.html">run</a>|<a href="samples/src/UseDynamicCodeLibrary.mxml">source</a>)</td>
+<td valign=top>Demonstrates how to create a library of user-entered functions and
+use it in subsequent executions of other user-entered code.</td></tr>
+
+<tr><td valign=top>D.eval Comprehensive Tester</td>
+<td nowrap valign=top>(<a href="samples/TestRunner/index.html">run</a>)</td>
+<td valign=top>This program is the comprehensive testing platform for all the features of the D.eval API. This is a pre-built program without source code.</td></tr>
+
+<tr><td valign=top>D.eval Flash CS3 Tester</td>
+<td nowrap valign=top>(<a href="samples/flash_test/Deval_Flash_Test.html">run</a>)</td>
+<td valign=top>This is a Flash program that uses D.eval, built with Adobe Flash CS3&trade;.</td></tr>
+
+</table>
+</table>
+
+<p>&nbsp;</p>
+
+<hr>
+
+
+<h3>Quick links:</h3>
+
+<blockquote>
+<p><a href="docs/release-notes-D.eval-1.1.html">D.eval API version 1.1 Release Notes</a></p>
+<p><a href="docs/user-guide/ug.html">D.eval API and Language User's Guide</a></p>
+<p><a href="docs/apidoc/r1/deval/D.html">D.eval API Documentation</a></p>
+<blockquote>
+
+<div class="clear"></div><div class="buffer30"></div><div class="bottom"></div></div>﻿</div><!-- end content -->
+
+
+<div class="clear"></div><div class="buffer20"></div><p style="width:710px" align=center>Copyright 2007,2008 RiaOne Company. All Rights Reserved.</p>
+
+</body></html>

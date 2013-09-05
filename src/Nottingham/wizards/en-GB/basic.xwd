@@ -1,0 +1,43 @@
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
+
+  <learningObject  icon="icPackage" remove="false" duplicate="false">
+
+    <name type="TextInput" label="Learning Object Title"/>
+    <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
+    <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
+    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250"/>
+    <language type="LanguageList" label="Language" width="170"/>
+
+    <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
+    <displayMode type="ComboBox" options="default,full screen,fill window" data="default,full screen,fill window" label="Display Mode" width="100"/>
+    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page title size"  defaultValue="24"/>
+	
+	<media optional="true" type="media" label="Media File"/>
+	<mediaImage optional="true" type="media" label="Media Image"/>
+    <mediaTranscript optional="true" type="media" label="Media Transcript"/>
+	<mediaTiming optional="true" type="ComboBox" options="Current caption only,Keep previous captions,Show all captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
+	<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Media Caption Position" defaultValue="below" width="175"/>
+	<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Media Caption Align" defaultValue="left" width="100"/>
+	<mediaColour optional="true" type="ColourPicker" label="Media Caption Colour" defaultValue="0x000000"/>
+	<mediaHighlight optional="true" type="CheckBox" label="Media Caption Highlight" defaultValue="true"/>
+	<mediaHighlightColour optional="true" type="ColourPicker" label="Media Caption Highlight Colour" defaultValue="0xFFFF00"/>
+	
+    <menuImageProperties optional="true" type="ComboBox" label="Menu Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100"/>
+    <menuImage optional="true" type="media" label="Menu Page Image"/>
+    <ic optional="true" type="media" label="Icon"/>
+    <nfo optional="true" label="Help File" type="media"/>
+    <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
+    <controller optional="true" label="Custom Interface" type="media"/>
+    <background optional="true" type="media" label="Background Image"/>
+    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
+    <stylesheet optional="true" type="Media" label="Stylesheet"/>
+    <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+    <trackingMode optional="true" label="SCORM tracking mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+    <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
+
+    <newNodes>
+    </newNodes>
+
+  </learningObject>
+
+</wizard>

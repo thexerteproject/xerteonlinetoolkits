@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<s:Panel id="mediaHolder"
+		width="300" height="300"
+		title="Media:"
+		dropShadowVisible="false">
+		
+		<s:HGroup id="mediaBtnBar"
+			y="{mediaHolder.y-27}"
+			width="{mediaHolder.width-7}"
+			horizontalAlign="right">
+			
+			<mx:Button id="mediaBtn"
+				width="20"
+				icon="@Embed(source='../buttons/folder_image.png')"
+				toolTip="Select Media"
+				click="parentDocument.browseForFile('media');"
+			/>
+			
+			<mx:Button id="imageBtn"
+				width="20"
+				icon="@Embed(source='../buttons/folder_picture.png')"
+				toolTip="Select Image"
+				click="parentDocument.browseForFile('image');"
+			/>
+			
+		</s:HGroup>
+		
+		<s:VGroup id="mediaInfoHolder"
+			horizontalAlign="center">
+			
+			<!-- ** video or audio player is loaded here depending on file user selects ** -->
+			
+		</s:VGroup>
+		
+		<s:Group id="buttonOverlay">
+			<mx:Image id="blankBtn"
+				source="@Embed(source='../buttons/blankBtn.png')"
+				visible="false"
+			/>
+		</s:Group>
+		
+	</s:Panel>
+	
+</s:Group>

@@ -1,0 +1,81 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
+	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
+	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
+	  showMeTxt="Use the arrows to learn more."
+	  regionsTxt="Show Regions"
+	  nextTxt="Next"
+	  priorTxt="Previous"
+	  nextBtnTxt="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
+	  checkBtnTxt="Check" checkBtnTip="Check your answer" checkBtnWidth="100"
+	  beforeQuesCount="Question" nQValue="n" betweenQuesCount="of" afterQuesCount=""
+	  questionTxt="Which item is highlighted in the diagram? Choose from the following options"
+	  wrong1stTxt="No. The"
+	  wrong2ndTxt="is highlighted in green. The correct answer is the"
+	  noOptionTxt="You haven't selected an option."
+	  correctTxt="That's right."
+	  continueTxt="Move on to the next question"
+	  scoreLabel="Score" 
+	  beforeScore="You scored" nSValue="s"
+	  betweenScore="out of" afterScore="in the quiz" 
+	  onCompletion="You can retake the quiz at any time"   
+	  restart="Restart"  
+	  >CDATA</customHotspots>]]></customHotspots>
+    </newNodes>
+  </pageWizard>
+
+  <!-- CUSTOM HOSTPOTS======================= -->
+  <customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="A more complex hotspot based-diagram" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
+    <name label="Name" type="TextInput"/>
+    <text label="Page Text" type="TextArea" height="200"/>
+    <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
+    <lineWidth label="Highlight Width" type="NumericStepper" min="0" max="5" step="1" defaultValue="1"/>
+    <interactivity label="Interactivity" options="Hotspots,Labels,Show Me,MCQ" type="ComboBox" data="Hotspots,Labels,Show Me,MCQ" defaultValue="Hotspots" width="100"/>
+    <showShapes label="Show Shapes" type="CheckBox" defaultValue="true"/>
+
+    <hotspotsTxt label="Hotspots text" type="textInput" divider="true" language="true"/>
+    <labelsTxt label="Labels text" type="textInput" language="true"/> 
+    <showMeTxt label="Show Me text" type="textInput" language="true"/> 
+    <regionsTxt label="Show Regions text" type="textInput" language="true"/> 
+    <nextTxt label="Next Arrow Label" type="textInput" language="true"/>
+	<priorTxt label="Prior Arrow Label" type="textInput" language="true"/>
+    <nextBtnTxt label="Next Button Label" type="textInput" language="true"/>
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+    <checkBtnTxt label="Check Button Label" type="textInput" language="true"/>
+    <checkBtnTip label="Check Button Tip" type="textInput" language="true"/>		
+    <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+    <beforeQuesCount label="QUESTION n of m questions" type="textInput" language="true"/>
+    <nQValue label="Number precedes Count" options="Yes,No" type="ComboBox"  defaultValue = "n" data="n,c" width="200" language="true"/>	
+    <betweenQuesCount label="question n OF m questions" type="textInput" language="true"/> 
+    <afterQuesCount label="question n of m QUESTIONS" type="textInput" language="true"/> 
+
+    <questionTxt label="Question Text" type="textInput" language="true"/>	
+	<wrong1stTxt label="Wrong feedback intro" type="textInput" language="true"/>
+	<wrong2ndTxt label="Wrong feedback main" type="textInput" language="true"/>
+    <noOptionTxt label="No Option Text" type="textInput" language="true"/>		
+    <correctTxt label="Question Text" type="textInput" language="true"/>		
+    <continueTxt label="Continue instructions" type="textInput" language="true"/>		
+    <scoreLabel label="Feedback Label" type="textInput" language="true"/> 
+    <beforeScore label="YOU SCORED n out of m marks" type="textInput" language="true"/>
+    <nSValue label="Score before Maximum" options="Yes,No" type="ComboBox" defaultValue = "s" data="s,m" width="200" language="true"/>	
+    <betweenScore label="you scored n OUT OF m marks" type="textInput" language="true"/>    
+    <afterScore label="you scored n out of m MARKS" type="textInput" language="true"/>    
+    <onCompletion label="Completion Text" type="textInput" language="true"/>    
+    <restart label="Restart Button Text" type="textInput" language="true"/>  
+
+ 	
+
+	
+    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media"  optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+
+  </customHotspots>
+
+
+</wizard>

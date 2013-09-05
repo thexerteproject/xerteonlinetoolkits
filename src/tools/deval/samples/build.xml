@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- This script builds all the D.eval samples. -->
+
+<project name="D.eval Samples" basedir="." default="build-samples">
+
+	<property file="env.properties" />
+
+	<!-- External derivative paths and parameters.  -->
+	<property name="flexsdk.home" value="${flexsdk_home}" />
+	<property name="fw_dir" value="${flexsdk_home}/frameworks" />
+	<property name="fw_libs_dir" value="${fw_dir}/libs" />
+	<property name="fw_locale_dir" value="${fw_dir}/locale/en_US" />
+
+	<!-- Directory to hold content for the zipped downloadable. -->
+	<property name="deval_path" value="${basedir}/../${deval_release}.swc" />
+
+	<!-- Build tools and resources -->
+	<taskdef resource="ant.tasks" classpath="${r1tools_path}" />
+
+	<target name="build-samples" description="Build samples">
+		<antcall target="?compile-a-sample">
+			<param name="asample" value="SimpleTester"/>
+		</antcall>
+
+		<antcall target="?compile-a-sample">
+			<param name="asample" value="UseDynamicCodeLibrary"/>
+		</antcall>
+
+		<antcall target="?compile-a-sample">
+			<param name="asample" value="DevalDataGrid"/>
+		</antcall>
+
+		<antcall target="?compile-a-sample">
+			<param name="asample" value="ExpertSystem"/>
+		</antcall>
+
+		<antcall target="?compile-a-sample-with-chart">
+			<param name="asample" value="SignalGenerator"/>
+		</antcall>
+
+		<delete file="${basedir}/mxmlc-link-report.xml" />
+	</target>
+
+	<target name="?compile-a-sample">
+		<echo message="Sample: ${asample}" />
+		<mkdir dir="${basedir}/${asample}" />
+
+		<mxmlc mainClass="${basedir}/src/${asample}.mxml">
+			<arg line="-load-config ${basedir}/deval-samples-config.xml" />
+			<arg line="-output ${basedir}/${asample}/${asample}.swf" />
+			<arg line="-link-report ${basedir}/mxmlc-link-report.xml" />
+			<arg value="-compiler.source-path=${basedir}/src"/>
+			<arg value="-compiler.include-libraries=${fw_locale_dir}/framework_rb.swc" />
+			<arg value="-compiler.include-libraries=${fw_locale_dir}/rpc_rb.swc" />
+			<arg value="-compiler.external-library-path=${fw_dir}/libs/player/playerglobal.swc"/>
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/flex.swc" />
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/framework.swc" />
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/rpc.swc" />
+			<arg value="-compiler.external-library-path=${deval_path}" />
+			<arg value="-runtime-shared-libraries=../rsls/flex3/framework_${flexsdk_version}.swf"/>
+			<arg value="-runtime-shared-libraries=../rsls/flex3/rpc_${flexsdk_version}.swf"/>
+			<arg value="-runtime-shared-libraries=../rsls/${deval_release}.swf"/>
+		</mxmlc>
+
+		<antcall target="?wrapper-html">
+			<param name="?dest" value="${basedir}/${asample}" />
+			<param name="?swf" value="${asample}" />
+			<param name="?title" value="${asample}" />
+			<param name="?name" value="${asample}" />
+		</antcall>
+	</target>
+
+	<target name="?compile-a-sample-with-chart">
+		<echo message="Sample: ${asample}" />
+		<mkdir dir="${basedir}/${asample}" />
+
+		<mxmlc mainClass="${basedir}/src/${asample}.mxml">
+			<arg line="-load-config ${basedir}/deval-samples-config.xml" />
+			<arg line="-output ${basedir}/${asample}/${asample}.swf" />
+			<arg line="-link-report ${basedir}/mxmlc-link-report.xml" />
+			<arg value="-compiler.source-path=${basedir}/src"/>
+			<arg value="-compiler.include-libraries=${fw_locale_dir}/datavisualization_rb.swc" />
+			<arg value="-compiler.include-libraries=${fw_locale_dir}/framework_rb.swc" />
+			<arg value="-compiler.include-libraries=${fw_locale_dir}/rpc_rb.swc" />
+			<arg value="-compiler.external-library-path=${fw_dir}/libs/player/playerglobal.swc"/>
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/datavisualization.swc" />
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/flex.swc" />
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/framework.swc" />
+			<arg value="-compiler.external-library-path=${fw_libs_dir}/rpc.swc" />
+			<arg value="-compiler.external-library-path=${deval_path}" />
+			<arg value="-runtime-shared-libraries=../rsls/flex3/framework_${flexsdk_version}.swf"/>
+			<arg value="-runtime-shared-libraries=../rsls/flex3/rpc_${flexsdk_version}.swf"/>
+			<arg value="-runtime-shared-libraries=../rsls/flex3/datavisualization_${flexsdk_version}.swf"/>
+			<arg value="-runtime-shared-libraries=../rsls/${deval_release}.swf"/>
+		</mxmlc>
+
+		<antcall target="?wrapper-html">
+			<param name="?dest" value="${basedir}/${asample}" />
+			<param name="?swf" value="${asample}" />
+			<param name="?title" value="${asample}" />
+			<param name="?name" value="${asample}" />
+		</antcall>
+	</target>
+
+	<target name="?wrapper-html">
+		<htmlwrapper srcBase="${flex_wrapper}" destBase="${?dest}">
+			<param name="title" value="${?title}" />
+			<param name="version_major" value="9" />
+			<param name="version_minor" value="0" />
+			<param name="version_revision" value="0" />
+			<param name="swf" value="${?swf}" />
+			<param name="width" value="100%" />
+			<param name="height" value="100%" />
+			<param name="bgcolor" value="#999999" />
+			<param name="application" value="${?name}" />
+		</htmlwrapper>
+	</target>
+
+</project>

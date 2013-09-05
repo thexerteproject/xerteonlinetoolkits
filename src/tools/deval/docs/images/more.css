@@ -1,0 +1,50 @@
+.pagetexttitle {
+font-size: 11pt; color: black; font-family: Arial, Verdana, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+.bartext {
+font-size: 11pt; color: white; font-family: Arial, Verdana, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+.greybartext {
+font-weight: bold; font-size: 11pt; color: black; font-family: Arial, Verdana, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+.bluebartext {
+font-weight: bold; font-size: 11pt; color: white; font-family: Arial, Verdana, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+.inputlabel {
+font-weight: bold; font-size: 9pt; color: black; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif
+}
+
+.bodytext {
+font-size: 9pt; color: black; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif
+}
+.colhead {
+font-weight: bold; font-size: 9pt; color: black; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif
+}
+
+.helptext {
+font-size: 8pt; color: black; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif
+}
+
+a:link {
+font-size: 9pt; color: #333399; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+a:active {
+font-size: 9pt; color: #333399; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+a:visited {
+font-size: 9pt; color: #333399; font-family: Arial, Helvetica, Verdana, Geneva, sans-serif; text-decoration: none
+}
+
+select { margin-left: 5px; }
+textarea { margin-left: 5px; }
+
+.TOC2 { margin-left:5px; font-size:10px; height:12px }
+.hilite { color: #FF0000 }
+.t_o_c { font-size:18px; height:27px }
+.disclaimer { margin-left:10px; font-size:10px; color:#999999 }

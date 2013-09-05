@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="300" height="300"
+	creationComplete="init();">
+	
+	<fx:Script>
+		<![CDATA[
+		
+		import components.Mp3Player;
+		import flash.events.Event;
+		import flash.events.TimerEvent;
+		import flash.utils.Timer;
+		import mx.controls.Image;
+		import org.osmf.events.MediaPlayerStateChangeEvent;
+		import org.osmf.events.TimeEvent;
+		import org.osmf.media.MediaPlayerState;
+		import spark.components.Group;
+		import spark.components.RichText;
+		import spark.components.ToggleButton;
+		import spark.components.VGroup;
+		import spark.components.VideoPlayer;
+		import spark.layouts.HorizontalLayout;
+		import spark.layouts.supportClasses.LayoutBase;
+		import spark.layouts.VerticalLayout;
+		
+		
+		public var xml:XML;
+		private var currentCaption:Number = -1;
+		[Bindable] private var captions:Array = new Array();
+		private var highlightedCaptions:Array = new Array();
+		private var captionAtStart:Number = -1;
+		
+		private var timing:String = "current";
+		private var position:String = "below";
+		private var textAlign:String = "left";
+		private var textColour:uint = 0x000000;
+		private var highlight:String = "false"
+		private var highlightColour:uint = 0xFFFF00;
+		
+		[Bindable] public var mediaName:String;
+		[Bindable] public var imgFile:String;
+		private var mediaType:String;
+		private var myVideo:VideoPlayer = new VideoPlayer();
+		private var myAudio:Mp3Player = new Mp3Player();
+		private var myImage:Image = new Image();
+		
+		private var mediaWidth:Number;
+		private var mediaHeight:Number;
+		[Bindable] private var scrollWidth:Number;
+		[Bindable] private var scrollHeight:Number;
+		
+		[Embed(source = "../buttons/captionSkin.png")]
+		[Bindable] private var captionSkin:Class;
+		[Embed(source = "../buttons/captionSkin_selected.png")]
+		[Bindable] private var captionSkinSelected:Class;
+		
+		
+		// fuction gets all info needed from xml & inserts video or audio player
+		private function init():void {
+			if (String(xml.head) != "") {
+				position = xml.head.caption.@position;
+				if (position == "top" || position == "bottom") { // subtitles can only show one at a time
+					timing = "current";
+				} else {
+					timing = xml.head.caption.@timing;
+				}
+				textAlign = xml.head.styling.@textAlign;
+				textColour = xml.head.styling.@textColour;
+				highlight = xml.head.styling.@highlight;
+				highlightColour = xml.head.styling.@highlightColour;
+			}
+			
+			var captionXML:XML = new XML();
+			if (String(xml.body) != "") {
+				if (String(xml.body.div) != "") {
+					captionXML = XML(xml.body.div);
+				} else {
+					captionXML = XML(xml.body);
+				}
+			} else {
+				if (String(xml.div) != "") {
+					captionXML = XML(xml.div);
+				} else {
+					captionXML = XML(xml);
+				}
+			}
+			
+			var i:Number;
+			for (i = 0; i < captionXML.P.length(); i++) {
+				captions.push( { name:captionXML.P[i], time:captionXML.P[i].@begin } );
+				captions.push( { name:"@end" + i, time:captionXML.P[i].@end } );
+				if (Number(captionXML.P[i].@begin) == 0) {
+					captionAtStart = i;
+				}
+			}
+			
+			var groupLayout:LayoutBase = new LayoutBase();
+			if (position == "right") {
+				groupLayout = new HorizontalLayout();
+				mainHolder.layout = groupLayout;
+			} else if (position == "below") {
+				groupLayout = new VerticalLayout();
+				mainHolder.layout = groupLayout;
+			} else {
+				captionScroller.x = 5;
+				captionScroller.y = 5;
+			}
+			if (timing == "current") {
+				borders.visible = false;
+			}
+			
+			var fileType:String = mediaName.substring(mediaName.lastIndexOf(".") + 1, mediaName.length);
+			if (fileType == "flv") {
+				mediaType = "video";
+				myVideo.source = mediaName;
+				myVideo.autoPlay = false;
+				myVideo.setStyle("dropShadowVisible", false); // ** this isn't working to get rid of the shadow **
+				myVideo.addEventListener("currentTimeChange", videoTimeChg);
+				myVideo.addEventListener("mediaPlayerStateChange", videoLoaded);
+				myVideo.addEventListener("complete", endMedia);
+				mainHolder.addElementAt(myVideo, 0);
+				
+			} else {
+				mediaType = "audio";
+				myAudio.source = mediaName;
+				myAudio.pause();
+				myAudio.width = 300;
+				if (imgFile != "null") {
+					var audioGroup:VGroup = new VGroup();
+					audioGroup.gap = 0;
+					mainHolder.addElementAt(audioGroup, 0);
+					myImage.source = imgFile;
+					myImage.visible = false;
+					audioGroup.addElement(myImage);
+					myImage.addEventListener(Event.INIT, imgLoaded); // scales image
+					audioGroup.addElement(myAudio);
+				} else {
+					mainHolder.addElementAt(myAudio, 0);
+				}
+				myAudio.addEventListener("creationComplete", audioLoaded);
+			}
+		}
+		
+		// function adds new caption to captionHolder
+		private var scroll:Boolean = false;
+		private function newCaption(num:Number):void {
+			var myCaption:RichText = new RichText();
+			myCaption.text = captions[num*2].name;
+			myCaption.width = captionHolder.width;
+			myCaption.setStyle("textAlign", textAlign);
+			myCaption.setStyle("color", textColour);
+			myCaption.setStyle("paddingTop", 5);
+			myCaption.setStyle("paddingBottom", 5);
+			myCaption.setStyle("paddingLeft", 5);
+			myCaption.setStyle("paddingRight", 15);
+			myCaption.setStyle("backgroundColor", highlightColour);
+			
+			if (highlight == "true" && currentCaption == num) {
+				sortHighlights(myCaption);
+			} else {
+				myCaption.setStyle("backgroundAlpha", 0);
+			}
+			captionHolder.addElement(myCaption);
+			if (timing != "all") {
+				myCaption.addEventListener("creationComplete", captionLoaded);
+			}
+		}
+		
+		// function called when caption loaded - can now get dimensions and position of caption
+		private function captionLoaded(event:Event):void {
+			if (position == "bottom") {
+				scrollHeight = RichText(event.target).height;
+				captionScroller.y = mediaHeight + myVideo.y - scrollHeight - myVideo.playerControls.height - 5;
+			}
+			if (timing == "previous") {
+				if (captionHolder.getElementIndex(RichText(event.target)) == currentCaption) {
+					setScrollPosition(RichText(event.target));
+				}
+			} else {
+				setScrollPosition(RichText(event.target));
+			}
+		}
+		
+		// function ensures scroller always show current caption
+		private function setScrollPosition(clip:RichText):void {
+			if ((timing != "all" && captionHolder.measuredHeight > scrollHeight) || (timing == "all" && clip.y + clip.height > scrollHeight)) {
+				var yDif:Number = clip.y + clip.height - scrollHeight;
+				captionHolder.verticalScrollPosition = yDif;
+			}
+		}
+		
+		// function adds highlight to myCaption
+		private function sortHighlights(myCaption:RichText):void {
+			removeHighlights();
+			myCaption.setStyle("backgroundAlpha", 0.9);
+			myCaption.invalidateDisplayList();
+			highlightedCaptions.push(myCaption);
+			if (timing == "all") {
+				setScrollPosition(myCaption);
+			}
+		}
+		
+		// removes all highlighted captions
+		private function removeHighlights():void {
+			var j:Number;
+			for (j = 0; j < highlightedCaptions.length; j++) {
+				var thisCaption:RichText = highlightedCaptions[j];
+				thisCaption.setStyle("backgroundAlpha", 0);
+				thisCaption.invalidateDisplayList();
+			}
+			highlightedCaptions.splice(0, highlightedCaptions.length);
+		}
+		
+		// functions called as media is played to see if caption should be shown / removed
+		private function videoTimeChg(event:TimeEvent):void {
+			mediaTimeChg(event.target.currentTime);
+		}
+		
+		private function audioTimeChg(event:TimerEvent):void {
+			mediaTimeChg(Math.round(myAudio.myChannel.position) / 1000);
+		}
+		
+		private function mediaTimeChg(time:Number):void {
+			if (currentCaption != -1) {
+				if (time > captions[(currentCaption * 2) + 1].time) {
+					currentCaption = -1;
+					captionFunction(currentCaption);
+				}
+			}
+			if (currentCaption == -1) {
+				var i:Number;
+				for (i = 0; i < captions.length / 2; i++) {
+					if (time > captions[i * 2].time && time < captions[(i * 2) + 1].time) {
+						currentCaption = i;
+						captionFunction(currentCaption);
+					}
+				}
+			}
+		}
+		
+		// function called at each cue point & when media time changed manually
+		private function captionFunction(num:Number):void {
+			if (num == -1) { // end of a caption
+				if (timing == "current") {
+					captionHolder.removeAllElements();
+				} else if (highlight == "true") {
+					removeHighlights();
+				}
+				
+			} else { // start of a caption
+				if (timing == "all" && highlight == "true") {
+					sortHighlights(RichText(captionHolder.getElementAt(num)));
+				} else if (timing == "previous") {
+					newCaption(num);
+				} else if (timing == "current") {
+					captionHolder.removeAllElements();
+					newCaption(num);
+				}
+			}
+		}
+		
+		// function checks for any current captions after time manually changed
+		private function manualChange(event:Event):void {
+			var currentTime:Number;
+			if (mediaType == "video") {
+				currentTime = myVideo.currentTime;
+			} else {
+				currentTime = myAudio.scrubBar.value;
+			}
+			var checkForCaptions:Boolean = true;
+			if (currentCaption != -1) {
+				if (captions[currentCaption * 2].time <= currentTime && captions[(currentCaption * 2) + 1].time > currentTime) {
+					checkForCaptions = false; // caption stays the same
+				}
+			}
+			if (checkForCaptions == true) {
+				currentCaption = -1;
+				var prevCaptions:Array = new Array();
+				var i:Number;
+				for (i = 0; i < captions.length / 2; i++) {
+					if (captions[i * 2].time <= currentTime && captions[(i * 2) + 1].time > currentTime) {
+						currentCaption = i;
+						break;
+					} else if (captions[i * 2].time < currentTime && captions[(i * 2) + 1].time <= currentTime && timing == "previous") {
+						prevCaptions.push(i);
+					}
+				}
+				
+				if (timing == "previous") { // load currentCaption & all previous captions
+					captionHolder.removeAllElements();
+					for (i = 0; i < prevCaptions.length; i++) {
+						captionFunction(i);
+					}
+					if (currentCaption == -1 && highlight == "true") {
+						removeHighlights();
+					} else if (currentCaption != -1) {
+						captionFunction(currentCaption);
+					}
+				} if (timing == "all" && highlight == "true") { // remove highlights & highlight current
+					if (currentCaption == -1) {
+						captionHolder.verticalScrollPosition = 0;
+						removeHighlights();
+					} else {
+						captionFunction(currentCaption);
+					}
+				}
+				if (timing == "current") { // remove all captions & load current caption
+					captionHolder.removeAllElements();
+					if (currentCaption != -1) {
+						captionFunction(currentCaption);
+					}
+				}
+			}
+		}
+		
+		// function triggered when audio play/pause button is clicked
+		public var audioPlayPauseButton:ToggleButton;
+		private var timer:Timer = new Timer(100);
+		private function audioPlaying(event:MouseEvent):void {
+			if (event.target.selected == true) {
+				timer.addEventListener(TimerEvent.TIMER, audioTimeChg);
+				timer.start();
+			} else {
+				myAudio.myChannel.removeEventListener("currentTimeChange", audioTimeChg);
+				timer.removeEventListener(TimerEvent.TIMER, audioTimeChg);
+				timer.stop();
+			}
+		}
+		
+		// functions called when media reaches end
+		public function audioFinished(event:Event):void {
+			endMedia(event);
+		}
+		
+		private function endMedia(event:Event):void {
+			currentCaption = -1;
+			if (timing != "all") {
+				captionHolder.removeAllElements();
+			} else {
+				captionFunction(currentCaption);
+			}
+			if (captionAtStart != -1) {
+				currentCaption = captionAtStart;
+				captionFunction(currentCaption);
+			}
+			if (mediaType == "audio") {
+				myAudio.pause();
+				myAudio.rewind();
+			}
+		}
+		
+		// function added as sometimes adjustVideoSize was called while dimensions were still 0
+		private var videoWidthTimer:Timer = new Timer(1);
+		private function checkVideoWidthTimer(event:TimerEvent):void {
+			if (myVideo.videoObject.videoWidth != 0 && myVideo.videoObject.videoHeight != 0) {
+				videoWidthTimer.stop();
+				adjustVideoSize();
+			}
+		}
+		
+		// function called when video loaded
+		private function videoLoaded(event:MediaPlayerStateChangeEvent):void {
+			if (event.state == MediaPlayerState.PAUSED) {
+				adjustVideoSize();
+				myVideo.removeEventListener("mediaPlayerStateChange", videoLoaded);
+			}
+		}
+		
+		// function scales loaded videos to fit & panel to fit video
+		private function adjustVideoSize():void {
+			if (myVideo.videoObject.videoWidth == 0 || myVideo.videoObject.videoWidth == 0) {
+				videoWidthTimer.addEventListener(TimerEvent.TIMER, checkVideoWidthTimer);
+				videoWidthTimer.start();
+			} else {
+				var maxW:Number = 400;
+				var minW:Number = 263;
+				var barH:Number = 24;
+				mediaWidth = myVideo.videoObject.videoWidth;
+				mediaHeight = myVideo.videoObject.videoHeight;
+				if (mediaWidth < minW) {
+					mediaHeight = mediaHeight / (mediaWidth / minW - 2);
+					mediaWidth = minW;
+				} else if (mediaWidth > maxWidth) {
+					mediaHeight = mediaHeight / (mediaWidth / maxW - 2);
+					mediaWidth = maxW;
+				}
+				myVideo.width = mediaWidth;
+				myVideo.height = mediaHeight + barH;
+				captionButton.width = myVideo.fullScreenButton.width
+				captionButton.height = myVideo.fullScreenButton.height;
+				captionButton.x = myVideo.x + myVideo.width - captionButton.width + 5;
+				captionButton.y = myVideo.y + myVideo.height - captionButton.height + 5;
+				myVideo.scrubBar.addEventListener("changeEnd", manualChange);
+				adjustWindowSize();
+			}
+		}
+		
+		// function called when mp3Player has loaded
+		private var audioLoadComplete:Boolean = false;
+		private function audioLoaded(event:Event):void {
+			audioLoadComplete = true;
+			mediaWidth = myAudio.width + captionButton.width - 1;
+			captionButton.x = myAudio.x + myAudio.width + 4;
+			if (imgFile != "null") {
+				if (imgLoadComplete == true) {
+					mediaHeight = myAudio.height + myImage.height;
+					captionButton.y = myImage.y + myImage.height + 4;
+					adjustWindowSize();
+				}
+			} else {
+				if (position == "right") {
+					mediaHeight = 300;
+				} else {
+					mediaHeight = myAudio.height;
+				}
+				captionButton.y = myAudio.y + 4;
+				adjustWindowSize();
+			}
+			myAudio.scrubBar.addEventListener("changeEnd", manualChange); // end of manual time change
+			audioPlayPauseButton.addEventListener(MouseEvent.CLICK, audioPlaying);
+			myAudio.removeEventListener("creationComplete", audioLoaded);
+		}
+		
+		// function scales loaded images to fit & panel to fit image
+		private var imgLoadComplete:Boolean = false;
+		private function imgLoaded(event:Event):void {
+			imgLoadComplete = true;
+			myImage.width = myImage.contentWidth;
+			myImage.height = myImage.contentHeight;
+			var maxW:Number = 299 + captionButton.width;
+			if (myImage.width > maxW) {
+				myImage.height = myImage.height * (maxW / myImage.width);
+				myImage.width = maxW;
+			}
+			if (audioLoadComplete == true) {
+				mediaHeight = myAudio.height + myImage.height;
+				captionButton.y = myImage.y + myImage.height + 4;
+				adjustWindowSize();
+			}
+			myImage.visible = true;
+		}
+		
+		// function called after video / audio have loaded
+		private function adjustWindowSize():void {
+			var stageW:Number = mediaWidth + 10 + 10; // width/height + padding + window border
+			var stageH:Number = mediaHeight + 10 + 35;
+			if (position == "right") {
+				if (mediaType == "audio") {
+					if (imgFile == "null") {
+						var spacer:Group = new Group(); // adds space before scroller as captionbutton is outside HGroup
+						spacer.width = captionButton.width - 8;
+						mainHolder.addElementAt(spacer, 1);
+						scrollHeight = 300;
+					} else {
+						scrollHeight = mediaHeight;
+					}
+				} else {
+					scrollHeight = mediaHeight;
+				}
+				scrollWidth = 300;
+				stageW = stageW + 305;
+			} else if (position == "bottom") {
+				scrollWidth = mediaWidth - 10;
+			} else if (position == "top") {
+				scrollWidth = mediaWidth - 10;
+				scrollHeight = 100;
+			} else if (position == "below") {
+				scrollWidth = mediaWidth;
+				scrollHeight = 300;
+				stageH = stageH + 305;
+			}
+			stage.nativeWindow.width = stageW;
+			stage.nativeWindow.height = stageH;
+			
+			mainHolder.visible = true;
+			captionButton.visible = true;
+			
+			if (timing == "all") {
+				var i:Number;
+				for (i = 0; i < captions.length/2; i++) {
+					newCaption(i);
+				}
+			}
+			if (captionAtStart != -1) {
+				currentCaption = captionAtStart;
+				captionFunction(currentCaption);
+			}
+		}
+		
+		// function shows / hides captions
+		public function showHide():void {
+			if (captionScroller.visible == true) {
+				captionScroller.visible = false;
+			} else {
+				captionScroller.visible = true;
+			}
+		}
+		
+		// function called from main.mxml when this window's closed - stops media as if you don't you can still hear it playing
+		public function stopMedia(event:Event):void {
+			if (mediaType == "video") {
+				myVideo.stop();
+			} else if (mediaType == "audio" && myAudio.myChannel != null) {
+				myAudio.myChannel.stop();
+			}
+		}
+		
+		]]>
+		
+	</fx:Script>
+	
+	<s:Group id="mainHolder"
+		x="5" y="5"
+		visible="false">
+		
+		<s:Scroller id="captionScroller"
+			height="{scrollHeight}" width="{scrollWidth}"
+			visible="false">
+			
+			<s:VGroup id="captionHolder"
+				width="{captionScroller.width}">
+				
+				<!-- captions are loaded here -->
+				
+			</s:VGroup>
+			
+		</s:Scroller>
+		
+		<!-- media is loaded (video or audio player) before captionScroller -->
+		
+	</s:Group>
+	
+	<!-- border around the caption scroller -->
+	<s:Rect id="borders"
+		x="{captionScroller.x + 5}" y="{captionScroller.y + 5}"
+		width="{captionHolder.width}" height="{captionHolder.height}">
+		
+		<s:stroke>
+			<s:SolidColorStroke weight="1" color="0x999999"/>
+		</s:stroke>
+		
+	</s:Rect>
+	
+	<!-- button to toggle captions on/off positioned at end of media control bar -->
+	<mx:Button id="captionButton"
+		toggle="true"
+		click="showHide()"
+		skin="{captionSkin}"
+		overSkin="{captionSkinSelected}"
+		downSkin="{captionSkinSelected}"
+		selectedUpSkin="{captionSkinSelected}"
+		selectedOverSkin="{captionSkinSelected}"
+		selectedDownSkin="{captionSkinSelected}"
+		visible="false"
+	/>
+	
+</s:Group>
