@@ -2,6 +2,20 @@
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
+	
+	function thumbsCovers(){
+		//tweak for swf player for flv having full screen button active in thumbnails
+		$("#thumbHolder .thumbMedia").not($("#thumbHolder .thumbMedia .thumbCover").parent()).append('<div class="thumbCover"></div>');
+		$("#thumbHolder .thumbCover").css({'position':'absolute','z-index':'1'});
+		$("#thumbHolder .thumbVideo").css({'position':'absolute','z-index':'0'})
+		$('#thumbHolder embed').attr({'wmode':'opaque'});
+
+		$("#thumbHolder .thumbCover").each(function() {
+			$(this).width($(this).prev().width());
+			$(this).height($(this).prev().height());
+		});
+	}
+	
 	var perspectives = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -11,6 +25,7 @@
 			} else if ($("#mainInfoHolder #pageAudio").length > 0) {
 				this.loadAudio($("#mainInfoHolder #pageAudio"));
 			}
+			thumbsCovers();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -267,19 +282,20 @@
 		
 		this.loadAudio = function($audio) {
 			$audio.mediaPlayer({
-				type	:"audio",
+				type		:"audio",
 				source	:$audio.data("src"),
-				width	:$audio.data("width")
+				width		:$audio.data("width")
 			});
 		}
 		
 		this.loadVideo = function($video) {
 			$video.mediaPlayer({
-				type	:"video",
+				type	  :"video",
 				source	:$video.data("src"),
-				width	:Number($video.data("dimensions")[0]),
+				width	  :Number($video.data("dimensions")[0]),
 				height	:Number($video.data("dimensions")[1])
 			});
+			thumbsCovers();
 		}
 	}
 	
@@ -299,19 +315,6 @@
 		this.exitFullScreen_org();
 	}
 	
-	//tweak for swf player for flv having full screen button active in thumbnails
-	$(window).load(function () {
-		
-		$("#thumbHolder .thumbMedia").append('<div class="thumbCover"></div>');
-		$("#thumbHolder .thumbCover").css({'position':'absolute','z-index':'1'});
-		$("#thumbHolder .thumbVideo").css({'position':'absolute','z-index':'0'})
-		$('#thumbHolder embed').attr({'wmode':'opaque'});
-
-		$("#thumbHolder .thumbCover").each(function() {
-			$(this).width($(this).prev().width());
-			$(this).height($(this).prev().height());
-		});
-	});
 	perspectives.init();
 	
 </script>
