@@ -1,3 +1,3 @@
 #!/bin/sh
-php/php ../website_code/php/rebuildtemplate.php ../src/Nottingham/wizards/en-GB > convert.log
+php ../website_code/php/rebuildtemplate.php ../src/Nottingham/wizards/en-GB > convert.log
 cp ../src/Nottingham/wizards/en-GB/template.xwd ../modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd
