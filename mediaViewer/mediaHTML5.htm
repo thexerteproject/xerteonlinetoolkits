@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Media Viewer HTML5</title>
+  <!--
+	-->
+	<link rel="stylesheet" href="../modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css" type="text/css" />
+	<link rel="stylesheet" href="../modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css" type="text/css" />
+  <link rel="stylesheet" href="../modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css" type="text/css" />
+  <link rel="stylesheet" href="../modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelementplayer.min.css" />
+		
+	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-ui-1.8.18.custom.min.js"></script>
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/js/jquery.ui.touch-punch.min.js"></script>
+	<!-- allows jQuery components to work on touchscreen devices -->
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/js/imageLens.js"></script>
+	<!-- for creating magnifiers on images -->
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelement-and-player.js"></script>
+	<!-- for audio & video players -->
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaPlayer.js"></script>
+	<!--<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/swfobject.js"></script>-->
+	<script type="text/javascript" src="../modules/xerte/parent_templates/Nottingham/common_html5/js/xttracking_noop.js"></script>
+
+	<style type="text/css">
+		#pageVideo {
+			margin-left: 10px;
+			margin-top:  10px;
+		}
+				
+		#infoHolder {
+			margin-left:	10px;
+			margin-top:	10px;
+			padding: 3px;
+			/*border: thin solid #F00*/;
+		}
+		
+		#infoHolder div {
+			cursor:	pointer;
+			padding: 3px;
+			margin-bottom:	10px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="pageVideo"></div>
+	<div id="infoHolder"></div>
+</body>
+
+<script type="text/javascript">
+	var x_volume		= 1;
+	var x_mediaText		= ['','','','',''];
+	
+	var mediaHTML5 = new function() {
+		//reading GET line
+		var str = document.location.search.substr(1,document.location.search.length);
+		var mediaFile = str.split(',')[0].split('media=')[1];
+		var transcriptFile = str.split(',')[1].split('transcript=')[1];
+		var imageFile = str.split(',')[2].split('img=')[1];
+		//getting captionDetails
+		var captionDetailsArray = {mediaTiming:"current", mediaPosition:"below", mediaAlign:"left", mediaColour:"#000000", mediaHighlight:"true", mediaHighlightColour:"#FFFF00"};
+		if (typeof(str.split(',')[3]) != 'undefined') var captionDetails = str.split(',')[3].split('caption=')[1].split(';');
+		for (i = 0; i < captionDetails.length; i ++) {
+			captionDetailsElem = captionDetails[i].split('=');
+			if (typeof(captionDetailsElem[1])!='undefined' && captionDetailsElem[1].substr(0,2)=='0x') {
+				captionDetailsElem[1] = "rgba("+parseInt(captionDetailsElem[1].substr(2,2),16)+","+parseInt(captionDetailsElem[1].substr(4,2),16)+","+parseInt(captionDetailsElem[1].substr(6,2),16)+",0.7)";
+				//captionDetailsElem[1] = '#'+captionDetailsElem[1].substr(2);
+			}
+			captionDetailsArray[captionDetailsElem[0]] = captionDetailsElem[1];
+		}
+		//setting some other variables
+		var x_languageData	= [];
+		var	captionInfo = new Array();
+		
+		//reading XML file
+		if (transcriptFile!='../undefined'){
+			$.ajax({
+			type: "GET",
+			url: transcriptFile,
+			dataType: "text",
+				success: function(xml) {
+					var xmlData = $($.parseXML(xml)).find('P');
+					$(xmlData).each(function(){
+						var	$this = $(this);
+						captionInfo.push({text:$this.text(), synch:$this.attr("begin"), end:$this.attr("end")});
+					});
+					mediaHTML5.createCaptions(captionInfo);
+				}
+			});
+		}
+		//setting up the captions
+		this.createCaptions = function() {
+			var	$infoHolder = $("#infoHolder"),
+				captions = new Array();
+			
+			$(captionInfo).each(function() {
+				var	$this = $(this),
+					imgStr = "",
+					divString = "";
+				
+				divString = "<div>" + $this.attr("text").replace(/(\n|\r|\r\n)/g, "<br />") + imgStr + "</div>"
+				var $caption = $(divString)
+						.hide()
+						.data("synch", $this.attr("synch"))
+						.data("end", $this.attr("end"));
+
+				$infoHolder.append($caption);
+				captions.push($caption[0]);
+			});
+			
+			$(captions).click(function() {
+				$("#pageVideo").data("mediaElement").setCurrentTime($(this).data("synch"));
+			});
+			mediaHTML5.loadVideo();
+		}	
+				
+		this.loadVideo = function() {		
+			//setting up player		
+			var xpath = window.location.pathname.split('/mediaViewer/')[0];
+			$("#pageVideo").mediaPlayer({
+				type					:"video",
+				source				:"'"+xpath+"/"+mediaFile+"'",
+				pageName		  :"mediaHTML5"
+			});
+		}
+		
+		// function called from mediaPlayer.js when video player has been set up
+		this.mediaFunct = function(mediaElement) {
+			$("#pageVideo").data("mediaElement", mediaElement);
+			
+
+			mediaElement.addEventListener("canplay", function(e) {
+				var videoDimensions = [mediaElement.width,mediaElement.height];
+				var temp_width = mediaElement.width;
+				var temp_height = mediaElement.height*2+10;
+				$("#pageVideo").css({'width':temp_width});
+				$("#infoHolder").css({'width':temp_width-7});
+				if (captionDetailsArray['mediaPosition'] == "right") {
+					$("#pageVideo").css({'float':'left'});
+					$("#infoHolder").css({'float':'left'});
+					temp_width = mediaElement.width*2+10;
+					temp_height = mediaElement.height;
+				}
+				if (captionDetailsArray['mediaPosition'] == "top" || captionDetailsArray["mediaPosition"] == "bottom") {
+					$("#infoHolder").css({'position':'relative'});
+					var pos_up = -mediaElement.height-10;
+					if (captionDetailsArray["mediaPosition"] == "bottom") pos_up=-70;
+					$("#infoHolder").css({'top':pos_up+'px'});
+					temp_width = mediaElement.width;
+					temp_height = mediaElement.height;
+				}
+				//console.log(window);
+				window.resizeTo(temp_width+38, temp_height+92);
+				redrawCaptions();
+			});
+
+			function redrawCaptions() {
+				var currentTime = mediaElement.currentTime;
+				
+				$("#infoHolder>div").each(function(){
+					var $thisCaption = $(this);
+					if ($thisCaption.css('background-color') != captionDetailsArray["mediaColour"]) $thisCaption.css({'background-color': captionDetailsArray["mediaColour"]});
+					if (currentTime > $thisCaption.data("synch") && currentTime < $thisCaption.data("end") && captionDetailsArray["mediaHighlight"]=='true') $thisCaption.css({'background-color': captionDetailsArray["mediaHighlightColour"]});
+					if ($thisCaption.css('text-align') != captionDetailsArray["mediaAlign"]) 
+					$thisCaption.css({'text-align': captionDetailsArray["mediaAlign"]});
+					
+					if (captionDetailsArray["mediaPosition"] == "top" || captionDetailsArray["mediaPosition"] == "bottom") captionDetailsArray["mediaTiming"] = "current";
+					var this_show = false;
+					if (currentTime > $thisCaption.data("synch") || captionDetailsArray["mediaTiming"] == "all") this_show = true;
+					if (currentTime > $thisCaption.data("end") && captionDetailsArray["mediaTiming"] == "current") this_show = false;
+					if (this_show) {
+						$thisCaption.show();
+					}	else {
+						$thisCaption.hide();
+					}					
+				})
+			}
+			mediaElement.addEventListener("timeupdate", redrawCaptions, false);
+		}	
+	}
+	$(window).load(function () {
+		mediaHTML5.createCaptions();
+	});
+	
+
+	</script>
+</html>
