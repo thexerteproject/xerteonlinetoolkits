@@ -277,12 +277,15 @@ function x_setUp() {
 	if (x_params.glossary != undefined) {
 		x_dialogInfo.push({type:'glossary', built:false});
 		
-		var items = x_params.glossary.split("||");
-		for (var i=0, len=items.length; i<len; i++) {
-			var item = items[i].split("|");
+		var i, len, item, word,
+		    items = x_params.glossary.split("||");
 
-			if (item[0].replace(/^\s+|\s+$/g, "") != "" && item[1].replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push({word:item[0], definition:item[1]});
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				x_glossary.push(word);
 			}
 		}
 		if (x_glossary.length > 0) {
