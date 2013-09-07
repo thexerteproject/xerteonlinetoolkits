@@ -755,7 +755,8 @@ function x_changePage(x_gotoPage) {
 		$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
 	}
 	
-	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	// Queue reparsing of MathJax - fails if no network connection
+	try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 	
 	x_updateHash();
 }
@@ -790,8 +791,8 @@ function x_loadPage(response, status, xhr) {
 		x_pageLoaded();
 	}
 	
-    	// Queue reparsing of MathJax
-    	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    	// Queue reparsing of MathJax - fails if no network connection
+    	try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 	
 	x_setUpPage();
 }
