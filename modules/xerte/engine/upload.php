@@ -53,7 +53,7 @@
 	*	Now we check that the session has a valid, logged in user
 	*/
 	if(!isset($_SESSION['toolkits_logon_username'])) {
-		file_put_contents('error.txt', "You are not logged in", true);
+		receive_message('admin', "ADMIN", "CRITICAL", "Session not found during file upload" , "Session not found during file upload");
 		exit();
 	}
 
@@ -67,7 +67,7 @@
 	$blacklist = explode(',', 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
 	$extension = strtolower(pathinfo($_FILES['Filedata']['name'], PATHINFO_EXTENSION));
 	if (in_array($extension, $blacklist)) {
-		file_put_contents('error.txt', "Invalid filetype", true);
+		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Invalid filetype: " . $extension , "Invalid filetype: " . $extension);
 		exit();
 	}
 
@@ -81,26 +81,23 @@
 	if (strpos($_FILES['Filedata']['name'], '...') !== false) $pass = false;
 
 	if ($pass === false){
-	  file_put_contents('error.txt', "Invalid filename", true);
-	  exit();
+		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Invalid filename: " . $_FILES['Filedata']['name'] , "Invalid filename: " . $_FILES['Filedata']['name']);
+		exit();
 	}
 
 
    /**
-	*  Passed all the checks so lets try to write the file
+	*  Passed all the checks so lets try to write the file - to temp file if mp4 or m4v extension
 	*/
 	$moov_temp_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . 'process_moov.temp';
 	if ($extension == 'mp4' || $extension == 'm4v') {
 		$new_file_name = $moov_temp_file_name;
 	}
 	else {
-		if (!@unlink($moov_temp_file_name)) {
-			file_put_contents('error.txt', error_get_last(), true);
-		}
 		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
 	}
 	if(!move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)) {
-		file_put_contents('error.txt', "Save file failed" . error_get_last(), true);
+		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Error saving file: " . $new_file_name , "Error saving file: " . error_get_last());
 		exit();
 	}
 
@@ -110,20 +107,44 @@
 	*  Relocate moov atom if file is .mp4/m4v to support progressive download
 	*/
 	if ($extension == 'mp4' || $extension == 'm4v') {
-		require_once 'tools/moovrelocator/Moovrelocator.class.php';
+		$error = true;
+		require_once '../../../library/MoovRelocator/Moovrelocator.class.php';
 
 		$moovrelocator = Moovrelocator::getInstance();
 
 		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
-		if ($moovrelocator->setInput($moov_temp_file_name) == true) {
-			if ($moovrelocator->setOutput($new_file_name) == true) {
-				if (!(($result = $moovrelocator->fix()) === true)) {
-					file_put_contents('moovrelocator_error.txt', $result, true);
-					if(!copy($moov_temp_file_name, $new_file_name)) {
-						file_put_contents('error.txt', "Copy temp file failed" . error_get_last(), true);
-						exit();
-					}
+		if ($moovrelocator->setInput($moov_temp_file_name) === true) {
+			if ($moovrelocator->setOutput($new_file_name) === true) {
+				if ((($result = $moovrelocator->fix()) === true)) {
+					receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "SUCCESS", "Moov successfully rewritten" , "File: " . $new_file_name);
+					$error = false;
+				}
+				else {
+					receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "SUCCESS", "MP4 uploaded with moov in correct place" , "File: " . $new_file_name);
 				}
 			}
+			else {
+				receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "WARNING", "Couldn't open output file" , $new_file_name);
+			}
 		}
+		else {
+			receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "WARNING", "Couldn't open input file" , $moov_temp_file_name);
+		}
+
+		if ($error == true) {
+			if(!copy($moov_temp_file_name, $new_file_name)) {
+					receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Copy temp file failed" . error_get_last() , "Copy temp file failed" . error_get_last());
+					exit();
+			}
+		}
+	}
+
+
+
+   /**
+	*  Tidy up temporary files - destroy file handle first to avoid 'Permission Denied' error
+	*/
+	$moovrelocator->__destruct();
+	if (!@unlink($moov_temp_file_name)) {
+		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Unable to delete temporary file: " . $moov_temp_file_name , error_get_last());
 	}
