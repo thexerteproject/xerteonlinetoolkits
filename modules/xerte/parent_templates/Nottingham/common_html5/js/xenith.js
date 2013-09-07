@@ -23,7 +23,6 @@ var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock,
 $(document).ready(function() {
 
 	$x_mainHolder = $("#x_mainHolder");
-	$x_mainHolder.css("visibility", "hidden");
 	
 	if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
 		x_browserInfo.iOS = true;
