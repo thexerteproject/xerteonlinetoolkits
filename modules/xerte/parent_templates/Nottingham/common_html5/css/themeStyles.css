@@ -64,6 +64,11 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
 
+.ui-button .ui-icon.x_colourChanger {				background-image: url("../colour_changer.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_colourChanger {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_colourChanger {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_colourChanger {		background-position: -84px 0px; }
+
 .ui-button .ui-icon.x_home {					background-image: url("../home.png"); background-position: 0px 0px; }
 .ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
