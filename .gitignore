@@ -1,0 +1,8 @@
+# Ignore Database Settings file, created after setup
+database.php
+
+# Ignore USER-FILES/ folder changes
+USER-FILES/
+
+# Ignore import/ folder changes
+import/
