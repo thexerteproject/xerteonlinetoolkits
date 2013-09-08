@@ -24,7 +24,7 @@
 		this.sizeChanged = function() {
 
 		};
-		
+
 		this.init = function() {
             var $pageContents = $("#pageContents"),
 				$textHolder = $("#textHolder"),
@@ -176,7 +176,7 @@
 			if (canvasSupported == true) {
 				var img = new Image(),
 					that = this;
-				
+
 				img.onload = function() {
 					canvas.save();
 					canvas.translate(attr.x, attr.y);
@@ -229,7 +229,7 @@
 		this.drawFreehand = function (canvas, attr) {
 			var points = attr.p.split('~'),
 				coords = [];
-			
+
 			for (var i=0; i<points.length; i++) {
 				coords.push(points[i].split(','));
 			}
@@ -249,7 +249,7 @@
 				fullySupported = false;
 				var pixelHash = ('000' + (Math.random()*Math.pow(36,3) << 0).toString(36)).slice(-3),
 					pixelStyle = 'position:absolute;width:' + attr.lw + 'px;height:' + attr.lw + 'px;background:' + attr.lc;
-				
+
 				$('<style type="text/css">.p_' + pixelHash + ' {' + pixelStyle + '}</style>').appendTo("head");
 				var pixels = '', maxX = 0, maxY = 0;
 				for (var i=0; i<coords.length; i++) {
@@ -324,7 +324,7 @@
                     var outerRadius = attr.y2,
 						innerRadius = attr.x2,
 						step, hStep, qStep, i, dx, dy, cx, cy;
-					
+
                     step = 2 * Math.PI / attr.n ;
                     hStep = step/2;
                     qStep = step/4;
