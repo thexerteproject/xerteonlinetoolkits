@@ -9,6 +9,16 @@
  * @package
  */
 
+/**
+ *  Store the $unescaped data BEFORE config inclusion as Moodle integration
+ *    messes with the slashes
+ */
+$unescaped_data = $_POST['filedata'];
+if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
+{
+    $unescaped_data = stripslashes($_POST['filedata']);
+}
+
 require_once("../../../config.php");
 require_once("../../../plugins.php");
 
@@ -30,11 +40,6 @@ if(strlen($_POST['filedata'])!=strlen($_POST['filesize'])){
 
 }
 
-$unescaped_data = $_POST['filedata'];
-if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
-{
-    $unescaped_data = stripslashes($_POST['filedata']);
-}
 
 $filedata = apply_filters("editor_save_data", $unescaped_data);
 
