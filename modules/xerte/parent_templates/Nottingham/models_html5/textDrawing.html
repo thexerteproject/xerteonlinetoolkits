@@ -31,7 +31,6 @@
 				$panel = $("#pageContents .panel");
 
             $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("desc")));
-            $textHolder.css('font-size', parseInt(x_currentPageXML.getAttribute("size")) + "pt");
 
             if (x_currentPageXML.getAttribute("align") != "right") {
                 $panel.addClass("x_floatRight");
