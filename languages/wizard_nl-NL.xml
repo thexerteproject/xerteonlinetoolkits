@@ -126,7 +126,15 @@
 		<savefile>
 			<prompt>Het genereren van de XML is mislukt. Wijzigingen zijn niet opgeslagen. Controleer uw laatste wijzigingen.</prompt>
 		</savefile>
-		
+        <upload>
+            <successful>Importeren is geslaagd!</successful>
+            <failed>
+                <permissions>Importeren is mislukt: Controleer de permissies</permissions>
+                <HTTPError>Importeren is mislukt: HTTP fout</HTTPError>
+                <IOError>Importeren is mislukt: Input/Ouput fout</IOError>
+                <security>Importeren is mislukt: Beveiligigs fout</security>
+            </failed>
+        </upload>
 	</Alert>
 
 </language>

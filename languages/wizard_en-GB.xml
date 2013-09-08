@@ -126,6 +126,15 @@
 		<savefile>
 			<prompt>The XML could not be formatted, and changes have not been saved. Check your recent changes.</prompt>
 		</savefile>
+        <upload>
+            <successful>Upload successful</successful>
+            <failed>
+                <permissions>Upload failed: Check permissions</permissions>
+                <HTTPError>Upload failed: HTTPError</HTTPError>
+                <IOError>Upload failed: IOError</IOError>
+                <security>Upload failed: Security Error</security>
+            </failed>
+        </upload>
 		
 	</Alert>
 </language>
