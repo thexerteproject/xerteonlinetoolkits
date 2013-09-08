@@ -163,7 +163,12 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             }
         } else {
 
-            $filter = $ldap_filter . $xot_username;
+            // 2013-08-09 Tom Knight-Markiegi <t.knight-markiegi@shu.ac.uk> - fixed bug with LDAP login
+            //$filter = $ldap_filter . $xot_username;
+            $filter = $ldap_filter_attr . "=" . $xot_username;
+            if ($ldap_filter != "") {
+                $filter = "(&(".$filter.")".$ldap_filter.")";
+            }
             $ldapConnection = ldap_connect($host, (int) $port);
             $ldapSearchResult = ldap_search($ldapConnection, $basedn, $filter);
 
