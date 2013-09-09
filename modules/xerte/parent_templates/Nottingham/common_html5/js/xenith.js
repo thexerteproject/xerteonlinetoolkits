@@ -317,7 +317,11 @@ function x_setUp() {
 					
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							if (x_glossary[i].definition.substring(0, 16) == "FileLocation + '")
+								myDefinition += "<img src=\"" + eval(x_glossary[i].definition) +"\">";
+							else
+								myDefinition += x_glossary[i].definition;
 						}
 					}
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
