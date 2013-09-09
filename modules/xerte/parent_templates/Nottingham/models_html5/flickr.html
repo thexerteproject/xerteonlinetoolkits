@@ -248,7 +248,7 @@
 				}
 			}
 
-			this.displayPicture(data.sizes.size[sizeIndex].source, x_pageInfo[x_currentPage].savedData.pictureInfo, size);
+			this.displayPicture(data.sizes.size[sizeIndex].url, data.sizes.size[sizeIndex].source, x_pageInfo[x_currentPage].savedData.pictureInfo, size);
 
 			// Store picture details in store so we don't need to do the work again
 			x_pageInfo[x_currentPage].savedData.pictureStore[x_pageInfo[x_currentPage].savedData.pictureIndex] = {
@@ -259,7 +259,7 @@
 			};
 		};
 
-        this.displayPicture = function(source, info, size) {
+        this.displayPicture = function(url, source, info, size) {
 			var imageTxt = x_currentPageXML.getAttribute("imageTxt");
 			if (imageTxt == undefined) {
 				imageTxt = "Image {i} of {n} images";
@@ -274,8 +274,14 @@
 			
             $("<img />")
 				.on("load", function() {
-					$("#pictureHolder").html($(this));
-					
+					var $img = $(this);
+					$("#pictureHolder").html(
+						$("<a>")
+							.attr("href", url)
+							.attr("target", "_blank")
+					);
+					$("#pictureHolder a").append($(this));
+
 					x_scaleImg(this, flickr.maxImageWidth, flickr.maxImageHeight, true, true, true);
 					$("#loadingSpinner").remove();
 				})
