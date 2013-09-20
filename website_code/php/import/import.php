@@ -79,7 +79,7 @@ function make_new_template($type,$zip_path){
 
     }
 
-    $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"" . $template_name . "\")";
+    $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"" . $template_name . "\", \"engine=javascript\")";
 
     if(mysql_query($query_for_new_template)){
 
