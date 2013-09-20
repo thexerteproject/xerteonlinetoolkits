@@ -321,10 +321,10 @@ function parseContent(pageIndex){
 		window.scroll(0,0);
 	else
 		location.href = startHash;
-		
-	
-	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-	
+
+    // Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
 	//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
 	$('#toc a:first').tab('show');
 	

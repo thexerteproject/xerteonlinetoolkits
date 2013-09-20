@@ -89,8 +89,8 @@
             XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
 
 			this.loadQ();
-
-			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 		}
 
 		this.loadQ = function() {
@@ -425,7 +425,8 @@
                             quiz.loadQ();
                         }
                     }
-                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    // Queue reparsing of MathJax - fails if no network connection
+                    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
                     });
 
 			$("#nextBtn")
@@ -442,7 +443,8 @@
 					} else {
 						quiz.loadQ();
 					}
-                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    // Queue reparsing of MathJax - fails if no network connection
+                    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 				});
 
 			$("#restartBtn")
