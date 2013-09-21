@@ -2,32 +2,32 @@
 	// -----------------------------------------------------------------------------------------
 	// All drawing code based on Actionscript routines by Ric Ewing (ric@formequalsfunction.com)
 	// -----------------------------------------------------------------------------------------
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var chart = new function() {
 		var allSeries;
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-		
+
 		};
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		};
-		
+
 		this.init = function() {
             var	$pageContents	= $("#pageContents"),
 				$textHolder		= $("#textHolder"),
 				$panel			= $("#pageContents .panel"),
 				$chartTitle		= $("#chartTitle"),
 				chartHolder		= document.getElementById("chartHolder");
-			
+
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			$chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
-			
+
 			if (x_currentPageXML.getAttribute("align") == "right") {
 				$textHolder
 					.removeClass("left")
@@ -40,22 +40,22 @@
 			} else {
 				$("#pageContents .splitScreen").addClass("medium");
 			}
-			
+
 			var series = $(x_currentPageXML).children();
 			if (series.length == 0) {
 				// There are no series - don't draw chart
-				
+
 			} else {
 				if (chartHolder.getContext) { // canvas is supported
 					allSeries = [];
-					
+
 					var	$panel = $("#pageContents .panel"),
 					availW = Math.min(550, Math.max(300, $panel.width())),
 					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15- $("#chartTitle").height()));
-					
+
 					chartHolder.width = availW;
 					chartHolder.height = availH;
-					
+
 					allSeries = [];
 					$(x_currentPageXML).children().each(function () {
 						var name = this.getAttribute("name"),
@@ -64,7 +64,7 @@
 						if (colour.substring(0, 2) == '0x') { // hex value
 							colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
 						}
-						
+
 						var	dataPair,
 							dataPairs = dataString.split('||'),
 							data = [];
@@ -74,14 +74,14 @@
 						}
 						allSeries.push({"name":name, "colour": colour, "data":data});
 					});
-					
+
 					var	chartHolderContext = chartHolder.getContext("2d"),
 						maxH = 0, i, j;
 					if (x_currentPageXML.getAttribute("chartType") == "pie") {
 						chartHolderContext.translate(60, 0); // space on left for legend
 					} else {
 						chartHolderContext.translate(100, 0); // space on left for y axis text
-						
+
 						if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
 							var tempH;
 							for (i=0; i<allSeries[0].data.length; i++) {
@@ -99,7 +99,7 @@
 							}
 						}
 					}
-					
+
 					var txtColour = $textHolder.css("color");
 					switch (x_currentPageXML.getAttribute("chartType")) {
 						case "stacked bar":
@@ -114,18 +114,18 @@
 						case "line":
 							this.doLine(chartHolderContext, maxH, availW, availH);
 					}
-					
+
 					if (x_currentPageXML.getAttribute("chartType") != "pie") {
 						this.doAxesAndLabels(chartHolderContext, maxH, availW, availH, txtColour);
 					}
-					
+
 				} else { // canvas tag not supported - display error message and data in a table
 					var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
 						tableHolder = $("#chartTitle").parent(),
 						table = '<table class="full">';
-					
+
 					tableHolder.find("#chartHolder").hide();
-					
+
 					var rows, cols, i, j;
 					if (x_currentPageXML.getAttribute("chartType") != "pie") {
 						table += '<tr><td></td>'; // row containing series names
@@ -133,7 +133,7 @@
 							table += '<td>' + series[i].getAttribute("name") + '</td>';
 						}
 						table += '</tr>';
-						
+
 						rows = series[0].getAttribute("data").split("||");
 						for (i=0; i<rows.length; i++) {
 							table += '<tr>'; // each row contains name followed by data from each series
@@ -144,7 +144,7 @@
 							}
 							table += '</tr>';
 						}
-						
+
 					} else { // pie - just show 1st series data
 						rows = series[0].getAttribute("data").split("||");
 						for (i=0; i<rows.length; i++) {
@@ -152,22 +152,22 @@
 							table += '<tr><td>' + cols[0] + '</td><td>' + cols[1] + '</td></tr>';
 						}
 					}
-					
+
 					table += '</table>';
 					tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
 				}
 			}
-			
+
             // call this function in every model once everything's loaded
             x_pageLoaded();
         };
-		
+
 		this.doBar = function(canvas, maxH, availW, availH) {
 			var i, j,
 				barW = ((availW - 110) / allSeries[0].data.length) / allSeries.length,
 				barH,
 				h = (availH - 30) / maxH; // height on graph of each point
-			
+
 			canvas.lineWidth = 2;
 			for (i=0; i<allSeries.length; i++) {
 				canvas.strokeStyle = allSeries[i].colour;
@@ -180,18 +180,18 @@
 			canvas.fill();
 			canvas.stroke();
 		}
-		
+
 		this.doStackedBar = function(canvas, maxH, availW, availH) {
 			var cumH = [],
 				tempH, i, j;
 			for (i=0; i<allSeries[0].data.length; i++) {
 				cumH.push(0);
 			}
-			
+
 			var	barW = (availW - 110) / allSeries[0].data.length,
 				barH,
 				h = (availH - 30) / maxH;
-			
+
 			canvas.lineWidth = 2;
 			for (i=0; i<allSeries.length; i++) {
 				canvas.strokeStyle = allSeries[i].colour;
@@ -205,15 +205,15 @@
 			canvas.fill();
 			canvas.stroke();
 		}
-		
+
 		this.doLine = function(canvas, maxH, availW, availH) {
 			canvas.lineWidth = 2;
-			
+
 			var i, j,
 				barW = (availW - 110) / allSeries[0].data.length,
 				barH,
 				h = (availH - 30) / maxH;
-			
+
 			for (i=0; i<allSeries.length; i++) {
 				canvas.beginPath();
 				canvas.strokeStyle = allSeries[i].colour;
@@ -224,7 +224,7 @@
 				canvas.stroke();
 			}
 		}
-		
+
 		this.doAxesAndLabels = function(canvas, maxH, availW, availH, txtColour) {
 			// draw x/y axis
 			canvas.strokeStyle = $('body').css('color');
@@ -234,7 +234,7 @@
 			canvas.moveTo(-5, availH - 20);
 			canvas.lineTo(availW - 110, availH - 20);
 			canvas.stroke();
-			
+
 			// draw legend
 			for (var i=0; i<allSeries.length; i++) {
 				canvas.fillStyle = allSeries[i].colour;
@@ -244,7 +244,7 @@
 				canvas.fillStyle = txtColour;
 				canvas.fillText(allSeries[i].name, -70, 20 + i * 20);
 			}
-			
+
 			// draw the x labels
 			var	barW = (availW - 110) / allSeries[0].data.length;
 			for (var i=0; i<allSeries[0].data.length; i++) {
@@ -253,7 +253,7 @@
 				var xLength = canvas.measureText(allSeries[0].data[i].x).width;
 				canvas.fillText(allSeries[0].data[i].x, barW * (i + 0.5) - xLength / 2 - 1, availH - 16);
 			}
-			
+
 			// draw the y labels
 			canvas.fillText(0, -25, availH - 20 - 6);
 			canvas.fillText(maxH, -25, 5);
@@ -264,14 +264,14 @@
 			var rgbToHex = function (r, g, b) {
 				return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 			}
-			
+
 			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(allSeries[0].colour);
 			var rgb = result ? {
 				r: parseInt(result[1], 16),
 				g: parseInt(result[2], 16),
 				b: parseInt(result[3], 16)
 			} : null;
-			
+
 			var colours = [];
 			for (var i=0; i<allSeries[0].data.length; i++) {
 				colours.push(rgbToHex(
@@ -280,7 +280,7 @@
 					parseInt(rgb.b + i * (255 - rgb.b)/allSeries[0].data.length)
 				));
 			}
-			
+
 			// draw legend
 			for (var i=0; i<allSeries[0].data.length; i++) {
 				canvas.fillStyle = colours[i];
@@ -290,13 +290,13 @@
 				canvas.fillStyle = txtColour;
 				canvas.fillText(allSeries[0].data[i].x, -30, 10 + i * 20);
 			}
-			
+
 			// draw chart
 			var total = 0;
 			for (var i=0; i<allSeries[0].data.length; i++) {
 				total += allSeries[0].data[i].y;
 			}
-			
+
 			var	theta,
 				exTheta = 0,
 				diameter = Math.min(availW - 70, availH - 20);
@@ -306,7 +306,7 @@
 				exTheta += theta;
 			}
 		}
-		
+
         this.drawWedge = function(canvas, x, y, radius, arc, r, colour) { // xy are to centre of circle
         	canvas.save();
 			canvas.translate(x, y);
@@ -351,24 +351,24 @@
 </script>
 
 <style type="text/css">
-	
+
 	#infoHolder .panel {
 		overflow:	auto;
 	}
-	
+
 	#infoHolder table {
-		margin-left:	auto; 
+		margin-left:	auto;
 		margin-right:	auto;
 	}
-	
+
 	#infoHolder table tr:first-child {
 		text-align:	center;
 	}
-	
+
 	#infoHolder table tr {
 		text-align:	right;
 	}
-	
+
 	#infoHolder table tr td:first-child {
 		text-align:	center;
 	}
@@ -376,18 +376,18 @@
 </style>
 
 <div id="pageContents">
-	
+
 	<div class="splitScreen">
-		
+
 		<div id="textHolder" class="left" tabindex="1"/>
-		
+
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<h3 id="chartTitle" class="centerAlign"></h3>
 				<canvas id="chartHolder"></canvas>
 			</div>
 		</div>
-	
+
 	</div>
-	
+
 </div>
