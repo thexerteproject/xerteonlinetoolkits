@@ -26,13 +26,22 @@
 
 			var styles = [];
 
+			// *** These will eventually be pushed out to reside in the relevant model ***
+			// *** Each model will also expose a needsRedrawn flag or will provide relevant methods ***
+
+			// *******************
+			// ***** Inverted ****
+			// *******************
+
+			// *** General ***
 			styles.push(['.filter_inv body', 'color:white; background:black;']);
-			styles.push(['.filter_inv #x_headerBlock', 'color:black; background:white;']);
-			styles.push(['.filter_inv #x_footerBlock', 'color:black; background:white;']);
+			styles.push(['.filter_inv #x_headerBlock', 'color:black; background:white; filter:none;']);
+			styles.push(['.filter_inv #x_footerBlock', 'color:black; background:white; filter:none;']);
 			styles.push(['.filter_inv #x_pageNo', 'color:white;']);
 			styles.push(['.filter_inv .panel', 'background:black;']);
 			styles.push(['.filter_inv #x_footerBg', 'visibility:hidden;']);
 			styles.push(['.filter_inv #x_mainBg', 'visibility:hidden;']);
+
 			styles.push(['.filter_inv div#thumbHolder a.thumbBox', 'color:white; background:black;']);
 			styles.push(['.filter_inv .thumbBox h3', 'color:white; background:black;']);
 			styles.push(['.filter_inv #x_colourChanger', 'color:white; background:black;']);
@@ -58,9 +67,21 @@
 			styles.push(['.filter_inv div#dragDropHolder div#categoryHolder .category', 'color:white; background:black; border: 1px white solid;']);
 			styles.push(['.filter_inv div#dragDropHolder div#categorytHolder .category h3', 'color:white; background:black;']);
 
+			// *** Glossary Terms ***
+			styles.push(['.filter_inv a.x_glossary', 'color:white;']);
+
+			// *** Thumbnail Navigator ***
+			styles.push(['.filter_inv div#mainInfoHolder div#mainPanel a#panelLink div#panelTxt p', 'color:black; background:white;']);
+
+
+			// **************************
+			// ***** Black on Yellow ****
+			// **************************
+
+			// *** General ***
 			styles.push(['.filter_boy body', 'color:black; background:yellow;']);
-			styles.push(['.filter_boy #x_headerBlock', 'color:yellow; background:black;']);
-			styles.push(['.filter_boy #x_footerBlock', 'color:yellow; background:black;']);
+			styles.push(['.filter_boy #x_headerBlock', 'color:yellow; background:black; filter:none;']);
+			styles.push(['.filter_boy #x_footerBlock', 'color:yellow; background:black; filter:none;']);
 			styles.push(['.filter_boy .panel', 'background:yellow;']);
 			styles.push(['.filter_boy #x_footerBg', 'visibility:hidden;']);
 			styles.push(['.filter_boy #x_mainBg', 'visibility:hidden;']);
@@ -88,8 +109,14 @@
 			styles.push(['.filter_boy div#dragDropHolder div#categoryHolder .category', 'color:black; background:yellow; border: 1px black solid;']);
 			styles.push(['.filter_boy div#dragDropHolder div#categorytHolder .category h3', 'color:black; background:yellow;']);
 
+			// *** Glossary Terms ***
+			styles.push(['.filter_boy a.x_glossary', 'color:black;']);
 
-			//if (!document.createElement('canvas').getContext) { // <IE9
+			// *** Thumbnail Navigator ***
+			styles.push(['.filter_boy div#mainInfoHolder div#mainPanel a#panelLink div#panelTxt p', 'color:black; background:yellow;']);
+
+
+			//if (!document.createElement('canvas').getContext) { // <IE9 - Do we need this??
 			//	for (var i=0; i<styles.length; i++) {
 			//		this.createCSSSelector(styles[i][0], styles[i][1]);
 			//	}
@@ -99,7 +126,6 @@
 				for (var i=0; i<styles.length; i++) {
 					all_styles.push([styles[i][0] + "{" + styles[i][1] + "}"]);
 				}
-				//console.log(all_styles);
 				var s = document.createElement('style');
 				s.setAttribute('type', 'text/css');
 				s.innerHTML = all_styles.join('');
@@ -119,6 +145,14 @@
 
 			$("input[name='colourChangerRadios']").click(function(){
 				colourChanger.applyFilter($(this).attr('value'));
+
+				// We need to force every page to rebuild until we can expose a 'needsRebuilt' property or similar
+				for (var i=0, len=x_pageInfo.length; i<len; i++) {
+					x_pageInfo[i].built = false;
+				}
+
+				// Then reload current page
+				x_changePage(x_currentPage);
 			});
 		}
 
