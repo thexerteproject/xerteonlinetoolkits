@@ -1,4 +1,5 @@
 <?php
+require("../functions.php");
 /**
  * XOT installer for XAMP type  users.
  * It assumes that :
@@ -112,10 +113,10 @@ $file_handle = fopen("../database.php",'w');
 fwrite($file_handle,$buffer,strlen($buffer));
 fclose($file_handle);
 
-if(!is_writeable('../index.php')) {
+if(!_is_writable('../index.php')) {
     echo "Check your file permissions, index.php file is not writeable by the web server; you will want to replace index.php with demo.txt";
 }
-/*if(is_file('../index.php') && is_writeable('../index.php')) {
+/*if(is_file('../index.php') && _is_writable('../index.php')) {
     @copy("../index.php","../index.txt");
     if(copy("../demo.txt","../index.php")) {
         echo "<p>Login requirement removed; using demo.txt as index.php page (index.php -&gt; index.txt && demo.txt -&gt index.php).</p>";

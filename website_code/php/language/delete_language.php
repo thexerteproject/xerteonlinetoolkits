@@ -50,7 +50,7 @@ if(isset($_POST['code']) && file_exists($xerte_toolkits_site->root_file_path . "
 
     $code = $_POST['code'];
 
-    if(!is_writeable($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
+    if(!_is_writable($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
         _debug("{$xerte_toolkits_site->root_file_path}languages/{$code} needs to be writeable. Cannot perform import");
         echo DELETE_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "languages/" . $code . DELETE_LANGUAGE_WRITABLE;
         exit(0);

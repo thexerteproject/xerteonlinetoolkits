@@ -24,7 +24,7 @@ function _debug($string, $up = 0)
         if(!file_exists($file)) {
             @touch($file); // try and create it.
         }
-        if(!is_writeable($file)) { // fall back to PHP's inbuilt log, which may go to the apache log file, syslog or somewhere else.
+        if(!_is_writable($file)) { // fall back to PHP's inbuilt log, which may go to the apache log file, syslog or somewhere else.
             error_log($string);
         }
         else {
@@ -205,4 +205,35 @@ function get_email_headers()
     }
     $headers .= $extraheaders;
     return $headers;
+}
+
+// Replacement function for the standard php is_writable because of bugs in Windows
+//
+// From comments on the manual page of is_writable
+//
+// Since looks like the Windows ACLs bug "wont fix" (see http://bugs.php.net/bug.php?id=27609) I propose this alternative function:
+//
+function _is_writable($path) {
+
+    if (is_dir($path) || $path{strlen($path)-1}=='/')
+        return _is_writable($path . ($path{strlen($path)-1}=='/' ? "" : "/") . uniqid(mt_rand()).'.tmp');
+
+    if (file_exists($path)) {
+        if (!($f = @fopen($path, 'r+')))
+            return false;
+        fclose($f);
+        return true;
+    }
+
+    if (!($f = @fopen($path, 'w')))
+        return false;
+    fclose($f);
+    unlink($path);
+    return true;
+}
+
+// To prevent mistakes, also supply the alias
+function __is_writable($path)
+{
+    _is_writable($path);
 }
