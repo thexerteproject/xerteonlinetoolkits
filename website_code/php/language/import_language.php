@@ -23,17 +23,17 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     $this_dir = rand() . "/";
 
-    if(!is_writeable($xerte_toolkits_site->import_path)) {
+    if(!_is_writable($xerte_toolkits_site->import_path)) {
         _debug("{$xerte_toolkits_site->import_path} needs to be writeable. Cannot perform import");
         echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->import_path . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
     }
-    if(!is_writeable($xerte_toolkits_site->root_file_path . "languages/")) {
+    if(!_is_writable($xerte_toolkits_site->root_file_path . "languages/")) {
         _debug("{$xerte_toolkits_site->root_file_path}  languages/ needs to be writeable. Cannot perform import");
         echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "languages/" . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
     }
-    if(!is_writeable($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/")) {
+    if(!_is_writable($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/")) {
         _debug("{$xerte_toolkits_site->root_file_path}  modules/xerte/parent_templates/Nottingham/wizards/ needs to be writeable. Cannot perform import");
         echo IMPORT_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . IMPORT_LANGUAGE_WRITABLE;
         exit(0);
