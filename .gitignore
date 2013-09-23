@@ -5,4 +5,4 @@ database.php
 USER-FILES/
 
 # Ignore import/ folder changes
-import/
+/import/
