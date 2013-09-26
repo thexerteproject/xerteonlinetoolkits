@@ -96,10 +96,10 @@ if ($warning)
 <?php
 if ($ok)
 {
-    echo "<form action=\"page1.php\"><input type=\"submit\" value=\"Next\" ></form>";
+    echo "<form action=\"page1.php\"><button type=\"submit\">Next</button></form>";
 }
 else{
-    echo "<form action=\"php_modules_test.php\"><input type=\"submit\" value=\"Try again\"></form>";
+    echo "<form action=\"php_modules_test.php\"><button type=\"submit\">Try again</button></form>";
 }
 ?>
 </p>

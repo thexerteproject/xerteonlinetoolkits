@@ -63,10 +63,10 @@ require("../functions.php");
 <?php
     if ($ok)
     {
-        echo "<form action=\"php_modules_test.php\"><input type=\"submit\" value=\"Next\" ></form>";
+        echo "<form action=\"php_modules_test.php\"><button type=\"submit\">Next</button></form>";
     }
     else{
-        echo "<form action=\"file_system_test.php\"><input type=\"submit\" value=\"Try again\"></form>";
+        echo "<form action=\"file_system_test.php\"><button type=\"submit\">Try again</button></form>";
     }
 ?>
 <p>
