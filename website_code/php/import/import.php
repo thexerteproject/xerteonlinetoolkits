@@ -354,7 +354,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     $this_dir = rand() . "/";
 
-    if(!is_writeable($xerte_toolkits_site->import_path)) { 
+    if(!_is_writable($xerte_toolkits_site->import_path)) {
         _debug("{$xerte_toolkits_site->import_path} needs to be writeable. Cannot perform import");
         die("{$xerte_toolkits_site->import_path} needs to be writeable");
     }
