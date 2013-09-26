@@ -23,10 +23,10 @@ Xerte Online Toolkits is a suite of web based tools designed and developed by a 
 Snoopy.class.php - written by Monte Ohrt and released as LGPL <br><br> Archive.php - written by Devin Doucette and released as GPL <br><br> dunzip2.inc.php - written by Alexandre Tedeschi and released under his own terms (please see the file for details).</p>
 <p>
 <p>
-	<a href="xampp.php" style="border:0; text-decoration:none"><img src="next.gif" align="middle" style="margin-right:10px" />For XAMPP People</a>
+	<a href="xampp.php" style="border:0; text-decoration:none"><button type="button">Press here for XAMPP People</button></a>
 </p>
 <p>
-	<a href="config_setup.php" style="border:0; text-decoration:none"><img src="next.gif" align="middle" style="margin-right:10px" />For a full install</a>
+	<a href="config_setup.php" style="border:0; text-decoration:none"><button type="button">Press here or a full install</button></a>
 </p>
 <p><b>Please note:</b> If you install locally and use XAMPP it may not run if you are using Skype. Please disable Skype if you intend to use XAMPP locally.</p>
 </body>

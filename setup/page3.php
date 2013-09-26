@@ -151,7 +151,7 @@ echo "<p>By directly editing the rss proxy.php file (in the root folder), you ca
 
 
 ?>
-        <input type="submit" />
+        <button type="submit">Save</button>
         </form>
 
 </body>
