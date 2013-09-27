@@ -1012,8 +1012,8 @@
     <copyShortcutTxt label="Copy Shortcut Text" type="textInput" language="true"/>
 	<closeBtnTxt label="Close Button Label" type="textInput" language="true"/>
 
-    <copypasteinfo label="Copy & paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
-	<copypasteinfo2 label="Copy & paste info (HTML)" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+    <copypasteinfo label="Copy &amp; paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+	<copypasteinfo2 label="Copy &amp; paste info (HTML)" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" optional="true"/>
     <image label="Image" type="media" optional="true"/>	
     <tooltip label="Image Tooltip" type="TextInput" optional="true"/>	
@@ -1031,7 +1031,7 @@
     <copyBtnTip label="Copy Button Tip" type="textInput" language="true"/>	
     <copyBtnWidth label="Copy Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="130" language="true"/>
 	<copyBtnLabel label="Select Button Label" type="textInput" language="true"/>
-	<copypasteinfo label="Copy & Paste Info" type="TextArea" height="50" language="true"/>
+	<copypasteinfo label="Copy &amp; Paste Info" type="TextArea" height="50" language="true"/>
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
