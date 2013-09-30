@@ -279,7 +279,7 @@ function export_folder_loop($path, $recursive=true, $ext=NULL, $dest=NULL){
 			}
 
 		}else{
-			if($f!="data.xml"){
+			if($f!="data.xml" && $f!="preview.xml"){
 				if ($ext == NULL || strrpos($f, $ext) == strlen($f)-strlen($ext))
 				{
                     $srcfile = $path . $f;
