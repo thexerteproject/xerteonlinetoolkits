@@ -87,64 +87,10 @@
 
 
    /**
-	*  Passed all the checks so lets try to write the file - to temp file if mp4 or m4v extension
+	*  Passed all the checks so lets try to write the file
 	*/
-	$moov_temp_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . 'process_moov.temp';
-	if ($extension == 'mp4' || $extension == 'm4v') {
-		$new_file_name = $moov_temp_file_name;
-	}
-	else {
-		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
-	}
+	$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
 	if(!move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)) {
 		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Error saving file: " . $new_file_name , "Error saving file: " . error_get_last());
 		exit();
-	}
-
-
-
-   /**
-	*  Relocate moov atom if file is .mp4/m4v to support progressive download
-	*/
-	if ($extension == 'mp4' || $extension == 'm4v') {
-		$error = true;
-		require_once '../../../library/MoovRelocator/Moovrelocator.class.php';
-
-		$moovrelocator = Moovrelocator::getInstance();
-
-		$new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
-		if ($moovrelocator->setInput($moov_temp_file_name) === true) {
-			if ($moovrelocator->setOutput($new_file_name) === true) {
-				if ((($result = $moovrelocator->fix()) === true)) {
-					receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "SUCCESS", "Moov successfully rewritten" , "File: " . $new_file_name);
-					$error = false;
-				}
-				else {
-					receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "SUCCESS", "MP4 uploaded with moov in correct place" , "File: " . $new_file_name);
-				}
-			}
-			else {
-				receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "WARNING", "Couldn't open output file" , $new_file_name);
-			}
-		}
-		else {
-			receive_message($_SESSION['toolkits_logon_username'], "MOOVRELOCATE", "WARNING", "Couldn't open input file" , $moov_temp_file_name);
-		}
-
-		if ($error == true) {
-			if(!copy($moov_temp_file_name, $new_file_name)) {
-					receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Copy temp file failed" . error_get_last() , "Copy temp file failed" . error_get_last());
-					exit();
-			}
-		}
-	}
-
-
-
-   /**
-	*  Tidy up temporary files - destroy file handle first to avoid 'Permission Denied' error
-	*/
-	$moovrelocator->__destruct();
-	if (!@unlink($moov_temp_file_name)) {
-		receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Unable to delete temporary file: " . $moov_temp_file_name , error_get_last());
 	}
