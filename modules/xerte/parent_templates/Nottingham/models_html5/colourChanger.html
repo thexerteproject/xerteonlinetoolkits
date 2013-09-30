@@ -146,13 +146,19 @@
 			$("input[name='colourChangerRadios']").click(function(){
 				colourChanger.applyFilter($(this).attr('value'));
 
-				// We need to force every page to rebuild until we can expose a 'needsRebuilt' property or similar
+				var pageTypesRequiringRefresh = ['chart', 'textDrawing'];
+
+				// Eventually we can expose a 'needsRebuilt' property or similar
 				for (var i=0, len=x_pageInfo.length; i<len; i++) {
-					x_pageInfo[i].built = false;
+					if (pageTypesRequiringRefresh.indexOf(x_pageInfo[i].type) > -1) {
+						x_pageInfo[i].built = false;
+					}
 				}
 
-				// Then reload current page
-				x_changePage(x_currentPage);
+				// Then reload current page if required
+				if (pageTypesRequiringRefresh.indexOf(x_pageInfo[x_currentPage].type) > -1) {
+					x_changePage(x_currentPage);
+				}
 			});
 		}
 
