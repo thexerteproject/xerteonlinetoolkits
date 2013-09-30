@@ -18,7 +18,7 @@ var x_languageData	= [],
 	x_mediaText		= [],
 	x_timer;		// use as reference to any timers in page models - they are cancelled on page change
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 $(document).ready(function() {
 
@@ -174,6 +174,7 @@ function x_setUp() {
 	$x_footerBlock	= $("#x_footerBlock");
 	$x_footerL		= $("#x_footerBlock .x_floatLeft");
 	$x_menuBtn		= $("#x_menuBtn");
+	$x_colourChangerBtn	= $("#x_colourChangerBtn");
 	$x_prevBtn		= $("#x_prevBtn");
 	$x_pageNo		= $("#x_pageNo");
 	$x_nextBtn		= $("#x_nextBtn");
@@ -471,7 +472,23 @@ function x_setUp() {
 				.removeClass("ui-state-focus")
 				.removeClass("ui-state-hover");
 		});
-	
+
+	x_dialogInfo.push({type:'colourChanger', built:false});
+	$x_colourChangerBtn
+		.button({
+			icons: {
+				primary: "x_colourChanger"
+			},
+			label:	"Change Colours",
+			text:	false
+		})
+		.click(function() {
+				x_openDialog("colourChanger", x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"), x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"));
+			$(this)
+				.blur()
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		});
 	
 	if (x_params.kblanguage != undefined) {
 		$.ajax({
