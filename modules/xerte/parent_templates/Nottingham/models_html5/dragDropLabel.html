@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dragDropLabel = new function() {
@@ -8,19 +8,19 @@
 			labelTxt3,
 			targetTxt1,
 			targetTxt2;
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.createLabels();
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
 			var $panel = $("#mainPanel");
 			if (x_browserInfo.mobile == false) {
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
-			
+
 			if (firstLoad == true) {
 				firstLoad = false;
 				this.createLabels();
@@ -29,9 +29,9 @@
 				var $image = $("#image"),
 					prevW = $image.width();
 				x_scaleImg($image, $panel.width(), $panel.height() - $("#labelHolder").height());
-				
+
 				this.createLabels();
-				
+
 				// adjust target sizes and positions
 				var scale = $image.width() / prevW;
 				$("#targetHolder .target").each(function() {
@@ -45,7 +45,7 @@
 				});
 			}
 		}
-		
+
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
 			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
@@ -53,63 +53,63 @@
 			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
 			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
 			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
-			
+
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
+
 			var tryTxt = x_currentPageXML.getAttribute("tryAgainTxt");
 			if (tryTxt == undefined || tryTxt == "") {
 				tryTxt = "Try again";
 			}
 			$("#pageContents").data("tryTxt", tryTxt);
-			
+
 			if (x_currentPageXML.getAttribute("align") == "Right") {
 				var $splitScreen = $("#pageContents .splitScreen");
-				
+
 				$("#textHolder")
 					.removeClass("left")
 					.addClass("right")
 					.appendTo($splitScreen);
-				$("#dragDropHolder")
+				$("#dragDropHolderLabelling")
 					.removeClass("right")
 					.addClass("left");
 				$splitScreen
 					.removeClass("medium")
 					.addClass("large");
 			}
-			
+
 			this.sizeChanged(true);
 		}
-		
+
 		this.createLabels = function() {
 			var	$labelHolder = $("#labelHolder"),
 				tempData = [];
-			
+
 			$labelHolder.empty();
 			$("#infoHolder").html("");
 			$("#pageContents").data("selectedLabel", "");
-			
+
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					tempData.push({name:this.getAttribute("name"), text:this.getAttribute("text"), correct:i});
 				});
-			
+
 			// randomise order and create labels
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var labelNum = Math.floor(Math.random() * tempData.length);
-					
+
 					$('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
 						.appendTo($labelHolder)
 						.data("correct", tempData[labelNum].correct);
-					
+
 					tempData.splice(labelNum, 1);
 				});
-			
+
 			// set up drag events (mouse and keyboard controlled)
-			$("#dragDropHolder .label")
+			$("#dragDropHolderLabelling .label")
 				.draggable({
-					containment:	"#dragDropHolder",
-					stack:			"#dragDropHolder .label", // item being dragged is always on top (z-index)
+					containment:	"#dragDropHolderLabelling",
+					stack:			"#dragDropHolderLabelling .label", // item being dragged is always on top (z-index)
 					revert:			"invalid", // snap back to original position if not dropped on target
 					start:			function() {
 						// remove any focus/selection highlights made by tabbing to labels/targets
@@ -125,10 +125,10 @@
 						if (targetInFocus.length > 0) {
 							targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
 						}
-						$("#dragDropHolder .selected").removeClass("selected");
-						$("#dragDropHolder .focus").removeClass("focus");
-						$("#dragDropHolder .highlight").addClass("transparent").removeClass("highlight");
-						
+						$("#dragDropHolderLabelling .selected").removeClass("selected");
+						$("#dragDropHolderLabelling .focus").removeClass("focus");
+						$("#dragDropHolderLabelling .highlight").addClass("transparent").removeClass("highlight");
+
 						$("#infoHolder").html("");
 					},
 					stop:			function() {
@@ -169,12 +169,12 @@
 							.addClass("selected")
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
 						$pageContents.data("selectedLabel", $this);
-						
+
 						$("#infoHolder").html("");
 					}
 					})
 				.disableSelection();
-			
+
 			if ($("#image").attr("src") == undefined) {
 				// image can load now as we know what its max dimensions are
 				$("#image")
@@ -190,7 +190,7 @@
 							$(this).trigger("load");
 						}
 					});
-				
+
 			} else {
 				// labels are being reset - make sure targets will still accept them being dropped
 				$("#targetHolder .target")
@@ -203,21 +203,21 @@
 					.off("click");
 			}
 		}
-		
+
 		this.imgLoaded = function() {
 			// labels have been created and image loaded - can now resize image to fit space and create targets on it
 			var $image = $("#image");
 			x_scaleImg($image, 1, 1, true, true); // resizing small initially otherwise vertical scrollbar width means the dimensions aren't being calculated properly
 			x_scaleImg($image, $("#mainPanel").width(), $("#mainPanel").height() - $("#labelHolder").height());
 			var scale = $image.width() / $image.data("origSize")[0];
-			
+
 			var $targetHolder = $("#targetHolder");
-			
+
 			// create targets
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var xywh = [Number(this.getAttribute("x")), Number(this.getAttribute("y")), Number(this.getAttribute("w")), Number(this.getAttribute("h"))];
-					
+
 					// adjust xywh so hotspots don't overlap image edges
 					if (xywh[0] < 0) {
 						xywh.splice(2, 1, xywh[2] + xywh[0]);
@@ -233,10 +233,10 @@
 					if (xywh[1] + xywh[3] > $image.data("origSize")[1]) {
 						xywh.splice(3, 1, $image.data("origSize")[1] - xywh[1]);
 					}
-					
+
 					// now adjust for resized image
 					xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
-					
+
 					// create target and position it
 					$('<div class="target transparent"></div>')
 						.appendTo($targetHolder)
@@ -253,9 +253,9 @@
 							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
 						});
 				});
-			
+
 			var $targets = $("#targetHolder .target");
-			
+
 			// add border to targets
 			if (x_currentPageXML.getAttribute("showHighlight") != "false") {
 				var highlightColour = "yellow";
@@ -266,7 +266,7 @@
 					.addClass("border")
 					.css("border-color", highlightColour);
 			}
-			
+
 			$targets
 				.droppable({
 					drop:	function(event, ui) {
@@ -304,14 +304,14 @@
 								$selectedLabel
 									.removeClass("selected")
 									.attr("title", labelTxt1);
-								
+
 								$("#infoHolder").html($pageContents.data("tryTxt"));
 								$pageContents.data("selectedLabel", "");
 							}
 						}
 					}
 				});
-			
+
 			// set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 2;
 			tabIndex += $("#labelHolder .label").length;
@@ -321,15 +321,15 @@
 				$this.attr("tabindex", tabIndex);
 				tabIndex++;
 			});
-			
+
 			x_pageLoaded();
 		}
-		
+
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
 			var $infoHolder = $("#infoHolder");
 			$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
-			
+
 			$thisLabel
 				.attr({
 					"title"		:labelTxt1,
@@ -345,7 +345,7 @@
 					"top"		:$thisTarget.position().top + 2,
 					"left"		:$thisTarget.position().left + 2
 				})
-				.off("keypress focusin focusout")	
+				.off("keypress focusin focusout")
 				.click(function() {
 					$("#infoHolder").html($(this).data("infoTxt"));
 				})
@@ -357,7 +357,7 @@
 					$(this).removeClass("focus");
 					$("#infoHolder").html("");
 				});
-			
+
 			$thisTarget
 				.attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
 				.data("infoTxt", $infoHolder.html())
@@ -365,84 +365,84 @@
 				.click(function() {
 					$("#infoHolder").html($(this).data("infoTxt"));
 				});
-			
+
 			$("#pageContents").data("selectedLabel", "");
 		}
 	}
-	
+
 	dragDropLabel.init();
-	
+
 </script>
 
 <style type="text/css">
-	
+
 	#textHolder {
 		margin-bottom:	10px;
 	}
-	
+
 	#infoHolder {
 		margin-top:		20px;
 		padding-top:	20px;
 		border-top:		1px solid gray;
 	}
-	
+
 	#mainPanel {
 		position:	relative;
 	}
-	
+
 	#labelHolder {
 		margin-top:	10px;
 	}
-	
+
 	#labelHolder .label {
 		display:	inline-block;
 		cursor:		pointer;
 		padding:	5px;
 		margin:		10px;
 	}
-	
+
 	#labelHolder .label.focus {
 		border:		2px solid yellow;
 	}
-	
+
 	#labelHolder .label.selected {
 		border:		2px solid green;
 	}
-	
+
 	#targetHolder {
 		position:	absolute;
 		margin:		10px;
 		top:		0;
 		left:		0;
 	}
-	
+
 	#targetHolder .target {
 		position:	absolute;
 	}
-	
+
 	#targetHolder .target.border {
 		border:	1px solid;
 	}
-	
+
 </style>
 
 <div id="pageContents">
-	
+
 	<div class="splitScreen medium">
-		
+
 		<div id="textHolder" class="left">
 			<div id="mainText" tabindex="1"></div>
 			<div id="infoHolder" tabindex="2"></div>
 		</div>
-		
-		<div id="dragDropHolder" class="right">
+
+		<div id="dragDropHolderLabelling" class="right">
 			<div id="mainPanel" class="panel">
 				<img id="image" />
 				<div id="targetHolder"></div>
 				<div id="labelHolder"></div>
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 </div>
