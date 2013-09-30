@@ -98,6 +98,15 @@ function show_template_page($row, $datafile="")
         // NOTE: also get rid of the closing '
         return preg_replace("#FileLocation\s*\+\s*'([^']+)'#", $xerte_toolkits_site->site_url . $string_for_flash . "$1", $page_content);
     }
+    else if ($engine == 'export')
+    {
+        ini_set('max_execution_time', 300);
+        require_once($xerte_toolkits_site->root_file_path . "website_code/php/template_status.php");
+
+        if(is_template_exportable($_GET['template_id'])){
+                require_once($xerte_toolkits_site->root_file_path . "modules/xerte/export.php");
+        }
+    }
     else
     {
         // $engine is assumed to be javascript if flash is NOT set

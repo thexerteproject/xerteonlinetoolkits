@@ -1,5 +1,7 @@
 <?PHP
 
+    global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
+
 	$folder_id_array = array();
 	$folder_array = array();
 	$file_array = array();
@@ -7,13 +9,13 @@
 	$delete_folder_array = array();
 	$zipfile = "";
 
-	include "archive.php";
-	include "scorm_library.php";
-	include "scorm2004_library.php";
-	include "../xmlInspector.php";
-	include "../screen_size_library.php";
-	include "../user_library.php";
-	include "../url_library.php";
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/archive.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm_library.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm2004_library.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xmlInspector.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_size_library.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
+    require_once ($xerte_toolkits_site->root_file_path . "website_code/php/url_library.php");
 
 	/*
 	 * Set up the paths
@@ -36,14 +38,29 @@
     }
     if (!$export_html5 && !$export_flash)
     {
-        $export_html5=true;
+        if (isset($row['extra_flags']))
+        {
+            if (strpos($row['extra_flags'], 'flash') !== false)
+            {
+                $export_flash = true;
+            }
+            else
+            {
+                $export_html5 = true;
+            }
+        }
+        else
+        {
+            $export_html5=true;
+        }
     }
 
 	/*
 	 * Make the zip
 	 */
-	$zipfile = new zip_file("example_zipper_new" . time() . ".zip");
-	$zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 1, 'recurse' => 1, 'storepaths' => 1));
+    $zipfile_tmpname =  "example_zipper_new" . time() . ".zip";
+	$zipfile = new zip_file($zipfile_tmpname);
+	$zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 0, 'recurse' => 1, 'storepaths' => 1));
 
 	/*
 	 * Copy the core files over from the parent folder
@@ -264,12 +281,13 @@
 	 
 	xerte_zip_files($fullArchive, $dir_path);
 	$zipfile->create_archive();
-	$zipfile->download_file($row['zipname']);
+	$zipfile->download_file($row['template_name']);
 
 	/*
 	 * remove the files
 	 */
 	clean_up_files();
 	unlink($dir_path . "template.xml");
+    unlink($dir_path . $zipfile_tmpname);
 
 ?>
