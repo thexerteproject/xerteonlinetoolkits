@@ -136,4 +136,8 @@
 	  <seconds name="seconds"/>
   </timer>
 
+  <colourChanger label="Colour Changer" description="Changer the colours.">
+	  <closeButton label="" description="Close Colour Changer"/>
+  </colourChanger>
+
 </language>
