@@ -1,2 +1,1 @@
-Xerte Online Toolkits v1.9 (from SVN rev 601 http://code.google.com/p/xerteonlinetoolkits)
-
+Xerte Online Toolkits v2.1
