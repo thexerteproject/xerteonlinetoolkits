@@ -284,7 +284,7 @@
 	 
 	xerte_zip_files($fullArchive, $dir_path);
 	$zipfile->create_archive();
-	$zipfile->download_file($row['template_name']);
+	$zipfile->download_file($row['zipname']);
 
 	/*
 	 * remove the files
