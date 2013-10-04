@@ -102,6 +102,9 @@
           /* Always add menu.rlm */
           _debug("copy model " . $parent_template_path . "models_html5/menu.html");
           array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
+          /* Always add colourChanger.html */
+          _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
+          array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
 
           export_folder_loop($parent_template_path . "common_html5/");
 
