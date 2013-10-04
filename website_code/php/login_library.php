@@ -203,59 +203,41 @@ function login_form($messages, $xerte_toolkits_site)
 <div class="topbar">
     <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
     <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
-    <?php
-    display_language_selectionform("");
-    ?>
-
 </div>
+
 <div class="mainbody">
-    <div class="title">
-        <p>
-          <?PHP echo $xerte_toolkits_site->welcome_message; ?>
-        </p>
+    <div class="title_holder">
+      <div class="title_welcome">
+        <?PHP echo $xerte_toolkits_site->welcome_message; ?>
+      </div>
+			<div class="mainbody_holder">
+				<div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
+				<form method="post" enctype="application/x-www-form-urlencoded" >
+				<p style="margin:4px"><?php echo INDEX_USERNAME; ?>
+				<input type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+				<p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>
+				<input type="password" size="20" maxlength="100" name="password" /></p>
+				<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
+				</form>
+				<script>document.getElementById("login_box").focus();      </script>
+			</div>		
     </div>
-    <div class="mainbody_holder">
-        <div class="mainbody_div_2">
-
-<?php
-  login_prompt($messages);
-?>
-
-            <div class="border"></div>
-            <div class="news">
-                <p class="news_title">
-                  <?PHP echo INDEX_HELP_TITLE; ?>
-                </p>
-                <p class="news_story">
-                  <?php echo INDEX_HELP_INTRODUCTION; ?>
-                    <br/>
-                    <br/><a href="<?php echo $xerte_toolkits_site->demonstration_page; ?>" target="new"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></a>
-                </p>
-            </div>
-            <div class="border"></div>
-            <div class="news">
-              <?PHP echo $xerte_toolkits_site->news_text; ?>
-            </div>
-
-        </div>
-        <div class="mainbody_left">
-            <div class="tutorials">
-                <?PHP echo $xerte_toolkits_site->tutorial_text; ?>
-            </div>
-        </div>
-        <div class="mainbody_div">
-            <p class="intro">
-              <?PHP echo $xerte_toolkits_site->site_text; ?>
-            </p>
-        </div>
-    </div>
+		<div style="clear:both;"></div>		
 </div>
-<div class="border">
-</div>
-<p class="copyright">
-    <img src="website_code/images/lt_logo.gif" /><br/>
-  <?php echo $xerte_toolkits_site->copyright; ?>
-</p>
+
+<div class="bottompart">
+	<p class="news_title">
+		<?PHP echo INDEX_HELP_TITLE; ?>
+	</p>
+	<p class="news_story">
+		<?php echo INDEX_HELP_INTRODUCTION; ?>
+		<button type="button" class="xerte_button_c" onClick="window.open('<?php echo $xerte_toolkits_site->demonstration_page; ?>','_blank');"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></button>
+	</p>
+	<div class="border">
+	</div>
+	<p class="copyright">
+		<?php echo $xerte_toolkits_site->copyright; ?>
+	</p>
 </div>
 </body>
 </html>
@@ -273,10 +255,12 @@ function login_processing($exit = true) {
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
   if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    if ($authmech->needsLogin() && $exit) {
+    //niko 
+		if ($authmech->needsLogin() && $exit) { 
       login_form($errors, $xerte_toolkits_site);
       exit(0);
-    }
+   //niko 
+	 }
   }
   if ($authmech->needsLogin()) {
    /**
