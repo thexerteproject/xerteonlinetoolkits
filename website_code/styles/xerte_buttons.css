@@ -1,22 +1,26 @@
 .xerte_button {
-    -moz-box-shadow: 2px 1px 2px -1px #0f0e0f;
-    -webkit-box-shadow: 2px 1px 2px -1px #0f0e0f;
-    box-shadow: 2px 1px 2px -1px #0f0e0f;
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #bfbfbf) );
-    background:-moz-linear-gradient( center top, #ffffff 5%, #bfbfbf 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bfbfbf');
-    background-color:#ffffff;
-    -moz-border-radius:1px;
-    -webkit-border-radius:1px;
-    border-radius:1px;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #ebebed) );
+    background:-moz-linear-gradient( center top, #ffffff 5%, #ebebed 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ebebed');
+    background-color:#4d585e;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    border-radius:2px;
     border:1px solid #dcdcdc;
     display:inline-block;
     color:#000000;
     font-family:arial;
     font-size:12px;
-    font-weight:bold;
-    padding:1px 4px;
+    padding:3px;
     text-decoration:none;
+}
+.xerte_button_c {
+	background-color:#f86718;	
+	color:#fff;
+	border-radius:4px;
+	border:#fff 1px solid; 
+	padding:2px;
+	width:70px;
 }
 .xerte_button:hover {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #84c0e0) );
@@ -30,27 +34,21 @@
     top:1px;
 }
 .xerte_button_disabled {
-    -moz-box-shadow: 2px 1px 2px -1px #ebebeb;
-    -webkit-box-shadow: 1px 1px 2px -1px #ebebeb;
-    box-shadow: 2px 1px 1px -1px #ebebeb;
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ebebeb), color-stop(1, #d6d6d6) );
     background:-moz-linear-gradient( center top, #ebebeb 5%, #d6d6d6 100% );
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebebeb', endColorstr='#d6d6d6');
-    background-color:#ebebeb;
-    -moz-border-radius:1px;
-    -webkit-border-radius:1px;
-    border-radius:1px;
+    background-color:#4d585e;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    border-radius:2px;
     border:1px solid #bdbdbd;
     display:inline-block;
     color:#a6a6a6;
     font-family:arial;
     font-size:12px;
-    font-weight:bold;
-    padding:1px 4px;
+    padding:3px;
     text-decoration:none;
-
 }
-
 .xerte_button img, .xerte_button_disabled img {
     margin:0 3px -3px 0 !important;
     padding:0;
