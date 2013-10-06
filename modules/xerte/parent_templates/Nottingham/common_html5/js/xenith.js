@@ -633,23 +633,30 @@ function x_setUp() {
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
     var page;
-	if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
-        x_changePage(parseInt(pageInfo.ID) - 1);
-		
-    } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        page = x_lookupPage(pageInfo.type, pageInfo.ID);
-        if (page != null) {
-            x_changePage(page);
-        } else if (force == true) {
-            x_changePage(0);
-        }
-		
-    } else {
-        page = parseInt(pageInfo.ID);
-        if (page > 0 && page <= x_pages.length) {
-            x_changePage(page-1);
-        } else if (force == true) {
-			x_changePage(0);
+    page = XTStartPage();
+    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
+        x_changePage(page);
+    }
+    else
+    {
+        if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
+            x_changePage(parseInt(pageInfo.ID) - 1);
+
+        } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+            page = x_lookupPage(pageInfo.type, pageInfo.ID);
+            if (page != null) {
+                x_changePage(page);
+            } else if (force == true) {
+                x_changePage(0);
+            }
+
+        } else {
+            page = parseInt(pageInfo.ID);
+            if (page > 0 && page <= x_pages.length) {
+                x_changePage(page-1);
+            } else if (force == true) {
+                x_changePage(0);
+            }
         }
     }
 }
