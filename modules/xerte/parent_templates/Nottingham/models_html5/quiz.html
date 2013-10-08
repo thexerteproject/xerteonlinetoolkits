@@ -188,7 +188,7 @@
 
             $("#qTxt").html(fbTxt);
             $("#optionHolder, #nextBtn, #checkBtn").hide();
-            if (XTGetMode() != "tracking")
+            if (XTGetMode() != "normal")
             {
                 $("#restartBtn").show();
             }
@@ -397,7 +397,7 @@
 					}
                     generalFeedback += rightWrongTxt;
                     var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
-                    if (XTGetMode() == "tracking")
+                    if (XTGetMode() == "normal")
                     {
                         // Disable all options
                         var i=0;
