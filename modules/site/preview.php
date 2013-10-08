@@ -45,6 +45,9 @@ function show_preview_code($row){
 		<!--styles -->
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap.css" rel="stylesheet">
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap-responsive.css" rel="stylesheet">
+		
+		<!--font awesome-->
+		<link href="<?PHP echo $template_path_string ?>/common/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 		<!--custom styles for this template-->
 		<link href="<?PHP echo $template_path_string ?>/common/css/custom.css" rel="stylesheet">
