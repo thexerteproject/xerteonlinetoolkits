@@ -7,6 +7,7 @@ require_once("../template_library.php");
 
 _load_language_file("/website_code/php/properties/publish.inc");
 _load_language_file("/website_code/php/properties/properties_library.inc");
+_load_language_file("/properties.inc");
 
 function xml_template_display($xerte_toolkits_site,$change){
 
@@ -237,7 +238,7 @@ function publish_display($template_id)
 
 function notes_display($notes, $change){
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_NOTES . "</span></p>";
+    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
 
     echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
 
@@ -429,7 +430,8 @@ function access_display($xerte_toolkits_site, $change){
 
     $row_access = mysql_fetch_array($query_access_response);
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
 
     echo "<div id=\"security_list\">";
 

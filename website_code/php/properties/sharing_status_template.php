@@ -11,10 +11,9 @@
 
 require_once("../../../config.php");
 _load_language_file("/website_code/php/properties/sharing_status_template.inc");
-
+_load_language_file("/properties.inc");
 
 include "../template_status.php";
-
 include "../user_library.php";
 
 if(is_numeric($_POST['template_id'])){
@@ -33,7 +32,13 @@ if(is_numeric($_POST['template_id'])){
 
         if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
 
-            echo "<div class=\"share_top\"><p class=\"header\"><span>" . SHARING_INSTRUCTION . "</span></p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . SHARING_NAMES . "</p></div><p id=\"area3\"></div>";	
+            echo "<div>";
+						echo "<p class=\"header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
+						echo "<p><span>" . SHARING_INSTRUCTION . "</span></p>";
+						echo "<form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form>";
+						echo "<div id=\"area2\"><p>" . SHARING_NAMES . "</p></div>";
+						echo "<p id=\"area3\">";
+						echo "</div>";	
 
         }
 

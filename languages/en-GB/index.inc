@@ -71,7 +71,7 @@ define("INDEX_BUTTON_PREVIEW", "Preview");
 
 define("INDEX_BUTTON_SORT", "Sort");
 
-define("INDEX_BUTTON_NEWFOLDER", "New Folder");
+define("INDEX_BUTTON_NEWFOLDER", "Create");
 
 define("INDEX_BUTTON_DELETE", "Delete");
 

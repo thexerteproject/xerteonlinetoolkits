@@ -1,5 +1,4 @@
 <?php
-
 // Load the plugin files and fire a startup action
 require_once(dirname(__FILE__) . "/plugins.php");
 
@@ -33,8 +32,8 @@ recycle_bin();
 /*
  * Output the main page, including the user's and blank templates
  */
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
 <?php head_start();?>
         <!--
 
@@ -50,6 +49,7 @@ recycle_bin();
         <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+				<link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />
@@ -92,32 +92,25 @@ _include_javascript_file("website_code/scripts/import.js");
         -->
 
         <div class="folder_popup" id="message_box">
-            <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
-            </div>
-            <div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
-            </div>
-            <div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;">
-            </div>
-            <div class="main_area_holder_1">
-                <div class="main_area_holder_2">
-                    <div class="main_area" id="dynamic_section">
-                        <p><?PHP echo INDEX_FOLDER_PROMPT; ?></p><form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain"><input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" /><br /><br />   <button type="submit" class="xerte_button"><img src="website_code/images/Icon_Folder_15x12.gif"/><?php echo INDEX_BUTTON_NEWFOLDER; ?></button><button type="button" class="xerte_button"  onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?></button></form>
-                        <p><span id="folder_feedback"></span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
-            </div>
-            <div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
-            </div>
-            <div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;">
-            </div>
+					<div class="main_area" id="dynamic_section">
+							<p style="color:white"><?PHP echo INDEX_FOLDER_PROMPT; ?></p>
+							<form id="foldernamepopup" action="javascript:create_folder()" method="post" enctype="text/plain">
+								<input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" />
+								<button type="submit" class="xerte_button_c">
+									<img src="website_code/images/Icon_Folder_15x12.gif"/>
+									<?php echo INDEX_BUTTON_NEWFOLDER; ?>
+								</button>
+								<button type="button" class="xerte_button_c" onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?>
+								</button>
+							</form>
+							<p><span id="folder_feedback"></span></p>
+					</div>
         </div>
 				
         <div class="topbar">
-            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:22px; float:right">
+            <div style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
             </div>
-            <img src="<?php echo $xerte_toolkits_site->site_logo;?>" style="margin-left:20px; float:left" />
+            <img src="<?php echo $xerte_toolkits_site->site_logo;?>" style="margin-left:10px; float:left" />
         </div>
         <div class="userbar">
           <div style="float:left;"><?php display_language_selectionform("general");?></div>

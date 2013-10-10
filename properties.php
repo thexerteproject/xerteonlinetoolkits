@@ -72,211 +72,186 @@ Hidden Iframes to allow for ajax file uploads and Downloads (Could be one I supp
 <iframe id="download_frame" style="display:none"></iframe>
 
 <div class="properties_main">
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;">
-    </div>
-    <div class="main_area_holder_1">
-        <div class="main_area_holder_2">
-            <div class="main_area">
-                <div>
-                    <span id="title">
-                        <img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
-                        <?PHP echo PROPERTIES_DISPLAY_TITLE; ?>
-                    </span>
-                </div>
-                <div id="data_area">
+		<div class="main_area">
+				<div>
+						<span id="title">
+								<img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
+								<?PHP echo PROPERTIES_DISPLAY_TITLE; ?>
+						</span>
+				</div>
+				<div id="data_area">
 
-                        <!--
+								<!--
 
-                            Dynamic area is the DIV used by the AJAX queries (The right hand side area of the properties panel.
+										Dynamic area is the DIV used by the AJAX queries (The right hand side area of the properties panel.
 
-                        -->
+								-->
 
-                        <div id="dynamic_area">
-                        </div>
+								<div id="dynamic_area">
+								</div>
 
-                        <!--
+								<!--
 
-                            Set up the three parts for each tab
+										Set up the three parts for each tab
 
-                            Structure
+										Structure
 
-                            tab1-1 is the small part to the right of the main tab, this is used to deal with the border round the main section
-                            tab1 is the actual tab with the text in it
+										tab1-1 is the small part to the right of the main tab, this is used to deal with the border round the main section
+										tab1 is the actual tab with the text in it
 
-                        -->
+								-->
 
-                        <div id="menu_tabs">
-                            <div class="tab_spacer" style="height:35px;">							
-                            </div>
-                            <div id="tab1-1" class="tab_right_pad" style="height:38px;">
-                            </div>
-                            <div id="tab1" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('1');properties_template()">
-                                    <?PHP echo PROPERTIES_TAB_PROJECT; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab2-1" class="tab_right_pad" style="height:38px;">
-                            </div>
-                            <div id="tab2" class="tab"  style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('2'); notes_template()">
-                                    <?PHP echo PROPERTIES_TAB_NOTES; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								if(in_array("media", $template_supports)){
-							
-							?>
-                            <div id="tab3-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab3" class="tab"  style="width:146px;  height:38px;">
-                                <p onclick="javascript:tab_highlight('3'); media_and_quota_template()">
-                                    <?PHP echo PROPERTIES_TAB_MEDIA; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								}
-							
-							?>
-                            <div id="tab4-1" class="tab_right_pad" style="height:38px;">																	
-                            </div>
-                            <div id="tab4" class="tab"  style="width:146px;  height:38px;">
-                                <p onclick="javascript:tab_highlight('4'); access_template()">
-                                    <?PHP echo PROPERTIES_TAB_ACCESS; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab5-1" class="tab_right_pad" style="height:38px;">																	
-                            </div>
-                            <div id="tab5" class="tab"  style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('5'); sharing_status_template()">
-                                    <?PHP echo PROPERTIES_TAB_SHARED; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab6-1" class="tab_right_pad" style="height:38px;">
-                            </div>
-                            <div id="tab6" class="tab"  style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('6'); rss_template()">
-                                    <?PHP echo PROPERTIES_TAB_RSS; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab7-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab7" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('7');syndication_template()">
-                                    <?PHP echo PROPERTIES_TAB_OPEN; ?>
-                                </p>									
-                            </div>							
-                            <div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								if(in_array("export", $template_supports)){
-							
-							?>							
-                            <div id="tab8-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab8" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('8');export_template()">
-                                    <?PHP echo PROPERTIES_TAB_EXPORT; ?>
-                                </p>									
-                            </div>
-							<div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								}
-							
-							?>							                            
-							<?PHP
-							
-								if(in_array("peer", $template_supports)){
-							
-							?>	
-                            <div id="tab9-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab9" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('9');peer_template()">
-                                    <?PHP echo PROPERTIES_TAB_PEER; ?>
-                                </p>									
-                            </div>	
-							<div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								}
-							
-							?>	
-							<?PHP
-							
-								if(in_array("give", $template_supports)){
-							
-							?>
-                            <div id="tab10-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab10" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('10');gift_template()">
-                                    <?PHP echo PROPERTIES_TAB_GIVE; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-							<?PHP
-							
-								}
-								
-							?>
-							<?PHP
-							
-								if(in_array("xml", $template_supports)){
-							
-							?>
-                            <div id="tab11-1" class="tab_right_pad" style="height:38px;">					
-                            </div>
-                            <div id="tab11" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('11');xml_template()">
-                                    <?PHP echo PROPERTIES_TAB_XML; ?>
-                                </p>									
-                            </div>						
-                            <!-- 
+								<div id="menu_tabs">
+										<div class="tab_spacer" style="height:35px;">							
+										</div>
+										<!--<div id="tab1-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab1" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('1');properties_template()">
+														<?PHP echo PROPERTIES_TAB_PROJECT; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<!--<div id="tab2-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab2" class="tab"  style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('2'); notes_template()">
+														<?PHP echo PROPERTIES_TAB_NOTES; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				if(in_array("media", $template_supports)){
+			
+			?>
+										<!--<div id="tab3-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab3" class="tab"  style="width:146px;  height:38px;">
+												<p onclick="javascript:tab_highlight('3'); media_and_quota_template()">
+														<?PHP echo PROPERTIES_TAB_MEDIA; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				}
+			
+			?>
+										<!--<div id="tab4-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab4" class="tab"  style="width:146px;  height:38px;">
+												<p onclick="javascript:tab_highlight('4'); access_template()">
+														<?PHP echo PROPERTIES_TAB_ACCESS; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<!--<div id="tab5-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab5" class="tab"  style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('5'); sharing_status_template()">
+														<?PHP echo PROPERTIES_TAB_SHARED; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<!--<div id="tab6-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab6" class="tab"  style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('6'); rss_template()">
+														<?PHP echo PROPERTIES_TAB_RSS; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<!--<div id="tab7-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab7" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('7');syndication_template()">
+														<?PHP echo PROPERTIES_TAB_OPEN; ?>
+												</p>									
+										</div>							
+										<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				if(in_array("export", $template_supports)){
+			
+			?>							
+										<!--<div id="tab8-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab8" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('8');export_template()">
+														<?PHP echo PROPERTIES_TAB_EXPORT; ?>
+												</p>									
+										</div>
+			<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				}
+			
+			?>							                            
+			<?PHP
+			
+				if(in_array("peer", $template_supports)){
+			
+			?>	
+										<!--<div id="tab9-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab9" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('9');peer_template()">
+														<?PHP echo PROPERTIES_TAB_PEER; ?>
+												</p>									
+										</div>	
+			<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				}
+			
+			?>	
+			<?PHP
+			
+				if(in_array("give", $template_supports)){
+			
+			?>
+										<!--<div id="tab10-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab10" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('10');gift_template()">
+														<?PHP echo PROPERTIES_TAB_GIVE; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+			<?PHP
+			
+				}
+				
+			?>
+			<?PHP
+			
+				if(in_array("xml", $template_supports)){
+			
+			?>
+										<!--<div id="tab11-1" class="tab_right_pad" style="height:38px;"></div>-->
+										<div id="tab11" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('11');xml_template()">
+														<?PHP echo PROPERTIES_TAB_XML; ?>
+												</p>									
+										</div>						
+										<!-- 
 
-                                Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel	
+												Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel	
 
-                            -->
-							<?PHP
-							
-								}
-								
-							?>
-                            <div class="tab_spacer" style="height:<?PHP echo (((5-count($template_supports))*53))+18; ?>px;">							
-                            </div>
-                        </div>						
-                </div>									
-            </div>		
-        </div>
-    </div>	
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;">
-    </div>
+										-->
+			<?PHP
+			
+				}
+				
+			?>
+										<div class="tab_spacer" style="height:<?PHP echo (((5-count($template_supports))*53))+18; ?>px;">							
+										</div>
+								</div>						
+				</div>									
+		<div style="clear:both;"></div>
+		</div>
+		<div style="clear:both;"></div>
 </div>
 
 </body>
