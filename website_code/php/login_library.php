@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2008,2009,2012 University of Nottingham
  * @package
  */
-
 require_once(dirname(__FILE__) . "/language_library.php");
 _load_language_file("/index.inc");
 
@@ -142,7 +141,6 @@ END;
 
 function login_prompt($messages, $extra_path = '') {
   ?>
-
             <div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
                 <div class="top_right sign_in_TR m_b_d_2_child">
                     <div class="bottom_left sign_in_BL m_b_d_2_child">
@@ -213,10 +211,10 @@ function login_form($messages, $xerte_toolkits_site)
 			<div class="mainbody_holder">
 				<div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
 				<form method="post" enctype="application/x-www-form-urlencoded" >
-				<p style="margin:4px"><?php echo INDEX_USERNAME; ?>
-				<input type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
-				<p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>
-				<input type="password" size="20" maxlength="100" name="password" /></p>
+				<p style="margin:4px"><?php echo INDEX_USERNAME; ?>:
+				<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+				<p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
+				<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
 				<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
 				</form>
 				<script>document.getElementById("login_box").focus();      </script>
@@ -244,7 +242,6 @@ function login_form($messages, $xerte_toolkits_site)
 <?php
 }
 
-
 function login_processing($exit = true) {
   global $errors, $authmech, $xerte_toolkits_site;
 
@@ -255,12 +252,10 @@ function login_processing($exit = true) {
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
   if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    //niko 
-		if ($authmech->needsLogin() && $exit) { 
+    //niko 		if ($authmech->needsLogin() && $exit) { 
       login_form($errors, $xerte_toolkits_site);
       exit(0);
-   //niko 
-	 }
+   //niko 	 }
   }
   if ($authmech->needsLogin()) {
    /**
@@ -343,7 +338,6 @@ function login_processing2($firstname = false, $surname = false, $username = fal
       $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
       $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
   }
-
 
   require_once dirname(__FILE__) . '/user_library.php';
 

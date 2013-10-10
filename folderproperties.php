@@ -42,92 +42,78 @@ Start the page and once loaded set the default option
 
 <body onload="javascript:folderproperties_template();tab_highlight('1');">
 <div class="properties_main">
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;">
-    </div>
-    <div class="main_area_holder_1">
-        <div class="main_area_holder_2">
-            <div class="main_area">
-                <div>
-                    <span id="title">
-                        <img src="website_code/images/Icon_Folder.gif" style="vertical-align:middle; padding-left:10px;" /> 
-                        <?PHP echo FOLDERPROPERTIES_DISPLAY_TITLE; ?>
-                    </span>
-                </div>
-                <div id="data_area">
+		<div class="main_area">
+				<div>
+						<span id="title">
+								<img src="website_code/images/Icon_Folder.gif" style="vertical-align:middle; padding-left:10px;" /> 
+								<?PHP echo FOLDERPROPERTIES_DISPLAY_TITLE; ?>
+						</span>
+				</div>
+				<div id="data_area">
 
-                        <!--
+								<!--
 
-                            Dynamic area is the DIV used by the AJAX queries (The right hand side area of the properties panel.
+										Dynamic area is the DIV used by the AJAX queries (The right hand side area of the properties panel.
 
-                        -->
+								-->
 
-                        <div id="dynamic_area">
-                        </div>
+								<div id="dynamic_area">
+								</div>
 
-                        <!--
+								<!--
 
-                            Set up the three menu tabs
+										Set up the three menu tabs
 
-                            Structure
+										Structure
 
-                            tab1-1 is the small part to the right of the main tab, this is used to deal with the border round the main section
-                            tab1 is the actual tab with the text in it
+										tab1-1 is the small part to the right of the main tab, this is used to deal with the border round the main section
+										tab1 is the actual tab with the text in it
 
-                        -->
+								-->
 
-                        <div id="menu_tabs">
-                            <div class="tab_spacer" style="height:35px;">							
-                            </div>
-                            <div id="tab1-1" class="tab_right_pad" style="height:38px;">
-                            </div>
-                            <div id="tab1" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('1');folderproperties_template()">
-                                    <?PHP echo FOLDERPROPERTIES_TAB_FOLDER; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab2-1" class="tab_right_pad" style="height:38px;">										
-                            </div>
-                            <div id="tab2" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('2'); folder_content_template()">
-                                    <?PHP echo FOLDERPROPERTIES_TAB_CONTENT; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <div id="tab3-1" class="tab_right_pad" style="height:38px;">										
-                            </div>
-                            <div id="tab3" class="tab" style="width:146px; height:38px;">
-                                <p onclick="javascript:tab_highlight('3'); folder_rss_template()">
-                                    <?PHP echo FOLDERPROPERTIES_TAB_RSS; ?>
-                                </p>									
-                            </div>
-                            <div class="tab_spacer">							
-                            </div>
-                            <!-- 
+								<div id="menu_tabs">
+										<div class="tab_spacer" style="height:35px;">							
+										</div>
+										<div id="tab1-1" class="tab_right_pad" style="height:38px;">
+										</div>
+										<div id="tab1" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('1');folderproperties_template()">
+														<?PHP echo FOLDERPROPERTIES_TAB_FOLDER; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<div id="tab2-1" class="tab_right_pad" style="height:38px;">										
+										</div>
+										<div id="tab2" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('2'); folder_content_template()">
+														<?PHP echo FOLDERPROPERTIES_TAB_CONTENT; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<div id="tab3-1" class="tab_right_pad" style="height:38px;">										
+										</div>
+										<div id="tab3" class="tab" style="width:146px; height:38px;">
+												<p onclick="javascript:tab_highlight('3'); folder_rss_template()">
+														<?PHP echo FOLDERPROPERTIES_TAB_RSS; ?>
+												</p>									
+										</div>
+										<div class="tab_spacer">							
+										</div>
+										<!-- 
 
-                                Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
+												Last spacer given sufficient heigbt to fill the rest of the border for the right hand panel
 
-                            -->
+										-->
 
-                            <div class="tab_spacer" style="height:357px;">							
-                            </div>
-                        </div>						
-                </div>									
-            </div>		
-        </div>
-    </div>	
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;">
-    </div>
+										<div class="tab_spacer" style="height:357px;">							
+										</div>
+								</div>						
+				</div>									
+		<div style="clear:both;"></div>
+    </div>				
+	<div style="clear:both;"></div>
 </div>
 
 </body>
