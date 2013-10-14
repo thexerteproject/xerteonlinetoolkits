@@ -252,10 +252,10 @@ function login_processing($exit = true) {
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
   if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    //niko 		if ($authmech->needsLogin() && $exit) { 
+    if ($authmech->needsLogin() && $exit) { 
       login_form($errors, $xerte_toolkits_site);
       exit(0);
-   //niko 	 }
+    }
   }
   if ($authmech->needsLogin()) {
    /**
