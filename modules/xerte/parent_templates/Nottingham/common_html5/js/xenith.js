@@ -9,7 +9,7 @@ var x_languageData	= [],
 	x_specialChars	= [],
 	x_inputFocus	= false,
 	x_dialogInfo	= [], // (type, built)
-	x_browserInfo	= {iOS:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
+	x_browserInfo	= {iOS:false, Android:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
 	x_pageHistory	= [], // keeps track of pages visited for historic navigation
 	x_firstLoad		= true,
 	x_fillWindow	= false,
@@ -27,6 +27,10 @@ $(document).ready(function() {
 	if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
 		x_browserInfo.iOS = true;
 	}
+    if (navigator.userAgent.match(/Android/i) != null)
+    {
+        x_browserInfo.Android = true;
+    }
 	
 	x_browserInfo.touchScreen = !!("ontouchstart" in window);
 	if (x_browserInfo.touchScreen == true) {
@@ -38,7 +42,7 @@ $(document).ready(function() {
 		}
 		
 		var mobileTimer = false;
-		if (x_browserInfo.iOS == true) {
+		if (x_browserInfo.iOS || x_browserInfo.Android) {
 			// zooming is disabled until 2nd gesture - can't find way around this (otherwise page zooms automatically on orientation change which messes other things up)
 			var $viewport = $("#viewport")
 			$viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0");
@@ -629,23 +633,30 @@ function x_setUp() {
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
     var page;
-	if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
-        x_changePage(parseInt(pageInfo.ID) - 1);
-		
-    } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-        page = x_lookupPage(pageInfo.type, pageInfo.ID);
-        if (page != null) {
-            x_changePage(page);
-        } else if (force == true) {
-            x_changePage(0);
-        }
-		
-    } else {
-        page = parseInt(pageInfo.ID);
-        if (page > 0 && page <= x_pages.length) {
-            x_changePage(page-1);
-        } else if (force == true) {
-			x_changePage(0);
+    page = XTStartPage();
+    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
+        x_changePage(page);
+    }
+    else
+    {
+        if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
+            x_changePage(parseInt(pageInfo.ID) - 1);
+
+        } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+            page = x_lookupPage(pageInfo.type, pageInfo.ID);
+            if (page != null) {
+                x_changePage(page);
+            } else if (force == true) {
+                x_changePage(0);
+            }
+
+        } else {
+            page = parseInt(pageInfo.ID);
+            if (page > 0 && page <= x_pages.length) {
+                x_changePage(page-1);
+            } else if (force == true) {
+                x_changePage(0);
+            }
         }
     }
 }
@@ -1131,7 +1142,7 @@ function x_getLangInfo(node, attribute, fallBack) {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
-	var	attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto"],
+	var	attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage"],
 		i, j, len;
 
 	for (i=0, len = pageXML.attributes.length; i<len; i++) {

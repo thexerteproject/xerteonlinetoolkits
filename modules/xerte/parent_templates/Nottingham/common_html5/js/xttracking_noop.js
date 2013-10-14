@@ -28,6 +28,11 @@ function XTGetMode()
     return "";
 }
 
+function XTStartPage()
+{
+    return -1;
+}
+
 function XTGetUserName()
 {
     return "";
