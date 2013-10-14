@@ -218,7 +218,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <button type="button" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:templates_list();"><?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:users_list();"><?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
@@ -226,7 +226,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                     <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:categories_list();"><?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
+                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
                                     <button type="button" class="xerte_button" onclick="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</button>
