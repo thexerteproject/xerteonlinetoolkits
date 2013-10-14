@@ -45,6 +45,9 @@ function show_preview_code($row){
 		<!--styles -->
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap.css" rel="stylesheet">
 		<link href="<?PHP echo $template_path_string ?>/common/css/bootstrap-responsive.css" rel="stylesheet">
+		
+		<!--font awesome-->
+		<link href="<?PHP echo $template_path_string ?>/common/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 		<!--custom styles for this template-->
 		<link href="<?PHP echo $template_path_string ?>/common/css/custom.css" rel="stylesheet">
@@ -55,6 +58,10 @@ function show_preview_code($row){
 		<!--media element and initialisation-->
 		<script src="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelement-and-player.min.js"></script>
 		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/mediaelement/mediaelementplayer.min.css" />
+		
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
 
 		<script type="text/javascript">
 

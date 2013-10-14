@@ -5,6 +5,7 @@
 	var mcq = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+            this.startQ();
 			$("#feedback").html("");
 			$("#optionHolder input:checked").prop("checked", false);
 			$("#checkBtn").attr("disabled", "disabled");
@@ -17,6 +18,31 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
+
+        this.startQ = function() {
+            var correctOptions = [],
+               correctAnswer = [],
+               correctFeedback = [],
+               correctOption = false; // is there a correct answer for the question?
+
+            // Track the quiz page
+            this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            $(x_currentPageXML).children()
+                .each(function(i) {
+                    if (this.getAttribute("correct") == 'true') {
+                        correctOptions.push(i+1+"");
+                        correctAnswer.push(this.getAttribute("text"));
+                        correctFeedback.push(this.getAttribute("feedback"));
+                        mcq.correctOption = true;
+                    }
+                });
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+        }
 
 		this.init = function() {
 			// correct attribute on option also not used as it doesn't mark correct/incorrect - only gives feedback for each answer
@@ -56,14 +82,6 @@
 				}
 			}
 
-            // Track the quiz page
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 
 			var $optionHolder = $("#optionHolder");
@@ -73,13 +91,9 @@
 				$optionHolder.find("input[type='checkbox']").remove();
 			}
 
-			var $optionGroup = $optionHolder.find(".optionGroup"),
+			var $optionGroup = $optionHolder.find(".optionGroup");
 				//$option = $optionHolder.find("input"),
 				//$optionTxt = $optionHolder.find(".optionTxt"),
-				correctOptions = [],
-				correctAnswer = [],
-				correctFeedback = [],
-				correctOption = false; // is there a correct answer for the question?
 
             $(x_currentPageXML).children()
 				.each(function(i) {
@@ -93,12 +107,6 @@
 					$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 
                     mcq.currNrOptions = i+1;
-                    if (this.getAttribute("correct") == 'true') {
-                        correctOptions.push(i+1+"");
-                        correctAnswer.push(this.getAttribute("text"));
-                        correctFeedback.push(this.getAttribute("feedback"));
-						correctOption = true;
-                    }
 
 					$thisOption
 						.attr({
@@ -129,7 +137,6 @@
 						.html(this.getAttribute("text"));
 				});
 
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
 
 			// checkBtnWidth attribute not used as button will be sized automatically
 			// if language attributes aren't in xml will have to use english fall back
@@ -196,7 +203,7 @@
                     var rightWrongTxt = "";
                     // add correct feedback depending on if question overall has been answered correctly or not
                     if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-						if (correctOption == true) { // there is a correct answer for question
+						if (mcq.correctOption == true) { // there is a correct answer for question
 							if (correct == true) {
 								rightWrongTxt = '<p><br/>' + multiRight + '</p>';
 							} else {
@@ -204,7 +211,7 @@
 							}
 						}
                     } else {
-						if (correctOption == true) { // there is a correct answer for question
+						if (mcq.correctOption == true) { // there is a correct answer for question
 							if (correct == true) {
 								rightWrongTxt = '<p><br/>' + singleRight + '</p>';
 							} else {
@@ -222,7 +229,7 @@
 
                     XTExitInteraction(x_currentPage, 0, correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
                     XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
-                    if (XTGetMode() == "tracking")
+                    if (XTGetMode() == "normal")
                     {
                         // Disable all options
                         var i=0;
@@ -234,6 +241,7 @@
 
 				});
 
+            this.startQ();
 			this.sizeChanged();
 			x_pageLoaded();
 		}
