@@ -98,7 +98,7 @@ _include_javascript_file("website_code/scripts/import.js");
 								<input type="text" width="200" id="foldername" name="foldername" style="margin:0px; margin-right:5px; padding:3px" />
 								<button type="submit" class="xerte_button_c">
 									<img src="website_code/images/Icon_Folder_15x12.gif"/>
-									<?php echo INDEX_BUTTON_NEWFOLDER; ?>
+									<?php echo INDEX_BUTTON_NEWFOLDER_CREATE; ?>
 								</button>
 								<button type="button" class="xerte_button_c" onclick="javascript:popup_close()"><?php echo INDEX_BUTTON_CANCEL; ?>
 								</button>
