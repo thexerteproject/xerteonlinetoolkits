@@ -15,19 +15,9 @@ body{
 	height:80px;
 	background-image:url(../images/TopBar.jpg);
 	background-repeat:repeat-x;
-	margin:10px auto 0px auto;
-	width:910px;
-}
-
-/*
-.edit_topbar{
-	height:65px;
-	background-image:url(../images/edit_TopBar.jpg);
-	background-repeat:repeat-x;
 	margin:0 auto;
 	width:910px;
 }
-*/
 
 .title_holder{
 	background-color:rgba(77,88,94,0.8);
