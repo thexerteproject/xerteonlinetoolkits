@@ -344,7 +344,7 @@ function list_blank_templates() {
   $query_for_blank_templates_response = mysql_query($query_for_blank_templates);
 
   while ($row = mysql_fetch_array($query_for_blank_templates_response)) {
-    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon\"></div><div class=\"template_desc\"><p class=\"template_name\">";
+    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon ".$row['template_framework']."\"></div><div class=\"template_desc\"><p class=\"template_name\">";
 
     echo $row['display_name'];
 

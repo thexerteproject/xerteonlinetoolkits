@@ -444,10 +444,17 @@ div#file_area div p{
 	position:relative; 
 	width:14px; 
 	height:20px; 
-	background-image:url(../images/Icon_Page.gif); 
 	background-repeat:no-repeat; 
 	background-position:top;
 	margin:5px 5px 0 0;
+}
+
+.template_icon.xerte {
+	background-image:url(../images/Icon_Page_xerte.gif); 
+}
+
+.template_icon.site {
+	background-image:url(../images/Icon_Page_site.gif); 
 }
 
 .template_desc{
