@@ -226,7 +226,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   while ($row = mysql_fetch_array($query_response)) {
 
-        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
+        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page.gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
 
   }
 
@@ -276,7 +276,7 @@ function list_users_projects($sort_type) {
   * Create the workspace folder
   */
 
-  echo "<div class=\"folder\" id=\"folder_workspace\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img style=\"vertical-align:middle\"";
+  echo "<div class=\"folder\" id=\"folder_workspace\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img style=\"vertical-align:middle;padding-right:5px\"";
 
   echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/folder_workspace.gif\"";
 
@@ -304,7 +304,7 @@ function list_users_projects($sort_type) {
   * Display the recycle bin
   */
 
-  echo "<div class=\"folder\" id=\"recyclebin\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img id=\"folder_recyclebin\" style=\"vertical-align:middle\"";
+  echo "<div class=\"folder\" id=\"recyclebin\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img id=\"folder_recyclebin\" style=\"vertical-align:middle;padding-right:5px\"";
 
   if (mysql_num_rows($query_response_for_folder_content) == 0) {
 

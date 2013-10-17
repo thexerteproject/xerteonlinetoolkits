@@ -426,6 +426,7 @@ div#file_area div p{
 	position:relative; 
 	width:100%; 
 	overflow:scroll;
+	overflow-x:hidden;
 	height:372px;
 }
 
@@ -510,6 +511,10 @@ div#file_area div p{
 .rename form{
 	margin:5px 0 0 0; 
 	padding:0px;
+}
+
+.rename input{
+	width:130px;
 }
 
 .form_button_pad{
