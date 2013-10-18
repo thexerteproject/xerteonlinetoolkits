@@ -449,8 +449,14 @@ div#file_area div p{
 	margin:5px 5px 0 0;
 }
 
-.template_icon.xerte {
-	background-image:url(../images/Icon_Page_xerte.gif); 
+.template_icon.nottingham,
+.template_icon.multipersp,
+.template_icon.mediainteractions {
+	background-image:url(../images/Icon_Page_nottingham.gif);
+}
+
+.template_icon.rss {
+	background-image:url(../images/Icon_Page_rss.gif); 
 }
 
 .template_icon.site {
