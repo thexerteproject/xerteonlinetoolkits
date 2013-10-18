@@ -52,7 +52,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
         if (empty($x)) {
             // Create the user table
-            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  PRIMARY KEY (`iduser`) )");
+            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
                 $this->addError("Does the user table exist?");
@@ -60,6 +60,23 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
             }
             else
                 return true;
+        }
+        else
+        {
+            $row = mysql_fetch_array($x);
+            if(strpos($row[1], "email") === false)
+            {
+
+                // Add column email
+                $x = db_query("ALTER TABLE {$xerte_toolkits_site->database_table_prefix}user ADD COLUMN `email` VARCHAR(45) NULL  AFTER `surname`");
+                if (empty($x))
+                {
+                    $this->addError("Could not add email column to the user table.");
+                    return false;
+                }
+                else
+                    return true;
+            }
         }
 	    return true;
     }
@@ -110,30 +127,86 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
         //_include_javascript_file("library/Xerte/Authentication/Db.js");
 
-        echo "<form name=\"user_authDb_list\" ><select id=\"authDb_list_user\">";
+        echo "<div style=\"margin-left:20px\" >";
+        echo "<form name=\"user_authDb_list\" margin-left=\"20px\"><select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
 
+        $first = true;
         foreach($result as $row_users){
-            echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            if ($first)
+            {
+                echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                $username = $row_users['username'];
+                $firstname = $row_users['firstname'];
+                $surname = $row_users['surname'];
+                $email = $row_users['email'];
+                $first = false;
+            }
+            else
+            {
+                echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            }
+
         }
 
         echo "</select>";
         echo "<button type=\"button\" class=\"xerte_button\" onclick=\"delete_authDb_user()\">" . AUTH_DB_DELETEUSER . "</button>";
-        echo "<input type=\"password\" id=\"authDb_changepassword\" value=\"\" />";
+        echo "<br /><table>";
+        echo "<tr><td><label for=\"authDb_username\">"  . AUTH_DB_USERNAME . "</label></td><td><input type=\"text\" id=\"authDb_username\" value=\"" . $username . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_firstname\">" . AUTH_DB_FIRSTNAME . "</label></td><td><input type=\"text\" id=\"authDb_firstname\" value=\"" . $firstname . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_surname\">" . AUTH_DB_SURNAME . "</label></td><td><input type=\"text\" id=\"authDb_surname\" value=\"" . $surname . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_password\">" . AUTH_DB_PASSWORD . "</label></td><td><input type=\"password\" id=\"authDb_password\" value=\"\" /></tr>";
+        echo "<tr><td><label for=\"authDb_email\">" . AUTH_DB_EMAIL . "</label></td><td><input type=\"text\" id=\"authDb_email\" value=\"" . $email . "\" /></tr>";
+        echo "</table>";
+        echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"add_authDb_user()\">" . AUTH_DB_ADDUSER . "</button>";
+        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"mod_authDb_user()\">" . AUTH_DB_MODUSER . "</button>";
         echo "<button type=\"button\" class=\"xerte_button\" onclick=\"changepassword_authDb_user()\">" . AUTH_DB_CHANGEPASSWD . "</button></p>";
-        echo "<br />";
-        echo "<p>" . AUTH_DB_USERNAME . "<input type=\"text\" id=\"authDb_username\" value=\"\" /></p>";
-        echo "<p>" . AUTH_DB_FIRSTNAME . "<input type=\"text\" id=\"authDb_firstname\" value=\"\" /></p>";
-        echo "<p>" . AUTH_DB_SURNAME . "<input type=\"text\" id=\"authDb_surname\" value=\"\" /></p>";
-        echo "<p>" . AUTH_DB_PASSWORD . "<input type=\"password\" id=\"authDb_password\" value=\"\" /></p>";
-        echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"add_authDb_user()\">" . AUTH_DB_ADDUSER . "</button></p>";
-        echo "</form>";
+        echo "</form></div>";
         if ($changed)
         {
             echo $mesg;
         }
     }
 
-    public function addUser($username, $firstname, $surname, $passwd)
+    public function changeUserSelection($username)
+    {
+        global $xerte_toolkits_site;
+        $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user order by surname,firstname,username");
+
+        //_include_javascript_file("library/Xerte/Authentication/Db.js");
+
+        echo "<div style=\"margin-left:20px\" >";
+        echo "<form name=\"user_authDb_list\" margin-left=\"20px\"><select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
+
+        foreach($result as $row_users){
+            if ($row_users['username'] == $username)
+            {
+                echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                $firstname = $row_users['firstname'];
+                $surname = $row_users['surname'];
+                $email = $row_users['email'];
+            }
+            else
+            {
+                echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+            }
+        }
+
+        echo "</select>";
+        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"delete_authDb_user()\">" . AUTH_DB_DELETEUSER . "</button>";
+        echo "<br /><table>";
+        echo "<tr><td><label for=\"authDb_username\">"  . AUTH_DB_USERNAME . "</label></td><td><input type=\"text\" id=\"authDb_username\" value=\"" . $username . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_firstname\">" . AUTH_DB_FIRSTNAME . "</label></td><td><input type=\"text\" id=\"authDb_firstname\" value=\"" . $firstname . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_surname\">" . AUTH_DB_SURNAME . "</label></td><td><input type=\"text\" id=\"authDb_surname\" value=\"" . $surname . "\" /></tr>";
+        echo "<tr><td><label for=\"authDb_password\">" . AUTH_DB_PASSWORD . "</label></td><td><input type=\"password\" id=\"authDb_password\" value=\"\" /></tr>";
+        echo "<tr><td><label for=\"authDb_email\">" . AUTH_DB_EMAIL . "</label></td><td><input type=\"text\" id=\"authDb_email\" value=\"" . $email . "\" /></tr>";
+        echo "</table>";
+        echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"add_authDb_user()\">" . AUTH_DB_ADDUSER . "</button>";
+        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"mod_authDb_user()\">" . AUTH_DB_MODUSER . "</button>";
+        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"changepassword_authDb_user()\">" . AUTH_DB_CHANGEPASSWD . "</button></p>";
+        echo "</form></div>";
+    }
+
+    public function addUser($username, $firstname, $surname, $passwd, $email)
     {
         global $xerte_toolkits_site;
         // Check if user exists
@@ -145,13 +218,61 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         // Insert user
         $spassword = $this->_hashAndSalt($username, $passwd);
 
-        $query="insert into {$xerte_toolkits_site->database_table_prefix}user set firstname=?, surname=?, username=?, password=?";
-        $params = array($firstname, $surname, $username, $spassword);
+        $query="insert into {$xerte_toolkits_site->database_table_prefix}user set firstname=?, surname=?, username=?, password=?, email=?";
+        $params = array($firstname, $surname, $username, $spassword, $email);
         $res = db_query($query, $params);
         if ($res)
             return "";
         else
             return "<li>" . AUTH_DB_USERADDFAILED . "</li>";
+    }
+
+    public function modUser($username, $firstname, $surname, $passwd, $email)
+    {
+        global $xerte_toolkits_site;
+        // Check if user exists
+        $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ?", array($username));
+        if (empty($row))
+        {
+            return "<li>" . AUTH_DB_USERDOESNOTEXIST . "</li>";
+        }
+        // Modify user
+        $set = "";
+        $params = array();
+        if (strlen($firstname)>0)
+        {
+            $set .= "firstname=?";
+            $params[] = $firstname;
+        }
+        if (strlen($surname))
+        {
+            if (strlen($set) > 0)
+                $set .= ", ";
+            $set .= "surname=?";
+            $params[] = $surname;
+        }
+        if (strlen($passwd) > 0)
+        {
+            $spassword = $this->_hashAndSalt($username, $passwd);
+            if (strlen($set) > 0)
+                $set .= ", ";
+            $set .= "password=?";
+            $params[] = $password;
+        }
+        if (strlen($email))
+        {
+            if (strlen($set) > 0)
+                $set .= ", ";
+            $set .= "email=?";
+            $params[] = $email;
+        }
+
+        $query="update {$xerte_toolkits_site->database_table_prefix}user set " . $set . " where iduser=" . $row['iduser'];
+        $res = db_query($query, $params);
+        if ($res)
+            return "";
+        else
+            return "<li>" . AUTH_DB_USERMODFAILED . "</li>";
     }
 
     public function delUser($username)

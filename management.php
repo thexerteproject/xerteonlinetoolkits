@@ -232,6 +232,11 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                     <button type="button" class="xerte_button" onclick="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</button>
                                 </div>					
                                 <div id="admin_area">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
         <?PHP
