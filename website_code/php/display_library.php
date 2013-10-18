@@ -226,7 +226,7 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   while ($row = mysql_fetch_array($query_response)) {
 
-        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".$row['template_framework'].".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
+        echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".strtolower($row['template_name']).".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
 
   }
 
@@ -344,7 +344,7 @@ function list_blank_templates() {
   $query_for_blank_templates_response = mysql_query($query_for_blank_templates);
 
   while ($row = mysql_fetch_array($query_for_blank_templates_response)) {
-    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon ".$row['template_framework']."\"></div><div class=\"template_desc\"><p class=\"template_name\">";
+    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon ".strtolower($row['template_name'])."\"></div><div class=\"template_desc\"><p class=\"template_name\">";
 
     echo $row['display_name'];
 
