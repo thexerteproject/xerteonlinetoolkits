@@ -10,10 +10,10 @@ var scorm='2004';
 
 function makeId(page_nr, ia_nr, ia_type, ia_name)
 {
-    var tmpid = 'urn:x-xerte:page-' + (page_nr + 1);
+    var tmpid = 'urn:x-xerte:p-' + (page_nr + 1);
     if (ia_nr >= 0)
     {
-        tmpid += ':interaction-' + (ia_nr + 1);
+        tmpid += ':' + (ia_nr + 1);
         if (ia_type.length > 0)
         {
             tmpid += '-' + ia_type;
@@ -67,8 +67,8 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.ia_type = jsonObj.ia_type;
         this.ia_name = jsonObj.ia_name;
         this.state = jsonObj.state;
-        this.start = jsonObj.start;
-        this.end = jsonObj.end;
+        this.start = new Date(jsonObj.start);
+        this.end = new Date(jsonObj.end);
         this.count = jsonObj.count;
         this.duration = jsonObj.duration;
         this.nrinteractions = jsonObj.nrinteractions;
@@ -160,14 +160,14 @@ function ScormTrackingState()
         if (jsonStr.length > 0)
         {
             var jsonObj = JSON.parse(jsonStr);
-            // Do NOT touch scormmode
+            // Do NOT touch scormmode, and don't touch start
             this.currentid = jsonObj.currentid;
             this.currentpageid = jsonObj.currentpageid;
             this.trackingmode = jsonObj.trackingmode;
             this.scoremode = jsonObj.scoremode;
             this.nrpages = jsonObj.nrpages;
             this.pages_visited=jsonObj.pages_visited;
-            this.start = jsonObj.start;
+            //this.start = new Date(jsonObj.start);
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
             this.lo_passed = jsonObj.lo_passed;
@@ -363,7 +363,9 @@ function ScormTrackingState()
             sit.result = result;
             sit.answerfeedback = feedback;
 
-            if (!this.trackingmode != 'none' && (sit.ia_nr < 0 || this.trackingmode=='full'))
+            if (!this.trackingmode != 'none'
+                && ((sit.ia_nr < 0 && (this.trackingmode!='full' || sit.nrinteractions == 0))
+                || (sit.ia_nr >= 0 && this.trackingmode == 'full')))
             {
                 var res = setValue(interaction + 'id', id);
                 sit.idx = index;
@@ -507,13 +509,9 @@ function ScormTrackingState()
         }
         else
         {
-            if (this.nrpages <= this.pages_visited)
+            if (getCompletionStatus() == 'completed')
             {
                 return "passed";
-            }
-            else if(this.pages_visited)
-            {
-                return "unknown";
             }
             else
             {
@@ -539,7 +537,10 @@ function ScormTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            return this.pages_visited;
+            if (getSuccessStatus() == 'completed')
+                return 100;
+            else
+                return 0;
         }
         else
         {
@@ -597,7 +598,7 @@ function ScormTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            return this.nrpages;
+            return 100.0;
         }
         else
         {
