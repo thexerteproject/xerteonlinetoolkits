@@ -350,13 +350,22 @@ $folder_id = "";
  * Check the file is the write type
  */
 
-if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")||($_FILES['filenameuploaded']['type']=="application/octet-stream")){
+if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded']['name'])-3, 3)==="zip"){
 
-    $this_dir = rand() . "/";
+	$zip = new ZipArchive;
+	$res = $zip->open($_FILES['filenameuploaded']['tmp_name']);
+	
+	if($res===19){
+		
+		echo IMPORT_ZIP_FAIL . ".****";
+	
+	}
+
+	$this_dir = rand() . "/";
 
     if(!_is_writable($xerte_toolkits_site->import_path)) {
         _debug("{$xerte_toolkits_site->import_path} needs to be writeable. Cannot perform import");
-        die("{$xerte_toolkits_site->import_path} needs to be writeable");
+        die("{$xerte_toolkits_site->import_path} needs to be writeable****");
     }
 
     $ok = mkdir($xerte_toolkits_site->import_path . $this_dir) && chmod($xerte_toolkits_site->import_path . $this_dir,0777);
@@ -371,6 +380,10 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         require_once dirname(__FILE__) . "/../dUnzip2.inc.php";
 
         $zip = new dUnzip2($new_file_name);
+		
+		echo $zip . "<br />";
+		
+		die();
 
         $zip->debug = false;
 
