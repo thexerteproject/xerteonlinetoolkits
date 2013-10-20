@@ -32,6 +32,12 @@ p{
 
 }
 
+.pagecontainer_holder{
+
+	padding:20px;
+
+}
+
 </style>
 </head>
 
@@ -43,3 +49,4 @@ p{
 	</div>
 
 	<div class="pagecontainer">
+		<div class="pagecontainer_holder">
