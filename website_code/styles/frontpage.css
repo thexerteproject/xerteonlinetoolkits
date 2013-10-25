@@ -339,9 +339,9 @@ body{
 .file_mgt_area_middle_button_left{
 	float:left; 
 	position:relative; 
-	padding-right:15px;
+	padding-right:10px;
 	border-right:#b6b3a8 1px solid; 
-	margin-right:15px;
+	margin-right:10px;
 }
 
 .file_mgt_area_middle_button_right{
