@@ -381,10 +381,6 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         $zip = new dUnzip2($new_file_name);
 		
-		echo $zip . "<br />";
-		
-		die();
-
         $zip->debug = false;
 
         $zip->getList();
