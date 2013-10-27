@@ -205,24 +205,29 @@ function login_form($messages, $xerte_toolkits_site)
 
 <div class="mainbody">
     <div class="title_holder">
-      <div class="title_welcome">
-        <?PHP echo $xerte_toolkits_site->welcome_message; ?>
-      </div>
-			<div class="mainbody_holder">
-				<div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
-				<form method="post" enctype="application/x-www-form-urlencoded" >
-				<p style="margin:4px"><?php echo INDEX_USERNAME; ?>:
-				<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
-				<p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
-				<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-				<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
-				</form>
-				<script>document.getElementById("login_box").focus();      </script>
-			</div>		
+        <div class="title_welcome">
+            <?PHP echo $xerte_toolkits_site->welcome_message; ?>
+        </div>
+        <div class="mainbody_holder">
+            <div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
+            <form method="post" enctype="application/x-www-form-urlencoded" >
+                <p style="margin:4px"><?php echo INDEX_USERNAME; ?>:
+                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+                <p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
+                <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
+                <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
+            </form>
+            <script>document.getElementById("login_box").focus();      </script>
+        </div>
     </div>
-		<div style="clear:both;"></div>		
-</div>
+    <div style="clear:both;"></div>
+    <?php if (strlen($xerte_toolkits_site->tutorial_text) > 0) {
+        echo "<div class=\"tutorials\">";
+        echo  $xerte_toolkits_site->tutorial_text;
+        echo "</div>";
+    } ?>
 
+</div>
 <div class="bottompart">
 	<p class="news_title">
 		<?PHP echo INDEX_HELP_TITLE; ?>
