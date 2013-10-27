@@ -226,12 +226,15 @@ body{
 }
 
 .tutorials{
-	background-color:#f9f7f2; 
+	background-color:#f9f7f2;
+    background: RGBa(240,240,240, 0.5);
 	float:left; 
-	margin:0px 0 40px 0;
 	width:260px;
-	margin-right:20px;
-	height:475px;
+	height:395px;
+}
+
+.tutorials a{
+    color: #f86718;
 }
 
 .tutorials_title{
