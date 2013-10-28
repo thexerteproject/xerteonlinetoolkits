@@ -30,5 +30,7 @@
 	
 	define("IMPORT_ZIP_FOLDER_LEVEL","The files in your zip folder need to be in the main folder, not within another folder in the zip.");
 
+    define("IMPORT_NOT_WRITABLE", "The folder needs to writable.")
+
 
 ?>

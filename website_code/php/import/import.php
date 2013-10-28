@@ -365,7 +365,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
     if(!_is_writable($xerte_toolkits_site->import_path)) {
         _debug("{$xerte_toolkits_site->import_path} needs to be writeable. Cannot perform import");
-        die("{$xerte_toolkits_site->import_path} needs to be writeable****");
+        die("{$xerte_toolkits_site->import_path}: " . IMPORT_NOT_WRITABLE . "****");
     }
 
     $ok = mkdir($xerte_toolkits_site->import_path . $this_dir) && chmod($xerte_toolkits_site->import_path . $this_dir,0777);
@@ -648,11 +648,14 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
                     $preview_xml = file_get_contents(str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml");
 
-                    $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
+                    if ($preview_xml !== false)
+                    {
+                        $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
 
-                    fwrite($fh, $preview_xml);
+                        fwrite($fh, $preview_xml);
 
-                    fclose($fh);
+                        fclose($fh);
+                    }
 
                     make_new_template($folder[1], $xerte_toolkits_site->import_path . $this_dir);
 
