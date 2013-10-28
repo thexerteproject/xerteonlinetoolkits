@@ -12,11 +12,11 @@
 		this.sizeChanged = function() {
 
 		};
-		
+
 		this.init = function() {
 			var $textHolder = $("#textHolder"),
 				$panel = $("#pageContents .panel");
-			
+
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			$panel.addClass("x_floatRight");
 
@@ -25,7 +25,7 @@
 
 			// Start with some defaults and build on them
 			var iframe = {code:"", width:420, height:315, time:0, related:1, autoplay:0, allowfullscreen:false};
-			
+
 			if (youtubeCode.length == 11) {
 				iframe.code = youtubeCode;
 			}
@@ -45,7 +45,16 @@
 				}
 			}
 			else if (youtubeCode.substring(0, 16) == "http://youtu.be/") {
-				iframe.code = youtubeCode.substring(16);
+				var finish = youtubeCode.length;
+				if (youtubeCode.indexOf('?') != -1 ) {
+					finish = youtubeCode.indexOf('?');
+					var params = youtubeCode.substring(finish + 1);
+					var parts = params.split("=");
+					if (parts[0] == "t") {
+						iframe.time = eval(parts[1].replace("s", "").replace("m", "*60+"));
+					}
+				}
+				iframe.code = youtubeCode.substring(16, finish);
 			}
 			else if (youtubeCode.indexOf('http://www.youtube.com/v/') != -1) {
 				var str = 'http://www.youtube.com/v/';
@@ -71,7 +80,7 @@
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
-		
+
 		this.buildIframe = function(iframe) {
 			if (iframe.code.length > 0) {
 				var html = "<iframe";
