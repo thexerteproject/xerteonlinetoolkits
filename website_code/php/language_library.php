@@ -44,12 +44,12 @@ function display_language_selectionform($formclass)
     {
         ?>
         <form action='' method='POST'>
-        <label for="language-selector"><?PHP echo LANGUAGE_PROMPT; ?></label>
+        <label for="language-selector"><?PHP echo LANGUAGE_PROMPT; ?> </label> 
         <?php
     }
 ?>
 
-        <select name='language' id="language-selector">
+        <select name='language' style="width:145px;margin:0 -2px 0 0;" id="language-selector" onchange="this.form.submit()">
           <?php
           /* I've just specified a random list of possible languages; "Nonsense" is minimal and just there so you can see the login page switch around */
           $languages = getLanguages();
@@ -63,9 +63,8 @@ function display_language_selectionform($formclass)
           }
           ?>
         </select>
-        <input type='submit' class="xerte_button" value='<?PHP echo LANGUAGE_BUTTON_TEXT; ?>' name='submit'/>
+        <!--<input type='submit' class="xerte_button" value='<?PHP echo LANGUAGE_BUTTON_TEXT; ?>' name='submit'/>-->
     </form>
 <?php
 }
 ?>
-

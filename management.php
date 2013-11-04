@@ -54,58 +54,35 @@ function mgt_page($xerte_toolkits_site, $extra)
                 <img src="<?PHP echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
                 <img src="<?PHP echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
             </div>
-            <div class="mainbody">
-                <div class="title">
-                    <p>
-    <?PHP echo $xerte_toolkits_site->welcome_message; ?>
-                    </p>
-                </div>		
-                <div class="mainbody_holder">
-                    <div class="mainbody_div_2">
-                        <div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
-                            <div class="top_right sign_in_TR m_b_d_2_child">
-                                <div class="bottom_left sign_in_BL m_b_d_2_child">
-                                    <div class="bottom_right sign_in_BR m_b_d_2_child">
-                                        <p>
-    <?PHP echo MANAGEMENT_LOGIN; ?>
-                                        </p>
-                                        <div>
-                                            <form method="post" enctype="application/x-www-form-urlencoded" action="management.php"><p>Username <input type="text" size="20" maxlength="100" name="login" /></p><p>Password <input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button" style="float:right" ><?php echo MANAGEMENT_BUTTON_LOGIN; ?></button></p></form>
 
-
-                                            <!-- 
-
-                                                After this, the login form is handled by the php
-
-                                            -->
-
-    <?PHP
-    echo $extra;
-    ?>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border"></div>
-                    </div>
-                    <div class="mainbody_left">
-                        <div class="tutorials">								
-                        </div>
-                    </div>		
-                    <div class="mainbody_div">	
-
-                    </div>
-                </div>		
-            </div>
-            <div class="border">
-            </div>
-            <p class="copyright">
-                <img src="website_code/images/lt_logo.gif" /><br>
-    <?PHP echo $xerte_toolkits_site->copyright; ?>
-            </p>
-            </div>
+						
+						<div class="mainbody">
+								<div class="title_holder">
+									<div class="title_welcome">
+										<?PHP echo $xerte_toolkits_site->welcome_message; ?>
+									</div>
+									<div class="mainbody_holder">
+										<div style="margin:0 7px 4px 0"><?PHP echo MANAGEMENT_LOGIN; ?></div>
+										<form method="post" enctype="application/x-www-form-urlencoded" >
+										<p style="margin:4px">Username:
+										<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+										<p style="margin:4px">Password:
+										<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
+										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo MANAGEMENT_BUTTON_LOGIN; ?></button>
+										</form>
+										<script>document.getElementById("login_box").focus();</script>
+										<!--<p><?PHP echo $extra; ?></p>-->
+									</div>		
+								</div>
+								<div style="clear:both;"></div>		
+						</div>
+						
+						<div class="bottompart">
+							<div class="border"></div>
+							<p class="copyright">
+								<?php echo $xerte_toolkits_site->copyright; ?>
+							</p>
+						</div>
         </body>
     </html>
 
@@ -241,7 +218,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <button type="button" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:templates_list();"><?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:users_list();"><?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
@@ -249,12 +226,17 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                     <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:categories_list();"><?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
                                     <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
+                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
                                     <button type="button" class="xerte_button" onclick="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</button>
                                 </div>					
                                 <div id="admin_area">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
         <?PHP

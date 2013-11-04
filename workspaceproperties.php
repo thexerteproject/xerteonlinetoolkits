@@ -57,14 +57,6 @@ Hidden Iframe to allow for ajax file uploads
 
 
 <div class="properties_main">
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;">
-    </div>
-    <div class="main_area_holder_1">
-        <div class="main_area_holder_2">
             <div class="main_area">
                 <div>
                     <span id="title">
@@ -148,19 +140,13 @@ Hidden Iframe to allow for ajax file uploads
 
                             -->
 
-                            <div class="tab_spacer" style="height:315px;">
+                            <div class="tab_spacer" style="height:275px;">
                             </div>
                         </div>
                 </div>
+		<div style="clear:both;"></div>
             </div>
-        </div>
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;">
-    </div>
-    <div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);">
-    </div>
-    <div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;">
-    </div>
+		<div style="clear:both;"></div>					
 </div>
 
 </body>

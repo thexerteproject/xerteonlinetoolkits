@@ -121,11 +121,14 @@ function url_return(url,parameter){
 function template_toggle(tag){
 
     var temp = document.getElementById(tag);
+    var butt = document.getElementById(tag+'_button');
 
     if((temp.style.display=="none")||(temp.style.display=="")){
         temp.style.display="block";	
+				butt.style.display="none";
     }else{
-        temp.style.display="none"
+        temp.style.display="none";
+				butt.style.display="";
     }	
 
 }
@@ -528,7 +531,7 @@ function example_stateChanged(){
 
 function publishproperties_window(admin){
 
-    var NewWindow = window.open(site_url + url_return("publishproperties", (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length))), (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length)), "height=570, width=610" );
+    var NewWindow = window.open(site_url + url_return("publishproperties", (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length))), (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length)), "height=600, width=635" );
 
     NewWindow.window_reference = self;
 
@@ -551,7 +554,7 @@ function properties_window(admin){
 
         if(document.getElementById("folder_workspace").mainhighlight){
 
-            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=570, width=610" );
+            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=600, width=635" );
 
             NewWindow.window_reference = self;
 
@@ -567,7 +570,7 @@ function properties_window(admin){
 
                     if(drag_manager.selected_items[x].parentNode.id!="folderchild_recyclebin"){
 
-                        var NewWindow = window.open(site_url + url_return("properties", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length)), "height=570, width=610" );
+                        var NewWindow = window.open(site_url + url_return("properties", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length)), "height=600, width=635" );
 
                         NewWindow.window_reference = self;
 
@@ -581,7 +584,7 @@ function properties_window(admin){
 
                 }else{
 
-                    var NewWindow = window.open(site_url + url_return("folderproperties", (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder")), (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder"), "height=570, width=610" );
+                    var NewWindow = window.open(site_url + url_return("folderproperties", (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder")), (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder"), "height=600, width=635" );
 
                     NewWindow.window_reference = self;
 
@@ -597,7 +600,7 @@ function properties_window(admin){
 
     }else{
 
-        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=570, width=610" );
+        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=600, width=630" );
 
         NewWindow.window_reference = self;
 

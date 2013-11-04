@@ -32,7 +32,7 @@ define("INDEX_HELP_TITLE", "Getting Started");
 
 define("INDEX_HELP_INTRODUCTION", "We've produced a short introduction to the Toolkits website.");
 
-define("INDEX_HELP_INTRO_LINK_TEXT","Demonstration");
+define("INDEX_HELP_INTRO_LINK_TEXT","Show me!");
 
 define("INDEX_NO_LDAP","PHP's LDAP library needs to be installed to use LDAP authentication. If you read the install guide other options are available");
 
@@ -72,6 +72,8 @@ define("INDEX_BUTTON_PREVIEW", "Preview");
 define("INDEX_BUTTON_SORT", "Sort");
 
 define("INDEX_BUTTON_NEWFOLDER", "New Folder");
+
+define("INDEX_BUTTON_NEWFOLDER_CREATE", "Create");
 
 define("INDEX_BUTTON_DELETE", "Delete");
 

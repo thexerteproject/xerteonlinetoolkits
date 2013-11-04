@@ -5,79 +5,41 @@ body{
 }
 
 .properties_main{
-	width:610px;
-}
-
-.corner{
-	background-repeat:no-repeat;
-	background-position:top; 
-	width:5px; 
-	height:5px; 
-	overflow:hidden;
-	float:left; 
-	position:relative;
-}
-
-.central{
-	background-repeat:repeat-x; 
-	width:600px; 
-	height:5px; 
-	overflow:hidden;  	
-	float:left; 
-	position:relative;
-}
-
-.main_area_holder_1{
-	float:left; 
-	background-image:url(../images/MessBoxLeft.gif); 
-	background-position:left; 	
-	background-repeat:repeat-y; 
-	width:610px; 
-	height:560px; 
-	background-color:#f4eee2; 
-	position:relative;
-}
-
-.main_area_holder_2{
-	float:right; 
-	background-image:url(../images/MessBoxRight.gif); 
-	background-repeat:repeat-y; 
-	background-position:right;
-	width:610px;
-	height:565px; 
+	width:590px;
+	margin:10px;
+	padding:10px;
+	background-color:#fff; 
+	border-radius:5px;
+	border:#ccc 1px solid; 
 }
 
 .main_area{
-	float:right; 
-	position:relative; 
-	width:610px; 
-	height:100%; 
-	color:#645f4f; 
-	margin-top:5px
+	color:#000; 
+	background:#ededed;
+	border-radius:3px;
+	margin:0px;
+	padding:10px;
 }
 
 span#title{
 	font-weight:bold; 
 	float:left;
+	color:#000;
 }
 
 div#data_area{
 	float:right; 
 	position:relative; 
-	width:595px; 
-	background-color:#f4eee2; 
-	margin:5px;
+	background-color:#ededed; 
 }
 
 div#dynamic_area{
 	float:right;
 	background-color:#fff;
- 	border-right:#b6b38a 1px solid;
-	border-bottom:#b6b38a 1px solid; 
-	border-top:#b6b38a 1px solid; 
 	width:410px; 
 	height:520px;	
 	overflow:scroll;
+	border-top-left-radius:7px;
 }
 
 div#dynamic_area form#rename_form{
@@ -117,11 +79,12 @@ div#dynamic_area p span{
 }
 
 div#dynamic_area a{
-	color:#000;
+	color:#007;
 }
 
 .header{
-	background-color:#f8f7f2; 
+	background-color:#4d585e;
+	color:#fff;
 }
 
 div#dynamic_area form{
@@ -144,8 +107,8 @@ div#dynamic_area form{
 	float:left;
 	width:150px; 
 	padding:7px;
-	border-bottom:1px solid #f4eee2;
-	border-right:1px solid #f4eee2;
+	border-bottom:1px solid #ededed;
+	border-right:1px solid #ededed;
 	font-weight:bold;
 	background-color:#0f0;
 	clear:left;
@@ -155,8 +118,8 @@ div#dynamic_area form{
 	float:left;
 	width:70px;
 	padding:7px;
-	border-bottom:1px solid #f4eee2;
-	border-right:1px solid #f4eee2;
+	border-bottom:1px solid #ededed;
+	border-right:1px solid #ededed;
 	font-weight:bold;
 }
 
@@ -165,7 +128,7 @@ div#dynamic_area form{
 	width:80px; 
 	background-color:#0f0; 
 	padding:7px;
-	border-bottom:1px solid #f4eee2;
+	border-bottom:1px solid #ededed;
 	font-weight:bold;
 }
 
@@ -174,7 +137,8 @@ div#dynamic_area form{
 }
 
 .found{
-	background-color:#f8f7f2;
+	background-color:#ededed;
+	border:1px #fff solid;
 }
 
 .notfoundtextcolor{
@@ -209,9 +173,7 @@ div#security_list p{
 }
 
 .share_intro_p{
-
 	border-bottom:1px dotted #a8b2b5;
-
 }
 
 /* end of dynamic area */
@@ -222,30 +184,38 @@ div#menu_tabs{
 	position:relative;
 }
 
-.tab_right_pad{
-	float:right; 
-	position:relative; 
-	width:1px; 
-	background-color:#f4eee2; 
-	border-right:1px #b6b38a solid;
-	border-top:1px solid #f4eee2;
-	border-bottom:1px solid #f4eee2;
-}
+/*
+86 99 9d 86999d
+9b b1 bd 9bb1bd
+4d 58 5e 4d585e
+*/
 
 .tab{
 	float:right; 
 	position:relative; 	
-	background-color:#f9f7f2;
-	border-top:1px solid #f4eee2;
-	border-left:1px solid #f4eee2;
-	border-bottom:1px solid #f4eee2;
+	background-color:#a4b6bf;
+	border-bottom-left-radius:7px;
+	border-top-left-radius:7px;
 	cursor:hand;
 	cursor:pointer;
+	color:#fff;
 }
 
-.tab p{
+.tab_selected{
+	float:right; 
+	position:relative; 	
+	background-color:#fff;
+	border-bottom-left-radius:7px;
+	border-top-left-radius:7px;
+	cursor:hand;
+	cursor:pointer;
+	color:#000;
+}
+
+.tab p,.tab_selected p{
 	margin:10px; 
 	font-weight:bold;
+	width:130px;
 }
 
 .tab_spacer{
@@ -253,7 +223,7 @@ div#menu_tabs{
 	position:relative; 
 	width:147px; 
 	height:3px; 
-	background-color:#f4eee2; 
+	background-color:#ededed; 
 	overflow:hidden; 
-	border-right:1px #b6b38a solid;
+	border-right:1px #ededed solid;
 }
