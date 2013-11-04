@@ -147,6 +147,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                         </div>						
                 </div>									
+							<div style="clear:both;"></div>
             </div>		
         </div>
     </div>	

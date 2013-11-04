@@ -1318,30 +1318,11 @@ var last_selected=null;
 
 function tab_highlight(id){
 
-	document.getElementById("tab"+id + "-1").style.borderTop="1px #b6b38a solid";
-	document.getElementById("tab"+id + "-1").style.borderBottom="1px #b6b38a solid";
-	document.getElementById("tab"+id + "-1").style.backgroundColor="#fff";
-	document.getElementById("tab"+id + "-1").style.borderRight="1px #fff solid";
-	document.getElementById("tab"+id + "-1").style.width = "1px";
-	
-	document.getElementById("tab"+id).style.borderLeft="1px #b6b38a solid";
-	document.getElementById("tab"+id).style.borderTop="1px #b6b38a solid";
-	document.getElementById("tab"+id).style.borderBottom="1px #b6b38a solid";
-	document.getElementById("tab"+id).style.backgroundColor="#fff";
+
+	document.getElementById("tab"+id).className = "tab_selected";
 	
 	if((last_selected!=null)&&(last_selected!=id)){
-	
-		document.getElementById("tab" + last_selected + "-1").style.borderTop="1px solid #f4eee2";
-		document.getElementById("tab" + last_selected + "-1").style.borderBottom="1px solid #f4eee2";
-		document.getElementById("tab" + last_selected + "-1").style.backgroundColor="#f4eee2";
-		document.getElementById("tab" + last_selected + "-1").style.borderRight="1px #b6b38a solid";
-		
-		document.getElementById("tab" + last_selected).style.borderLeft="1px solid #f4eee2";
-		document.getElementById("tab" + last_selected).style.borderTop="1px solid #f4eee2";
-		document.getElementById("tab" +last_selected).style.borderBottom="1px solid #f4eee2";
-		document.getElementById("tab" + last_selected).style.backgroundColor="#f9f7f2";
-
-	
+		document.getElementById("tab" + last_selected).className = "tab";
 	}
 	
 	last_selected = id;

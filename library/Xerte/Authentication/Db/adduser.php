@@ -46,7 +46,7 @@ if(is_user_admin()){
     }
     if (strlen($mesg) == 0)
     {
-        $mesg = $authmech->addUser(urldecode($_POST['username']), urldecode($_POST['firstname']), urldecode($_POST['surname']), urldecode($_POST['password']));
+        $mesg = $authmech->addUser(urldecode($_POST['username']), urldecode($_POST['firstname']), urldecode($_POST['surname']), urldecode($_POST['password']), urldecode($_POST['email']));
     }
     if (strlen($mesg) > 0)
     {

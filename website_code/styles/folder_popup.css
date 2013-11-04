@@ -1,76 +1,18 @@
-
 .folder_popup{
-	width:300px;
 	position:absolute;
 	z-index:3;
 	display:none;
-}
-
-.corner{
-	background-repeat:no-repeat;
-	background-position:top; 
-	width:5px; 
-	height:5px; 
-	overflow:hidden;
-	float:left; 
-	position:relative;
-}
-
-.central{
-	background-repeat:repeat-x; 
-	width:290px; 
-	height:5px; 
-	overflow:hidden;  	
-	float:left; 
-	position:relative;
-}
-
-.main_area_holder_1{
-	float:left; 
-	background-image:url(../images/MessBoxLeft.gif); 
-	background-position:left; 	
-	background-repeat:repeat-y; 
-	width:300px; 
-	height:90%; 
-	background-color:#f4eee2; 
-	position:relative;
-}
-
-.main_area_holder_2{
-	float:right; 
-	background-image:url(../images/MessBoxRight.gif); 
-	background-repeat:repeat-y; 
-	background-position:right;
-	width:300px;
-	height:90%; 
+	padding:10px;
+	background-color:#fff; 
+	border-radius:5px;
+	border:#ccc 1px solid; 
 }
 
 .main_area{
-	float:left; 
-	position:relative; 
-	width:300px; 
-	height:90%; 
-	color:#645f4f; 
-	padding:3px;
-}
-
-.main_area p{
-	font-weight:bold; 
-	float:left;
-	position:relative;
-	padding-left:5px;
-	padding-top:5px;
-	padding-bottom:5px;
-}
-
-.main_area form{
-	float:left;
-	position:relative;
-	width:100%;
-	padding-left:5px;
-}
-
-.main_area img{
-	float:left;
-	position:relative;
+	width:320px;
+	height:80px;
+	background:#4d585e;
+	border-radius:3px;
+	margin:0px;
+	padding:10px;
 }

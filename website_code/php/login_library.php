@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2008,2009,2012 University of Nottingham
  * @package
  */
-
 require_once(dirname(__FILE__) . "/language_library.php");
 _load_language_file("/index.inc");
 
@@ -142,7 +141,6 @@ END;
 
 function login_prompt($messages, $extra_path = '') {
   ?>
-
             <div class="top_left sign_in_TL m_b_d_2_child" style="background-color:#f3eee2;">
                 <div class="top_right sign_in_TR m_b_d_2_child">
                     <div class="bottom_left sign_in_BL m_b_d_2_child">
@@ -203,65 +201,51 @@ function login_form($messages, $xerte_toolkits_site)
 <div class="topbar">
     <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
     <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
-    <?php
-    display_language_selectionform("");
-    ?>
-
 </div>
+
 <div class="mainbody">
-    <div class="title">
-        <p>
-          <?PHP echo $xerte_toolkits_site->welcome_message; ?>
-        </p>
-    </div>
-    <div class="mainbody_holder">
-        <div class="mainbody_div_2">
-
-<?php
-  login_prompt($messages);
-?>
-
-            <div class="border"></div>
-            <div class="news">
-                <p class="news_title">
-                  <?PHP echo INDEX_HELP_TITLE; ?>
-                </p>
-                <p class="news_story">
-                  <?php echo INDEX_HELP_INTRODUCTION; ?>
-                    <br/>
-                    <br/><a href="<?php echo $xerte_toolkits_site->demonstration_page; ?>" target="new"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></a>
-                </p>
-            </div>
-            <div class="border"></div>
-            <div class="news">
-              <?PHP echo $xerte_toolkits_site->news_text; ?>
-            </div>
-
+    <div class="title_holder">
+        <div class="title_welcome">
+            <?PHP echo $xerte_toolkits_site->welcome_message; ?>
         </div>
-        <div class="mainbody_left">
-            <div class="tutorials">
-                <?PHP echo $xerte_toolkits_site->tutorial_text; ?>
-            </div>
-        </div>
-        <div class="mainbody_div">
-            <p class="intro">
-              <?PHP echo $xerte_toolkits_site->site_text; ?>
-            </p>
+        <div class="mainbody_holder">
+            <div style="margin:0 7px 4px 0"><?php display_language_selectionform("");?></div>
+            <form method="post" enctype="application/x-www-form-urlencoded" >
+                <p style="margin:4px"><?php echo INDEX_USERNAME; ?>:
+                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+                <p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
+                <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
+                <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
+            </form>
+            <script>document.getElementById("login_box").focus();      </script>
         </div>
     </div>
+    <div style="clear:both;"></div>
+    <?php if (strlen($xerte_toolkits_site->tutorial_text) > 0) {
+        echo "<div class=\"tutorials\">";
+        echo  $xerte_toolkits_site->tutorial_text;
+        echo "</div>";
+    } ?>
+
 </div>
-<div class="border">
-</div>
-<p class="copyright">
-    <img src="website_code/images/lt_logo.gif" /><br/>
-  <?php echo $xerte_toolkits_site->copyright; ?>
-</p>
+<div class="bottompart">
+	<p class="news_title">
+		<?PHP echo INDEX_HELP_TITLE; ?>
+	</p>
+	<p class="news_story">
+		<?php echo INDEX_HELP_INTRODUCTION; ?>
+		<button type="button" class="xerte_button_c" onClick="window.open('<?php echo $xerte_toolkits_site->demonstration_page; ?>','_blank');"><?php echo INDEX_HELP_INTRO_LINK_TEXT; ?></button>
+	</p>
+	<div class="border">
+	</div>
+	<p class="copyright">
+		<?php echo $xerte_toolkits_site->copyright; ?>
+	</p>
 </div>
 </body>
 </html>
 <?php
 }
-
 
 function login_processing($exit = true) {
   global $errors, $authmech, $xerte_toolkits_site;
@@ -273,7 +257,7 @@ function login_processing($exit = true) {
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
   if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    if ($authmech->needsLogin() && $exit) {
+    if ($authmech->needsLogin() && $exit) { 
       login_form($errors, $xerte_toolkits_site);
       exit(0);
     }
@@ -359,7 +343,6 @@ function login_processing2($firstname = false, $surname = false, $username = fal
       $_SESSION['toolkits_surname'] = $surname == false ? $authmech->getSurname() : $surname;
       $_SESSION['toolkits_logon_username'] = $username == false ? $authmech->getUsername() : $username;
   }
-
 
   require_once dirname(__FILE__) . '/user_library.php';
 

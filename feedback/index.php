@@ -28,7 +28,7 @@ require_once("../config.php");
 
     <div class="topbar">
         <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
-        <img src="../website_code/images/UofNLogo.jpg" style="margin-right:10px; float:right" />
+        <img src="../website_code/images/UofNLogo.jpg" style="margin-right:0px; float:right" />
     </div>
     <div class="mainbody"><?PHP
 	

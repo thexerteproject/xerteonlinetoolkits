@@ -26,12 +26,18 @@ function authdb_ajax_send_prepare(url){
 function authdb_stateChanged(){
 
     if (xmlHttp.readyState==4){
+        document.getElementById('manage_auth_users').innerHTML = xmlHttp.responseText;
+    }
+}
 
-        if(xmlHttp.responseText!=""){
+function changeUserSelection_authDb_user()
+{
+    if(setup_ajax()!=false){
+        var url="seluser.php";
 
-            document.getElementById('manage_auth_users').innerHTML = xmlHttp.responseText;
+        authdb_ajax_send_prepare(url);
 
-        }
+        xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value));
     }
 }
 
@@ -46,7 +52,6 @@ function delete_authDb_user() {
 
             xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value));
         }
-
     }
 }
 
@@ -59,7 +64,7 @@ function changepassword_authDb_user() {
 
         var passwd = document.getElementById('authDb_changepassword').value;
         var encodedpasswd = encodeURIComponent(document.getElementById('authDb_changepassword').value);
-        xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value) + '&password=' + encodeURIComponent(document.getElementById('authDb_changepassword').value));
+        xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value) + '&password=' + encodeURIComponent(document.getElementById('authDb_password').value));
 
     }
 }
@@ -74,7 +79,25 @@ function add_authDb_user() {
         xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_username').value) +
                      '&firstname=' + encodeURIComponent(document.getElementById('authDb_firstname').value) +
                      '&surname=' + encodeURIComponent(document.getElementById('authDb_surname').value) +
-                     '&password=' + encodeURIComponent(document.getElementById('authDb_password').value));
+                     '&password=' + encodeURIComponent(document.getElementById('authDb_password').value) +
+                     '&email=' + encodeURIComponent(document.getElementById('authDb_email').value));
+
+    }
+}
+
+function mod_authDb_user() {
+    if(setup_ajax()!=false){
+
+        var url="moduser.php";
+
+        authdb_ajax_send_prepare(url);
+
+        xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value) +
+            '&usernamefield=' + encodeURIComponent(document.getElementById('authDb_username').value) +
+            '&firstname=' + encodeURIComponent(document.getElementById('authDb_firstname').value) +
+            '&surname=' + encodeURIComponent(document.getElementById('authDb_surname').value) +
+            '&password=' + encodeURIComponent(document.getElementById('authDb_password').value) +
+            '&email=' + encodeURIComponent(document.getElementById('authDb_email').value));
 
     }
 }

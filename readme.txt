@@ -1,4 +1,4 @@
-v2.0+
+v2.1
 
 Here's a quick guide to installing toolkits on your local computer:
 

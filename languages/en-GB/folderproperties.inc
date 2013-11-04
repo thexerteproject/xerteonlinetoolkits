@@ -16,8 +16,8 @@
 
 	define("FOLDERPROPERTIES_TAB_FOLDER", "Folder Properties");
 
-	define("FOLDERPROPERTIES_TAB_CONTENT", "Folder Contents of this folder");
+	define("FOLDERPROPERTIES_TAB_CONTENT", "Folder Contents");
 
-	define("FOLDERPROPERTIES_TAB_RSS", "Folder RSS feed for this folder");
+	define("FOLDERPROPERTIES_TAB_RSS", "Folder RSS feed");
 
 ?>
