@@ -186,10 +186,6 @@ function replace_existing_template($path_to_copy_from, $template_id){
     array_splice($delete_folder_array,0);
 
     delete_loop($path_to_copy_from);
-	
-	echo "HELLO****";
-	
-	die();
 
     while($delete_folder = array_pop($delete_folder_array)){
 
@@ -352,14 +348,6 @@ $folder_id = "";
 
 if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded']['name'])-3, 3)==="zip"){
 
-	$zip = new ZipArchive;
-	$res = $zip->open($_FILES['filenameuploaded']['tmp_name']);
-	
-	if($res===19){
-		
-		echo IMPORT_ZIP_FAIL . ".****";
-	
-	}
 
 	$this_dir = rand() . "/";
 
@@ -383,7 +371,10 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 		
         $zip->debug = false;
 
-        $zip->getList();
+        $res = $zip->getList();
+        if($res===false){
+            echo IMPORT_ZIP_FAIL . ".****";
+        }
 
         $file_data = array();
 
