@@ -33,6 +33,11 @@ abstract class Xerte_Authentication_Abstract
     {
         $this->_errors[] = $string;
     }
+	
+	public function removeErrors($string)
+    {
+        $this->_errors = array();
+    }
 
     /**
      * @return string user's firstname
@@ -99,17 +104,7 @@ abstract class Xerte_Authentication_Abstract
         echo "";
     }
 
-    public function changeUserSelection($username)
-    {
-        echo "";
-    }
-
-    public function addUser($username, $passwd, $firstname, $lastname, $email)
-    {
-        $this->getUserList(true, "");
-    }
-
-    public function modUser($username, $passwd, $firstname, $lastname, $email)
+    public function addUser($username, $passwd, $firstname, $lastname)
     {
         $this->getUserList(true, "");
     }
