@@ -90,6 +90,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             $result = $this->_authenticate_to_host($host['ldap_host'], $host['ldap_port'], $host['ldap_password'], $host['ldap_username'], $host['ldap_basedn'], $host['ldap_filter'], $host['ldap_filter_attr'], $username, $password);
 
             if ($result === true) {
+				$this->removeErrors();
                 return true;
             }
         }
@@ -163,12 +164,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             }
         } else {
 
-            // 2013-08-09 Tom Knight-Markiegi <t.knight-markiegi@shu.ac.uk> - fixed bug with LDAP login
-            //$filter = $ldap_filter . $xot_username;
-            $filter = $ldap_filter_attr . "=" . $xot_username;
-            if ($ldap_filter != "") {
-                $filter = "(&(".$filter.")".$ldap_filter.")";
-            }
+            $filter = $ldap_filter . $xot_username;
             $ldapConnection = ldap_connect($host, (int) $port);
             $ldapSearchResult = ldap_search($ldapConnection, $basedn, $filter);
 
