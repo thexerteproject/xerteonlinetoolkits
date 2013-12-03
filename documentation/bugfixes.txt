@@ -1,3 +1,9 @@
+NB. This file is now superceded by the issues log on Github:
+
+https://github.com/thexerteproject/xerteonlinetoolkits/issues
+
+
+
 19/10/2011
 ----------
 Changes made
