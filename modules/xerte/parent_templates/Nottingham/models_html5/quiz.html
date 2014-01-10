@@ -14,6 +14,7 @@
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
+			quiz.loadAudio($thisQ.getAttribute("sound"));
 		}
 
 		// function called every time the size of the LO is changed
@@ -100,6 +101,9 @@
 
 			var infoString = $thisQ.getAttribute("prompt");
 
+			if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
+				quiz.loadAudio($thisQ.getAttribute("sound"),true);
+			}	
 			var url = $thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
@@ -460,6 +464,19 @@
 			this.sizeChanged();
 			x_pageLoaded();
 		}
+		this.loadAudio = function(soundFile,firstLoad) {
+			console.log('audio',soundFile);
+			if (soundFile != undefined && soundFile != "") {
+				$("#questionAudio").mediaPlayer({
+					type		:"audio",
+					source	:soundFile,
+					width		:$("#pageImg").width()
+				});
+			}
+			if (firstLoad == true) {
+				x_pageLoaded();
+			}
+		}		
 	}
 
 	quiz.init();
@@ -521,6 +538,7 @@
 			<div class="panel qPanel">
 				<h3 id="qNo"></h3>
 				<p id="qTxt"></p>
+				<div id="questionAudio"></div>
 				<div id="optionHolder"></div>
 				<div id="buttonHolder">
 					<button id="checkBtn"></button>
