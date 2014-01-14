@@ -83,7 +83,7 @@ _include_javascript_file("website_code/scripts/import.js");
 
     -->
 
-    <body onload="javascript:sort_display_settings()"  onselectstart="return false;" onscroll="body_scroll()">
+    <body onload="javascript:sort_display_settings()"  onselectstart="return false;" onscroll="body_scroll()" onbeforeunload="javascript:logout()">
 	<?php body_start();?>
         <!--
 
