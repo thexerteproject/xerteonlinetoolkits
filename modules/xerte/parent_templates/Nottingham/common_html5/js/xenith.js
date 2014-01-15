@@ -1125,7 +1125,11 @@ function x_openMediaWindow() {
 	window.open("mediaViewer/mediaHTML5.htm?media=" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
 }
 
-//a function for opening text in a new window to show additional information
+//a function for opening text in a new window to show additional informationfunction x_dialog(text){
+
+	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+
+}
 function x_openInfoWindow(text){
 
 	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
