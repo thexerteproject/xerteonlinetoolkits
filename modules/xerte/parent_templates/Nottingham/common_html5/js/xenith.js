@@ -629,6 +629,12 @@ function x_setUp() {
     x_navigateToPage(true, x_startPage);
 }
 
+function x_dialog(text){
+
+	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+
+}
+
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
@@ -1123,6 +1129,12 @@ function x_openMediaWindow() {
 	}
 	
 	window.open("mediaViewer/mediaHTML5.htm?media=" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+}
+
+function x_openInfoWindow(text){
+
+	window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+
 }
 
 
