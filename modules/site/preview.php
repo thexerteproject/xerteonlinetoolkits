@@ -39,6 +39,8 @@ function show_preview_code($row){
 		<meta name="description" content="">
 		<meta name="author" content="">
 
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+				
 		<!--jquery-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/jquery.js"></script>
 

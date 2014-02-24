@@ -37,6 +37,8 @@ function show_template($row_play){
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
+		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 		<!--jquery-->
 		<script src="<?PHP echo $template_path_string ?>/common/js/jquery.js"></script>
