@@ -1,7 +1,7 @@
 <?php
+session_start();
 
 echo file_get_contents("page_top");
-session_start();
 $success = true;
 // First try if we have access to the db
 $mysql_connect_id = mysql_connect($_SESSION['DATABASE_HOST'], $_POST['account'], $_POST['accountpw']);
