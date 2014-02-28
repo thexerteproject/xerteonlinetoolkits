@@ -625,7 +625,8 @@ function x_setUp() {
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
-	
+
+    XTInitialise(); // initialise here, because of XTStartPage in next function
     x_navigateToPage(true, x_startPage);
 }
 
