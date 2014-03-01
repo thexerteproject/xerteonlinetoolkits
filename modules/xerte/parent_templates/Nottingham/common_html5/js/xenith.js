@@ -625,8 +625,15 @@ function x_setUp() {
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
-	
+
+    XTInitialise(); // initialise here, because of XTStartPage in next function
     x_navigateToPage(true, x_startPage);
+}
+
+function x_dialog(text){
+
+	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+
 }
 
 
@@ -1123,6 +1130,12 @@ function x_openMediaWindow() {
 	}
 	
 	window.open("mediaViewer/mediaHTML5.htm?media=" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+}
+
+function x_openInfoWindow(text){
+
+	window.open('','','width=300,height=450,scrollbars=yes').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
+
 }
 
 
