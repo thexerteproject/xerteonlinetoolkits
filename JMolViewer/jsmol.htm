@@ -1,0 +1,411 @@
+﻿<head>
+  <title>JMol Example</title>
+ 	<script type="text/javascript" src="jsmol/JSmol.min.js"></script>
+	<script type="text/javascript">
+		// ***** SET UP Jmol PARAMETERS & CONTROL BAR *****
+		
+		// file location
+		var str = document.location.search.substr(1,document.location.search.length).replace(/%20/g," ");
+		var modelFile = str.split(',')[0].split('xyz=')[1];
+		//console.log(modelFile)
+		var setUpInfo = "load " + modelFile + ";";
+		
+		// control bar?
+		var controls = str.split(',')[2].split('controls=')[1];
+		
+		// spin
+		var spin = str.split(',')[1].split('spin=')[1];
+		if (spin == "true") {
+			setUpInfo += " spin on;";
+			spin = true;
+		} else {
+			spin = false;
+		}
+		
+		
+		// background colour
+		var bgColour = str.split(',')[3].split('bgColour=')[1];
+		if (bgColour != "Black" && bgColour != "Blue") {
+			bgColour = "White";
+		}
+		setUpInfo += " background " + bgColour + ";";
+		
+		
+		// display / initial appearance
+		var initDisplay = str.split(',')[4].split('initLook=')[1];
+		var currentDisplay = initDisplay;
+		if (initDisplay == "CPK") {
+			setUpInfo += " spacefill on; wireframe off; backbone off; cartoon off;";
+		} else if (initDisplay == "Ball and Stick") {
+			setUpInfo += " spacefill 25%; wireframe 35%; backbone off; cartoon off;";
+		} else if (initDisplay == "Sticks") {
+			setUpInfo += " spacefill off; wireframe 20%; backbone off; cartoon off;";
+		} else if (initDisplay == "Wireframe") {
+			setUpInfo += " spacefill off; wireframe on; backbone off; cartoon off;";
+		} else if (initDisplay == "Cartoon") {
+			setUpInfo += " spacefill off; wireframe off; backbone off; cartoon on;";
+		} else if (initDisplay == "Backbone") {
+			setUpInfo += " spacefill off; wireframe off; backbone 0.4; cartoon off;";
+		}
+		
+		
+		// model colours
+		var initColour = str.split(',')[7].split('initColour=')[1];
+		if (initColour == "Element") {
+			setUpInfo += " color cpk;";
+		} else if (initColour == "Amino Acid") {
+			setUpInfo += " color amino;";
+		} else if (initColour == "Chain") {
+			setUpInfo += " color chain;";
+		} else if (initColour == "Secondary Structure") {
+			setUpInfo += " color structure;";
+		} else { // default or not set
+			if (initDisplay == "Cartoon") {
+				setUpInfo += " color cartoon structure;";
+			} else if (initDisplay == "Backbone") {
+				setUpInfo += " color structure;";
+			} else {
+				setUpInfo += " color cpk;";
+			}
+		}
+		var colourOpt = str.split(',')[12].split('colourOpt=')[1];
+		
+		
+		// labels
+		var labelOpt = str.split(',')[11].split('labelOpt=')[1];
+		
+		
+		// surface
+		var surfaceOpt = str.split(',')[10].split('surfaceOpt=')[1];
+		
+		
+		setUpInfo += " set antialiasDisplay true;";
+		
+		
+		// bespoke script stuff
+		var initScript = str.split(',')[8].split('initScript=')[1];
+		if (initScript != "undefined" && initScript != "" && initScript != "null") {
+			setUpInfo += initScript;
+		}
+		var scriptOpt  = str.split(',')[9].split('scriptOpt=')[1];
+		
+		
+		// Jmol window size
+		var windowW = Number(str.split(',')[13].split('width=')[1])-2;
+		var windowH = Number(str.split(',')[14].split('height=')[1])-2;
+		var modelW = windowW;//-4;
+		var modelH = windowH;//-4;		
+		
+		function jmolScript(script) {
+			Jmol.script(jmolApplet0,script);
+		}
+		
+		function setValues() {
+			document.getElementById("spinCheck").checked = spin;
+			var comboArray = new Array("displayCombo", "colourCombo", "labelCombo", "surfaceCombo");
+			var valueArray = new Array(initDisplay, initColour, "None", "None");
+			for (i=0; i<comboArray.length; i++) {
+				var combo = document.getElementById(comboArray[i]);
+				if (combo) {
+					for (j=0; j<combo.options.length; j++) {
+						if (combo.options[j].text == valueArray[i]) {
+							combo.selectedIndex = j;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		function displayChg() {
+			var selected = document.getElementById("displayCombo").options[document.getElementById("displayCombo").selectedIndex].text;
+			if (selected == "CPK") {
+				jmolScript("spacefill on; wireframe off; backbone off; cartoon off");
+			} else if (selected == "Ball and Stick") {
+				jmolScript("spacefill 25%; wireframe 35%; backbone off; cartoon off");
+			} else if (selected == "Sticks") {
+				jmolScript("spacefill off; wireframe 20%; backbone off; cartoon off");
+			} else if (selected == "Wireframe") {
+				jmolScript("spacefill off; wireframe on; backbone off; cartoon off");
+			} else if (selected == "Backbone") {
+				jmolScript("spacefill off; wireframe off; backbone 0.4; cartoon off");
+			} else if (selected == "Cartoon") {
+				jmolScript("spacefill off; wireframe off; backbone off; cartoon on");
+			}
+			currentDisplay = selected;
+			colourChg();
+		}
+		
+		function colourChg() {
+			var selected;
+			if (document.getElementById("colourCombo") == null) {
+				selected = initColour;
+			} else {
+				selected = document.getElementById("colourCombo").options[document.getElementById("colourCombo").selectedIndex].text;
+			}
+			if (selected == "Element") {
+				jmolScript("color cpk");
+			} else if (selected == "Amino Acid") {
+				jmolScript("color amino");
+			} else if (selected == "Chain") {
+				jmolScript("color chain");
+			} else if (selected == "Secondary Structure") {
+				jmolScript("color structure");
+			} else { // default
+				if (currentDisplay == "Cartoon") {
+					jmolScript("color cartoon structure");
+				} else if (currentDisplay == "Backbone") {
+					jmolScript("color structure");
+				} else {
+					jmolScript("color cpk");
+				}
+			}
+		}
+		
+		function labelChg() {
+			var selected = document.getElementById("labelCombo").options[document.getElementById("labelCombo").selectedIndex].text;
+			if (selected == "None") {
+				jmolScript("label off");
+			} else if (selected == "Element symbol") {
+				jmolScript("label %e");
+			} else if (selected == "Atom name") {
+				jmolScript("label %a");
+			} else if (selected == "Charged") {
+				jmolScript("select carbon; label 'carbon'");
+			}
+		}
+		
+		function surfaceChg() {
+			var selected = document.getElementById("surfaceCombo").options[document.getElementById("surfaceCombo").selectedIndex].text;
+			if (selected == "Solvent accessible") {
+				jmolScript("isosurface sasurface");
+			} else if (selected == "Solvent excluded") {
+				jmolScript("isosurface solvent");
+			} else if (selected == "Cavities") {
+				jmolScript("isosurface cavity");
+			} else { // none
+				jmolScript("isosurface off");
+			}
+		}
+		
+		function scriptChg() {
+			var textArea = document.getElementById("scriptInput");
+			if (textArea.value != "") {
+				jmolScript(textArea.value);
+			}
+		}
+		
+		function spinChg() {
+			var checkbox = document.getElementById("spinCheck");
+			if (checkbox.checked == true) {
+				jmolScript("spin on");
+			} else {
+				jmolScript("spin off");
+			}
+		}
+		
+		function resetBtn() {
+			jmolScript(setUpInfo);
+			if (scriptOpt == "true") {
+				document.getElementById("scriptInput").value = "";
+			}
+			
+			if (controls == "true") {
+				setValues();
+			}
+		}
+		
+		function resize(newW, newH) {
+			windowW = newW-2;
+			windowH = newH-2;
+			modelW = windowW;//-4;
+
+			if (document.getElementById("controlBar") != null) {
+				modelH = windowH-document.getElementById("controlBar").offsetHeight;//-4;
+			} else {
+				modelH = windowH;//-4;
+			}
+			//jmolResizeApplet([modelW, modelH]);
+			document.getElementById("holder").style.cssText = 'width: ' + windowW + 'px; height: ' + modelH + 'px;';
+			//console.log(windowH, document.getElementById("controlBar").offsetHeight);
+			//console.log('xxx', newW, newH, modelW, modelH);
+			Info.height = modelH;
+			Info.width = modelW;
+			$("#holder").html(Jmol.getAppletHtml("jmolApplet0", Info));
+		}
+		
+		function init() {
+			document.getElementById("holder").style.cssText = 'width: ' + windowW + 'px; height: ' + (windowH-11) + 'px;';
+		
+			// remove control bar elements not needed
+			var remove = new Array();
+			if (controls != "true" && scriptOpt != "true") {
+				remove.push("controlBar");
+			} else if (controls != "true" && scriptOpt == "true") {
+				remove.push("normalControls");
+			} else if (controls == "true" && scriptOpt != "true") {
+				remove.push("scriptHolder");
+			}
+			if (controls == "true") {
+				if (colourOpt != "true") {
+					remove.push("colourHolder");
+				}
+				if (surfaceOpt != "true") {
+					remove.push("surfaceHolder");
+				}
+				if (labelOpt != "true") {
+					remove.push("labelHolder");
+				}
+				if (str.split(',')[6].split('backOpt=')[1] == "false") {
+					remove.push("backbone");
+				}
+				if (str.split(',')[5].split('cartoonOpt=')[1] == "false") {
+					remove.push("cartoon");
+				}
+			}
+			
+			for (i=0; i<remove.length; i++) {
+				var tag = document.getElementById(remove[i]);
+				if (tag!=null) tag.parentNode.removeChild(tag);
+			}
+			
+			// set init values
+			if (controls == "true") {
+				setValues();
+			}
+			
+			// resize so no scrolling
+			if (controls == "true" || scriptOpt == "true" || controls == true) {
+				//modelH = windowH-document.getElementById("controlBar").offsetHeight-4;
+				//resize(modelW, modelH);
+				//jmolResizeApplet([modelW, modelH]);	
+			}
+		}
+		
+		
+		var jmolApplet0;
+		Jmol._debugCode = false;
+
+		jmol_isReady = function (applet) {
+			//document.title = (applet._id + " - Jmol " + ___JmolVersion)
+			//Jmol._getElement(applet, "appletdiv").style.border = "1px solid blue"
+		}
+		
+		var Info = {
+			width: modelW,
+			height: modelH,
+			debug: false,
+			color: "0xFFFFFF",
+			use: "HTML5", 
+			j2sPath: "./j2s", 
+			jarPath: "./java", 
+			//jarFile: "JmolAppletSigned.jar",
+			isSigned: true,
+			script: setUpInfo,
+			serverURL: "/jmolviewer/php/jsmol.php",
+			readyFunction: jmol_isReady,
+			disableJ2SLoadMonitor: true,
+			disableInitialConsole: true,
+			allowJavaScript: true
+		}
+
+		$(document).ready(function () {
+				init();
+				//console.log('x')
+				resize(modelW, modelH);
+		})
+		 var lastPrompt = 0;
+		
+	</script>
+	
+	<style type="text/css">
+	<!--
+	select, button, input {
+		font-size: 11px;
+	}
+	
+	.model {
+		border: solid 2px white;
+		background-color: white;
+		text-align: center;
+	}
+	
+	.controlBar {
+		border: solid 2px white;
+		background-color: #E6E6E6;
+		padding-top: 10px;
+		padding-bottom: 5px;
+	}
+	
+	.block {
+		display:inline-block;
+		padding-left: 10px;
+		padding-bottom: 5px;
+	}​
+	-->
+	</style>
+	
+</head>
+
+<body style="margin:0; width:100%; height:100%; min-height:100%; background-color:#D6E0EC; font-family:Verdana, sans-serif; font-size:11px; overflow:hidden">
+	
+		
+		<div class="model">
+			<div name="holder" id="holder">
+			<script type="text/javascript">
+			  //jmolInitialize("jmol");
+			  //jmolSetAppletColor(bgColour);
+			  //jmolApplet([modelW, modelH], setUpInfo);
+			</script>
+		</div>
+		
+		<div class="controlBar" id="controlBar">
+			
+			<span id="normalControls">
+				
+				<label id="displayHolder" class="block">Display: <select name="displayCombo" id="displayCombo" onchange="displayChg();">
+					<option>CPK</option>
+					<option>Ball and Stick</option>
+					<option>Sticks</option>
+					<option>Wireframe</option>
+					<option id="backbone">Backbone</option>
+					<option id="cartoon">Cartoon</option>
+				</select></label>
+				
+				<label id="colourHolder" class="block">Colour: <select name="colourCombo" id="colourCombo" onchange="colourChg();">
+					<option>Default</option>
+					<option>Element</option>
+					<option>Amino Acid</option>
+					<option>Chain</option>
+					<option>Secondary Structure</option>
+				</select></label>
+				
+				<label id="surfaceHolder" class="block">Surface: <select name="surfaceCombo" id="surfaceCombo" onchange="surfaceChg();">
+					<option selected="selected">None</option>
+					<option>Solvent accessible</option>
+					<option>Solvent excluded</option>
+					<option>Cavities</option>
+				</select></label>
+				
+				<label id="labelHolder" class="block">Labels: <select name="labelCombo" id="labelCombo" onchange="labelChg();">
+					<option selected="selected">None</option>
+					<option>Element symbol</option>
+					<option>Atom name</option>
+					<option>Charged</option>
+				</select></label>
+				
+				<label id="spinHolder" class="block">Spin: <input type="checkbox" name="spinCheck" id="spinCheck" onclick="spinChg();" checked="false" /></label>
+				
+			</span>
+			
+			<label id="scriptHolder" class="block"><input type="text" name="scriptInput" id="scriptInput" /><button onclick="scriptChg();">Apply script</button></label>
+			
+			<span class="block">
+				<button onclick="resetBtn();">Reset</button>
+			</span>
+			
+		</div>
+		
+	</div>
+
+</body>
