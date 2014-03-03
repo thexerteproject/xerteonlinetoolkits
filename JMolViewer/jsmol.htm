@@ -7,7 +7,6 @@
 		// file location
 		var str = document.location.search.substr(1,document.location.search.length).replace(/%20/g," ");
 		var modelFile = str.split(',')[0].split('xyz=')[1];
-		//console.log(modelFile)
 		var setUpInfo = "load " + modelFile + ";";
 		
 		// control bar?
@@ -93,8 +92,10 @@
 		// Jmol window size
 		var windowW = Number(str.split(',')[13].split('width=')[1])-2;
 		var windowH = Number(str.split(',')[14].split('height=')[1])-2;
+		windowW = this.parent.jmol.calcWidth();
+		windowH = this.parent.jmol.calcHeight()* 0.8 - 20;
 		var modelW = windowW;//-4;
-		var modelH = windowH;//-4;		
+		var modelH = windowH;//-4;
 		
 		function jmolScript(script) {
 			Jmol.script(jmolApplet0,script);
@@ -226,9 +227,7 @@
 				modelH = windowH;//-4;
 			}
 			//jmolResizeApplet([modelW, modelH]);
-			document.getElementById("holder").style.cssText = 'width: ' + windowW + 'px; height: ' + modelH + 'px;';
-			//console.log(windowH, document.getElementById("controlBar").offsetHeight);
-			//console.log('xxx', newW, newH, modelW, modelH);
+			document.getElementById("holder").style.cssText = 'width: ' + modelW + 'px; height: ' + modelH + 'px;';
 			Info.height = modelH;
 			Info.width = modelW;
 			$("#holder").html(Jmol.getAppletHtml("jmolApplet0", Info));
@@ -311,7 +310,6 @@
 
 		$(document).ready(function () {
 				init();
-				//console.log('x')
 				resize(modelW, modelH);
 		})
 		 var lastPrompt = 0;
