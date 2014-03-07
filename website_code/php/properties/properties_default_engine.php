@@ -19,7 +19,7 @@ include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
 
-    $template_id = mysql_real_escape_string($_POST['template_id']);
+    $template_id = (int) $_POST['template_id'];
     $engine = mysql_real_escape_string($_POST['engine']);
 
     if ($engine != 'flash' && $engine!='javascript')
@@ -46,12 +46,14 @@ if(is_numeric($_POST['template_id'])){
     {
         $extra_flags[] = "engine=" . $engine;
     }
-    $db_entry = join(";", $extra_flags);
 
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET extra_flags =\"" . str_replace(" ", "_", mysql_real_escape_string($db_entry)) . "\" WHERE template_id =\"" . $template_id . "\"";
+    $db_entry = str_replace(" ", "_", join(";", $extra_flags)); /* curious as to why we do a str_replace here, but don't seem to 'undo' it when reading above. */
 
-    if(mysql_query($query)){
+    $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET extra_flags = ? WHERE template_id = ?";
+    $params = array($db_entry, $template_id);
+    $ok = db_query($query, $params);
 
+    if($ok) { 
         if ($_REQUEST['page']=='properties')
         {
             properties_display($xerte_toolkits_site,$template_id,true,"engine");
@@ -64,8 +66,4 @@ if(is_numeric($_POST['template_id'])){
     }else{
 
     }
-
-    mysql_close($database_id);
-
 }
-?>
