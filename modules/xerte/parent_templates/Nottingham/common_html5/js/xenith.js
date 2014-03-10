@@ -1179,7 +1179,8 @@ function x_findText(pageXML) {
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
 	var tempText = node.nodeValue;
-	
+
+	// check text for glossary words - if found replace with a link
 	if (x_glossary.length > 0) {
 		for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
