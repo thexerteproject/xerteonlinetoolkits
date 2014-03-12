@@ -19,7 +19,7 @@
 			}
 		}
 
-        this.startQ = function() {
+        this.startQ = function(optionElements) {
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
@@ -32,15 +32,14 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-            $(x_currentPageXML).children()
-                .each(function(i) {
-                    if (this.getAttribute("correct") == 'true') {
-                        correctOptions.push(i+1+"");
-                        correctAnswer.push(this.getAttribute("text"));
-                        correctFeedback.push(this.getAttribute("feedback"));
-                        mcq.correctOption = true;
-                    }
-                });
+            for (var i = 0; i < optionElements.length; i++) {
+                if (optionElements[i].correct == 'true') {
+                    correctOptions.push((i+1)+"");
+                    correctAnswer.push(optionElements[i].text);
+                    correctFeedback.push(optionElements[i].feedback);
+                    mcq.correctOption = true;
+                }
+            }
             XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
         }
 
@@ -95,8 +94,30 @@
 				//$option = $optionHolder.find("input"),
 				//$optionTxt = $optionHolder.find(".optionTxt"),
 
-            $(x_currentPageXML).children()
-				.each(function(i) {
+			// Store the answers in a temporary array
+			var optionElements = [];
+            $(x_currentPageXML).children().each(function(i) {
+            	optionElements.push(
+            		{
+            			text:		this.getAttribute("text"),
+            			correct:	this.getAttribute("correct"),
+            			feedback:	this.getAttribute("feedback")
+            		}
+            	);
+            });
+            
+            // Randomise the answers, if required
+            if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
+            	for (var tmp, j, k, i = optionElements.length; i--;) {
+            		j = Math.floor(Math.random() * optionElements.length);
+            		k = Math.floor(Math.random() * optionElements.length);
+            		tmp = optionElements[j];
+        			optionElements[j] = optionElements[k];
+        			optionElements[k] = tmp;
+            	}
+            }
+            
+			$.each(optionElements, function(i, thisOption) {
 					var $thisOptionGroup, $thisOption, $thisOptionTxt;
 					if (i != 0) {
 						$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
@@ -110,7 +131,7 @@
 
 					$thisOption
 						.attr({
-							"value"		:this.getAttribute("text"),
+							"value"		:thisOption.text,
 							"id"		:"option" + i
 							})
 						.change(function() {
@@ -134,7 +155,7 @@
 					$thisOptionTxt
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
-						.html(this.getAttribute("text"));
+						.html(thisOption.text);
 				});
 
 
@@ -169,16 +190,16 @@
 
                     for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).parent().index(),
-							selectedOption = $(x_currentPageXML).children()[optionIndex];
+							selectedOption = optionElements[optionIndex];
 
-						correct = correct && (	(selectedOption.getAttribute("correct") == "true" && $(selected[i]).is(':checked')) ||
-												(selectedOption.getAttribute("correct") == "false" && !$(selected[i]).is(':checked')));
+						correct = correct && (	(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
+												(selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
                         if ($(selected[i]).is(':checked')) {
-                        	answerFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback")) + "</p>";
+                        	answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
 
 							l_options.push(optionIndex+1+"");
-							l_answer.push(selectedOption.getAttribute("text"));
-							l_feedback.push(selectedOption.getAttribute("feedback"));
+							l_answer.push(selectedOption.text);
+							l_feedback.push(selectedOption.feedback);
 						}
                     }
                     generalFeedback += answerFeedback;
@@ -241,7 +262,7 @@
 
 				});
 
-            this.startQ();
+            this.startQ(optionElements);
 			this.sizeChanged();
 			x_pageLoaded();
 		}

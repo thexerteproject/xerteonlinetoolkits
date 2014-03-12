@@ -4,6 +4,7 @@
 	// other functions for model should also be in here to avoid conflicts
 	var quiz = new function() {
 		var questions,
+			currentAnswers,
 			currentQ,
 			qNoTxt,
 			myProgress;
@@ -131,8 +132,31 @@
             var correctOptions = [];
             var correctAnswer = [];
             var correctFeedback = [];
-			$($thisQ).children()
-				.each(function(i) {
+            
+            // Store the answers in a temporary array
+			this.currentAnswers = [];
+            $($thisQ).children().each(function(i) {
+            	quiz.currentAnswers.push(
+            		{
+            			text:		this.getAttribute("text"),
+            			correct:	this.getAttribute("correct"),
+            			feedback:	this.getAttribute("feedback")
+            		}
+            	);
+            });
+
+            // Randomise the answers, if required
+            if ($thisQ.getAttribute("answerOrder") == 'random') {
+            	for (var tmp, j, k, l = this.currentAnswers.length, i = l; i--;) {
+            		j = Math.floor(Math.random() * l);
+            		k = Math.floor(Math.random() * l);
+            		tmp = this.currentAnswers[j];
+        			this.currentAnswers[j] = this.currentAnswers[k];
+        			this.currentAnswers[k] = tmp;
+            	}
+            }
+
+			$.each(this.currentAnswers, function(i, thisOption) {
 					var $thisOption, $thisOptionTxt;
 					if (i != 0) {
 						$thisOption = $option.clone().appendTo($optionHolder);
@@ -142,18 +166,18 @@
 						$thisOptionTxt = $optionTxt;
 					}
                     quiz.currNrOptions = i+1;
-					if (this.getAttribute("correct") == 'true')
+					if (thisOption.correct == 'true')
                     {
-                        correctOptions.push(i+1+"");
-                        correctAnswer.push(this.getAttribute("text"));
-                        correctFeedback.push(this.getAttribute("feedback"));
+                        correctOptions.push((i+1)+"");
+                        correctAnswer.push(thisOption.text);
+                        correctFeedback.push(thisOption.feedback);
                     }
 					$thisOption
 						.attr({
-							"value"	:this.getAttribute("text"),
+							"value"	:thisOption.text,
 							"id"	:"option" + i
 							})
-						.data("correct", this.getAttribute("correct"))
+						.data("correct", thisOption.correct)
 						.change(function() {
 							$feedback.html("");
 							var $selected = $("#optionHolder input:checked");
@@ -168,7 +192,7 @@
 					$thisOptionTxt
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
-						.html(x_addLineBreaks(this.getAttribute("text")));
+						.html(x_addLineBreaks(thisOption.text));
 				});
             XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
 
@@ -356,17 +380,17 @@
                         // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).index()/2,
-							selectedOption = $(currentQuestion).children()[optionIndex];
+							selectedOption = quiz.currentAnswers[optionIndex];
 
-						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.getAttribute("feedback"))  + "</p>";
-						if (correct != false && selectedOption.getAttribute("correct") == "true") {
+						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
+						if (correct != false && selectedOption.correct == "true") {
 							correct = true;
 						} else {
 							correct = false;
 						}
                         l_options.push(optionIndex+1+"");
-                        l_answer.push(selectedOption.getAttribute("text"));
-                        l_feedback.push(selectedOption.getAttribute("feedback"));
+                        l_answer.push(selectedOption.text);
+                        l_feedback.push(selectedOption.feedback);
 					}
                     generalFeedback += optionFeedback;
 					var rightWrongTxt = "";
@@ -375,8 +399,8 @@
 						if (correct != false) {
 							var notSelected = $("#optionHolder input:not(:checked)");
 							for (var i=0; i<notSelected.length; i++) {
-								var notSelectedOption = $(currentQuestion).children()[$(notSelected[i]).index()/2];
-								if (notSelectedOption.getAttribute("correct") == "true") {
+								var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
+								if (notSelectedOption.correct == "true") {
 									correct = false;
 								}
 							}
