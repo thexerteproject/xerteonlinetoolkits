@@ -8,7 +8,7 @@ _load_language_file("/properties.inc");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?PHP echo PROPERTIES_TITLE; ?></title>
+<title><?php echo PROPERTIES_TITLE; ?></title>
 
 <!-- 
 
@@ -45,9 +45,7 @@ _include_javascript_file("website_code/scripts/file_system.js");
 $template_supports = $learning_objects->{get_template_type((int) $_GET['template_id'])}->supports;
 
 if($template_supports==""){
-
 	$template_supports = array();
-
 }
 
 ?>
@@ -76,7 +74,7 @@ Hidden Iframes to allow for ajax file uploads and Downloads (Could be one I supp
 				<div>
 						<span id="title">
 								<img src="website_code/images/Icon_Page.gif" style="vertical-align:middle; padding-left:10px;" /> 
-								<?PHP echo PROPERTIES_DISPLAY_TITLE; ?>
+								<?php echo PROPERTIES_DISPLAY_TITLE; ?>
 						</span>
 				</div>
 				<div id="data_area">
