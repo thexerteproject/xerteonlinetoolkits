@@ -31,17 +31,17 @@ if(is_numeric($_POST['template_id'])){
     $row = db_query_one("SELECT td.extra_flags  FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td WHERE td.template_id = ?", array($template_id));
 
     $extra_flags = explode(";", $row['extra_flags']);
-    $found=false;
-    for ($i=0; $i<count($extra_flags); $i++)
-    {
-        $parameter = explode("=", $extra_flags[$i]);
-        if ($parameter[0] == 'engine')
-        {
-            $extra_flags[$i] = "engine=" . $engine;
+    $found = false;
+
+    foreach($extra_flags as $i => $flag) {
+        $bits = explode('=', $flag);
+        if($bits[0] == 'engine') {
+            $extra_flags[$i] = "engine={$engine}";
             $found = true;
             break;
         }
     }
+
     if (!$found)
     {
         $extra_flags[] = "engine=" . $engine;
