@@ -17,24 +17,15 @@ include "../url_library.php";
 include "../user_library.php";
 include "properties_library.php";
 
-if(is_numeric($_POST['template_id'])){
-
-    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
-
-    $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
-
-    // User has to have some rights to do this
-
-    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
-
-        properties_display($xerte_toolkits_site,$tutorial_id,false,"");
-
-    }else{
-
-        properties_display_fail();
-
-    }
-
+if(empty($_POST['template_id']) || !is_numeric($_POST['template_id'])) {
+    properties_display_fail();
+    exit(0);
 }
 
-?>
+$template_id = (int) $_POST['template_id'];
+
+if(has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    properties_display($xerte_toolkits_site,$template_id,false,"");
+}else{
+    properties_display_fail();
+}
