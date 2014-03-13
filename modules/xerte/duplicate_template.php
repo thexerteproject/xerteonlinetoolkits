@@ -119,14 +119,6 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
 
     global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $xerte_toolkits_site;
 
-    $database_id=database_connect("file_library database connect success","file_library database connect fail");
-
-    $query_for_framework = "select template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_name =\"" . $tutorial_id_from_post . "\"";
-
-    $query_for_framework_response = mysql_query($query_for_framework);
-
-    $row_framework = mysql_fetch_array($query_for_framework_response); 
-
     $dir_path = $xerte_toolkits_site->users_file_area_full . $id_to_copy. "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
 
     /*
