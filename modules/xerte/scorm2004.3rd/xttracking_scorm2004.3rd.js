@@ -113,6 +113,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
 function ScormTrackingState()
 {
+    this.initialised = false;
     this.scormmode = "";
     this.currentid = "";
     this.currentpageid = "";
@@ -672,9 +673,13 @@ function setValue(elementName, value){
 
 function XTInitialise()
 {
-    initializeCommunication();
-    state.initTracking();
-    state.scormmode =  String(getValue("cmi.mode"));
+    if (! state.initialised)
+    {
+        state.initialised = true;
+        initializeCommunication();
+        state.initTracking();
+        state.scormmode =  String(getValue("cmi.mode"));
+    }
 }
 
 function XTTrackingSystem()

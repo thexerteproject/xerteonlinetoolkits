@@ -110,10 +110,13 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
 function ScormTrackingState()
 {
+    this.initialised = false;
     this.scormmode = "";
     this.currentid = "";
     this.currentpageid = "";
     this.trackingmode = "full";
+    this.skipcomments = false;
+    this.skipinteractions = false;
     this.scoremode = "last";
     this.nrpages = 0;
     this.pages_visited=0;
@@ -389,7 +392,7 @@ function ScormTrackingState()
             sit.result = result;
             sit.answerfeedback = feedback;
 
-            if (this.trackingmode != 'none'
+            if (!this.skipinteractions && this.trackingmode != 'none'
                 && ((sit.ia_nr < 0 && (this.trackingmode!='full' || sit.nrinteractions == 0))
                 || (sit.ia_nr >= 0 && this.trackingmode == 'full')))
             {
@@ -478,7 +481,7 @@ function ScormTrackingState()
             if (sit.ia_nr < 0 && sit.count==1)
                 this.pages_visited++;
 
-            if (this.trackingmode == 'full')
+            if (this.trackingmode == 'full' && !this.skipcomments)
             {
                 var comment = 'cmi.comments';
                 var commentText = this.formatDate(new Date()) + ': ' + SCORM_LEFT_PAGE + ' ' + sit.page_ref;
@@ -488,6 +491,10 @@ function ScormTrackingState()
                 }
                 commentText += ': ' + sit.ia_name + '\n';
                 res = setValue(comment, commentText);
+                if (res == _NotImplementedError)
+                {
+                    this.skipcomments = true;
+                }
             }
         }
 
@@ -624,9 +631,17 @@ function ScormTrackingState()
                     setValue('cmi.suspend_data', suspend_str);
                 }
             }
+            var supported = getValue('cmi.core.score._children');
+
             setValue('cmi.core.score.raw', this.getRawScore());
-            setValue('cmi.core.score.min', this.getMinScore());
-            setValue('cmi.core.score.max', this.getMaxScore());
+            if (supported.indexOf('min') >= 0)
+            {
+                setValue('cmi.core.score.min', this.getMinScore());
+            }
+            if (supported.indexOf('max') >= 0)
+            {
+                setValue('cmi.core.score.max', this.getMaxScore());
+            }
 
             var end = new Date();
             var duration = end.getTime() - this.start.getTime();
@@ -645,6 +660,25 @@ function ScormTrackingState()
             if (suspend_str.length > 0)
             {
                 this.setVars(suspend_str);
+            }
+        }
+        var interactions_supported = getValue('cmi.interactions._children');
+        if (interactions_supported == _NotImplementedError)
+        {
+            this.skipinteractions = true;
+        }
+        else
+        {
+            if (interactions_supported.indexOf('íd') < 0
+                || interactions_supported.indexOf('time') < 0
+                || interactions_supported.indexOf('type') < 0
+                || interactions_supported.indexOf('correct_responses') < 0
+                || interactions_supported.indexOf('weighting') < 0
+                || interactions_supported.indexOf('student_response') < 0
+                || interactions_supported.indexOf('result') < 0
+                || interactions_supported.indexOf('latency') < 0)
+            {
+                this.skipinteractions = true;
             }
         }
     }
@@ -666,9 +700,13 @@ function setValue(elementName, value){
 
 function XTInitialise()
 {
-    doLMSInitialize();
-    state.initTracking();
-    state.scormmode = String(getValue("cmi.core.lesson_mode"));
+    if (! state.initialised)
+    {
+        state.initialised = true;
+        doLMSInitialize();
+        state.initTracking();
+        state.scormmode = String(getValue("cmi.core.lesson_mode"));
+    }
 }
 
 function XTTrackingSystem()
