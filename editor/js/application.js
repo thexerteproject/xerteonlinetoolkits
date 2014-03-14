@@ -62,23 +62,96 @@ jQuery(document).ready(function($) {
 			// Ok we've only taken the attributes but there are still child nodes
 			// that we need 
 			$(wizard_xml.children()).each(function(i) {
+                console.log("Main node: " + $(this)[0].nodeName);
 				var menu_options = {};
-				for (var i=0, a=$(this)[0].attributes; i<a.length; i++) {
-					menu_options[a[i].name] = a[i].value;
+				for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
+					menu_options[a[j].name] = a[j].value;
 				}
 				
 				var node_options = {};
+                var all_options = [];
+                var name_option = [];
+                var normal_options = [];
+                var opt_options  = [];
+                var adv_options  = [];
+                var lang_options = [];
 				//if ($(this)[0].nodeName == 'bullets') {
+
+                var attributes = {};
+                for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
+                    console.log("  attr: " + a[j].name + ":" + a[j].value);
+                    attributes[a[j].name] = a[j].value;
+                }
+
+
 				$($(this).children()).each(function() {
-					//console.log($(this)[0].nodeName);
+					console.log("   sub node: " + $(this)[0].nodeName);
 					var node_params = {};
-					for (var i=0, a=$(this)[0].attributes; i<a.length; i++) {
-						node_params[a[i].name] = a[i].value;
+					for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
+                        console.log("      attr: " + a[j].name + ":" + a[j].value);
+						node_params[a[j].name] = a[j].value;
 					}
-					node_options[$(this)[0].nodeName] = node_params;
+					all_options.push({name: [$(this)[0].nodeName], value: node_params});
 				});
-				//}
-				
+
+                // search attribute name and put that as the first one
+                $(all_options).each(function(key, option) {
+                    if (option.name == 'name')
+                    {
+                        name_option.push(option);
+                    }
+                });
+
+                // if attr.type in text,html,drawing
+                var cdataoption = {};
+                if (attributes['type'] == 'text'
+                    || attributes['type'] == 'script'
+                    || attributes['type'] == 'html'
+                    || attributes['type'] == 'drawing'
+                    || attributes['type'] == 'hotspot'
+                    || attributes['type'] == 'custom')
+                {
+                    node_options['cdata'] = true;
+                    node_options['cdata_name'] = $(this)[0].nodeName;
+                    cdataoption = {name: $(this)[0].nodeName, value: attributes};
+                    normal_options.push(cdataoption);
+                }
+
+                // do the rest of the options
+                $(all_options).each(function(key, option) {
+                    if (option.value['optional'])
+                    {
+                        opt_options.push(option);
+                    }
+                    else if (option.value['advanced'])
+                    {
+                        adv_options.push(option);
+                    }
+                    else if (option.value['language'])
+                    {
+                        lang_options.push(option);
+                    }
+                    else
+                    {
+                        if (option.name != 'name')
+                        {
+                            normal_options.push(option);
+                        }
+                    }
+                });
+                // Add cdata also to all_options
+                if (node_options['cdata_name'])
+                {
+                    all_options.push(cdataoption);
+                }
+
+                node_options['name'] = name_option;
+                node_options['normal'] = normal_options;
+                node_options['advanced'] = adv_options;
+                node_options['language'] = lang_options;
+                node_options['optional'] = opt_options;
+                node_options['all'] = all_options;
+
 				wizard_data[$(this)[0].nodeName] = {'menu_options' : menu_options, 'node_options' : node_options};
 			});
 			wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
@@ -99,74 +172,22 @@ jQuery(document).ready(function($) {
 		dataType: "text",
 		success: function(text) {
 			// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
-			var indexAttr = [];	 // contains objects [startIndex, endIndex] of attributes
-			var indexCData = []; // contains objects [startIndex, endIndex] of CDATA
-			var start = true;
-			var pos = text.indexOf('<![CDATA[');
-			while(pos > -1) { // find all CDATA and ignore them when searching for attributes
-				if (start == true) {
-					var cData = new Object();
-					cData.start = pos;
-					indexCData.push(cData);
-					start = false;
-					pos = text.indexOf(']]>', pos+1);
-				} else {
-					indexCData[indexCData.length - 1].end = pos;
-					start = true;
-					pos = text.indexOf('<![CDATA[', pos+1);
-				}
-			}
-			
-			start = true;
-			pos = text.indexOf('"');
-			while(pos > -1) {
-				var attribute = true;
-				for (var i=0; i<indexCData.length; i++) {
-					if (indexCData[i].start < pos && indexCData[i].end > pos) {
-						attribute = false; // ignore as in CDATA
-					}
-				}
-				if (attribute == true) {
-					if (start == true) {
-						start = false;
-						var attr = new Object();
-						attr.start = pos;
-						indexAttr.push(attr);
-					} else {
-						start = true;
-						indexAttr[indexAttr.length-1].end = pos;
-					}
-				}
-				pos = text.indexOf('"', pos+1);
-			}
-			
-			var newString = "";
-			for (var i=0; i<indexAttr.length; i++) {
-				if (i == 0) {
-					newString += text.substring(0, indexAttr[i].start);
-				} else {
-					newString += text.substring(indexAttr[i - 1].end, indexAttr[i].start);
-				}
-				newString += text.substring(indexAttr[i].start, indexAttr[i].end).replace(/(\n|\r|\r\n)/g, "&#10;");
-				if (i == indexAttr.length - 1) {
-					newString += text.substring(indexAttr[i].end, text.length);
-				}
-			}
-			
-			var tree_json = build_lo_data($($.parseXML(newString)).find("learningObject"), null);
+            var newString = FixLineBreaks(text);
 
+			var tree_json = build_lo_data($($.parseXML(newString)).find("learningObject"), null);
+            console.log(tree_json);
 			var treeview = $('<div />').attr('id', 'treeview');
 			$(".ui-layout-west .content").append(treeview);        			
-			$("#treeview").jstree({ 
-				"json_data" : {
-					"data" : tree_json,
-					"progressive_render" : true
-				},
-				"plugins" : [ "themes", "json_data", "ui" ]
+			$("#treeview").jstree({
+				"core" : {
+					"data" : tree_json
+				}
 			})
 			.bind('select_node.jstree', function(event, data) {
-				console.log(data.rslt.obj.data("id"));
-				showNodeData(data.rslt.obj.data("id"));
+				console.log(event);
+                console.log(data);
+
+				showNodeData(data.node.id);
 
 			});
 			
