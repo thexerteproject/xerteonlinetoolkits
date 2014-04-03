@@ -16,7 +16,7 @@
     <name label="Page Title" type="TextInput"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
-    <order label="Question Order" options="sequence,random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
+    <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <align label="Alignment" options="left,right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
 	<classes label="Classes (max 10)" type="TextInput" />
 	<scoreType label="Score Type" options="absolute,individual percent,relative percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>

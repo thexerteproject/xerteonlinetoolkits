@@ -98,17 +98,18 @@ function media_folder_loop($folder_name){
 
 }
 
-database_connect("Media and quota template database connect success","Media and quota template database connect failed");
+if(is_numeric($_POST['template_id'])) {
+    if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin()) {
 
-if(is_numeric($_POST['template_id'])){
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " . 
+            "{$prefix}originaltemplatesdetails, {$prefix}templatedetails, {$prefix}templaterights, {$prefix}logindetails WHERE " .
+            "{$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id AND " . 
+            "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id AND " . 
+            "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " . 
+            "{$prefix}templatedetails.template_id = ? AND role = ? ";
 
-    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
-
-        $query_for_path = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "templaterights.folder, " . $xerte_toolkits_site->database_table_prefix . "logindetails.username from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "logindetails where " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.creator_id = " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\" and role=\"creator\"";
-
-        $query_for_path_response = mysql_query($query_for_path);
-
-        $row_path = mysql_fetch_array($query_for_path_response);
+        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator'));
 
         $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
 
@@ -139,7 +140,7 @@ if(is_numeric($_POST['template_id'])){
         echo "<p style=\"margin:0px; padding:0px; margin-left:10px;\" id=\"download_link\"></p>";
 
         echo "<div class=\"template_file_area\"><p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";
-				
+
 
         /**
          * display the first string
@@ -152,8 +153,8 @@ if(is_numeric($_POST['template_id'])){
         }
 
         echo "</div>";
-				echo "<div style=\"clear:both;\"></div>";
-				echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+        echo "<div style=\"clear:both;\"></div>";
+        echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
 
     }else{
 
@@ -163,5 +164,6 @@ if(is_numeric($_POST['template_id'])){
     }
 
 }
-
-?>
+else {
+    echo "<p>" . MEDIA_AND_QUOTA_FAIL . "</p>";
+}
