@@ -34,8 +34,13 @@
 					$thisItem = $menuItem;
 				}
 				
-				$thisItem.html(x_pages[i+numOffset].getAttribute("name"));
+				$thisItem.html((i+1) + ") " + x_pages[i+numOffset].getAttribute("name"));
 			}
+			
+			// First attempt at setting current page...
+			// problem is that this needs to change each time page is changed so needs to go there...
+			//$menuItems = $("#menuItems")[x_currentPage].addClass("current");
+
 			
 			$("#menuItems .menuItem")
 				.button()
@@ -132,6 +137,10 @@
 
 	#menuItems {
 		width:	100%;
+	}
+	
+	#menuItems .menuItem.current {
+		color:	white;
 	}
 	
 </style>
