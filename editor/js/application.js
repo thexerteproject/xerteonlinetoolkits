@@ -1,5 +1,6 @@
 var wizard_data = {};
 var lo_data = {};
+var menu_data = [];
 
 jQuery(document).ready(function($) {
 	
@@ -7,8 +8,11 @@ jQuery(document).ready(function($) {
 
 		//top buttons
 		(function() {
+			$( "#insert-dialog" ).hide();
+			$( "#insert-buttons" ).hide();
+
 			var insert_page = function() {
-				alert("insert a page");
+				$( "#insert-dialog" ).dialog({ width: '60%' });
 			},
 			
 			delete_page = function() {
@@ -22,8 +26,8 @@ jQuery(document).ready(function($) {
 			buttons = $('<div />').attr('id', 'top_buttons');
 			$([
 				{name:'Insert', icon:'img/insert.png', id:'insert_button', click:insert_page},
-				{name:'Copy', icon:'http://cdn1.iconfinder.com/data/icons/uidesignicons/copy.png', id:'copy_button', click:duplicate_page},
-				{name:'Delete', icon:'http://projects.dfid.gov.uk/images/ppi_structure/red_cross.gif', id:'delete_button', click:delete_page}
+				{name:'Copy', icon:'img/copy.png', id:'copy_button', click:duplicate_page},
+				{name:'Delete', icon:'img/delete.gif', id:'delete_button', click:delete_page}
 			])
 			.each(function(index, value) {
 				var button = $('<button>')
@@ -43,26 +47,27 @@ jQuery(document).ready(function($) {
 		url: "./data.xwd",
 		dataType: "text",
 		success: function(xml) {
-		
-			var wizard_xml = $($.parseXML(xml)).find("wizard"); 		
 			
-			// No longer needed
-			/*$(wizard.find("learningObject").children()).each(function() {
-				var $this = $(this);
-				if ($this[0].nodeName != "newNodes") {
-					var attributes = {};
-					for (var i=0, a=$this[0].attributes; i<a.length; i++) {
-						attributes[a[i].name] = a[i].value;
-					}
-					lo_options[$this[0].nodeName] = attributes;
-				}
-			});
-			*/
+			var wizard_xml = $($.parseXML(xml)).find("wizard");
+			
+			// Build the page menu object
+			var	j, temp_menu_data = [],
+				categories = String(wizard_xml[0].attributes.menus.value).split(',');
 
-			// Ok we've only taken the attributes but there are still child nodes
-			// that we need 
+			for (j=0; j<categories.length; j++) {
+				temp_menu_data.push(
+					{
+						"name"		: categories[j],
+						"submenu"	: []
+					}
+				);
+			}
+			menu_data = {"menu": temp_menu_data};
+
+			// Parse the xml 
 			$(wizard_xml.children()).each(function(i) {
-                console.log("Main node: " + $(this)[0].nodeName);
+				var main_node = $(this)[0].nodeName;
+                //console.log("Main node: " + main_node);
 				var menu_options = {};
 				for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
 					menu_options[a[j].name] = a[j].value;
@@ -75,20 +80,39 @@ jQuery(document).ready(function($) {
                 var opt_options  = [];
                 var adv_options  = [];
                 var lang_options = [];
-				//if ($(this)[0].nodeName == 'bullets') {
 
                 var attributes = {};
                 for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
+                	if (a[j].name == 'menu') is_menu = true;
                     console.log("  attr: " + a[j].name + ":" + a[j].value);
                     attributes[a[j].name] = a[j].value;
                 }
-
+                
+                // If we have a menu item then lets store it for the menu
+                if (attributes.menu != undefined) {
+                	var lookup = ((function (item) {
+                		var i = menu_data.menu.length;
+                		while (i--) if (menu_data.menu[i].name == item) return i;
+                		return -1;
+                	})(attributes.menu));
+                	
+                	if (lookup > -1) {
+                		menu_data.menu[lookup].submenu.push(
+                			{
+                				"name"	: attributes.menuItem,
+                				"hint"	: attributes.hint,
+                				"thumb"	: attributes.thumb,
+                				"icon"	: attributes.icon
+                			}
+                		);
+                	}
+                }
 
 				$($(this).children()).each(function() {
-					console.log("   sub node: " + $(this)[0].nodeName);
+					//console.log("   sub node: " + $(this)[0].nodeName);
 					var node_params = {};
 					for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
-                        console.log("      attr: " + a[j].name + ":" + a[j].value);
+                        //console.log("      attr: " + a[j].name + ":" + a[j].value);
 						node_params[a[j].name] = a[j].value;
 					}
 					all_options.push({name: [$(this)[0].nodeName], value: node_params});
@@ -152,13 +176,71 @@ jQuery(document).ready(function($) {
                 node_options['optional'] = opt_options;
                 node_options['all'] = all_options;
 
-				wizard_data[$(this)[0].nodeName] = {'menu_options' : menu_options, 'node_options' : node_options};
+				wizard_data[main_node] = {'menu_options' : menu_options, 'node_options' : node_options};
 			});
-			wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
+			//wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
+			
+			// Now we build the "insert page" menu
+			(function () {
+				var getMenuItem = function (itemData) {
+					var data = {
+						href: '#',
+						html: itemData.name
+					};
 
+					if (itemData.hint != undefined) {
+						data.hint = itemData.hint;
+					}
+					
+					if (itemData.thumb != undefined) {
+						data.thumb = itemData.thumb;
+					}
+					
+					if (itemData.icon != undefined) {
+						data.icon = itemData.icon;
+					}
+
+					var item = $("<li>").append(
+						$("<a>", data)
+					);
+
+					if (itemData.submenu != undefined) {
+						var subList = $("<ul>");
+						$.each(itemData.submenu, function () {
+							subList.append(getMenuItem(this));
+						});
+						item.append(subList);
+					}
+					return item;
+				};
+
+				var $menu = $("<ul>", {
+					id: 'menu'
+				});
+				$.each(menu_data.menu, function () {
+					$menu.append(
+						getMenuItem(this)
+					);
+				});
+				$("#insert-menu").append(
+					$menu.menu({
+						select: function(event, ui) {
+							if (ui.item.children().attr('hint') != undefined) {
+								$("#insert-info img").attr("src", "../modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
+								$("#insert-info span").text(ui.item.children().attr('hint'));
+								$("#insert-buttons").show();
+								console.log(ui.item.children().attr('hint'));
+								console.log(ui.item.children().attr('thumb'));
+								console.log(ui.item.children().attr('icon'));
+							}
+						}
+					})
+				);
+
+			})();
 		}
-
 	});
+	
 })();
 
 

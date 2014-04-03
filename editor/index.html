@@ -7,11 +7,18 @@
 
 	<title>Xerte Online Toolkits Editor</title>
 
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="js/vendor/themes/default/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/complex.css" />
 	<!--[if lte IE 7]>
 		<style type="text/css"> body { font-size: 85%; } </style>
 	<![endif]-->
+
+  <style>
+  .ui-menu { width: 200px; }
+  #insert-info {width: 60%; display: block; float: right; }
+  
+  </style>
 
 </head>
 <body>
@@ -65,9 +72,18 @@
 
 </div>
 
+<div id="insert-dialog" title="Insert Page">
+	<div id="insert-info">
+		<img /><br />
+		<span></span><br /><br />
+		<div id="insert-buttons"><button>Insert Before</button>&nbsp;<button>Insert After</button>&nbsp;<button>Insert (at end)</button></div>
+	</div>
+	<div id="insert-menu"></div>
+</div>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-	<script type="text/javascript" src="js/vendor/jquery.ui-1.9.2.js"></script>
+	<script type="text/javascript" src="js/vendor/jquery.ui-1.10.4.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
     <script type="text/javascript" src="js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="js/vendor/jstree.js"></script>

@@ -349,7 +349,16 @@ function button_check(){
 
 			editbtn.removeAttribute("disabled");
             editbtn.className = "xerte_button";
-			editbtn.onclick=function(){edit_window()};
+			editbtn.onclick=function(e){
+				if (e.shiftKey) {
+        			var NewEditWindow = window.open(site_url + '/editor/' + url_return("edit", admin), "editwindow" + admin, "height=665, width=800" );
+					NewEditWindow.window_reference = self;			
+					NewEditWindow.focus();
+				}
+				else {
+					edit_window();
+				}
+			};
 
 			previewbtn.removeAttribute("disabled");
             previewbtn.className = "xerte_button";
