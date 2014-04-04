@@ -89,6 +89,16 @@
 				.attr("title", x_currentPageXML.getAttribute("tip"));
 			
 			this.loadVideo();
+			
+			//controls toggle
+			$(".panel.inline.x_floatRight")
+				.mouseover(function(){
+					$(".mejs-controls").show();
+				})
+				.mouseout(function(){
+					$(".mejs-controls").hide();
+				});
+			
 			x_pageLoaded();
 		}
 		
