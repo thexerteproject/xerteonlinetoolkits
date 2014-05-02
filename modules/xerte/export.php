@@ -285,5 +285,3 @@ $zipfile->download_file($row['zipname']);
 clean_up_files();
 unlink($dir_path . "template.xml");
 unlink($dir_path . $zipfile_tmpname);
-
-?>
