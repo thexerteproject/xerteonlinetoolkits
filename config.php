@@ -51,6 +51,7 @@ if (!isset($xerte_toolkits_site)) {
      */
     if (!is_file(dirname(__FILE__) . '/database.php')) {
         header("Location: " . $_SERVER['REQUEST_URI'] . "setup/");
+        exit(0);
     }
 
     require_once(dirname(__FILE__) . '/database.php');
