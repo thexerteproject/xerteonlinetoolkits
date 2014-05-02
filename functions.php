@@ -4,11 +4,15 @@
  * @param string $string - the message to write to the debug file.
  * @param int $up - how far up the call stack we go to; this affects the line number/file name given in logging
  */
-function _debug($string, $up = 0)
-{
+function _debug($string, $up = 0) {
     global $development;
     if (isset($development) && $development) {
+        if (!is_string($string)) {
+            $string = print_r($string, true);
+        }
+
         // yes, we really don't want to report file write errors if this doesn't work.
+
         $backtrace = debug_backtrace();
         if (isset($backtrace[$up]['file'])) {
             $string = $backtrace[$up]['file'] . $backtrace[$up]['line'] . $string;
