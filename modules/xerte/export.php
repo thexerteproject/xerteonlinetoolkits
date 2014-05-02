@@ -58,10 +58,8 @@ if (!$export_html5 && !$export_flash)
 /*
  * Make the zip
  */
-$zipfile_tmpname =  "example_zipper_new" . time() . ".zip";
-
+$zipfile_tmpname =  tempnam(sys_get_temp_dir());
 $zipfile = new zip_file($zipfile_tmpname);
-
 $zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 0, 'recurse' => 1, 'storepaths' => 1));
 
 /*
