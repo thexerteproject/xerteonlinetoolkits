@@ -405,6 +405,8 @@ function copy_extra_files() {
  * This function zips up the files
  * @version 1.0
  * @author Patrick Lockley
+ * @global $zipfile
+ * @global $file_array - emptied by array_pop calls.
  */
 function xerte_zip_files($fullArchive = false, $dir_path) {
 
@@ -420,19 +422,12 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 $string = str_replace($dir_path, "", $file[0]);
 
                 if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false) {
-
-                    _debug("  add " . $string);
-
                     $zipfile->add_files($string);
                 }
             } else {
                 $string = str_replace($dir_path, "", $file[0]);
-                _debug("  add " . $string);
-
                 $zipfile->add_files($string);
             }
         }
     }
 }
-
-?>
