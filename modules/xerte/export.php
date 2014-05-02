@@ -59,7 +59,9 @@ if (!$export_html5 && !$export_flash)
  * Make the zip
  */
 $zipfile_tmpname =  "example_zipper_new" . time() . ".zip";
+
 $zipfile = new zip_file($zipfile_tmpname);
+
 $zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 0, 'recurse' => 1, 'storepaths' => 1));
 
 /*
@@ -183,15 +185,6 @@ else if ($scorm=="2004")
     copy_extra_files();
 }
 
-//if($scorm=="true" || $scorm=="2004"){
-//copy($dir_path . $row['template_name'] . ".rlt", $dir_path . "learningobject.rlo");
-//unlink($dir_path . $row['template_name'] . ".rlt");
-//array_push($delete_file_array,  $dir_path . "learningobject.rlo");
-//}else{
-//copy($dir_path . $row['template_name'] . ".rlt", $dir_path . "learningobject.rlt");
-//unlink($dir_path . $row['template_name'] . ".rlt");
-//array_push($delete_file_array,  $dir_path . "learningobject.rlt");
-//}
 $rlo_file = $row['template_name'] . ".rlt";
 /*
  * if used copy extra folders
