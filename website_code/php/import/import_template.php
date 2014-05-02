@@ -156,7 +156,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-            echo IMPORT_TEMPLATE_ZIP_FAIL "****";
+            echo IMPORT_TEMPLATE_ZIP_FAIL . "****";
 
             die();
 
