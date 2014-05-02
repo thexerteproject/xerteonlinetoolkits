@@ -44,6 +44,13 @@ function lmsmanifest_create($name, $flash, $lo_name) {
  * This function creates a scorm manifest
  * @version 1.0
  * @author Patrick Lockley
+ * 
+ * @param array $row
+ * @param array $metadata
+ * @param array $users
+ * @param boolean flash
+ * @param string $lo_name
+ * 
  */
 function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
 
@@ -59,7 +66,7 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
 
     $scorm_top_string .= "</imsmd:general>";
 
-    while ($user = mysql_fetch_array($users)) {
+    foreach($users as $user) {
         $scorm_top_string .= "<imsmd:lifeCycle><imsmd:contribute><imsmd:role><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>author</imsmd:value></imsmd:role><imsmd:entity>" . $user['firstname'] . " " . $user['surname'] . "</imsmd:entity></imsmd:contribute></imsmd:lifeCycle>";
     }
 
