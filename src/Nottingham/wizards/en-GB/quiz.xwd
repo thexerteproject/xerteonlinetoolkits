@@ -16,7 +16,7 @@
   <!-- QUIZ=============================== -->  
     <quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
     <name label="Quiz Title" type="textInput" />    
-	<order label="Question Order" options="sequence,random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput"  width="120"/>
     <align label="Alignment" options="left,right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
@@ -63,6 +63,7 @@
 
     <prompt label="Prompt" type="TextArea"  height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
+	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <image label="Image" type="Media" optional="true" />
     <tip label="Image Tooltip" type="TextInput" optional="true" />
     <sound label="Sound" type="Media" optional="true"/>
