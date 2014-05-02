@@ -22,16 +22,17 @@ function _debug($string, $up = 0) {
             $file = 'c:\debug.log';
         }
 
-        if(defined('XOT_DEBUG_LOGFILE')) {
+        if (defined('XOT_DEBUG_LOGFILE')) {
             $file = XOT_DEBUG_LOGFILE;
         }
-        if(!file_exists($file)) {
+        if (!file_exists($file)) {
             @touch($file); // try and create it.
         }
-        if(!_is_writable($file)) { // fall back to PHP's inbuilt log, which may go to the apache log file, syslog or somewhere else.
+
+
+        if (!_is_writable($file)) { // fall back to PHP's inbuilt log, which may go to the apache log file, syslog or somewhere else.
             error_log($string);
-        }
-        else {
+        } else {
             @file_put_contents($file, date('Y-m-d H:i:s ') . $string . "\n", FILE_APPEND);
         }
     }
@@ -50,8 +51,7 @@ function _debug($string, $up = 0) {
  * @param string $file_path
  * @return boolean true on success; else false.
  */
-function _load_language_file($file_path)
-{
+function _load_language_file($file_path) {
     global $development;
     Zend_Locale::setDefault('en_GB');
 
@@ -89,17 +89,13 @@ function _load_language_file($file_path)
     $real_file_path = $languages . $language . $file_path;
     $en_gb_file_path = $languages . "en-GB" . $file_path;
 
-    if ($language != "en-GB")
-    {
+    if ($language != "en-GB") {
         if (file_exists($real_file_path)) {
             require_once($real_file_path);
-        }
-        else
-        {
+        } else {
             // stuff will break at this point.
             //die("Where was $real_file_path?");
-            if ($development)
-            {
+            if ($development) {
                 error_log("Failed to load language file for Xerte - $language/$file_path");
                 //return false;
             }
@@ -107,13 +103,11 @@ function _load_language_file($file_path)
     }
     if (file_exists($en_gb_file_path)) {
         // prevent notices from redefines of other languages
-        if ($development)
-        {
-            $prev_el = error_reporting(E_ALL ^(E_NOTICE | E_WARNING));
+        if ($development) {
+            $prev_el = error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
         }
         require_once($en_gb_file_path);
-        if ($development)
-        {
+        if ($development) {
             error_reporting($prev_el);
         }
     } else {
@@ -125,8 +119,7 @@ function _load_language_file($file_path)
     return true;
 }
 
-function _include_javascript_file($file_path)
-{
+function _include_javascript_file($file_path) {
 
     global $xerte_toolkits_site;
     $languages = 'languages/';
@@ -158,7 +151,7 @@ function _include_javascript_file($file_path)
 
 
     $real_file_path = $languages . $language . '/' . $file_path;
-    $en_gb_file_path = $languages .  "en-GB/" . $file_path;
+    $en_gb_file_path = $languages . "en-GB/" . $file_path;
 
     _debug($language);
     _debug($real_file_path);
@@ -173,17 +166,13 @@ function _include_javascript_file($file_path)
         return false;
     }
 
-    if ($language != "en-GB")
-    {
-	if(file_exists(dirname(__FILE__) . "/" . $real_file_path)) {
+    if ($language != "en-GB") {
+        if (file_exists(dirname(__FILE__) . "/" . $real_file_path)) {
             echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . "\"></script>";
-        }
-        else
-        {
+        } else {
             // stuff will break at this point.
             //die("Where was $real_file_path?");
-            if ($development)
-            {
+            if ($development) {
                 error_log("Failed to load language file for Xerte - $language/$file_path");
                 return false;
             }
@@ -192,19 +181,16 @@ function _include_javascript_file($file_path)
     return true;
 }
 
-function get_email_headers()
-{
+function get_email_headers() {
     global $xerte_toolkits_site;
 
     $from = $xerte_toolkits_site->site_email_account;
-    $extraheaders = str_replace("*","\n",$xerte_toolkits_site->headers);
+    $extraheaders = str_replace("*", "\n", $xerte_toolkits_site->headers);
     $headers = "";
-    if (strpos("From:", $extraheaders) === false)
-    {
-        $headers .=  "From: " . $from . "\n" . $extraheaders;
+    if (strpos("From:", $extraheaders) === false) {
+        $headers .= "From: " . $from . "\n" . $extraheaders;
     }
-    if (strpos("Content-Type:", $extraheaders) === false)
-    {
+    if (strpos("Content-Type:", $extraheaders) === false) {
         $headers .= "Content-Type: text/html; charset=\"UTF-8\"";
     }
     $headers .= $extraheaders;
@@ -219,8 +205,8 @@ function get_email_headers()
 //
 function _is_writable($path) {
 
-    if (is_dir($path) || $path{strlen($path)-1}=='/')
-        return _is_writable($path . ($path{strlen($path)-1}=='/' ? "" : "/") . uniqid(mt_rand()).'.tmp');
+    if (is_dir($path) || $path{strlen($path) - 1} == '/')
+        return _is_writable($path . ($path{strlen($path) - 1} == '/' ? "" : "/") . uniqid(mt_rand()) . '.tmp');
 
     if (file_exists($path)) {
         if (!($f = @fopen($path, 'r+')))
@@ -237,7 +223,6 @@ function _is_writable($path) {
 }
 
 // To prevent mistakes, also supply the alias
-function __is_writable($path)
-{
+function __is_writable($path) {
     _is_writable($path);
 }
