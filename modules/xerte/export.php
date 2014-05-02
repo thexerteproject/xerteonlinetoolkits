@@ -60,7 +60,10 @@ if (!$export_html5 && !$export_flash)
  */
 $zipfile_tmpname =  tempnam(sys_get_temp_dir());
 $zipfile = new zip_file($zipfile_tmpname);
-$zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' => 0, 'recurse' => 1, 'storepaths' => 1));
+$zipfile->set_options(
+        array('basedir' => $dir_path, 
+            'prepand' => "", 'inmemory' => 0, 
+            'recurse' => 1, 'storepaths' => 1));
 
 /*
  * Copy the core files over from the parent folder
@@ -68,6 +71,7 @@ $zipfile->set_options(array('basedir' => $dir_path, 'prepand' => "", 'inmemory' 
 copy($dir_path . "data.xml",$dir_path . "template.xml");
 $xml = new XerteXMLInspector();
 $xml->loadTemplateXML($dir_path . 'template.xml');
+
 if ($fullArchive){
     _debug("Full archive");
     export_folder_loop($parent_template_path);
@@ -227,12 +231,18 @@ if($scorm=="true"){
     if(isset($_GET['data'])){
         if($_GET['data']==true){
 
-            $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
-            $query_response_metadata = mysql_query($query);
-            $metadata = mysql_fetch_array($query_response_metadata);
-            $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
+            $prefix = $xerte_toolkits_site->database_table_prefix;
+            
+            $query = "SELECT * FROM {$prefix}templatesyndication WHERE template_id = ? ";
+            $metadata = db_query_one($query, array($_GET['template_id'])); 
+            
+            $query = "SELECT * FROM {$prefix}templaterights "
+            . "{$prefix}logindetails  WHERE template_id = ? and login_id = user_id ";
+            
+            $users = db_query($query, array($_GET['template_id']));
+            
             $query_response_users = mysql_query($query);
-            lmsmanifest_create_rich($row, $metadata, $query_response_users, $useflash, $lo_name);
+            lmsmanifest_create_rich($row, $metadata, $users, $useflash, $lo_name);
         }
     }
     else
@@ -282,4 +292,4 @@ $zipfile->download_file($row['zipname']);
  */
 clean_up_files();
 unlink($dir_path . "template.xml");
-unlink($dir_path . $zipfile_tmpname);
+unlink($dir_path . $zipfile_tmpname); 
