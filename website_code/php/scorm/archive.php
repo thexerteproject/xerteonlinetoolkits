@@ -256,8 +256,13 @@ class archive {
         return 0;
     }
 
+    /**
+     * @param string $name - name of zip file as it's presented to the browser.
+     */
     function download_file($name) {
-
+        // Remove any double quotes or other rubbish in the file name which could cause problems.
+        $name = preg_replace('/[^-_a-z0-9\.]/i', '', $name);
+        
         switch ($this->options['type']) {
             case "zip":
                 header("Content-Type: application/zip");
@@ -280,16 +285,20 @@ class archive {
             header("Content-Length: " . strlen($this->archive));
             print($this->archive);
         } else {
-            $pwd = @getcwd();
-            @chdir($this->options['basedir']);
-            $fp = @fopen($this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : ""), "rb");
-            header("Content-Length: " . @filesize($this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : "")));
-
-            _debug("Opening file " . $this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : "") . ": " . $fp);
+            /* $this->options['name'] is the temporary file we created in the constructor */
+            $filename = $this->options['name'] . ($this->options['type'] == "gzip" || $this->options['type'] == "bzip" ? ".tmp" : "");
+            if(!file_exists($filename)) {
+                _debug("ERROR: How can we open a non-existent file for download/writing ? : $filename");
+                die("Download failed; file not found.");
+            }
+            
+            $fp = fopen($filename,"rb");
+            header("Content-Length: " . filesize($filename));
+            _debug("Opening file / fpassthru");
             $res = fpassthru($fp);
             _debug("Written " . $res . " bytes");
-            @fclose($fp);
-            @chdir($pwd);
+            fclose($fp);
+            
         }
     }
 
