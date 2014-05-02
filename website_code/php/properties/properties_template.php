@@ -17,7 +17,8 @@ include "../url_library.php";
 include "../user_library.php";
 include "properties_library.php";
 
-if(is_numeric($_POST['template_id'])) {
+
+if(!empty($_POST['template_id']) && is_numeric($_POST['template_id'])) {
     $template_id = (int) $_POST['template_id'];
     if(has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
         properties_display($xerte_toolkits_site,$template_id,false,"");
