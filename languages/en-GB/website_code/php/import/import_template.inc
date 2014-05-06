@@ -22,4 +22,3 @@
 
 	define("IMPORT_TEMPLATE_FOLDER_FAIL","Error creating folder");
 	
-}
