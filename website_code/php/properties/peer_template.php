@@ -25,7 +25,7 @@ if(is_numeric($_POST['template_id'])){
 
     if(is_user_creator(mysql_real_escape_string($_POST['template_id']))||is_user_admin()){
 
-        peer_display($xerte_toolkits_site,false);
+        peer_display($xerte_toolkits_site,false, $_POST['template_id']);
 
     }else{
 
@@ -33,8 +33,5 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
-    mysql_close($database_id);
 
 }
-
-?>

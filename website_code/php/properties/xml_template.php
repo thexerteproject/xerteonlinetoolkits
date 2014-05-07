@@ -33,7 +33,5 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
-    mysql_close($database_id);
 
 }
-?>
