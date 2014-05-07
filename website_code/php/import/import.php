@@ -55,11 +55,13 @@ function make_new_template($type,$zip_path){
 
     $root_folder = get_user_root_folder();
 
-    $query_for_template_type_id = "select template_type_id, template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_name = '" .  $type . "'";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $query_for_template_type_id = "select template_type_id, template_framework from {$prefix}originaltemplatesdetails where template_name = ?";
+    $params = array($type);
 
-    $query_for_template_type_id_response = mysql_query($query_for_template_type_id);	
-
-    $row_template_type = mysql_fetch_array($query_for_template_type_id_response);	
+    
+    $row_template_type = db_query_one($query_for_template_type_id, $params);
+	
 
     /*
      * create the new template record in the database
@@ -71,7 +73,7 @@ function make_new_template($type,$zip_path){
 
     if($_POST['templatename']!=""){
 
-        $template_name = mysql_real_escape_string($_POST['templatename']);	
+        $template_name = $_POST['templatename'];	
 
     }else{
 
@@ -79,9 +81,22 @@ function make_new_template($type,$zip_path){
 
     }
 
-    $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"" . $template_name . "\", \"engine=javascript\")";
+    $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
+    . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
+    . "VALUES (?,?,?,?,?,?,?,?)";
+    
+    $params = array(
+        $maximum_template_id+1, 
+        $_SESSION['toolkits_logon_id'],
+        $row_template_type['template_type_id'],
+        date('Y-m-d'),
+        date('Y-m-d'),
+        "Private",
+        $template_name , 
+        "engine=javascript");
 
-    if(mysql_query($query_for_new_template)){
+    $ok = db_query($query_for_new_template, $params);
+    if($ok) {
 
         /*
          * Are we importing into a folder
@@ -93,9 +108,14 @@ function make_new_template($type,$zip_path){
 
         }
 
-        $query_for_template_rights = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templaterights (template_id,user_id,role, folder) VALUES (\"" . ($maximum_template_id+1) . "\",\"" .  $_SESSION['toolkits_logon_id'] . "\", \"creator\" ,\"" . $folder_id . "\")";
+        $query_for_template_rights = "INSERT INTO {$prefix}templaterights"
+        . " (template_id,user_id,role, folder)"
+        . "VALUES (?,?,?,?)";
+        $params($maximum_template_id+1, $_SESSION['toolkits_logon_id'],"creator" ,$folder_id);
 
-        if(mysql_query($query_for_template_rights)){		
+        $ok = db_query($query_for_template_rights, $params);
+        
+        if($ok) {
 
             /*
              * Make the folders and copy the files in
@@ -148,7 +168,6 @@ function make_new_template($type,$zip_path){
 
     }
 
-    mysql_close($database_connect_id);	
 
 }
 /**
@@ -167,11 +186,11 @@ function replace_existing_template($path_to_copy_from, $template_id){
 
     $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
+    $template_id = (int) $template_id;
     $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
 
-    $query_for_play_content_response = mysql_query($query_for_play_content);
-
-    $row_play = mysql_fetch_array($query_for_play_content_response);
+    
+    $row_play = db_query_one($query_for_play_content);
 
     delete_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $template_id . "-" . $row_play['username'] . "-" . $row_play['template_name'] . "/");
 
@@ -536,11 +555,14 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         if(!empty($_POST['replace'])){
 
-            $query = "select template_framework from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id =\"" . mysql_real_escape_string($_POST['replace']) . "\"";
+            $prefix = $xerte_toolkits_site->database_table_prefix;
+            
+            $query = "SELECT template_framework FROM {$prefix}templatedetails, {$prefix}originaltemplatesdetails "
+            . "where {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND {$prefix}templatedetails.template_id =?";
+            $params = array($_POST['replace']);
 
-            $query_response = mysql_query($query);
-
-            if($query_reponse===false){
+            $row = db_query_one($query, $params);
+            if(empty($row)) {
 
                 receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Failed to get template type", "Failed to get template type");
 
@@ -548,7 +570,6 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
             }else{
 
-                $row = mysql_fetch_array($query_response);
 
                 if($row['template_framework']=="xerte"){
 
@@ -721,5 +742,3 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
     echo IMPORT_ZIP_FAIL . ".****";
 
 }
-
-?>
