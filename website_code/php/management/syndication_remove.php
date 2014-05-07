@@ -28,14 +28,16 @@ if(is_user_admin()){
     }
 
     $query="select * from {$xerte_toolkits_site->database_table_prefix}templatesyndication, {$xerte_toolkits_site->database_table_prefix}templatedetails 
-                where {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id = {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id and(rss=\"true\" or export=\"true\" or syndication=\"true\")";
+                where {$xerte_toolkits_site->database_table_prefix}templatesyndication.template_id = "
+                . "{$xerte_toolkits_site->database_table_prefix}templatedetails.template_id "
+                . "and ( rss = ? or export = ? or syndication = ? )";
+                
+    $params = array('true', 'true', 'true'); 
 
-    $query_response = mysql_query($query);
-
+    $query_response = db_query($query, $params);
+    
     syndication_list();
 
 }else{
-
     management_fail();
-
 }
