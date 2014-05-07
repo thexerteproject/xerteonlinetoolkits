@@ -156,7 +156,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
             rmdir($xerte_toolkits_site->import_path . $this_dir);
 
-            echo IMPORT_TEMPLATE_ZIP_FAIL "****";
+            echo IMPORT_TEMPLATE_ZIP_FAIL . "****";
 
             die();
 
@@ -358,9 +358,15 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         $mysql_id = database_connect("Import_template.php database connect success", "Import_template.php database connect failure");
 
-        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails (template_framework, template_name, description, date_uploaded, display_name, display_id, access_rights, active) values  ('xerte','" . $folder . "','" . $desc  ."','" . date('Y-m-d') . "','" . $name . "','0','','false')";
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        
+        $query = "INSERT INTO {$prefix}originaltemplatesdetails "
+        . "(template_framework, template_name, description, date_uploaded, display_name, display_id, access_rights, active) "
+        . "values  (?,?,?,?,?,?,?,?)";
+        $params = array('xerte', $folder, $desc, date('Y-m-d'), $name,'0','','false');
 
-        if(mysql_query($query)){
+        $ok = db_query($query, $params);
+        if($ok) {
 
             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
@@ -377,8 +383,6 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
             rmdir(substr($xerte_toolkits_site->import_path . $end_dir,-1));
 
         }
-
-        mysql_close($mysql_id);
 
     }
 
