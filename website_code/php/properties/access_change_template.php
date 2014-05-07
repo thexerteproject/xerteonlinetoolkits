@@ -45,19 +45,17 @@ $database_id = database_connect("Access change database connect success","Access
 /*
  * Update the database setting
  */
-
+ $query = "UPDATE {$prefix}templatedetails SET access_to_whom = ? WHERE template_id = ?";
 if(isset($_POST['server_string'])){
-
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET access_to_whom =\"" . mysql_real_escape_string($_POST['access']) . "-" . mysql_real_escape_string($_POST['server_string']) . "\" WHERE template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
-
+    $access_to_whom = $_POST['access'] . '-' . $_POST['server_string'];    
 }else{
-
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET access_to_whom =\"" . mysql_real_escape_string($_POST['access']) . "\" WHERE template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";		
-
+    $access_to_whom = $_POST['access'];
 }
 
-if(mysql_query($query)){
+$params = array($access_to_whom, $_POST['template_id']);
+$ok = db_query($query, $params);
 
+if($ok) {
     access_display($xerte_toolkits_site, true);
 
 }else{
@@ -65,7 +63,3 @@ if(mysql_query($query)){
     access_display_fail();
 
 }
-
-mysql_close($database_id);
-
-?>

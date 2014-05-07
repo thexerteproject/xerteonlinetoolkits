@@ -11,17 +11,20 @@ _load_language_file("/properties.inc");
 
 function xml_template_display($xerte_toolkits_site,$change){
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_XML_TITLE . "</span></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_DESCRIPTION . "</p>";
 
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"xml\" AND template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
+    $query = "select * from {$prefix}additional_sharing where sharing_type= ? AND template_id = ?";
+    $params = array("xml", $_POST['template_id']);
 
-    $query_response = mysql_query($query);
+    $query_response = db_query($query, $params);
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_SHARING . " </p>";
 
-    if(mysql_num_rows($query_response)==1){
+    if(sizeof($query_response)==1){
 
         echo "<p class=\"share_status_paragraph\"><img id=\"xmlon\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:xml_tick_toggle('xmlon')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
         echo "<p class=\"share_status_paragraph\"><img id=\"xmloff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:xml_tick_toggle('xmloff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
@@ -34,7 +37,7 @@ function xml_template_display($xerte_toolkits_site,$change){
 
     }
 
-    $row = mysql_fetch_array($query_response);
+    $row = $query_response[0];
 
     echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" >" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
@@ -55,20 +58,22 @@ function xml_template_display_fail(){
 function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
+    . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
 
-    $query_for_names = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_id=\"". $tutorial_id . "\" and " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id ";
+    $params = array($tutorial_id);
+    $query_names_response = db_query($query_for_names, $params);
 
-    $query_names_response = mysql_query($query_for_names);
+    $_POST['template_id'] = (int) $_POST['template_id'];
+    
+    if(is_user_creator($_POST['template_id'])){
 
-    $row = mysql_fetch_array($query_names_response);
+        $query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
+        $params = array($_POST['template_id']);
 
-    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
-
-        $query_for_template_name = "select template_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=" . mysql_real_escape_string($_POST['template_id']);
-
-        $query_name_response = mysql_query($query_for_template_name);
-
-        $row_template_name = mysql_fetch_array($query_name_response);
+        $row_template_name = db_query_one($query_for_template_name, $params);
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . "</p>";
 
@@ -94,11 +99,13 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
 	}
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id']))!='Private'){
+    if(template_access_settings($_POST['template_id'])!='Private'){
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
 
-        echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "'>" . $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
+        echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url . 
+                url_return("play", $_POST['template_id']) . "'>" .
+                $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
 
 		$template = explode("_", get_template_type($_POST['template_id']));
 
@@ -113,11 +120,15 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
         // Get the template screen size
 
-        $query_for_template_name = "select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id AND template_id =\"" . $tutorial_id . "\"";
+        $query_for_template_name = "select {$prefix}originaltemplatesdetails.template_name, "
+        . "{$prefix}originaltemplatesdetails.template_framework from "
+        . "{$prefix}originaltemplatesdetails, {$prefix}templatedetails where"
+        . " {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND template_id = ?";
 
-        $query_name_response = mysql_query($query_for_template_name);
-
-        $row_name = mysql_fetch_array($query_name_response);
+        $params = array($tutorial_id);
+        
+        $row_name = db_query_one($query_for_template_name, $params);
+        
 
 		if(isset($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size)){
 
@@ -155,6 +166,7 @@ function publish_display($template_id)
 {
     global $xerte_toolkits_site;
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
     $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
     // User has to have some rights to do this
@@ -163,15 +175,18 @@ function publish_display($template_id)
 
         echo "<p class=\"header\"><span>" . PUBLISH_TITLE . "</span></p>";
 
-        $query_for_names = "select td.template_name, td.date_created, td.date_modified, otd.template_framework from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd where td.template_id=\"". $template_id . "\" and td.template_type_id = otd.template_type_id";
+        $query_for_names = "select td.template_name, td.date_created, td.date_modified, otd.template_framework from {$prefix}templatedetails td, "
+        . "{$prefix}originaltemplatesdetails otd where td.template_id= ? and td.template_type_id = otd.template_type_id";
 
-        $query_names_response = mysql_query($query_for_names);
+        $params = array($template_id);
+        
+      
 
-        $row = mysql_fetch_array($query_names_response);
+        $row = db_query_one($query_for_names, $params); 
 
         echo "<p>" . PUBLISH_DESCRIPTION . "</p>";
 
-        $template_access = template_access_settings(mysql_real_escape_string($template_id));
+        $template_access = template_access_settings($template_id);
 
         echo "<p><b>" . PUBLISH_ACCESS . "</b><br>" . PUBLISH_ACCESS_DESCRIPTION . "</p>";
 
@@ -187,7 +202,7 @@ function publish_display($template_id)
 
         echo "<p><b>" . PUBLISH_RSS . "</b><br>" . PUBLISH_RSS_DESCRIPTION . "</p>";
 
-        if(!is_template_rss(mysql_real_escape_string($_POST['template_id']))){
+        if(!is_template_rss($_POST['template_id'])){
 
             echo "<p><b>" . PUBLISH_RSS_NOT_INCLUDE . "</b></p>";
 
@@ -203,7 +218,7 @@ function publish_display($template_id)
 
         echo "<p><b>" . PUBLISH_SYNDICATION . "</b><br>" . PUBLISH_SYNDICATION_DESCRIPTION . "</p>";
 
-        if(!is_template_syndicated(mysql_real_escape_string($template_id))){
+        if(!is_template_syndicated($template_id)){
 
             echo "<p><b>" . PUBLISH_SYNDICATION_STATUS_OFF . "</b></p>";
 
@@ -236,12 +251,12 @@ function publish_display($template_id)
 
 }
 
-function notes_display($notes, $change){
-
+function notes_display($notes, $change, $template_id){
+    $template_id = (int) $template_id;
     $notes = htmlentities($notes, ENT_QUOTES, 'UTF-8', false);
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
+    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
 
     if($change){
 
@@ -257,23 +272,27 @@ function notes_display_fail(){
 
 }
 
-function peer_display($xerte_toolkits_site,$change){
-
+function peer_display($xerte_toolkits_site,$change, $template_id){
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $template_id = (int) $template_id;
+    
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PEER . "</span></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_EXPLAINED . "</p>";
 
-    $query = "select * from " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where sharing_type=\"peer\" AND template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
+    $query = "select * from {$prefix}additional_sharing where sharing_type=? AND template_id = ?";
 
-    $query_response = mysql_query($query);
+    $params = array('peer', $template_id);
+    
+    $query_response = db_query($query, $params);
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_STATUS . " </p>";
 
-    if(mysql_num_rows($query_response)==1){
+    if(sizeof($query_response)==1){
 
         echo "<p class=\"share_status_paragraph\"><img id=\"peeron\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeron')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
         echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_LINK . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id']) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $_POST['template_id'])  . "</a></p>";
+        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_LINK . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a></p>";
 
     }else{
 
@@ -282,7 +301,7 @@ function peer_display($xerte_toolkits_site,$change){
 
     }
 
-    $row = mysql_fetch_array($query_response);
+    $row = $query_response[0];
     $extra = explode("," , $row['extra'],2);
 
     $passwd = $extra[0];
@@ -328,11 +347,14 @@ function syndication_display($xerte_toolkits_site, $change){
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . " <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a></p>";
 
-    $query_for_syndication = "select syndication,description,keywords,category,license from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=" . mysql_real_escape_string($_POST['tutorial_id']);
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_syndication = "select syndication,description,keywords,category,license from {$prefix}templatesyndication where template_id=?";
 
-    $query_syndication_response = mysql_query($query_for_syndication);
+    $params = array($_POST['tutorial_id']);
+    
+    $row_syndication = db_query_one($query_for_syndication, $params);
 
-    $row_syndication = mysql_fetch_array($query_syndication_response);
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_PROMPT . " ";
 
@@ -348,11 +370,11 @@ function syndication_display($xerte_toolkits_site, $change){
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_CATEGORY . "<br><select SelectedItem=\"" . $row_syndication['category'] . "\" name=\"type\" id=\"category_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
 
-    $query_for_categories = "select category_name from " . $xerte_toolkits_site->database_table_prefix . "syndicationcategories";
+    $query_for_categories = "select category_name from {$prefix}syndicationcategories";
 
-    $query_categories_response = mysql_query($query_for_categories);
+    $query_categories_response = db_query($query_for_categories);
 
-    while($row_categories = mysql_fetch_array($query_categories_response)){
+    foreach($query_categories_response as $row) {
 
         echo "<option value=\"" . $row_categories['category_name'] . "\"";
 
@@ -378,11 +400,11 @@ function syndication_display($xerte_toolkits_site, $change){
 
     echo " name=\"type\" id=\"license_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
 
-    $query_for_licenses = "select license_name from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses";
+    $query_for_licenses = "select license_name from {$prefix}syndicationlicenses";
 
-    $query_licenses_response = mysql_query($query_for_licenses);
-
-    while($row_licenses = mysql_fetch_array($query_licenses_response)){
+    $query_licenses_response = db_query($query_for_licenses);
+    
+    foreach($query_licenses_response as $row_licenses){
 
         echo "<option value=\"" . $row_licenses['license_name'] . "\"";
 
@@ -425,18 +447,19 @@ function syndication_display_fail(){
 
 function access_display($xerte_toolkits_site, $change){
 
-    $query_for_template_access = "select access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=" . mysql_real_escape_string($_POST['template_id']);
+    $prefix =  $xerte_toolkits_site->database_table_prefix ;
+    $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
+    $params = array($_POST['template_id']);
 
-    $query_access_response = mysql_query($query_for_template_access);
-
-    $row_access = mysql_fetch_array($query_access_response);
+    $query_access_response = db_query_one($query_for_template_access, $params);
+    $row_access = db_query_one($query_access_response, $params);
 
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
     echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
 
     echo "<div id=\"security_list\">";
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id'])) == "Public"){
+    if(template_access_settings($_POST['template_id']) == "Public"){
 
         echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\" />";
 
@@ -448,7 +471,7 @@ function access_display($xerte_toolkits_site, $change){
 
     echo " " . PROPERTIES_LIBRARY_ACCESS_PUBLIC . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED . "</p>";
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id'])) == "Password"){
+    if(template_access_settings($_POST['template_id']) == "Password"){
 
         echo "<p id=\"Password\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\"  onclick=\"javascript:access_tick_toggle(this)\" />";
 
@@ -460,7 +483,7 @@ function access_display($xerte_toolkits_site, $change){
 
     echo " " . PROPERTIES_LIBRARY_ACCESS_PASSWORD . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
 
-    if(substr(template_access_settings(mysql_real_escape_string($_POST['template_id'])),0,5) == "Other"){
+    if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
 
         echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
@@ -490,7 +513,7 @@ function access_display($xerte_toolkits_site, $change){
 
     echo "</textarea></form></p>";
 
-    if(template_access_settings(mysql_real_escape_string($_POST['template_id'])) == "Private"){
+    if(template_access_settings($_POST['template_id']) == "Private"){
 
         echo "<p id=\"Private\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
 
@@ -501,13 +524,11 @@ function access_display($xerte_toolkits_site, $change){
 
     echo " " . PROPERTIES_LIBRARY_ACCESS_PRIVATE . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED . "</p>";
 
-    $query_for_security_content = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
+    $query_for_security_content = "select * from {$prefix}play_security_details";
 
-    $query_for_security_content_response = mysql_query($query_for_security_content);
-
-    if(mysql_num_rows($query_for_security_content_response)!=0){
-
-        while($row_security = mysql_fetch_array($query_for_security_content_response)){
+    $rows = db_query($query_for_security_content);
+    
+    foreach($rows as $row_security) {
 
             if(template_share_status($row_security['security_setting'])){
 
@@ -520,8 +541,7 @@ function access_display($xerte_toolkits_site, $change){
             }
 
             echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";
-
-        }
+    
 
     }
 
@@ -544,17 +564,14 @@ function access_display_fail(){
 
 function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
-    $query_for_name = "select firstname,surname from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=" . $_SESSION['toolkits_logon_id'];
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_name = "select firstname,surname from {$prefix}logindetails where login_id= ?";
+    $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
 
-    $query_for_name_response = mysql_query($query_for_name);
 
-    $row_name = mysql_fetch_array($query_for_name_response);
-
-    $query_for_rss = "select rss,export,description from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=" . mysql_real_escape_string($tutorial_id);
-
-    $query_rss_response = mysql_query($query_for_rss);
-
-    $row_rss = mysql_fetch_array($query_rss_response);
+    $query_for_rss = "select rss,export,description from {$prefix}templatesyndication where template_id=?";
+    $row_rss = db_query_one($query_for_rss, array($tutorial_id));
 
     echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_RSS . "</span></p>";
 
@@ -607,7 +624,3 @@ function rss_display_fail(){
     echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";
 
 }
-
-
-?>
-
