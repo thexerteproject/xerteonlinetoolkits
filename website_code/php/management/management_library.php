@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 	_load_language_file("/website_code/php/management/management_library.inc");
 	require_once("../language_library.php");
@@ -15,9 +15,9 @@
 
 		echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_CATEGORIES . "</p>";
 
-		$query_response = mysql_query($query);
+		$query_response = db_query($query);
 
-		while($row = mysql_fetch_array($query_response)){
+		foreach($query_response as $row) {
 
 			echo "<p>" . $row['category_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_category('" . $row['category_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
 
@@ -31,11 +31,16 @@
 	
 		$database_id = database_connect("templates list connected","template list failed");
 
-		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication," . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and( rss=\"true\" or export=\"true\" or syndication=\"true\")";
+		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication," . 
+                        $xerte_toolkits_site->database_table_prefix . "templatedetails where " .
+                        $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id = " .
+                        $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and( rss=? or export=? or syndication=?)";
 
-		$query_response = mysql_query($query);
+                $params = array('true', 'true', 'true');
+                
+		$query_response = db_query($query, $params);
 
-		while($row = mysql_fetch_array($query_response)){
+                foreach($query_response as $row) {
 
 			echo "<p>" . $row['template_name'];
 
@@ -65,9 +70,7 @@
 	
 		global $xerte_toolkits_site;
 	
-		$query_for_play_security = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
-
-		$query_for_play_security_response = mysql_query($query_for_play_security);
+		
 
 		echo "<p>" . MANAGEMENT_LIBRARY_ADD_SECURITY . "</p>";
 
@@ -77,8 +80,11 @@
 		echo "<p><form action=\"javascript:new_security();\"><button type=\"submit\" class=\"xerte_button\">" . MANAGEMENT_LIBRARY_ADD_SECURITY . " </button></form></p>";
 
 		echo "<p>" . MANAGEMENT_LIBRARY_EXISTING_SECURITY . "</p>";
+                
+                $query_for_play_security = "select * from " . $xerte_toolkits_site->database_table_prefix . "play_security_details";
 
-		while($row_security = mysql_fetch_array($query_for_play_security_response)){
+		$query_for_play_security_response = db_query($query_for_play_security);
+                foreach($query_for_play_security_response as $row_security) {
 		
 			echo "<div class=\"template\" id=\"play" . $row_security['security_id'] . "\" savevalue=\"" . $row_security['security_id'] .  "\"><p>" . $row_security['security_setting'] . " <button type=\"button\" class=\"xerte_button\" id=\"play" . $row_security['security_id'] . "_btn\" onclick=\"javascript:templates_display('play" . $row_security['security_id'] . "')\">" . MANAGEMENT_LIBRARY_VIEW . "</button></p></div><div class=\"template_details\" id=\"play" . $row_security['security_id']  . "_child\">";
 		
@@ -109,9 +115,9 @@
 
 		$query="select * from " . $xerte_toolkits_site->database_table_prefix . "syndicationlicenses";
 
-		$query_response = mysql_query($query);
+		$query_response = db_query($query);
 
-		while($row = mysql_fetch_array($query_response)){
+		foreach($query_response as $row) { 
 
 			echo "<p>" . $row['license_name'] . " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_licenses('" . $row['license_id'] .  "')\">" . MANAGEMENT_LIBRARY_REMOVE . " </button></p>";
 
@@ -155,4 +161,3 @@
         }
 
     }
-?>
