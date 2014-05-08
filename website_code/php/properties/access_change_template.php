@@ -58,8 +58,7 @@ $ok = db_query($query, $params);
 if($ok) {
     access_display($xerte_toolkits_site, true);
 
-}else{
+}else {
 
     access_display_fail();
-
 }

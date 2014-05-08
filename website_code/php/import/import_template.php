@@ -259,7 +259,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
     }else{
 
-        $folder = mysql_real_escape_string($_POST['folder']);
+        $folder = $_POST['folder'];
 
     }
 

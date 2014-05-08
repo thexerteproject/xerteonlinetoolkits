@@ -171,7 +171,7 @@ function publish_display($template_id)
 
     // User has to have some rights to do this
 
-    if(has_rights_to_this_template(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    if( has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin() ){
 
         echo "<p class=\"header\"><span>" . PUBLISH_TITLE . "</span></p>";
 
@@ -238,7 +238,7 @@ function publish_display($template_id)
 
             echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"publish_project(window.name);\">" . PUBLISH_BUTTON_LABEL . "</button></p>";
 
-            echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($template_id)) . "'>" . $xerte_toolkits_site->site_url . url_return("play",mysql_real_escape_string($template_id)) . "</a></p>";
+            echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "</a></p>";
 
 
         }

@@ -25,7 +25,7 @@ $prefix = $xerte_toolkits_site->database_table_prefix;
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))||is_user_admin()){
+    if(is_user_creator($_POST['template_id'])||is_user_admin()){
 
         if($_POST['peer_status']=="off"){
 
@@ -60,7 +60,7 @@ if(is_numeric($_POST['template_id'])){
          * Update the screen
          */
 
-        peer_display($xerte_toolkits_site,true);
+        peer_display($xerte_toolkits_site,true, $_POST['template_id']);
 
     }else{
 

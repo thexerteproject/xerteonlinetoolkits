@@ -354,7 +354,7 @@ function folder_loop($path){
  */
 
 if(!empty($_POST['replace'])) { 
-    if(!is_user_creator(mysql_real_escape_string($_POST['replace']))){
+    if(!is_user_creator($_POST['replace'])){
         die(IMPORT_OWNER_FILE . "****");
     }
 }
@@ -604,7 +604,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
                          * Copy over the top
                          */
 
-                        replace_existing_template($xerte_toolkits_site->import_path . $this_dir, mysql_real_escape_string($_POST['replace']));
+                        replace_existing_template($xerte_toolkits_site->import_path . $this_dir, $_POST['replace']);
 
 
                     }else{
