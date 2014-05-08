@@ -18,19 +18,18 @@ include "properties_library.php";
 if(is_numeric($_POST['template_id'])){
 
     $database_id = database_connect("notes change template database connect success","notes change template database connect failed");
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $query = "update {$prefix}templaterights SET notes = ?  WHERE template_id = ?";
 
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templaterights SET notes =\"" . mysql_real_escape_string($_POST['notes']) . "\" WHERE template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
+    $params = array($_POST['notes'], $_POST['template_id']);
+    
+    
+    if(db_query($query, $params)){
 
-    if(mysql_query($query)){
-
-        notes_display($_POST['notes'],true);
+        notes_display($_POST['notes'],true, $_POST['template_id']);
 
     }else{
 
     }
 
-    mysql_close($database_id);
-
 }
-
-?>
