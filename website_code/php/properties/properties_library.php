@@ -238,6 +238,7 @@ function publish_display($template_id)
 
 function notes_display($notes, $change){
 
+    $notes = htmlentities($notes, ENT_QUOTES, 'UTF-8', false);
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
 
     echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $_POST['template_id'] ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
