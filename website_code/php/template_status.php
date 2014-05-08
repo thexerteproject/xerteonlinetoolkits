@@ -110,19 +110,36 @@ function has_template_multiple_editors($template_id){
 
     global $xerte_toolkits_site;
 
-    $query_for_read_only = "select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id, role, " . $xerte_toolkits_site->database_table_prefix . "logindetails.username, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name from " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "logindetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.creator_id = " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id=\"" . $_GET['template_id'] . "\" AND role=\"read-only\"";
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_read_only = "select {$prefix}templaterights.template_id, role, {$prefix}logindetails.username, "
+    . "{$prefix}originaltemplatesdetails.template_name FROM {$prefix}templaterights, {$prefix}logindetails, "
+    . "{$prefix}originaltemplatesdetails, {$prefix}templatedetails where "
+    . "{$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND "
+    . "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id and "
+    . "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id and "
+    . "{$prefix}templaterights.template_id= ? AND role = ?";
+    $params = array($_GET['template_id']. "read-only");
 
-    $query_for_number_of_rows = "select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id, role, " . $xerte_toolkits_site->database_table_prefix . "logindetails.username, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name from " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "logindetails, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.creator_id = " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id=\"" . $_GET['template_id'] . "\"";
+    $query_response = db_query($query_for_read_only, $params);
+    $read_only_rows = sizeof($query_response);
+    
+    $query_for_number_of_rows = "select {$prefix}templaterights.template_id, role, "
+    . "{$prefix}logindetails.username, {$prefix}originaltemplatesdetails.template_name from "
+    . "{$prefix}templaterights, {$prefix}logindetails, {$prefix}originaltemplatesdetails, "
+    . "{$prefix}templatedetails where "
+    . "{$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND "
+    . "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id and "
+    . "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id and "
+    . "{$prefix}templaterights.template_id = ?";
 
-    $query_response = mysql_query($query_for_read_only);
+    $params = array($_GET['template_id']);
+    
+    $query_response = db_query($query_for_number_of_rows, $params);
 
-    $read_only_rows = mysql_num_rows($query_response);
+    $overall_rows = sizeof($query_response);
 
-    $query_response = mysql_query($query_for_number_of_rows);
-
-    $overall_rows = mysql_num_rows($query_response);
-
-    if(mysql_num_rows($query_response)!=0){
+    if(sizeof($overall_rows)!=0){
 
         if($read_only_rows==($overall_rows-1)){
 
@@ -178,12 +195,11 @@ function has_rights_to_this_template($template_id, $user_id){
 function is_user_an_editor($template_id, $user_id){
 
     global $xerte_toolkits_site;
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    $query = "select role from {$prefix}templaterights where user_id= ? AND template_id = ? ";
+    $params = array($user_id, $template_id );
 
-    $query = "select role from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id=\"" .  $user_id  . "\" and template_id=\"" . $template_id . "\"";
-
-    $query_response = mysql_query($query);
-
-    $row = mysql_fetch_array($query_response);
+    $row = db_query_one($query, $params);
 
     if(($row['role']=="creator")||($row['role']=="editor")){
 
@@ -212,13 +228,13 @@ function is_user_an_editor($template_id, $user_id){
 function template_access_settings($id){
 
     global $xerte_toolkits_site;
-
-    $query_for_template_status = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"" . $id . "\"";
-
-    $query_response = mysql_query($query_for_template_status);
-
-    $row = mysql_fetch_array($query_response);
-
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_template_status = "select {$prefix}templatedetails.access_to_whom from {$prefix}templatedetails where template_id= ?";
+    $params = array($id);
+    
+    $row = db_query_one($query_for_template_status, $params);
+    
     return $row['access_to_whom'];
 
 }
@@ -239,15 +255,14 @@ function template_access_settings($id){
 function template_access_settings_temp(){
 
     global $xerte_toolkits_site;
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    
+    $query_for_template_status = "select {$prefix}templatedetails.access_to_whom from "
+    . "{$prefix}templatedetails where template_id= ?";
+    $params = array($_GET['template_id']);
 
-    $query_for_template_status = "select " . $xerte_toolkits_site->database_table_prefix . "templatedetails.access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"" . $_GET['template_id'] . "\"";
-
-    $query_response = mysql_query($query_for_template_status);
-
-    $row = mysql_fetch_array($query_response);
-
+    $row = db_query_one($query_for_template_status, $params); 
     return $row['access_to_whom'];
-
 }
 
 /**
