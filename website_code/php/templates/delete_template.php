@@ -21,26 +21,28 @@ $database_id = database_connect("delete template database connect success","dele
 /*
  * get the folder id to delete
  */
+$prefix = $xerte_toolkits_site->database_table_prefix;
+
 
 if(is_numeric($_POST['template_id'])){
 
-    $safe_template_id = mysql_real_escape_string($_POST['template_id']);
+    $safe_template_id = (int) $_POST['template_id'];
 
     if(!is_template_syndicated($safe_template_id)){
 
         if(is_user_creator($safe_template_id)){
 
-            $query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
+            $query_for_folder_id = "select * from {$prefix}templaterights where template_id= ?"; 
+            $params = array($safe_template_id);
 
-            $query_for_folder_id_response = mysql_query($query_for_folder_id);
-
-            $row = mysql_fetch_array($query_for_folder_id_response);
+            $row = db_query_one($query_for_folder_id, $params); 
 
             // delete from the database 
 
-            $query_to_delete_template = "update " .$xerte_toolkits_site->database_table_prefix . "templaterights set folder=\"" . get_recycle_bin() . "\" where template_id=\"" . $safe_template_id . "\" and user_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
-
-            if(mysql_query($query_to_delete_template)){
+            $query_to_delete_template = "UPDATE {$prefix}templaterights set folder= ? WHERE template_id = ? AND user_id = ?";
+            $params = array(get_recycle_bin(), $safe_template_id, $_SESSION['toolkits_logon_id']);
+            
+            if(db_query($query_to_delete_template, $params)){
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Moved file to users recycle bin", "Moved file to users recycle bin");
 
@@ -63,8 +65,5 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
-    mysql_close($database_id);
 
 }
-
-?>
