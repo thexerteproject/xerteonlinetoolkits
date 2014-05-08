@@ -53,5 +53,4 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
         echo SHARING_THIS_FEEDBACK_FAIL . " <br>";			
 
     }
-
 }

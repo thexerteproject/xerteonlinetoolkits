@@ -23,7 +23,7 @@ $database_id = database_connect("peer template database connect success","peer t
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))||is_user_admin()){
+    if(is_user_creator($_POST['template_id'])||is_user_admin()){
 
         xml_template_display($xerte_toolkits_site,false);
 
