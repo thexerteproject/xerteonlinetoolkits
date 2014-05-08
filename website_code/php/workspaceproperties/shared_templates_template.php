@@ -23,18 +23,23 @@ include "workspace_library.php";
  */
 
 workspace_templates_menu();
+$prefix =  $xerte_toolkits_site->database_table_prefix;
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_shared_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id=\"" . $_SESSION['toolkits_logon_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and creator_id = login_id";
+$query_for_shared_templates = "select * from {$prefix}logindetails, "
+. "{$prefix}templatedetails, {$prefix}templaterights where "
+. "user_id= ? and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and creator_id = login_id";
 
-$query_shared_response = mysql_query($query_for_shared_templates);
+$params = array($_SESSION['toolkits_logon_id']);
+
+$query_shared_response = db_query($query_for_shared_templates, $params);
 
 workspace_menu_create(60);
 
 echo "<div style=\"float:left; width:30%; height:20px;\">" . SHARED_TEMPLATE_CREATOR . "</div>";
 
-while($row_template_name = mysql_fetch_array($query_shared_response)){
+foreach($query_shared_response as $row_template_name) {
 
     echo "<div style=\"float:left; width:60%; overflow:hidden;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
     echo "<div style=\"float:left; width:30%; overflow:hidden;\">" . $row_template_name['firstname'] . " " . $row_template_name['surname'] . "</div>";
@@ -42,5 +47,3 @@ while($row_template_name = mysql_fetch_array($query_shared_response)){
 }
 
 echo "</div></div>";
-
-?>
