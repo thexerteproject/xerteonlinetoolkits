@@ -30,7 +30,7 @@ if(isset($_POST['template_id'])){
 
 		}else{
 		
-			$template_id = mysql_real_escape_string($_POST['template_id']);
+			$template_id = (int) $_POST['template_id'];
 		
 		}
 		
@@ -38,13 +38,11 @@ if(isset($_POST['template_id'])){
 
 		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $template_id, $query_for_play_content_strip);
 
-		$query_for_play_content_response = mysql_query($query_for_play_content);
-
-		$row_play = mysql_fetch_array($query_for_play_content_response);
+		$row_play = db_query_one($query_for_play_content);
 
 		$temp_array = array();
 
-		array_push($temp_array, mysql_real_escape_string($_POST['template_id']));
+		array_push($temp_array, (int) $_POST['template_id']);
 
 		array_push($temp_array, $row_play['username']);
 
@@ -93,5 +91,3 @@ if(isset($_POST['template_id'])){
 	}
 
 }
-
-?>
