@@ -26,20 +26,24 @@ workspace_templates_menu();
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_peer_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "additional_sharing where creator_id=\"" . $_SESSION['toolkits_logon_id'] . "\"     and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id  = " . $xerte_toolkits_site->database_table_prefix . "additional_sharing.template_id and sharing_type=\"xml\"";
+$prefix = $xerte_toolkits_site->database_table_prefix ;
 
-$query_peer_response = mysql_query($query_for_peer_templates);
+$query_for_peer_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights, {$prefix}additional_sharing where creator_id= ? "
+. " and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and "
+. "{$prefix}templaterights.template_id  = {$prefix}additional_sharing.template_id and sharing_type=?";
+
+$params = array($_SESSION['toolkits_logon_id'], 'xml');
+
+$query_peer_response = db_query($query_for_peer_templates, $params);
 
 workspace_menu_create(60);
 
 echo "<div style=\"float:left; width:30%; height:20px;\">" . XML_TEMPLATE_NAME . "</div>";
 
-while($row_template_name = mysql_fetch_array($query_peer_response)){
+foreach($query_peer_response as $row) {
 
     echo "<div style=\"float:left; width:60%;\">" . str_replace("_","",$row['template_name']) . "</div><div style=\"float:left; width:20%;\"> On </div>";
 
 }
 
 echo "</div></div>";
-
-?>
