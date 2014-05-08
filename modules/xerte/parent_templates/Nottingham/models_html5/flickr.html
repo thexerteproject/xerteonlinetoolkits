@@ -137,7 +137,7 @@
 				license = '1,2,3,4,5,6';
 			}
 
-			var feedURL = "http://api.flickr.com/services/rest/";
+			var feedURL = "https://api.flickr.com/services/rest/";
 			feedURL += "?method=flickr.photos.search";
 			feedURL += "&text=" + keywords;
 			feedURL += "&api_key=8f6f38d31f048a90c436583a6ac92e47";
@@ -185,7 +185,7 @@
 				);
 			}
 			else {
-				var url = "http://api.flickr.com/services/rest/";
+				var url = "https://api.flickr.com/services/rest/";
 				url += "?api_key=8f6f38d31f048a90c436583a6ac92e47";
 				url += "&method=flickr.photos.getInfo";
 				url += "&format=json";
@@ -217,7 +217,7 @@
 			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license-1].desc + '</a>';
 			x_pageInfo[x_currentPage].savedData.pictureInfo = ccInfo;
 
-			var url =  "http://api.flickr.com/services/rest/";
+			var url =  "https://api.flickr.com/services/rest/";
 			url += "?api_key=8f6f38d31f048a90c436583a6ac92e47";
 			url += "&method=flickr.photos.getSizes";
 			url += "&format=json";
