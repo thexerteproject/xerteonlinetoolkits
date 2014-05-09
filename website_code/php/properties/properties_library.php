@@ -64,8 +64,8 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
     . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
 
     $params = array($tutorial_id);
-    $query_names_response = db_query($query_for_names, $params);
-
+    $row = db_query_one($query_for_names, $params);
+    
     $_POST['template_id'] = (int) $_POST['template_id'];
     
     if(is_user_creator($_POST['template_id'])){
