@@ -165,13 +165,7 @@ $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->databas
 
 $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
 
-$query_for_play_content_response = mysql_query($query_for_play_content);
-
-$row_play = mysql_fetch_array($query_for_play_content_response);
-
-$query_to_find_out_if_in_recycle_bin = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id =\"" . $row_play['folder'] . "\"";
-
-$query_for_recycle_bin_response = mysql_query($query_to_find_out_if_in_recycle_bin);
+$row_play = db_query_one($query_for_play_content);
 
 /*
  * Is the file in the recycle bin?
