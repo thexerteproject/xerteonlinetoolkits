@@ -13,15 +13,66 @@
   <style>
   	.ui-menu { width: 200px; }
   	#insert-info {width: 60%; display: block; float: right; }
-  	
+  	/*#container {display:none;}*/
   </style>
 
 </head>
 <body>
-<img id="loader" src="http://www.junolightinggroup.com/images/loading16.gif" />
+<img id="loader" src="img/loading16.gif" />
+<div id="container">
+	<div class="ui-layout-west">
+
+		<div class="header"></div>
+
+		<div class="content"></div>
+
+		<div class="footer"></div>
+
+	</div>
+
+	<div class="ui-layout-east">
+
+		<div class="header">Optional parameters</div>
+
+		<div class="subhead">A subheader</div>
+
+		<div id="optionalParams" class="content">
+			<p>...</p>
+		</div>
+
+	</div>
+
+
+	<div class="ui-layout-north">
+		<div class="content" id="#header_images">
+			<img src="img/xerteLogo.jpg" style="float:left" />
+			<img src="img/UofNLogo.jpg" style="float:right" />
+		</div>
+	</div>
+
+
+	<div class="ui-layout-south">
+		<div class="header">Options</div>
+		<div class="content"></div>
+	</div>
+
+
+	<div id="mainContent">
+
+		<div id="mainPanel"></div>
+		<div id="advancedPanel">
+			<hr>
+		</div>
+		<div id="languagePanel">
+			<hr>
+		</div>
+
+	</div>
+</div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script type="text/javascript" src="js/vendor/jstree.js"></script>
 <script type="text/javascript" src="js/application2.js"></script>
 </body>
 </html>

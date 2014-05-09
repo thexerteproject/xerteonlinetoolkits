@@ -15,9 +15,16 @@ var EDITOR = (function ($, _this) {
     //var METHOD = function () { };
     
     _this.start = function () {
+    	// Start asynchronous loading of the data files
     	_this.DATAXML.begin("./data.xml");
     	_this.DATAXWD.begin("./data.xwd");
-    }
+    };
+    
+    _this.continue = function () { // This will be called once each asynchronous task completes
+    	if ( _this.wizard_data == {} && _this.lo_data == {} ) return; // Both files not loaded
+    	
+    	console.log("Both files loaded and parsed");
+    };
 
     return _this;
 
@@ -45,8 +52,8 @@ EDITOR = (function ($, _parent) {
 	var build_lo_data = function (xmlData, parent_node_id) {
 
 		// First lets generate a unique key
-		var key = (function () {
-			var i, key,
+		var key = (parent_node_id == null) ? 'treeroot' : (function () {
+			var key,
 				lo_data = _parent.lo_data,
 				lo_key_exists = function (key) {
 					for (var lo_key in lo_data) if (lo_key == key) return true;
@@ -54,20 +61,11 @@ EDITOR = (function ($, _parent) {
 				};
 
 			do {
-				i = 10;
-				key = "ID_";
-				do {
-					key += String(parseInt(Math.random()*10));
-				} while (i--);
+				key = 'ID_' + Math.random().toString().slice(2,11); console.log(key); // Quicker and 9 digits is plenty
 			} while (lo_key_exists(key));
 
 			return key;
 		})();
-
-		if (parent_node_id == null)
-		{
-			key = 'treeroot';
-		}
 
 		// Parse the attributes and store in the data store
 		var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
@@ -133,7 +131,6 @@ EDITOR = (function ($, _parent) {
     process_xml = function (text) {
 		// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
 		var newString = fix_line_breaks(text);
-
 		var tree_json = build_lo_data($($.parseXML(newString)).find("learningObject"), null);
 		console.log(tree_json);
 		var treeview = $('<div />').attr('id', 'treeview');
@@ -152,6 +149,7 @@ EDITOR = (function ($, _parent) {
 		});
 
 		$("#treeview").jstree("select_node", "#treeroot");
+		_parent.continue();
     };
     
     // Initialiser
@@ -317,6 +315,8 @@ EDITOR = (function ($, _parent) {
 
 			_parent.wizard_data[main_node] = {'menu_options' : menu_options, 'node_options' : node_options};
 		});
+
+		_parent.continue();
     };
     
     // Initialiser
