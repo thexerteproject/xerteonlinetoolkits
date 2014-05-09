@@ -227,12 +227,58 @@ function convertColorPickers()
     });
 }
 
+function duplicateSelectedNodes() {
+	var tree = $.jstree.reference("#treeview");
+	var copy_node, new_node, id, ids = tree.get_selected();
+	
+	if(!ids.length) { return false; } // Something needs to be selected
+	
+	id = ids[0];
+	
+	if (id == "treeroot") { return false; } // Can't copy the root node
+	
+	console.log(id);
+	
+	current_node = tree.get_node(id, false); console.log(current_node);
+	parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+	parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+	
+	var result = tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
+		node.attr("id", 
+		console.log(node);
+	});
+	
+	//var current_node = tree.get_node(id, false); console.log(current_node);
+	
+	//tree.remove();
+	
+	//for (var i=0, len=ids.length; i<len; i++) {
+	//	var new_key = generate_lo_key();
+	///	lo_data[new_key]['attributes'] = lo_data[key]['attributes'];
+	//}
+	console.log(tree.last_error());
+}
+
+function deleteSelectedNodes() {
+	var tree = $.jstree.reference("#treeview");
+	/*var copy_node, new_node, id, ids = tree.get_selected();
+
+	if(!ids.length) { return false; } // Something needs to be selected
+	
+	id = ids[0];
+	
+	if (id == "treeroot") { return false; } // Can't remove the root node*/
+	
+	tree.last_error();
+}
+
 function showNodeData(key) {
 	var attributes = lo_data[key]['attributes'];
 	
 	// Get the node name
-	var node_name = '';var i=attributes.length;
-	for(var i=0; i< attributes.length; i++)
+	var node_name = '';
+
+	for (var i=0, len=attributes.length; i<len; i++)
     {
         if (attributes[i].name == 'nodeName')
         {
@@ -387,7 +433,7 @@ function setAttributeValue(key, name, value)
 
 function cbChanged(id, key, name)
 {
-    console.log(id + ': ' + key + ', ' +  name);
+    //console.log(id + ': ' + key + ', ' +  name);
     var value = $('#' + id).is(':checked');
     if (value)
     {
@@ -402,14 +448,14 @@ function cbChanged(id, key, name)
 
 function selectChanged(id, key, name)
 {
-    console.log(id + ': ' + key + ', ' +  name);
+    //console.log(id + ': ' + key + ', ' +  name);
     var value = $('#' + id).val();
     setAttributeValue(key, name, value);
 }
 
 function inputChanged(id, key, name)
 {
-    console.log(id + ': ' + key + ', ' +  name);
+    //console.log(id + ': ' + key + ', ' +  name);
     var value;
     if (id.indexOf('textinput') >= 0)
     {
@@ -471,7 +517,7 @@ function displayDataType(value, options, name, key) {
             var max = parseInt(options.max);
             var step = parseInt(options.step);
             var intvalue = parseInt(value);
-            console.log({min: min, max: max, step: step});
+            //console.log({min: min, max: max, step: step});
             if (!Modernizr.inputtypes.number)
             {
                 var id = 'select_' + form_id_offset;

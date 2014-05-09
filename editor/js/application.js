@@ -16,11 +16,11 @@ jQuery(document).ready(function($) {
 			},
 			
 			delete_page = function() {
-				alert("delete a page");
+				deleteSelectedNodes();
 			},
 			
 			duplicate_page = function() {
-				alert("duplicate a page");
+				duplicateSelectedNodes();
 			},
 			
 			buttons = $('<div />').attr('id', 'top_buttons');
@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
 						var attributes = {};
 						for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
 							if (a[j].name == 'menu') is_menu = true;
-							console.log("  attr: " + a[j].name + ":" + a[j].value);
+							//console.log("  attr: " + a[j].name + ":" + a[j].value);
 							attributes[a[j].name] = a[j].value;
 						}
 				
@@ -254,23 +254,24 @@ jQuery(document).ready(function($) {
 					var newString = FixLineBreaks(text);
 
 					var tree_json = build_lo_data($($.parseXML(newString)).find("learningObject"), null);
-					console.log(tree_json);
+					//console.log(tree_json);
 					var treeview = $('<div />').attr('id', 'treeview');
 					$(".ui-layout-west .content").append(treeview);        			
 					$("#treeview").jstree({
+						"plugins" : [ "wholerow"],
 						"core" : {
-							"data" : tree_json
+							"data" : tree_json,
+							"check_callback" : true,
+							"multiple" : false // Need to disable this just now as nodes could be on different levels
 						}
 					})
 					.bind('select_node.jstree', function(event, data) {
-						console.log(event);
-						console.log(data);
-
 						showNodeData(data.node.id);
-
+					})
+					.on('ready.jstree', function (e, data) {
+						data.instance.open_node(["treeroot"]);
+						data.instance.select_node(["treeroot"]);
 					});
-			
-					$("#treeview").jstree("select_node", "#treeroot");
 				}
 			});
 		})(); 
