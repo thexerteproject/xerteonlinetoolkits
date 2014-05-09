@@ -85,11 +85,11 @@ function create_user_id($username, $firstname, $surname){
     global $xerte_toolkits_site;
 
     $query = "insert into {$xerte_toolkits_site->database_table_prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
-    $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
+    $res = db_query($query, array(null, $username, date('Y-m-d'), $firstname, $surname));
 
     if($res){
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
-        return get_user_id();
+        return $res;
 
     }else{
 
