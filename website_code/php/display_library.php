@@ -304,7 +304,7 @@ function list_users_projects($sort_type) {
 
   $prefix = $xerte_toolkits_site->database_table_prefix;
   
-  $query = "select folder_id from {$prefix}folderdetails where folder_name=? AND logon_id = ?";
+  $query = "select folder_id from {$prefix}folderdetails where folder_name=? AND login_id = ?";
   $params = array("recyclebin", $_SESSION['toolkits_logon_id']);
 
   $row = db_query_one($query, $params);
@@ -363,9 +363,9 @@ function list_blank_templates() {
   $prefix = $xerte_toolkits_site->database_table_prefix;
   
   $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where "
-  . "access_rights=? and active=true order by date_uploaded DESC";
+  . "access_rights=? and active= ? order by date_uploaded DESC";
 
-  $rows = db_query($query_for_blank_templates, array('*'));
+  $rows = db_query($query_for_blank_templates, array('*', 1));
   
   
   foreach($rows as $row) {
