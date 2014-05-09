@@ -60,10 +60,6 @@ if(is_user_admin()){
 
     echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") </p><br /><br /></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row['username']  . "_child\">";
 
-    //$query_templates="select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails," . $xerte_toolkits_site->database_table_prefix . "templaterights where " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id =\"" . $row['login_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id";
-
-    //$query_templates_response = mysql_query($query_templates);
-
     if(sizeof($query_templates_response) > 0){
         // This user has templates, loop over them
         _debug("User " . $row['username'] . " (" . $row['login_id'] . ") has templates");
@@ -89,12 +85,6 @@ if(is_user_admin()){
             echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
             echo "<form name=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" action=\"javascript:change_owner('" . $row_templates['template_id'] . "')\"><select id=\"" . $row_templates['template_id'] . "_new_owner\">";
-
-            //$query_users="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id !=" . $row['login_id'];
-
-            //$query_users_response = mysql_query($query_users);
-
-            //if(mysql_num_rows($query_users_response)!=0){
 
             foreach($logins as $row_users){
 
