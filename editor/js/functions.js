@@ -1,6 +1,6 @@
 // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
 function FixLineBreaks(text) {
-    var 	split_up = text.split(/<\!\[CDATA\[|\]\]>/),
+    var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
         temp, i, j, len, len2;
 
     for (i=0, len=split_up.length; i<len; i+=2) {
@@ -23,68 +23,68 @@ function FixLineBreaks(text) {
 
 
 function lo_key_exists(key) {
-	for (var lo_key in lo_data) if (lo_key == key) return true;
-	return false;
+    for (var lo_key in lo_data) if (lo_key == key) return true;
+    return false;
 }
 
 function generate_lo_key() {
-	var key;
-	do {
-		key = "ID_";
-		for (var i=0; i<10; i++) key += String(parseInt(Math.random()*10));
-	} while (lo_key_exists(key));
-	return key;
+    var key;
+    do {
+        key = "ID_";
+        for (var i=0; i<10; i++) key += String(parseInt(Math.random()*9));
+    } while (lo_key_exists(key));
+    return key;
 }
 
-// ** Recursive function to traverse the xml and build 
+// ** Recursive function to traverse the xml and build
 function build_lo_data(xmlData, parent_id) {
 
-	// First lets generate a unique key
-	var key = generate_lo_key();
+    // First lets generate a unique key
+    var key = generate_lo_key();
     if (parent_id == null)
     {
         key = 'treeroot';
     }
 
-	// Parse the attributes and store in the data store
-	var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
-	$(xmlData[0].attributes).each(function() {
-		attributes.push({name: this.name, value: this.value});
-	});
-	lo_data[key] = {};
+    // Parse the attributes and store in the data store
+    var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
+    $(xmlData[0].attributes).each(function() {
+        attributes.push({name: this.name, value: this.value});
+    });
+    lo_data[key] = {};
     lo_data[key]['attributes'] = attributes;
     if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
     {
         lo_data[key]['data'] = xmlData[0].firstChild.data;
     }
 
-	// Build the JSON object for the treeview
+    // Build the JSON object for the treeview
     /* For version 1 jsTree
-	var this_json = {
-		data: {
-			title : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
-			icon : 'img/page_types/' + xmlData[0].nodeName + '.png'
-		},
-		metadata: {
-			id: key,
-			parent_id: parent_id
-		}
-	};
-	
-	// if we are at top level then make sure it's open and display node data
-	if (parent_id == null) {
-		this_json.state = "open";
-		//showNodeData(key);
-	}
-	
-	if (xmlData.children()[0]) {
-		this_json.children = [];
-		
-		xmlData.children().each(function(i) {
-			this_json.children.push( build_lo_data($(this), key) );
-		});
-	}
-	*/
+    var this_json = {
+        data: {
+            title : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
+            icon : 'img/page_types/' + xmlData[0].nodeName + '.png'
+        },
+        metadata: {
+            id: key,
+            parent_id: parent_id
+        }
+    };
+
+    // if we are at top level then make sure it's open and display node data
+    if (parent_id == null) {
+        this_json.state = "open";
+        //showNodeData(key);
+    }
+
+    if (xmlData.children()[0]) {
+        this_json.children = [];
+
+        xmlData.children().each(function(i) {
+            this_json.children.push( build_lo_data($(this), key) );
+        });
+    }
+    */
 
     // Build the JSON object for the treeview
     // For version 3 jsTree
@@ -228,57 +228,80 @@ function convertColorPickers()
 }
 
 function duplicateSelectedNodes() {
-	var tree = $.jstree.reference("#treeview");
-	var copy_node, new_node, id, ids = tree.get_selected();
-	
-	if(!ids.length) { return false; } // Something needs to be selected
-	
-	id = ids[0];
-	
-	if (id == "treeroot") { return false; } // Can't copy the root node
-	
-	console.log(id);
-	
-	current_node = tree.get_node(id, false); console.log(current_node);
-	parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-	parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
-	
-	var result = tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
-		node.attr("id", 
-		console.log(node);
-	});
-	
-	//var current_node = tree.get_node(id, false); console.log(current_node);
-	
-	//tree.remove();
-	
-	//for (var i=0, len=ids.length; i<len; i++) {
-	//	var new_key = generate_lo_key();
-	///	lo_data[new_key]['attributes'] = lo_data[key]['attributes'];
-	//}
-	console.log(tree.last_error());
+    var tree = $.jstree.reference("#treeview");
+    var copy_node, new_node, id, ids = tree.get_selected();
+
+    if(!ids.length) { return false; } // Something needs to be selected
+
+    id = ids[0];
+
+    if (id == "treeroot") { return false; } // Can't copy the root node
+
+    console.log(id);
+
+    current_node = tree.get_node(id, false); console.log(current_node);
+    parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+    parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+
+    var result = tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
+        var copied_node_id = current_node.id;
+        var node_id = node.id;
+        var new_node_id = generate_lo_key();
+
+        // Update the id
+        node.id = new_node_id;
+
+        // Copy the lo_data from the old node to the new one
+        lo_data[new_node_id] = lo_data[copied_node_id];
+
+        console.log(lo_data[node.id]);
+    });
+
+    current_node = null;
+
+    //var current_node = tree.get_node(id, false); console.log(current_node);
+
+    //tree.remove();
+
+    //for (var i=0, len=ids.length; i<len; i++) {
+    //  var new_key = generate_lo_key();
+    /// lo_data[new_key]['attributes'] = lo_data[key]['attributes'];
+    //}
+
+    //console.log(tree.last_error());
 }
 
 function deleteSelectedNodes() {
-	var tree = $.jstree.reference("#treeview");
-	/*var copy_node, new_node, id, ids = tree.get_selected();
+    var tree = $.jstree.reference("#treeview");
+    var copy_node, new_node, id, ids = tree.get_selected();
 
-	if(!ids.length) { return false; } // Something needs to be selected
-	
-	id = ids[0];
-	
-	if (id == "treeroot") { return false; } // Can't remove the root node*/
-	
-	tree.last_error();
+    if(!ids.length) { return false; } // Something needs to be selected
+
+    id = ids[0];
+
+    if (id == "treeroot") { return false; } // Can't remove the root node
+
+    if (!confirm('Are you sure you want to delete this page?')) {
+        return;
+    }
+
+    // Delete from the tree
+    tree.delete_node(id);
+
+    // Delete from lo_data
+
+    //tree.last_error();
 }
 
 function showNodeData(key) {
-	var attributes = lo_data[key]['attributes'];
-	
-	// Get the node name
-	var node_name = '';
+    console.log(key);
 
-	for (var i=0, len=attributes.length; i<len; i++)
+    var attributes = lo_data[key]['attributes'];
+
+    // Get the node name
+    var node_name = '';
+
+    for (var i=0, len=attributes.length; i<len; i++)
     {
         if (attributes[i].name == 'nodeName')
         {
@@ -286,8 +309,8 @@ function showNodeData(key) {
             break;
         }
     }
-	
-	var node_options = wizard_data[node_name].node_options;
+
+    var node_options = wizard_data[node_name].node_options;
 
     // Clear editor array
     textareas_options = [];
@@ -295,7 +318,7 @@ function showNodeData(key) {
     colorpickers = [];
     form_fields = [];
     form_id_offset = 0;
-	$("#mainPanel").html("<table class=\"wizard\" border=\"0\">");
+    $("#mainPanel").html("<table class=\"wizard\" border=\"0\">");
 
     // Build the form
     var attribute_name;
@@ -357,12 +380,12 @@ function showNodeData(key) {
     }
     $('#languagePanel').append("</table>");
 /*
-	for (var i=0; i<attributes.length; i++) {
-		if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
-			var attribute_name = attributes[i].name;
-			var attribute_value = attributes[i].value;
-			
-			var options = getOptionValue(node_options['all'], attribute_name);
+    for (var i=0; i<attributes.length; i++) {
+        if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
+            var attribute_name = attributes[i].name;
+            var attribute_value = attributes[i].value;
+
+            var options = getOptionValue(node_options['all'], attribute_name);
             if (options != null)
             {
                 var output_string = '<tr class="wizardattribute">';
@@ -379,8 +402,8 @@ function showNodeData(key) {
                 output_string += '</tr>';
                 $('#mainContent').append(output_string);
             }
-		}
-	}
+        }
+    }
 */
 
     //$('textarea.ckeditor').ckeditor(function(){}, { customConfig: 'config.js' });
@@ -477,16 +500,16 @@ function inputChanged(id, key, name)
 }
 
 function displayDataType(value, options, name, key) {
-	var html;					//console.log(options);
+    var html;                   //console.log(options);
 
-	switch(options.type.toLowerCase())
-	{
-		case 'checkbox':
+    switch(options.type.toLowerCase())
+    {
+        case 'checkbox':
             var id = 'checkbox_' + form_id_offset;
             form_id_offset++;
-			html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
-			break;
-		case 'combobox':
+            html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
+            break;
+        case 'combobox':
             var id = 'select_' + form_id_offset;
             form_id_offset++;
             var s_options = options.options.split(',');
@@ -495,24 +518,24 @@ function displayDataType(value, options, name, key) {
             {
                 s_data = options.data.split(',');
             }
-			html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-			for (var i=0; i<s_options.length; i++) {
-				html += "<option value=\"" + s_options[i] + (s_options[i]==value ? "\" selected=\"selected\">" : "\">") + (options.data ? s_data[i] : s_options[i]) + "</option>";
-			}
-			html += '</select>';
-			break;
+            html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+            for (var i=0; i<s_options.length; i++) {
+                html += "<option value=\"" + s_options[i] + (s_options[i]==value ? "\" selected=\"selected\">" : "\">") + (options.data ? s_data[i] : s_options[i]) + "</option>";
+            }
+            html += '</select>';
+            break;
         case 'text':
         case 'script':
         case 'html':
         case 'textarea':
             var id = "textarea_" + form_id_offset;
             form_id_offset++;
-			html = "<div style=\"width:1000px\"><textarea id=\"" + id + "\" class=\"ckeditor\" onchange=\"inputChanged('" + id + "', '" + key + "', '" + name + "')\" style=\"";
-			if (options.height) html += "height:" + options.height + "px";
-			html += "\">" + value + "</textarea></div>";
+            html = "<div style=\"width:1000px\"><textarea id=\"" + id + "\" class=\"ckeditor\" onchange=\"inputChanged('" + id + "', '" + key + "', '" + name + "')\" style=\"";
+            if (options.height) html += "height:" + options.height + "px";
+            html += "\">" + value + "</textarea></div>";
             textareas_options.push({id: id, key: key, name: name, options: options});
-			break;
-		case 'numericstepper':
+            break;
+        case 'numericstepper':
             var min = parseInt(options.min);
             var max = parseInt(options.max);
             var step = parseInt(options.step);
@@ -524,7 +547,7 @@ function displayDataType(value, options, name, key) {
                 form_id_offset++;
                 html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
                 for (var i=min; i<=max; i += step) {
-                	html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
+                    html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
                 }
                 html += "</select>";
             }
@@ -534,7 +557,7 @@ function displayDataType(value, options, name, key) {
                 form_id_offset++;
                 html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
             }
-			break;
+            break;
         case 'pagelist':
             // Implement differently then in the flash editor
             // Leave PageIDs untouched, and prefer to use the PageID over the linkID
@@ -590,13 +613,13 @@ function displayDataType(value, options, name, key) {
         case 'datagrid':
         case 'webpage':
         case 'media':
-		default:
+        default:
 
-			 //html = "<input type=\"text\" value=\"" + value + "\" />";
+             //html = "<input type=\"text\" value=\"" + value + "\" />";
             var id = 'textinput_' + form_id_offset;
             form_id_offset++;
             html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
             textinputs_options.push({id: id, key: key, name: name, options: options});
-	}
-	return html;
+    }
+    return html;
 }
