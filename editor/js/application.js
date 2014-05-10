@@ -254,11 +254,11 @@ jQuery(document).ready(function($) {
                     var newString = FixLineBreaks(text);
 
                     var tree_json = build_lo_data($($.parseXML(newString)).find("learningObject"), null);
-                    //console.log(tree_json);
+                    //console.log(JSON.stringify(tree_json));
                     var treeview = $('<div />').attr('id', 'treeview');
                     $(".ui-layout-west .content").append(treeview);
                     $("#treeview").jstree({
-                        "plugins" : [ "wholerow"],
+                        /*"plugins" : [ "wholerow"],*/
                         "core" : {
                             "data" : tree_json,
                             "check_callback" : true, // Need this to allow the copy_node function to work...
@@ -269,7 +269,26 @@ jQuery(document).ready(function($) {
                         console.log(data.node.id);
                         showNodeData(data.node.id);
                     })
-                    .on('ready.jstree', function (e, data) {
+                    .bind("copy_node.jstree", function (e, data) {
+                        var new_id = generate_lo_key(),
+                            original_id =  data.original.id,
+                            tree = $('#treeview').jstree(true);
+
+                        // Change the id
+                        tree.set_id(data.node, new_id);
+
+                        // Copy the lo_data from the old node to the new one
+                        lo_data[new_id] = lo_data[original_id];
+
+                        // Do the same for all the children
+                        for(var i = 0, j = data.original.children_d.length; i < j; i++) {
+                            new_id = generate_lo_key();
+                            original_id =  data.original.children_d[i];
+                            tree.set_id(data.node.children_d[i], new_id);
+                            lo_data[new_id] = lo_data[original_id];
+                        }
+                    })
+                    .one('ready.jstree', function (e, data) {
                         data.instance.open_node(["treeroot"]);
                         data.instance.select_node(["treeroot"]);
                     });
@@ -282,11 +301,51 @@ jQuery(document).ready(function($) {
         //bottom buttons
         (function() {
             var up = function() {
-                alert("move node up");
+                console.log("move node up");
+                move(-1);
             },
 
             down = function() {
-                alert("move node down");
+                console.log("move node down");
+                move(1);
+            },
+
+            move = function(dir) {
+                var tree = $.jstree.reference("#treeview");
+                var copy_node, new_node, id, ids = tree.get_selected();
+
+                if(!ids.length) { return false; } // Something needs to be selected
+
+                id = ids[0];
+
+                if (id == "treeroot") {  // Can't remove the root node
+                    alert("You can't move the LO node");
+                    return false;
+                }
+
+                current_node = tree.get_node(id, false); //console.log(current_node);
+                parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+                //parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+
+                //var pos = (dir > 0) ? 'next' : 'previous';
+
+                //tree.move_node(current_node, parent_node, 2, function(node, parent, position){
+                //    console.log("done");
+
+                    //var copied_node_id = current_node.id;
+                    //var node_id = node.id;
+                    //var new_node_id = generate_lo_key();
+
+                    // Update the id
+                    //node.id = new_node_id;
+
+                    // Copy the lo_data from the old node to the new one
+                    //lo_data[new_node_id] = lo_data[copied_node_id];
+
+                    //console.log(lo_data[node.id]);
+                //});
+
+                return true;
             },
 
             buttons = $('<div />').attr('id', 'bottom_buttons');

@@ -243,19 +243,7 @@ function duplicateSelectedNodes() {
     parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
     parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
 
-    tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
-        var copied_node_id = current_node.id;
-        var node_id = node.id;
-        var new_node_id = generate_lo_key();
-
-        // Update the id
-        node.id = new_node_id;
-
-        // Copy the lo_data from the old node to the new one
-        lo_data[new_node_id] = lo_data[copied_node_id];
-
-        console.log(lo_data[node.id]);
-    });
+    tree.copy_node(current_node, parent_node, 'last');
 
     return true; // Successful
 }
