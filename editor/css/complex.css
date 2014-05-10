@@ -99,8 +99,8 @@ table {
 .pane-north {
 	border-bottom:	none;
 	}
-	.pane-north .content ,
-	.pane-south .content {
+.pane-north .content ,
+.pane-south .content {
 		text-align: center;
 	}
 .pane-center {

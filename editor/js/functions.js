@@ -244,7 +244,7 @@ function duplicateSelectedNodes() {
 	parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
 	
 	var result = tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
-		node.attr("id", 
+		//node.attr("id",
 		console.log(node);
 	});
 	
