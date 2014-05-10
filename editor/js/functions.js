@@ -243,7 +243,7 @@ function duplicateSelectedNodes() {
     parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
     parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
 
-    var result = tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
+    tree.copy_node(current_node, parent_node, 'last', function(node, parent, position){
         var copied_node_id = current_node.id;
         var node_id = node.id;
         var new_node_id = generate_lo_key();
@@ -257,18 +257,7 @@ function duplicateSelectedNodes() {
         console.log(lo_data[node.id]);
     });
 
-    current_node = null;
-
-    //var current_node = tree.get_node(id, false); console.log(current_node);
-
-    //tree.remove();
-
-    //for (var i=0, len=ids.length; i<len; i++) {
-    //  var new_key = generate_lo_key();
-    /// lo_data[new_key]['attributes'] = lo_data[key]['attributes'];
-    //}
-
-    //console.log(tree.last_error());
+    return true; // Successful
 }
 
 function deleteSelectedNodes() {
@@ -279,7 +268,10 @@ function deleteSelectedNodes() {
 
     id = ids[0];
 
-    if (id == "treeroot") { return false; } // Can't remove the root node
+    if (id == "treeroot") {  // Can't remove the root node
+        alert("You can't remove the LO node");
+        return false;
+    }
 
     if (!confirm('Are you sure you want to delete this page?')) {
         return;
@@ -288,9 +280,13 @@ function deleteSelectedNodes() {
     // Delete from the tree
     tree.delete_node(id);
 
-    // Delete from lo_data
+    // Delete
+    delete lo_data[id];
 
+    //console.log(lo_data[id]);
     //tree.last_error();
+
+    return true; // Successful
 }
 
 function showNodeData(key) {
