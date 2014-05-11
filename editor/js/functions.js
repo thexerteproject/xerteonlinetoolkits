@@ -60,25 +60,25 @@ function build_lo_data(xmlData, parent_id) {
 
     // Build the JSON object for the treeview
     // For version 3 jsTree
-     var this_json = {
-         id : key,
-         text : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
-         icon : 'editor/img/page_types/' + xmlData[0].nodeName + '.png'
-     }
+    var this_json = {
+        id : key,
+        text : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
+        icon : 'editor/img/page_types/' + xmlData[0].nodeName + '.png'
+    }
 
-     // if we are at top level then make sure it's open and display node data
-     if (parent_id == null) {
-         this_json.state = { opened : true };
-         //showNodeData(key);
-     }
+    // if we are at top level then make sure it's open and display node data
+    if (parent_id == null) {
+        this_json.state = { opened : true };
+        //showNodeData(key);
+    }
 
-     if (xmlData.children()[0]) {
-     this_json.children = [];
+    if (xmlData.children()[0]) {
+        this_json.children = [];
 
-     xmlData.children().each(function(i) {
-         this_json.children.push( build_lo_data($(this), key) );
-         });
-     }
+        xmlData.children().each(function(i) {
+            this_json.children.push( build_lo_data($(this), key) );
+        });
+    }
 
     return this_json;
 }
