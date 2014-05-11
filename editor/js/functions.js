@@ -120,7 +120,7 @@ function getOptionValue(all_options, key)
             value = all_options[i].value;
             break;
         }
-    };
+    }
     return value;
 }
 
@@ -225,6 +225,14 @@ function convertColorPickers()
         myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
 
     });
+}
+
+function preview() {
+    console.log("preview clicked");
+}
+
+function publish() {
+    console.log("publish clicked");
 }
 
 function duplicateSelectedNodes() {
