@@ -164,7 +164,7 @@ function convertTextAreas()
                 // This is the call back when editor looses focus
                 if (this.checkDirty())
                 {
-                    inputChanged(options.id, options.key, options.name);
+                    inputChanged(options.id, options.key, options.name, this.getData());
                 }
             })
         }, ckoptions);
@@ -179,8 +179,9 @@ function convertTextInputs()
             this.on('blur', function(){
                 // This is the call back when editor looses focus
                 if (this.checkDirty())
-                {
-                    inputChanged(options.id, options.key, options.name);
+                {   var thisValue = this.getData();
+                    thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+                    inputChanged(options.id, options.key, options.name, thisValue);
                 }
             })
         }, { toolbarGroups : [
@@ -440,13 +441,14 @@ function selectChanged(id, key, name)
     setAttributeValue(key, name, value);
 }
 
-function inputChanged(id, key, name)
+function inputChanged(id, key, name, passedValue)
 {
-    //console.log(id + ': ' + key + ', ' +  name);
-    var value;
+    //console.log(id + ': ' + key + ', ' +  name  + ', ' +  passedValue);
+    var value, valuePassed = (arguments.length == 4);
+
     if (id.indexOf('textinput') >= 0)
     {
-        value = $('#' + id).html();
+        value = (valuePassed) ? passedValue : $('#' + id).html();
         value = value.substr(3);
         value = value.substr(0, value.length-4);
         value.trim();
@@ -455,6 +457,7 @@ function inputChanged(id, key, name)
     {
         value = $('#' + id).val();
     }
+
     if (id.indexOf('color')>=0)
     {
         value = value.substr(1);
