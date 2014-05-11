@@ -131,7 +131,7 @@ function displayParameter(id, all_options, name, value, key)
         var output_string = '<tr class="wizardattribute">';
         if (options.optional == 'true')
         {
-            output_string += '<td class="wizardoptional"><img src="editor/img/optional.gif" />&nbsp;</td>';
+            output_string += '<td class="wizardoptional"><img id="opt_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
         }
         else
         {
@@ -141,7 +141,20 @@ function displayParameter(id, all_options, name, value, key)
         output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
         output_string += '</tr>';
         $(id).append(output_string);
+        if (options.optional == 'true') {
+            $("#opt_"+ name).on("click", function () {
+                var this_name = name;
+                removeOptionalProperty(this_name);
+            });
+        }
     }
+}
+
+function removeOptionalProperty(name) {
+    console.log("Handler for removing optional properties called: " + name);
+
+    // Need to remove row from the screen and
+    // Also need to remove property from the data store
 }
 
 function convertTextAreas()

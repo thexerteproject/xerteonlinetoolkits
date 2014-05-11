@@ -419,3 +419,8 @@ table.wizard{
 td.wizardvalue {
     width: 85%;
 }
+
+img.optional {
+	cursor: pointer;
+	cursor: hand;
+}
