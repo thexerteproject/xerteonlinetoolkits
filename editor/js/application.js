@@ -38,6 +38,22 @@ jQuery(document).ready(function($) {
                 buttons.append(button);
             });
             $('.ui-layout-west .header').append(buttons);
+
+            buttons = $('<div />').attr('id', 'save_buttons');
+            $([
+                {name:'Preview', icon:'img/insert.png', id:'insert_button', click:preview},
+                {name:'Publish', icon:'img/copy.png', id:'copy_button', click:publish},
+            ])
+            .each(function(index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .click(value.click)
+                    .append($('<img>').attr('src', value.icon).height(14))
+                    .append(value.name);
+                buttons.append(button);
+            });
+            $('.ui-layout-east .content').append(buttons);
+
         })();
 
         (function(){
