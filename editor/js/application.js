@@ -25,9 +25,9 @@ jQuery(document).ready(function($) {
 
             buttons = $('<div />').attr('id', 'top_buttons');
             $([
-                {name:'Insert', icon:'img/insert.png', id:'insert_button', click:insert_page},
-                {name:'Copy', icon:'img/copy.png', id:'copy_button', click:duplicate_page},
-                {name:'Delete', icon:'img/delete.gif', id:'delete_button', click:delete_page}
+                {name:'Insert', icon:'editor/img/insert.png', id:'insert_button', click:insert_page},
+                {name:'Copy', icon:'editor/img/copy.png', id:'copy_button', click:duplicate_page},
+                {name:'Delete', icon:'editor/img/delete.gif', id:'delete_button', click:delete_page}
             ])
             .each(function(index, value) {
                 var button = $('<button>')
@@ -41,8 +41,8 @@ jQuery(document).ready(function($) {
 
             buttons = $('<div />').attr('id', 'save_buttons');
             $([
-                {name:'Preview', icon:'img/insert.png', id:'insert_button', click:preview},
-                {name:'Publish', icon:'img/copy.png', id:'copy_button', click:publish},
+                {name:'Preview', icon:'editor/img/insert.png', id:'insert_button', click:preview},
+                {name:'Publish', icon:'editor/img/copy.png', id:'copy_button', click:publish},
             ])
             .each(function(index, value) {
                 var button = $('<button>')
@@ -53,14 +53,13 @@ jQuery(document).ready(function($) {
                 buttons.append(button);
             });
             $('.ui-layout-east .content').append(buttons);
-
         })();
 
         (function(){
             // load and parse the wizard xml
             $.ajax({
                 type: "GET",
-                url: "./data.xwd",
+                url: originalpathvariable + "wizards/" + languagecodevariable + "/data.xwd",
                 dataType: "text",
                 success: function(xml) {
 
@@ -242,7 +241,7 @@ jQuery(document).ready(function($) {
                             $menu.menu({
                                 select: function(event, ui) {
                                     if (ui.item.children().attr('hint') != undefined) {
-                                        $("#insert-info img").attr("src", "../modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
+                                        $("#insert-info img").attr("src", "modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
                                         $("#insert-info span").text(ui.item.children().attr('hint'));
                                         $("#insert-buttons").show();
                                     }
@@ -263,7 +262,7 @@ jQuery(document).ready(function($) {
             // get xml data and sorts it
             $.ajax({
                 type: "GET",
-                url: "./data.xml",
+                url: xmlvariable,
                 dataType: "text",
                 success: function(text) {
                     // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
@@ -385,4 +384,3 @@ jQuery(document).ready(function($) {
     init();
 
 });
-
