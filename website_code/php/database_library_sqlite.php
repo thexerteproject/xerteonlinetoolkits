@@ -15,60 +15,98 @@ if (function_exists('database_connect')) {
     return;
 }
 
+
 /**
- * 
- * Function database connect
- * This function checks http security settings
- * @param string $success_string = Successful message for the error log
- * @param string $error_string = Error message for the error log
- * @version 1.0
- * @author Patrick Lockley
+ * Perform a basic Xerte database install
+ * @param string file path for the sqlite database file
  */
-function database_connect($success_string, $error_string)
-{
+function database_setup($database_location) {
+
+    if (is_file($database_location)) {
+        return true; // nothing to do.
+    }
+
+    if (!extension_loaded('sqlite3')) {
+        die("SQLite extension not available; please edit config.php and try using MySQL."
+                . "\n\n Or fix your PHP installation. \n\n"
+                . "Hint: apt-get install php5-sqlite ");
+    }
+// need to create.
+    $schema_file = dirname(__FILE__) . '/../../sqlite/sqlite.schema';
+    $data_file = dirname(__FILE__) . '/../../sqlite/sqlite.data';
+    if (is_file($schema_file)) {
+        _debug("Creating new Sqlite database");
+        $db = new SQLite3($database_location);
+        _debug("Loading default sqlite schema");
+        $schema = file_get_contents($schema_file);
+        $bits = explode(';', $schema);
+        foreach ($bits as $bit) {
+            $bit = trim($bit);
+            if(empty($bit)) {
+                continue;
+            }
+            _debug("Db setup : About to run - $bit");
+            $ok = $db->query($bit);
+            
+            if ($ok === FALSE) {
+                _debug("DB schema load error on $bit" . $db->lastErrorMsg());
+                die("Failed to run schema load  : $bit / " .print_r($ok, true) .  $db->lastErrorMsg());
+            }
+        }
+        
+        // Load initial (near empty) data.
+        _debug("Loading default data");
+        $bits = explode(';', file_get_contents($data_file));
+
+        foreach ($bits as $bit) {
+            $bit = trim($bit);
+            if(empty($bit)) {
+                continue;
+            }
+            $ok = $db->query($bit);
+            if ($ok === FALSE) {
+                _debug("DB error on data load : $bit " . $db->lastErrorMsg());
+                die("Failed to load default data : $bit / " . print_r($ok, true));
+            }
+        }
+
+        if (!$ok) {
+            die("SQLite installation failed.");
+        }
+        
+        $db->query("UPDATE sitedetails SET site_url = 'http://{$_SERVER['HTTP_HOST']}/'");
+        $root_path = realpath(dirname(__FILE__) . '/../../');
+        
+        $db->query("UPDATE sitedetails SET root_file_path = '$root_path/'");
+        $db->query("UPDATE sitedetails SET import_path = '$root_path/import'");
+        
+        $db->close();
+    } else {
+        die("Can't find : $schema_file");
+    }
+    
+    return true;
+}
+
+/**
+ * @global type $xerte_toolkits_site
+ * @return \SQLite3
+ */
+function database_connect() {
     global $xerte_toolkits_site;
 
-    /*
-     * Try to connect
-     */
-
-    $mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
-
-    /*
-     * Check for connection and error if failed
-     */
-
-    if (!$mysql_connect_id) {
-        die("<h2>Xerte Online Toolkits</h2>
-             <p><strong>Sorry, the system cannot connect to the database at present</strong></p>
-             <p>This may be because the database server is offline, or this instance of Xerte has not been setup (see <a href='setup'>/setup</a>). </p>
-             <p>The mysql error is <strong>" . mysql_error() . "</strong></p>");
+    if (!file_exists($xerte_toolkits_site->database_location)) {
+        die("Sqlite DB doesn't exist; aborting");
     }
 
-    $database_fail = false;
-
-    mysql_select_db($xerte_toolkits_site->database_name) or ($database_fail = true);
-
-    /*
-     * database failing code
-     */
-
-    $username = 'anonymous';
-    if (isset($_SESSION['toolkits_logon_username'])) {
-        $username = $_SESSION['toolkits_logon_username'];
+    /* reuse the same connection everywhere, if we can */
+    if (isset($xerte_toolkits_site->database)) {
+        return $xerte_toolkits_site->database;
     }
-    if ($database_fail) {
-        receive_message($username, "ADMIN", "CRITICAL", "DATABASE FAILED AT " . $error_string, "MYSQL ERROR MESSAGE IS " . mysql_error());
-        die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error());
-    } else {
-        receive_message($username, "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
-    }
-
-    /*
-     * if all worked returned the mysql ID
-     */
-
-    return $mysql_connect_id;
+    $db = new SQLite3($xerte_toolkits_site->database_location);
+    $db->busyTimeout(1000);
+    $xerte_toolkits_site->database = $db;
+    return $db;
 }
 
 /**
@@ -77,53 +115,49 @@ function database_connect($success_string, $error_string)
  * @param array $params - e.g. array('bob', "david's");
  * @return mysql resultset.
  */
-function db_query($sql, $params = array())
-{
+function db_query($sql, $params = array()) {
     $connection = database_connect('db_query ok', 'db_query fail');
-	
-    foreach ($params as $key => $value) {
-	
-        if (isset($value)) {
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
-            $value = "'" . mysql_real_escape_string($value) . "'";
-        } else {
-            $value = 'NULL';
-        }
-        // overwrite the $params data with the santised stuff.
-        $params[$key] = $value;
-    }
 
-    // following code taken from php.net/mysql_query - axiak at mit dot edu - 24th october 2006
-    $curpos = 0;
-    $curph = count($params) - 1;
-    // start at the end of the string and replace things backwards; this avoids us replacing a replacement
-    for ($i = strlen($sql) - 1; $i > 0; $i--) {
-        if ($sql[$i] !== '?') {
-            continue;
+    _debug("SQLITE Running : $sql", 1);
+    _debug($params);
+    if (empty($params)) {
+        _debug("No parameters; lazy query");
+        $result = $connection->query($sql);
+    } else {
+        $statement = $connection->prepare($sql);
+        if (!$statement) {
+            die("Fail : $sql " . $connection->lastErrorMsg());
         }
-        if ($curph < 0) {
-            $sql = substr_replace($sql, 'NULL', $i, 1);
-        } else {
-            $sql = substr_replace($sql, $params[$curph], $i, 1);
+        $c = 0;
+        foreach ($params as $value) {
+            $c++;
+            $statement->bindValue($c, $value);
         }
-        $curph--;
-		
-    }
-    _debug("Running : $sql", 1);
 
-    $result = mysql_query($sql, $connection);
+        $result = $statement->execute();
+    }
+    _debug($result);
+
     if (!$result) {
-        _debug("Failed to execute query : $sql : " . mysql_error());
+        _debug("Failed to execute query : $sql : " . print_r($params, true) . ' -- error message -- ' . $connection->lastErrorMsg());
         return false;
     }
+
     if (preg_match("/^select/i", $sql)) {
         $rows = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $rows[] = $row;
         }
         return $rows;
+    }
+
+    if (preg_match('/^insert/i', $sql)) {
+        $result = $connection->lastInsertRowID();
+    }
+    /* See http://stackoverflow.com/questions/313567/how-can-i-determine-the-number-of-affected-rows-in-a-sqlite-2-query-in-php */
+    if (preg_match('/^update/i', $sql) || preg_match('/^delete/i', $sql)) {
+        $result = $connection->changes();
+        _debug("Result? " . print_r($result, true));
     }
     return $result;
 }
@@ -134,8 +168,7 @@ function db_query($sql, $params = array())
  * @param array $params (optional)
  * @return array (db row) or null
  */
-function db_query_one($sql, $params = array())
-{
+function db_query_one($sql, $params = array()) {
     $results = db_query($sql, $params);
 
     if (sizeof($results) > 0) {
