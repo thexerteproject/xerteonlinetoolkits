@@ -27,8 +27,9 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
  */
 function update_access_time($row_edit){
     global $xerte_toolkits_site;
-    return db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
-
+    /* This function is called even if the template is new - in which case it fails as a record doesn't exist */
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
+    return true;
 }
 
 
@@ -38,7 +39,7 @@ function update_access_time($row_edit){
 
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     _debug("Template id is not numeric. ->" . $_GET['template_id']);
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+    require_once(dirname(__FILE__) . '/modules/xerte/edit.php');
     dont_show_template();
     exit(0);
 }
