@@ -45,6 +45,8 @@ $database_id = database_connect("Access change database connect success","Access
 /*
  * Update the database setting
  */
+$prefix = $xerte_toolkits_site->database_table_prefix;
+
  $query = "UPDATE {$prefix}templatedetails SET access_to_whom = ? WHERE template_id = ?";
 if(isset($_POST['server_string'])){
     $access_to_whom = $_POST['access'] . '-' . $_POST['server_string'];    
