@@ -20,12 +20,11 @@ function xml_template_display($xerte_toolkits_site,$change){
     $query = "select * from {$prefix}additional_sharing where sharing_type= ? AND template_id = ?";
     $params = array("xml", $_POST['template_id']);
 
-    $query_response = db_query($query, $params);
+    $row = db_query_one($query, $params);
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_SHARING . " </p>";
 
-    if(sizeof($query_response)==1){
-
+    if(!empty($row)) {
         echo "<p class=\"share_status_paragraph\"><img id=\"xmlon\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:xml_tick_toggle('xmlon')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
         echo "<p class=\"share_status_paragraph\"><img id=\"xmloff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:xml_tick_toggle('xmloff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
         echo "<p class=\"share_status_paragraph\">The link for xml sharing is " . $xerte_toolkits_site->site_url . url_return("xml",$_POST['template_id']) . "</p>";
@@ -36,8 +35,6 @@ function xml_template_display($xerte_toolkits_site,$change){
         echo "<p class=\"share_status_paragraph\"><img id=\"xmloff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:xml_tick_toggle('xmloff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
 
     }
-
-    $row = $query_response[0];
 
     echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" >" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
@@ -284,12 +281,11 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 
     $params = array('peer', $template_id);
     
-    $query_response = db_query($query, $params);
+    $row = db_query_one($query, $params);
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_STATUS . " </p>";
 
-    if(sizeof($query_response)==1){
-
+    if(!empty($row)) { 
         echo "<p class=\"share_status_paragraph\"><img id=\"peeron\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeron')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
         echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
         echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_LINK . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a></p>";
@@ -300,11 +296,12 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
         echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" />  " . PROPERTIES_LIBRARY_OFF . "</p>";
 
     }
+    $extra = array();
+    if(!empty($row)) { 
+        $extra = explode("," , $row['extra'],2);
+        $passwd = $extra[0];
+    }
 
-    $row = $query_response[0];
-    $extra = explode("," , $row['extra'],2);
-
-    $passwd = $extra[0];
     if (count($extra) > 1)
     {
         $retouremail = $extra[1];
@@ -328,7 +325,6 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
     echo "</form>";
 
     if($change){
-
         echo "<p>" . PROPERTIES_LIBRARY_PEER_SAVED . "</p>";
 
     }
@@ -451,8 +447,7 @@ function access_display($xerte_toolkits_site, $change){
     $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
     $params = array($_POST['template_id']);
 
-    $query_access_response = db_query_one($query_for_template_access, $params);
-    $row_access = db_query_one($query_access_response, $params);
+    $row_access = db_query_one($query_for_template_access, $params);
 
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
     echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace("-", " - ", $row_access['access_to_whom']) . "</span></p>";
