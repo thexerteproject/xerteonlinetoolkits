@@ -12,4 +12,4 @@
 require_once("../../../config.php");
 include '../folder_library.php';
 
-make_new_folder(mysql_real_escape_string($_POST['folder_id']),mysql_real_escape_string($_POST['folder_name']));
+make_new_folder($_POST['folder_id'],$_POST['folder_name']);

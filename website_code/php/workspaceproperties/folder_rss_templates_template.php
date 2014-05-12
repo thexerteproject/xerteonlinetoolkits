@@ -22,19 +22,20 @@ include "../display_library.php";
 
 $database_connect_id = database_connect("my_propertes_template.php connect success","my_properties_template.php connect failed");
 
-$query_for_folder = "select * from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id=\"" . $_SESSION['toolkits_logon_id'] . "\" and folder_parent!=\"0\"";
+$prefix = $xerte_toolkits_site->database_table_prefix;
+$query_for_folder = "select * from {$prefix}folderdetails where login_id= ? AND folder_parent != ? ";
+$params = array($_SESSION['toolkits_logon_id'], "0");
 
-$query_folder_response = mysql_query($query_for_folder);
+$query_folder_response = db_query($query_for_folder, $params);
 
 echo "<p class=\"header\"><span>" . FOLDER_RSS_TEMPLATE_MY . "</span></p>";
 
 echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FEED . "<br/><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "\" target=\"new\"> " . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "</a></p>";
 
-if(mysql_num_rows($query_folder_response)!=0){
+if(sizeof($query_folder_response)!=0){
 
     echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED . "</p>";
-
-    while($row_folder = mysql_fetch_array($query_folder_response)){
+    foreach($query_folder_response as $row_folder) {
 
         echo "<p><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] );
 
@@ -66,5 +67,3 @@ if(mysql_num_rows($query_folder_response)!=0){
 
 }
 
-
-?>

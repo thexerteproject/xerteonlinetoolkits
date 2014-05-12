@@ -19,9 +19,9 @@ include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
     if(is_user_creator($_POST['template_id'])||is_user_admin()){
-        $query_for_template_notes = "select notes from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ?";
+       $query_for_template_notes = "select notes from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ?";
        $row_notes = db_query_one($query_for_template_notes, array($_POST['template_id']));
-       notes_display($row_notes['notes'],false);
+       notes_display($row_notes['notes'],false, $_POST['template_id']);
        exit(0);
     }
 }

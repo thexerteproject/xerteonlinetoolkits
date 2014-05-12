@@ -67,7 +67,7 @@ foreach($query_sharing_rows as $row) {
 
     if($row['role']!="creator"){
 
-        if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
+        if(is_user_creator($_POST['template_id'])){
 
             echo "<p class=\"share_files_paragraph\">";
 
@@ -104,7 +104,7 @@ foreach($query_sharing_rows as $row) {
 
 }
 
-if(!is_user_creator(mysql_real_escape_string($_POST['template_id']))&&!is_user_admin()){
+if(!is_user_creator($_POST['template_id'])&&!is_user_admin()){
 
     echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
 

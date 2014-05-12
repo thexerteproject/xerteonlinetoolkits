@@ -21,14 +21,15 @@ if(is_user_admin()){
 
             $user_parameter = substr($file,0,strlen($file)-4);
 
-            $query_for_full_name = "select login_id, firstname, surname from " . $xerte_toolkits_site->database_table_prefix . "logindetails where username=\"" . $user_parameter . "\"";
+            $prefix = $xerte_toolkits_site->database_table_prefix ;
+            
+            $query_for_full_name = "select login_id, firstname, surname from {$prefix}logindetails where username= ?";
+            $params = array($user_parameter);
 
-            $query_for_full_name_response = mysql_query($query_for_full_name);
-
-            $row_name = mysql_fetch_array($query_for_full_name_response);			
-
-            if(mysql_num_rows($query_for_full_name_response)!=0){
-
+            $query_for_full_name_response = db_query($query_for_full_name, $params);
+		
+            if(sizeof($query_for_full_name_response) > 0) { 
+                $row_name =	$query_for_full_name_response[0];
                 echo "<div class=\"template\" id=\"log" . $row_name['login_id'] . "\" savevalue=\"log" . $row_name['login_id'] .  "\"><p>" . $row_name['firstname'] . " " . $row_name['surname'] . " <a href=\"javascript:templates_display('log" . $row_name['login_id'] . "')\">View</a></p></div><div class=\"template_details\" id=\"log" . $row_name['login_id']  . "_child\">";
 
             }else{
@@ -50,5 +51,3 @@ if(is_user_admin()){
     management_fail();
 
 }
-
-?>

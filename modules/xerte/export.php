@@ -154,7 +154,7 @@
 	/*
 	 * If scorm copy the scorm files as well
 	 */
-	$scorm=mysql_real_escape_string($_GET['scorm']);
+	$scorm = $_GET['scorm'];
 	if($scorm=="true")
     {
 		export_folder_loop($scorm_path, false, null, "/");
@@ -235,12 +235,19 @@
         $useflash = ($export_flash && !$export_html5);
         if(isset($_GET['data'])){
             if($_GET['data']==true){
-
-                    $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templatesyndication where template_id = " . mysql_real_escape_string($_GET['template_id']);
-                    $query_response_metadata = mysql_query($query);
-                    $metadata = mysql_fetch_array($query_response_metadata);
-                    $query = "select * from " . $xerte_toolkits_site->database_table_prefix ."templaterights, " . $xerte_toolkits_site->database_table_prefix ."logindetails  where template_id = " . mysql_real_escape_string($_GET['template_id']) . " and login_id = user_id";
-                    $query_response_users = mysql_query($query);
+                    $prefix =  $xerte_toolkits_site->database_table_prefix;
+                    
+                    $query = "select * from {$prefix}templatesyndication where template_id = ? ";
+                    $metadata = db_query_one($query, array($_GET['template_id']));
+                    
+                    
+                    
+                    $query = "select * from {$prefix}templaterights, {$prefix}logindetails  where "
+                    . "template_id =  ? and login_id = user_id";
+                    $params = array($_GET['template_id']);
+                    
+                    $query_response_users = db_query($query, $params);
+                    
                     lmsmanifest_create_rich($row, $metadata, $query_response_users, $useflash, $lo_name);
                 }
         }
