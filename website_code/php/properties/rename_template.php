@@ -18,19 +18,21 @@ include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
 
-    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
+    $tutorial_id = (int)$_POST['template_id'];
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
     $database_id = database_connect("Template rename database connect success","Template rename database connect failed");
 
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "templatedetails SET template_name =\"" . str_replace(" ", "_", mysql_real_escape_string($_POST['template_name'])) . "\" WHERE template_id =\"" . mysql_real_escape_string($_POST['template_id']) . "\"";
+    $query = "update {$prefix}templatedetails SET template_name = ? WHERE template_id = ?";
+    $params = array(str_replace(" ", "_", $_POST['template_name']), $_POST['template_id']);
 
-    if(mysql_query($query)){
+    if(db_query($query, $params)) {
 
-        $query_for_names = "select template_name, date_created, date_modified from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"". $tutorial_id . "\"";
+        $query_for_names = "select template_name, date_created, date_modified from {$prefix}templatedetails where template_id=?"; 
+        $params = array($tutorial_id);
 
-        $query_names_response = mysql_query($query_for_names);
-
-        $row = mysql_fetch_array($query_names_response);
+        $row = db_query_one($query_for_names, $params); 
 
         echo "~~**~~" . $_POST['template_name'] . "~~**~~";	
 
@@ -40,8 +42,4 @@ if(is_numeric($_POST['template_id'])){
 
     }
 
-    mysql_close($database_id);
-
 }
-
-?>

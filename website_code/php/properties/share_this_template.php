@@ -12,11 +12,13 @@
 require_once("../../../config.php");
 _load_language_file("/website_code/php/properties/share_this_template.inc");
 
+
+$prefix = $xerte_toolkits_site->database_table_prefix;
 if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
 
-    $user_id = mysql_real_escape_string($_POST['user_id']);
+    $user_id = $_POST['user_id'];
 
-    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
+    $tutorial_id = $_POST['template_id'];
 
     $database_id=database_connect("Share this template database connect success","Share this template database connect success");
 
@@ -24,25 +26,25 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
      * find the user you are sharing with's root folder to add this template to
      */
 
-    $query_to_find_out_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id =\"" . $user_id . "\" and folder_parent=\"0\" and folder_name!=\"recyclebin\"";
+    $query_to_find_out_root_folder = "select folder_id from {$prefix}folderdetails where login_id = ? and folder_parent=? and folder_name!=?";
 
-    $query_to_find_out_root_folder_response = mysql_query($query_to_find_out_root_folder);
+    $params = array($user_id, '0', 'recyclebin');
+    
+    $row_query_root = db_query_one($query_to_find_out_root_folder, $params); 
 
-    $row_query_root = mysql_fetch_array($query_to_find_out_root_folder_response);
+    $query_to_insert_share = "INSERT INTO {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
+    $params = array($tutorial_id, $user_id,"editor", $row_query_root['folder_id']);
 
-    $query_to_insert_share = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templaterights (template_id, user_id, role, folder) VALUES (" . $tutorial_id . "," . $user_id . ",\"editor\",". $row_query_root['folder_id'] . ")";
-
-    if(mysql_query($query_to_insert_share)){
+    if(db_query($query_to_insert_share, $params)){
 
         /**
          * sort ouf the html to return to the screen
          */
 
-        $query_for_name = "select firstname, surname from " . $xerte_toolkits_site->database_table_prefix . "logindetails WHERE login_id=\"" . $user_id . "\"";
+        $query_for_name = "select firstname, surname from {$prefix}logindetails WHERE login_id=?";
+        $params = array($user_id);
 
-        $query_name_response = mysql_query($query_for_name);
-
-        $row = mysql_fetch_array($query_name_response);
+        $row = db_query_one($query_for_name, $params); 
 
         echo SHARING_THIS_FEEDBACK_SUCCESS  . " " . $row['firstname'] . " " . $row['surname'] . "<br>";
 
@@ -51,7 +53,4 @@ if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
         echo SHARING_THIS_FEEDBACK_FAIL . " <br>";			
 
     }
-
 }
-
-?>

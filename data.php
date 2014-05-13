@@ -59,10 +59,8 @@ if(!empty($query_for_data_response)) {
 
             $query_for_preview_content = $xerte_toolkits_site->play_edit_preview_query;
 
-            $query_for_preview_content_response = mysql_query($query_for_preview_content);
-
-            $row = mysql_fetch_array($query_for_preview_content_response);
-
+            $row = db_query_one($query_for_preview_content);
+          
             $query_for_username = "select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?";
             $row_username = db_query_one($query_for_username, array($row['user_id']));
 
@@ -85,7 +83,7 @@ if(!empty($query_for_data_response)) {
 
         $query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-        $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", mysql_real_escape_string($_GET['template_id']), $query_for_play_content_strip);
+        $query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", (int) $_GET['template_id'], $query_for_play_content_strip);
 
         $row = db_query_one($query_for_play_content);
 

@@ -46,7 +46,7 @@ if(is_numeric($_POST['template_id'])){
 
             $query_for_name = "select firstname,surname from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?";
             $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
-            rss_display($xerte_toolkits_site,mysql_real_escape_string($_POST['template_id']),true);
+            rss_display($xerte_toolkits_site,$_POST['template_id'],true);
 
         }else{
 

@@ -17,13 +17,14 @@ include "../display_library.php";
 echo "<p class=\"header\"><span>API</span></p>";
 
 $database_connect_id = database_connect("api_template.php connect success","api_template.php connect failed");
+$prefix = $xerte_toolkits_site->database_table_prefix;
+$query = "select * from {$prefix}api_keys where user_id= ? ORDER BY created DESC";
+$params = array($_SESSION['toolkits_logon_id']);
 
-$query = "select * from {$xerte_toolkits_site->database_table_prefix}api_keys where user_id={$_SESSION['toolkits_logon_id']} ORDER BY created DESC";
-
-$response = mysql_query($query);
+$response = db_query($query, $params);
 if ($response) {
 	$count = 0;
-	while($row = mysql_fetch_array($response)) {
+	foreach($response as $row) {
 		echo "<p><strong>" . $row['description'] . "</strong><br />";
 		echo "Key: " . $row['consumer_key'] . "<br />";
 		echo "Secret: " . $row['consumer_secret'] . "<br />";
@@ -42,5 +43,3 @@ if ($response) {
 else {
 	echo "<p>API not yet installed.</p>";
 }
-
-?>

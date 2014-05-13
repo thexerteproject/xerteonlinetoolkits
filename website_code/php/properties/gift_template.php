@@ -22,7 +22,7 @@ $database_id=database_connect("Sharing status template database connect success"
  * show a different view if you are the file creator
  */ 
 
-if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
+if(is_user_creator($_POST['template_id'])){
 
     echo "<div>";
 		echo "<p class=\"header\"><span>" . PROPERTIES_TAB_GIVE . "</span></p>";

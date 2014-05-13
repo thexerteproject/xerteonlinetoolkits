@@ -20,7 +20,7 @@ include "properties_library.php";
 if(is_numeric($_POST['template_id'])){
 
     $template_id = (int) $_POST['template_id'];
-    $engine = mysql_real_escape_string($_POST['engine']);
+    $engine = $_POST['engine'];
 
     if ($engine != 'flash' && $engine!='javascript')
     {
