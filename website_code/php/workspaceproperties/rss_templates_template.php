@@ -24,18 +24,24 @@ include "workspace_library.php";
  */
 
 workspace_templates_menu();
+$prefix = $xerte_toolkits_site->database_table_prefix;
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_rss_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where creator_id=\"" . $_SESSION['toolkits_logon_id'] . "\"     and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id = " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id  = " . $xerte_toolkits_site->database_table_prefix . "templatesyndication.template_id and role=\"creator\" and (rss=\"true\" or export=\"true\")"; 
+$query_for_rss_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights, "
+. "{$prefix}templatesyndication where creator_id= ? and "
+. "{$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and "
+. "{$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id "
+. "and role=? and (rss= ? or export = ? )" ; 
 
-$query_rss_response = mysql_query($query_for_rss_templates);
+$params = array($_SESSION['toolkits_logon_id'], 'creator', 'true', 'true');
+$query_rss_response = db_query($query_for_rss_templates, $params);
 
 workspace_menu_create(50);
 
 echo "<div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_RSS . "</div><div style=\"float:left; position:relative; width:15%; height:20px;\">" . RSS_WORKSPACE_EXPORT . "</div>";
 
-while($row_template_name = mysql_fetch_array($query_rss_response)){
+foreach($query_rss_response as $row_template_name) {
 
     echo "<div style=\"float:left; position:relative; width:50%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div><div style=\"float:left; position:relative; width:15%;\">";
 
@@ -65,5 +71,3 @@ while($row_template_name = mysql_fetch_array($query_rss_response)){
 }
 
 echo "</div></div>";
-
-?>

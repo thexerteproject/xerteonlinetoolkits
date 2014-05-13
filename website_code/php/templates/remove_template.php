@@ -14,7 +14,7 @@ require_once("../../../config.php");
 include "../user_library.php";
 include "../template_status.php";
 
-
+$prefix = $xerte_toolkits_site->database_table_prefix;
 _load_language_file("/website_code/php/templates/remove_template.inc");
 
 $database_id = database_connect("delete template database connect success","delete template database connect failed");
@@ -25,41 +25,42 @@ $database_id = database_connect("delete template database connect success","dele
 
 if(is_numeric($_POST['template_id'])){
 
-    $safe_template_id = mysql_real_escape_string($_POST['template_id']);
+    $safe_template_id = (int) $_POST['template_id'];
 
     if(!is_template_syndicated($safe_template_id)){
 
         if(is_user_creator($safe_template_id)){
 
-            $query_for_folder_id = "select * from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
-
-            $query_for_folder_id_response = mysql_query($query_for_folder_id);
-
-            $row = mysql_fetch_array($query_for_folder_id_response);
+            $query_for_folder_id = "select * from {$prefix}templaterights where template_id= ? ";
+            $row = db_query_one($query_for_folder_id, array($safe_template_id));
 
             /*
              * delete from the database 
              */
 
-            $query_to_delete_template = "delete from " .$xerte_toolkits_site->database_table_prefix . "templaterights where template_id=\"" . $safe_template_id . "\"";
+            $query_to_delete_template = "delete from {$prefix}templaterights where template_id= ? ";
+            $params = array($safe_template_id);
 
-            if(mysql_query($query_to_delete_template)){
+            if(db_query($query_to_delete_template, $params)){
 
                 /*
                  * work out the file path before we start deletion
                  */
 
-                $query_to_get_template_type_id = " select template_type_id from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id = \"" . $safe_template_id . "\"";
+                $query_to_get_template_type_id = "select template_type_id from {$prefix}templatedetails where template_id = ?";
+                $params = array($safe_template_id);
 
-                $query_to_get_template_type_id_response = mysql_query($query_to_get_template_type_id);
+                $row_template_id = db_query_one($query_to_get_template_type_id, $params);
+                
+                
+                $query_to_get_template_type_name = "select template_name, template_framework from "
+                        . "{$prefix}originaltemplatesdetails where template_type_id = ? ";
+                        
+                $params = array($row_template_id['template_type_id']);
 
-                $row_template_id = mysql_fetch_array($query_to_get_template_type_id_response);
+              
 
-                $query_to_get_template_type_name = "select template_name, template_framework from " .$xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where template_type_id =\"" . $row_template_id['template_type_id'] . "\"";
-
-                $query_to_get_template_type_name_response = mysql_query($query_to_get_template_type_name);
-
-                $row_template_name = mysql_fetch_array($query_to_get_template_type_name_response);
+                $row_template_name = db_query_one($query_to_get_template_type_name, $params); 
 
                 $path = $xerte_toolkits_site->users_file_area_full . $safe_template_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $row_template_name['template_name'];
 
@@ -71,18 +72,19 @@ if(is_numeric($_POST['template_id'])){
 
                 delete_template($path . "/");
 
-                $query_to_delete_template_attributes = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatedetails where template_id=\"" . $safe_template_id . "\"";
+                $query_to_delete_template_attributes = "delete from {$prefix}templatedetails where template_id= ?";
+                $params = array($safe_template_id);
+                db_query($query_to_delete_template_attributes, $params);
+                
+                $query_to_delete_syndication = "delete from {$prefix}templatesyndication where template_id=?";
+                $params = array($safe_template_id);
+                db_query($query_to_delete_syndication, $params);
 
-                mysql_query($query_to_delete_template_attributes);
+                $query_to_delete_xml_and_peer = "delete from {$prefix}additional_sharing where template_id=?"; 
+                $params = array($safe_template_id);
 
-                $query_to_delete_syndication = "delete from " .$xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=\"" . $safe_template_id . "\"";
-
-                mysql_query($query_to_delete_syndication);
-
-                $query_to_delete_xml_and_peer = "delete from " .$xerte_toolkits_site->database_table_prefix . "additional_sharing where template_id=\"" . $safe_template_id . "\"";
-
-                mysql_query($query_to_delete_xml_and_peer);
-
+                db_query($query_to_delete_xml_and_peer, $params);
+                
             }else{
 
 
@@ -101,7 +103,3 @@ if(is_numeric($_POST['template_id'])){
     }
 
 }
-
-mysql_close($database_id);
-
-?>

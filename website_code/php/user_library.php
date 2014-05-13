@@ -89,7 +89,7 @@ function create_user_id($username, $firstname, $surname){
 
     if($res){
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
-        return get_user_id();
+        return $res;
 
     }else{
 
@@ -154,14 +154,14 @@ function get_recycle_bin(){
 
     global $xerte_toolkits_site;
 
-    $query = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_name=\"recyclebin\" AND login_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query = "select folder_id from {$prefix}folderdetails where folder_name= ? AND login_id = ?";
+    $params = array('recyclebin', $_SESSION['toolkits_logon_id']);
 
-    $query_response = mysql_query($query);
-
-    $row = mysql_fetch_array($query_response);
-
+    $row = db_query_one($query, $params);
+    
     return $row['folder_id'];
-
 }
 
 /**
@@ -178,9 +178,12 @@ function create_a_virtual_root_folder(){
 
     global $xerte_toolkits_site;
 
-    $query = "insert into " . $xerte_toolkits_site->database_table_prefix . "folderdetails (login_id,folder_parent,folder_name) VALUES (\"" . $_SESSION['toolkits_logon_id'] . "\", \"0\", \"". $_SESSION['toolkits_logon_username'] . "\" )";
+    $prefix =  $xerte_toolkits_site->database_table_prefix ;
+    
+    $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
+    $params = array($_SESSION['toolkits_logon_id'], "0", $_SESSION['toolkits_logon_username']);
 
-    if(mysql_query($query)){
+    if(db_query($query, $params)){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
 
@@ -206,9 +209,12 @@ function update_user_logon_time(){
 
     global $xerte_toolkits_site;
 
-    $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "logindetails SET lastlogin = '" . date('Y-m-d') . "' WHERE username = '" . $_SESSION['toolkits_logon_username'] . "'"; 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query = "UPDATE {$prefix}logindetails SET lastlogin = ? WHERE username = ?";
+    $params = array(date('Y-m-d'), $_SESSION['toolkits_logon_username']); 
 
-    if(mysql_query($query)){
+    if(db_query($query, $params)){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time " . $_SESSION['toolkits_logon_username'], "Succeeded in updating users login time " . $_SESSION['toolkits_logon_id']);
 
@@ -218,9 +224,10 @@ function update_user_logon_time(){
 
     }
 
-    $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "logindetails SET firstname = '" . $_SESSION['toolkits_firstname'] . "', surname = '" . $_SESSION['toolkits_surname'] . "' WHERE username = '" . $_SESSION['toolkits_logon_username'] . "'"; 
+    $query = "UPDATE {$prefix}logindetails SET firstname = ?, surname = ? WHERE username = ?";
+    $params = array($_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname'], $_SESSION['toolkits_logon_username'] ); 
 
-    if(mysql_query($query)){
+    if(db_query($query, $params)){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users username " . $_SESSION['toolkits_logon_username'], "Succeeded in updating usersname ");
 
@@ -246,13 +253,15 @@ function get_user_root_folder(){
 
     global $xerte_toolkits_site;
 
-    $query = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id='" . $_SESSION['toolkits_logon_id'] . "' AND folder_name = '" . $_SESSION['toolkits_logon_username'] . "'";
+    $prefix =  $xerte_toolkits_site->database_table_prefix;
+    $query = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name = ?";
+    $params = array($_SESSION['toolkits_logon_id'], $_SESSION['toolkits_logon_username']);
 
-    $query_response = mysql_query($query);
+    $query_response = db_query($query, $params);
 
     if($query_response!=FALSE){
 
-        $row = mysql_fetch_array($query_response);
+        $row = $query_response[0];
 
         return $row['folder_id'];
 

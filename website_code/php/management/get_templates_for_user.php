@@ -27,13 +27,12 @@ if(is_user_admin()){
     $login_id = $_REQUEST['user_id'];
 
     // Get all users
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username" ;
+    $query="SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username" ;
 
-    $query_response = mysql_query($query);
+    $query_response = db_query($query);
     // Fetch users only once and put the results in a php array
     $logins = array();
-    while ($login = mysql_fetch_array($query_response, MYSQL_ASSOC))
-    {
+    foreach($query_response as $login) {
         $logins[] = $login;
         if ($login['login_id'] == $login_id)
         {
@@ -41,26 +40,30 @@ if(is_user_admin()){
         }
     }
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
     // Now query all templates in use and sort on username
-    $query_templates="select td.*, tr.*, ld.*, od.login_id as owner_id, od.firstname as owner_firstname, od.surname as owner_surname, od.username as owner_username from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td," . $xerte_toolkits_site->database_table_prefix . "templaterights tr," . $xerte_toolkits_site->database_table_prefix . "logindetails ld," . $xerte_toolkits_site->database_table_prefix . "logindetails od where tr.user_id = ld.login_id and ld.login_id = " . $login_id . " and od.login_id = td.creator_id and tr.template_id = td.template_id";
-
+    $query_templates="select td.*, tr.*, ld.*, od.login_id as owner_id, od.firstname "
+            . "as owner_firstname, od.surname as owner_surname, "
+            . "od.username as owner_username from {$prefix}templatedetails td,"
+            . "{$prefix}templaterights tr," 
+            . "{$prefix}logindetails ld," 
+            . "{$prefix}logindetails od "
+            . "where tr.user_id = ld.login_id and ld.login_id = ? "
+            . "and od.login_id = td.creator_id and tr.template_id = td.template_id";
+     $params = array($login_id);
+            
     _debug("Query for templates of user " . $row['username'] . ": " . $query_templates);
 
-    $query_templates_response = mysql_query($query_templates);
+    $query_templates_response = db_query($query_templates, $params);
 
-    _debug("Query returned " . mysql_num_rows($query_templates_response) . "records");
+    _debug("Query returned " . sizeof($query_templates_response) . "records");
 
     echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ") </p><br /><br /></div><div class=\"template_details\" style=\"display:block;\" id=\"" . $row['username']  . "_child\">";
 
-    //$query_templates="select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails," . $xerte_toolkits_site->database_table_prefix . "templaterights where " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id =\"" . $row['login_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id";
-
-    //$query_templates_response = mysql_query($query_templates);
-
-    if(mysql_num_rows($query_templates_response) > 0){
+    if(sizeof($query_templates_response) > 0){
         // This user has templates, loop over them
         _debug("User " . $row['username'] . " (" . $row['login_id'] . ") has templates");
-        while ($row_templates = mysql_fetch_array($query_templates_response, MYSQL_ASSOC))
-        {
+        foreach($query_template_response as $row_templates) {
             $debug_rec = print_r($row_templates, true);
             _debug($debug_rec);
 
@@ -82,12 +85,6 @@ if(is_user_admin()){
             echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
             echo "<form name=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" action=\"javascript:change_owner('" . $row_templates['template_id'] . "')\"><select id=\"" . $row_templates['template_id'] . "_new_owner\">";
-
-            //$query_users="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id !=" . $row['login_id'];
-
-            //$query_users_response = mysql_query($query_users);
-
-            //if(mysql_num_rows($query_users_response)!=0){
 
             foreach($logins as $row_users){
 
@@ -115,13 +112,9 @@ if(is_user_admin()){
 
     echo "</div>";
 
-    mysql_close($database_id);
-
 }else{
 
     management_fail();
 
 }
 
-
-?>
