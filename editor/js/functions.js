@@ -1,5 +1,5 @@
 // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
-function FixLineBreaks(text) {
+var FixLineBreaks = function (text) {
     var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
         temp, i, j, len, len2;
 
@@ -19,25 +19,25 @@ function FixLineBreaks(text) {
     temp.push(split_up[i]);
 
     return temp.join("]]>");
-}
+},
 
 
-function lo_key_exists(key) {
+lo_key_exists = function (key) {
     for (var lo_key in lo_data) if (lo_key == key) return true;
     return false;
-}
+},
 
-function generate_lo_key() {
+generate_lo_key = function () {
     var key;
     do {
         key = "ID_";
         for (var i=0; i<10; i++) key += String(parseInt(Math.random()*9));
     } while (lo_key_exists(key));
     return key;
-}
+},
 
 // ** Recursive function to traverse the xml and build
-function build_lo_data(xmlData, parent_id) {
+build_lo_data = function (xmlData, parent_id) {
 
     // First lets generate a unique key
     var key = generate_lo_key();
@@ -81,9 +81,9 @@ function build_lo_data(xmlData, parent_id) {
     }
 
     return this_json;
-}
+},
 
-function getOptionValue(all_options, key)
+getOptionValue = function (all_options, key)
 {
     var value="";
     for (var i=0; i<all_options.length; i++) {
@@ -94,9 +94,9 @@ function getOptionValue(all_options, key)
         }
     }
     return value;
-}
+},
 
-function getAttributeValue(attributes, name, options, key)
+getAttributeValue = function (attributes, name, options, key)
 {
     var attribute_value;
     var attr_found = false;
@@ -121,9 +121,9 @@ function getAttributeValue(attributes, name, options, key)
         }
     }
     return {found : true, value: attribute_value};
-}
+},
 
-function displayParameter(id, all_options, name, value, key)
+displayParameter = function (id, all_options, name, value, key)
 {
     var options = getOptionValue(all_options, name);
     if (options != null)
@@ -148,16 +148,16 @@ function displayParameter(id, all_options, name, value, key)
             });
         }
     }
-}
+},
 
-function removeOptionalProperty(name) {
+removeOptionalProperty = function (name) {
     console.log("Handler for removing optional properties called: " + name);
 
     // Need to remove row from the screen and
     // Also need to remove property from the data store
-}
+},
 
-function convertTextAreas()
+convertTextAreas = function ()
 {
     $.each(textareas_options, function (i, options) {
         var ckoptions = {};
@@ -182,9 +182,9 @@ function convertTextAreas()
             })
         }, ckoptions);
     });
-}
+},
 
-function convertTextInputs()
+convertTextInputs = function ()
 {
     $.each(textinputs_options, function (i, options) {
         $('div.inputtext').ckeditor(function(){
@@ -202,26 +202,26 @@ function convertTextInputs()
             { name: 'colors' }]
         });
     });
-}
+},
 
-function convertColorPickers()
+convertColorPickers = function ()
 {
     $.each(colorpickers, function (i, options){
         var myPicker = new jscolor.color(document.getElementById(options.id), {})
         myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
 
     });
-}
+},
 
-function preview() {
+preview = function () {
     console.log("preview clicked");
-}
+},
 
-function publish() {
+publish = function () {
     console.log("publish clicked");
-}
+},
 
-function duplicateSelectedNodes() {
+duplicateSelectedNodes = function () {
     var tree = $.jstree.reference("#treeview");
     var copy_node, new_node, id, ids = tree.get_selected();
 
@@ -240,9 +240,10 @@ function duplicateSelectedNodes() {
     tree.copy_node(current_node, parent_node, 'last');
 
     return true; // Successful
-}
 
-function deleteSelectedNodes() {
+},
+
+deleteSelectedNodes = function () {
     var tree = $.jstree.reference("#treeview");
     var copy_node, new_node, id, ids = tree.get_selected();
 
@@ -269,9 +270,9 @@ function deleteSelectedNodes() {
     //tree.last_error();
 
     return true; // Successful
-}
+},
 
-function showNodeData(key) {
+showNodeData = function (key) {
     console.log(key);
 
     var attributes = lo_data[key]['attributes'];
@@ -395,9 +396,9 @@ function showNodeData(key) {
     convertColorPickers();
 
     //$('div.inputtext').ckeditor();
-}
+},
 
-function setAttributeValue(key, name, value)
+setAttributeValue = function (key, name, value)
 {
     var attributes = lo_data[key]['attributes'];
     // Get the node name
@@ -430,9 +431,9 @@ function setAttributeValue(key, name, value)
             }
         }
     }
-}
+},
 
-function cbChanged(id, key, name)
+cbChanged = function (id, key, name)
 {
     //console.log(id + ': ' + key + ', ' +  name);
     var value = $('#' + id).is(':checked');
@@ -445,16 +446,16 @@ function cbChanged(id, key, name)
         value = 'false';
     }
     setAttributeValue(key, name, value);
-}
+},
 
-function selectChanged(id, key, name)
+selectChanged = function (id, key, name)
 {
     //console.log(id + ': ' + key + ', ' +  name);
     var value = $('#' + id).val();
     setAttributeValue(key, name, value);
-}
+},
 
-function inputChanged(id, key, name, passedValue)
+inputChanged = function (id, key, name, passedValue)
 {
     //console.log(id + ': ' + key + ', ' +  name  + ', ' +  passedValue);
     var value, valuePassed = (arguments.length == 4);
@@ -477,9 +478,9 @@ function inputChanged(id, key, name, passedValue)
         value = '0x' + value;
     }
     setAttributeValue(key, name, value);
-}
+},
 
-function displayDataType(value, options, name, key) {
+displayDataType = function (value, options, name, key) {
     var html;                   //console.log(options);
 
     switch(options.type.toLowerCase())
@@ -602,4 +603,4 @@ function displayDataType(value, options, name, key) {
             textinputs_options.push({id: id, key: key, name: name, options: options});
     }
     return html;
-}
+};
