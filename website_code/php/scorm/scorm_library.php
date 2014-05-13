@@ -66,13 +66,13 @@ function lmsmanifest_create_rich($row, $metadata, $users, $flash, $lo_name) {
 
     $scorm_top_string .= "</imsmd:general>";
 
-    foreach($users as $user) {
-        $scorm_top_string .= "<imsmd:lifeCycle><imsmd:contribute><imsmd:role><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>author</imsmd:value></imsmd:role><imsmd:entity>" . $user['firstname'] . " " . $user['surname'] . "</imsmd:entity></imsmd:contribute></imsmd:lifeCycle>";
-    }
+	foreach($users as $user) { 
+		$scorm_top_string .= "<imsmd:lifeCycle><imsmd:contribute><imsmd:role><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>author</imsmd:value></imsmd:role><imsmd:entity>" . $user['firstname'] . " " . $user['surname'] . "</imsmd:entity></imsmd:contribute></imsmd:lifeCycle>";
+	}
 
-    $scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", mysql_real_escape_string($_GET['template_id'])) . "</imsmd:location></imsmd:technical>";
-    $scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['license'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['license'] . "</imsmd:string></imsmd:description></imsmd:rights>";
-    $scorm_top_string .= "</imsmd:lom></metadata>";
+	$scorm_top_string .= "<imsmd:technical><imsmd:format>text/html</imsmd:format><imsmd:location>" . url_return("play", $_GET['template_id']) . "</imsmd:location></imsmd:technical>";
+	$scorm_top_string .= "<imsmd:rights><imsmd:copyrightAndOtherRestrictions><imsmd:source>LOMv1.0</imsmd:source><imsmd:value>yes</imsmd:value></imsmd:copyrightAndOtherRestrictions><imsmd:description><imsmd:string language=\"en-GB\">" . $metadata['license'] . "</imsmd:string><imsmd:string language=\"x-t-cc-url\">" . $metadata['license'] . "</imsmd:string></imsmd:description></imsmd:rights>";
+	$scorm_top_string .= "</imsmd:lom></metadata>";
 
     $date = time();
 

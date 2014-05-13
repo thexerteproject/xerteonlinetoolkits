@@ -20,7 +20,7 @@ include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
 
-    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
+    $tutorial_id = $_POST['template_id'];
 
     publish_display($tutorial_id);
 

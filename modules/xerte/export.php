@@ -154,7 +154,7 @@ if ($export_flash) {
 /*
  * If scorm copy the scorm files as well
  */
-$scorm = mysql_real_escape_string($_GET['scorm']);
+$scorm = $_GET['scorm'];
 if ($scorm == "true") {
     export_folder_loop($scorm_path, false, null, "/");
     copy_extra_files();
@@ -226,10 +226,10 @@ if ($scorm == "true") {
             $query = "SELECT * FROM {$prefix}templaterights "
                     . "{$prefix}logindetails  WHERE template_id = ? and login_id = user_id ";
 
-            $users = db_query($query, array($_GET['template_id']));
+            $params = array($_GET['template_id']);
 
-            $query_response_users = mysql_query($query);
-            lmsmanifest_create_rich($row, $metadata, $users, $useflash, $lo_name);
+            $query_response_users = db_query($query, $params);
+            lmsmanifest_create_rich($row, $metadata, $query_response_users, $useflash, $lo_name);
         }
     } else {
         lmsmanifest_create($row['zipname'], $useflash, $lo_name);

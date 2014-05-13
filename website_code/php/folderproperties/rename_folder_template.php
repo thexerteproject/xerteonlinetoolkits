@@ -19,9 +19,14 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 
     $database_id = database_connect("Folder rename database connect success","Folder rename database connect failed");
 
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "folderdetails SET folder_name =\"" . str_replace(" ", "_", $_POST['folder_name']) . "\" WHERE folder_id =\"" . mysql_real_escape_string($_POST['folder_id']) . "\"";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query = "update {$prefix}folderdetails SET folder_name = ? WHERE folder_id = ?";
+    $params = array(str_replace(" ", "_", $_POST['folder_name']), $_POST['folder_id']);
 
-    if(mysql_query($query)){
+    $ok = db_query($query, $params);
+    
+    if($ok) {
 
         echo "<p class=\"header\"><span>" . FOLDER_PROPERTIES_PROPERTIES . "</span></p>";			
 
@@ -29,7 +34,11 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
 
         echo "<p>" . FOLDER_PROPERTIES_CHANGE . "</p>";
 
-        echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."', 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" . str_replace("_", " ", $_POST['folder_name']) . "\" name=\"newfoldername\" /><button type=\"submit\" class=\"xerte_button\"  align=\"top\" style=\"padding-left:5px\">" . FOLDER_PROPERTIES_BUTTON_SAVE . "</button></form>";
+        echo "<p><form id=\"rename_form\" action=\"javascript:rename_folder('" . $_POST['folder_id'] ."',"
+                . " 'rename_form')\"><input style=\"padding-bottom:5px\" type=\"text\" value=\"" .
+                str_replace("_", " ", $_POST['folder_name']) . "\" name=\"newfoldername\" />"
+                . "<button type=\"submit\" class=\"xerte_button\"  align=\"top\" style=\"padding-left:5px\">" . 
+                FOLDER_PROPERTIES_BUTTON_SAVE . "</button></form>";
 
         echo "<p>" . FOLDER_RENAMED . "</p>";
 
@@ -44,7 +53,3 @@ if(is_numeric($_POST['folder_id'])&&is_string($_POST['folder_name'])){
     }
 
 }
-
-mysql_close($database_id);
-
-?>

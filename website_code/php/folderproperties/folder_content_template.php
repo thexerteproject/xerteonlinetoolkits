@@ -26,7 +26,7 @@ if(is_numeric($_POST['folder_id'])){
     $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
     echo "<p class=\"header\"><span>" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</span></p>";			
-    list_folder_contents_event_free(mysql_real_escape_string($_POST['folder_id']));
+    list_folder_contents_event_free($_POST['folder_id']);
     
 }
 
