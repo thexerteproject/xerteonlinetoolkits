@@ -32,11 +32,11 @@ function list_folders_in_this_folder_event_free($folder_id, $path = '', $item = 
 
   global $xerte_toolkits_site,$level;
 
-  $query = "select folder_id, folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder_parent=\"" . $folder_id . "\"";
-
-  $query_response = mysql_query($query);
-
-  while ($row = mysql_fetch_array($query_response)) {
+  $prefix = $xerte_toolkits_site->database_table_prefix;
+  $query = "SELECT folder_id, folder_name FROM {$prefix}folderdetails WHERE login_id = ? AND folder_parent = ?";
+  $rows = db_query($query, array($_SESSION['toolkits_logon_id'], $folder_id));
+  
+  foreach($rows as $row) { 
     $extra='<p>';
     $extra1='</p>';
 $extra2='';
@@ -46,7 +46,8 @@ $extra2='';
       $extra2=" style=\"padding-left:" . ($level*10) . "px\" ";
     }
 
-    echo "<div id=\"dynamic_area_folder\" $extra2>$extra<img style=\"\" src=\"{$path}website_code/images/Icon_Folder.gif\" />" . str_replace("_", " ", $row['folder_name']) . "$extra1</div><div id=\"dynamic_area_folder_content\">";
+    echo "<div id=\"dynamic_area_folder\" $extra2>$extra<img style=\"\" src=\"{$path}website_code/images/Icon_Folder.gif\" />" . 
+            str_replace("_", " ", $row['folder_name']) . "$extra1</div><div id=\"dynamic_area_folder_content\">";
 
 
     $item = list_folder_contents_event_free($row['folder_id'], $path, $item, $input_method);
@@ -71,12 +72,14 @@ $extra2='';
 function list_files_in_this_folder_event_free($folder_id, $path = '', $item = false, $input_method = 'link') {
 
   global $xerte_toolkits_site,$level;
+  $prefix = $xerte_toolkits_site->database_table_prefix;
 
-  $query = "select template_name, template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails where template_id in ( select " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder=\"" . $folder_id . "\") order by " . $xerte_toolkits_site->database_table_prefix . "templatedetails.date_created ASC";
+  $query = "SELECT template_name, template_id FROM {$prefix}templatedetails WHERE template_id IN (
+      SELECT {$prefix}templaterights.template_id FROM {$prefix}templaterights WHERE user_id = ? AND folder = ?)
+          ORDER BY {$prefix}templatedetails.date_created ASC";
 
-  $query_response = mysql_query($query);
-
-  while ($row = mysql_fetch_array($query_response)) {
+  $rows = db_query($query, array($_SESSION['toolkits_logon_id'], $folder_id));
+  foreach($rows as $row) {
     $extra='<p>';
     $extra1='</p>';
     $extra2='';
@@ -144,8 +147,11 @@ function list_folders_in_this_folder($folder_id, $sort_type){
   * select the folders in this folder
   */
 
-  $query = "select folder_id, folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and folder_parent=\"" . $folder_id . "\" ";
+  $prefix = $xerte_toolkits_site->database_table_prefix;
 
+  $query = "select folder_id, folder_name from {$prefix}folderdetails where login_id = ? AND folder_parent = ?";
+  $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+  
   /*
   * Add some more to the query to sort the files
   */
@@ -160,17 +166,20 @@ function list_folders_in_this_folder($folder_id, $sort_type){
     $query .= " order by date_created ASC";
   }
 
-  $query_response = mysql_query($query);
-
+  $query_response = db_query($query, $params);
+  
   /*
   * recurse through the folders
   */
 
-  while ($row = mysql_fetch_array($query_response)) {
+  foreach($query_response as $row) { 
 
-    $query_for_folder_content = "select template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where folder=\"" . $row['folder_id'] . "\" UNION SELECT folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_parent=\"" . $row['folder_id'] . "\"";
+    $query_for_folder_content = "select template_id from {$prefix}templaterights where "
+    . "folder=? UNION SELECT folder_id FROM {$prefix}folderdetails where folder_parent=\"" . $row['folder_id'] . "\"";
 
-    $query_response_for_folder_content = mysql_query($query_for_folder_content);
+    $params = array($row['folder_id'], $row['folder_id']);
+    
+    $query_response_for_folder_content = db_query($query_for_folder_content, $params); 
 
     /*
     * Use level to nest the folders
@@ -178,7 +187,7 @@ function list_folders_in_this_folder($folder_id, $sort_type){
 
         echo "<div class=\"folder\" style=\"padding-left:" . ($level*10) . "px\" id=\"folder_" . $row['folder_id'] .  "\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" ondblclick=\"folder_open_close(this)\" onmouseup=\"file_drag_stop(event,this)\"><p><img style=\"vertical-align:middle\"";
 
-    if (mysql_num_rows($query_response_for_folder_content) == 0) {
+    if (sizeof($query_response_for_folder_content) == 0) {
 
             echo " src=\"website_code/images/Icon_Folder_Empty.gif\" />" . str_replace("_", " ", $row['folder_name']) . "</p></div><div id=\"folderchild_" . $row['folder_id'] . "\" class=\"folder_content\">";
 
@@ -210,8 +219,15 @@ function list_files_in_this_folder($folder_id, $sort_type) {
 
   global $level, $xerte_toolkits_site;
 
-  $query = "select td.template_name as project_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework, td.template_id from " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix  . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where td.template_id = tr.template_id and tr.user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and tr.folder=\"" . $folder_id . "\" and  " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id = td.template_type_id ";
+  $prefix = $xerte_toolkits_site->database_table_prefix;
 
+  $query = "select td.template_name as project_name, {$prefix}originaltemplatesdetails.template_name,"
+  . " {$prefix}originaltemplatesdetails.template_framework, td.template_id from {$prefix}templatedetails td, "
+  . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails where td.template_id = tr.template_id and tr.user_id = ? "
+  . " and tr.folder= ? and  {$prefix}originaltemplatesdetails.template_type_id = td.template_type_id ";
+
+  $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+  
   if ($sort_type == "alpha_down") {
     $query .= "order by td.template_name DESC";
   } elseif ($sort_type == "alpha_up") {
@@ -222,9 +238,9 @@ function list_files_in_this_folder($folder_id, $sort_type) {
     $query .= "order by td.date_created ASC";
   }
 
-  $query_response = mysql_query($query);
+  $query_response = db_query($query, $params);
 
-  while ($row = mysql_fetch_array($query_response)) {
+  foreach($query_response as $row) {
 
         echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".strtolower($row['template_name']).".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
 
@@ -286,17 +302,21 @@ function list_users_projects($sort_type) {
 
   list_folder_contents(get_user_root_folder(), $sort_type);
 
-  $query = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_name=\"recyclebin\" and login_id =\"" . $_SESSION['toolkits_logon_id'] . "\"";
+  $prefix = $xerte_toolkits_site->database_table_prefix;
+  
+  $query = "select folder_id from {$prefix}folderdetails where folder_name=? AND login_id = ?";
+  $params = array("recyclebin", $_SESSION['toolkits_logon_id']);
 
-  $query_response = mysql_query($query);
-
-  $row = mysql_fetch_array($query_response);
+  $row = db_query_one($query, $params);
 
   $level = 1;
 
-  $query_for_folder_content = "select template_id from " . $xerte_toolkits_site->database_table_prefix . "templaterights where folder=\"" . $row['folder_id'] . "\" UNION SELECT folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_parent=\"" . $row['folder_id'] . "\"";
-
-  $query_response_for_folder_content = mysql_query($query_for_folder_content);
+  $query_for_folder_content = "select template_id from {$prefix}templaterights where folder= ? "
+  . " UNION SELECT folder_id from {$prefix}folderdetails where folder_parent= ?";
+  
+  $params2 = array($row['folder_id'], $row['folder_id']);
+  
+  $query_response_for_folder_content = db_query($query_for_folder_content, $params2);
 
   echo "</div>";
 
@@ -306,7 +326,7 @@ function list_users_projects($sort_type) {
 
   echo "<div class=\"folder\" id=\"recyclebin\" ondblclick=\"folder_open_close(this)\" onclick=\"highlight_main_toggle(this)\"><p><img id=\"folder_recyclebin\" style=\"vertical-align:middle;padding-right:5px\"";
 
-  if (mysql_num_rows($query_response_for_folder_content) == 0) {
+  if (sizeof($query_response_for_folder_content) == 0) {
 
     echo " src=\"{$xerte_toolkits_site->site_url}/website_code/images/rb_empty.gif\"";
 
@@ -339,12 +359,20 @@ function list_blank_templates() {
 
   global $xerte_toolkits_site;
 
-  $query_for_blank_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where access_rights=\"*\" and active=true order by date_uploaded DESC";
+  
+  $prefix = $xerte_toolkits_site->database_table_prefix;
+  
+  $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where "
+  . "access_rights=? and active= ? order by date_uploaded DESC";
 
-  $query_for_blank_templates_response = mysql_query($query_for_blank_templates);
-
-  while ($row = mysql_fetch_array($query_for_blank_templates_response)) {
-    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" onmouseout=\"this.style.backgroundColor='#fff'\"><div class=\"template_icon ".strtolower($row['template_name'])."\"></div><div class=\"template_desc\"><p class=\"template_name\">";
+  $rows = db_query($query_for_blank_templates, array('*', 1));
+  
+  
+  foreach($rows as $row) {
+    echo "<div class=\"template\" onmouseover=\"this.style.backgroundColor='#ebedf3'\" "
+      . "onmouseout=\"this.style.backgroundColor='#fff'\">"
+            . "<div class=\"template_icon ".strtolower($row['template_name'])."\">"
+            . "</div><div class=\"template_desc\"><p class=\"template_name\">";
 
     echo $row['display_name'];
 
@@ -430,11 +458,14 @@ function list_specific_templates() {
 
   global $xerte_toolkits_site;
 
-  $query_for_blank_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails where access_rights!=\"*\" order by date_uploaded DESC";
+  $prefix = $xerte_toolkits_site->database_table_prefix;
+  
+  $query_for_blank_templates = "select * from {$prefix}originaltemplatesdetails where access_rights != ? order by date_uploaded DESC";
 
-  $query_for_blank_templates_response = mysql_query($query_for_blank_templates);
-
-  while ($row = mysql_fetch_array($query_for_blank_templates_response)) {
+  $params = array('*');
+  $rows = db_query($query_for_blank_templates, $params);
+  
+  foreach($rows as $row) {
 
     if (access_check($row['access_rights'])) {
 
@@ -522,5 +553,3 @@ function output_locked_file_code($lock_file_creator) {
   echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
 
 }
-
-?>

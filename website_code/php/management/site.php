@@ -15,9 +15,7 @@ if(is_user_admin()){
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "sitedetails";
 
-    $query_response = mysql_query($query);
-
-    $row = mysql_fetch_array($query_response);
+    $row = db_query_one($query);
 
     $site_texts = explode("~~~", $row['site_text']);
     if (count($site_texts) > 1)

@@ -14,14 +14,8 @@ if(is_user_admin()){
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username" ;
 
-    $query_response = mysql_query($query);
-    // Fetch users only once and put the results in a php array
-    $logins = array();
-    while ($login = mysql_fetch_array($query_response, MYSQL_ASSOC))
-    {
-        $logins[] = $login;
-    }
-
+    $logins = db_query($query);
+   
     echo "<form name=\"user_templates\" action=\"javascript:list_templates_for_user('list_user')\"><select id=\"list_user\">";
 
     foreach($logins as $row_users){
@@ -34,12 +28,9 @@ if(is_user_admin()){
 
     echo "<button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_VIEW . "</button></form></div><div id=\"usertemplatelist\"></div>";
 
-    mysql_close($database_id);
 
 }else{
 
     management_fail();
 
 }
-
-?>

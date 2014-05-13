@@ -26,9 +26,9 @@ if(is_user_admin()){
 
     $query="select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails";
 
-    $query_response = mysql_query($query);
+    $query_response = db_query($query);
 
-    while($row = mysql_fetch_array($query_response)){
+    foreach($query_response as $row) { 
 
         echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
