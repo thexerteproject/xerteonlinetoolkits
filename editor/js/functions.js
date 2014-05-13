@@ -1,5 +1,6 @@
+var EDITOR = (function ($, my) {
 	// replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
-	var FixLineBreaks = function (text) {
+	my.FixLineBreaks = function (text) {
 		var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
 			temp, i, j, len, len2;
 
@@ -19,25 +20,27 @@
 		temp.push(split_up[i]);
 
 		return temp.join("]]>");
-	},
+	};
 
 
-	lo_key_exists = function (key) {
+	my.lo_key_exists = function (key) {
 		for (var lo_key in lo_data) if (lo_key == key) return true;
 		return false;
-	},
+	};
 
-	generate_lo_key = function () {
+
+	my.generate_lo_key = function () {
 		var key;
 		do {
 			key = "ID_";
 			for (var i=0; i<10; i++) key += String(parseInt(Math.random()*9));
 		} while (lo_key_exists(key));
 		return key;
-	},
+	};
+
 
 	// ** Recursive function to traverse the xml and build
-	build_lo_data = function (xmlData, parent_id) {
+	my.build_lo_data = function (xmlData, parent_id) {
 
 		// First lets generate a unique key
 		var key = generate_lo_key();
@@ -81,9 +84,10 @@
 		}
 
 		return this_json;
-	},
+	};
 
-	getOptionValue = function (all_options, key)
+
+	my.getOptionValue = function (all_options, key)
 	{
 		var value="";
 		for (var i=0; i<all_options.length; i++) {
@@ -94,9 +98,10 @@
 			}
 		}
 		return value;
-	},
+	};
 
-	getAttributeValue = function (attributes, name, options, key)
+
+	my.getAttributeValue = function (attributes, name, options, key)
 	{
 		var attribute_value;
 		var attr_found = false;
@@ -121,9 +126,10 @@
 			}
 		}
 		return {found : true, value: attribute_value};
-	},
+	};
 
-	displayParameter = function (id, all_options, name, value, key)
+
+	my.displayParameter = function (id, all_options, name, value, key)
 	{
 		var options = getOptionValue(all_options, name);
 		if (options != null)
@@ -148,16 +154,18 @@
 				});
 			}
 		}
-	},
+	};
 
-	removeOptionalProperty = function (name) {
+
+	my.removeOptionalProperty = function (name) {
 		console.log("Handler for removing optional properties called: " + name);
 
 		// Need to remove row from the screen and
 		// Also need to remove property from the data store
-	},
+	};
 
-	convertTextAreas = function ()
+
+	my.convertTextAreas = function ()
 	{
 		$.each(textareas_options, function (i, options) {
 			var ckoptions = {};
@@ -182,9 +190,10 @@
 				})
 			}, ckoptions);
 		});
-	},
+	};
 
-	convertTextInputs = function ()
+
+	my.convertTextInputs = function ()
 	{
 		$.each(textinputs_options, function (i, options) {
 			$('div.inputtext').ckeditor(function(){
@@ -202,26 +211,30 @@
 				{ name: 'colors' }]
 			});
 		});
-	},
+	};
 
-	convertColorPickers = function ()
+
+	my.convertColorPickers = function ()
 	{
 		$.each(colorpickers, function (i, options){
 			var myPicker = new jscolor.color(document.getElementById(options.id), {})
 			myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
 
 		});
-	},
+	};
 
-	preview = function () {
+
+	my.preview = function () {
 		console.log("preview clicked");
-	},
+	};
 
-	publish = function () {
+
+	my.publish = function () {
 		console.log("publish clicked");
-	},
+	};
 
-	duplicateSelectedNodes = function () {
+
+	my.duplicateSelectedNodes = function () {
     var tree = $.jstree.reference("#treeview");
 		var copy_node, new_node, id, ids = tree.get_selected();
 
@@ -241,9 +254,10 @@
 
 		return true; // Successful
 
-	},
+	};
 
-	deleteSelectedNodes = function () {
+
+	my.deleteSelectedNodes = function () {
 		var tree = $.jstree.reference("#treeview");
 		var copy_node, new_node, id, ids = tree.get_selected();
 
@@ -270,9 +284,10 @@
 		//tree.last_error();
 
 		return true; // Successful
-	},
+	};
 
-	showNodeData = function (key) {
+
+	my.showNodeData = function (key) {
 		console.log(key);
 
 		var attributes = lo_data[key]['attributes'];
@@ -396,9 +411,10 @@
 		convertColorPickers();
 
 		//$('div.inputtext').ckeditor();
-	},
+	};
 
-	setAttributeValue = function (key, name, value)
+
+	my.setAttributeValue = function (key, name, value)
 	{
 		var attributes = lo_data[key]['attributes'];
 		// Get the node name
@@ -431,9 +447,10 @@
 				}
 			}
 		}
-	},
+	};
 
-	cbChanged = function (id, key, name)
+
+	my.cbChanged = function (id, key, name)
 	{
 		//console.log(id + ': ' + key + ', ' +  name);
 		var value = $('#' + id).is(':checked');
@@ -446,16 +463,18 @@
 			value = 'false';
 		}
 		setAttributeValue(key, name, value);
-	},
+	};
 
-	selectChanged = function (id, key, name)
+
+	my.selectChanged = function (id, key, name)
 	{
 		//console.log(id + ': ' + key + ', ' +  name);
 		var value = $('#' + id).val();
 		setAttributeValue(key, name, value);
-	},
+	};
 
-	inputChanged = function (id, key, name, passedValue)
+
+	my.inputChanged = function (id, key, name, passedValue)
 	{
 		//console.log(id + ': ' + key + ', ' +  name  + ', ' +  passedValue);
 		var value, valuePassed = (arguments.length == 4);
@@ -478,9 +497,10 @@
 			value = '0x' + value;
 		}
 		setAttributeValue(key, name, value);
-	},
+	};
 
-	displayDataType = function (value, options, name, key) {
+
+	my.displayDataType = function (value, options, name, key) {
 		var html;                   //console.log(options);
 
 		switch(options.type.toLowerCase())
@@ -604,3 +624,8 @@
 		}
 		return html;
 	};
+
+	return my;
+
+})(jQuery, window);
+
