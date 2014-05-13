@@ -50,9 +50,8 @@ if (!isset($xerte_toolkits_site)) {
      * Access the database to get the variables
      */
     if (!is_file(dirname(__FILE__) . '/database.php')) {
-		
-		header("Location: " . $_SERVER['REQUEST_URI'] . "setup/");
-	
+        header("Location: " . $_SERVER['REQUEST_URI'] . "setup/");
+        exit(0);
     }
 
     require_once(dirname(__FILE__) . '/database.php');
@@ -91,15 +90,12 @@ if (!isset($xerte_toolkits_site)) {
     //$xerte_toolkits_site->copyright = utf8_decode($row['copyright']);
 
     $site_texts = explode("~~~", $row['site_text']);
-    if (count($site_texts) > 1)
-    {
+    if (count($site_texts) > 1) {
         $xerte_toolkits_site->site_text = $site_texts[0];
-        $xerte_toolkits_site->tutorial_text=$site_texts[1];
-    }
-    else
-    {
+        $xerte_toolkits_site->tutorial_text = $site_texts[1];
+    } else {
         $xerte_toolkits_site->site_text = $site_texts[0];
-        $xerte_toolkits_site->tutorial_text="";
+        $xerte_toolkits_site->tutorial_text = "";
     }
 
 
@@ -134,25 +130,25 @@ if (!isset($xerte_toolkits_site)) {
 
     // I'm not sure why we allow this path to be set via the DB. It'd make more sense to fix it to dirname(__FILE__), which will cope with the site moving.
     $xerte_toolkits_site->root_file_path = dirname(__FILE__) . '/';
-	
-	$learning_objects = new StdClass();
-	
-	foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
-	
+
+    $learning_objects = new StdClass();
+
+    foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
+
         if (preg_match('!/modules/(\w+)/templates/(\w+)/!', $infoFile, $matches)) {
-		
+
             $attributeName = $matches[1] . '_' . $matches[2];
-			
+
             $templateProperties = new StdClass();
             $learning_objects->{$attributeName} = $templateProperties;
 
             $info = file($infoFile, FILE_SKIP_EMPTY_LINES);
-            if($info === FALSE || empty($info))  {
+            if ($info === FALSE || empty($info)) {
                 die("Invalid template info file - check $infoFile is valid.");
             }
             foreach ($info as $line) {
                 $attr_data = explode(":", $line, 2);
-                if(empty($attr_data) || sizeof($attr_data) != 2) {
+                if (empty($attr_data) || sizeof($attr_data) != 2) {
                     continue;
                 }
                 switch (trim(strtolower($attr_data[0]))) {
@@ -168,8 +164,7 @@ if (!isset($xerte_toolkits_site)) {
                         break;
                 }
             }
-        }
-        else {
+        } else {
             die("Invalid template name : $infoFile");
         }
     }
