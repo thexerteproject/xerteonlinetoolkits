@@ -56,7 +56,7 @@ $query_for_edit_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_i
 $row_edit = db_query_one($query_for_edit_content);
 
 if(empty($row_edit)) {
-    die("Invalid template_id (could not find in DB)");
+    die("Invalid template_id (could not find in DB) (1)");
 }
 
 if(isset($_SESSION['toolkits_logon_id'])){
