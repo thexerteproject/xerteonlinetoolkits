@@ -1,87 +1,68 @@
-<?PHP    
+<?php
 
- class toolkits_session_handler{
-	
-		var $database_connect;
-	
-		function toolkits_session_handler(){
+class toolkits_session_handler {
 
+    var $database_connect;
 
+    function toolkits_session_handler() {
+        
+    }
 
-		}
+    function xerte_session_open() {
 
-		function xerte_session_open(){
-		
-			global $xerte_toolkits_site;
-		
-			$this->database_connect = mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
+        global $xerte_toolkits_site;
 
-			mysql_select_db($xerte_toolkits_site->database_name);
+        $this->database_connect = mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
 
-			return TRUE;
-		
-		}
-		
-		function xerte_session_close(){
-		
-			mysql_close();
-		
-		}
-		
-		function xerte_session_read($id){
+        mysql_select_db($xerte_toolkits_site->database_name);
 
-			global $xerte_toolkits_site;
+        return TRUE;
+    }
 
-			$response = mysql_query("select data from user_sessions where session_id = '$id'");
+    function xerte_session_close() {
 
-			$value = mysql_fetch_object($response);
-			
-			if(isset($value->data)){
+    }
 
-				return $value->data;
-				
-			}else{
-			
-				return false;
-			
-			}
-		
-		}
-		
-		function xerte_session_write($id,$data){
+    function xerte_session_read($id) {
 
-			global $xerte_toolkits_site;
-		
-			$access = time();
+        global $xerte_toolkits_site;
 
-			mysql_query("replace into user_sessions values('$id','$access','$data')");
-	
-		}
-		
-		function xerte_session_destroy($id){
-		
-			global $xerte_toolkits_site;
-		
-			mysql_query("delete from user_sessions where session_id = '$id'");				
-		
-		}	
-		
-		function xerte_session_clean($max){
-		
-			global $xerte_toolkits_site;
-		
-		  	$old = time() - $max;
+        $response = db_query_one("select data from user_sessions where session_id = ?", array($id));
 
-			$old = mysql_real_escape_string($old);
+        if (isset($response['data'])) {
+            return $response['data'];
+        } else {
+            return false;
+        }
+    }
 
-			$sql = "delete from user_sessions WHERE  access < '$old'";
-			
-			mysql_query($sql);	
-		
-		
-		}
-	
-	}
+    function xerte_session_write($id, $data) {
 
+        global $xerte_toolkits_site;
 
-?>
+        $access = time();
+        $response = db_query_one('SELECT * FROM user_sessions WHERE id = ?', array($id));
+        if (empty($response)) {
+            db_query_one("INSERT INTO user_sessions VALUES(?,?,?)", array($id, $access, $data));
+        } else {
+            db_query("UPDATE user_sessions SET data = ?, access = ? WHERE id = ?", array($data, $access, $id));
+        }
+    }
+
+    function xerte_session_destroy($id) {
+
+        global $xerte_toolkits_site;
+
+        db_query("delete from user_sessions where session_id = ?", array($id));
+    }
+
+    function xerte_session_clean($max) {
+
+        global $xerte_toolkits_site;
+
+        $old = time() - $max;
+
+        db_query("DELETE FROM user_sessions WHERE access < ? ", array($old));
+    }
+
+}

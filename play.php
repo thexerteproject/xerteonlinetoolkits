@@ -22,7 +22,7 @@ require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
 
 //error_reporting(E_ALL);
-//ini_set(display_errors,"ON");
+//ini_set('display_errors',"ON");
 
 /**
  *

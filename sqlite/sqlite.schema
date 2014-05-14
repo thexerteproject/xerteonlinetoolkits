@@ -1,0 +1,178 @@
+CREATE TABLE additional_sharing ( id integer primary key autoincrement, template_id int default null, sharing_type char(255) default null, extra char(255) default null);
+CREATE TABLE config ( id integer primary key autoincrement, name varchar(20) not null, "value" varchar(20) not null);
+CREATE TABLE "folderdetails" (
+  "folder_id" integer primary key autoincrement,
+  "login_id" bigint(20) DEFAULT NULL,
+  "folder_parent" bigint(20) DEFAULT NULL,
+  "folder_name" char(255) DEFAULT NULL,
+  "date_created" date DEFAULT '2008-12-08'
+);
+CREATE TABLE "ldap" (
+  "ldap_id" integer primary key autoincrement,
+  "ldap_knownname" text NOT NULL,
+  "ldap_host" text NOT NULL,
+  "ldap_port" text NOT NULL,
+  "ldap_username" text,
+  "ldap_password" text,
+  "ldap_basedn" text,
+  "ldap_filter" text,
+  "ldap_filter_attr" text
+);
+CREATE TABLE logindetails ( login_id integer primary key autoincrement, username char(255) default null, lastlogin date default null, firstname char(255) default null, surname char(255) default null);
+CREATE TABLE "lti_context" (
+  "lti_context_key" varchar(255) NOT NULL,
+  "c_internal_id" varchar(255) NOT NULL,
+  "updated_on" datetime NOT NULL,
+  PRIMARY KEY ("lti_context_key")
+);
+CREATE TABLE "lti_keys" (
+  "id" mediumint(9) NOT NULL ,
+  "oauth_consumer_key" char(255) NOT NULL,
+  "secret" char(255) DEFAULT NULL,
+  "name" char(255) DEFAULT NULL,
+  "context_id" char(255) DEFAULT NULL,
+  "deleted" datetime DEFAULT NULL,
+  "updated_on" datetime DEFAULT NULL,
+  PRIMARY KEY ("id")
+);
+CREATE TABLE "lti_resource" (
+  "lti_resource_key" varchar(255) NOT NULL,
+  "internal_id" varchar(255) DEFAULT NULL,
+  "internal_type" varchar(255) NOT NULL,
+  "updated_on" datetime DEFAULT NULL,
+  PRIMARY KEY ("lti_resource_key")
+);
+CREATE TABLE "lti_user" (
+  "lti_user_key" varchar(255) NOT NULL DEFAULT '',
+  "lti_user_equ" varchar(255) NOT NULL,
+  "updated_on" datetime NOT NULL,
+  PRIMARY KEY ("lti_user_key")
+);
+CREATE TABLE "originaltemplatesdetails" (
+  "template_type_id" bigint(20) NOT NULL ,
+  "template_framework" char(255) DEFAULT NULL,
+  "template_name" char(255) DEFAULT NULL,
+  "description" char(255) DEFAULT NULL,
+  "date_uploaded" date DEFAULT NULL,
+  "display_name" char(255) DEFAULT NULL,
+  "display_id" bigint(20) DEFAULT NULL,
+  "access_rights" char(255) DEFAULT NULL,
+  "active" tinyint(1) DEFAULT NULL,
+  PRIMARY KEY ("template_type_id")
+);
+CREATE TABLE "play_security_details" (
+  "security_id" int(11) NOT NULL ,
+  "security_setting" char(255) DEFAULT NULL,
+  "security_data" char(255) DEFAULT NULL,
+  "security_info" char(255) DEFAULT NULL,
+  PRIMARY KEY ("security_id")
+);
+CREATE TABLE "sitedetails" (
+  "site_id" int(11) NOT NULL ,
+  "site_url" char(255) DEFAULT NULL,
+  "apache" char(255) DEFAULT NULL,
+  "mimetypes" text,
+  "site_session_name" char(255) DEFAULT NULL,
+  "LDAP_preference" char(255) DEFAULT NULL,
+  "LDAP_filter" char(255) DEFAULT NULL,
+  "integration_config_path" char(255) DEFAULT NULL,
+  "admin_username" char(255) DEFAULT NULL,
+  "admin_password" char(255) DEFAULT NULL,
+  "site_title" char(255) DEFAULT NULL,
+  "site_name" char(255) DEFAULT NULL,
+  "site_logo" char(255) DEFAULT NULL,
+  "organisational_logo" char(255) DEFAULT NULL,
+  "welcome_message" char(255) DEFAULT NULL,
+  "site_text" text,
+  "news_text" text,
+  "pod_one" text,
+  "pod_two" text,
+  "copyright" char(255) DEFAULT NULL,
+  "rss_title" char(255) DEFAULT NULL,
+  "synd_publisher" char(255) DEFAULT NULL,
+  "synd_rights" char(255) DEFAULT NULL,
+  "synd_license" char(255) DEFAULT NULL,
+  "demonstration_page" char(255) DEFAULT NULL,
+  "form_string" text,
+  "peer_form_string" text,
+  "module_path" char(255) DEFAULT NULL,
+  "website_code_path" char(255) DEFAULT NULL,
+  "users_file_area_short" char(255) DEFAULT NULL,
+  "php_library_path" char(255) DEFAULT NULL,
+  "import_path" char(255) DEFAULT NULL,
+  "root_file_path" char(255) DEFAULT NULL,
+  "play_edit_preview_query" text,
+  "error_log_path" char(255) DEFAULT NULL,
+  "email_error_list" char(255) DEFAULT NULL,
+  "error_log_message" char(255) DEFAULT NULL,
+  "max_error_size" char(255) DEFAULT NULL,
+  "error_email_message" char(255) DEFAULT NULL,
+  "ldap_host" char(255) DEFAULT NULL,
+  "ldap_port" char(255) DEFAULT NULL,
+  "bind_pwd" char(255) DEFAULT NULL,
+  "basedn" char(255) DEFAULT NULL,
+  "bind_dn" char(255) DEFAULT NULL,
+  "flash_save_path" char(255) DEFAULT NULL,
+  "flash_upload_path" char(255) DEFAULT NULL,
+  "flash_preview_check_path" char(255) DEFAULT NULL,
+  "flash_flv_skin" char(255) DEFAULT NULL,
+  "site_email_account" char(255) DEFAULT NULL,
+  "headers" char(255) DEFAULT NULL,
+  "email_to_add_to_username" char(255) DEFAULT NULL,
+  "proxy1" char(255) DEFAULT NULL,
+  "port1" char(255) DEFAULT NULL,
+  "feedback_list" char(255) DEFAULT NULL,
+  PRIMARY KEY ("site_id")
+);
+CREATE TABLE "syndicationcategories" (
+  "category_id" int(11) NOT NULL ,
+  "category_name" char(255) DEFAULT NULL,
+  PRIMARY KEY ("category_id")
+);
+CREATE TABLE "syndicationlicenses" (
+  "license_id" int(11) NOT NULL ,
+  "license_name" char(255) DEFAULT NULL,
+  PRIMARY KEY ("license_id")
+);
+CREATE TABLE "templatedetails" (
+  "template_id" bigint(20) NOT NULL,
+  "creator_id" bigint(20) DEFAULT NULL,
+  "template_type_id" bigint(20) DEFAULT NULL,
+  "template_name" char(255) DEFAULT NULL,
+  "date_created" date DEFAULT NULL,
+  "date_modified" date DEFAULT NULL,
+  "date_accessed" date DEFAULT NULL,
+  "number_of_uses" bigint(20) DEFAULT NULL,
+  "access_to_whom" text,
+  "extra_flags" varchar(45) DEFAULT NULL,
+  PRIMARY KEY ("template_id")
+);
+CREATE TABLE "templaterights" (
+  "template_id" bigint(20) NOT NULL,
+  "user_id" bigint(20) DEFAULT NULL,
+  "role" text,
+  "folder" bigint(20) DEFAULT NULL,
+  "notes" char(255) DEFAULT NULL
+);
+CREATE TABLE "templatesyndication" (
+  "template_id" bigint(20) NOT NULL,
+  "description" char(255) DEFAULT NULL,
+  "keywords" char(255) DEFAULT NULL,
+  "rss" text,
+  "export" text,
+  "syndication" text,
+  "category" char(255) DEFAULT NULL,
+  "license" char(255) DEFAULT NULL
+);
+CREATE TABLE "user_sessions" (
+  "session_id" varchar(32) NOT NULL DEFAULT '',
+  "access" int(10)  DEFAULT NULL,
+  "data" text,
+  PRIMARY KEY ("session_id")
+);
+CREATE INDEX config_name_idx on config('name');
+CREATE INDEX "lti_context_c_internal_id" ON "lti_context" ("c_internal_id");
+CREATE INDEX "lti_keys_oauth_consumer_key" ON "lti_keys" ("oauth_consumer_key");
+CREATE INDEX "lti_resource_destination" ON "lti_resource" ("internal_id");
+CREATE INDEX "lti_resource_destination2" ON "lti_resource" ("internal_type");
+CREATE INDEX "lti_user_lti_user_equ" ON "lti_user" ("lti_user_equ");
