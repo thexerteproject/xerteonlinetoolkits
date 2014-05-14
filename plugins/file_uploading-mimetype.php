@@ -7,18 +7,27 @@
 function filter_by_mimetype() {
 
     $args = func_get_args();
-    $file_name = $args[0];
-    $allowable_mimetypes = $args[1];
-
-    $mime_type = mime_content_type($file_name);
-
-    if(in_array($allowable_mime_types, $mime_type)) {
-        return $file_name;
+    $files = $args[0];
+    _debug($args);
+    foreach($files as $file) {
+        _debug("Checking {$file['name']} for mimetype etc");
+        
+        $user_filename = $file['name'];
+        $php_upload_filename = $file['tmp_name'];
+        
+        $validator = new Xerte_Validate_FileMimeType();
+        if($validator->isValid($php_upload_filename)) {
+            _debug("Mime check of $php_upload_filename ($user_filename) - ok");
+        }
+        else {
+            _debug("Mime check of $php_upload_filename ($user_filename) failed. ");
+            return false;
+        }
     }
-    return false;
+    return $files;
 }
 
-if(function_exists('mime_content_type')) {
+if(Xerte_Validate_FileMimeType::canRun()) {
     // this array should probably be defined within config.php as it's likely to be a per site setting.
     // hopefully these are 'safe-by-default'.
     $allowable_mime_types = array(
@@ -49,5 +58,6 @@ if(function_exists('mime_content_type')) {
         // add other 'permissible' formats here.
     );
 
-    add_filter('editor_upload_file', 'filter_by_mimetype', $allowable_mime_types);
+    Xerte_Validate_FileMimeType::$allowableMimeTypeList = $allowable_mime_types;
+    add_filter('editor_upload_file', 'filter_by_mimetype');
 }

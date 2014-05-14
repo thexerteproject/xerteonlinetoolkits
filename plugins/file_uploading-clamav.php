@@ -14,34 +14,20 @@
  */
 function virus_check_file() {
     $args = func_get_args();
-    $file_name = $args[0];
+    $files = $args[0]; /* $_FILES like */
 
-    if(file_exists($file_name)) {
-        $command = "/usr/bin/clamscan " . escapeshellarg($file_name);
-        $retval = -1;
-        exec($command, $output, $retval);
-
-        if($retval == 0) {
-            return $file_name;
-        }
-        else {
-            _debug("Virus found? {$retval} / {$output} (When scanning : $file_name)");
-            error_log("Virus found in file upload? From " . __FILE__ . " - ClamAV output: {$retval} / {$output}");
-            die("Possible virus found; aborting upload. Consult server log files for more information.");
-            return false;
+    if(Xerte_Validate_VirusScanClamAv::canRun()){
+        foreach($files as $file) {
+            $validator = new Xerte_Validate_VirusScanClamAv();
+            if(!$validator->isValid($file['tmp_name'])) {
+                die("Possible virus found in upload; Consult server log files for more information.");
+            }
         }
     }
-    return $file_name;
-}
-
-function _is_clamav_available()  {
-    return file_exists('/usr/bin/clamav') && is_executable('/usr/bin/clamav');
+    return $files;
 }
 
 
 // perhaps have 'pre-flight check here' ?? e.g. explode if /usr/bin/clamscan doesn't exist.
-//
-if(_is_clamav_available()) {
-    add_filter('editor_upload_file', 'virus_check_file');
-}
+add_filter('editor_upload_file', 'virus_check_file');
 

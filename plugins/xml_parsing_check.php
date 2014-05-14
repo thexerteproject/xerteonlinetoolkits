@@ -19,11 +19,12 @@ function xml_check_parseability() {
     $xml_string = $args[0];
     $validator = new Xerte_Validate_Xml();
     if($validator->isValid($xml_string)) {
-        return $string;
+        _debug("XML parsing passed");
+        return $xml_string;
     }
     else {
-        _debug("Invalid XML passed in : '{$string}'");
-        error_log("Invalid XML passed in : '{$string}'");
+        _debug("Invalid XML passed in : '{$xml_string}'");
+        error_log("Invalid XML passed in : '{$xml_string}'");
         return false;
     }
 }
