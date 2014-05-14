@@ -14,19 +14,23 @@
  */
 class Xerte_Validate_Xml /* implements Zend_Validate_Interface */ { // silent dependency at the moment as we don't have all of ZF1
 
+    protected $messages = array();
+
+
     /**
      * @return boolean false if it's not valid.
      * @param string $string - presumably some XML.
      */
-    public static function isValid($string) {
+    public function isValid($string) {
         $return = false;
-
-        if (exntension_loaded('libxml') && extension_loaded('simplexml')) {
+        $this->messages = array();
+        if (extension_loaded('libxml') && extension_loaded('simplexml')) {
             libxml_clear_errors();
             $old_setting = libxml_use_internal_errors(true);
             $xml = simplexml_load_string($string);
             $errors = libxml_get_errors();
             foreach ($errors as $error) {
+                $this->messages[$error->line] = $error->message;
                 _debug("XML Error on {$error->line} - {$error->level} - {$error->message}");
                 _debug($xml);
             }
@@ -37,10 +41,6 @@ class Xerte_Validate_Xml /* implements Zend_Validate_Interface */ { // silent de
 
             libxml_use_internal_errors($old_setting);
             libxml_clear_errors();
-            
-            if (!$errors) {
-                $return = true;
-            }
         } else {
             _debug("Warning: simplexml extension not found");
         }
@@ -48,4 +48,18 @@ class Xerte_Validate_Xml /* implements Zend_Validate_Interface */ { // silent de
         return $return;
     }
 
+    /**
+     * @return array
+     */
+    public function getMessages() {
+        return $this->messages;
+    }
+
+
+    /**
+     * @return array of line numbers where there was a problem, or an empty array.
+     */
+    public function getErrors() {
+        return array_keys($this->messages);
+    }
 }

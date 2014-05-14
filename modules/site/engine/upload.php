@@ -43,7 +43,7 @@ if ($_GET['BROWSER'] == 'firefox' || $_GET['BROWSER'] == 'safari') {
  */
 require_once("../../../config.php");
 
-
+require_once("../../../plugins.php");
 
 /**
  * 	Now we check that the session has a valid, logged in user
@@ -53,34 +53,14 @@ if (!isset($_SESSION['toolkits_logon_username'])) {
 }
 
 
-
-/**
- *  Next we will check our blacklist of extensions
- *  This is really not very effective - will be replaced by whitelist
- *    and mimetype detection - feel free to add to this list
- */
-
-
-// Ignorance would make me think this would be more effective being a whitelist based on mime types.
-// e.g image/jpg, image/png, image/gif, multimedia/audio, multimedia/mp3, text/xml, text/plain, multimedia/video etc 
-// and banned file extensions - i.e. .htaccess, .php, .cgi ?
-
-$blacklist = explode(',', 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm');
-$extension = strtolower(pathinfo($_FILES['Filedata']['name'], PATHINFO_EXTENSION));
-if (in_array($extension, $blacklist)) {
-    receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Invalid filetype: " . $extension, "Invalid filetype: " . $extension);
-    exit();
+if (!empty($_FILES)) {
+    if(!apply_filters('editor_upload_file', $_FILES)) {
+        _debug("file upload for " . print_r($_FILES, true) . " failed. ");
+        die("File upload failed; check server logs.");
+    }
 }
-
-
-
-$tmp_file_name = false;
-if(isset($_FILES['Filedata'])) {
-    $tmp_file_name = apply_filters('editor_upload_file', $_FILES['Filedata']['tmp_name']);
-}
-
-if(empty($tmp_file_name)) {
-    die("File upload failed; check server logs.");
+else {
+    die("No file(s) uploaded");
 }
 
 /**

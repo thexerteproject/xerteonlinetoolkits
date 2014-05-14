@@ -8,6 +8,7 @@
 define('D_S', DIRECTORY_SEPARATOR);
 define('PLUGINS_PATH', dirname(__FILE__) . D_S . 'plugins');
 
+require_once(dirname(__FILE__) . D_S . 'library' . D_S . 'autoloader.php');
 
 /**
  * We will be absorbing the Wordpress plugins.php code
