@@ -11,17 +11,18 @@ if(is_user_admin()){
 
     $database_id = database_connect("templates list connected","template list failed");
 
-    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails";
 
-    $query_response = mysql_query($query);
 
     echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</button></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
 	
-	$last_template_type = "";
-
-    while($row = mysql_fetch_array($query_response)){
+    $last_template_type = "";
+    
+    $query="select * from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails";
+    $query_response = db_query($query);
+    foreach($query_response as $row) {
+    
 
 		if($row['template_framework']!=$last_template_type){
 		

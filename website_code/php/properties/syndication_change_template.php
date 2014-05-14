@@ -16,34 +16,38 @@ include "../template_status.php";
 include "../user_library.php";
 include "../url_library.php";	
 include "properties_library.php";
+$prefix = $xerte_toolkits_site->database_table_prefix;
 
 if(is_numeric($_POST['tutorial_id'])){
 
     $database_connect_id = database_connect("syndication change template database connect success", "syndication change template database connect failed");
 
-    if(is_user_creator(mysql_real_escape_string($_POST['tutorial_id']))||is_user_admin()){
+    if(is_user_creator($_POST['tutorial_id'])||is_user_admin()){
 
-        $query_for_syndication_status = "select syndication from " . $xerte_toolkits_site->database_table_prefix . "templatesyndication where template_id=" . mysql_real_escape_string($_POST['tutorial_id']);
+        $query_for_syndication_status = "select syndication from {$prefix}templatesyndication where template_id=?";
+        $params = array($_POST['tutorial_id']);
 
-        $query_for_syndication_response = mysql_query($query_for_syndication_status);
+        $query_for_syndication_response = db_query($query_for_syndication_status, $params);
 
-        if(mysql_num_rows($query_for_syndication_response)==0){
+        if(sizeof($query_for_syndication_response)==0){
 
-            $query_to_change_syndication_status = "Insert into " . $xerte_toolkits_site->database_table_prefix . "templatesyndication(template_id,syndication,keywords,description,category,license) VALUES (" . mysql_real_escape_string($_POST['tutorial_id']) . ",'" . mysql_real_escape_string($_POST['synd']) . "','" . mysql_real_escape_string($_POST['keywords']) . "','" . mysql_real_escape_string($_POST['description']) . "','" . mysql_real_escape_string($_POST['category_value']) . "','" . mysql_real_escape_string($_POST['license_value']) . "')";
+            $query_to_change_syndication_status = "INSERT into {$prefix}templatesyndication(template_id,syndication,keywords,description,category,license) VALUES (?,?,?,?,?,?)";
+            $params = array($_POST['tutorial_id'], $_POST['synd'], $_POST['keywords'], $_POST['description'], $_POST['category_value'], $_POST['license_value']);
 
         }else{
 
-            $query_to_change_syndication_status = "update " . $xerte_toolkits_site->database_table_prefix . "templatesyndication set syndication='" . mysql_real_escape_string($_POST['synd']) . "', keywords='" . mysql_real_escape_string($_POST['keywords']) . "', description='" . mysql_real_escape_string($_POST['description']) . "', category='" . mysql_real_escape_string($_POST['category_value']) . "', license='" . mysql_real_escape_string($_POST['license_value']) . "' where template_id=" . mysql_real_escape_string($_POST['tutorial_id']);
-
+            $query_to_change_syndication_status = "UPDATE {prefix}templatesyndication SET "
+                    . "syndication = ?, keywords = ?, description = ?, category = ?, license = ? WHERE template_id=?";
+            $params = array($_POST['synd'], $_POST['keywords'], $_POST['description'], $_POST['category_value'], $_POST['license_value'], $_POST['tutorial_id']);
         }
 
-        $query_to_change_syndication_status_response = mysql_query($query_to_change_syndication_status);
+        $query_to_change_syndication_status_response = db_query($query_to_change_syndication_status, $params);
 
         /**
          * Check template is public
          */
 
-        if(template_access_settings(mysql_real_escape_string($_POST['tutorial_id']))=="Public"){
+        if(template_access_settings($_POST['tutorial_id'])=="Public"){
 
             syndication_display($xerte_toolkits_site,true);
 
@@ -62,4 +66,3 @@ if(is_numeric($_POST['tutorial_id'])){
 
 }
 
-?>
