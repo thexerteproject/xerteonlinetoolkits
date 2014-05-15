@@ -77,12 +77,13 @@ if ($pass === false) {
     exit();
 }
 
-
 /**
  *  Passed all the checks so lets try to write the file
  */
 $new_file_name = $xerte_toolkits_site->root_file_path . $_GET['path'] . $_FILES['Filedata']['name'];
 if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)) {
     receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Error saving file: " . $new_file_name, "Error saving file: " . error_get_last());
-    exit();
+    die("Couldn't move uploaded file into place.");
 }
+
+apply_filters('editor_post_upload_file', $new_file_name);
