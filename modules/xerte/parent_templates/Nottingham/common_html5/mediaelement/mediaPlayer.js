@@ -7,6 +7,7 @@
 			},
 			opts = $.extend({}, defaults, options),
 			dimensionsString = "",
+			mimeType = '',
 			thisMedia = this;
 		
 		if (opts.type == "audio") {
@@ -25,11 +26,11 @@
 		
 		var fileInfo = opts.source.split(".");
 		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-		
+		mimeType = opts.type + "/" + fileInfo[1];
 		
 		var setUpMedia = function() {
 			opts.source = eval(opts.source);
-			thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + opts.type + "/" + fileInfo[1] + '" src="' + opts.source + '" /></' + opts.type + '>');
+			thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + mimeType + '" src="' + opts.source + '" /></' + opts.type + '>');
 			
 			thisMedia.find(opts.type).mediaelementplayer({
 				startVolume:		x_volume,
@@ -118,6 +119,7 @@
 			fileExists(url, function(exists) {
 				if (exists) {
 					opts.source = fileInfo[0] + ".mp4'";
+					mimeType = 'video/mp4';
 				}
 
 				setUpMedia();
