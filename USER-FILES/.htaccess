@@ -1,0 +1,11 @@
+# Stop Apache doing directory indexing.
+Options -Indexes 
+
+
+# Try and tell Apache not to serve out any files within this directory as PHP - 
+# this helps close a potential security flaw - given people can upload almost anything into an LO.
+
+#RemoveHandler .php
+<FilesMatch "\.((php[0-9]?)|p?html?|pl|sh|java|cpp|c|h|js|rc)$">
+    SetHandler None
+</FilesMatch>
