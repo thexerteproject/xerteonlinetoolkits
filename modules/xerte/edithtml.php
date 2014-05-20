@@ -163,8 +163,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
-<script type="text/javascript" src="editor/js/functions.js"></script>
-<script type="text/javascript" src="editor/js/config.js"></script>
 <script>
     <?php
     echo "xmlvariable=\"" . $string_for_flash_xml . "\";\n";
@@ -181,6 +179,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     ?>
 </script>
+<script type="text/javascript" src="editor/js/toolbox.js"></script>
+<script type="text/javascript" src="editor/js/layout.js"></script>
+<script type="text/javascript" src="editor/js/tree.js"></script>
+<script type="text/javascript" src="editor/js/data.js"></script>
 <script type="text/javascript" src="editor/js/application.js"></script>
 </body>
 </html>
