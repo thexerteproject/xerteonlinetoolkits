@@ -263,10 +263,14 @@ var EDITOR = (function ($, parent) {
                 "multiple" : false // Need to disable this just now as nodes could be on different levels
             }
         })
+        .one('ready.jstree', function (e, data) {
+            data.instance.open_node(["treeroot"]);
+            data.instance.select_node(["treeroot"]);
+        })
         .bind('select_node.jstree', function(event, data) {
             showNodeData(data.node.id);
         })
-        .bind("copy_node.jstree", function (e, data) {
+        .bind("copy_node.jstree", function (event, data) {
             var new_id = generate_lo_key(),
                 original_id =  data.original.id,
                 tree = $('#treeview').jstree(true);
@@ -285,9 +289,8 @@ var EDITOR = (function ($, parent) {
                 lo_data[new_id] = lo_data[original_id];
             }
         })
-        .one('ready.jstree', function (e, data) {
-            data.instance.open_node(["treeroot"]);
-            data.instance.select_node(["treeroot"]);
+        .bind('move_node.jstree', function(event, data) {
+            console.log("move node");
         });
     },
 
@@ -300,13 +303,19 @@ var EDITOR = (function ($, parent) {
     // Down button handler
     down = function() {
         console.log("move node down");
-        move(1);
+        move(2);
     },
 
     // Move the selected node up or down
     move = function(dir) {
-        var tree = $.jstree.reference("#treeview");
-        var copy_node, new_node, id, ids = tree.get_selected();
+        var tree = $.jstree.reference("#treeview"),
+            copy_node,
+            new_node,
+            id,
+            ids = tree.get_selected(),
+            pos,
+            new_pos,
+            count;
 
         if(!ids.length) { return false; } // Something needs to be selected
 
@@ -317,27 +326,24 @@ var EDITOR = (function ($, parent) {
             return false;
         }
 
-        current_node = tree.get_node(id, false); //console.log(current_node);
-        parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-        //parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        current_node = tree.get_node(id, false);
+        $current_node = $("#" + id).closest('li');
 
-        //var pos = (dir > 0) ? 'next' : 'previous';
+        // Calculate positions and total
+        pos = $current_node.index();
+        new_pos = pos + dir;
+        count = $current_node.siblings().length + 1;
 
-        //tree.move_node(current_node, parent_node, 2, function(node, parent, position){
-        //    console.log("done");
+        // Exit if we are at the top or bottom
+        if (new_pos < 0 ) return false;
+        if (new_pos > count) return false;
 
-            //var copied_node_id = current_node.id;
-            //var node_id = node.id;
-            //var new_node_id = generate_lo_key();
+        // Get the parent node
+        parent_node_id = tree.get_parent(current_node);
+        parent_node = tree.get_node(parent_node_id, false);
 
-            // Update the id
-            //node.id = new_node_id;
-
-            // Copy the lo_data from the old node to the new one
-            //lo_data[new_node_id] = lo_data[copied_node_id];
-
-            //console.log(lo_data[node.id]);
-        //});
+        // Do the move
+        tree.move_node(current_node, parent_node, new_pos);
 
         return true;
     },
