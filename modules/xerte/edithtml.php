@@ -180,6 +180,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     ?>
 </script>
 <script type="text/javascript" src="editor/js/toolbox.js"></script>
+<script type="text/javascript" src="editor/js/language.js"></script>
 <script type="text/javascript" src="editor/js/layout.js"></script>
 <script type="text/javascript" src="editor/js/tree.js"></script>
 <script type="text/javascript" src="editor/js/data.js"></script>
