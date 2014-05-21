@@ -239,8 +239,21 @@ var EDITOR = (function ($, parent) {
                 this.on('blur', function(){
                     // This is the call back when editor looses focus
                     if (this.checkDirty())
-                    {   var thisValue = this.getData();
+                    {
+                        var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+
+                        if (options.name = 'name') {
+                            // Get cleaned up text - must be a better way of doing this
+                            var strippedValue = thisValue.substr(3);
+                            strippedValue = strippedValue.substr(0, strippedValue.length-4);
+                            strippedValue = strippedValue.trim();
+
+                            // Rename the node
+                            var tree = $.jstree.reference("#treeview");
+                            tree.rename_node(tree.get_node(options.key, false), strippedValue);
+                        }
+
                         inputChanged(options.id, options.key, options.name, thisValue);
                     }
                 })
