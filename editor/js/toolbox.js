@@ -231,8 +231,15 @@ var EDITOR = (function ($, parent) {
     },
 
 
-    convertTextInputs = function ()
-    {
+    // Clean up the text - must be a better way of doing this
+    stripP = function (val) {
+        var strippedValue = val.substr(3);
+        strippedValue = strippedValue.substr(0, strippedValue.length-4);
+        return strippedValue.trim();
+    },
+
+
+    convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
             $('div.inputtext').ckeditor(function(){
                 // Editor is ready, attach onblur event
@@ -243,20 +250,23 @@ var EDITOR = (function ($, parent) {
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
 
-                        if (options.name = 'name') {
-                            // Get cleaned up text - must be a better way of doing this
-                            var strippedValue = thisValue.substr(3);
-                            strippedValue = strippedValue.substr(0, strippedValue.length-4);
-                            strippedValue = strippedValue.trim();
+                        inputChanged(options.id, options.key, options.name, thisValue);
+                    }
+                });
+                var lastValue = "";
+                this.on('change', function(event) {
+                    if (options.name = 'name') {
+                        var thisValue = this.getData();
+                        thisValue = stripP(thisValue.substr(0, thisValue.length-1));
+                        if (lastValue != thisValue) {
+                            lastValue = thisValue;
 
                             // Rename the node
                             var tree = $.jstree.reference("#treeview");
-                            tree.rename_node(tree.get_node(options.key, false), strippedValue);
+                            tree.rename_node(tree.get_node(options.key, false), thisValue);
                         }
-
-                        inputChanged(options.id, options.key, options.name, thisValue);
                     }
-                })
+                });
             }, { toolbarGroups : [
                 { name: 'basicstyles', groups: [ 'basicstyles' ] },
                 { name: 'colors' }]
@@ -342,9 +352,7 @@ var EDITOR = (function ($, parent) {
         if (id.indexOf('textinput') >= 0)
         {
             value = (valuePassed) ? passedValue : $('#' + id).html();
-            value = value.substr(3);
-            value = value.substr(0, value.length-4);
-            value.trim();
+            value = stripP(value);
         }
         else
         {
