@@ -7,6 +7,7 @@
 			},
 			opts = $.extend({}, defaults, options),
 			dimensionsString = "",
+			mimeType = '',
 			thisMedia = this;
 		
 		if (opts.type == "audio") {
@@ -25,11 +26,11 @@
 		
 		var fileInfo = opts.source.split(".");
 		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-		
+		mimeType = opts.type + "/" + fileInfo[1];
 		
 		var setUpMedia = function() {
 			opts.source = eval(opts.source);
-			thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + opts.type + "/" + fileInfo[1] + '" src="' + opts.source + '" /></' + opts.type + '>');
+			thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + mimeType + '" src="' + opts.source + '" /></' + opts.type + '>');
 			
 			thisMedia.find(opts.type).mediaelementplayer({
 				startVolume:		x_volume,
@@ -96,36 +97,34 @@
 					}
 				}
 			});
-		}
-		
-		
-		var checkFileType = function() {
-			// if video is flv look for alternative mp4 file to use as this can play in flash player or video tag
+		};
+
+
+		var fileExists = function(url, resultCallback) {
 			$.ajax({
-				url:	eval(fileInfo[0] + ".mp4'"),
-				type:	"HEAD",
+				url: url,
+				type: 'HEAD',
 				success: function() {
-					// mp4 version exists - use this instead
-					opts.source = fileInfo[0] + ".mp4'";
-					fileInfo.splice(1, 1, "mp4");
-					if (thisMedia.data("src") != undefined) { // save this new src so it doesn't have to check again if page returned to
-						thisMedia.data("src", opts.source);
-					}
-					setUpMedia();
-				},
-				error:	function() {
-					// no mp4 version to use - continue with flv
-					setUpMedia();
+					resultCallback(true);
+				}, error: function() {
+					resultCallback(false);
 				}
 			});
+		};
+
+
+		if (fileInfo['1'] !== 'mp4') {
+			var url = eval(fileInfo[0] + ".mp4'");
+
+			fileExists(url, function(exists) {
+				if (exists) {
+					opts.source = fileInfo[0] + ".mp4'";
+					mimeType = 'video/mp4';
+				}
+
+				setUpMedia();
+			});
 		}
-		
-		
-		if (opts.type == "video" && fileInfo[1] == "flv") {
-			checkFileType();
-		} else {
-			setUpMedia();
-		}
-		
-	}
+
+	};
 })(jQuery);
