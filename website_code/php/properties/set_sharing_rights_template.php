@@ -12,21 +12,18 @@
 
 require_once("../../../config.php");
 
-
+$prefix = $xerte_toolkits_site->database_table_prefix;
 if(is_numeric($_POST['user_id'])&&is_numeric($_POST['template_id'])){
 
-    $new_rights = mysql_real_escape_string($_POST['rights']);
+    $new_rights = $_POST['rights'];
 
-    $user_id = mysql_real_escape_string($_POST['user_id']);
+    $user_id = $_POST['user_id'];
 
-    $tutorial_id = mysql_real_escape_string($_POST['template_id']);
+    $tutorial_id = $_POST['template_id'];
 
     $database_id=database_connect("Template sharing rights database connect success","Template sharing rights database connect failed");
 
-    $query_to_change_share_rights = "update " . $xerte_toolkits_site->database_table_prefix . "templaterights set role = \"" . $new_rights . "\" where template_id=\"" . $tutorial_id . "\" and user_id=\"" . $user_id . "\"";
-
-    mysql_query($query_to_change_share_rights);
-
+    $query_to_change_share_rights = "update {$prefix}templaterights set role = ? WHERE template_id = ? and user_id= ?";
+    $params = array($new_rights, $tutorial_id, $user_id);
+    db_query($query_to_change_share_rights, $params);
 }
-
-?>

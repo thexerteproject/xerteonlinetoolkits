@@ -89,6 +89,16 @@
 				.attr("title", x_currentPageXML.getAttribute("tip"));
 			
 			this.loadVideo();
+			
+			//controls toggle
+			$(".panel.inline.x_floatRight")
+				.mouseover(function(){
+					$(".mejs-controls").show();
+				})
+				.mouseout(function(){
+					$(".mejs-controls").hide();
+				});
+			
 			x_pageLoaded();
 		}
 		
@@ -103,6 +113,13 @@
 			});
 		}
 	}
+	
+	//tweak for outscaled thumbnails when returned from video-full-screen for mp4
+	MediaElementPlayer.prototype.exitFullScreen_org = MediaElementPlayer.prototype.exitFullScreen;
+	MediaElementPlayer.prototype.exitFullScreen = function() {
+		textVideo.init();
+		this.exitFullScreen_org();
+	}	
 	
 	textVideo.init();
 	

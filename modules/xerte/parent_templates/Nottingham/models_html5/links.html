@@ -1,18 +1,18 @@
 <script type="text/javascript">
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var links = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-			
+
 		}
-		
+
 		this.init = function() {
 			var $linkHolder = $("#linkHolder");
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -20,7 +20,7 @@
 			if (numCols < 1) {
 				numCols = 3;
 			}
-			
+
 			var $linkBlock = $(".linkBlock:first");
 			$(x_currentPageXML).children().each(function(i) {
 				var $thisLink;
@@ -41,14 +41,14 @@
 					$thisLink.addClass("clear");
 				}
 			});
-			
+
 			// set column widths
 			if (x_browserInfo.mobile == false) {
 				var numColumns = Number(x_currentPageXML.getAttribute("cols")),
 					spacerWidth = (numColumns + 1) * 2,	// 2% gap between columns
 					paddingWidth = numColumns * 2,		// 1% padding inside panel
 					columnWidth = Math.floor((100 - spacerWidth - paddingWidth) / numColumns);
-				
+
 				$("#linkHolder .linkBlock")
 					.css({
 						width			:columnWidth + "%",
@@ -56,35 +56,44 @@
 						"margin-left"	:"2%"
 					});
 			}
-			
+
 			x_pageLoaded();
 		}
 	}
-	
+
 	links.init();
-	
+
 </script>
 
 <style type="text/css">
-	
+
 	#linkHolder {
 		width:		100%;
 		margin-top:	20px;
 	}
-	
+
 	#linkHolder .panel.linkBlock {
 		margin:		0 0 20px 0;
 		float:		left;
 	}
-	
+
+	#linkHolder a {
+		-ms-word-break: break-all;
+		word-break: break-all;
+		word-break: break-word;
+		-webkit-hyphens: auto;
+		-moz-hyphens: auto;
+		hyphens: auto;
+	}
+
 	.clear {
 		clear:	both;
 	}
-	
+
 </style>
 
 <div id="textHolder" tabindex="1">
-	
+
 </div>
 
 <div id="linkHolder">

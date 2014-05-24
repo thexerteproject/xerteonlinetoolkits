@@ -625,7 +625,8 @@ function x_setUp() {
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
-	
+
+    XTInitialise(); // initialise here, because of XTStartPage in next function
     x_navigateToPage(true, x_startPage);
 }
 
@@ -1178,12 +1179,16 @@ function x_findText(pageXML) {
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
 	var tempText = node.nodeValue;
-	
+
 	// check text for glossary words - if found replace with a link
 	if (x_glossary.length > 0) {
 		for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
-			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$2</a>$3');
+			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+		}
+		for (var k=0, len=x_glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
+			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 		}
 	}
 	

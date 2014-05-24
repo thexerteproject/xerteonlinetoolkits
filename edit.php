@@ -27,8 +27,9 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
  */
 function update_access_time($row_edit){
     global $xerte_toolkits_site;
-    return db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
-
+    /* This function is called even if the template is new - in which case it fails as a record doesn't exist */
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
+    return true;
 }
 
 
@@ -38,7 +39,7 @@ function update_access_time($row_edit){
 
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     _debug("Template id is not numeric. ->" . $_GET['template_id']);
-    require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edit.php";
+    require_once(dirname(__FILE__) . '/modules/xerte/module_functions.php');
     dont_show_template();
     exit(0);
 }
@@ -56,7 +57,7 @@ $query_for_edit_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_i
 $row_edit = db_query_one($query_for_edit_content);
 
 if(empty($row_edit)) {
-    die("Invalid template_id (could not find in DB)");
+    die("Invalid template_id (could not find in DB) (1)");
 }
 
 if(isset($_SESSION['toolkits_logon_id'])){
@@ -69,7 +70,6 @@ if(isset($_SESSION['toolkits_logon_id'])){
 
 			// Check for multiple editors
 			if(has_template_multiple_editors($safe_template_id)){
-
 				// Check for lock file. A lock file is created to prevent more than one
 				if(file_exists($xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/lockfile.txt")){
 
@@ -83,7 +83,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 					}
 
 					$lock_file_creator = $temp[0];
-
+                                    
 					/*
 					 * Check if lock file creator is current user, if so, continue into the code
 					 */

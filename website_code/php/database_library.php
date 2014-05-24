@@ -75,7 +75,7 @@ function database_connect($success_string, $error_string)
  * Poorman's prepared statement emulation. Does not cope with named parameters - only ?'s.
  * @param string $sql - e.g. "SELECT * FROM users WHERE name = ? OR name = ?"
  * @param array $params - e.g. array('bob', "david's");
- * @return mysql resultset.
+ * @return array|mysql resultset (if not select)
  */
 function db_query($sql, $params = array())
 {

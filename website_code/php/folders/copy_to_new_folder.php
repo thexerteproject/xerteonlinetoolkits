@@ -12,6 +12,6 @@
 require_once('../../../config.php');
 include '../folder_library.php';
 
-move_file(mysql_real_escape_string($_POST['files']),mysql_real_escape_string($_POST['destination']));
+move_file($_POST['files'],$_POST['destination']);
 
 ?>
