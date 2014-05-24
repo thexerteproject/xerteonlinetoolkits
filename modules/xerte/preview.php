@@ -29,16 +29,16 @@ function show_preview_code($row)
 {
     global $xerte_toolkits_site;
 
-    if(!file_exists($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/preview.xml")){
+    $template_dir = $xerte_toolkits_site->users_file_area_full . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
-        $buffer = file_get_contents($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/data.xml");
+    if(!file_exists($template_dir .'/preview.xml')) {
 
-        $fp = fopen($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/preview.xml","x");
+        $buffer = file_get_contents($template_dir . '/data.xml');
+        $fp = fopen($template_dir . '/preview.xml','x');
         fwrite($fp, $buffer);
         fclose($fp);
 
     }
-
     echo show_template_page($row, "preview.xml");
 }
 
@@ -48,16 +48,17 @@ function show_preview_code2($row, $row_username){
 
     _load_language_file("/modules/xerte/preview.inc");
 
+    $template_dir = $xerte_toolkits_site->users_file_area_full . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     /*
     * Format the XML strings to provide data to the engine
     */
 
-	if(!file_exists($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.xml")){
+	if(!file_exists($template_dir . '/preview.xml')) {
 
-		$buffer = file_get_contents($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/data.xml");
+		$buffer = file_get_contents($template_dir . "/data.xml");
 
-		$fp = fopen($xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row_username['username'] . "-" . $row['template_name'] . "/preview.xml","x");
+		$fp = fopen($template_dir . "/preview.xml","x");
 		fwrite($fp, $buffer);
 		fclose($fp);		
 
@@ -148,4 +149,3 @@ function show_preview_code2($row, $row_username){
     echo $page_content;
 }
 
-?>

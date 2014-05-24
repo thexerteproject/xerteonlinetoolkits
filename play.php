@@ -22,7 +22,7 @@ require_once $xerte_toolkits_site->php_library_path . "template_library.php";
 
 
 //error_reporting(E_ALL);
-//ini_set(display_errors,"ON");
+//ini_set('display_errors',"ON");
 
 /**
  *
@@ -161,18 +161,12 @@ if (get_maximum_template_number() < $safe_template_id) {
  * Take the query from site variable and alter it to suit this request
  */
 
+$prefix = $xerte_toolkits_site->database_table_prefix;
+$sql = "SELECT otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname " .
+    " FROM {$prefix}originaltemplatesdetails otd, {$prefix}templaterights tr, {$prefix}templatedetails td, {$prefix}logindetails ld " .
+    " WHERE td.template_type_id = otd.template_type_id AND td.creator_id = ld.login_id AND tr.template_id = td.template_id AND tr.template_id= ? AND role = ?";
 
-$query_for_play_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags, td.template_name as zipname";
-$query_for_play_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
-$query_for_play_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
-
-$query_for_play_content_response = mysql_query($query_for_play_content);
-
-$row_play = mysql_fetch_array($query_for_play_content_response);
-
-$query_to_find_out_if_in_recycle_bin = "select folder_name from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id =\"" . $row_play['folder'] . "\"";
-
-$query_for_recycle_bin_response = mysql_query($query_to_find_out_if_in_recycle_bin);
+$row_play = db_query_one($sql, array($safe_template_id, 'creator'));
 
 /*
  * Is the file in the recycle bin?
@@ -192,7 +186,6 @@ require_once $xerte_toolkits_site->php_library_path . "screen_size_library.php";
  * Ge show template functions for this 'module'  / 'template framework'
 */
 require_once $xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/play.php";
-
 
 /*
  * Fix for NULL number_of_uses

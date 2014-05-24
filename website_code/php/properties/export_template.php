@@ -28,21 +28,23 @@ $database_id=database_connect("Export template database connect success","Export
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator(mysql_real_escape_string($_POST['template_id']), $_SESSION['toolkits_logon_id'])||is_user_admin()){
+    if(is_user_creator($_POST['template_id'], $_SESSION['toolkits_logon_id'])||is_user_admin()){
 
         echo "<p class=\"header\"><span>" . EXPORT_TITLE . "</span></p>";
 
 		$query_for_play_content_strip = str_replace("\" . \$xerte_toolkits_site->database_table_prefix . \"", $xerte_toolkits_site->database_table_prefix, $xerte_toolkits_site->play_edit_preview_query);
 
-		$safe_template_id = htmlentities($_POST['template_id']);
+		$safe_template_id = (int) $_POST['template_id'];
 
 		$query_for_play_content = str_replace("TEMPLATE_ID_TO_REPLACE", $safe_template_id, $query_for_play_content_strip);
 
-		$query_for_play_content_response = mysql_query($query_for_play_content);
-
-		$row_play = mysql_fetch_array($query_for_play_content_response);
-		
-		if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php")){
+                $row_play = db_query_one($query_for_play_content);
+		$export_exists = false;
+                
+                if(!empty($row_play)) {
+                    $export_exists = file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
+                }
+		if($export_exists) {
 
 			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row_play['template_framework'] . "/export_page.php");
 			

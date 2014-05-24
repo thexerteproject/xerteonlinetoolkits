@@ -23,20 +23,23 @@ include "workspace_library.php";
 
 workspace_templates_menu();
 
+$prefix = $xerte_toolkits_site->database_table_prefix;
+
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_public_templates = "select * from " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights where access_to_whom=\"public\" and user_id =\"" . $_SESSION['toolkits_logon_id'] . "\" and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id=" . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id ORDER BY template_name DESC";
+$query_for_public_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights where "
+. "access_to_whom = ? AND "
+. "user_id = ? and "
+. " {$prefix}templaterights.template_id = {$prefix}templatedetails.template_id ORDER BY template_name DESC";
+$params = array('public', $_SESSION['toolkits_logon_id']);
 
-$query_public_response = mysql_query($query_for_public_templates);
+$query_public_response = db_query($query_for_public_templates, $params);
 
 workspace_menu_create(100);
 
-while($row_template_name = mysql_fetch_array($query_public_response)){
-
+foreach($query_public_response as $row_template_name) {
     echo "<div style=\"float:left; width:100%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
 
 }
 
 echo "</div>";
-
-?>

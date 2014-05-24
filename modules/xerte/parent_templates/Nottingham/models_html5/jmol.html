@@ -10,10 +10,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (navigator.javaEnabled()) {
+			//if (navigator.javaEnabled()) {
 				var $pageContents = $("#pageContents"),
 					$textHolder = $("#textHolder");
-				
 				if ($pageContents.data("modelSize") == "Large") {
 					var $iFrame = $("#iFrameHolder iframe");
 					$iFrame
@@ -21,13 +20,12 @@
 						.width(this.calcWidth());
 					
 					$textHolder.height(this.calcHeight() * 0.2);
-					
 					document.getElementById("iFrame0").contentWindow.resize($iFrame.width(), $iFrame.height());
 					
 				} else if (x_currentPageXML.getAttribute("xyz2") != undefined && x_currentPageXML.getAttribute("xyz2") != "") {
 					$textHolder.height(this.calcHeight() * 0.2);
 				}
-			}
+			//}
 		}
 		
 		this.init = function() {
@@ -36,61 +34,61 @@
 				$textHolder = $("#textHolder");
 			
 			// java needs to be installed / enabled for jmol to run
-			if (!navigator.javaEnabled()) {
-				$iFrameHolder.append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
+			//var playertype = 'JMol';
+			//if (!navigator.javaEnabled()) playertype = 'JSmol';
+			var playertype = 'JSmol';
+				//$iFrameHolder.append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
 				
-			} else {
-				var numXYZ		= 1,
-					controls	= x_currentPageXML.getAttribute("controls"),
-					scriptOpt	= x_currentPageXML.getAttribute("scriptOpt"),
-					size		= x_currentPageXML.getAttribute("size"),
-					dimensions	= [];
-				
-				// size of iFrame
-				if (size == undefined) {
-					size = "Medium";
-				}
-				if (x_currentPageXML.getAttribute("xyz2") != undefined && x_currentPageXML.getAttribute("xyz2") != "") { // if there's a 2nd jmol file it defaults to medium size
-					size = "Medium";
-					numXYZ = 2;
-				}
-				
-				$pageContents.data("modelSize", size);
-				
-				if (size == "Small") {
-					controls = false; // no space for control bar when model is small
-					scriptOpt = false;
+			var numXYZ		= 1,
+				controls	= x_currentPageXML.getAttribute("controls"),
+				scriptOpt	= x_currentPageXML.getAttribute("scriptOpt"),
+				size		= x_currentPageXML.getAttribute("size"),
+				dimensions	= [];
+			
+			// size of iFrame
+			if (size == undefined) {
+				size = "Medium";
+			}
+			if (x_currentPageXML.getAttribute("xyz2") != undefined && x_currentPageXML.getAttribute("xyz2") != "") { // if there's a 2nd jmol file it defaults to medium size
+				size = "Medium";
+				numXYZ = 2;
+			}
+			
+			$pageContents.data("modelSize", size);
+			
+			if (size == "Small") {
+				controls = false; // no space for control bar when model is small
+				scriptOpt = false;
+				$iFrameHolder.addClass("x_floatRight");
+				dimensions = [250,250];
+			} else if (size == "Medium") {
+				dimensions = [350,350];
+				if (x_currentPageXML.getAttribute("xyz2") == undefined) {
 					$iFrameHolder.addClass("x_floatRight");
-					dimensions = [250,250];
-				} else if (size == "Medium") {
-					dimensions = [350,350];
-					if (x_currentPageXML.getAttribute("xyz2") == undefined) {
-						$iFrameHolder.addClass("x_floatRight");
-					} else {
-						$iFrameHolder
-							.appendTo($pageContents)
-							.addClass("centerAlign");
-						$textHolder.height(jmol.calcHeight() * 0.2);
-					}
 				} else {
 					$iFrameHolder
 						.appendTo($pageContents)
 						.addClass("centerAlign");
-					$textHolder.height(this.calcHeight() * 0.2);
-					dimensions = [this.calcWidth(),(this.calcHeight() * 0.8) - 20];
+					$textHolder.height(jmol.calcHeight() * 0.2);
 				}
-				
-				for (i=0; i<numXYZ; i++) {
-					var myFile;
-					if (i == 0) {
-						myFile = x_currentPageXML.getAttribute("xyz");
-					} else {
-						myFile = x_currentPageXML.getAttribute("xyz2");
-					}
-					var url = "JMolViewer/jmol.htm?xyz=../" + eval(myFile) + ",spin=" + x_currentPageXML.getAttribute("initSpin") + ",controls=" + controls + ",bgColour=" + x_currentPageXML.getAttribute("bgColour") + ",initLook=" + x_currentPageXML.getAttribute("initLook") + ",cartoonOpt=" + x_currentPageXML.getAttribute("cartoonOpt") + ",backOpt=" + x_currentPageXML.getAttribute("backOpt") + ",initColour=" + x_currentPageXML.getAttribute("colour") + ",initScript=" + x_currentPageXML.getAttribute("initScript") + ",scriptOpt=" + scriptOpt + ",surfaceOpt=" + x_currentPageXML.getAttribute("surfaceOpt") + ",labelOpt=" + x_currentPageXML.getAttribute("labelOpt") + ",colourOpt=" + x_currentPageXML.getAttribute("colourOpt") + ",width=" + dimensions[0] + ",height=" + dimensions[1];
-					var iFrameTag = '<iframe id="iFrame' + i + '" src="' + url + '" width="' + dimensions[0] + '" height="' + dimensions[1] + '"></iframe>';
-					$iFrameHolder.append(iFrameTag);
+			} else {
+				$iFrameHolder
+					.appendTo($pageContents)
+					.addClass("centerAlign");
+				$textHolder.height(this.calcHeight() * 0.2);
+				dimensions = [this.calcWidth(),(this.calcHeight() * 0.8) - 20];
+			}
+			
+			for (i=0; i<numXYZ; i++) {
+				var myFile;
+				if (i == 0) {
+					myFile = x_currentPageXML.getAttribute("xyz");
+				} else {
+					myFile = x_currentPageXML.getAttribute("xyz2");
 				}
+				var url = "JMolViewer/"+playertype+".htm?xyz=../" + eval(myFile) + ",spin=" + x_currentPageXML.getAttribute("initSpin") + ",controls=" + controls + ",bgColour=" + x_currentPageXML.getAttribute("bgColour") + ",initLook=" + x_currentPageXML.getAttribute("initLook") + ",cartoonOpt=" + x_currentPageXML.getAttribute("cartoonOpt") + ",backOpt=" + x_currentPageXML.getAttribute("backOpt") + ",initColour=" + x_currentPageXML.getAttribute("colour") + ",initScript=" + x_currentPageXML.getAttribute("initScript") + ",scriptOpt=" + scriptOpt + ",surfaceOpt=" + x_currentPageXML.getAttribute("surfaceOpt") + ",labelOpt=" + x_currentPageXML.getAttribute("labelOpt") + ",colourOpt=" + x_currentPageXML.getAttribute("colourOpt") + ",width=" + dimensions[0] + ",height=" + dimensions[1];
+				var iFrameTag = '<iframe id="iFrame' + i + '" src="' + url + '" width="' + dimensions[0] + '" height="' + dimensions[1] + '"></iframe>';
+				$iFrameHolder.append(iFrameTag);
 			}
 			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));

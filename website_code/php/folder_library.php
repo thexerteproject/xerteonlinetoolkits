@@ -22,17 +22,22 @@ function make_new_folder($folder_id,$folder_name){
 
     $mysql_id = database_connect("New folder database connect success","New folder database connect failed");
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
     if($folder_id=="file_area"){
 
-        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "folderdetails (login_id,folder_parent,folder_name,date_created) values  ('" . $_SESSION['toolkits_logon_id'] . "','" . get_user_root_folder() . "','" . $folder_name  ."','" . date('Y-m-d') . "')";
-
+        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+        $params = array($_SESSION['toolkits_logon_id'], get_user_root_folder(), $folder_name, date('Y-m-d'));
+        
     }else{
 
-        $query = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "folderdetails (login_id,folder_parent,folder_name,date_created) values  ('" . $_SESSION['toolkits_logon_id'] . "','" . $folder_id . "','" . $folder_name . "','" . date('Y-m-d') . "')";
-
+        $query = "INSERT INTO {prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+        $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
     }
 
-    if(mysql_query($query)){
+    $ok = db_query($query, $params);
+    
+    if($ok) {
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
@@ -46,7 +51,6 @@ function make_new_folder($folder_id,$folder_name){
 
     }
 
-    mysql_close($mysql_id);
 
 
 }
@@ -69,13 +73,17 @@ function delete_folder($folder_id){
 
     $folder_id = substr($folder_id,strpos($folder_id,"_")+1,strlen($folder_id));
 
-    echo $folder_id;
+    //echo $folder_id;
 
-    $query_to_delete_folder = "delete from " .$xerte_toolkits_site->database_table_prefix . "folderdetails where folder_id=\"" . $folder_id . "\""; 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+    
+    $query_to_delete_folder = "delete from {$prefix}folderdetails where folder_id=?";
+    $params = array($folder_id); 
 
-    echo $query_to_delete_folder;
+    //echo $query_to_delete_folder;
 
-    if(mysql_query($query_to_delete_folder)){
+    $ok = db_query($query_to_delete_folder, $params);
+    if($ok) {
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " deleted for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
@@ -84,8 +92,6 @@ function delete_folder($folder_id){
         receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder " . $folder_id . " not deleted for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
     }
-
-    mysql_close($database_id);
 
 }
 
@@ -149,10 +155,15 @@ function move_file($files_to_move,$destination){
                          * Move files in the database
                          */
 
-                        $query_file = "UPDATE " .$xerte_toolkits_site->database_table_prefix . "templaterights SET folder = \"" . $destination . "\" where (template_id=\"" . $new_files_array[$x] . "\" AND user_id =\"" . $_SESSION['toolkits_logon_id'] . "\")";
+                        $prefix = $xerte_toolkits_site->database_table_prefix;
+                        
+                        $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE (template_id = ?  AND user_id = = ? ";
 
-                        if(mysql_query($query_file)){
-
+                        $params = array($destination, $new_files_array[$x], $_SESSION['toolkits_logon_id']); 
+                        
+                        $ok = db_query($query_file, $params);
+                        
+                        if($ok) {
                             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
 
                         }else{
@@ -172,10 +183,13 @@ function move_file($files_to_move,$destination){
                             $destination = get_user_root_folder();				
 
                         }
+                        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-                        $query_folder = "UPDATE " .$xerte_toolkits_site->database_table_prefix . "folderdetails SET folder_parent = \"" . $destination . "\" where (folder_id=\"" . $new_files_array[$x] . "\")";
+                        $query_folder = "UPDATE {$prefix}folderdetails SET folder_parent = ? WHERE (folder_id = ?  )";
+                        $params = array($destination, $new_files_array[$x]);
 
-                        if(mysql_query($query_folder)){
+                        $ok = db_query($query_folder, $params);
+                        if($ok) {
 
                             receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
 
@@ -197,8 +211,5 @@ function move_file($files_to_move,$destination){
 
     }
 
-    mysql_close($mysql_id);
 
 }
-
-?>

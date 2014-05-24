@@ -22,11 +22,13 @@ include "../display_library.php";
 
 $database_connect_id = database_connect("my_propertes_template.php connect success","my_properties_template.php connect failed");
 
-$query_for_user = "select * from " . $xerte_toolkits_site->database_table_prefix . "logindetails where login_id=\"" . $_SESSION['toolkits_logon_id'] . "\"";
+$prefix = $xerte_toolkits_site->database_table_prefix ;
 
-$query_user_response = mysql_query($query_for_user);
+$query_for_user = "select * from {$prefix}logindetails where login_id= ?";
+$params = array($_SESSION['toolkits_logon_id']);
 
-$row_user = mysql_fetch_array($query_user_response);
+$row_user = db_query_one($query_for_user, $params);
+
 
 echo "<p class=\"header\"><span>" . MY_PROPERTIES_DETAILS . "</span></p>";
 
@@ -35,5 +37,3 @@ echo "<p>" . MY_PROPERTIES_NAME_DETAILS . " " . $row_user['firstname'] . " " . $
 echo "<p>" . MY_PROPERTIES_LOGIN_DETAILS . " " . $row_user['lastlogin'] . "</p>";
 
 echo "<p>" . MY_PROPERTIES_USERNAME_DETAILS . " " . $row_user['username'] . "</p>";
-
-?>

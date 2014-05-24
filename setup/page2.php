@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 $success = true;
 
@@ -81,7 +82,6 @@ if ($success)
 {
 
 
-    session_start();
 
     $_SESSION['DATABASE_HOST'] = $_POST['host'];
     $_SESSION['DATABASE_NAME'] = $_POST['database_name'];

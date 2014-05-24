@@ -22,9 +22,11 @@ $database_connect_id = database_connect("new_template database connect success",
  * get the root folder for this user
  */
 
+$prefix = $xerte_toolkits_site->database_table_prefix;
+
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator(mysql_real_escape_string($_POST['template_id']))){
+    if(is_user_creator($_POST['template_id'])){
 
         if($_POST['folder_id']=="workspace"){
 
@@ -42,29 +44,40 @@ if(is_numeric($_POST['template_id'])){
 
         $maximum_template_id = get_maximum_template_number();
 
-        //$query_for_root_folder = "select folder_id from " . $xerte_toolkits_site->database_table_prefix . "folderdetails where login_id = '" .  $_SESSION['toolkits_logon_id'] . "' and folder_parent='0'";
+      
 
-        //$query_for_root_folder_response = mysql_query($query_for_root_folder);
+        $query_for_template_type_id = "select otd.template_type_id, otd.template_name, otd.template_framework, td.extra_flags FROM " 
+                 . "{$prefix}originaltemplatesdetails otd, {$prefix}templatedetails td where "
+                 . "otd.template_type_id = td.template_type_id  AND "
+                 . "td.template_id = ? ";
+        
+        $params = array($_POST['template_id']);
 
-        //$row_root = mysql_fetch_array($query_for_root_folder_response); 
-
-        $query_for_template_type_id = "select otd.template_type_id, otd.template_name, otd.template_framework, td.extra_flags from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td where otd.template_type_id = td.template_type_id  AND td.template_id = '" .  mysql_real_escape_string($_POST['template_id']) . "'";
-
-        $query_for_template_type_id_response = mysql_query($query_for_template_type_id);	
-
-        $row_template_type = mysql_fetch_array($query_for_template_type_id_response);	
+        $row_template_type = db_query_one($query_for_template_type_id, $params); 
 
         /*
          * create the new template record in the database
          */
 
-        $query_for_new_template = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) VALUES (\"" . ($maximum_template_id+1) . "\",\"" . $_SESSION['toolkits_logon_id'] . "\", \"" . $row_template_type['template_type_id'] . "\",\"" . date('Y-m-d') . "\",\"" . date('Y-m-d') . "\",\"Private\",\"Copy of " . mysql_real_escape_string($_POST['template_name']) . "\", \"" . mysql_real_escape_string($row_template_type['extra_flags']) . "\")";
+        $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
+        . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
+                . " VALUES (?,?,?,?,?,?,?,?)";
+        $params = array(
+                ($maximum_template_id+1),
+            $_SESSION['toolkits_logon_id'], 
+            $row_template_type['template_type_id'],
+            date('Y-m-d'), 
+            date('Y-m-d'),
+            "Private",
+            "Copy of " . $_POST['template_name'], 
+            $row_template_type['extra_flags']);
 
-        if(mysql_query($query_for_new_template)){
+        if(db_query($query_for_new_template, $params)){
 
-            $query_for_template_rights = "INSERT INTO " . $xerte_toolkits_site->database_table_prefix . "templaterights (template_id,user_id,role, folder) VALUES (\"" . ($maximum_template_id+1) . "\",\"" .  $_SESSION['toolkits_logon_id'] . "\", \"creator\" ,\"" . mysql_real_escape_string($folder_id) . "\")";
+            $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
+            $params = array(($maximum_template_id+1), $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
 
-            if(mysql_query($query_for_template_rights)){		
+            if(db_query($query_for_template_rights, $params)){		
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
@@ -88,8 +101,6 @@ if(is_numeric($_POST['template_id'])){
 
         }
 
-        mysql_close($database_connect_id);	
-
     }else{
 
         echo DUPLICATE_TEMPLATE_NOT_CREATOR;
@@ -97,5 +108,3 @@ if(is_numeric($_POST['template_id'])){
     }
 
 }
-
-?>
