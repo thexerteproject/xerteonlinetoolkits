@@ -5,6 +5,8 @@ var EDITOR = (function ($, parent) {
 
     var my = parent.language = {},
         toolbox = parent.toolbox,
+        selected_language = {},
+        fallback_language = {},
 
     parse_wizard_xml = function (wizard_xml) {
         // Build the page menu object
@@ -142,9 +144,42 @@ var EDITOR = (function ($, parent) {
 
 
     process_language_file = function (xml) {
-        console.log("language file is loaded...");
+       console.log(languagecodevariable + " language file is loaded...");
 
         // Parse the file
+        var x2js = new X2JS({
+            // XML attributes. Default is "_"
+            attributePrefix : "@"
+        });
+        selected_language = x2js.xml_str2json(xml);
+        waittomerge();
+    },
+
+    process_language_fallback = function (xml) {
+        console.log("en_GB fall-back language file is loaded...");
+        // Parse the file
+        var x2js = new X2JS({
+            // XML attributes. Default is "_"
+            attributePrefix : "@"
+        });
+        fallback_language = x2js.xml_str2json(xml);
+        waittomerge();
+    },
+
+    merge_language_files = function () {
+        // Merge the two language files
+        if (languagecodevariable !=  'en-GB')
+        {
+            //merge into language_def
+            language = $.extend(true, {}, fallback_language, selected_language);
+        }
+        else
+        {
+            // set language_def
+            language = selected_language;
+        }
+        console.log("language files are merged:");
+        console.log(language);
 
         wait();
     },
@@ -162,25 +197,74 @@ var EDITOR = (function ($, parent) {
     process_config_file = function (xml) {
         console.log("config file is loaded...");
 
+        // Used by the language selection box, ref. EDITOR.displayDataType (toolbox.js)
+        installed_languages = [];
         // Parse the file
+        var config_xml = $($.parseXML(xml)).find("languages");
+        $(config_xml.children()).each(function(i) {
+            var attributes = {};
+            for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
+                attributes[a[j].name] = a[j].value;
+            }
+            installed_languages.push( { code: attributes['code'], name: attributes['name'] });
+        });
 
         wait();
     },
 
-    language_files = [
-        {
-            "u" : "languages/wizard_" + languagecodevariable + ".xml",
-            "c" : process_language_file
-        },
+    foreign_language_files = [
         {
             "u" : originalpathvariable + "wizards/" + languagecodevariable + "/data.xwd",
-            "c" : process_data_xwd
+            "c" : process_data_xwd,
+            "merge" : false
+        },
+        {
+            "u" : editorlanguagefile,
+            "c" : process_language_file,
+            "merge" : true
+        },
+        {
+            "u" : "languages/wizard_en-GB.xml",
+            "c" : process_language_fallback,
+            "merge" : true
         },
         {
             "u" : "languages/language-config.xml",
-            "c" : process_config_file
+            "c" : process_config_file,
+            "merge" : false
         }
     ],
+
+    en_language_files = [
+        {
+            "u" : originalpathvariable + "wizards/" + languagecodevariable + "/data.xwd",
+            "c" : process_data_xwd,
+            "merge" : false
+        },
+        {
+            "u" : editorlanguagefile,
+            "c" : process_language_file,
+            "merge" : true
+        },
+        {
+            "u" : "languages/language-config.xml",
+            "c" : process_config_file,
+            "merge" : false
+        }
+    ],
+
+    waittomerge = function (){
+        var count = 0;
+        var total = 0;
+        $(language_files).each(function() {
+            count += (this.loaded && this.merge) ? 1 : 0;
+            total += (this.merge ? 1 : 0);
+        });
+
+        if (count == total) {
+            merge_language_files();
+        }
+    }
 
     wait = function () {
         var count = 0;
@@ -199,6 +283,7 @@ var EDITOR = (function ($, parent) {
 
     init = function () {
         // Start loading of the xml files
+        language_files = (languagecodevariable=='en-GB' ? en_language_files : foreign_language_files);
         $(language_files).each(function() {
             var _this = this;
             $.ajax({

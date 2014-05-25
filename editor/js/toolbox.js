@@ -206,7 +206,17 @@ var EDITOR = (function ($, parent) {
     convertTextAreas = function ()
     {
         $.each(textareas_options, function (i, options) {
-            var ckoptions = {};
+            var ckoptions = {
+                filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
+                //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
+                //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
+            };
 
             if (options.options.height)
             {
@@ -269,7 +279,16 @@ var EDITOR = (function ($, parent) {
                 });
             }, { toolbarGroups : [
                 { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                { name: 'colors' }]
+                { name: 'colors' }],
+                filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
+                //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
+                //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
             });
         });
     },
@@ -475,9 +494,17 @@ var EDITOR = (function ($, parent) {
                     colorpickers.push({id: id, value: colorvalue, options: options});
                 }
                 break;
+            case 'languagelist':
+                var id = 'select_' + form_id_offset;
+                form_id_offset++;
+                html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                for (var i=0; i<installed_languages.length; i++) {
+                    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                }
+                html += '</select>';
+                break;
             case 'hotspot':
             case 'drawing':
-            case 'languagelist':
             case 'datefield':
             case 'datagrid':
             case 'webpage':
