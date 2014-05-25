@@ -6,6 +6,7 @@ var EDITOR = (function ($, parent) {
     var my = parent.layout = {},
 
     setup = function () {
+        console.log("Setting up layout...");
         var xerte_layout,
             xerte_editor_layout_settings = {
                 name: "xerte_editor_layout"
@@ -112,7 +113,9 @@ var EDITOR = (function ($, parent) {
     }
 
     // Create the layout once the document has finished loading
-    $(document).ready(setup);
+    //$(document).ready(setup);
+
+    my.setup = setup;
 
     return parent;
 

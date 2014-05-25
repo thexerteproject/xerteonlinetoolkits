@@ -5,6 +5,9 @@ var EDITOR = (function ($, parent) {
 
     var my = parent.data = {},
         toolbox = parent.toolbox,
+        step1_languagesloaded = false,
+        step2_xmlloaded = false,
+        step2_data = {},
 
     // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
     FixLineBreaks = function (text) {
@@ -34,7 +37,29 @@ var EDITOR = (function ($, parent) {
 
         // replace all line breaks in attributes with ascii code
         // otherwise these are replaced with spaces when parsed to xml
-        parent.tree.build( FixLineBreaks(xml) );
+
+        parent.tree.setup( FixLineBreaks(xml) );
+    },
+
+    wait = function(step, data)
+    {
+        if (step == 1)
+        {
+            console.log("All language definitions loaded...");
+            step1_languagesloaded = true;
+        }
+        else if (step == 2)
+        {
+            console.log(xmlvariable +  " is loaded...");
+            step2_xmlloaded = true;
+            step2_data = data;
+        }
+        if (step1_languagesloaded && step2_xmlloaded)
+        {
+            console.log("Start processing of " + xmlvariable);
+            process_data(step2_data);
+        }
+
     },
 
     init = function (xmlurl) {
@@ -46,12 +71,16 @@ var EDITOR = (function ($, parent) {
             url: xmlurl,
             dataType: "text",
             success: function (data) {
-                process_data(data);
+                wait(2, data);
+                //process_data(data);
             }
         });
     };
 
+    my.wait = wait;
     init(xmlvariable);
+
+
     return parent;
 
 })(jQuery, EDITOR || {});

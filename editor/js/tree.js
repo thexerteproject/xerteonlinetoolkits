@@ -6,8 +6,11 @@ var EDITOR = (function ($, parent) {
         toolbox = parent.toolbox,
 
     // Called once document is ready
-    setup = function () {
+    setup = function (xml) {
+        console.log("Setting up tree");
         do_bottom_buttons();
+        do_buttons();
+        build(xml);
     },
 
     // Add the buttons
@@ -366,10 +369,11 @@ var EDITOR = (function ($, parent) {
     };
 
     // Create the layout once the document has finished loading
-    $(document).ready(setup);
+    //$(document).ready(setup);
 
-    my.build = build;
-    my.do_buttons = do_buttons;
+    // my.build = build;
+    // my.do_buttons = do_buttons;
+    my.setup = setup;
 
     return parent;
 
