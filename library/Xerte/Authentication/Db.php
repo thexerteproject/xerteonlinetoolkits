@@ -44,10 +44,6 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
     public function check()
     {
         global $xerte_toolkits_site;
-        if (!function_exists('mysql_query')) {
-            $this->addError("MySQL not available?");
-            return false;
-        }
         // check for existence of the 'user' db table?
         $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
         if (empty($x)) {

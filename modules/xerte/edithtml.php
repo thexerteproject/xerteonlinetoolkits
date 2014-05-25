@@ -22,6 +22,7 @@
 function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $version_control){
 
     require_once("config.php");
+    require_once("website_code/php/language_library.php");
 
     _load_language_file("/modules/xerte/edit.inc");
 
@@ -44,15 +45,17 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         chmod($preview, 0777);
     }
 
-    /**
-     * set up the strings used in the flash vars
-     */
+    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
 
-    $string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
+    $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
 
-    $string_for_flash_media = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
+    $rlo_url = $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
-    $string_for_flash_xwd = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
+    $media_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
+
+    $rlo_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
+
+    $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
 
     /**
      * sort of the screen sies required for the preview window
@@ -163,12 +166,21 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
+<script type="text/javascript" src="editor/js/vendor/xml2json.min.js"></script>
 <script>
     <?php
-    echo "xmlvariable=\"" . $string_for_flash_xml . "\";\n";
-    echo "rlovariable=\"" . $string_for_flash_media . "\";\n";
+    $_SESSION['KCFINDER']= array(
+        'disabled' => false,
+        'uploadURL' => $rlo_url,
+        'uploadDir' => $rlo_path
+    );
+
+
+    echo "xmlvariable=\"" . $preview_url . "\";\n";
+    echo "mediavariable=\"" . $media_path . "\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
-    echo "originalpathvariable=\"" . $string_for_flash_xwd . "\";\n";
+    echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
+    echo "originalpathvariable=\"" . $xwd_url . "\";\n";
     echo "template_id=\"" . $row_edit['template_id'] . "\";\n";
     echo "template_height=\"" . $temp[1] . "\";\n";
     echo "template_width=\"" . $temp[0] . "\";\n";
