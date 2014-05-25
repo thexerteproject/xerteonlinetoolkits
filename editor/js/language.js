@@ -181,7 +181,7 @@ var EDITOR = (function ($, parent) {
         console.log("language files are merged:");
         console.log(language);
 
-        wait();
+        waitonlanguage();
     },
 
     process_data_xwd = function (xml) {
@@ -191,7 +191,7 @@ var EDITOR = (function ($, parent) {
 
         parse_wizard_xml(wizard_xml);
 
-        wait();
+        waitonlanguage();
     },
 
     process_config_file = function (xml) {
@@ -209,7 +209,7 @@ var EDITOR = (function ($, parent) {
             installed_languages.push( { code: attributes['code'], name: attributes['name'] });
         });
 
-        wait();
+        waitonlanguage();
     },
 
     foreign_language_files = [
@@ -266,7 +266,7 @@ var EDITOR = (function ($, parent) {
         }
     }
 
-    wait = function () {
+    waitonlanguage = function () {
         var count = 0;
         $(language_files).each(function() {
             count += (this.loaded) ? 1 : 0;
@@ -278,7 +278,10 @@ var EDITOR = (function ($, parent) {
     },
 
     proceed = function () {
-        parent.tree.do_buttons();
+        parent.data.wait(1, {});
+        parent.layout.setup();
+        //parent.tree.do_buttons();
+
     },
 
     init = function () {
