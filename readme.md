@@ -25,8 +25,6 @@ http://www.nottingham.ac.uk/xerte/manual/installingToolkits.swf
 Server administrators should choose the 'full install' option and step through the wizard. When copying the files to a server, you can use the setup utility at http://yourserver.com/yourtololkitsfolder/setup
 
 
-
-
 Installation Instructions (unstable release, github)
 --------------------------------------------------
 
@@ -45,6 +43,7 @@ Optional additions :
 
  1. ClamAV - if /usr/bin/clamscan exists, uploads will be checked for viruses. Requires appropriate AV definitions are in place.
  2. XML parsing - if PHP has the 'xml' module installed, then we'll validate the Learning Object's XML before saving on the server.
+ 3. Transcoding support for video files - see/read cron/transcoding.php - when run it will attempt to convert .flv files to .mp4 files to improve template viewing on Adobe-flash-free devices.
 
 
 If you do not go through /setup (and stick with using Sqlite) then the Sqlite database will be somewhere in /tmp. 
