@@ -1,21 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/error_library.php");
-/** 	
- * 
- * Database library, code for connecting to the database
- *
- * @author Patrick Lockley
- * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
- * @package
- */
-// horrible includes.
-if (function_exists('database_connect')) {
-    return;
-}
-
-
 /**
  * Perform a basic Xerte database install
  * @param string file path for the sqlite database file
@@ -31,7 +15,8 @@ function database_setup($database_location) {
                 . "\n\n Or fix your PHP installation. \n\n"
                 . "Hint: apt-get install php5-sqlite ");
     }
-// need to create.
+    
+    // need to create.
     $schema_file = dirname(__FILE__) . '/../../sqlite/sqlite.schema';
     $data_file = dirname(__FILE__) . '/../../sqlite/sqlite.data';
     if (is_file($schema_file)) {
@@ -88,91 +73,3 @@ function database_setup($database_location) {
     return true;
 }
 
-/**
- * @global type $xerte_toolkits_site
- * @return \SQLite3
- */
-function database_connect() {
-    global $xerte_toolkits_site;
-
-    if (!file_exists($xerte_toolkits_site->database_location)) {
-        die("Sqlite DB doesn't exist; aborting");
-    }
-
-    /* reuse the same connection everywhere, if we can */
-    if (isset($xerte_toolkits_site->database)) {
-        return $xerte_toolkits_site->database;
-    }
-    $db = new SQLite3($xerte_toolkits_site->database_location);
-    $db->busyTimeout(1000);
-    $xerte_toolkits_site->database = $db;
-    return $db;
-}
-
-/**
- * Poorman's prepared statement emulation. Does not cope with named parameters - only ?'s.
- * @param string $sql - e.g. "SELECT * FROM users WHERE name = ? OR name = ?"
- * @param array $params - e.g. array('bob', "david's");
- * @return mysql resultset.
- */
-function db_query($sql, $params = array()) {
-    $connection = database_connect('db_query ok', 'db_query fail');
-
-    _debug("SQLITE Running : $sql", 1);
-    _debug($params);
-    if (empty($params)) {
-        _debug("No parameters; lazy query");
-        $result = $connection->query($sql);
-    } else {
-        $statement = $connection->prepare($sql);
-        if (!$statement) {
-            die("Fail : $sql " . $connection->lastErrorMsg());
-        }
-        $c = 0;
-        foreach ($params as $value) {
-            $c++;
-            $statement->bindValue($c, $value);
-        }
-
-        $result = $statement->execute();
-    }
-    _debug($result);
-
-    if (!$result) {
-        _debug("Failed to execute query : $sql : " . print_r($params, true) . ' -- error message -- ' . $connection->lastErrorMsg());
-        return false;
-    }
-
-    if (preg_match("/^select/i", $sql)) {
-        $rows = array();
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            $rows[] = $row;
-        }
-        return $rows;
-    }
-
-    if (preg_match('/^insert/i', $sql)) {
-        $result = $connection->lastInsertRowID();
-    }
-    /* See http://stackoverflow.com/questions/313567/how-can-i-determine-the-number-of-affected-rows-in-a-sqlite-2-query-in-php */
-    if (preg_match('/^update/i', $sql) || preg_match('/^delete/i', $sql)) {
-        $result = $connection->changes();
-        _debug("Result? " . print_r($result, true));
-    }
-    return $result;
-}
-
-/**
- * Convienance query for db_query - retrieve one row
- * @param string $sql
- * @param array $params (optional)
- * @return array (db row) or null
- */
-function db_query_one($sql, $params = array()) {
-    $results = db_query($sql, $params);
-
-    if (sizeof($results) > 0) {
-        return $results[0];
-    }
-    return null;
-}
