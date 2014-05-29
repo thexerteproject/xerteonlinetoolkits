@@ -64,14 +64,64 @@ var EDITOR = (function ($, parent) {
         $('.ui-layout-east .content').append(buttons);
     },
 
+
+	build_json = function (node_id) {
+		var tree = $.jstree.reference("#treeview");
+		var node = tree.get_node(node_id, false);
+		var obj = {};
+		obj.attributes = lo_data[node_id]['attributes'];
+
+		console.log(node_id + ": " + node.children.length + " children");
+		if (node.children.length > 0) {
+			obj.children = {}
+			for (var i=0; i<node.children.length; i++) {
+				key = node.children[i];
+				obj.children[i] = build_json(key);
+			}
+		}
+
+		return(obj);
+	},
+    
+
     preview = function () {
-        console.log("preview clicked");
-    },
+		var json = build_json("treeroot");
+		json["fileupdate"] = 0;
+		
+		var ajax_call = $.post(
+			"upload.php",
+			json,
+			null, // Add the handlers later
+			"json"
+		)
+		.done(function() {
+			alert( "success" );
+			// We would also launch the preview window from here
+		})
+		.fail(function() {
+			alert( "error" );
+		});
+	},
 
 
     publish = function () {
-        console.log("publish clicked");
+		var json = build_json("treeroot");
+		json["fileupdate"] = 1;
+		
+		var ajax_call = $.post(
+			"upload.php",
+			json,
+			null, // Add the handlers later
+			"json"
+		)
+		.done(function() {
+			alert( "success" );
+		})
+		.fail(function() {
+			alert( "error" );
+		});
     },
+
 
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
