@@ -378,6 +378,23 @@ var EDITOR = (function ($, parent) {
         return true;
     },
 
+
+    generate_lo_key = function () {
+        var key;
+
+        function lo_key_exists(key) {
+            for (var lo_key in lo_data) if (lo_key == key) return true;
+            return false;
+        };
+
+        do {
+            key = "ID_";
+            for (var i=0; i<10; i++) key += String(parseInt(Math.random()*9));
+        } while (lo_key_exists(key));
+        return key;
+    },
+
+
     do_bottom_buttons = function () {
         buttons = $('<div />').attr('id', 'bottom_buttons');
         $([
@@ -401,6 +418,7 @@ var EDITOR = (function ($, parent) {
     // my.build = build;
     // my.do_buttons = do_buttons;
     my.setup = setup;
+    my.generate_lo_key = generate_lo_key;
 
     return parent;
 
