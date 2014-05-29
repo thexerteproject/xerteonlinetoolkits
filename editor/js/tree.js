@@ -32,13 +32,14 @@ var EDITOR = (function ($, parent) {
 
         buttons = $('<div />').attr('id', 'top_buttons');
         $([
-            {name:'Insert', icon:'editor/img/insert.png', id:'insert_button', click:insert_page},
-            {name:'Copy', icon:'editor/img/copy.png', id:'copy_button', click:duplicate_page},
-            {name:'Delete', icon:'editor/img/delete.gif', id:'delete_button', click:delete_page}
+            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'editor/img/insert.png', id:'insert_button', click:insert_page},
+            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'editor/img/copy.png', id:'copy_button', click:duplicate_page},
+            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'editor/img/delete.gif', id:'delete_button', click:delete_page}
         ])
         .each(function(index, value) {
             var button = $('<button>')
                 .attr('id', value.id)
+                .attr('title', value.tooltip)
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -48,12 +49,13 @@ var EDITOR = (function ($, parent) {
 
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
-            {name:'Preview', icon:'editor/img/insert.png', id:'insert_button', click:preview},
-            {name:'Publish', icon:'editor/img/copy.png', id:'copy_button', click:publish},
+            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/insert.png', id:'preview_button', click:preview},
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/copy.png', id:'publish_button', click:publish},
         ])
         .each(function(index, value) {
             var button = $('<button>')
                 .attr('id', value.id)
+                .attr('title', value.tooltip)
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -133,7 +135,7 @@ var EDITOR = (function ($, parent) {
 
         // Get the node name
         var node_name = '';
-
+        var node_label = '';
         for (var i=0, len=attributes.length; i<len; i++)
         {
             if (attributes[i].name == 'nodeName')
@@ -144,7 +146,10 @@ var EDITOR = (function ($, parent) {
         }
 
         var node_options = wizard_data[node_name].node_options;
-
+        if (wizard_data[node_name].menu_options.label)
+        {
+            node_label = wizard_data[node_name].menu_options.label;
+        }
         // Clear editor array
         textareas_options = [];
         textinputs_options = [];
@@ -156,6 +161,7 @@ var EDITOR = (function ($, parent) {
         // Build the form
         var attribute_name;
         var attribute_value;
+        // Always display name option first
         if (node_options['name'].length > 0)
         {
             attribute_name = node_options['name'][0].name;
@@ -164,6 +170,11 @@ var EDITOR = (function ($, parent) {
             {
                 toolbox.displayParameter('#mainPanel', node_options['name'], attribute_name, attribute_value.value, key);
             }
+        }
+        // If the main node has a label, display the node item second (unconditionaly)
+        if (node_label.length > 0)
+        {
+            toolbox.displayParameter('#mainPanel', node_options['normal'], node_name, '', key, node_label);
         }
         // Optional parameters
         for (var i=0; i<node_options['optional'].length; i++)
@@ -255,16 +266,32 @@ var EDITOR = (function ($, parent) {
     // Build the tree once the data has loaded
     build = function (xml) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null);
+
+        // build Types structure for the types plugin
+        var node_types = {};
+        $.each(wizard_data, function (key, value) {
+            // Add a object to nod_types containg the icon, and the valid children
+            //var key = wizard_data['learningObject'].new_nodes[i];
+            var node_type = {
+                icon: parent.toolbox.getIcon(key),
+                valid_children: value.new_nodes
+                };
+            node_types[key] = node_type;
+        });
+
+        console.log(node_types);
+
         //console.log(JSON.stringify(tree_json));
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({
-            /*"plugins" : [ "wholerow"],*/
+            "plugins" : [ "types",  "dnd"],
             "core" : {
                 "data" : tree_json,
                 "check_callback" : true, // Need this to allow the copy_node function to work...
                 "multiple" : false // Need to disable this just now as nodes could be on different levels
-            }
+            },
+            "types" : node_types
         })
         .one('ready.jstree', function (e, data) {
             data.instance.open_node(["treeroot"]);

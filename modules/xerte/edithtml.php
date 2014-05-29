@@ -57,6 +57,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
 
+    $module_url = "modules/" . $row_edit['template_framework'] . "/";
+
     /**
      * sort of the screen sies required for the preview window
      */
@@ -181,6 +183,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";
+    echo "moduleurlvariable=\"" . $module_url . "\";\n";
     echo "template_id=\"" . $row_edit['template_id'] . "\";\n";
     echo "template_height=\"" . $temp[1] . "\";\n";
     echo "template_width=\"" . $temp[0] . "\";\n";

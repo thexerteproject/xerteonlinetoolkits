@@ -44,6 +44,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
     public function check()
     {
         global $xerte_toolkits_site;
+        _debug("Calling check");
         // check for existence of the 'user' db table?
         $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
         if (empty($x)) {
@@ -51,11 +52,15 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
             $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
+                _debug("Failed: Does the user table exist?");
                 $this->addError("Does the user table exist?");
                 return false;
             }
             else
+            {
+                _debug("Succeeded!");
                 return true;
+            }
         }
         else
         {
@@ -68,12 +73,17 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
                 if (empty($x))
                 {
                     $this->addError("Could not add email column to the user table.");
+                    _debug("Failed: Could not add email column to the user table.");
                     return false;
                 }
                 else
+                {
+                    _debug("Succeeded!");
                     return true;
+                }
             }
         }
+        _debug("Succeeded!");
 	    return true;
     }
 

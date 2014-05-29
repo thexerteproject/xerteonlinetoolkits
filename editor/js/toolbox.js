@@ -104,8 +104,9 @@ var EDITOR = (function ($, parent) {
         var this_json = {
             id : key,
             text : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
-            icon : 'editor/img/page_types/' + xmlData[0].nodeName + '.png'
+            type : xmlData[0].nodeName
         }
+        console.log(this_json);
 
         // if we are at top level then make sure it's open and display node data
         if (parent_id == null) {
@@ -138,6 +139,17 @@ var EDITOR = (function ($, parent) {
         return value;
     },
 
+    getIcon = function (nodeName)
+    {
+        var node = wizard_data[nodeName];
+        var icon = "";
+        if (node.menu_options.icon)
+        {
+            icon = moduleurlvariable + "/icons/" + node.menu_options.icon + ".png";
+        }
+
+        return icon;
+    },
 
     getAttributeValue = function (attributes, name, options, key)
     {
@@ -167,9 +179,10 @@ var EDITOR = (function ($, parent) {
     },
 
 
-    displayParameter = function (id, all_options, name, value, key)
+    displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
-        var options = getOptionValue(all_options, name);
+        var options = (nodelabel ? {type : name} : getOptionValue(all_options, name));
+        var label = (nodelabel ? nodelabel : options.label);
         if (options != null)
         {
             var output_string = '<tr class="wizardattribute">';
@@ -181,7 +194,7 @@ var EDITOR = (function ($, parent) {
             {
                 output_string += '<td class="wizardparameter"></td>';
             }
-            output_string += '<td class="wizardlabel">' + options.label + ' : </td>';
+            output_string += '<td class="wizardlabel">' + label + ' : </td>';
             output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
             output_string += '</tr>';
             $(id).append(output_string);
@@ -418,7 +431,7 @@ var EDITOR = (function ($, parent) {
             case 'textarea':
                 var id = "textarea_" + form_id_offset;
                 form_id_offset++;
-                html = "<div style=\"width:1000px\"><textarea id=\"" + id + "\" class=\"ckeditor\" onchange=\"inputChanged('" + id + "', '" + key + "', '" + name + "')\" style=\"";
+                html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" onchange=\"inputChanged('" + id + "', '" + key + "', '" + name + "')\" style=\"";
                 if (options.height) html += "height:" + options.height + "px";
                 html += "\">" + value + "</textarea></div>";
                 textareas_options.push({id: id, key: key, name: name, options: options});
@@ -504,6 +517,11 @@ var EDITOR = (function ($, parent) {
                 html += '</select>';
                 break;
             case 'hotspot':
+                // this is a special one. the attributes in the node are called x, y, w, h
+                var id = 'button_' + form_id_offset;
+                form_id_offset++;
+                html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                break;
             case 'drawing':
             case 'datefield':
             case 'datagrid':
@@ -528,6 +546,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+    my.getIcon = getIcon;
 
     return parent;
 
