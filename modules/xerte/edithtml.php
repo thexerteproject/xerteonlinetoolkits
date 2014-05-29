@@ -115,8 +115,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <div class="header">Optional parameters</div>
 
-    <div class="subhead">A subheader</div>
-
     <div id="optionalParams" class="content">
         <p>...</p>
     </div>
