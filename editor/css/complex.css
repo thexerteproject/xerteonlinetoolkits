@@ -8,7 +8,10 @@
     display: block;
 }
 
-
+button
+{
+    padding: 1px;
+}
 
 body {
 	font-family: Arial, sans-serif;
@@ -69,7 +72,7 @@ table {
 		text-align: left;
 	}
 	td {
-		padding: 2px 7px 3px;
+		padding: 2px;
 		border-color: #666 #CCC;
 		vertical-align: top;
 	}
@@ -416,8 +419,11 @@ table.wizard{
     width: 100%;
 }
 
+td.wizardlabel {
+    width: 200px;
+}
+
 td.wizardvalue {
-    width: 85%;
 }
 
 img.optional {
