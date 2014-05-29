@@ -904,6 +904,18 @@ function x_setUpPage() {
 function x_pageLoaded() {
 	x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
 	
+	// Resolve all text box added <img> src tags to proper urls
+	$("#x_page" + x_currentPage + " img").each(function() {
+		var $this = $(this),
+			src = $this.attr("src");
+
+		if (src.substring(0, 16) == "FileLocation + '") {
+			src = eval(src);
+		}
+		
+		$this.attr("src", src);
+	});
+	
 	$("#x_page" + x_currentPage)
 		.hide()
 		.css("visibility", "visible")
