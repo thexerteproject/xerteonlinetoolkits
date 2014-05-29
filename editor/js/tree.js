@@ -89,7 +89,7 @@ var EDITOR = (function ($, parent) {
 		json["fileupdate"] = 0;
 		
 		var ajax_call = $.post(
-			"upload.php",
+			"editor/upload.php",
 			json,
 			null, // Add the handlers later
 			"json"
@@ -109,7 +109,7 @@ var EDITOR = (function ($, parent) {
 		json["fileupdate"] = 1;
 		
 		var ajax_call = $.post(
-			"upload.php",
+			"editor/upload.php",
 			json,
 			null, // Add the handlers later
 			"json"
