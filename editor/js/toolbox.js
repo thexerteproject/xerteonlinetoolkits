@@ -61,27 +61,11 @@ var EDITOR = (function ($, parent) {
     },
 
 
-    generate_lo_key = function () {
-        var key;
-
-        function lo_key_exists(key) {
-            for (var lo_key in lo_data) if (lo_key == key) return true;
-            return false;
-        };
-
-        do {
-            key = "ID_";
-            for (var i=0; i<10; i++) key += String(parseInt(Math.random()*9));
-        } while (lo_key_exists(key));
-        return key;
-    },
-
-
     // ** Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
 
         // First lets generate a unique key
-        var key = generate_lo_key();
+        var key = parent.tree.generate_lo_key();
         if (parent_id == null)
         {
             key = 'treeroot';
