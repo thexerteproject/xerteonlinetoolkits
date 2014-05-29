@@ -169,13 +169,15 @@ var EDITOR = (function ($, parent) {
         var label = (nodelabel ? nodelabel : options.label);
         if (options != null)
         {
-            var output_string = '<tr class="wizardattribute">';
+            var output_string;
             if (options.optional == 'true')
             {
-                output_string += '<td class="wizardoptional"><img id="opt_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
+                output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
+                output_string += '<td class="wizardoptional"><img id="optbtn_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
             }
             else
             {
+                output_string += '<tr class="wizardattribute">';
                 output_string += '<td class="wizardparameter"></td>';
             }
             output_string += '<td class="wizardlabel">' + label + ' : </td>';
@@ -183,7 +185,7 @@ var EDITOR = (function ($, parent) {
             output_string += '</tr>';
             $(id).append(output_string);
             if (options.optional == 'true') {
-                $("#opt_"+ name).on("click", function () {
+                $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
                 });

@@ -69,7 +69,11 @@ var EDITOR = (function ($, parent) {
 		var tree = $.jstree.reference("#treeview");
 		var node = tree.get_node(node_id, false);
 		var obj = {};
-		obj.attributes = lo_data[node_id]['attributes'];
+        //console.log(lo_data[node_id]);
+        $.each(lo_data[node_id], function(key , value){
+            obj[key] = value;
+        });
+		//obj.attributes = lo_data[node_id]['attributes'];
 
 		console.log(node_id + ": " + node.children.length + " children");
 		if (node.children.length > 0) {
@@ -79,7 +83,7 @@ var EDITOR = (function ($, parent) {
 				obj.children[i] = build_json(key);
 			}
 		}
-
+        //console.log(obj);
 		return(obj);
 	},
     
@@ -87,11 +91,11 @@ var EDITOR = (function ($, parent) {
     preview = function () {
 		var json = build_json("treeroot");
 		json["fileupdate"] = 0;
-		
+		console.log(json);
 		var ajax_call = $.post(
 			"editor/upload.php",
-			json,
-			null, // Add the handlers later
+            json,
+            null, // Add the handlers later
 			"json"
 		)
 		.done(function() {
@@ -110,9 +114,9 @@ var EDITOR = (function ($, parent) {
 		
 		var ajax_call = $.post(
 			"editor/upload.php",
-			json,
+            JSON.stringify(json),
 			null, // Add the handlers later
-			"json"
+			"text"
 		)
 		.done(function() {
 			alert( "success" );
@@ -222,7 +226,7 @@ var EDITOR = (function ($, parent) {
             }
         }
         // If the main node has a label, display the node item second (unconditionaly)
-        if (node_label.length > 0)
+        if (node_label.length > 0 && !node_options['cdata'])
         {
             toolbox.displayParameter('#mainPanel', node_options['normal'], node_name, '', key, node_label);
         }
