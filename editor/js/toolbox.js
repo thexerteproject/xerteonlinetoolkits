@@ -244,7 +244,7 @@ var EDITOR = (function ($, parent) {
                 this.on('blur', function(){
                     // This is the call back when editor looses focus
                     if (this.checkDirty())
-                    {
+                    {	console.log([options.id, options.key, options.name, this.getData()]);
                         inputChanged(options.id, options.key, options.name, this.getData());
                     }
                 })
@@ -272,6 +272,7 @@ var EDITOR = (function ($, parent) {
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
 
+						console.log([options.id, options.key, options.name, thisValue]);
                         inputChanged(options.id, options.key, options.name, thisValue);
                     }
                 });
@@ -316,7 +317,7 @@ var EDITOR = (function ($, parent) {
     },
 
     setAttributeValue = function (key, name, value)
-    {
+    {															console.log([key, name, value]); 
         var attributes = lo_data[key]['attributes'];
         // Get the node name
         var node_name = '';var i=attributes.length;
@@ -387,7 +388,7 @@ var EDITOR = (function ($, parent) {
         }
         else
         {
-            value = $('#' + id).val();
+            value = (valuePassed) ? passedValue : $('#' + id).val();
         }
 
         if (id.indexOf('color')>=0)
