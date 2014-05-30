@@ -74,21 +74,6 @@ function database_setup($database_location) {
             die("SQLite installation failed.");
         }
 
-<<<<<<< HEAD
-	$http = 'http';
-	if(isset($_SERVER['HTTPS'])) {
-		$http = 'https';
-	}
-	$site_root = $http . '://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI'] . '/';
-        /* $site_root = $_SERVER['SCRIPT_URI']; */
-        if(preg_match('!(.*)/([a-z]+.php)$!', $site_root, $matches)) {
-            $site_root = $matches[1] . '/';
-        }
-	while(substr($site_root, -1) == '/') {
-		$site_root = substr($site_root, 0, -1);
-	}
-	$site_root .= '/';
-=======
         $http = 'http';
         if(isset($_SERVER['HTTPS'])) {
             $http = 'https';
@@ -103,7 +88,6 @@ function database_setup($database_location) {
             $site_root = substr($site_root, 0, -1);
         }
         $site_root .= '/';
->>>>>>> origin/sqlite-fixes
 
         // this ought to work and cope with https vs http urls - as long as the first url requested isn't within a subdir.
         $db->query("UPDATE sitedetails SET site_url = '" . $db->escapeString($site_root). "'");
