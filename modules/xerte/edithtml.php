@@ -137,7 +137,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 
 <div id="mainContent">
-
+    <div class="header">Header</div>
     <div id="mainPanel"></div>
     <div id="advancedPanel">
         <hr>
@@ -145,7 +145,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <div id="languagePanel">
         <hr>
     </div>
-    <div class="footer"></div>
+    <div class="footer">Footer</div>
 </div>
 
 <div id="insert-dialog" title="Insert Page">
