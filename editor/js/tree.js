@@ -77,7 +77,7 @@ var EDITOR = (function ($, parent) {
 
 		console.log(node_id + ": " + node.children.length + " children");
 		if (node.children.length > 0) {
-			obj.children = {}
+			obj.children = {};
 			for (var i=0; i<node.children.length; i++) {
 				key = node.children[i];
 				obj.children[i] = build_json(key);
@@ -90,13 +90,21 @@ var EDITOR = (function ($, parent) {
 
     preview = function () {
 		var json = build_json("treeroot");
-		json["fileupdate"] = 0;
-		console.log(json);
-		var ajax_call = $.post(
-			"editor/upload.php",
-            json,
-            null, // Add the handlers later
-			"json"
+		var ajax_call = $.ajax({
+                url: "editor/upload.php",
+                data: {
+                    fileupdate: 0,
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                },
+                //success: function(data){
+                //    alert("success");
+                //},
+                //error: function(data, status, error){
+                //    alert(status + ': ' + error);
+                //},
+                dataType: "json",
+                type: "POST"
+            }
 		)
 		.done(function() {
 			alert( "success" );
@@ -110,15 +118,22 @@ var EDITOR = (function ($, parent) {
 
     publish = function () {
 		var json = build_json("treeroot");
-		json["fileupdate"] = 1;
-		
-		var ajax_call = $.post(
-			"editor/upload.php",
-            JSON.stringify(json),
-			null, // Add the handlers later
-			"text"
-		)
-		.done(function() {
+        var ajax_call = $.ajax({
+                url: "editor/upload.php",
+                data: {
+                    fileupdate: 1,
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                },
+                //success: function(data){
+                //    alert("success");
+                //},
+                //error: function(data, status, error){
+                //    alert(status + ': ' + error);
+                //},
+                dataType: "json",
+                type: "POST"
+            }
+        ).done(function() {
 			alert( "success" );
 		})
 		.fail(function() {
