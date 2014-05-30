@@ -127,7 +127,7 @@ var EDITOR = (function ($, parent) {
     {
         var node = wizard_data[nodeName];
         var icon = "";
-        if (node.menu_options.icon)
+        if (node && node.menu_options.icon)
         {
             icon = moduleurlvariable + "icons/" + node.menu_options.icon + ".png";
         }
