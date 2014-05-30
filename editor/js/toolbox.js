@@ -195,10 +195,23 @@ var EDITOR = (function ($, parent) {
 
 
     removeOptionalProperty = function (name) {
-        console.log("Handler for removing optional properties called: " + name);
+    	if (!confirm('Are you sure?')) {
+            return;
+        }
 
-        // Need to remove row from the screen and
-        // Also need to remove property from the data store
+        // Need to remove row from the screen
+        var $row = $("#opt_" + name).remove();
+
+        // Find the property in the data store
+        var key = parent.tree.getSelectedNodeKeys();
+        var search = -1;
+        $(lo_data[key]["attributes"]).each(function(index){
+        	if (this["name"] == name) search = index;
+        });
+        
+        // If we found it then remove it
+        if (search > -1) lo_data[key]["attributes"].splice(search, 1);
+        console.log(lo_data[key]["attributes"]);
     },
 
 
