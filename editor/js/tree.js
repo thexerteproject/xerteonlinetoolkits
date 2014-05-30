@@ -342,18 +342,20 @@ var EDITOR = (function ($, parent) {
 
     // Build the tree once the data has loaded
     build = function (xml) {
-        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null);
+        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
+        
+        create_node_type = function (page_name, children) {
+			return {
+                icon: parent.toolbox.getIcon(page_name),
+                valid_children: children
+        	};
+        };
 
         // build Types structure for the types plugin
         var node_types = {};
+        node_types["#"] = create_node_type(null, "treeroot"); // Make sure that only the LO can be at root level
         $.each(wizard_data, function (key, value) {
-            // Add a object to nod_types containg the icon, and the valid children
-            //var key = wizard_data['learningObject'].new_nodes[i];
-            var node_type = {
-                icon: parent.toolbox.getIcon(key),
-                valid_children: value.new_nodes
-                };
-            node_types[key] = node_type;
+            node_types[key] = create_node_type(key, value.new_nodes);
         });
 
         console.log(node_types);
