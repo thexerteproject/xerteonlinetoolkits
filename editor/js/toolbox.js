@@ -129,7 +129,7 @@ var EDITOR = (function ($, parent) {
         var icon = "";
         if (node.menu_options.icon)
         {
-            icon = moduleurlvariable + "/icons/" + node.menu_options.icon + ".png";
+            icon = moduleurlvariable + "icons/" + node.menu_options.icon + ".png";
         }
 
         return icon;
