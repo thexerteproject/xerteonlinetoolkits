@@ -140,6 +140,14 @@ var EDITOR = (function ($, parent) {
 			alert( "error" );
 		});
     },
+    
+    
+    getSelectedNodeKeys = function () {
+    	var tree = $.jstree.reference("#treeview"),
+        	ids = tree.get_selected();
+        	
+        	return ids[0];
+    },
 
 
     // Make a copy of the currently selected node
@@ -488,6 +496,7 @@ var EDITOR = (function ($, parent) {
     // my.do_buttons = do_buttons;
     my.setup = setup;
     my.generate_lo_key = generate_lo_key;
+    my.getSelectedNodeKeys = getSelectedNodeKeys;
 
     return parent;
 
