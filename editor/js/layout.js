@@ -7,6 +7,16 @@ var EDITOR = (function ($, parent) {
 
     setup = function () {
         console.log("Setting up layout...");
+        var opentooltip = "Open this pane",
+            closetooltip = "Close this pane",
+            resizetooltip = "Resize this pane";
+        if (language.layout.$opentooltip)
+            opentooltip = language.layout.$opentooltip;
+        if (language.layout.$closetooltip)
+            closetooltip = language.layout.$closetooltip;
+        if (language.layout.$resizetooltip)
+            resizetooltip = language.layout.$resizetooltip;
+
         var xerte_layout,
             xerte_editor_layout_settings = {
                 name: "xerte_editor_layout"
@@ -22,9 +32,9 @@ var EDITOR = (function ($, parent) {
                     togglerLength_open:     35,
                     togglerLength_closed:   35,
                     hideTogglerOnSlide:     true,
-                    togglerTip_open:        "Close This Pane",
-                    togglerTip_closed:      "Open This Pane",
-                    resizerTip:             "Resize This Pane",
+                    togglerTip_open:        closetooltip,
+                    togglerTip_closed:      opentooltip,
+                    resizerTip:             resizetooltip,
                     fxName:                 "slide",
                     fxSpeed_open:           750,
                     fxSpeed_close:          1500,
@@ -56,9 +66,9 @@ var EDITOR = (function ($, parent) {
                     togglerLength_closed:   21,
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
-                    togglerTip_open:        "Close This Pane",
-                    togglerTip_closed:      "Open This Pane",
-                    resizerTip_open:        "Resize This Pane",
+                    togglerTip_open:        closetooltip,
+                    togglerTip_closed:      opentooltip,
+                    resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "click",
                     initClosed:             false,
                     fxSettings_open:        { easing: "easeOutBounce" }
@@ -72,9 +82,9 @@ var EDITOR = (function ($, parent) {
                     togglerLength_closed:   21,
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
-                    togglerTip_open:        "Close This Pane",
-                    togglerTip_closed:      "Open This Pane",
-                    resizerTip_open:        "Resize This Pane",
+                    togglerTip_open:        closetooltip,
+                    togglerTip_closed:      opentooltip,
+                    resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "mouseover",
                     initClosed:             false,
                     fxName:                 "drop",

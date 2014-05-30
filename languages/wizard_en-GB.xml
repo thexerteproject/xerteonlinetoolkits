@@ -1,4 +1,5 @@
 <language name="English" code="en-GB">
+    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
 	<btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
@@ -28,8 +29,8 @@
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
 	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
-	<chkShowLanguage label="Show Language Options" />
-	<chkShowAdvanced label="Show Advanced Options" />
+	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
+	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview"/>
 	<filemenu title="File">
