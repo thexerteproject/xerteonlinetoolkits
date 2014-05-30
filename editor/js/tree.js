@@ -404,19 +404,17 @@ var EDITOR = (function ($, parent) {
     },
 
     // Up button handler
-    up = function() {
-        console.log("move node up");
-        move(-1);
+    up_btn = function() {
+        move_node('up');
     },
 
     // Down button handler
-    down = function() {
-        console.log("move node down");
-        move(2);
+    down_btn = function() {
+        move_node('down');
     },
 
     // Move the selected node up or down
-    move = function(dir) {
+    move_node = function(dir) {
         var tree = $.jstree.reference("#treeview"),
             copy_node,
             new_node,
@@ -430,17 +428,14 @@ var EDITOR = (function ($, parent) {
 
         id = ids[0];
 
-        if (id == "treeroot") {  // Can't remove the root node
-            alert("You can't move the LO node");
-            return false;
-        }
+        if (id == "treeroot") return false; // Can't remove the root node
 
         current_node = tree.get_node(id, false);
         $current_node = $("#" + id).closest('li');
 
         // Calculate positions and total
         pos = $current_node.index();
-        new_pos = pos + dir;
+        new_pos = pos + (dir == 'up' ? -1 : 2);
         count = $current_node.siblings().length + 1;
 
         // Exit if we are at the top or bottom
@@ -477,8 +472,8 @@ var EDITOR = (function ($, parent) {
     do_bottom_buttons = function () {
         buttons = $('<div />').attr('id', 'bottom_buttons');
         $([
-        {name:'UP', icon:'', id:'up_button', click:up},
-        {name:'DOWN', icon:'', id:'down_button', click:down}
+        {name:'UP', icon:'', id:'up_button', click:up_btn},
+        {name:'DOWN', icon:'', id:'down_button', click:down_btn}
         ])
         .each(function(index, value) {
         var button = $('<button>')
