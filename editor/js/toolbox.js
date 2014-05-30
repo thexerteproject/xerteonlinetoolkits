@@ -418,9 +418,13 @@ var EDITOR = (function ($, parent) {
                 {
                     s_data = options.data.split(',');
                 }
+                else
+                {
+                    s_data = s_options;
+                }
                 html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
                 for (var i=0; i<s_options.length; i++) {
-                    html += "<option value=\"" + s_options[i] + (s_options[i]==value ? "\" selected=\"selected\">" : "\">") + (options.data ? s_data[i] : s_options[i]) + "</option>";
+                    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
                 }
                 html += '</select>';
                 break;

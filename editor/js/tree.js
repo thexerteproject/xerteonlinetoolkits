@@ -47,10 +47,11 @@ var EDITOR = (function ($, parent) {
         });
         $('.ui-layout-west .header').append(buttons);
 
+        // Save buttons
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/insert.png', id:'preview_button', click:preview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/copy.png', id:'publish_button', click:publish},
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/copy.png', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
             var button = $('<button>')
@@ -61,7 +62,29 @@ var EDITOR = (function ($, parent) {
                 .append(value.name);
             buttons.append(button);
         });
-        $('.ui-layout-east .content').append(buttons);
+        $('.ui-layout-center .header').append(buttons);
+
+        // Advanced and language checkboxes
+        var checkboxes = $('<div />').attr('id', 'parameter_checkboxes');
+        $([
+            {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', click:showLanguage},
+            {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cd', click:showAdvanced}
+        ]).each(function(index, value) {
+            var checkbox = $('<input>')
+                .attr('id', value.id)
+                .attr('type',  'checkbox')
+                .attr('title', value.tooltip)
+                .attr('disabled', 'disabled')
+                .on('change', value.click)
+
+            checkboxes.append(checkbox);
+            var span = $('<span>')
+                .attr('id', value.id + "_span")
+                .addClass("disabled")
+                .append(value.name);
+            checkboxes.append(span);
+        });
+        $('#checkbox_holder').append(checkboxes);
     },
 
 
@@ -94,7 +117,7 @@ var EDITOR = (function ($, parent) {
                 url: "editor/upload.php",
                 data: {
                     fileupdate: 0,
-                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
                 //    alert("success");
@@ -122,7 +145,7 @@ var EDITOR = (function ($, parent) {
                 url: "editor/upload.php",
                 data: {
                     fileupdate: 1,
-                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
                 //    alert("success");
@@ -149,6 +172,31 @@ var EDITOR = (function ($, parent) {
         	return ids[0];
     },
 
+    showLanguage = function(event) {
+        if ($('#language_cb').prop('checked'))
+        {
+            // show
+            $('#languagePanel').show();
+
+        }
+        else
+        {
+            $('#languagePanel').hide();
+        }
+    },
+
+    showAdvanced = function() {
+        if ($('#advanced_cb').prop('checked'))
+        {
+            // show
+            $('#advancedPanel').show();
+
+        }
+        else
+        {
+            $('#advancedPanel').hide();
+        }
+    },
 
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
@@ -223,6 +271,7 @@ var EDITOR = (function ($, parent) {
         }
 
         var node_options = wizard_data[node_name].node_options;
+        var new_nodes = wizard_data[node_name].new_nodes;
         if (wizard_data[node_name].menu_options.label)
         {
             node_label = wizard_data[node_name].menu_options.label;
@@ -276,7 +325,10 @@ var EDITOR = (function ($, parent) {
         $('#mainPanel').append("</table>");
 
         $('#advancedPanel').html("<hr><table class=\"wizard\" border=\"0\">");
+
         // advancedOptons
+        var nradvancedoptions= 0;
+
         for (var i=0; i<node_options['advanced'].length; i++)
         {
             attribute_name = node_options['advanced'][i].name;
@@ -284,12 +336,30 @@ var EDITOR = (function ($, parent) {
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#advancedPanel', node_options['advanced'], attribute_name, attribute_value.value, key);
+                nradvancedoptions++;
             }
         }
         $('#advancedPanel').append("</table>");
+        if (nradvancedoptions>0)
+        {
+            // Enable Advanced settings
+            $('#advancedPanel').hide();
+            $('#advanced_cb_span').switchClass("disabled", "enabled");
+            $('#advanced_cb').removeAttr("disabled");
+            $('#advanced_cb').prop('checked', false);
+        }
+        else
+        {
+            // Hide the advanced panel and disable check box
+            $('#advancedPanel').hide();
+            $('#advanced_cb_span').switchClass("enabled", "disabled");
+            $('#advanced_cb').attr("disabled", "disabled");
+            $('#advanced_cb').prop('checked', false);
+        }
 
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
-        // advancedOptons
+        // languageOptons
+        var nrlanguageoptions= 0;
         for (var i=0; i<node_options['language'].length; i++)
         {
             attribute_name = node_options['language'][i].name;
@@ -297,9 +367,51 @@ var EDITOR = (function ($, parent) {
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#languagePanel', node_options['language'], attribute_name, attribute_value.value, key);
+                nrlanguageoptions++;
             }
         }
         $('#languagePanel').append("</table>");
+        if (nrlanguageoptions>0)
+        {
+            // Enable Advanced settings
+            $('#languagePanel').hide();
+            $('#language_cb_span').switchClass("disabled", "enabled");
+            $('#language_cb').removeAttr("disabled");
+            $('#language_cb').prop('checked', false);
+        }
+        else
+        {
+            // Hide the advanced panel and disable check box
+            $('#languagePanel').hide();
+            $('#language_cb_span').switchClass("endabled", "disabled");
+            $('#language_cb').attr("disabled", "disabled");
+            $('#language_cb').prop('checked', false);
+        }
+
+        // Extra insert buttons
+        if (new_nodes.length > 0 && key != 'treeroot')
+        {
+            $('#insert_subnodes').html("<hr>");
+            for (var i=0; i<new_nodes.length; i++)
+            {
+                var item = new_nodes[i];
+                var itemname = item;
+                if (wizard_data[item].menu_options.menuItem)
+                    itemname = wizard_data[item].menu_options.menuItem;
+                var button = $('<button>')
+                    .attr('id',  'add_'+item)
+                    .click({key: key, node: item}, function(event){
+                        addSubNode(event);
+                    })
+                    .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                    .append(itemname);
+                $('#insert_subnodes').append(button);
+            }
+        }
+        else
+        {
+            $('#insert_subnodes').html("");
+        }
     /*
         for (var i=0; i<attributes.length; i++) {
             if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
@@ -340,6 +452,10 @@ var EDITOR = (function ($, parent) {
         //$('div.inputtext').ckeditor();
     },
 
+    addSubNode = function (event)
+    {
+        alert('Add sub node ' + event.data.node + ' to ' + event.data.key);
+    }
     // Build the tree once the data has loaded
     build = function (xml) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),

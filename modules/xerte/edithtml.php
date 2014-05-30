@@ -136,16 +136,25 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 </div>
 
 
-<div id="mainContent">
-    <div class="header">Header</div>
-    <div id="mainPanel"></div>
-    <div id="advancedPanel">
-        <hr>
+<div >
+    <div id="mainContent" class="pane pane-center ui-layout-center ui-layout-pane ui-layout-pane-center">
+        <div class="header">Header</div>
+        <div class="ui-layout-content">
+            <div id="mainPanel"></div>
+            <div id="advancedPanel" style="display:none">
+                <hr>
+            </div>
+            <div id="languagePanel" style="display:none">
+                <hr>
+            </div>
+            <div id="insert_subnodes">
+
+            </div>
+        </div>
+        <div id="main_footer" class="footer">
+            <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
+        </div>
     </div>
-    <div id="languagePanel">
-        <hr>
-    </div>
-    <div class="footer">Footer</div>
 </div>
 
 <div id="insert-dialog" title="Insert Page">

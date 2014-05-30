@@ -385,6 +385,23 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
 	display: block !important;
 }
 
+#save_buttons
+{
+    float: right;
+}
+
+#checkbox_outer .td {
+    vertical-align: text-bottom;
+}
+
+#checkbox_outer .disabled {
+    color: gray;
+}
+
+#checkbox_outer .enabled {
+    color: black;
+}
+
 /* XERTE ADDITIONS */
 div.ui-layout-north div.content {
 	background-image:url(../img/TopBar.jpg);
