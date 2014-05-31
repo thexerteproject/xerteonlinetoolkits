@@ -14,8 +14,7 @@ button
 }
 
 body {
-	font-family: Arial, sans-serif;
-	font-size: 100%;
+    font: 14px "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
 	background-color: #EEE;
 }
 h1 {

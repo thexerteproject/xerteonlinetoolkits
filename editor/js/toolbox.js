@@ -169,21 +169,41 @@ var EDITOR = (function ($, parent) {
         var label = (nodelabel ? nodelabel : options.label);
         if (options != null)
         {
-            var output_string;
+            //var output_string;
+            var tr = $('<tr>');
             if (options.optional == 'true')
             {
-                output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
-                output_string += '<td class="wizardoptional"><img id="optbtn_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
+                tr.attr('id', 'opt_'+ name)
+                    .addClass("wizardattribute")
+                    .append($('<td>')
+                        .addClass("wizardoptional")
+                        .append($('<img>')
+                            .attr('id', 'optbtn_' + name)
+                            .attr('src', 'editor/img/optional.gif')
+                            .addClass("optional"))
+                    );
+                //output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
+                //output_string += '<td class="wizardoptional"><img id="optbtn_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
             }
             else
             {
-                output_string += '<tr class="wizardattribute">';
-                output_string += '<td class="wizardparameter"></td>';
+                tr.attr('id', 'param_'+ name)
+                    .addClass("wizardattribute")
+                    .append($('<td>')
+                        .addClass("wizardparameter"));
+                //output_string += '<tr class="wizardattribute">';
+                //output_string += '<td class="wizardparameter"></td>';
             }
-            output_string += '<td class="wizardlabel">' + label + ' : </td>';
-            output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
-            output_string += '</tr>';
-            $(id).append(output_string);
+            tr.append($('<td>')
+                .addClass("wizardlabel")
+                .append(label))
+                .append($('<td>')
+                    .addClass("wizardvalue")
+                    .append(displayDataType(value, options, name, key)));
+            //output_string += '<td class="wizardlabel">' + label + ' : </td>';
+            //output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
+            //output_string += '</tr>';
+            $(id).append(tr);
             if (options.optional == 'true') {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
@@ -244,8 +264,8 @@ var EDITOR = (function ($, parent) {
                 this.on('blur', function(){
                     // This is the call back when editor looses focus
                     if (this.checkDirty())
-                    {	console.log([options.id, options.key, options.name, this.getData()]);
-                        inputChanged(options.id, options.key, options.name, this.getData());
+                    {
+                        inputChanged(options.id, options.key, options.name, this.getData(), this);
                     }
                 })
             }, ckoptions);
@@ -263,7 +283,7 @@ var EDITOR = (function ($, parent) {
 
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
-            $('div.inputtext').ckeditor(function(){
+            $('#'+options.id).ckeditor(function(){
                 // Editor is ready, attach onblur event
                 this.on('blur', function(){
                     // This is the call back when editor looses focus
@@ -272,13 +292,12 @@ var EDITOR = (function ($, parent) {
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
 
-						console.log([options.id, options.key, options.name, thisValue]);
-                        inputChanged(options.id, options.key, options.name, thisValue);
+                        inputChanged(options.id, options.key, options.name, thisValue, this);
                     }
                 });
                 var lastValue = "";
                 this.on('change', function(event) {
-                    if (options.name = 'name') {
+                    if (options.name == 'name') {
                         var thisValue = this.getData();
                         thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                         if (lastValue != thisValue) {
@@ -289,6 +308,10 @@ var EDITOR = (function ($, parent) {
                             tree.rename_node(tree.get_node(options.key, false), thisValue);
                         }
                     }
+                });
+                // Fix for known issue in webkit browsers that cahnge contenteditable when an outer div is hidden
+                this.on('focus', function () {
+                    this.setReadOnly(false);
                 });
             }, { toolbarGroups : [
                 { name: 'basicstyles', groups: [ 'basicstyles' ] },
@@ -352,51 +375,48 @@ var EDITOR = (function ($, parent) {
     },
 
 
-    cbChanged = function (id, key, name)
+    cbChanged = function (id, key, name, value, obj)
     {
         //console.log(id + ': ' + key + ', ' +  name);
-        var value = $('#' + id).is(':checked');
-        if (value)
-        {
-            value = 'true';
-        }
-        else
-        {
-            value = 'false';
-        }
+        //var value = $('#' + id).is(':checked');
+        //if (value)
+        //{
+        //    value = 'true';
+        //}
+        //else
+        //{
+        //    value = 'false';
+        //}
         setAttributeValue(key, name, value);
     },
 
 
-    selectChanged = function (id, key, name)
+    selectChanged = function (id, key, name, value, obj)
     {
         //console.log(id + ': ' + key + ', ' +  name);
-        var value = $('#' + id).val();
+
         setAttributeValue(key, name, value);
     },
 
 
-    inputChanged = function (id, key, name, passedValue)
+    inputChanged = function (id, key, name, value, obj)
     {
-        //console.log(id + ': ' + key + ', ' +  name  + ', ' +  passedValue);
-        var value, valuePassed = (arguments.length == 4);
+        console.log(id + ': ' + key + ', ' +  name  + ', ' +  value);
+        var actvalue = value;
 
         if (id.indexOf('textinput') >= 0)
         {
-            value = (valuePassed) ? passedValue : $('#' + id).html();
-            value = stripP(value);
-        }
-        else
-        {
-            value = (valuePassed) ? passedValue : $('#' + id).val();
+            actvalue = value;
+            actvalue = stripP(actvalue);
         }
 
         if (id.indexOf('color')>=0)
         {
-            value = value.substr(1);
-            value = '0x' + value;
+            if (actvalue.indexOf('#') == 0)
+                actvalue = actvalue.substr(1);
+            actvalue = '0x' + actvalue;
         }
-        setAttributeValue(key, name, value);
+        setAttributeValue(key, name, actvalue);
     },
 
 
@@ -408,7 +428,15 @@ var EDITOR = (function ($, parent) {
             case 'checkbox':
                 var id = 'checkbox_' + form_id_offset;
                 form_id_offset++;
-                html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
+                //html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="parent.toolbox.cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
+                html = $('<input>')
+                    .attr('id', id)
+                    .attr('type',  "checkbox");
+                if (value == 'true')
+                    html.attr('checked', 'checked')
+                        .click({id:id, key:key, name:name}, function(event){
+                            cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+                        });
                 break;
             case 'combobox':
                 var id = 'select_' + form_id_offset;
@@ -423,11 +451,26 @@ var EDITOR = (function ($, parent) {
                 {
                     s_data = s_options;
                 }
-                html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //for (var i=0; i<s_options.length; i++) {
+                //    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
+                //}
+                //html += '</select>';
+                html = $('<select>')
+                    .attr('id', id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                    });
                 for (var i=0; i<s_options.length; i++) {
-                    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
+                    var option = $('<option>')
+                        .attr('value', s_data[i]);
+                    if (s_data[i]==value)
+                        option.attr('selected', 'selected');
+                    option.append(s_options[i]);
+                    html.append(option);
                 }
-                html += '</select>';
+
                 break;
             case 'text':
             case 'script':
@@ -435,9 +478,27 @@ var EDITOR = (function ($, parent) {
             case 'textarea':
                 var id = "textarea_" + form_id_offset;
                 form_id_offset++;
-                html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" onchange=\"inputChanged('" + id + "', '" + key + "', '" + name + "')\" style=\"";
+                //html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                //if (options.height) html += "height:" + options.height + "px";
+                //html += "\">" + value + "</textarea></div>";
+
+
+                //Something weird is going on here If I build the textarea using jquery, then the ckeditor doesn't work anymore
+                // So I use html to build the text area and append that to the div
+                //var textarea = $('<textarea>')
+                //    .attr('id', id)
+                //    .addClass("ckeditor");
+                //if (options.height)
+                //    textarea.attr('style', "height:" + options.height + "px");
+                //textarea.append(value);
+
+                textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
                 if (options.height) html += "height:" + options.height + "px";
-                html += "\">" + value + "</textarea></div>";
+                textarea += "\">" + value + "</textarea>";
+
+                html = $('<div>')
+                    .attr('style', 'width:100%')
+                    .append(textarea);
                 textareas_options.push({id: id, key: key, name: name, options: options});
                 break;
             case 'numericstepper':
@@ -450,17 +511,43 @@ var EDITOR = (function ($, parent) {
                 {
                     var id = 'select_' + form_id_offset;
                     form_id_offset++;
-                    html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    for (var i=min; i<=max; i += step) {
-                        html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
+                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    //for (var i=min; i<=max; i += step) {
+                    //    html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
+                    //}
+                    //html += "</select>";
+                    html = $('<select>')
+                        .attr('id', id)
+                        .click({id:id, key:key, name:name}, function(event)
+                        {
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                        });
+                    for (var i=min; i<max; i += step) {
+                        var option = $('<option>')
+                            .attr('value', i);
+                        if (intvalue==i)
+                            option.attr('selected', 'selected');
+                        option.append(i);
+                        html.append(option);
                     }
-                    html += "</select>";
+
                 }
                 else
                 {
                     var id = 'numericstepper_' + form_id_offset;
                     form_id_offset++;
-                    html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    //html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    html = $('<input>')
+                        .attr('id', id)
+                        .attr('type', 'number')
+                        .attr('min', min)
+                        .attr('max', max)
+                        .attr('step', step)
+                        .attr('value', value)
+                        .click({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
                 }
                 break;
             case 'pagelist':
@@ -468,9 +555,21 @@ var EDITOR = (function ($, parent) {
                 // Leave PageIDs untouched, and prefer to use the PageID over the linkID
                 var id = 'select_' + form_id_offset;
                 form_id_offset++;
-                html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                html = $('<select>')
+                    .attr('id', id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                    });
                 // Add empty entry
-                html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
+                //html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
+                var option = $('<option>')
+                    .attr('value', "");
+                if (value=="")
+                    option.attr('selected', 'selected');
+                option.append("&nbsp;");
+                html.append(option);
                 $.each(lo_data, function(i, data){
                     var name = getAttributeValue(data['attributes'], 'name', [], i);
                     var pageID = getAttributeValue(data['attributes'], 'pageID', [], i);
@@ -479,19 +578,31 @@ var EDITOR = (function ($, parent) {
                     {
                         if (pageID.found)
                         {
-                            html += "<option value=\"" + pageID.value
-                                + (value ==  pageID.value || value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                                + name.value + "</option>";
+                            //html += "<option value=\"" + pageID.value
+                            //    + (value ==  pageID.value || value == linkID.value ? "\" selected=\"selected\">" :  "\">")
+                            //    + name.value + "</option>";
+                            option = $('<option>')
+                                .attr('value', pageID.value);
+                            if (value==pageID.value || value==linkID.value)
+                                option.attr('selected', 'selected');
+                            option.append(name.value);
+                            html.append(option);
                         }
                         else
                         {
-                            html += "<option value=\"" + linkID.value
-                                + (value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                                + name.value + "</option>";
+                            //html += "<option value=\"" + linkID.value
+                            //    + (value == linkID.value ? "\" selected=\"selected\">" :  "\">")
+                            //   + name.value + "</option>";
+                            option = $('<option>')
+                                .attr('value', linkID.value);
+                            if (value==linkID.value)
+                                option.attr('selected', 'selected');
+                            option.append(name.value);
+                            html.append(option);
                         }
                     }
                 });
-                html += "</select>";
+                //html += "</select>";
                 break;
             case 'colourpicker':
                 var colorvalue = value;
@@ -499,32 +610,71 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 if (colorvalue.indexOf("0x") == 0)
                 {
-                    colorvalue ='#' + colorvalue.substr(2);
+                    colorvalue = colorvalue.substr(2);
                 }
-                if (Modernizr.inputtypes.color)
+                if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
                 {
-                    html = '<input id='+ id + ' type="color" value="' + colorvalue + '" onchange="inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
+
+                    //html = '<input id='+ id + ' type="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
+                    html = $('<input>')
+                        .attr('id', id)
+                        .attr('type', 'color')
+                        .attr('value', colorvalue)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
                 }
                 else
                 {
-                    html = '<input id='+ id + ' class="color" value="' + colorvalue + '" onchange="inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
+                    //html = '<input id='+ id + ' class="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\',' + this +  ')">';
+                    html = $('<input>')
+                        .attr('id', id)
+                        .addClass('color')
+                        .attr('value', colorvalue)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
                     colorpickers.push({id: id, value: colorvalue, options: options});
                 }
                 break;
             case 'languagelist':
                 var id = 'select_' + form_id_offset;
                 form_id_offset++;
-                html = '<select id="' + id + '" onchange="selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //for (var i=0; i<installed_languages.length; i++) {
+                //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                //}
+                //html += '</select>';
+                html = $('<select>')
+                    .attr('id', id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                    });
                 for (var i=0; i<installed_languages.length; i++) {
-                    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                    var option = $('<option>')
+                        .attr('value', installed_languages[i].code);
+                    if (installed_languages[i]==value.code)
+                        option.attr('selected', 'selected');
+                    option.append(installed_languages[i].name);
+                    html.append(option);
                 }
-                html += '</select>';
                 break;
             case 'hotspot':
                 // this is a special one. the attributes in the node are called x, y, w, h
                 var id = 'button_' + form_id_offset;
                 form_id_offset++;
-                html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                html = $('<input>')
+                    .attr('id', id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                    })
+                    .attr('title', language.edit.$tooltip)
+                    .append(language.edit.$label);
                 break;
             case 'drawing':
             case 'datefield':
@@ -536,7 +686,13 @@ var EDITOR = (function ($, parent) {
                  //html = "<input type=\"text\" value=\"" + value + "\" />";
                 var id = 'textinput_' + form_id_offset;
                 form_id_offset++;
-                html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
+                //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
+                html = $('<div>')
+                    .attr('id', id)
+                    .addClass('inputtext')
+                    .attr('contenteditable', 'true')
+                    .append($('<p>')
+                        .append(value));
                 textinputs_options.push({id: id, key: key, name: name, options: options});
         }
         return html;

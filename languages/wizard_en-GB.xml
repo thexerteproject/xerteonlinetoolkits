@@ -1,6 +1,7 @@
 <language name="English" code="en-GB">
     <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
-	<btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
+    <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
+    <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
 	<browseImportFile title="Select file to import...">
