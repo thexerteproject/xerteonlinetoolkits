@@ -1,7 +1,7 @@
-<?PHP    
+<?PHP
 
 /**
-* 
+*
 * preview page, allows the site to make a preview page for a xerte module
 *
 * @author Patrick Lockley
@@ -14,7 +14,7 @@
 require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
 /**
-* 
+*
 * Function show_preview_code
 * This function creates folders needed when creating a template
 * @param array $row - an array from a mysql query for the template
@@ -39,7 +39,18 @@ function show_preview_code($row)
         fclose($fp);
 
     }
-    echo show_template_page($row, "preview.xml");
+
+    $preview_filename = "preview.xml";
+
+	//************ TEMPORARY ****************
+
+	if (file_exists($template_dir . '/preview2.xml')) {
+		$preview_filename = "preview2.xml";
+	}
+
+	//***************************************
+
+    echo show_template_page($row, $preview_filename);
 }
 
 function show_preview_code2($row, $row_username){
@@ -60,7 +71,7 @@ function show_preview_code2($row, $row_username){
 
 		$fp = fopen($template_dir . "/preview.xml","x");
 		fwrite($fp, $buffer);
-		fclose($fp);		
+		fclose($fp);
 
 	}
 

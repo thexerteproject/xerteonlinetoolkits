@@ -36,6 +36,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      * create the preview xml used for editing
      */
 
+	$preview_filename = "preview.xml";
+
     $preview = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
 
     $data    = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
@@ -45,7 +47,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         chmod($preview, 0777);
     }
 
-    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
+    //************ TEMPORARY ****************
+
+    $preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
+    if(file_exists($preview2)) {
+    	$preview_filename = "preview2.xml";
+    }
+
+    //***************************************
+
+    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
 
     $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
 
@@ -88,6 +99,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
+    <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
     <![endif]-->
@@ -183,6 +195,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         'uploadURL' => $rlo_url,
         'uploadDir' => $rlo_path
     );
+
 
 
     echo "xmlvariable=\"" . $preview_url . "\";\n";

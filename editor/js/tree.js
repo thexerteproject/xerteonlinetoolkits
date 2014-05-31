@@ -88,35 +88,42 @@ var EDITOR = (function ($, parent) {
     },
 
 
-	build_json = function (node_id) {
-		var tree = $.jstree.reference("#treeview");
-		var node = tree.get_node(node_id, false);
-		var obj = {};
+    build_json = function (node_id) {
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node(node_id, false);
+        var obj = {};
         //console.log(lo_data[node_id]);
         $.each(lo_data[node_id], function(key , value){
             obj[key] = value;
         });
-		//obj.attributes = lo_data[node_id]['attributes'];
+        //obj.attributes = lo_data[node_id]['attributes'];
 
-		console.log(node_id + ": " + node.children.length + " children");
-		if (node.children.length > 0) {
-			obj.children = {};
-			for (var i=0; i<node.children.length; i++) {
-				key = node.children[i];
-				obj.children[i] = build_json(key);
-			}
-		}
+        console.log(node_id + ": " + node.children.length + " children");
+        if (node.children.length > 0) {
+            obj.children = {};
+            for (var i=0; i<node.children.length; i++) {
+                key = node.children[i];
+                obj.children[i] = build_json(key);
+            }
+        }
         //console.log(obj);
-		return(obj);
-	},
-    
+        return(obj);
+    },
+
 
     preview = function () {
-		var json = build_json("treeroot");
-		var ajax_call = $.ajax({
+        // ***************** TEMPORARY ****************
+        if(xmlvariable.slice(-11) == "preview.xml") {
+            xmlvariable = xmlvariable.substring(0, xmlvariable.length-4) + "2.xml";
+        }
+        // ***************** TEMPORARY ****************
+
+        var json = build_json("treeroot");
+        var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
                     fileupdate: 0,
+                    filename: xmlvariable,
                     lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
@@ -128,23 +135,26 @@ var EDITOR = (function ($, parent) {
                 dataType: "json",
                 type: "POST"
             }
-		)
-		.done(function() {
-			alert( "success" );
-			// We would also launch the preview window from here
-		})
-		.fail(function() {
-			alert( "error" );
-		});
-	},
+        )
+        .done(function() {
+            //alert( "success" );
+            // We would also launch the preview window from here
+            window.open(site_url + "preview.php?template_id=" + template_id, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width );
+        })
+        .fail(function() {
+            alert( "error" );
+        });
+    },
 
 
     publish = function () {
-		var json = build_json("treeroot");
+        alert("Publish disabled for now to prevent accidental data overwrite!");
+        /*var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
                     fileupdate: 1,
+                    filename: xmlvariable,
                     lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
@@ -157,19 +167,19 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
-			alert( "success" );
-		})
-		.fail(function() {
-			alert( "error" );
-		});
+            alert( "success" );
+        })
+        .fail(function() {
+            alert( "error" );
+        });*/
     },
-    
-    
+
+
     getSelectedNodeKeys = function () {
-    	var tree = $.jstree.reference("#treeview"),
-        	ids = tree.get_selected();
-        	
-        	return ids[0];
+        var tree = $.jstree.reference("#treeview"),
+            ids = tree.get_selected();
+
+            return ids[0];
     },
 
     showLanguage = function(event) {
@@ -494,12 +504,12 @@ var EDITOR = (function ($, parent) {
     // Build the tree once the data has loaded
     build = function (xml) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
-        
+
         create_node_type = function (page_name, children) {
-			return {
+            return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: children
-        	};
+            };
         };
 
         // build Types structure for the types plugin

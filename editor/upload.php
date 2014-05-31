@@ -3,18 +3,18 @@
 // Check for Preview/Publish
 $tst = file_get_contents("php://stdin");
 $fileupdate = $_POST["fileupdate"];
+$filename = $_POST["filename"];
 $mode = $fileupdate ? "publish" : "preview";
 
-//$json = array(
-//    "attributes" => json_decode(urldecode($_POST["attributes"])),
-//    "children" => json_decode(urldecode($_POST["children"])),
-//);
+$filename = dirname(dirname(__FILE__)) . '/' . $filename;
+
 
 $json = json_decode(urldecode($_POST["lo_data"]));
 
 $data = process($json);
 file_put_contents("unprocessed_$mode.txt", print_r($json, true));
 file_put_contents("processed_$mode.xml", $data->asXML());
+file_put_contents($filename, $data->asXML());
 
 echo true;
 
