@@ -261,16 +261,8 @@ var EDITOR = (function ($, parent) {
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
-        var node_name = '';
+        var node_name = attributes.nodeName;
         var node_label = '';
-        for (var i=0, len=attributes.length; i<len; i++)
-        {
-            if (attributes[i].name == 'nodeName')
-            {
-                node_name = attributes[i].value;
-                break;
-            }
-        }
 
         var node_options = wizard_data[node_name].node_options;
         var new_nodes = wizard_data[node_name].new_nodes;
@@ -305,19 +297,55 @@ var EDITOR = (function ($, parent) {
             toolbox.displayParameter('#mainPanel', node_options['normal'], node_name, '', key, node_label);
         }
         // Optional parameters
+        // 1. Empty right panel
+        $('#optionalParams').html("");
+        var html = $('<div>')
+            .addClass("optButtonContainer");
+        var table = $('<table>');
+
         for (var i=0; i<node_options['optional'].length; i++)
         {
-            attribute_name = node_options['optional'][i].name;
+            attribute_name = node_options['optional'][i].name[0];
+            attribute_label = "  " + node_options['optional'][i].value.label;
+            // Create button for right panel
+            var button = $('<button>')
+                .attr('id', 'insert_opt_' + attribute_name)
+                .addClass('btnInsertOptParam')
+                .click({key:key, attribute:attribute_name, default:(node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")},
+                    function(event){
+                        parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+                    })
+                .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                .append(attribute_label);
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#mainPanel', node_options['optional'], attribute_name, attribute_value.value, key);
+                // Add disabled button to right panel
+                button.attr('enabled', false)
+                    .addClass('disabled');
             }
+            else
+            {
+                // Add enabled button to the right panel
+                button.attr('enabled', true)
+                    .addClass('enabled');
+            }
+            var tablerow = $('<tr>')
+                .append($('<td>')
+                    .append(button));
+            table.append(tablerow);
         }
+        html.append(table);
+        if (node_options['optional'].length > 0)
+        {
+            $('#optionalParams').append(html);
+        }
+
         // The rest of the normal params
         for (var i=0; i<node_options['normal'].length; i++)
         {
-            attribute_name = node_options['normal'][i].name;
+            attribute_name = node_options['normal'][i].name[0];
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -333,7 +361,7 @@ var EDITOR = (function ($, parent) {
 
         for (var i=0; i<node_options['advanced'].length; i++)
         {
-            attribute_name = node_options['advanced'][i].name;
+            attribute_name = node_options['advanced'][i].name[0];
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -364,7 +392,7 @@ var EDITOR = (function ($, parent) {
         var nrlanguageoptions= 0;
         for (var i=0; i<node_options['language'].length; i++)
         {
-            attribute_name = node_options['language'][i].name;
+            attribute_name = node_options['language'][i].name[0];
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -418,6 +446,9 @@ var EDITOR = (function ($, parent) {
         {
             $('#insert_subnodes').html("");
         }
+
+        // The optional parameters (what to do here, only enable the not used entries)
+
     /*
         for (var i=0; i<attributes.length; i++) {
             if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
@@ -614,6 +645,7 @@ var EDITOR = (function ($, parent) {
     my.setup = setup;
     my.generate_lo_key = generate_lo_key;
     my.getSelectedNodeKeys = getSelectedNodeKeys;
+    my.showNodeData = showNodeData;
 
     return parent;
 

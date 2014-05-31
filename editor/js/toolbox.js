@@ -72,9 +72,9 @@ var EDITOR = (function ($, parent) {
         }
 
         // Parse the attributes and store in the data store
-        var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
+        var attributes = {nodeName: xmlData[0].nodeName};
         $(xmlData[0].attributes).each(function() {
-            attributes.push({name: this.name, value: this.value});
+            attributes[this.name] = this.value;
         });
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
@@ -141,12 +141,10 @@ var EDITOR = (function ($, parent) {
         var attr_found = false;
 
         // find the value
-        for (var j=0; !attr_found && j<attributes.length; j++) {
-            if (attributes[j].name == name)
-            {
-                attribute_value = attributes[j].value;
-                attr_found = true;
-            }
+        if (name in attributes)
+        {
+            attribute_value = attributes[name];
+            attr_found = true;
         }
         if (!attr_found)
         {
@@ -224,16 +222,33 @@ var EDITOR = (function ($, parent) {
 
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
-        var search = -1;
-        $(lo_data[key]["attributes"]).each(function(index){
-        	if (this["name"] == name) search = index;
-        });
+
+        if (name in lo_data[key]["attributes"])
+        {
+            delete lo_data[key]["attributes"][name];
+        };
         
-        // If we found it then remove it
-        if (search > -1) lo_data[key]["attributes"].splice(search, 1);
         console.log(lo_data[key]["attributes"]);
+
+        // Enable the optional parameter button
+        $('#insert_opt_' + name)
+            .switchClass('disabled', 'enabled')
+            .attr('enabled', true);
     },
 
+    insertOptionalProperty = function (key, name, defaultvalue)
+    {
+
+        // Place attribute
+        lo_data[key]['attributes'][name] = defaultvalue;
+
+        // Enable the optional parameter button
+        $('#insert_opt_' + name)
+            .switchClass('enabled', 'disabled')
+            .attr('enabled', false);
+
+        parent.tree.showNodeData(key);
+    },
 
     convertTextAreas = function ()
     {
@@ -340,18 +355,10 @@ var EDITOR = (function ($, parent) {
     },
 
     setAttributeValue = function (key, name, value)
-    {															console.log([key, name, value]); 
-        var attributes = lo_data[key]['attributes'];
+    {
+        console.log([key, name, value]);
         // Get the node name
-        var node_name = '';var i=attributes.length;
-        for(var i=0; i< attributes.length; i++)
-        {
-            if (attributes[i].name == 'nodeName')
-            {
-                node_name = attributes[i].value;
-                break;
-            }
-        }
+        var node_name = lo_data[key]['attributes'].nodeName;
 
         var node_options = wizard_data[node_name].node_options;
 
@@ -361,15 +368,9 @@ var EDITOR = (function ($, parent) {
         }
         else
         {
-            var attr_found = false;
-
-            // find the value
-            for (var j=0; !attr_found && j<attributes.length; j++) {
-                if (attributes[j].name == name)
-                {
-                    attributes[j].value = value;
-                    attr_found = true;
-                }
+            if (name in lo_data[key]['attributes'])
+            {
+                lo_data[key]['attributes'][name] = value;
             }
         }
     },
@@ -460,7 +461,7 @@ var EDITOR = (function ($, parent) {
                     .attr('id', id)
                     .click({id:id, key:key, name:name}, function(event)
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                     });
                 for (var i=0; i<s_options.length; i++) {
                     var option = $('<option>')
@@ -520,7 +521,7 @@ var EDITOR = (function ($, parent) {
                         .attr('id', id)
                         .click({id:id, key:key, name:name}, function(event)
                         {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=min; i<max; i += step) {
                         var option = $('<option>')
@@ -651,12 +652,12 @@ var EDITOR = (function ($, parent) {
                     .attr('id', id)
                     .click({id:id, key:key, name:name}, function(event)
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                     });
                 for (var i=0; i<installed_languages.length; i++) {
                     var option = $('<option>')
                         .attr('value', installed_languages[i].code);
-                    if (installed_languages[i]==value.code)
+                    if (installed_languages[i].code==value)
                         option.attr('selected', 'selected');
                     option.append(installed_languages[i].name);
                     html.append(option);
@@ -707,6 +708,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
     my.getIcon = getIcon;
+    my.insertOptionalProperty = insertOptionalProperty;
 
     return parent;
 

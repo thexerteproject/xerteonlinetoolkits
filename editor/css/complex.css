@@ -134,7 +134,7 @@ table {
 .footer  { border-top: 1px solid #777; }
 #mainContent .footer  { border-top: 1px solid #BBB; }
 .content {
-	padding:	10px;
+	padding:	5px;
 	position:	relative;
 	overflow:	auto;
 }
@@ -445,3 +445,42 @@ td.wizardvalue {
 img.optional {
 	cursor: pointer;
 }
+
+#optionalParams.content{
+    padding: 2px;
+}
+
+.optButtonContainer {
+    overflow: auto;
+}
+
+.optButtonContainer  table {
+    border-spacing: 0px;
+}
+
+.optButtonContainer  td {
+    padding: 1px;
+}
+
+
+.btnInsertOptParam {
+    white-space: nowrap;
+    width:100%;
+    text-align: left;
+}
+
+.btnInsertOptParam.disabled img {
+    filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='grayscale'><feColorMatrix%20type='matrix'%20values='0.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200%200%200%201%200'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
+    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: gray; /* IE6+ */
+}
+
+.btnInsertOptParam.disabled {
+    color: gray;
+}
+
+
