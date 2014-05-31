@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DIALOG INTERACTION================================= -->
-  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icSCript" thumb="thumbs/dialog.jpg" remove="true">
+  <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>    
     <text  label="Text" type="TextArea" height="100"/>
