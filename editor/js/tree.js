@@ -177,6 +177,7 @@ var EDITOR = (function ($, parent) {
         {
             // show
             $('#languagePanel').show();
+            $('#languagePanel div.inputtext').attr('contenteditable', 'true');
 
         }
         else
@@ -190,6 +191,7 @@ var EDITOR = (function ($, parent) {
         {
             // show
             $('#advancedPanel').show();
+            //$('div.textinput').attr('contenteditable', 'true');
 
         }
         else
@@ -351,10 +353,10 @@ var EDITOR = (function ($, parent) {
         else
         {
             // Hide the advanced panel and disable check box
-            $('#advancedPanel').hide();
             $('#advanced_cb_span').switchClass("enabled", "disabled");
             $('#advanced_cb').attr("disabled", "disabled");
             $('#advanced_cb').prop('checked', false);
+            $('#advancedPanel').hide();
         }
 
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
@@ -383,7 +385,7 @@ var EDITOR = (function ($, parent) {
         {
             // Hide the advanced panel and disable check box
             $('#languagePanel').hide();
-            $('#language_cb_span').switchClass("endabled", "disabled");
+            $('#language_cb_span').switchClass("enabled", "disabled");
             $('#language_cb').attr("disabled", "disabled");
             $('#language_cb').prop('checked', false);
         }
@@ -398,13 +400,17 @@ var EDITOR = (function ($, parent) {
                 var itemname = item;
                 if (wizard_data[item].menu_options.menuItem)
                     itemname = wizard_data[item].menu_options.menuItem;
+                var buttonlabel = language.newLink.$label;
+                var pos = buttonlabel.indexOf('{i}');
+                if (pos >= 0)
+                    buttonlabel = buttonlabel.substr(0, pos) + itemname + buttonlabel.substr(pos+3);
                 var button = $('<button>')
                     .attr('id',  'add_'+item)
                     .click({key: key, node: item}, function(event){
                         addSubNode(event);
                     })
                     .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
-                    .append(itemname);
+                    .append(buttonlabel);
                 $('#insert_subnodes').append(button);
             }
         }
@@ -448,8 +454,6 @@ var EDITOR = (function ($, parent) {
         //});
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
-
-        //$('div.inputtext').ckeditor();
     },
 
     addSubNode = function (event)

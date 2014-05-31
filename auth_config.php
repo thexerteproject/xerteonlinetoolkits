@@ -9,9 +9,9 @@
  * See code in library/Xerte/Authentication/*.php - where each file should match up to the value used below.
  */
 
-$xerte_toolkits_site->authentication_method = 'Guest';
+//$xerte_toolkits_site->authentication_method = 'Guest';
 //$xerte_toolkits_site->authentication_method = 'Ldap';
-//$xerte_toolkits_site->authentication_method = 'Db';
+$xerte_toolkits_site->authentication_method = 'Db';
 //$xerte_toolkits_site->authentication_method = 'Static';
 //$xerte_toolkits_site->authentication_method = "Moodle";
 
