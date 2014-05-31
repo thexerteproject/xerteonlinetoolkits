@@ -74,8 +74,8 @@ class ExSimpleXMLElement extends SimpleXMLElement
 function process($json, $xml = null) {
         if (isset($json->attributes)) {
                 foreach ($json->attributes as $key => $val) {
-                        $name = $val->name; //echo $name;
-                        $value = $val->value; //echo $value;
+                        $name = $key; //echo $name;
+                        $value = $val; //echo $value;
 
                         if (is_null($xml)) {
                                 if ($name == 'nodeName') {
