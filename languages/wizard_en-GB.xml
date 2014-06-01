@@ -1,6 +1,11 @@
 <language name="English" code="en-GB">
     <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
     <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
+    <insertDialog>
+        <insertBefore label="Insert before" tooltip="Insert before selected node"/>
+        <insertAfter label="Insert after" tooltip="Insert after selected node"/>
+        <insertAtEnd label="Insert at end" tooltip="Insert as last node"/>
+    </insertDialog>
     <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>

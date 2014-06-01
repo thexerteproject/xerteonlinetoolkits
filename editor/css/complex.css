@@ -483,4 +483,15 @@ img.optional {
     color: gray;
 }
 
+.newNodesContainer {
+    margin-left:100px;
+}
 
+.newNodesLevel {
+    padding: 5px 0px 5px 0px;
+}
+
+.btnNewNode
+{
+    margin-left: 20px;
+}

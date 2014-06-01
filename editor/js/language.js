@@ -83,7 +83,7 @@ var EDITOR = (function ($, parent) {
                     //console.log("      attr: " + a[j].name + ":" + a[j].value);
                     node_params[a[j].name] = a[j].value;
                 }
-                all_options.push({name: [$(this)[0].nodeName], value: node_params});
+                all_options.push({name: $(this)[0].nodeName, value: node_params});
             });
 
             // search attribute name and put that as the first one
@@ -223,7 +223,7 @@ var EDITOR = (function ($, parent) {
 
     foreign_language_files = [
         {
-            "u" : originalpathvariable + "wizards/" + languagecodevariable + "/data.xwd",
+            "u" : xwd_file_url,
             "c" : process_data_xwd,
             "merge" : false
         },
@@ -246,7 +246,7 @@ var EDITOR = (function ($, parent) {
 
     en_language_files = [
         {
-            "u" : originalpathvariable + "wizards/" + languagecodevariable + "/data.xwd",
+            "u" : xwd_file_url,
             "c" : process_data_xwd,
             "merge" : false
         },

@@ -47,6 +47,22 @@ var EDITOR = (function ($, parent) {
                 getMenuItem(this)
             );
         });
+        $("#insert-buttons").html("");
+        buttons = $('<div />').attr('id', 'insert_buttons');
+        $([
+            {name: language.insertDialog.insertBefore.$label, tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', click:insert_page_before},
+            {name: language.insertDialog.insertAfter.$label, tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', click:insert_page_after},
+            {name: language.insertDialog.insertAtEnd.$label, tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', click:insert_page_end}
+        ])
+            .each(function(index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .append(value.name);
+                buttons.append(button);
+            });
+        $("#insert-buttons").append(buttons);
+
         $("#insert-menu").append(
             $menu.menu({
                 select: function(event, ui) {
@@ -59,6 +75,18 @@ var EDITOR = (function ($, parent) {
             })
         );
     },
+
+    insert_page_before = function(){
+
+    }
+
+    insert_page_after = function(){
+
+    }
+
+    insert_page_end = function(){
+
+    }
 
 
     // ** Recursive function to traverse the xml and build
@@ -85,9 +113,19 @@ var EDITOR = (function ($, parent) {
 
         // Build the JSON object for the treeview
         // For version 3 jsTree
+        var treeLabel = xmlData[0].nodeName;
+        if (xmlData[0].attributes['name'])
+        {
+            treeLabel = xmlData[0].attributes['name'].value;
+        }
+        else
+        {
+            if (wizard_data[treeLabel].menu_options.menuItem)
+                treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+        }
         var this_json = {
             id : key,
-            text : (xmlData[0].attributes['name'] ? xmlData[0].attributes['name'].value : xmlData[0].nodeName),
+            text : treeLabel,
             type : xmlData[0].nodeName
         }
         console.log(this_json);
@@ -233,23 +271,20 @@ var EDITOR = (function ($, parent) {
         // Enable the optional parameter button
         $('#insert_opt_' + name)
             .switchClass('disabled', 'enabled')
-            .attr('enabled', true);
+            .prop('disabled', false);
     },
 
     insertOptionalProperty = function (key, name, defaultvalue)
     {
-        if (lo_data[key]['attributes'][name] === undefined) {
+        // Place attribute
+        lo_data[key]['attributes'][name] = defaultvalue;
 
-            // Place attribute
-            lo_data[key]['attributes'][name] = defaultvalue;
+        // Enable the optional parameter button
+        $('#insert_opt_' + name)
+            .switchClass('enabled', 'disabled')
+            .prop('disabled', true);
 
-            // Enable the optional parameter button
-            $('#insert_opt_' + name)
-                .switchClass('enabled', 'disabled')
-                .attr('enabled', false);
-
-            parent.tree.showNodeData(key);
-        }
+        parent.tree.showNodeData(key);
     },
 
     convertTextAreas = function ()
@@ -436,7 +471,7 @@ var EDITOR = (function ($, parent) {
                     .attr('id', id)
                     .attr('type',  "checkbox");
                 if (value == 'true')
-                    html.attr('checked', 'checked')
+                    html.prop('checked', true)
                         .click({id:id, key:key, name:name}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                         });
@@ -469,7 +504,7 @@ var EDITOR = (function ($, parent) {
                     var option = $('<option>')
                         .attr('value', s_data[i]);
                     if (s_data[i]==value)
-                        option.attr('selected', 'selected');
+                        option.prop('selected', true);
                     option.append(s_options[i]);
                     html.append(option);
                 }
@@ -529,7 +564,7 @@ var EDITOR = (function ($, parent) {
                         var option = $('<option>')
                             .attr('value', i);
                         if (intvalue==i)
-                            option.attr('selected', 'selected');
+                            option.prop('selected', true);
                         option.append(i);
                         html.append(option);
                     }
@@ -570,7 +605,7 @@ var EDITOR = (function ($, parent) {
                 var option = $('<option>')
                     .attr('value', "");
                 if (value=="")
-                    option.attr('selected', 'selected');
+                    option.prop('selected', true);
                 option.append("&nbsp;");
                 html.append(option);
                 $.each(lo_data, function(i, data){
@@ -587,7 +622,7 @@ var EDITOR = (function ($, parent) {
                             option = $('<option>')
                                 .attr('value', pageID.value);
                             if (value==pageID.value || value==linkID.value)
-                                option.attr('selected', 'selected');
+                                option.prop('selected', true);
                             option.append(name.value);
                             html.append(option);
                         }
@@ -599,7 +634,7 @@ var EDITOR = (function ($, parent) {
                             option = $('<option>')
                                 .attr('value', linkID.value);
                             if (value==linkID.value)
-                                option.attr('selected', 'selected');
+                                option.prop('selected', true);
                             option.append(name.value);
                             html.append(option);
                         }
@@ -660,7 +695,7 @@ var EDITOR = (function ($, parent) {
                     var option = $('<option>')
                         .attr('value', installed_languages[i].code);
                     if (installed_languages[i].code==value)
-                        option.attr('selected', 'selected');
+                        option.prop('selected', true);
                     option.append(installed_languages[i].name);
                     html.append(option);
                 }
