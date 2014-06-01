@@ -213,7 +213,7 @@ var EDITOR = (function ($, parent) {
 
 
     removeOptionalProperty = function (name) {
-    	if (!confirm('Are you sure?')) {
+        if (!confirm('Are you sure?')) {
             return;
         }
 
@@ -227,7 +227,7 @@ var EDITOR = (function ($, parent) {
         {
             delete lo_data[key]["attributes"][name];
         };
-        
+
         console.log(lo_data[key]["attributes"]);
 
         // Enable the optional parameter button
@@ -238,16 +238,18 @@ var EDITOR = (function ($, parent) {
 
     insertOptionalProperty = function (key, name, defaultvalue)
     {
+        if (lo_data[key]['attributes'][name] === undefined) {
 
-        // Place attribute
-        lo_data[key]['attributes'][name] = defaultvalue;
+            // Place attribute
+            lo_data[key]['attributes'][name] = defaultvalue;
 
-        // Enable the optional parameter button
-        $('#insert_opt_' + name)
-            .switchClass('enabled', 'disabled')
-            .attr('enabled', false);
+            // Enable the optional parameter button
+            $('#insert_opt_' + name)
+                .switchClass('enabled', 'disabled')
+                .attr('enabled', false);
 
-        parent.tree.showNodeData(key);
+            parent.tree.showNodeData(key);
+        }
     },
 
     convertTextAreas = function ()
