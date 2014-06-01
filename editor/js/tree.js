@@ -19,7 +19,10 @@ var EDITOR = (function ($, parent) {
         $( "#insert-buttons" ).hide();
 
         var insert_page = function() {
-            $( "#insert-dialog" ).dialog({ width: '60%' });
+            $( "#insert-dialog" ).dialog({ width: '60%', close : function (event, ui){
+                addNode(event, ui);
+            }
+            });
         },
 
         delete_page = function() {
@@ -57,7 +60,9 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
-                .click(value.click)
+                .click(function(){
+                    setTimeout(value.click, 500);
+                })
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
             buttons.append(button);
@@ -74,7 +79,7 @@ var EDITOR = (function ($, parent) {
                 .attr('id', value.id)
                 .attr('type',  'checkbox')
                 .attr('title', value.tooltip)
-                .attr('disabled', 'disabled')
+                .prop('disabled', true)
                 .on('change', value.click)
 
             checkboxes.append(checkbox);
@@ -275,7 +280,6 @@ var EDITOR = (function ($, parent) {
         var node_label = '';
 
         var node_options = wizard_data[node_name].node_options;
-        var new_nodes = wizard_data[node_name].new_nodes;
         if (wizard_data[node_name].menu_options.label)
         {
             node_label = wizard_data[node_name].menu_options.label;
@@ -294,7 +298,7 @@ var EDITOR = (function ($, parent) {
         // Always display name option first
         if (node_options['name'].length > 0)
         {
-            attribute_name = node_options['name'][0].name;
+            attribute_name = node_options['name'].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -315,7 +319,7 @@ var EDITOR = (function ($, parent) {
 
         for (var i=0; i<node_options['optional'].length; i++)
         {
-            attribute_name = node_options['optional'][i].name[0];
+            attribute_name = node_options['optional'][i].name;
             attribute_label = "  " + node_options['optional'][i].value.label;
             // Create button for right panel
             var button = $('<button>')
@@ -332,13 +336,13 @@ var EDITOR = (function ($, parent) {
             {
                 toolbox.displayParameter('#mainPanel', node_options['optional'], attribute_name, attribute_value.value, key);
                 // Add disabled button to right panel
-                button.attr('enabled', false)
+                button.prop('disabled', true)
                     .addClass('disabled');
             }
             else
             {
                 // Add enabled button to the right panel
-                button.attr('enabled', true)
+                button.prop('disabled', false)
                     .addClass('enabled');
             }
             var tablerow = $('<tr>')
@@ -355,7 +359,7 @@ var EDITOR = (function ($, parent) {
         // The rest of the normal params
         for (var i=0; i<node_options['normal'].length; i++)
         {
-            attribute_name = node_options['normal'][i].name[0];
+            attribute_name = node_options['normal'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -371,7 +375,7 @@ var EDITOR = (function ($, parent) {
 
         for (var i=0; i<node_options['advanced'].length; i++)
         {
-            attribute_name = node_options['advanced'][i].name[0];
+            attribute_name = node_options['advanced'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -402,7 +406,7 @@ var EDITOR = (function ($, parent) {
         var nrlanguageoptions= 0;
         for (var i=0; i<node_options['language'].length; i++)
         {
-            attribute_name = node_options['language'][i].name[0];
+            attribute_name = node_options['language'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
@@ -429,32 +433,69 @@ var EDITOR = (function ($, parent) {
         }
 
         // Extra insert buttons
-        if (new_nodes.length > 0 && key != 'treeroot')
+        // Start with the current level, and work your way up to rootlevel
+        var tree = $.jstree.reference("#treeview");
+        var currkey = key;
+        var hr_drawn = false;
+        $('#insert_subnodes').html("");
+        var subnodes = $('<div>').
+            addClass('newNodesContainer');
+        while (currkey != 'treeroot')
         {
-            $('#insert_subnodes').html("<hr>");
-            for (var i=0; i<new_nodes.length; i++)
+            var currItem = lo_data[currkey]['attributes'].nodeName;
+            var new_nodes = wizard_data[currItem].new_nodes;
+            if (new_nodes.length > 0)
             {
-                var item = new_nodes[i];
-                var itemname = item;
-                if (wizard_data[item].menu_options.menuItem)
-                    itemname = wizard_data[item].menu_options.menuItem;
-                var buttonlabel = language.newLink.$label;
-                var pos = buttonlabel.indexOf('{i}');
-                if (pos >= 0)
-                    buttonlabel = buttonlabel.substr(0, pos) + itemname + buttonlabel.substr(pos+3);
-                var button = $('<button>')
-                    .attr('id',  'add_'+item)
-                    .click({key: key, node: item}, function(event){
-                        addSubNode(event);
-                    })
-                    .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
-                    .append(buttonlabel);
-                $('#insert_subnodes').append(button);
+                // There are nodes for this level
+                var new_nodes_default = wizard_data[currItem].new_nodes_defaults;
+                if (!hr_drawn)
+                {
+                    subnodes.append("<hr>");
+                    hr_drawn = true;
+                }
+                // Display the level, i.e. the name of the current node
+                var currItemName;
+                if (wizard_data[currItem].menu_options.menuItem)
+                    currItemName = wizard_data[currItem].menu_options.menuItem;
+                var label = currItemName;
+                if (lo_data[currkey]['attributes'].name)
+                    label = lo_data[currkey]['attributes'].name;
+
+                var level = $('<div>')
+                    .addClass('newNodesLevel')
+                    .append($('<div>')
+                        .addClass('newNodesTitle')
+                        .append(label));
+                for (var i=0; i<new_nodes.length; i++)
+                {
+                    var item = new_nodes[i];
+                    var itemname = item;
+                    if (wizard_data[item].menu_options.menuItem)
+                        itemname = wizard_data[item].menu_options.menuItem;
+                    var buttonlabel = language.newLink.$label;
+                    var pos = buttonlabel.indexOf('{i}');
+                    if (pos >= 0)
+                        buttonlabel = buttonlabel.substr(0, pos) + itemname + buttonlabel.substr(pos+3) + "...";
+                    var button = $('<button>')
+                        .addClass('btnNewNode')
+                        .attr('id',  'add_'+item)
+                        .click({key: currkey, node: item, defaultnode: new_nodes_default[i]}, function(event){
+                            addSubNode(event);
+                        })
+                        .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                        .append("  " + buttonlabel);
+
+                    level.append(button)
+                        .append("<br>");
+                }
+                subnodes.append(level);
             }
+            currkey = tree.get_parent(currkey);
         }
-        else
+        if (hr_drawn)
         {
-            $('#insert_subnodes').html("");
+            // There are newNodes
+            $('#insert_subnodes').append(subnodes);
         }
 
         // The optional parameters (what to do here, only enable the not used entries)
@@ -499,8 +540,52 @@ var EDITOR = (function ($, parent) {
 
     addSubNode = function (event)
     {
-        alert('Add sub node ' + event.data.node + ' to ' + event.data.key);
-    }
+        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node(event.data.key, false);
+        var nodeName = event.data.node;
+        var key = parent.tree.generate_lo_key();
+        var xmlData = $.parseXML(event.data.defaultnode);
+        // Parse the attributes and store in the data store
+        var attributes = {nodeName: nodeName};
+        $(xmlData.firstChild.attributes).each(function() {
+            attributes[this.name] = this.value;
+        });
+        lo_data[key] = {};
+        lo_data[key]['attributes'] = attributes;
+        // Build the JSON object for the treeview
+        // For version 3 jsTree
+
+        var treeLabel = nodeName;
+        if (xmlData.firstChild.attributes['name'])
+        {
+            treeLabel = xmlData[0].attributes['name'].value;
+        }
+        else
+        {
+            if (wizard_data[treeLabel].menu_options.menuItem)
+                treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+        }
+        var this_json = {
+            id : key,
+            text : treeLabel,
+            type : nodeName
+        }
+        console.log(this_json);
+        // Add the node
+        var newkey = tree.create_node(event.data.key, this_json, 'last', function(){
+            tree.select_node(key);
+        });
+        console.log(key);
+
+    },
+
+    addNode = function(event, ui)
+    {
+        console.log(event, ui);
+        return true;
+    },
+
     // Build the tree once the data has loaded
     build = function (xml) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
