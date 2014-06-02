@@ -59,10 +59,10 @@ $xerte_toolkits_site = new StdClass();
  * created in your system's temp dir unless you've edited the below.
  * This will probably not survive a server reboot.
  */
-$xerte_toolkits_site->database_type = 'sqlite';
-$xerte_toolkits_site->database_location = sys_get_temp_dir() . '/xerte.sqlite';
+//$xerte_toolkits_site->database_type = 'sqlite';
+//$xerte_toolkits_site->database_location = sys_get_temp_dir() . '/xerte.sqlite';
 
-// $xerte_toolkits_site->database_type = 'mysql';
+$xerte_toolkits_site->database_type = 'mysql';
 
 if(file_exists(dirname(__FILE__) . '/database.php')) {
     require_once(dirname(__FILE__) .'/database.php');
