@@ -30,6 +30,6 @@ class Xerte_Authentication_Factory
             $auth_mech = new $class_name($xerte_toolkits_site);
             return $auth_mech;
         }
-        throw new InvalidArgumentException("Authentication mechanism defined in xerte_site_details is not valid");
+        //throw new InvalidArgumentException("Authentication mechanism defined in xerte_site_details is not valid");
     }
 }

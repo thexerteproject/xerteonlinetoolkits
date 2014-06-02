@@ -12,6 +12,10 @@
 
 require_once('../../../config.php');
 
+if(empty($_SESSION) || !isset($_SESSION['toolkits_logon_id'])) {
+    die("Session expired; please login again.");
+}
+
 _load_language_file("/website_code/php/versioncontrol/template_close.inc");
 
 require('../template_status.php');
