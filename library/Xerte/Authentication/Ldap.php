@@ -166,8 +166,12 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
 
             $filter = $ldap_filter . $xot_username;
             $ldapConnection = ldap_connect($host, (int) $port);
-            $ldapSearchResult = ldap_search($ldapConnection, $basedn, $filter);
 
+            $ldapSearchResult = ldap_search($ldapConnection, $basedn, $filter);
+            if ($ldapSearchResult === false)
+            {
+                _debug("Cannot search ldap server " . ldap_error($ldapConnection));
+            }
             if ($ldapSearchResult) {
                 $ldapSearchArray = ldap_get_entries($ldapConnection, $ldapSearchResult);
                 $userBaseDn = $ldapSearchArray[0]["dn"];

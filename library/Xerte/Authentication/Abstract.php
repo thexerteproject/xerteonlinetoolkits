@@ -34,7 +34,7 @@ abstract class Xerte_Authentication_Abstract
         $this->_errors[] = $string;
     }
 	
-	public function removeErrors($string)
+	public function removeErrors()
     {
         $this->_errors = array();
     }
