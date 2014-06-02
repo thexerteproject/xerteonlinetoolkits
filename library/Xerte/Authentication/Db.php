@@ -62,27 +62,6 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
                 return true;
             }
         }
-        else
-        {
-            $row = mysql_fetch_array($x);
-            if(strpos($row[1], "email") === false)
-            {
-
-                // Add column email
-                $x = db_query("ALTER TABLE {$xerte_toolkits_site->database_table_prefix}user ADD COLUMN `email` VARCHAR(45) NULL  AFTER `surname`");
-                if (empty($x))
-                {
-                    $this->addError("Could not add email column to the user table.");
-                    _debug("Failed: Could not add email column to the user table.");
-                    return false;
-                }
-                else
-                {
-                    _debug("Succeeded!");
-                    return true;
-                }
-            }
-        }
         _debug("Succeeded!");
 	    return true;
     }
