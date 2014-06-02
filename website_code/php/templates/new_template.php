@@ -43,14 +43,16 @@ if ($row_template_type['template_framework'] == 'xerte')
 }
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-$ok = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), 0, "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
+$lastid = db_query($query_for_new_template, array($new_template_id, $_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), 0, "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
 
-if($ok) {
+// templatedetails doesn't have a AI field, so $lastid returns always 0, check explicitly for false
+if($lastid !== false) {
     _debug("Created new template entry in db");
     $query_for_template_rights = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
-    $ok = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", "" . $root_folder_id));
+    $lastid = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", "" . $root_folder_id));
 
-    if($ok) {
+    // templaterights doesn't have a AI field, so $lastid returns always 0, check explicitly for false
+    if($lastid !==false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
