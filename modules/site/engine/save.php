@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * Save page, used by xerte to update its XML files
@@ -14,74 +15,58 @@
  *    messes with the slashes
  */
 $unescaped_data = $_POST['filedata'];
-if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
-{
+if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
     $unescaped_data = stripslashes($_POST['filedata']);
 }
 
 require_once("../../../config.php");
+
 require_once("../../../plugins.php");
 
-if(!isset($_SESSION['toolkits_logon_username'])) {
-  print "You are not logged in.";
-  exit();
-}
-
-$savepath = str_replace("preview.xml","data.xml",$_POST['filename']);
-
-/**
- * The XML length is not equal to the expected file length so don't save
- */
-
-if(strlen($_POST['filedata'])!=strlen($_POST['filesize'])){
-
-    echo "file has been corrupted<BR>";
-    //die();
-
+if (!isset($_SESSION['toolkits_logon_username'])) {
+    die("You are not logged in.");
 }
 
 
-$filedata = apply_filters("editor_save_data", $unescaped_data);
+$previewpath = str_replace("preview.xml", "data.xml", $_POST['filename']);
+$datapath = $_POST['filename'];
+
+if (empty($_POST['filedata'])) {
+    die("Invalid request");
+}
+
+$filedata = apply_filters('editor_save_data', $unescaped_data);
+
+if ($filedata === FALSE) {
+    die("Invalid XML format (unparseable)");
+}
+
 
 /**
  * Save and play do slightly different things. Save sends an extra variable so we update data.xml as well as preview.xml
  */
-
-if($_POST['fileupdate']=="true"){
-
-    $file_handle = fopen($xerte_toolkits_site->root_file_path . $savepath,'w');
-
-    if(fwrite($file_handle, $filedata)!=false){
-
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved" , $filedata);
-
-    }else{
-
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save" , $filedata);
-
+if ($_POST['fileupdate'] == "true") {
+    $file_handle = fopen($xerte_toolkits_site->root_file_path . $datapath, 'w');
+    if (fwrite($file_handle, $filedata) != false) {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved", $filedata);
+    } else {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save", $filedata);
     }
-
     fclose($file_handle);
-
 }
 
-/**
- * Update preview.xml
- */
+// Always update preview.xml
 
 $filedata = apply_filters("editor_save_preview", $unescaped_data);
-
-$file_handle = fopen($xerte_toolkits_site->root_file_path . $_POST['filename'],'w');
-
-if(fwrite($file_handle, $filedata)!=false){
-
-    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved" , $filedata);
-
-}else{
-
-    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save" , $filedata);
-
+if ($filedata === FALSE) {
+    die("Invalid XML format (unparseable)");
 }
 
-fclose($file_handle);
+$file_handle = fopen($xerte_toolkits_site->root_file_path . $previewpath, 'w');
 
+if (fwrite($file_handle, $filedata) != false) {
+    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Template " . $_POST['filename'] . " saved", $filedata);
+} else {
+    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Template " . $_POST['filename'] . " failed to save", $filedata);
+}
+fclose($file_handle);
