@@ -10,7 +10,8 @@ var EDITOR = (function ($, parent) {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
-                html: itemData.name
+                html: itemData.name,
+                item: itemData.item
             };
 
             if (itemData.hint != undefined) {
@@ -50,18 +51,23 @@ var EDITOR = (function ($, parent) {
         $("#insert-buttons").html("");
         buttons = $('<div />').attr('id', 'insert_buttons');
         $([
-            {name: language.insertDialog.insertBefore.$label, tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', click:insert_page_before},
-            {name: language.insertDialog.insertAfter.$label, tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', click:insert_page_after},
-            {name: language.insertDialog.insertAtEnd.$label, tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', click:insert_page_end}
+            {name: language.insertDialog.insertBefore.$label, tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before", click:insert_page_before},
+            {name: language.insertDialog.insertAfter.$label, tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after", click:insert_page_after},
+            {name: language.insertDialog.insertAtEnd.$label, tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end", click:insert_page_end}
         ])
             .each(function(index, value) {
                 var button = $('<button>')
                     .attr('id', value.id)
                     .attr('title', value.tooltip)
+                    .attr('value', value.btnvalue)
+                    .click(value.click)
                     .append(value.name);
                 buttons.append(button);
             });
         $("#insert-buttons").append(buttons);
+        $("#insert-buttons").append($('<input>')
+            .attr('id', 'selected-item')
+            .attr('type', 'hidden'));
 
         $("#insert-menu").append(
             $menu.menu({
@@ -69,6 +75,7 @@ var EDITOR = (function ($, parent) {
                     if (ui.item.children().attr('hint') != undefined) {
                         $("#insert-info img").attr("src", "modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
                         $("#insert-info span").text(ui.item.children().attr('hint'));
+                        $("#selected-item").val(ui.item.children().attr('item'));
                         $("#insert-buttons").show();
                     }
                 }
@@ -77,15 +84,18 @@ var EDITOR = (function ($, parent) {
     },
 
     insert_page_before = function(){
-
+        parent.tree.addNode($('#selected-item').val(), 'before');
+        $( "#insert-dialog").dialog("close");
     }
 
     insert_page_after = function(){
-
+        parent.tree.addNode($('#selected-item').val(), 'after');
+        $( "#insert-dialog").dialog("close");
     }
 
     insert_page_end = function(){
-
+        parent.tree.addNode($('#selected-item').val(), 'end');
+        $( "#insert-dialog").dialog("close");
     }
 
 

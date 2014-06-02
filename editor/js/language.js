@@ -67,6 +67,7 @@ var EDITOR = (function ($, parent) {
                 if (lookup > -1) {
                     menu_data.menu[lookup].submenu.push(
                         {
+                            "item"  : main_node,
                             "name"  : attributes.menuItem,
                             "hint"  : attributes.hint,
                             "thumb" : attributes.thumb,
@@ -148,7 +149,6 @@ var EDITOR = (function ($, parent) {
         });
         //wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
 
-        toolbox.create_insert_page_menu();
     },
 
 
@@ -289,8 +289,7 @@ var EDITOR = (function ($, parent) {
     proceed = function () {
         parent.data.wait(1, {});
         parent.layout.setup();
-        //parent.tree.do_buttons();
-
+        toolbox.create_insert_page_menu();
     },
 
     init = function () {
