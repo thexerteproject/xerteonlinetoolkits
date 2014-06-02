@@ -121,13 +121,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <style>
         .ui-menu { width: 200px; }
         #insert-info {width: 60%; display: block; float: right; }
-
+		.hide {display: none;}
     </style>
 
 </head>
 <body>
-
-<div class="ui-layout-west">
+<img id="loader" src="editor/img/loading16.gif" />
+<div class="hide ui-layout-west">
 
     <div class="header"></div>
 
@@ -137,7 +137,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 </div>
 
-<div class="ui-layout-east">
+<div class="hide ui-layout-east">
 
     <div class="header">Optional parameters</div>
 
@@ -148,7 +148,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 </div>
 
 
-<div class="ui-layout-north">
+<div class="hide ui-layout-north">
     <div class="content" id="#header_images">
         <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="float:left" />
         <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="float:right" />
@@ -156,14 +156,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 </div>
 
 
-<div class="ui-layout-south">
+<div class="hide ui-layout-south">
     <div class="header">Options</div>
     <div class="content"></div>
 </div>
 
 
 <div >
-    <div id="mainContent" class="pane pane-center ui-layout-center ui-layout-pane ui-layout-pane-center">
+    <div id="mainContent" class="hide pane pane-center ui-layout-center ui-layout-pane ui-layout-pane-center">
         <div class="header">Header</div>
         <div class="ui-layout-content">
             <div id="mainPanel"></div>
@@ -183,7 +183,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     </div>
 </div>
 
-<div id="insert-dialog" title="Insert Page">
+<div id="insert-dialog" class="hide" title="Insert Page">
     <div id="insert-info">
         <img /><br />
         <span></span><br /><br />
