@@ -73,8 +73,25 @@ function database_setup($database_location) {
         if (!$ok) {
             die("SQLite installation failed.");
         }
-        
-        $db->query("UPDATE sitedetails SET site_url = 'http://{$_SERVER['HTTP_HOST']}/'");
+
+        $http = 'http';
+        if(isset($_SERVER['HTTPS'])) {
+            $http = 'https';
+        }
+        $site_root = $http . '://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI'] . '/';
+        // Remove any top level trailing script names from the uri (i.e. http://host/**index.php**)
+        if(preg_match('!(.*)/([a-z]+.php)$!i', $site_root, $matches)) {
+            $site_root = $matches[1] . '/';
+        }
+        // Ensure we do not have zillions of trailing slashes.
+        while(substr($site_root, -1) == '/') {
+            $site_root = substr($site_root, 0, -1);
+        }
+        $site_root .= '/';
+
+        // this ought to work and cope with https vs http urls - as long as the first url requested isn't within a subdir.
+        $db->query("UPDATE sitedetails SET site_url = '" . $db->escapeString($site_root). "'");
+
         $root_path = realpath(dirname(__FILE__) . '/../../');
         
         $db->query("UPDATE sitedetails SET root_file_path = '$root_path/'");
