@@ -27,8 +27,9 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
  */
 function update_access_time($row_edit){
     global $xerte_toolkits_site;
-    return db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
-
+    /* This function is called even if the template is new - in which case it fails as a record doesn't exist */
+    db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}templatedetails SET date_accessed=? WHERE template_id = ?", array(date('Y-m-d'), $row_edit['template_id']));
+    return true;
 }
 
 
