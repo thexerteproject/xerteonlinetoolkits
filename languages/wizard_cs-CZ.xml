@@ -1,0 +1,140 @@
+<language name="Čeština" code="cs-CZ">
+	<btnSaveXerte label="Uložit" tooltip="Uloží projekt" description="Tlačítko uložit"/>
+	<btnPublishXot label="Publikovat" tooltip="Publikuje projekt" description="Tlačítko publikovat"/>
+	<popupFileUpload title="Nahrát soubor" cancelLabel="Zrušit"/>
+	<browseImportFile title="Vybrat soubor k importu...">
+		<dialogFilter>Všechny soubory|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importovat</buttontext>
+	</browseImportFile>
+	<kblanguage title="Znaková sada" tooltip="Znaková sada" description="Jazyky rozložení klávesnice">
+		<item>Francouzština</item>
+		<item>Němčina</item>
+		<item>Italština</item>
+		<item>Polština</item>
+		<item>Portualština</item>
+		<item>Španělština</item>
+	</kblanguage>
+	<newLink label="Nový {i}" />
+	<helpLink tooltip="Nápověda"/>
+	<btnInsert label="Vložit" tooltip="Vkládá"/>
+	<btnAddChild tooltip="přidat nějaké děti"/>
+	<btnDuplicate label="Kopírovat" tooltip="Klonuje"/>
+	<btnDelete label="Smazat" tooltip="Odstraní"/>
+	<btnMoveUp tooltip="Přesunout nahoru"/>
+	<btnMoveDown tooltip="Přesunout dolů"/>
+	<btnNext tooltip="Další položka"/>
+	<btnPreview label="Přehrát" tooltip="Náhled"/>
+	<btnPrev tooltip="Předchozí položka"/>
+	<icDelete tooltip="Smazat" prompt="Smazat položku?"/>
+	<addProp label="Přidat" tooltip="Přidá" />
+	<optionalProp label="Volitelné vlastnosti:"/>
+	<chkShowLanguage label="Zobrazit jazykové možnosti" />
+	<chkShowAdvanced label="Zobrazit pokročilé možnosti" />
+	<compMedia tooltip="Importovat média"/>
+	<compPreview tooltip="Náhled"/>
+	<filemenu title="Soubor">
+		<menuNew>Nový projekt...</menuNew>
+		<menuOpen>Otevřít...</menuOpen>
+		<menuSave>Uložit</menuSave>
+		<menuExit>Odejít</menuExit>
+	</filemenu>
+	<menuOpen title="Vyberte prosím nějaký projekt">
+		<dialogText>Vybrat soubor</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Učební šablony|*.rlt|Soubory MXML|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Náhled">
+		<menuPreview>Náhled</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publikovat">
+		<menuPublish>Publikovat</menuPublish>
+		<menuPackage>Balíček</menuPackage>
+	</publishmenu>
+	<menuPackage title="Uložit balíček SCORM 1.2">
+		<dialogText>Vybrat soubor</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Soubory Zip|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Nápověda">
+		<menuHelp>Nápověda</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Zde bude v budoucnu nápověda.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Všechny soubory (*.*)</allfiles>
+			<images>Obrázky (*.jpg, *.jpeg, *.png)</images>
+			<flash>Soubory Flash (*.swf)</flash>
+			<sound>Zvukové soubory (*.mp3)</sound>
+			<video>Video soubory (*.flv)</video>
+		</filters>
+		<title>Vyberte soubor k importu...</title>
+		<filter>Všechny soubory|*.*|JPG|*.jpg|PNG|*.png|Soubory SWF|*.swf|Zvuky|*.mp3|Videa|*.flv</filter>
+		<btnimport>Importovat</btnimport>
+		<btncancel>Zrušit</btncancel>
+		<fileexists>
+			<prompt>Soubor {f} již existuje.\r\rPřepsat tento soubor?</prompt>
+			<title>Potvrdit</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Zrušit</cancellabel>
+		<nolabel>Ne</nolabel>
+		<yeslabel>Ano</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Zadejte URL odkazu</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Můžete přidat pouze {m} {i}</prompt>
+				<title>Chyba</title>
+			</max>
+			<mixedcontent>
+				<prompt>Zde nelze míchat obsah.</prompt>
+				<title>Chyba</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Adresář není prázdný. Opravdu ho chcete použít pro nový projekt?</prompt>
+			<title>Potvrdit</title>
+		</newproject>
+		<openproject>
+			<prompt>Chcete otevřít nový projekt?</prompt>
+			<title>Potvrdit</title>
+		</openproject>
+		<initpreview>
+			<prompt>Před prohlédnutím musíte něco vybrat.</prompt>
+			<title>Informace</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Tuto položku nelze zduplikovat.</prompt>
+			<title>Chyba</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Přejete si smazat položku?</prompt>
+				<title>Potvrzení</title>
+			</confirm>
+			<error>
+				<prompt>Tuto položku nelze smazat</prompt>
+				<title>Chyba</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>XML nelze naformátovat, změny nebudou uloženy. Zkontrolujte poslední provedené změny.</prompt>
+		</savefile>
+        <upload>
+            <successful>Nahrání bylo úspěšné</successful>
+            <failed>
+                <permissions>Nahrávání selhalo: Zkontrolujte oprávnění k souborům</permissions>
+                <HTTPError>Nahrávání selhalo: HTTPError</HTTPError>
+		<IOError>Nahrávání selhalo: Chyba vstupu/výstupu</IOError>
+                <security>Nahrávání selhalo: Chyba zabezpečení</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>

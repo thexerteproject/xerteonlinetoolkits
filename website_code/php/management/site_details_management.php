@@ -31,7 +31,7 @@ if(is_user_admin()){
 
     $res = db_query($query, $data);
 
-    $query = "UPDATE {$xerte_toolkits_site->database_table_prefix}ldap SET ldap_host = ?, ldap_port = ?, ldap_username = ?, ldap_password = ?, ldap_basedn = ?, ldap_filter = ?, ldap_filter_attr = ?";
+    $query = "replace {$xerte_toolkits_site->database_table_prefix}ldap SET ldap_id=1, ldap_host = ?, ldap_port = ?, ldap_username = ?, ldap_password = ?, ldap_basedn = ?, ldap_filter = ?, ldap_filter_attr = ?";
 
     $res2 = db_query($query, array($_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_dn'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['LDAP_filter'], $_POST['LDAP_preference']));
 

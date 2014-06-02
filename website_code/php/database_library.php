@@ -16,116 +16,101 @@ if (function_exists('database_connect')) {
 }
 
 /**
- * 
- * Function database connect
- * This function checks http security settings
- * @param string $success_string = Successful message for the error log
- * @param string $error_string = Error message for the error log
- * @version 1.0
- * @author Patrick Lockley
+ * Create PDO connection to the database.
+ * @return PDO instance
+ * @throws PDOException if it's not setup / working etc.
  */
-function database_connect($success_string, $error_string)
+function database_connect() 
 {
     global $xerte_toolkits_site;
-
     /*
      * Try to connect
      */
 
-    $mysql_connect_id = @mysql_connect($xerte_toolkits_site->database_host, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password);
+    $dsn = false;
 
-    /*
-     * Check for connection and error if failed
-     */
-
-    if (!$mysql_connect_id) {
-        die("<h2>Xerte Online Toolkits</h2>
-             <p><strong>Sorry, the system cannot connect to the database at present</strong></p>
-             <p>This may be because the database server is offline, or this instance of Xerte has not been setup (see <a href='setup'>/setup</a>). </p>
-             <p>The mysql error is <strong>" . mysql_error() . "</strong></p>");
+    if($xerte_toolkits_site->database_type == 'sqlite') {
+        $dsn = "sqlite:{$xerte_toolkits_site->database_location}";
+        /* not relevant parameters */
+        $xerte_toolkits_site->database_username = null;
+        $xerte_toolkits_site->database_password = null;
     }
 
-    $database_fail = false;
-
-    mysql_select_db($xerte_toolkits_site->database_name) or ($database_fail = true);
-
-    /*
-     * database failing code
-     */
-
-    $username = 'anonymous';
-    if (isset($_SESSION['toolkits_logon_username'])) {
-        $username = $_SESSION['toolkits_logon_username'];
-    }
-    if ($database_fail) {
-        receive_message($username, "ADMIN", "CRITICAL", "DATABASE FAILED AT " . $error_string, "MYSQL ERROR MESSAGE IS " . mysql_error());
-        die("Sorry, the system cannot connect to the database at present. The mysql error is " . mysql_error());
-    } else {
-        receive_message($username, "ADMIN", "SUCCESS", "DATABASE CONNECTED", $success_string);
+    if($dsn == false) {
+        // default to MySQL.
+        $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
     }
 
-    /*
-     * if all worked returned the mysql ID
-     */
+    $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
 
-    return $mysql_connect_id;
+    $db_connection = new PDO($dsn, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $options); 
+//    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    return $db_connection;
 }
 
 /**
- * Poorman's prepared statement emulation. Does not cope with named parameters - only ?'s.
- * @param string $sql - e.g. "SELECT * FROM users WHERE name = ? OR name = ?"
- * @param array $params - e.g. array('bob', "david's");
- * @return array|mysql resultset (if not select)
+ * @return boolean true if it looks like the database will work.
+ */
+function database_is_setup($xerte_toolkits_site) {
+
+    /* sqlite will create a database on trying to connect if it doesn't exist and it can ... hence file_exists() */
+    if($xerte_toolkits_site->database_type == 'sqlite') {
+        return file_exists($xerte_toolkits_site->database_location);
+    } 
+
+    $connection = false;
+    try {
+        $connection = database_connect();
+        return true;
+    }
+    catch(PDOException $e) {
+        _debug("Failed to check if db is working : {$e->getMessage()}");
+    }
+    return false;
+}
+
+/**
+ * Execute an SQL query.
+ * If it's a select query, then we return a list of all results found (array, string keys).
+ * If it's an update or delete query, we return a count of how many rows were changed.
+ * If it's an insert query we return the auto-increment id (if appropriate) (lastInsertId()).
+ * If the query fails, we should return boolean false.
+ *
+ * @param string $sql e.g. "SELECT * FROM users WHERE name = ? OR name = ?" or one with named placeholders (... WHERE name = :name OR blah = :fish ...)
+ * @param array $params (optional) e.g. array('bob', "david's") or you can use named parameters like array('name' => 'blah', 'job' => 'fish');
+ * @return array|boolean false|int 
  */
 function db_query($sql, $params = array())
 {
-    $connection = database_connect('db_query ok', 'db_query fail');
-	
-    foreach ($params as $key => $value) {
-	
-        if (isset($value)) {
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
-            $value = "'" . mysql_real_escape_string($value) . "'";
-        } else {
-            $value = 'NULL';
-        }
-        // overwrite the $params data with the santised stuff.
-        $params[$key] = $value;
-    }
+    $connection = database_connect();
 
-    // following code taken from php.net/mysql_query - axiak at mit dot edu - 24th october 2006
-    $curpos = 0;
-    $curph = count($params) - 1;
-    // start at the end of the string and replace things backwards; this avoids us replacing a replacement
-    for ($i = strlen($sql) - 1; $i > 0; $i--) {
-        if ($sql[$i] !== '?') {
-            continue;
-        }
-        if ($curph < 0) {
-            $sql = substr_replace($sql, 'NULL', $i, 1);
-        } else {
-            $sql = substr_replace($sql, $params[$curph], $i, 1);
-        }
-        $curph--;
-		
-    }
     _debug("Running : $sql", 1);
 
-    $result = mysql_query($sql, $connection);
-    if (!$result) {
-        _debug("Failed to execute query : $sql : " . mysql_error());
+    $statement = $connection->prepare($sql);
+
+    $ok = $statement->execute($params);
+    if ($ok === false) {
+        _debug("Failed to execute query : $sql : " . print_r($connection->errorInfo(), true));
         return false;
     }
-    if (preg_match("/^select/i", $sql)) {
+
+    if(preg_match('/^select/i', $sql)) { 
         $rows = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $rows[] = $row;
         }
         return $rows;
     }
-    return $result;
+
+    if(preg_match('/^(update|delete)/i', $sql)) {
+        return $statement->rowCount();  /* number of rows affected */
+    }
+
+    if(preg_match('/^insert/i', $sql)) {
+        return $connection->lastInsertId();
+    }
+    return $ok;
 }
 
 /**

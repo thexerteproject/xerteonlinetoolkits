@@ -64,29 +64,37 @@ $xerte_toolkits_site = new StdClass();
 
 $xerte_toolkits_site->database_type = 'mysql';
 
-
-if($xerte_toolkits_site->database_type == 'sqlite') {
-    $xerte_toolkits_site->database_table_prefix = '';
-    require_once(dirname(__FILE__) . '/website_code/php/database_library_sqlite.php');
-    $ok = database_setup($xerte_toolkits_site->database_location);
+if(file_exists(dirname(__FILE__) . '/database.php')) {
+    require_once(dirname(__FILE__) .'/database.php');
 }
 
+require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
 
-if($xerte_toolkits_site->database_type == 'mysql') {
-    // check if setup needs to run.
-    if( !is_file(dirname(__FILE__) . '/database.php')) {
-        header("Location: " . $_SERVER['REQUEST_URI'] . "setup/");
+
+$ok = database_is_setup($xerte_toolkits_site);
+
+if(!$ok) {
+    if($xerte_toolkits_site->database_type == 'mysql' && is_dir(dirname(__FILE__) . '/setup')) {
+        header("Location: {$_SERVER['REQUEST_URI']}setup/");
         exit(0);
     }
-    
-    require_once(dirname(__FILE__) . '/database.php');
-    require_once(dirname(__FILE__) . '/website_code/php/database_library.php');
+
+    /* run the magical sqlite auto-installer */
+    if($xerte_toolkits_site->database_type == 'sqlite') {
+        require_once(dirname(__FILE__) . '/website_code/php/database_library_sqlite.php');
+        $ok = database_setup($xerte_toolkits_site->database_location);
+    }
+}
+
+if(!$ok) {
+    die("Database setup failed");
 }
 
 /* test database access */
-if (!database_connect("", "")) {
-    die("database.php isn't correctly configured; cannot connect to database; have you run /setup?");
+if (!database_connect($xerte_toolkits_site)) {
+    die("database.php isn't correctly configured; or we cannot connect to database");
 }
+
 
 $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
