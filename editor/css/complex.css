@@ -495,3 +495,12 @@ img.optional {
 {
     margin-left: 20px;
 }
+
+.media_container button
+{
+    padding:0px;
+}
+
+.media_container table{
+    width:100%;
+}
