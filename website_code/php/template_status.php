@@ -119,7 +119,7 @@ function has_template_multiple_editors($template_id){
     . "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id and "
     . "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id and "
     . "{$prefix}templaterights.template_id= ? AND role = ?";
-    $params = array($_GET['template_id']. "read-only");
+    $params = array($_GET['template_id'], "read-only");
 
     $query_response = db_query($query_for_read_only, $params);
     $read_only_rows = sizeof($query_response);

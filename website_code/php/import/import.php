@@ -362,7 +362,7 @@ if(!empty($_POST['replace'])) {
 $folder_id = "";
 
 /*
- * Check the file is the write type
+ * Check the file is the right type
  */
 
 if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded']['name'])-3, 3)==="zip"){
