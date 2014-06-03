@@ -55,11 +55,11 @@ var EDITOR = (function ($, parent) {
                     spacing_closed:         0,
                     spacing_open:           4,
                     slidable:               false,
-                    initClosed:             false
+                    initClosed:             true
                 },
                 west: {
                     size:                   250,
-                    minSize:                150,
+                    minSize:                250,
                     maxSize:                450,
                     spacing_open:           4,
                     spacing_closed:         21,
@@ -74,8 +74,8 @@ var EDITOR = (function ($, parent) {
                     fxSettings_open:        { easing: "easeOutBounce" }
                 },
                 east: {
-                    size:                   150,
-                    minSize:                150,
+                    size:                   200,
+                    minSize:                200,
                     maxSize:                350,
                     spacing_open:           4,
                     spacing_closed:         21,
@@ -95,7 +95,7 @@ var EDITOR = (function ($, parent) {
                     /*paneSelector:           "#mainContent",*/
                     minWidth:               200,
                     minHeight:              200/*,
-                    contentSelector:		".ui-layout-content"*/
+                    contentSelector:        ".ui-layout-content"*/
                 }
             };
 
