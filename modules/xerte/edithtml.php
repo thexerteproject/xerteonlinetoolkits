@@ -111,6 +111,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
+    <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
     <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
@@ -143,6 +144,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <p>...</p>
     </div>
 
+	<div class="footer"></div>
 </div>
 
 

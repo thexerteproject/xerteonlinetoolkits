@@ -763,11 +763,13 @@ var EDITOR = (function ($, parent) {
                 var td2 = $('<td>')
                     .append($('<button>')
                     .attr('id', 'browse_' + id)
+                    .attr('title', language.compMedia.$tooltip)
+                    .addClass("xerte_button")
                     .click({id:id, key:key, name:name}, function(event)
                     {
                         browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
                     })
-                    .append("..."));
+                    .append("&nbsp;&nbsp;...&nbsp&nbsp;"));
                 html = $('<div>')
                     .attr(id, 'container_' + id)
                     .addClass('media_container');

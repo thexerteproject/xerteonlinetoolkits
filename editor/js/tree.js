@@ -40,6 +40,7 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
+                .addClass("xerte_button")
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -57,6 +58,7 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
+                .addClass("xerte_button")
                 .click(function(){
                     setTimeout(value.click, 500);
                 })
@@ -836,13 +838,15 @@ var EDITOR = (function ($, parent) {
     do_bottom_buttons = function () {
         buttons = $('<div />').attr('id', 'bottom_buttons');
         $([
-        {name:'UP', icon:'', id:'up_button', click:up_btn},
-        {name:'DOWN', icon:'', id:'down_button', click:down_btn}
+        {name:'', tooltip: language.btnMoveUp.$tooltip, icon:'editor/img/up.png', id:'up_button', click:up_btn},
+        {name:'', tooltip: language.btnMoveDown.$tooltip, icon:'editor/img/down.png', id:'down_button', click:down_btn}
         ])
         .each(function(index, value) {
         var button = $('<button>')
             .attr('id', value.id)
+            .attr('title', value.tooltip)
             .click(value.click)
+            .addClass("xerte_button")
             .append($('<img>').attr('src', value.icon).height(14))
             .append(value.name);
         buttons.append(button);

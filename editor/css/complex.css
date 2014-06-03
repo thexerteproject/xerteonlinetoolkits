@@ -133,7 +133,7 @@ table {
 }
 .subhead { border-bottom: 1px solid #777; }
 .footer  { border-top: 1px solid #777; }
-#mainContent .footer  { border-top: 1px solid #BBB; }
+
 .content {
 	padding:	5px;
 	position:	relative;
