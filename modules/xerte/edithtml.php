@@ -58,9 +58,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
 
-    $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
-
-    $rlo_url = $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
+    $rlo_url = $media_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
     $media_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
 
@@ -214,6 +212,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     echo "xmlvariable=\"" . $preview_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
+    echo "mediaurlvariable=\"" . $media_url . "\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";

@@ -320,6 +320,7 @@ var EDITOR = (function ($, parent) {
             if (options.options.type == 'script')
             {
                 // enable source mode of ckeditor
+                ckoptions['startupMode'] = 'source';
             }
             $('#'+options.id).ckeditor(function(){
                 // Editor is ready, attach onblur event
@@ -337,9 +338,16 @@ var EDITOR = (function ($, parent) {
 
     // Clean up the text - must be a better way of doing this
     stripP = function (val) {
-        var strippedValue = val.substr(3);
-        strippedValue = strippedValue.substr(0, strippedValue.length-4);
-        return strippedValue.trim();
+        if (val.indexOf('<p>') == 0)
+        {
+            var strippedValue = val.substr(3);
+            strippedValue = strippedValue.substr(0, strippedValue.length-4);
+            return strippedValue.trim();
+        }
+        else
+        {
+            return val;
+        }
     },
 
 
@@ -449,7 +457,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log(id + ': ' + key + ', ' +  name  + ', ' +  value);
+        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0)
@@ -467,6 +475,23 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, name, actvalue);
     },
 
+    browseFile = function (id, key, name, value, obj)
+    {
+        console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        window.KCFinder = {};
+        window.KCFinder.callBack = function(url) {
+            // Actions with url parameter here
+            console.log('Browse file: url=' + url);
+            var pos = url.indexOf(mediaurlvariable);
+            if (pos >=0)
+                url = "FileLocation + '" + url.substr(mediaurlvariable.length + 1) + "'";
+            var newvalue = '<p>' + url + '</p>';
+            $('#' + id).html(newvalue);
+            setAttributeValue(key, name, url);
+            window.KCFinder = null;
+        };
+        window.open('editor/kcfinder/browse.php?type=media', 'Browse file', "height=600, width=800");
+    },
 
     displayDataType = function (value, options, name, key) {
         var html;                   //console.log(options);
@@ -724,11 +749,38 @@ var EDITOR = (function ($, parent) {
                     .attr('title', language.edit.$tooltip)
                     .append(language.edit.$label);
                 break;
+            case 'media':
+                var id = 'media_' + form_id_offset;
+                form_id_offset++;
+                // a textinput with a browse buttons next to the type-in
+                var td1 = $('<td>')
+                    .append($('<div>')
+                    .attr('id', id)
+                    .addClass('inputtext')
+                    .attr('contenteditable', 'true')
+                    .append($('<p>')
+                        .append(value)));
+                var td2 = $('<td>')
+                    .append($('<button>')
+                    .attr('id', 'browse_' + id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+                    })
+                    .append("..."));
+                html = $('<div>')
+                    .attr(id, 'container_' + id)
+                    .addClass('media_container');
+                html.append($('<table>')
+                        .append($('<tr>')
+                            .append(td1)
+                            .append(td2)));
+                textinputs_options.push({id: id, key: key, name: name, options: options});
+                break;
             case 'drawing':
             case 'datefield':
             case 'datagrid':
             case 'webpage':
-            case 'media':
             default:
 
                  //html = "<input type=\"text\" value=\"" + value + "\" />";
