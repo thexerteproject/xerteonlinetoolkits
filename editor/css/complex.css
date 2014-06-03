@@ -108,7 +108,6 @@ table {
 .pane-center {
 	/* show off the inner-layout inside the outer-center-pane*/
 	background-color: #F6F6F6;
-	padding: 15px; /* for outer layout */
 }
 
 /* inner divs inside Outer East/West panes */
@@ -117,9 +116,10 @@ table {
 	border-bottom: 1px solid #777;
 	font-weight: bold;
 	text-align: center;
-	padding: 2px 0 4px;
+	/*padding: 2px 0 4px;*/
 	position: relative;
 	overflow: hidden;
+	height: 26px;
 }
 .subhead ,
 .footer {
@@ -129,6 +129,7 @@ table {
 	position: relative;
 	overflow: hidden;
 	white-space: nowrap;
+	height: 26px;
 }
 .subhead { border-bottom: 1px solid #777; }
 .footer  { border-top: 1px solid #777; }

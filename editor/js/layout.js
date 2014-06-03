@@ -92,9 +92,10 @@ var EDITOR = (function ($, parent) {
                     fxSettings:             { easing: "" } // remove default
                 },
                 center: {
-                    paneSelector:           "#mainContent",
+                    /*paneSelector:           "#mainContent",*/
                     minWidth:               200,
-                    minHeight:              200
+                    minHeight:              200/*,
+                    contentSelector:		".ui-layout-content"*/
                 }
             };
 
