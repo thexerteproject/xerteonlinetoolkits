@@ -51,8 +51,8 @@ var EDITOR = (function ($, parent) {
         // Save buttons
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
-            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/insert.png', id:'preview_button', click:preview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/copy.png', id:'publish_button', click:publish}
+            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/play.png', id:'preview_button', click:preview},
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/publish.png', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
             var button = $('<button>')
