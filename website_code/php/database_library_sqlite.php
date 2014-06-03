@@ -78,10 +78,10 @@ function database_setup($database_location) {
         $db->query("UPDATE sitedetails SET site_url = '" . $db->escapeString($site_root). "'");
 
         $root_path = realpath(dirname(__FILE__) . '/../../');
-        
+
         $db->query("UPDATE sitedetails SET root_file_path = '$root_path/'");
         $db->query("UPDATE sitedetails SET import_path = '$root_path/import'");
-        
+
         $db->close();
     } else {
         die("Can't find : $schema_file");
@@ -89,5 +89,4 @@ function database_setup($database_location) {
     
     return true;
 }
-
 
