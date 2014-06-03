@@ -160,10 +160,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 </div>
 
 
-<div >
-    <div id="mainContent" class="hide pane pane-center ui-layout-center ui-layout-pane ui-layout-pane-center">
-        <div class="header">Header</div>
-        <div class="ui-layout-content">
+    <div id="mainContent" class="hide ui-layout-center pane pane-center ui-layout-pane ui-layout-pane-center">
+        <div class="header"></div>
+        <div class="content">
             <div id="mainPanel"></div>
             <div id="advancedPanel" style="display:none">
                 <hr>
@@ -179,7 +178,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
         </div>
     </div>
-</div>
 
 <div id="insert-dialog" class="hide" title="Insert Page">
     <div id="insert-info">
