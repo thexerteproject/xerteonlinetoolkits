@@ -225,7 +225,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("wizardoptional")
                         .append($('<img>')
                             .attr('id', 'optbtn_' + name)
-                            .attr('src', 'editor/img/optional.gif')
+                            .attr('src', 'editor/img/optional.png')
                             .addClass("optional"))
                     );
                 //output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
