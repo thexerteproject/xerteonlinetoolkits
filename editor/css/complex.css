@@ -447,8 +447,16 @@ img.optional {
 	cursor: pointer;
 }
 
+.inputtext p{
+    padding:2px 2px 2px 4px;
+}
+
+.inputtext p {
+    border: 1px solid lightgray;
+}
 #optionalParams.content{
     padding: 2px;
+
 }
 
 .optButtonContainer {
@@ -461,6 +469,10 @@ img.optional {
 
 .optButtonContainer  td {
     padding: 1px;
+}
+
+.divInsertOptParam {
+    width:100%;
 }
 
 
