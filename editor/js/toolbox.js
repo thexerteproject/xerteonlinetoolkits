@@ -51,16 +51,18 @@ var EDITOR = (function ($, parent) {
         $("#insert-buttons").html("");
         buttons = $('<div />').attr('id', 'insert_buttons');
         $([
-            {name: language.insertDialog.insertBefore.$label, tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before", click:insert_page_before},
-            {name: language.insertDialog.insertAfter.$label, tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after", click:insert_page_after},
-            {name: language.insertDialog.insertAtEnd.$label, tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end", click:insert_page_end}
+            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before", click:insert_page_before},
+            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after", click:insert_page_after},
+            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end", click:insert_page_end}
         ])
             .each(function(index, value) {
                 var button = $('<button>')
                     .attr('id', value.id)
                     .attr('title', value.tooltip)
                     .attr('value', value.btnvalue)
+                    .addClass("xerte_button")
                     .click(value.click)
+                    .append($('<img>').attr('src', value.icon).height(14))
                     .append(value.name);
                 buttons.append(button);
             });
@@ -73,7 +75,7 @@ var EDITOR = (function ($, parent) {
             $menu.menu({
                 select: function(event, ui) {
                     if (ui.item.children().attr('hint') != undefined) {
-                        $("#insert-info img").attr("src", "modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
+                        $("#insert-info .thumb").attr("src", "modules/xerte/parent_templates/Nottingham/" + ui.item.children().attr('thumb'));
                         $("#insert-info span").text(ui.item.children().attr('hint'));
                         $("#selected-item").val(ui.item.children().attr('item'));
                         $("#insert-buttons").show();
