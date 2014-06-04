@@ -594,29 +594,35 @@ var EDITOR = (function ($, parent) {
         var ids = tree.get_selected();
         var id;
         var pos;
-
         if (mode == 'before' || mode == 'after')
         {
-            if(!ids.length) { return false; } // Something needs to be selected
+            if(!ids.length) {
+                pos='last';
+            }
+            else
+            {
+                id = ids[0];
 
-            id = ids[0];
+                if (id == 'treeroot')
+                {
+                    pos = 'first';
+                }
+                else
+                {
+                    while (tree.get_parent(id) != 'treeroot')
+                        id = tree.get_parent(id);
 
-            if (mode == 'before' && id == "treeroot") return false; // Can't insert before the root node
-            if (id == 'treeroot')
-                pos = 'first';
-
-            while (tree.get_parent(id) != 'treeroot')
-                id = tree.get_parent(id);
-
-            // Walk and count children of 'treeroot' to figure out pos
-            var i = 0;
-            $.each(tree.get_children_dom('treeroot'), function () {
-                if (this.attributes['id'].nodeValue == id)
-                    pos = i;
-                i++;
-            });
-            if (mode == 'after')
-                pos++;
+                    // Walk and count children of 'treeroot' to figure out pos
+                    var i = 0;
+                    $.each(tree.get_children_dom('treeroot'), function () {
+                        if (this.attributes['id'].nodeValue == id)
+                            pos = i;
+                        i++;
+                    });
+                    if (mode == 'after')
+                        pos++;
+                }
+            }
         }
         else
         {
