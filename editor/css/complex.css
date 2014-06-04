@@ -511,7 +511,8 @@ img.optional {
 
 .media_container button
 {
-    padding:0px;
+    padding-right:3px;
+    margin-top:0px;
 }
 
 .media_container table{

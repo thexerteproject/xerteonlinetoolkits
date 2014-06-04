@@ -769,7 +769,7 @@ var EDITOR = (function ($, parent) {
                     {
                         browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
                     })
-                    .append("&nbsp;&nbsp;...&nbsp&nbsp;"));
+                    .append($('<img>').attr('src', 'editor/img/browse.png').height(14)));
                 html = $('<div>')
                     .attr(id, 'container_' + id)
                     .addClass('media_container');
