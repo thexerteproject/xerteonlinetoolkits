@@ -301,13 +301,13 @@ var EDITOR = (function ($, parent) {
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
-                toolbox.displayParameter('#mainPanel', node_options['name'], attribute_name, attribute_value.value, key);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['name'], attribute_name, attribute_value.value, key);
             }
         }
         // If the main node has a label, display the node item second (unconditionaly)
         if (node_label.length > 0 && !node_options['cdata'])
         {
-            toolbox.displayParameter('#mainPanel', node_options['normal'], node_name, '', key, node_label);
+            toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
         }
         // Optional parameters
         // 1. Empty right panel
@@ -333,7 +333,7 @@ var EDITOR = (function ($, parent) {
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
-                toolbox.displayParameter('#mainPanel', node_options['optional'], attribute_name, attribute_value.value, key);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
                 // Add disabled button to right panel
                 button.prop('disabled', true)
                     .addClass('disabled');
@@ -362,10 +362,9 @@ var EDITOR = (function ($, parent) {
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
-                toolbox.displayParameter('#mainPanel', node_options['normal'], attribute_name, attribute_value.value, key);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
             }
         }
-        $('#mainPanel').append("</table>");
 
         $('#advancedPanel').html("<hr><table class=\"wizard\" border=\"0\">");
 
@@ -378,11 +377,11 @@ var EDITOR = (function ($, parent) {
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
-                toolbox.displayParameter('#advancedPanel', node_options['advanced'], attribute_name, attribute_value.value, key);
+                toolbox.displayParameter('#advancedPanel .wizard', node_options['advanced'], attribute_name, attribute_value.value, key);
                 nradvancedoptions++;
             }
         }
-        $('#advancedPanel').append("</table>");
+
         if (nradvancedoptions>0)
         {
             // Enable Advanced settings
@@ -409,11 +408,11 @@ var EDITOR = (function ($, parent) {
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
             if (attribute_value.found)
             {
-                toolbox.displayParameter('#languagePanel', node_options['language'], attribute_name, attribute_value.value, key);
+                toolbox.displayParameter('#languagePanel .wizard', node_options['language'], attribute_name, attribute_value.value, key);
                 nrlanguageoptions++;
             }
         }
-        $('#languagePanel').append("</table>");
+
         if (nrlanguageoptions>0)
         {
             // Enable Advanced settings

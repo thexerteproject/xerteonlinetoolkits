@@ -753,7 +753,7 @@ var EDITOR = (function ($, parent) {
                 var id = 'media_' + form_id_offset;
                 form_id_offset++;
                 // a textinput with a browse buttons next to the type-in
-                var td1 = $('<td>')
+                var td1 = $('<td width="100%">')
                     .append($('<div>')
                     .attr('id', id)
                     .addClass('inputtext')
@@ -771,9 +771,9 @@ var EDITOR = (function ($, parent) {
                     })
                     .append($('<img>').attr('src', 'editor/img/browse.png').height(14)));
                 html = $('<div>')
-                    .attr(id, 'container_' + id)
+                    .attr('id', 'container_' + id)
                     .addClass('media_container');
-                html.append($('<table>')
+                html.append($('<table width="100%">')
                         .append($('<tr>')
                             .append(td1)
                             .append(td2)));
