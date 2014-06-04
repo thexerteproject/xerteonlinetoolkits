@@ -183,7 +183,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <div id="insert-dialog" class="hide" title="Insert Page">
     <div id="insert-info">
-        <img /><br />
+        <img class="thumb"/><br />
         <span></span><br /><br />
         <div id="insert-buttons"><button>Insert Before</button>&nbsp;<button>Insert After</button>&nbsp;<button>Insert (at end)</button></div>
     </div>
