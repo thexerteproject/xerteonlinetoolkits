@@ -1514,7 +1514,7 @@
     <alt label="Alternative Text" type="TextInput" optional="true"/>
     <url label="CSV File" type="Media" optional="true"/>
 
-  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plaintext.jpg" remove="true">
+  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
 
