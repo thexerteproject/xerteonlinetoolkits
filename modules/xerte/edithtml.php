@@ -108,7 +108,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <title>Xerte Online Toolkits Editor</title>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="editor/css/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
