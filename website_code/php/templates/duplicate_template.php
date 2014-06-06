@@ -16,7 +16,9 @@ include "../template_status.php";
 
 _load_language_file("/website_code/php/templates/duplicate_template.inc");
 
-$database_connect_id = database_connect("new_template database connect success","new_template database connect fail");
+if(empty($_SESSION['toolkits_logon_id'])) {
+            die("Please login");
+}
 
 /*
  * get the root folder for this user

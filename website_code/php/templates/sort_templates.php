@@ -9,7 +9,9 @@ require_once("../../../config.php");
 require_once("../display_library.php");
 require_once("../user_library.php");
 
-$database_connect_id = database_connect("your templates database connect success", "your templates database connect failed");
+if(empty($_SESSION['toolkits_logon_id'])) {
+            die("Please login");
+}
 
 $_SESSION['sort_type'] = $_POST['sort_type'];
 
