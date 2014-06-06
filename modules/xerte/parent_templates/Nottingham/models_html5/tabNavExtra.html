@@ -15,7 +15,7 @@
 					$paneHolder = $("#pageContents .paneHolder");
 				
 				$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10);
-				$infoHolder.tabs("resize");
+				$infoHolder.tabs("refresh"); 
 				$paneHolder.height($infoHolder.height()-$("#pageContents .tabList:visible").height() - parseInt($paneHolder.css("padding-top")) * 2 - 5);
 			}
 			
