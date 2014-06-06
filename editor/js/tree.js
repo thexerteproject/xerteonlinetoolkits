@@ -59,8 +59,8 @@ var EDITOR = (function ($, parent) {
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
                 .addClass("xerte_button")
-                .click(function(){
-                    setTimeout(value.click, 500);
+                .click(function(e){
+                    setTimeout(value.click(e), 500);
                 })
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -115,14 +115,24 @@ var EDITOR = (function ($, parent) {
     },
 
 
-    preview = function () {
+    preview = function (e) {
         // ***************** TEMPORARY ****************
-        if(xmlvariable.slice(-11) == "preview.xml") {
-            xmlvariable = xmlvariable.substring(0, xmlvariable.length-4) + "2.xml";
-        }
+        //if(xmlvariable.slice(-11) == "preview.xml") {
+        //    xmlvariable = xmlvariable.substring(0, xmlvariable.length-4) + "2.xml";
+        //}
         // ***************** TEMPORARY ****************
 
         var json = build_json("treeroot");
+        var clickevent = e || window.event;
+        var urlparam = "";
+        if (clickevent.shiftKey)
+        {
+            var id = getCurrentPageID();
+            if (id !== false)
+            {
+                urlparam = '&linkID='+id;
+            }
+        }
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
@@ -143,7 +153,7 @@ var EDITOR = (function ($, parent) {
         .done(function() {
             //alert( "success" );
             // We would also launch the preview window from here
-            window.open(site_url + "preview.php?template_id=" + template_id, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width );
+            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width );
         })
         .fail(function() {
             alert( "error" );
@@ -178,6 +188,20 @@ var EDITOR = (function ($, parent) {
         });*/
     },
 
+    getCurrentPageID = function()
+    {
+        var tree = $.jstree.reference("#treeview"),
+            ids = tree.get_selected();
+
+        if(!ids.length) { return false; } // Something needs to be selected
+
+        id = ids[0];
+
+        if (lo_data[id]['attributes'].linkID)
+            return lo_data[id]['attributes'].linkID;
+        else
+            return false;
+    },
 
     getSelectedNodeKeys = function () {
         var tree = $.jstree.reference("#treeview"),
@@ -496,6 +520,9 @@ var EDITOR = (function ($, parent) {
             $('#insert_subnodes').append(subnodes);
         }
 
+        // schedule MathJax
+        // Queue reparsing of MathJax - fails if no network connection
+       // try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
         // The optional parameters (what to do here, only enable the not used entries)
 
     /*

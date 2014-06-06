@@ -25,7 +25,7 @@
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
-	<btnDelete label="Verwijder" tooltip="Verwijderen"/>
+	<btnDelete label="Wis" tooltip="Verwijder het geselecteerde item"/>
 	<btnMoveUp tooltip="Verplaats naar boven"/>
 	<btnMoveDown tooltip="Verplaats naar beneden"/>
 	<btnNext tooltip="Volgende item"/>

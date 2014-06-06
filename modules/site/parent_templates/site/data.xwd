@@ -33,7 +33,7 @@
 		<name type="TextInput" label="Section Title"/>
 		
 		<newNodes>
-			<markup><![CDATA[<markup name="Name">Enter HTML Code</markup>]]></markup>
+			<markup><![CDATA[<markup name="Name">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
