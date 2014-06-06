@@ -17,7 +17,9 @@ include "../template_status.php";
 $prefix = $xerte_toolkits_site->database_table_prefix;
 _load_language_file("/website_code/php/templates/remove_template.inc");
 
-$database_id = database_connect("delete template database connect success","delete template database connect failed");
+if(empty($_SESSION['toolkits_logon_id'])) {
+            die("Please login");
+}
 
 /* 
  * get the folder id to delete
