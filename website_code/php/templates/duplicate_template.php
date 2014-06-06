@@ -74,12 +74,12 @@ if(is_numeric($_POST['template_id'])){
             "Copy of " . $_POST['template_name'], 
             $row_template_type['extra_flags']);
 
-        if(db_query($query_for_new_template, $params)){
+        if(db_query($query_for_new_template, $params) !== FALSE){
 
             $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
             $params = array(($maximum_template_id+1), $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
 
-            if(db_query($query_for_template_rights, $params)){		
+            if(db_query($query_for_template_rights, $params) !== FALSE){		
 
                 receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
