@@ -86,7 +86,7 @@ function database_setup($database_location) {
     } else {
         die("Can't find : $schema_file");
     }
-
+    
     return true;
 }
 
