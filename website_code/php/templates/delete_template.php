@@ -16,7 +16,9 @@ include "../template_status.php";
 
 _load_language_file("/website_code/php/templates/delete_template.inc");
 
-$database_id = database_connect("delete template database connect success","delete template database connect failed");
+if(empty($_SESSION['toolkits_logon_id'])) {
+            die("Please login");
+}
 
 /*
  * get the folder id to delete
