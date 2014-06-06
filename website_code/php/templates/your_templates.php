@@ -9,7 +9,9 @@ require_once("../../../config.php");
 
 require_once("../display_library.php");
 
-database_connect("your template connect","your template fail");
+if(empty($_SESSION['toolkits_logon_id'])) {
+            die("Please login");
+}
 
 require_once("../user_library.php");
 
