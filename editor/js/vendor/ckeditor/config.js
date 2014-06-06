@@ -15,17 +15,16 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'editing',     groups: [ 'spellchecker' ] },
         //{ name: 'forms' },
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-        { name: 'paragraph',   groups: [ 'list', 'indent', /* 'blocks', */ 'align', 'bidi' ] },
-        { name: 'links' },
-        { name: 'insert' },
         { name: 'styles' },
+        { name: 'links' },
         { name: 'colors' },
         { name: 'tools' },
-        { name: 'others' },
-        { name: 'about' }
+        { name: 'insert' },
+        { name: 'paragraph',   groups: [ 'list', 'indent', /* 'blocks', */ 'align', 'bidi' ] },
+        { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,mathjax,image2';
+    config.extraPlugins = 'dialog,widget,mathjax,image2,codemirror,oembed';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
@@ -33,4 +32,5 @@ CKEDITOR.editorConfig = function( config ) {
 
     // Let's have it basic on dialogs as well.
     config.removeDialogTabs = 'link:advanced';
+    config.toolbarCanCollapse = true;
 };

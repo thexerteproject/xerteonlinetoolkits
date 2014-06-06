@@ -49,18 +49,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     //************ TEMPORARY ****************
 
-    $preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
-    if(file_exists($preview2)) {
-    	$preview_filename = "preview2.xml";
-    }
+    //$preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
+    //if(file_exists($preview2)) {
+    //	$preview_filename = "preview2.xml";
+    //}
 
     //***************************************
 
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
 
-    $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
-
-    $rlo_url = $media_url = $xerte_toolkits_site->site_url . "/" . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
+    $rlo_url = $media_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
     $media_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
 
@@ -110,9 +108,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <title>Xerte Online Toolkits Editor</title>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="editor/css/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
+    <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
     <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
@@ -121,13 +120,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <style>
         .ui-menu { width: 200px; }
         #insert-info {width: 60%; display: block; float: right; }
-
+		.hide {display: none;}
     </style>
 
 </head>
 <body>
-
-<div class="ui-layout-west">
+<img id="loader" src="editor/img/loading16.gif" />
+<div class="hide ui-layout-west">
 
     <div class="header"></div>
 
@@ -137,18 +136,19 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 </div>
 
-<div class="ui-layout-east">
+<div class="hide ui-layout-east">
 
-    <div class="header">Optional parameters</div>
+    <div class="header"><span style="color:#d2e4e8">Optional parameters</span></div>
 
     <div id="optionalParams" class="content">
         <p>...</p>
     </div>
 
+	<div class="footer"></div>
 </div>
 
 
-<div class="ui-layout-north">
+<div class="hide ui-layout-north">
     <div class="content" id="#header_images">
         <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="float:left" />
         <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="float:right" />
@@ -156,16 +156,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 </div>
 
 
-<div class="ui-layout-south">
+<div class="hide ui-layout-south">
     <div class="header">Options</div>
     <div class="content"></div>
 </div>
 
 
-<div >
-    <div id="mainContent" class="pane pane-center ui-layout-center ui-layout-pane ui-layout-pane-center">
-        <div class="header">Header</div>
-        <div class="ui-layout-content">
+    <div id="mainContent" class="hide ui-layout-center pane center-pane pane-center ui-layout-pane ui-layout-pane-center">
+        <div class="header"></div>
+        <div class="content">
             <div id="mainPanel"></div>
             <div id="advancedPanel" style="display:none">
                 <hr>
@@ -181,11 +180,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
         </div>
     </div>
-</div>
 
-<div id="insert-dialog" title="Insert Page">
+<div id="insert-dialog" class="hide" title="Insert Page">
     <div id="insert-info">
-        <img /><br />
+        <img class="thumb"/><br />
         <span></span><br /><br />
         <div id="insert-buttons"><button>Insert Before</button>&nbsp;<button>Insert After</button>&nbsp;<button>Insert (at end)</button></div>
     </div>
@@ -198,6 +196,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
+<!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
@@ -214,6 +213,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     echo "xmlvariable=\"" . $preview_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
+    echo "mediaurlvariable=\"" . $media_url . "\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";

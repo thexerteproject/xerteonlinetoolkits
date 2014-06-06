@@ -44,9 +44,9 @@ function show_preview_code($row)
 
 	//************ TEMPORARY ****************
 
-	if (file_exists($template_dir . '/preview2.xml')) {
-		$preview_filename = "preview2.xml";
-	}
+	//if (file_exists($template_dir . '/preview2.xml')) {
+	//	$preview_filename = "preview2.xml";
+	//}
 
 	//***************************************
 

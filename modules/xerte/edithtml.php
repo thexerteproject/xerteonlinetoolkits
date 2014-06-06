@@ -49,10 +49,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     //************ TEMPORARY ****************
 
-    $preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
-    if(file_exists($preview2)) {
-    	$preview_filename = "preview2.xml";
-    }
+    //$preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
+    //if(file_exists($preview2)) {
+    //	$preview_filename = "preview2.xml";
+    //}
 
     //***************************************
 
@@ -196,6 +196,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
+<!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>

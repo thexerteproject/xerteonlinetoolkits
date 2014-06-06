@@ -351,10 +351,10 @@ function button_check(){
             editbtn.className = "xerte_button";
 			editbtn.onclick=function(e){
 				if (e.shiftKey) {
-                    edit_window(false, "edithtml");
+                    edit_window(false, "edit");
 				}
 				else {
-					edit_window(false, "edit");
+					edit_window(false, "edithtml");
 				}
 			};
 
