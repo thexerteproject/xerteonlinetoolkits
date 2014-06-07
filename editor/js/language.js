@@ -46,7 +46,6 @@ var EDITOR = (function ($, parent) {
             var name_option = [];
             var normal_options = [];
             var opt_options  = [];
-            var adv_options  = [];
             var lang_options = [];
 
             var attributes = {};
@@ -116,10 +115,6 @@ var EDITOR = (function ($, parent) {
                 {
                     opt_options.push(option);
                 }
-                else if (option.value['advanced'])
-                {
-                    adv_options.push(option);
-                }
                 else if (option.value['language'])
                 {
                     lang_options.push(option);
@@ -140,7 +135,6 @@ var EDITOR = (function ($, parent) {
 
             node_options['name'] = name_option;
             node_options['normal'] = normal_options;
-            node_options['advanced'] = adv_options;
             node_options['language'] = lang_options;
             node_options['optional'] = opt_options;
             node_options['all'] = all_options;

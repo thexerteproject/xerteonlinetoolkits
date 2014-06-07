@@ -503,6 +503,15 @@ img.optional {
 .newNodesLevel {
     padding: 5px 0px 5px 0px;
 }
+.advNewNodesLevel {
+    padding: 5px 0px 5px 0px;
+}
+
+.advNewNodesLevel hr {
+    border: 0;
+    border-bottom: 1px dashed #ccc;
+    background: #999;
+}
 
 .btnNewNode
 {
