@@ -4,6 +4,7 @@
 var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
+        defaultToolBar = false,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -299,6 +300,18 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key);
     },
 
+    showToolBar = function(show){
+        defaultToolBar = show;
+        var tree = $.jstree.reference("#treeview");
+        var ids = tree.get_selected();
+        var id;
+        if (ids.length>0)
+        {
+            id = ids[0];
+            parent.tree.showNodeData(id);
+        }
+    },
+
     convertTextAreas = function ()
     {
         $.each(textareas_options, function (i, options) {
@@ -311,7 +324,7 @@ var EDITOR = (function ($, parent) {
                 filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                toolbarStartupExpanded : false,
+                toolbarStartupExpanded : defaultToolBar,
                 codemirror : {
 
                     // Set this to the theme you wish to use (codemirror themes)
@@ -507,15 +520,16 @@ var EDITOR = (function ($, parent) {
     cbChanged = function (id, key, name, value, obj)
     {
         //console.log(id + ': ' + key + ', ' +  name);
-        //var value = $('#' + id).is(':checked');
-        //if (value)
-        //{
-        //    value = 'true';
-        //}
-        //else
-        //{
-        //    value = 'false';
-        //}
+        // The current xml expectes 'true' and/or 'false'
+        var value = $('#' + id).prop('checked');
+        if (value)
+        {
+            value = 'true';
+        }
+        else
+        {
+            value = 'false';
+        }
         setAttributeValue(key, name, value);
     },
 
@@ -577,12 +591,12 @@ var EDITOR = (function ($, parent) {
                 //html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="parent.toolbox.cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
                 html = $('<input>')
                     .attr('id', id)
-                    .attr('type',  "checkbox");
-                if (value == 'true')
-                    html.prop('checked', true)
-                        .click({id:id, key:key, name:name}, function(event){
-                            cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-                        });
+                    .attr('type',  "checkbox")
+                    .click({id:id, key:key, name:name}, function(event){
+                        cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+                    });
+                if (value || value == 'true')
+                    html.prop('checked', true);
                 break;
             case 'combobox':
                 var id = 'select_' + form_id_offset;
@@ -690,7 +704,7 @@ var EDITOR = (function ($, parent) {
                         .attr('max', max)
                         .attr('step', step)
                         .attr('value', value)
-                        .click({id:id, key:key, name:name}, function(event)
+                        .change({id:id, key:key, name:name}, function(event)
                         {
                             inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
@@ -881,6 +895,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+    my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
 

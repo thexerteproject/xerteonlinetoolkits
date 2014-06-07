@@ -71,20 +71,21 @@ var EDITOR = (function ($, parent) {
         // Advanced and language checkboxes
         var checkboxes = $('<div />').attr('id', 'parameter_checkboxes');
         $([
-            {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', click:showLanguage},
-            {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cd', click:showAdvanced}
+            {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
+            {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
+            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar}
         ]).each(function(index, value) {
             var checkbox = $('<input>')
                 .attr('id', value.id)
                 .attr('type',  'checkbox')
                 .attr('title', value.tooltip)
-                .prop('disabled', true)
+                .prop('disabled', value.disabled)
                 .on('change', value.click)
 
             checkboxes.append(checkbox);
             var span = $('<span>')
                 .attr('id', value.id + "_span")
-                .addClass("disabled")
+                .addClass(value.disabled ? "disabled" : "enabled")
                 .append(value.name);
             checkboxes.append(span);
         });
@@ -228,14 +229,18 @@ var EDITOR = (function ($, parent) {
         if ($('#advanced_cb').prop('checked'))
         {
             // show
-            $('#advancedPanel').show();
+            $('.advNewNodesLevel').show();
             //$('div.textinput').attr('contenteditable', 'true');
 
         }
         else
         {
-            $('#advancedPanel').hide();
+            $('.advNewNodesLevel').hide();
         }
+    },
+
+    showToolbar = function(){
+        parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
 
     // Make a copy of the currently selected node
@@ -281,6 +286,9 @@ var EDITOR = (function ($, parent) {
             return;
         }
 
+        // Get sibling node
+        var prev = tree.get_prev_dom(id);
+
         // Delete from the tree
         tree.delete_node(id);
 
@@ -289,6 +297,9 @@ var EDITOR = (function ($, parent) {
 
         //console.log(lo_data[id]);
         //tree.last_error();
+
+        tree.deselect_all();
+        tree.select_node(prev);
 
         return true; // Successful
     },
@@ -390,39 +401,6 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        $('#advancedPanel').html("<hr><table class=\"wizard\" border=\"0\">");
-
-        // advancedOptons
-        var nradvancedoptions= 0;
-
-        for (var i=0; i<node_options['advanced'].length; i++)
-        {
-            attribute_name = node_options['advanced'][i].name;
-            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-            if (attribute_value.found)
-            {
-                toolbox.displayParameter('#advancedPanel .wizard', node_options['advanced'], attribute_name, attribute_value.value, key);
-                nradvancedoptions++;
-            }
-        }
-
-        if (nradvancedoptions>0)
-        {
-            // Enable Advanced settings
-            $('#advancedPanel').hide();
-            $('#advanced_cb_span').switchClass("disabled", "enabled");
-            $('#advanced_cb').removeAttr("disabled");
-            $('#advanced_cb').prop('checked', false);
-        }
-        else
-        {
-            // Hide the advanced panel and disable check box
-            $('#advanced_cb_span').switchClass("enabled", "disabled");
-            $('#advanced_cb').attr("disabled", "disabled");
-            $('#advanced_cb').prop('checked', false);
-            $('#advancedPanel').hide();
-        }
-
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
         // languageOptons
         var nrlanguageoptions= 0;
@@ -462,6 +440,8 @@ var EDITOR = (function ($, parent) {
         $('#insert_subnodes').html("");
         var subnodes = $('<div>').
             addClass('newNodesContainer');
+        var subnodes_present = false;
+        var advsubnodes_present = false;
         while (currkey != 'treeroot')
         {
             var currItem = lo_data[currkey]['attributes'].nodeName;
@@ -474,6 +454,7 @@ var EDITOR = (function ($, parent) {
                 {
                     subnodes.append("<hr>");
                     hr_drawn = true;
+                    subnodes_present = true;
                 }
                 // Display the level, i.e. the name of the current node
                 var currItemName;
@@ -483,11 +464,17 @@ var EDITOR = (function ($, parent) {
                 if (lo_data[currkey]['attributes'].name)
                     label = lo_data[currkey]['attributes'].name;
 
+                var advlevel = $('<div>')
+                    .addClass('advNewNodesLevel')
+                    .append($('<hr>'));
+
                 var level = $('<div>')
                     .addClass('newNodesLevel')
                     .append($('<div>')
                         .addClass('newNodesTitle')
                         .append(label));
+
+                var advnodes_level = false;
                 for (var i=0; i<new_nodes.length; i++)
                 {
                     var item = new_nodes[i];
@@ -507,17 +494,50 @@ var EDITOR = (function ($, parent) {
                         .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
                         .append("  " + buttonlabel);
 
-                    level.append(button)
-                        .append("<br>");
+
+                    if (wizard_data[item].menu_options.advanced === 'true')
+                    {
+                        advlevel.append(button)
+                            .append("<br>");
+                        advnodes_level = true;
+                        advsubnodes_present = true;
+                    }
+                    else
+                    {
+                        level.append(button)
+                            .append("<br>");
+                    }
+
                 }
                 subnodes.append(level);
+                if (advnodes_level)
+                {
+                    subnodes.append(advlevel);
+                }
             }
             currkey = tree.get_parent(currkey);
         }
-        if (hr_drawn)
+        if (subnodes_present)
         {
             // There are newNodes
             $('#insert_subnodes').append(subnodes);
+
+            if (advsubnodes_present)
+            {
+                // Enable Advanced settings
+                $('.advNewNodesLevel').hide();
+                $('#advanced_cb_span').switchClass("disabled", "enabled");
+                $('#advanced_cb').removeAttr("disabled");
+                $('#advanced_cb').prop('checked', false);
+            }
+            else
+            {
+                // Hide the advanced panel and disable check box
+                $('#advanced_cb_span').switchClass("enabled", "disabled");
+                $('#advanced_cb').attr("disabled", "disabled");
+                $('#advanced_cb').prop('checked', false);
+                $('.advNewNodesLevel').hide();
+            }
         }
 
         // schedule MathJax
