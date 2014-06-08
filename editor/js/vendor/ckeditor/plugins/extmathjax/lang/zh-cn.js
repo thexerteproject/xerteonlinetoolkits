@@ -2,7 +2,7 @@
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
-CKEDITOR.plugins.setLang( 'mathjax', 'zh-cn', {
+CKEDITOR.plugins.setLang( 'extmathjax', 'zh-cn', {
 	title: 'TeX 语法的数学公式编辑器',
 	button: '数学公式',
 	dialogInput: '在此编写您的 TeX 指令',

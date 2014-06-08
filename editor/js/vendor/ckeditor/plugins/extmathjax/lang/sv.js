@@ -2,7 +2,7 @@
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
-CKEDITOR.plugins.setLang( 'mathjax', 'sv', {
+CKEDITOR.plugins.setLang( 'extmathjax', 'sv', {
 	title: 'Mattematik i TeX',
 	button: 'Matte',
 	dialogInput: 'Skriv din TeX här',

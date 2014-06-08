@@ -5,10 +5,10 @@
 
 'use strict';
 
-CKEDITOR.dialog.add( 'mathjax', function( editor ) {
+CKEDITOR.dialog.add( 'extmathjax', function( editor ) {
 
 	var preview,
-		lang = editor.lang.mathjax;
+		lang = editor.lang.extmathjax;
 
 	return {
 		title: lang.title,
@@ -25,43 +25,53 @@ CKEDITOR.dialog.add( 'mathjax', function( editor ) {
                             {
                                 type : 'select',
                                 id : 'style',
-                                label : lang.mjsyntax,
                                 items :
                                     [
                                         [ lang.TeX, 't' ],
                                         [ lang.AsciiMath, 'a' ],
                                         [ lang.MathML, 'm' ]
                                     ],
-                                setup: function (data) {
+                                setup: function (widget) {
                                     this.allowOnChange = false;
 
-                                    if (data.syntax)
-                                        this.setValue(data.syntax);
+                                    if (widget.data.syntax)
+                                        this.setValue(widget.data.syntax);
 
                                     this.allowOnChange = true;
                                 },
-                                commit : function( data )
+                                onChange : function(e)
                                 {
-                                    data.syntax = this.getValue();
+                                    var dialog = CKEDITOR.dialog.getCurrent();
+                                    CKEDITOR.plugins.extmathjax.widget.setData('syntax', this.getValue());
+                                    preview.setValue( CKEDITOR.plugins.extmathjax.add( dialog.getValueOf( 'info', 'equation' ) ));
+                                },
+                                commit : function( widget )
+                                {
+                                    widget.setData('syntax', this.getValue());
                                 }
                             },
                             {
                                 id: "button",
                                 type: "checkbox",
                                 label: lang.displayasblock,
-                                setup: function (data) {
+                                setup: function (widget) {
                                     this.allowOnChange = false;
 
-                                    if (data.block)
-                                        this.setValue(data.block);
+                                    if (widget.data.block)
+                                        this.setValue(widget.data.block);
 
                                     this.allowOnChange = true;
                                 },
-                                commit: function (data) {
-                                    data.block = this.getValue()
-                                    this.allowOnChange = false;
+                                onChange : function(e)
+                                {
+                                    var dialog = CKEDITOR.dialog.getCurrent();
+                                    CKEDITOR.plugins.extmathjax.widget.setData('block', this.getValue());
+                                    preview.setValue( CKEDITOR.plugins.extmathjax.add( dialog.getValueOf( 'info', 'equation' ) ));
+                                },
+                                commit: function (widget) {
+                                    widget.setData('block' , this.getValue());
                                 }
-                            },
+                            }
 
                         ]
                     },
@@ -76,19 +86,19 @@ CKEDITOR.dialog.add( 'mathjax', function( editor ) {
 							if ( !( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) ) {
 								this.getInputElement().on( 'keyup', function() {
 									// Add \( and \) for preview.
-									preview.setValue( '\\(' + that.getInputElement().getValue() + '\\)' );
+									preview.setValue( CKEDITOR.plugins.extmathjax.add( that.getInputElement().getValue()) );
 								} );
 							}
 						},
 
 						setup: function( widget ) {
 							// Remove \( and \).
-							this.setValue( CKEDITOR.plugins.mathjax.trim( widget.data.math ) );
+							this.setValue( CKEDITOR.plugins.extmathjax.trim( widget.data.math ) );
 						},
 
 						commit: function( widget ) {
 							// Add \( and \) to make TeX be parsed by MathJax by default.
-							widget.setData( 'math', '\\(' + this.getValue() + '\\)' );
+							widget.setData( 'math', CKEDITOR.plugins.extmathjax.add( this.getValue()) );
 						}
 					},
 					{
@@ -106,12 +116,12 @@ CKEDITOR.dialog.add( 'mathjax', function( editor ) {
 						type: 'html',
 						html:
 							'<div style="width:100%;text-align:center;">' +
-								'<iframe style="border:0;width:0;height:0;font-size:20px" scrolling="no" frameborder="0" allowTransparency="true" src="' + CKEDITOR.plugins.mathjax.fixSrc + '"></iframe>' +
+								'<iframe style="border:0;width:0;height:0;font-size:20px" scrolling="no" frameborder="0" allowTransparency="true" src="' + CKEDITOR.plugins.extmathjax.fixSrc + '"></iframe>' +
 							'</div>',
 
 						onLoad: function( widget ) {
 							var iFrame = CKEDITOR.document.getById( this.domId ).getChild( 0 );
-							preview = new CKEDITOR.plugins.mathjax.frameWrapper( iFrame, editor );
+							preview = new CKEDITOR.plugins.extmathjax.frameWrapper( iFrame, editor );
 						},
 
 						setup: function( widget ) {
