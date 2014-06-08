@@ -436,8 +436,11 @@ table.wizard{
     width: 100%;
 }
 
+td.wizardparameter{
+    width:20px;
+}
 td.wizardlabel {
-    width: 200px;
+    width: 150px;
 }
 
 td.wizardvalue {
@@ -497,7 +500,7 @@ img.optional {
 }
 
 .newNodesContainer {
-    margin-left:100px;
+    margin-left:188px;
 }
 
 .newNodesLevel {
