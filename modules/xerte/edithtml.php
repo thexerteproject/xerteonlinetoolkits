@@ -166,9 +166,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <div class="header"></div>
         <div class="content">
             <div id="mainPanel"></div>
-            <div id="advancedPanel" style="display:none">
-                <hr>
-            </div>
             <div id="languagePanel" style="display:none">
                 <hr>
             </div>
