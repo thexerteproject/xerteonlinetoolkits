@@ -464,15 +464,23 @@ var EDITOR = (function ($, parent) {
                 if (lo_data[currkey]['attributes'].name)
                     label = lo_data[currkey]['attributes'].name;
 
+
                 var advlevel = $('<div>')
                     .addClass('advNewNodesLevel')
                     .append($('<hr>'));
 
+
                 var level = $('<div>')
-                    .addClass('newNodesLevel')
-                    .append($('<div>')
-                        .addClass('newNodesTitle')
-                        .append(label));
+                    .addClass('newNodesLevel');
+
+                var leveltitle = $('<div>')
+                        .addClass('newNodesTitle');
+                if (tree.get_parent(currkey) == 'treeroot')
+                {
+                    leveltitle.attr('id', 'mainleveltitle');
+                }
+                leveltitle = leveltitle.append(label);
+                level = level.append(leveltitle);
 
                 var advnodes_level = false;
                 for (var i=0; i<new_nodes.length; i++)
