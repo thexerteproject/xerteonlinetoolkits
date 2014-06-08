@@ -460,6 +460,12 @@ var EDITOR = (function ($, parent) {
                             // Rename the node
                             var tree = $.jstree.reference("#treeview");
                             tree.rename_node(tree.get_node(options.key, false), thisValue);
+
+                            if ($('#mainleveltitle'))
+                            {
+                                $('#mainleveltitle').html(thisValue);
+                            }
+
                         }
                     }
                 });
