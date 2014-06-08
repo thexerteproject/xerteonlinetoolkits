@@ -2,7 +2,7 @@
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
-CKEDITOR.plugins.setLang( 'mathjax', 'uk', {
+CKEDITOR.plugins.setLang( 'extmathjax', 'uk', {
 	title: 'Математика у TeX',
 	button: 'Математика',
 	dialogInput: 'Наберіть тут на TeX\'у',
