@@ -189,6 +189,14 @@ var EDITOR = (function ($, parent) {
         });*/
     },
 
+    getParent = function(key)
+    {
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node(key, false);
+
+        return node.parent;
+    },
+
     getCurrentPageID = function()
     {
         var tree = $.jstree.reference("#treeview"),
@@ -589,6 +597,12 @@ var EDITOR = (function ($, parent) {
         //});
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
+
+        // And finally, scroll to the top
+        setTimeout(function(){
+            $('#content').animate({scrollTop: 0});
+        }, 50);
+        //setTimeout($('#mainPanel').animate({scrollTop: 0}, 500));
     },
 
     addSubNode = function (event)
@@ -924,6 +938,7 @@ var EDITOR = (function ($, parent) {
     my.getSelectedNodeKeys = getSelectedNodeKeys;
     my.showNodeData = showNodeData;
     my.addNode = addNode;
+    my.getParent = getParent;
 
     return parent;
 

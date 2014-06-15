@@ -5,6 +5,10 @@ var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
         defaultToolBar = false,
+        textinputs_options = [],
+        textareas_options = [],
+        colorpickers = [],
+        lightboxes=[],
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -501,6 +505,13 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    //convertLightboxes = function ()
+    //{
+    //    $.each(lightboxes, function(i, options){
+    //       $('#link_' + options.id).colorbox({inline:true, href:'#edit_' + options.id});
+    //    });
+    //},
+
     setAttributeValue = function (key, name, value)
     {
         console.log([key, name, value]);
@@ -566,6 +577,50 @@ var EDITOR = (function ($, parent) {
             actvalue = '0x' + actvalue;
         }
         setAttributeValue(key, name, actvalue);
+    },
+
+    hotspotChanged = function(id, key, name, img, selection)
+    {
+        console.log("Hotspot edited: " + name + ", (" + selection.x1 + ", " + selection.y1 + "), (" + selection.x2 + ", " + selection.y2 + ")");
+        var x = selection.x1,
+            y = selection.y1,
+            w = selection.width,
+            h = selection.height;
+        setAttributeValue(key, "x", x + "");
+        setAttributeValue(key, "y", y + "");
+        setAttributeValue(key, "w", w + "");
+        setAttributeValue(key, "h", h + "");
+    },
+
+    showHotSpotSelection = function(initialised, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2)
+    {
+        if (initialised)
+        {
+            $('#featherlight-content img').imgAreaSelect({
+                x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
+                handles: true,
+                imageWidth: orgwidth,
+                imageHeight: orgheight,
+
+                parent: '#featherlight-content',
+                persistent: true,
+                onSelectEnd: function (img, selection) {
+                    hotspotChanged(id, key, name, img, selection);
+                }
+            });
+            $('#featherlight-content').unbind('click');
+        }
+        else
+        {
+            setTimeout(function(){
+                showHotSpotSelection(true, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2);
+            }, 50);
+        }
+    },
+
+    closeHotSpotSelection = function(evt, key)
+    {
+        parent.tree.showNodeData(key);
     },
 
     browseFile = function (id, key, name, value, obj)
@@ -829,18 +884,134 @@ var EDITOR = (function ($, parent) {
                 }
                 break;
             case 'hotspot':
-                // this is a special one. the attributes in the node are called x, y, w, h
-                var id = 'button_' + form_id_offset;
+                var id = 'hotspot_' + form_id_offset;
                 form_id_offset++;
-                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
-                html = $('<input>')
-                    .attr('id', id)
-                    .click({id:id, key:key, name:name}, function(event)
+
+                // this is a special one. the attributes in the node are called x, y, w, h
+                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+                var hsattrs = lo_data[key].attributes;
+                var hsparent = parent.tree.getParent(key);
+                var hspattrs = lo_data[hsparent].attributes;
+                var div = $('<div>')
+                    .attr('id', 'inner_' + id)
+                    .addClass('clickableHotspot')
+                if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
+                {
+                    // go one further up
+                    hsparent = parent.tree.getParent(hsparent);
+                    hspattrs = lo_data[hsparent].attributes;
+                }
+                var url = hspattrs.url;
+                var pos = url.indexOf('FileLocation + \'');
+                if (pos >= 0)
+                {
+                    url = mediaurlvariable + '/' + url.substr(pos + 16, url.length - 17);
+                }
+                // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                if (hspattrs.url != "")
+                {
+                    div.append($('<img>')
+                        .attr('id', 'inner_img_' + id)
+                        .attr('src', url)
+                        .load(function(){
+                            var orgwidth = this.naturalWidth;
+                            var orgheight = this.naturalHeight;
+                            var width = this.width;
+                            var hsleft = parseInt(hsattrs.x),
+                                hstop = parseInt(hsattrs.y),
+                                hsbottom = orgheight - hstop - parseInt(hsattrs.h),
+                                hsright = orgwidth - hsleft - parseInt(hsattrs.w);
+                            var scale = width / orgwidth;
+                            hsleft = Math.round(hsleft * scale);
+                            hstop = Math.round(hstop * scale);
+                            hsbottom = Math.round(hsbottom * scale);
+                            hsright = Math.round(hsright * scale);
+
+                            var cssobj = {
+                                position:  "absolute",
+                                left: hsleft + "px",
+                                top:  hstop + "px",
+                                right: hsright + "px",
+                                bottom: hsbottom + "px",
+                                background: "#ff0000",
+                                opacity: "0.4"
+                                 };
+
+                            var hsdiv = $('<div>')
+                                .attr('id', 'inner_hs_' + id)
+                                .css(cssobj);
+                            div.append(hsdiv);
+
+                        })
+                    );
+                }
+                else
+                {
+                    div = div.append("select image first");
+                }
+
+                // Ok, now create the content to be shown in the lightbox
+                var editdiv = $('<div>')
+                    .attr('id', 'edit_' + id)
+                    .addClass('hotspotLightbox');
+                var editimg = $('<img>')
+                    .attr('id', 'edit_img_' + id)
+                    .addClass('hotspotLightboxImg')
+                    .attr('src', url)
+                    .load(function()
                     {
-                        inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                    })
-                    .attr('title', language.edit.$tooltip)
-                    .append(language.edit.$label);
+                        var orgwidth = this.naturalWidth;
+                        var orgheight = this.naturalHeight;
+                        var hsx1 = parseInt(hsattrs.x),
+                            hsy1 = parseInt(hsattrs.y),
+                            hsx2 = hsx1 + parseInt(hsattrs.w),
+                            hsy2 = hsy1 + parseInt(hsattrs.h);
+
+                        /*
+                        $('#edit_img_' + id).imgAreaSelect({
+                            x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
+                            handles: false,
+                            imgeWidth: orgwidth,
+                            imageHeight: orgheight,
+                            parent: '#edit_' + id,
+                            persistent: true,
+                            onSelectEnd: function (img, selection) {
+                                hotspotChanged(id, key, name, img, selection);
+                            }
+                        });
+
+                        //$('#featherlight-content').unbind('click');
+                        */
+
+                        $('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
+                        $('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
+                            var par = event.data;
+                            showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
+                        });
+
+                    });
+                editdiv.append(editimg);
+
+                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                html = $('<div>')
+                    .attr('id', id)
+                    //.attr('href', '#')
+                    //.click({id:id, key:key, name:name}, function(event)
+                    //{
+                    //    hotspotEdit(event.data.id, event.data.key, event.data.name, this.value, this);
+                    //})
+                    .append(editdiv)
+                    .append($('<a>')
+                        .attr('id', 'link_' + id)
+                        .attr('href', '#')
+                        .attr('data-featherlight', '#edit_img_' + id)
+                        .attr('title', language.edit.$tooltip)
+                        .append(div))
+
+                lightboxes.push({id:id, key:key, name:name, options: options});
+                //$('#link_'+ id).colorbox({inline:true, href:'#edit_' + id});
+
                 break;
             case 'media':
                 var id = 'media_' + form_id_offset;
@@ -901,6 +1072,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
+    //my.convertLightboxes = convertLightboxes;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;

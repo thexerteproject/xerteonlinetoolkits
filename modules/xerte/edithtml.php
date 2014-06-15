@@ -112,6 +112,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css" />
     <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
@@ -164,7 +166,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <div id="mainContent" class="hide ui-layout-center pane pane-center ui-layout-pane ui-layout-pane-center">
         <div class="header"></div>
-        <div class="content">
+        <div id="content" class="content">
             <div id="mainPanel"></div>
             <div id="languagePanel" style="display:none">
                 <hr>
@@ -198,6 +200,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/xml2json.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js"></script>
+<script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js"></script>
 <script>
     <?php
     $_SESSION['KCFINDER']= array(
