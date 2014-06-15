@@ -530,3 +530,22 @@ img.optional {
 .media_container table{
     width:100%;
 }
+
+.clickableHotspot
+{
+    position: relative;
+    width:150px;
+}
+
+.clickableHotspot img
+{
+    width:150px;
+}
+
+.hotspotLightbox {
+    display: none;
+}
+
+.hotspotLightboxImg {
+    width:400px;
+}
