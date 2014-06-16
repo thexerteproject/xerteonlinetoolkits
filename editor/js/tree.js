@@ -703,6 +703,7 @@ var EDITOR = (function ($, parent) {
         var node = tree.get_node('treeroot', false);
         var nodeName = selectedItem;
         var key = parent.tree.generate_lo_key();
+        var extranodes = false;
 
         for (i=0; i<wizard_data['learningObject'].new_nodes.length; i++)
         {
@@ -711,26 +712,33 @@ var EDITOR = (function ($, parent) {
         }
         if (i >= wizard_data['learningObject'].new_nodes.length)
             return; // not found!!
-        var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]);
+        var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
         // Parse the attributes and store in the data store
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        $(xmlData.firstChild.attributes).each(function() {
+        $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
-        if (xmlData.firstChild.firstChild && xmlData.firstChild.firstChild.nodeType == 3)  // becomes a cdata-section
+        if (xmlData.firstChild)
         {
-            lo_data[key]['data'] = xmlData.firstChild.firstChild.data;
+            if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
+            {
+                lo_data[key]['data'] = xmlData.firstChild.data;
+            }
+            else if (xmlData.firstChild.nodeType == 1) // extra node
+            {
+                extranodes = true;
+            }
         }
 
         // Build the JSON object for the treeview
         // For version 3 jsTree
 
         var treeLabel = nodeName;
-        if (xmlData.firstChild.attributes['name'])
+        if (xmlData.attributes['name'])
         {
-            treeLabel = xmlData.firstChild.attributes['name'].value;
+            treeLabel = xmlData.attributes['name'].value;
         }
         else
         {
@@ -749,6 +757,61 @@ var EDITOR = (function ($, parent) {
             var newkey = tree.create_node('treeroot', this_json, pos, function(){
                 tree.deselect_all();
                 tree.select_node(key);
+            });
+        }
+        // Any children to add?
+        if (extranodes)
+        {
+            var nodekey = key;
+            var nodeType = nodeName;
+            $.each(xmlData.children, function(nr, child){
+                key = parent.tree.generate_lo_key();
+                if (child.nodeType == 1)
+                {
+                    nodeName = child.nodeName;
+
+                    // Parse the attributes and store in the data store
+                    attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
+                    $(child.attributes).each(function() {
+                        attributes[this.name] = this.value;
+                    });
+                    lo_data[key] = {};
+                    lo_data[key]['attributes'] = attributes;
+                    if (child.firstChild)
+                    {
+                        if(child.firstChild.nodeType == 3)  // becomes a cdata-section
+                        {
+                            lo_data[key]['data'] = child.firstChild.data;
+                        }
+                    }
+
+                    // Build the JSON object for the treeview
+                    // For version 3 jsTree
+
+                    var treeLabel = nodeName;
+                    if (child.attributes['name'])
+                    {
+                        treeLabel = child.attributes['name'].value;
+                    }
+                    else
+                    {
+                        if (wizard_data[treeLabel].menu_options.menuItem)
+                            treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+                    }
+                    var this_json = {
+                        id : key,
+                        text : treeLabel,
+                        type : nodeName
+                    }
+                    console.log(this_json);
+                    // Add the node
+                    if (validateInsert(nodeType, nodeName, tree))
+                    {
+                        newkey = tree.create_node(nodekey, this_json, 'last', function(){
+                            console.log("subnode " + nodeName + " added as well");
+                        });
+                    }
+                }
             });
         }
     },
@@ -787,9 +850,37 @@ var EDITOR = (function ($, parent) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
 
         create_node_type = function (page_name, children) {
+            var lchildren = children;
+
+            // Check defaults, and see whther there are children, that are NOT new_nodes
+            // As an example see tableData within table
+            for (var i=0; i<wizard_data['learningObject'].new_nodes.length; i++)
+            {
+                if (page_name == wizard_data['learningObject'].new_nodes[i])
+                    break;
+            }
+            if (i < wizard_data['learningObject'].new_nodes.length)
+            {
+                var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
+                $.each(xmlData.children, function(j, child)
+                {
+                    if (child.nodeType == 1)
+                    {
+                        for (var i=0; i<lchildren.length; i++)
+                        {
+                            if (lchildren[i] == child.nodeName)
+                                break;
+                        }
+                        if (i>=lchildren.length)
+                        {
+                            lchildren.push(child.nodeName);
+                        }
+                    }
+                });
+            }
             return {
                 icon: parent.toolbox.getIcon(page_name),
-                valid_children: children
+                valid_children: lchildren
             };
         };
 
