@@ -112,7 +112,7 @@
 			});
 		};
 
-
+        // If it's not an .mp4 media, see if an .mp4 copy exists, and use this in preference.
 		if (fileInfo['1'] !== 'mp4') {
 			var url = eval(fileInfo[0] + ".mp4'");
 
@@ -121,10 +121,13 @@
 					opts.source = fileInfo[0] + ".mp4'";
 					mimeType = 'video/mp4';
 				}
-
 				setUpMedia();
 			});
 		}
+        else {
+            // .mp4 
+            setUpMedia();
+        }
 
 	};
 })(jQuery);
