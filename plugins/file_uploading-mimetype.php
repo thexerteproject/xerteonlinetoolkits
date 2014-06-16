@@ -35,6 +35,7 @@ if(Xerte_Validate_FileMimeType::canRun()) {
         'text/xml',
 
         'image/jpg',
+        'image/jpeg',
         'image/png',
         'image/bmp',
         'image/gif',
@@ -45,9 +46,11 @@ if(Xerte_Validate_FileMimeType::canRun()) {
         'audio/mp3',
         'audio/mpeg',
 
+        'video/x-flv',
         'video/mp4',
         'video/quicktime',
         'video/mpeg',
+
         'application/ogg', // .ogg files can be video or audio.
         'application/x-shockwave-flash', // ??
 
