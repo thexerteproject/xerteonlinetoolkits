@@ -503,6 +503,8 @@ var EDITOR = (function ($, parent) {
                         buttonlabel = buttonlabel.substr(0, pos) + itemname + buttonlabel.substr(pos+3) + "...";
                     var button = $('<button>')
                         .addClass('btnNewNode')
+                        .addClass('editorbutton')
+                        .attr('type', 'button')
                         .attr('id',  'add_'+item)
                         .click({key: currkey, node: item, defaultnode: new_nodes_default[i]}, function(event){
                             addSubNode(event);
