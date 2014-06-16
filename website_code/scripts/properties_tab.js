@@ -1356,7 +1356,7 @@ function property_tab_download(id,html5_tag, flash_tag, url)
     var ifrm = document.getElementById(id);
     var export_html5_engine = export_use_engine(html5_tag);
     var export_flash_engine = export_use_engine(flash_tag);
-    var urlparams = url.indexOf('?') !== false;
+    var urlparams = url.indexOf('?') !== -1;
     ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
 }
 
