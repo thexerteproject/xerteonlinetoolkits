@@ -8,7 +8,7 @@ var EDITOR = (function ($, parent) {
         textinputs_options = [],
         textareas_options = [],
         colorpickers = [],
-        lightboxes=[],
+        datagrids=[],
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -1125,10 +1125,18 @@ var EDITOR = (function ($, parent) {
                             .append(td2)));
                 textinputs_options.push({id: id, key: key, name: name, options: options});
                 break;
-            case 'drawing':
-            case 'datefield':
             case 'datagrid':
-            case 'webpage':
+                var id = 'grid_' + form_id_offset;
+                form_id_offset++;
+                html= $('<div>')
+                    .attr('id', id)
+                    .addClass('datagrid')
+                    .
+                break;
+
+            case 'drawing':
+            case 'datefield': // Not used??
+            case 'webpage':  //Not used??
             default:
 
                  //html = "<input type=\"text\" value=\"" + value + "\" />";
