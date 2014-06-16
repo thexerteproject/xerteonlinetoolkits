@@ -218,7 +218,7 @@ var EDITOR = (function ($, parent) {
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
-        var options = (nodelabel ? {type : name} : getOptionValue(all_options, name));
+        var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
         if (options != null)
         {
@@ -586,16 +586,18 @@ var EDITOR = (function ($, parent) {
             y = selection.y1,
             w = selection.width,
             h = selection.height;
-        setAttributeValue(key, "x", x + "");
-        setAttributeValue(key, "y", y + "");
-        setAttributeValue(key, "w", w + "");
-        setAttributeValue(key, "h", h + "");
+        $('#' + id + '_x').val(x);
+        $('#' + id + '_y').val(y);
+        $('#' + id + '_w').val(w);
+        $('#' + id + '_h').val(h);
+        $('#' + id + '_set').val(1);
     },
 
     showHotSpotSelection = function(initialised, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2)
     {
         if (initialised)
         {
+            // All the items exist
             $('#featherlight-content img').imgAreaSelect({
                 x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
                 handles: true,
@@ -608,14 +610,55 @@ var EDITOR = (function ($, parent) {
                     hotspotChanged(id, key, name, img, selection);
                 }
             });
+
+            // Only now are we able to bind call-backs to the correct buttons.
             $('#featherlight-content').unbind('click');
+            var okbutton = $('#featherlight-content button[name="ok"]');
+            okbutton.click({id:id, key:key, name:name}, function(event){
+                var par = event.data;
+                okHotSpotSelection(par.id, par.key, par.name);
+            });
+
+            var cancelbutton = $('#featherlight-content button[name="cancel"]');
+            cancelbutton.click({id:id, key:key, name:name}, function(event){
+                var par = event.data;
+                cancelHotSpotSelection(par.id, par.key, par.name);
+            });
+
         }
         else
         {
             setTimeout(function(){
                 showHotSpotSelection(true, id, key, name, orgwidth, orgheight, hsx1, hsy1, hsx2, hsy2);
-            }, 50);
+            }, 100);
         }
+    },
+
+    okHotSpotSelection = function(id, key, name)
+    {
+        var current = $.featherlight.current()
+        var set = $('#' + id + '_set').val();
+        if (set == 1)
+        {
+            var x = $('#' + id + '_x').val(),
+                y = $('#' + id + '_y').val(),
+                w = $('#' + id + '_w').val(),
+                h = $('#' + id + '_h').val();
+
+            setAttributeValue(key, "x", x);
+            setAttributeValue(key, "y", y);
+            setAttributeValue(key, "w", w);
+            setAttributeValue(key, "h", h);
+        }
+        current.close();
+        parent.tree.showNodeData(key);
+    },
+
+    cancelHotSpotSelection = function(id, key, name)
+    {
+        var current = $.featherlight.current()
+        current.close();
+        parent.tree.showNodeData(key);
     },
 
     closeHotSpotSelection = function(evt, key)
@@ -781,7 +824,7 @@ var EDITOR = (function ($, parent) {
                     .attr('id', id)
                     .click({id:id, key:key, name:name}, function(event)
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.val(), this);
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                     });
                 // Add empty entry
                 //html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
@@ -984,6 +1027,7 @@ var EDITOR = (function ($, parent) {
                         //$('#featherlight-content').unbind('click');
                         */
 
+
                         $('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
                         $('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
                             var par = event.data;
@@ -992,6 +1036,47 @@ var EDITOR = (function ($, parent) {
 
                     });
                 editdiv.append(editimg);
+
+                editdiv.append($('<div>')
+                    .attr('id', id + '_edit_buttons')
+                    .append($('<input>')
+                        .attr('id', id + '_x')
+                        .attr('type', 'hidden')
+                    )
+                    .append($('<input>')
+                        .attr('id', id + '_y')
+                        .attr('type', 'hidden')
+                    )
+                    .append($('<input>')
+                        .attr('id', id + '_h')
+                        .attr('type', 'hidden')
+                    )
+                    .append($('<input>')
+                        .attr('id', id + '_w')
+                        .attr('type', 'hidden')
+                    )
+                    .append($('<input>')
+                        .attr('id', id + '_set')
+                        .attr('type', 'hidden')
+                        .attr('value', '0')
+                    )
+                    //.append(okbutton)
+                    //.append(cancelbutton)
+                    .append($('<button>')
+                        .attr('id', id + '_ok')
+                        .attr('name', 'ok')
+                        .attr('type', 'button')
+                        .addClass('editorbutton')
+                        .append(language.Alert.oklabel)
+                    )
+                    .append($('<button>')
+                        .attr('id', id + '_cancel')
+                        .attr('name', 'cancel')
+                        .attr('type', 'button')
+                        .addClass('editorbutton')
+                        .append(language.Alert.cancellabel)
+                    )
+                );
 
                 //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
                 html = $('<div>')
@@ -1005,12 +1090,9 @@ var EDITOR = (function ($, parent) {
                     .append($('<a>')
                         .attr('id', 'link_' + id)
                         .attr('href', '#')
-                        .attr('data-featherlight', '#edit_img_' + id)
+                        .attr('data-featherlight', '#edit_' + id)
                         .attr('title', language.edit.$tooltip)
                         .append(div))
-
-                lightboxes.push({id:id, key:key, name:name, options: options});
-                //$('#link_'+ id).colorbox({inline:true, href:'#edit_' + id});
 
                 break;
             case 'media':
