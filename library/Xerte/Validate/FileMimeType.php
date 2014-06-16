@@ -30,10 +30,13 @@ class Xerte_Validate_FileMimeType {
                 }
                 $this->messages['INVALID_MIME_TYPE'] = "$mime_type is not in list of allowable types";
             }
-            $this->messages['FILE_NOT_FOUND'] = "File not found - $file_name";
+            else {
+                $this->messages['FILE_NOT_FOUND'] = "File not found - $file_name";
+            }
         }
         else {
             $this->messages['UNSUPPORTED'] = "Can't run - function: mime_content_type not found";
+            // maybe return true if it can't run? or everything is invalid.
         }
         return false;
     }
