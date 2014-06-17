@@ -330,6 +330,7 @@ var EDITOR = (function ($, parent) {
         textareas_options = [];
         textinputs_options = [];
         colorpickers = [];
+        datagrids = [];
         form_fields = [];
         form_id_offset = 0;
         $("#mainPanel").html("<table class=\"wizard\" border=\"0\">");
@@ -367,6 +368,7 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', 'insert_opt_' + attribute_name)
                 .addClass('btnInsertOptParam')
+                .addClass('xerte_button')
                 .click({key:key, attribute:attribute_name, default:(node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")},
                     function(event){
                         parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
@@ -599,6 +601,7 @@ var EDITOR = (function ($, parent) {
         //});
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
+        toolbox.convertDataGrids();
 
         // And finally, scroll to the top
         setTimeout(function(){
