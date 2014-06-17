@@ -1187,7 +1187,6 @@ function x_findText(pageXML) {
 	}
 }
 
-
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
 	var tempText = node.nodeValue;
@@ -1196,12 +1195,13 @@ function x_insertText(node) {
 	if (x_glossary.length > 0) {
 		for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
-			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+		//	tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+            tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$2</a>$3');
 		}
-		for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
-			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-		}
+		//for (var k=0, len=x_glossary.length; k<len; k++) {
+		//	var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
+		//	tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
+		//}
 	}
 	
 	// check text for LaTeX tags - if found replace with image
@@ -1302,6 +1302,11 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
+    if (text.indexOf("<p>") == 0)
+    {
+        // probably with new editor, don't replace newlines!
+        return text;
+    }
 	if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
 		return text.replace(/(\n|\r|\r\n)/g, "<br />");
 		
