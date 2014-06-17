@@ -5,10 +5,9 @@ var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
         defaultToolBar = false,
-        textinputs_options = [],
-        textareas_options = [],
-        colorpickers = [],
-        datagrids=[],
+        jqGridsLastSel = {},
+        jqGridsColSel = {},
+        jqGrGridData = {},
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -316,6 +315,214 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+    onclickJqGridSubmitLocal = function(id, key, name, options,postdata) {
+        var grid = $('#' + id + '_jqgrid'),
+            grid_p = grid[0].p,
+            idname = grid_p.prmNames.id,
+            grid_id = grid[0].id,
+            id_in_postdata = grid_id+"_id",
+            rowid = postdata[id_in_postdata],
+            addMode = rowid === "_empty",
+            oldValueOfSortColumn;
+
+        // postdata has row id property with another name. we fix it:
+        if (addMode) {
+            // generate new id
+            var new_id = grid_p.records + 1;
+            while ($("#"+new_id).length !== 0) {
+                new_id++;
+            }
+            postdata[idname] = String(new_id);
+        } else if (typeof(postdata[idname]) === "undefined") {
+            // set id property only if the property not exist
+            postdata[idname] = rowid;
+        }
+        delete postdata[id_in_postdata];
+
+        // clone postdata
+        var data = $.extend({}, postdata);
+        delete data[idname];
+        var colnr = parseInt(postdata[idname]) - 1;
+        jqGrGridData[key][colnr] = data;
+        var xerte = convertjqGridData(jqGrGridData[key]);
+        setAttributeValue(key, name, xerte);
+
+        // prepare postdata for tree grid
+        if(grid_p.treeGrid === true) {
+            if(addMode) {
+                var tr_par_id = grid_p.treeGridModel === 'adjacency' ? grid_p.treeReader.parent_id_field : 'parent_id';
+                postdata[tr_par_id] = grid_p.selrow;
+            }
+
+            $.each(grid_p.treeReader, function (i){
+                if(postdata.hasOwnProperty(this)) {
+                    delete postdata[this];
+                }
+            });
+        }
+
+        // decode data if there encoded with autoencode
+        if(grid_p.autoencode) {
+            $.each(postdata,function(n,v){
+                postdata[n] = $.jgrid.htmlDecode(v); // TODO: some columns could be skipped
+            });
+        }
+
+        // save old value from the sorted column
+        oldValueOfSortColumn = grid_p.sortname === "" ? undefined: grid.jqGrid('getCell',rowid,grid_p.sortname);
+
+        // save the data in the grid
+        if (grid_p.treeGrid === true) {
+            if (addMode) {
+                grid.jqGrid("addChildNode",rowid,grid_p.selrow,postdata);
+            } else {
+                grid.jqGrid("setTreeRow",rowid,postdata);
+            }
+        } else {
+            if (addMode) {
+                grid.jqGrid("addRowData",rowid,postdata,options.addedrow);
+            } else {
+                grid.jqGrid("setRowData",rowid,postdata);
+            }
+        }
+
+        if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+            // close the edit/add dialog
+            $.jgrid.hideModal("#editmod"+grid_id,
+                {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+        }
+
+        if (oldValueOfSortColumn === undefined || postdata[grid_p.sortname] !== oldValueOfSortColumn) {
+            // if the data are changed in the column by which are currently sorted, or no sort is defined
+            // we need resort the grid
+            setTimeout(function() {
+                grid.trigger("reloadGrid", [{current:true}]);
+            },100);
+        }
+
+        // !!! the most important step: skip ajax request to the server
+        this.processing = true;
+        return {};
+
+    },
+
+    addColumn = function(id, key, name, colnr)
+    {
+        console.log('Add column');
+        // get the default value of the new column
+        var nodeName = lo_data[key].attributes.nodeName;
+        var alloptions = wizard_data[nodeName].node_options.all;
+        var defvalue = " ";
+        for (var i=0; i<alloptions.length; i++)
+        {
+            if (alloptions[i].name == name)
+            {
+                defvalue = alloptions[i].value.newCol;
+                break;
+            }
+        }
+
+        // Modify data, and rebuild Xerte structure
+        // ignore colnr for now
+        $.each(jqGrGridData[key], function(i, row){
+            var col = row.length-1;
+            row['col_' + col] = defvalue;
+        });
+        var data = convertjqGridData(jqGrGridData[key]);
+        setAttributeValue(key, name, data);
+        parent.tree.showNodeData(key);
+    },
+
+    delColumn = function(id, key, name, colnr)
+    {
+        console.log('Del column ' + colnr);
+        // Modify data, and rebuild Xerte structure
+        $.each(jqGrGridData[key], function(i, row){
+             delete row['col_' + (colnr-1)];
+        });
+        var data = convertjqGridData(jqGrGridData[key]);
+        setAttributeValue(key, name, data);
+        parent.tree.showNodeData(key);
+    },
+
+    convertjqGridData = function(data)
+    {
+        var xerte = "";
+        $.each(data, function(i, row){
+            if (i>0)
+            {
+                xerte += '||';
+            }
+            $.each(row, function(j, field){
+                if (j !== 'col_0')
+                    xerte += '|';
+                xerte += field;
+            });
+        })
+        return xerte;
+    }
+
+    jqGridAfterShowForm = function(id, ids)
+    {
+        //the field name that needs to be edited with CKEditor is 'col_1'
+        if( CKEDITOR.instances.col_1 )
+        {
+            try {
+                CKEDITOR.instances.col_1.destroy();
+            } catch(e) {
+                CKEDITOR.remove( 'col_1' );
+            }
+            //CKEDITOR.instances.col_1 = null;
+        }
+        var ckoptions = {
+            toolbarGroups : [
+                { name: 'basicstyles', groups: [ 'basicstyles' ] },
+                { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+                { name: 'colors' },
+                { name: 'insert' }],
+            filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            mathJaxClass :  'mathjax',
+            mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+            toolbarStartupExpanded : true,
+            height : 200,
+            resize_enabled: false,
+        };
+
+        $('#col_1').ckeditor(function(){
+            // JQGrid
+            // we need to get selected row in case currently we are in Edit Mode
+            var grid = $('#' + id + '_jqgrid');
+            var selID = grid.getGridParam('selrow'); // get selected row
+            // I don't know how to get the current mode is, in Editing or Add new?
+            // then let's find out if
+            //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
+            if( !($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID==null))
+            { // then it must be edit?
+                var va = grid.getRowData(selID);
+                CKEDITOR.instances.col_1.setData( va['col_1'] );
+            }
+        }, ckoptions);
+
+    },
+
+    jqGridBeforeSubmit = function(data)
+    {
+        data['col_1'] = CKEDITOR.instances.col_1.getData();
+        return [true, ""];
+    },
+
+    jqGridAfterclickPgButtons = function(id, whichbutton, formid, rowid)
+    {
+        var grid = $('#' + id + '_jqgrid');
+        var va = grid.getRowData(rowid);
+        CKEDITOR.instances.col_1.setData( va['col_1'] );
+    },
+
     convertTextAreas = function ()
     {
         $.each(textareas_options, function (i, options) {
@@ -429,7 +636,15 @@ var EDITOR = (function ($, parent) {
         if (val.indexOf('<p>') == 0)
         {
             var strippedValue = val.substr(3);
-            strippedValue = strippedValue.substr(0, strippedValue.length-4);
+            if (strippedValue.lastIndexOf('</p>') != strippedValue - 4)
+            {
+                // Strip extra newline
+                strippedValue = strippedValue.substr(0, strippedValue.length-5);
+            }
+            else
+            {
+                strippedValue = strippedValue.substr(0, strippedValue.length-4);
+            }
             return strippedValue.trim();
         }
         else
@@ -502,6 +717,280 @@ var EDITOR = (function ($, parent) {
             var myPicker = new jscolor.color(document.getElementById(options.id), {})
             myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
 
+        });
+    },
+
+    convertDataGrids = function ()
+    {
+        // Set up a jqGrid for local editing. This is not that trivial, because jqGrid is all setup to
+        // send the data back to the server automatically.
+        // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excelent example
+        jqGridsLastSel = {};
+        jqGridsColSel = {};
+        $.each(datagrids, function(i, options){
+            // Get the data for this grid
+
+            var data = lo_data[options.key].attributes[options.name];
+            var rows = [];
+
+            $.each(data.split('||'), function(i, row){
+                var records = row.split('|');
+                var record = {};
+                $.each(records, function(i, field)
+                {
+                    record['col_' + i] = field;
+                });
+                rows.push(record);
+            });
+            var gridoptions = options.options;
+            var id = options.id;
+            var key = options.key;
+            jqGridsLastSel[key] = -1;
+            jqGridsColSel[key] = -1;
+            jqGrGridData[key] = rows;
+            var name = options.name;
+            var nrCols = gridoptions.columns;
+            var addCols = false;
+            // If the nr of Columns is dynamic, get the nrCols from the data
+            if (gridoptions.addCols && gridoptions.addCols === 'true')
+            {
+                addCols = true;
+                var rs = data.split('||');
+                var cs = rs[0].split('|');
+                nrCols = cs.length;
+            }
+            var headers = [];
+            var showHeaders = false;
+            if (gridoptions.headers)
+            {
+                showHeaders = (gridoptions.showHeaderRow !== undefined ? gridoptions.showHeaderRow : true);
+                headers = gridoptions.headers.split(',');
+            }
+            if (!showHeaders)
+            {
+                for(var i=0; i<nrCols; i++)
+                {
+                    headers.push((i+1) + '');
+                }
+            }
+            var editable;
+            if (gridoptions.editable)
+            {
+                editable = gridoptions.editable.split(',');
+            }
+            var colWidths = [];
+            if (gridoptions.colWidths)
+            {
+                colWidths = gridoptions.colWidths.split(',');
+            }
+
+            // set up the jqGrid column model
+            var colModel  = [];
+            for (var i=0; i<nrCols; i++)
+            {
+                var col = {};
+                col['name'] = 'col_' + i;
+                if (addCols)
+                {
+                    col['width'] = Math.round(parseInt(gridoptions.width) / nrCols);
+                }
+                else
+                {
+                    col['width'] = (colWidths[i] ? colWidths[i] : Math.round(parseInt(gridoptions.width) / nrCols));
+                }
+                col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
+                col['sortable'] = false;
+                // Do something special for second column of glossary
+                if (options.name == 'glossary' && i == 1)
+                {
+                    col['edittype'] = 'textarea';
+                    col['editoptions'] = {rows:"5",cols:"40"};
+                    col['editrules'] = {edithidden:true};
+                }
+                colModel.push(col);
+            }
+
+            var editSettings,
+                addSettings,
+                delSettings;
+            if (options.name == 'glossary')
+            {
+                // other set of options for the glossary
+                // to be able to replace the editor of the descrition with ckEditor
+                editSettings = {
+                    height:450,
+                    width:500,
+                    jqModal:false,
+                    reloadAfterSubmit:false,
+                    closeOnEscape:true,
+                    savekey: [true,13],
+                    closeAfterEdit:true,
+                    onclickSubmit: function(options, postdata){
+                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                        return [true, "", 0];
+                    },
+                    //afterclickPgButtons: function (whichbutton, formid, rowid)
+                    //{
+                    //    jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
+                    //},
+                    //beforeSubmit: function(data)
+                    //{
+                    //    return jqGridBeforeSubmit(data);
+                    //},
+                    afterShowForm: function(ids){
+                        jqGridAfterShowForm(id, ids);
+                    }
+                };
+                addSettings = {
+                    height:450,
+                    width:500,
+                    jqModal:false,
+                    reloadAfterSubmit:false,
+                    savekey: [true,13],
+                    closeOnEscape:true,
+                    closeAfterAdd:true,
+                    afterSubmit:function(options, postdata){
+                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                        return [true, "", 0];
+                    },
+                    afterclickPgButtons: function (whichbutton, formid, rowid)
+                    {
+                        jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
+                    },
+                    beforeSubmit: function(data)
+                    {
+                        return jqGridBeforeSubmit(data);
+                    },
+                    afterShowForm: function(ids){
+                        jqGridAfterShowForm(id, ids);
+                    }
+                }
+            }
+            else
+            {
+                editSettings = {
+                    jqModal:false,
+                    reloadAfterSubmit:false,
+                    closeOnEscape:true,
+                    savekey: [true,13],
+                    closeAfterEdit:true,
+                    onclickSubmit: function(options, postdata){
+                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                    }
+                };
+                addSettings = {
+                    jqModal:false,
+                    reloadAfterSubmit:false,
+                    savekey: [true,13],
+                    closeOnEscape:true,
+                    closeAfterAdd:true,
+                    onclickSubmit:function(options, postdata){
+                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                    }
+                }
+            }
+            delSettings = {
+                // because I use "local" data I don't want to send the changes to the server
+                // so I use "processing:true" setting and delete the row manually in onclickSubmit
+                onclickSubmit: function(options, rowid) {
+                    var grid_id = $.jgrid.jqID(grid[0].id),
+                        grid_p = grid[0].p,
+                        newPage = grid[0].p.page;
+
+                    // delete the row
+                    grid.delRowData(rowid);
+                    $.jgrid.hideModal("#delmod"+grid_id,
+                        {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+
+                    if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+                        if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
+                            // if after deliting there are no rows on the current page
+                            // which is the last page of the grid
+                            newPage--; // go to the previous page
+                        }
+                        // reload grid to make the row from the next page visable.
+                        grid.trigger("reloadGrid", [{page:newPage}]);
+                    }
+
+                    return true;
+                },
+                processing:true
+            };
+
+            // Setup the grid
+            var grid = $('#' + id + '_jqgrid');
+            grid.jqGrid({
+                datatype: 'local',
+                data: rows,
+                height: "100%",
+                colNames: headers,
+                colModel: colModel,
+                rowNum: 10,
+                rowList: [5,10,15,20,30],
+                viewrecords: true,
+                pager: '#' + id + '_nav',
+                editurl: 'editor/js/vendor/jqgrid/jqgrid_dummy.php',
+                rownumbers:true,
+                gridview:true,
+                ondblClickRow: function(rowid, ri, ci) {
+                    var p = grid[0].p;
+                    if (p.selrow !== rowid) {
+                        // prevent the row from be unselected on double-click
+                        // the implementation is for "multiselect:false" which we use,
+                        // but one can easy modify the code for "multiselect:true"
+                        grid.jqGrid('setSelection', rowid);
+                    }
+                    grid.jqGrid('editGridRow', rowid, editSettings);
+                },
+                onSelectRow: function(id, status, event) {
+                    if (id && id !== jqGridsLastSel[key]) {
+                        // cancel editing of the previous selected row if it was in editing state.
+                        // jqGrid hold intern savedRow array inside of jqGrid object,
+                        // so it is safe to call restoreRow method with any id parameter
+                        // if jqGrid not in editing state
+                        if (jqGridsLastSel[key] !== -1) {
+                            grid.jqGrid('restoreRow',jqGridsLastSel[key]);
+                        }
+                        jqGridsLastSel[key] = id;
+                    }
+                },
+                onCellSelect: function(iRow, iCol, content, event) {
+                    console.log("Select cell: " + iRow + ", " + iCol);
+                    jqGridsColSel[key] = iCol;
+                    var delbutton = $('#' + id + '_delcol');
+                    delbutton.html("");
+                    delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                        .append(language.btnDelColumn.$label + ' ' + iCol);
+                    delbutton.switchClass('disabled', 'enabled');
+                    delbutton.prop('disabled', false);
+                }
+
+            });
+            grid.jqGrid('navGrid', '#' + id + '_nav', {refresh:false}, editSettings, addSettings, delSettings, {multipleSearch:true,overlay:false});
+            if (addCols)
+            {
+                buttons = $('#' + id + '_addcolumns');
+                $([
+                    {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'editor/img/insert.png', disabled: false, id: id + '_addcol', click:addColumn},
+                    {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'editor/img/delete.gif', disabled: true, id: id + '_delcol', click:delColumn}
+                ])
+                .each(function(index, value) {
+                    var button = $('<button>')
+                        .attr('id', value.id)
+                        .attr('title', value.tooltip)
+                        .addClass("xerte_button")
+                        .prop('disabled', value.disabled)
+                        .addClass(value.disabled ? 'disabled' : 'enabled')
+                        .click({id:id, key:key, name:name}, function(evt){
+                            var par = evt.data;
+                            value.click(par.id, par.key, par.name, jqGridsColSel[key]);
+                        })
+                        .append($('<img>').attr('src', value.icon).height(14))
+                        .append(value.name);
+                    buttons.append(button);
+                });
+                buttons.append($('<br>'));
+            }
         });
     },
 
@@ -1131,10 +1620,17 @@ var EDITOR = (function ($, parent) {
                 html= $('<div>')
                     .attr('id', id)
                     .addClass('datagrid')
-                    .
-                break;
+                    .append($('<table>')
+                        .attr('id', id + '_jqgrid'))
+                    .append($('<div>')
+                        .attr('id', id + '_nav'))
+                    .append($('<div>')
+                        .attr('id', id + '_addcolumns')
+                        .addClass('jqgridAddColumnsContainer'));
 
-            case 'drawing':
+                datagrids.push({id: id, key: key, name: name, options: options});
+                break;
+            case 'drawing': // Not implemented
             case 'datefield': // Not used??
             case 'webpage':  //Not used??
             default:
@@ -1162,7 +1658,7 @@ var EDITOR = (function ($, parent) {
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;
-    //my.convertLightboxes = convertLightboxes;
+    my.convertDataGrids = convertDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
