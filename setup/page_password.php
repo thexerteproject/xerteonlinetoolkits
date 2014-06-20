@@ -4,42 +4,46 @@ session_start();
 echo file_get_contents("page_top");
 $success = true;
 // First try if we have access to the db
-$mysql_connect_id = mysql_connect($_SESSION['DATABASE_HOST'], $_POST['account'], $_POST['accountpw']);
-if(!$mysql_connect_id) {
+require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
+
+global $xerte_toolkits_site;
+global $development;
+$xerte_toolkits_site = new stdClass();
+
+$xerte_toolkits_site->database_host = $_SESSION['DATABASE_HOST'];
+$xerte_toolkits_site->database_name = $_SESSION['DATABASE_NAME'];
+$xerte_toolkits_site->database_prefix = $_SESSION['DATABASE_PREFIX'];
+$xerte_toolkits_site->database_username = $_POST['account'];
+$xerte_toolkits_site->database_password = $_POST['accountpw'];
+
+function _debug($string) {
+    // pass, for now.
+}
+
+
+$connection = database_connect();
+
+if(!$connection) {
     ?>
     <p>Sorry, the attempt to connect to MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. MySQL reports the following error -</p>
     <p class="error">
-        <?php echo mysql_error(); ?>
+        <?php echo $connection->errorInfo(); ?>
     </p><br />
     <p>The account <?php echo $_POST['account']; ?> must already exist, and have access to database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
     $success = false;
 }
+$connection = null;
 if ($success)
 {
-    $query = "USE " .  $_SESSION['DATABASE_NAME'];
-    $query_response = mysql_query($query);
-    if(!$query_response){
-?>
-    <p>Sorry, the attempt to open database <?php echo $_SESSION['DATABASE_NAME'];?> using account <?php echo $_POST['account']; ?> failed. MySQL reports the following error -</p>
-    <p class="error">
-    <?php echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); ?><br />
-    </p><br />
-    <p>The account <?php echo $_POST['account']; ?> must already exist, and have access to database <?php echo $_SESSION['DATABASE_NAME'];?></p>
-<?php
-        $success = false;
-    }
-}
-if ($success)
-{
-    $res = mysql_query("insert  into " . $_SESSION['DATABASE_PREFIX'] . "sitedetails(site_id) VALUES (999)");
+    $res = db_query("insert  into " . $_SESSION['DATABASE_PREFIX'] . "sitedetails(site_id) VALUES (999)");
     if ($res === false)
     {
         $success = false;
     }
     else
     {
-        $res = mysql_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
+        $res = db_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
         if ($res === false)
         {
             $success=false;
@@ -48,19 +52,14 @@ if ($success)
     if (!$success)
     {
 ?>
-        <p>Sorry, the attempt to insert and delete records in MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. MySQL reports the following error -</p>
-        <p class="error">
-            <?php echo mysql_error(); ?>
-        </p><br />
+        <p>Sorry, the attempt to insert and delete records in MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.
         <p>The account <?php echo $_POST['account']; ?> exists, but does not have enough privileges to access database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
         // Remove record as DBA
-        mysql_close($mysql_connect_id);
-        $mysql_connect_id = mysql_connect($_SESSION['DATABASE_HOST'], $_SESSION['MYSQL_DBA'], $_SESSION['MYSQL_DBAPASSWORD']);
-        mysql_select_db($_SESSION['DATABASE_NAME']);
-        $res = mysql_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
+        $xerte_toolkits_site->database_username = $_POST['account'];
+        $xerte_toolkits_site->database_password = $_POST['accountpw'];
+        $res = db_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
     }
-    mysql_close($mysql_connect_id);
 }
 if ($success)
 {

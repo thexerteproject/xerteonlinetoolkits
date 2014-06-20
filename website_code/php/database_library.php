@@ -38,7 +38,14 @@ function database_connect()
 
     if($dsn == false) {
         // default to MySQL.
-        $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
+        if ($xerte_toolkits_site->database_name)
+        {
+            $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
+        }
+        else
+        {
+            $dsn = "mysql:host={$xerte_toolkits_site->database_host}";
+        }
     }
 
     $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
@@ -92,6 +99,8 @@ function db_query($sql, $params = array())
     $ok = $statement->execute($params);
     if ($ok === false) {
         _debug("Failed to execute query : $sql : " . print_r($connection->errorInfo(), true));
+        $statement = null;
+        $connection = null;
         return false;
     }
 
@@ -100,6 +109,8 @@ function db_query($sql, $params = array())
         while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $rows[] = $row;
         }
+        $statement = null;
+        $connection = null;
         return $rows;
     }
 
@@ -108,8 +119,13 @@ function db_query($sql, $params = array())
     }
 
     if(preg_match('/^insert/i', $sql)) {
-        return $connection->lastInsertId();
+        $lastid = $connection->lastInsertId();;
+        $statement = null;
+        $connection = null;
+        return $lastid;
     }
+    $statement = null;
+    $connection = null;
     return $ok;
 }
 
