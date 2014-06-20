@@ -1,6 +1,5 @@
 <?PHP echo file_get_contents("page_top");
-
-if(function_exists("mysql_connect")&&function_exists("mysql_query")){
+if ( extension_loaded('pdo')  && extension_loaded('pdo_mysql')) { // e.g., pdo_mysql
 
 ?>
 
@@ -8,7 +7,7 @@ if(function_exists("mysql_connect")&&function_exists("mysql_query")){
 MySQL Database Creation page
 </h2>
 <p>
-On this page the installer will execute a MySQL query to create the database that Xerte Online Toolkits will use. 
+On this page the installer will execute a database query to create the database that Xerte Online Toolkits will use.
 </p>
 <form action="page2.php" method="post" enctype="multipart/form-data">
 <label>Please start by typing in the name of the host where you'd like the toolkits database to be created on. People following the XAMPP path / or testing locally should type in localhost.</label><br><br>
@@ -30,7 +29,7 @@ On this page the installer will execute a MySQL query to create the database tha
 
 ?>
 
-	<p>Sorry your PHP install lacks the functions mysql_connect and mysql_query, and without these this installer cannot create the database.</p>
+	<p>Sorry your PHP install lacks the extension PDO, and without these this installer cannot create the database.</p>
 	die();
 
 <?PHP }

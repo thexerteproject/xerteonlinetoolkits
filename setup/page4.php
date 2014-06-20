@@ -1,7 +1,7 @@
 <?php
 global $xerte_toolkits_site;
 global $development;
-$xerte_toolkits_site = new StdClass();
+$xerte_toolkits_site = new stdClass();
 
 require_once(dirname(__FILE__) . "/../database.php");
 require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
@@ -29,13 +29,13 @@ die("<p>You appear to have already created a database and so do not need to inst
 }
 
 $res = db_query("DELETE FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
-if(!$res) {
-    die("Error running SQL query " . mysql_error());
+if($res === false) {
+    die("Error running SQL query");
 }
 
 $res = db_query("insert  into {$xerte_toolkits_site->database_table_prefix}sitedetails(site_id) VALUES (1)");
-if(!$res) {
-    die("Error running SQL query " . mysql_error());
+if($res === false) {
+    die("Error running SQL query");
 }
 
 if(!empty($_POST['site_url'])) {
@@ -55,8 +55,8 @@ foreach(array('site_url', 'apache', 'mimetypes', 'LDAP_preference', 'LDAP_filter
     'site_email_account', 'headers', 'email_to_add_to_username', 'proxy1', 'port1', 'feedback_list', 'play_edit_preview_query' ) as $field) {
 
     $res = db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET $field = ? WHERE site_id = ?", array($_POST[$field], '1'));
-    if(!$res) {
-        $fail_string .= "<div style='color: red;'>The sitedetails {$field} query has failed, with MySQL saying: " . mysql_error() . "</div><br/>";
+    if($res===false) {
+        $fail_string .= "<div style='color: red;'>The sitedetails {$field} query has failed.</div><br/>";
     }
     else {
         $success_string .= "The sitedetails {$field} query succeeded<br/>";
@@ -77,8 +77,8 @@ foreach($ldap_fields as $post_key) {
 $query .= ")";
 
 $res = db_query($query, $values);
-if(!$res) {
-    $fail_string .= "The ldap query has failed (query: {{{$query}}}) due to " . mysql_error() . "<br/>";
+if($res===false) {
+    $fail_string .= "The ldap query has failed (query: {{{$query}}})<br/>";
 }
 else {
     $success_string .= "The 'ldap' insert query has succeeded<br/>";
@@ -93,10 +93,10 @@ if(!$magic_quotes){
 
 $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set import_path=\"" . str_replace("\\\\","/",$import_path) . "\" where site_id=\"1\"";	
 
-$query_response = mysql_query($query);
+$query_response = db_query($query);
 
-if(!$query_response){
-    $fail_string .= "The sitedetails import_path query " . $query . " has failed due to " . mysql_error() . "<br>";
+if($query_response === false){
+    $fail_string .= "The sitedetails import_path query " . $query . " has failed.<br>";
 }else{
     $success_string .= "The sitedetails import_path query succeeded <br>";
 }
@@ -109,9 +109,9 @@ if(!$magic_quotes){
 }
 
 $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set root_file_path='" . str_replace("\\\\","/",$root_path) . "' where site_id=\"1\"";	
-$query_response = mysql_query($query);
+$query_response = db_query($query);
 
-if(!$query_response){
+if($query_response === false){
     $fail_string .= "The sitedetails root_file_path query " . $query . " has failed due to " . mysql_error() . "<br>";
 }else{
     $success_string .= "The sitedetails root_file_path query succeeded <br>";
