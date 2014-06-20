@@ -13,7 +13,7 @@
 			if (x_browserInfo.mobile == false) {
 				$("#infoHolder")
 					.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
-					.accordion("resize");
+					.accordion("refresh");
 			}
 			
 			var $pageContents = $("#pageContents");
@@ -37,9 +37,7 @@
 					$("#pageContents .splitScreen").addClass("medium");
 				}
 			}
-			
-			this.sizeChanged();
-			
+
 			var $infoHolder = $("#infoHolder"),
 				$paneHeader = $("#infoHolder .paneHeader"),
 				$paneContents = $("#infoHolder .paneContents");
@@ -124,9 +122,10 @@
 					});
 				}
 			});
-			
+
 			$infoHolder.accordion({
 				fillSpace:	true,
+				heightStyle: "fill",
 				change:	function(e, ui) {
 					// remove any custom HTML so it doesn't mess up any custom HTML that might be loaded on another pane
 					$(".customHTMLHolder").detach();
@@ -162,6 +161,8 @@
 			} else if ($paneContents.find(".jsHolder").length > 0) {
 				this.loadCustomHTML();
 			}
+			
+			this.sizeChanged();
 			
 			x_pageLoaded();
 		}
