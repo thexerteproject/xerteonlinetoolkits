@@ -6,16 +6,35 @@ $success = true;
 echo file_get_contents("page_top");
 if (!isset($_POST['database_created']))
 {
-    $mysql_connect_id = mysql_connect($_POST['host'], $_POST['username'], $_POST['password']);
+    require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
+
+    global $xerte_toolkits_site;
+    global $development;
+    $xerte_toolkits_site = new stdClass();
+
+    $xerte_toolkits_site->database_host = $_POST['host'];
+    if ($xerte_toolkits_site->database_host == 'localhost')
+    {
+        $xerte_toolkits_site->database_host = '127.0.0.1';
+    }
+
+    $xerte_toolkits_site->database_prefix = $_POST['database_prefix'];
+    if (isset($_POST['username']) && isset($_POST['password']))
+    {
+        $xerte_toolkits_site->database_username = $_POST['username'];
+        $xerte_toolkits_site->database_password = $_POST['password'];
+    }
+
+    $connection = database_connect();
     $_POST['account'] = $_POST['username'];
     $_POST['accountpw'] = $_POST['password'];
 
     // Check for connection and error if failed
-    if(!$mysql_connect_id) {
+    if(!$connection) {
     ?>
         <p >Sorry, the attempt to connect to the host has failed. MySQL reports the following error -</p>
         <p class="error">
-            <?php echo mysql_error(); ?>
+            <?php echo $connection->errorInfo(); ?>
         </p>
         <br />
     <?php
@@ -23,59 +42,43 @@ if (!isset($_POST['database_created']))
     }
     if ($success)
     {
-        $query = "create database if not exists " . $_POST['database_name'];
-        $query_response = mysql_query($query);
-        if(!$query_response){
-    ?>
-            <p>Sorry, the attempt to create the database to the database has failed. MySQL reports the following error -</p>
-            <p class="error"><?php echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id);?>
-            </p>
-            <br/>
-    <?php
-            $success = false;
+        $xerte_toolkits_site->database_name = $_POST['database_name'];
+        $connection = database_connect();
+        $sql = file_get_contents("basic.sql");
+        if($_POST['database_prefix']!=""){
+            $sql = str_replace("$",$_POST['database_prefix'],$sql);
+        }else{
+            $sql = str_replace("$","",$sql);
         }
-    }
-    if ($success)
-    {
-        $query = "USE " . $_POST['database_name'];
-        $query_response = mysql_query($query);
-        if(!$query_response){
-    ?>
-            <p>Sorry, the attempt to specify which database we need to work on (the MySQL keyword - USE) has failed. MySQL reports the following error -</p>
-            <p class="error">
-    <?php
-            echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); echo "The query response was " . $query_response . "</p><br>";
-            $success = false;
-        }
-    }
-    if ($success)
-    {
-        $temp = explode(";", file_get_contents("basic.sql"));
+        $sql = str_replace("<databasename>",$_POST['database_name'],$sql);
+        $temp = explode(";", $sql);
         $x=0;
         while($x!=count($temp) && $success){
-            if($_POST['database_prefix']!=""){
-                $query = str_replace("$",$_POST['database_prefix'],ltrim($temp[$x++]));
-            }else{
-                $query = str_replace("$","",ltrim($temp[$x++]));
-            }
-
+            $query = $temp[$x++];
             if($query!=""){
-                $query_response = mysql_query($query);
+
+                $statement = $connection->prepare($query);
+                $ok = $statement->execute();
+
+                if ($ok === false) {
+                    _debug("Failed to execute query : $sql : " . print_r($connection->errorInfo(), true));
 
 
-                if(!$query_response){
-?>
+                ?>
                     <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
                     <p class="error">
-                    <?php echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); ?>
+                    <?php echo $connection->errorInfo(); ?>
                     </p>
                     <br />
 <?php
+                    $statement = null;
+                    $connection = null;
                     $success = false;
                 }
             }
         }
-        mysql_close($mysql_connect_id);
+        $statement = null;
+        $connection = null;
     }
 }
 if ($success)
@@ -83,7 +86,7 @@ if ($success)
 
 
 
-    $_SESSION['DATABASE_HOST'] = $_POST['host'];
+    $_SESSION['DATABASE_HOST'] = $xerte_toolkits_site->database_host;
     $_SESSION['DATABASE_NAME'] = $_POST['database_name'];
     $_SESSION['DATABASE_PREFIX'] = $_POST['database_prefix'];
     if (isset($_POST['username']) && isset($_POST['password']))

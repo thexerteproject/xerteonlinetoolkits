@@ -1,4 +1,8 @@
 
+CREATE DATABASE IF NOT EXISTS <databasename>;
+
+USE <databasename>;
+
 DROP TABLE IF EXISTS `$additional_sharing`;
 DROP TABLE IF EXISTS `$folderdetails`;
 DROP TABLE IF EXISTS `$ldap`;
@@ -12,6 +16,7 @@ DROP TABLE IF EXISTS `$templatedetails` ;
 DROP TABLE IF EXISTS `$templaterights` ;
 DROP TABLE IF EXISTS `$templatesyndication` ;
 DROP TABLE IF EXISTS `$user_sessions` ;
+DROP TABLE IF EXISTS `$user` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -25,7 +30,7 @@ CREATE TABLE `$additional_sharing` (
   `sharing_type` char(255) DEFAULT NULL,
   `extra` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE `$folderdetails` (
@@ -35,7 +40,7 @@ CREATE TABLE `$folderdetails` (
   `folder_name` char(255) DEFAULT NULL,
   `date_created` date DEFAULT '2008-12-08',
   PRIMARY KEY (`folder_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$ldap` (
   `ldap_id` bigint(20) NOT NULL auto_increment,
@@ -48,7 +53,7 @@ CREATE TABLE `$ldap` (
   `ldap_filter` text,
   `ldap_filter_attr` text,
   PRIMARY KEY  (`ldap_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$logindetails` (
   `login_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -57,7 +62,7 @@ CREATE TABLE `$logindetails` (
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
   PRIMARY KEY (`login_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$originaltemplatesdetails` (
   `template_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -70,7 +75,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   `access_rights` char(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`template_type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',1),(14,'xerte','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1);;
 
@@ -80,7 +85,7 @@ CREATE TABLE `$play_security_details` (
   `security_data` char(255) DEFAULT NULL,
   `security_info` char(255) DEFAULT NULL,
   PRIMARY KEY (`security_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -138,13 +143,13 @@ CREATE TABLE `$sitedetails` (
   `port1` char(255) DEFAULT NULL,
   `feedback_list` char(255) DEFAULT NULL,
   PRIMARY KEY (`site_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$syndicationcategories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationcategories`(`category_id`,`category_name`) values (1,'American and Canadian Studies'),(2,'Biology'),(3,'Biomedical Sciences'),(4,'Biosciences'),(5,'Built Environment, The'),(6,'Centre for English Language Education'),(7,'Chemistry'),(9,'Community Health Sciences'),(10,'Computer Science'),(11,'Contemporary Chinese Studies'),(12,'Economics'),(13,'Education'),(14,'English Studies'),(15,'Geography'),(16,'Medicine and Health'),(17,'History'),(18,'Humanities'),(20,'Mathematical Sciences'),(21,'Modern Languages and Cultures'),(22,'Nursing, Midwifery and Physiotherapy'),(23,'Pharmacy'),(24,'Physics & Astronomy'),(25,'Politics and International Relations'),(26,'Psychology'),(27,'Sociology & Social Policy'),(28,'Veterinary Medicine and Science');
 
@@ -152,7 +157,7 @@ CREATE TABLE `$syndicationlicenses` (
   `license_id` int(11) NOT NULL AUTO_INCREMENT,
   `license_name` char(255) DEFAULT NULL,
   PRIMARY KEY (`license_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 insert  into `$syndicationlicenses`(`license_id`,`license_name`) values (6,'Creative Commons Attribution-ShareAlike'),(5,'Creative Commons Attribution-NonCommercial-ShareAlike'),(4,'Creative Commons Attribution-NonCommercial'),(3,'Creative Commons Attribution-NonCommercial-NoDerivs'),(2,'Creative Commons Attribution-NoDerivs');
 
@@ -168,7 +173,7 @@ CREATE TABLE `$templatedetails` (
   `access_to_whom` text,
   `extra_flags` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`template_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templaterights` (
   `template_id` bigint(20) NOT NULL,
@@ -176,7 +181,7 @@ CREATE TABLE `$templaterights` (
   `role` text,
   `folder` bigint(20) DEFAULT NULL,
   `notes` char(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
   `template_id` bigint(20) NOT NULL,
@@ -187,14 +192,24 @@ CREATE TABLE `$templatesyndication` (
   `syndication` text,
   `category` char(255) DEFAULT NULL,
   `license` char(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$user_sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` text,
   PRIMARY KEY (`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `$user` (
+  `iduser` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) DEFAULT NULL,
+  `password` varchar(45) DEFAULT NULL,
+  `firstname` varchar(45) DEFAULT NULL,
+  `surname` varchar(45) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`iduser`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_context` (
   `lti_context_key` varchar(255) NOT NULL,
@@ -202,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `$lti_context` (
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_context_key`),
   KEY `c_internal_id` (`c_internal_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_keys` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -214,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `$lti_keys` (
   `updated_on` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `oauth_consumer_key` (`oauth_consumer_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_resource` (
   `lti_resource_key` varchar(255) NOT NULL,
@@ -224,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `$lti_resource` (
   PRIMARY KEY (`lti_resource_key`),
   KEY `destination2` (`internal_type`),
   KEY `destination` (`internal_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `$lti_user` (
   `lti_user_key` varchar(255) NOT NULL DEFAULT '',
@@ -232,4 +247,4 @@ CREATE TABLE IF NOT EXISTS `$lti_user` (
   `updated_on` datetime NOT NULL,
   PRIMARY KEY (`lti_user_key`),
   KEY `lti_user_equ` (`lti_user_equ`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
