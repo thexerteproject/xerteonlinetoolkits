@@ -853,7 +853,8 @@ var EDITOR = (function ($, parent) {
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
 
         create_node_type = function (page_name, children) {
-            var lchildren = children;
+            // clone children
+            var lchildren = $.extend({}, children);
 
             // Check defaults, and see whther there are children, that are NOT new_nodes
             // As an example see tableData within table
