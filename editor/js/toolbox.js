@@ -891,7 +891,7 @@ var EDITOR = (function ($, parent) {
                     savekey: [true,13],
                     closeAfterEdit:true,
                     onclickSubmit: function(options, postdata){
-                        return onclickJqGridSubmitLocal(id, key, name, options, {}, postdata);
+                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 };
                 addSettings = {
@@ -901,7 +901,7 @@ var EDITOR = (function ($, parent) {
                     closeOnEscape:true,
                     closeAfterAdd:true,
                     onclickSubmit:function(options, postdata){
-                       return onclickJqGridSubmitLocal(id, key, name, options, {}, postdata);
+                       return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 }
             }
