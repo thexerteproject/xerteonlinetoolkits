@@ -315,15 +315,33 @@ var EDITOR = (function ($, parent) {
         }
     },
 
-    onclickJqGridSubmitLocal = function(id, key, name, options,postdata) {
+    onclickJqGridSubmitLocal = function(id, key, name, options, postdata) {
         var grid = $('#' + id + '_jqgrid'),
             grid_p = grid[0].p,
             idname = grid_p.prmNames.id,
             grid_id = grid[0].id,
             id_in_postdata = grid_id+"_id",
-            rowid = postdata[id_in_postdata],
-            addMode = rowid === "_empty",
+            rowid,
+            addMode,
             oldValueOfSortColumn;
+
+        if (postdata[id_in_postdata])
+        {
+            rowid = postdata[id_in_postdata];
+        }
+        else if (postdata[idname])
+        {
+            rowid = postdata[idname];
+        }
+        if (postdata['oper'])
+        {
+            addMode = true;
+            delete postdata['oper'];
+        }
+        else
+        {
+            addMode = rowid === "_empty";
+        }
 
         // postdata has row id property with another name. we fix it:
         if (addMode) {
@@ -374,15 +392,15 @@ var EDITOR = (function ($, parent) {
         // save the data in the grid
         if (grid_p.treeGrid === true) {
             if (addMode) {
-                grid.jqGrid("addChildNode",rowid,grid_p.selrow,postdata);
+                grid.jqGrid("addChildNode",postdata['col_0'],grid_p.selrow,postdata);
             } else {
-                grid.jqGrid("setTreeRow",rowid,postdata);
+                grid.jqGrid("setTreeRow",postdata['col_0'],postdata);
             }
         } else {
             if (addMode) {
-                grid.jqGrid("addRowData",rowid,postdata,options.addedrow);
+                grid.jqGrid("addRowData",postdata['col_0'],postdata, options.addedrow);
             } else {
-                grid.jqGrid("setRowData",rowid,postdata);
+                grid.jqGrid("setRowData",postdata['col_0'],postdata);
             }
         }
 
@@ -625,7 +643,7 @@ var EDITOR = (function ($, parent) {
                     {
                         inputChanged(options.id, options.key, options.name, this.getData(), this);
                     }
-                })
+                });
             }, ckoptions);
         });
     },
@@ -636,7 +654,7 @@ var EDITOR = (function ($, parent) {
         if (val.indexOf('<p>') == 0)
         {
             var strippedValue = val.substr(3);
-            if (strippedValue.lastIndexOf('</p>') != strippedValue - 4)
+            if (strippedValue.lastIndexOf('</p>') != strippedValue.length - 4)
             {
                 // Strip extra newline
                 strippedValue = strippedValue.substr(0, strippedValue.length-5);
@@ -789,6 +807,10 @@ var EDITOR = (function ($, parent) {
             for (var i=0; i<nrCols; i++)
             {
                 var col = {};
+                if (i==0)
+                {
+                    col['key'] = true;
+                }
                 col['name'] = 'col_' + i;
                 if (addCols)
                 {
@@ -827,12 +849,11 @@ var EDITOR = (function ($, parent) {
                     closeAfterEdit:true,
                     onclickSubmit: function(options, postdata){
                         return onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                        return [true, "", 0];
                     },
-                    //afterclickPgButtons: function (whichbutton, formid, rowid)
-                    //{
-                    //    jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
-                    //},
+                    afterclickPgButtons: function (whichbutton, formid, rowid)
+                    {
+                        jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
+                    },
                     //beforeSubmit: function(data)
                     //{
                     //    return jqGridBeforeSubmit(data);
@@ -849,18 +870,13 @@ var EDITOR = (function ($, parent) {
                     savekey: [true,13],
                     closeOnEscape:true,
                     closeAfterAdd:true,
-                    afterSubmit:function(options, postdata){
-                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
-                        return [true, "", 0];
+                    onclickSubmit:function(options, postdata){
+                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     },
-                    afterclickPgButtons: function (whichbutton, formid, rowid)
-                    {
-                        jqGridAfterclickPgButtons(id, whichbutton, formid, rowid);
-                    },
-                    beforeSubmit: function(data)
-                    {
-                        return jqGridBeforeSubmit(data);
-                    },
+                    //beforeSubmit: function(data)
+                    //{
+                    //    return jqGridBeforeSubmit(data);
+                    //},
                     afterShowForm: function(ids){
                         jqGridAfterShowForm(id, ids);
                     }
@@ -875,7 +891,7 @@ var EDITOR = (function ($, parent) {
                     savekey: [true,13],
                     closeAfterEdit:true,
                     onclickSubmit: function(options, postdata){
-                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                        return onclickJqGridSubmitLocal(id, key, name, options, {}, postdata);
                     }
                 };
                 addSettings = {
@@ -885,7 +901,7 @@ var EDITOR = (function ($, parent) {
                     closeOnEscape:true,
                     closeAfterAdd:true,
                     onclickSubmit:function(options, postdata){
-                        onclickJqGridSubmitLocal(id, key, name, options, postdata);
+                       return onclickJqGridSubmitLocal(id, key, name, options, {}, postdata);
                     }
                 }
             }
@@ -930,6 +946,8 @@ var EDITOR = (function ($, parent) {
                 viewrecords: true,
                 pager: '#' + id + '_nav',
                 editurl: 'editor/js/vendor/jqgrid/jqgrid_dummy.php',
+                //cellsubmit : 'clientArray',
+                //editurl: 'clientArray',
                 rownumbers:true,
                 gridview:true,
                 ondblClickRow: function(rowid, ri, ci) {
