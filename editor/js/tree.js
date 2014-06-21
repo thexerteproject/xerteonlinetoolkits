@@ -854,7 +854,7 @@ var EDITOR = (function ($, parent) {
 
         create_node_type = function (page_name, children) {
             // clone children
-            var lchildren = $.extend({}, children);
+            var lchildren = children.slice();
 
             // Check defaults, and see whther there are children, that are NOT new_nodes
             // As an example see tableData within table
@@ -890,9 +890,12 @@ var EDITOR = (function ($, parent) {
 
         // build Types structure for the types plugin
         var node_types = {};
-        node_types["#"] = create_node_type(null, "treeroot"); // Make sure that only the LO can be at root level
+        node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
         $.each(wizard_data, function (key, value) {
-            node_types[key] = create_node_type(key, value.new_nodes);
+            if (key == "learningObject")
+                node_types['treeroot'] = create_node_type(key, value.new_nodes);
+            else
+                node_types[key] = create_node_type(key, value.new_nodes);
         });
 
         console.log(node_types);
