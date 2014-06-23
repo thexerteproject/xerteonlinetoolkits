@@ -810,7 +810,7 @@
   </geocommons><hangman menu="Games" menuItem="Hangman" hint="A Hangman game. Create a list of words for the learner to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <text label="Instructions" type="TextArea" height="100"/>
-    <words label="Words" type="TextArea" height="100"/>
+    <words label="Words" type="script" height="100"/>
     
 	<nextBtnTxt label="Next Button Label" type="textInput" divider="true" language="true"/>
     <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
@@ -1190,9 +1190,9 @@
     
     <name label="Page Title" type="TextInput"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
-    <text label="Initial Text" type="TextArea" height="100"/>
-    <prompt label="Answer Prompt" type="TextArea" height="100"/>
-    <answer label="Model Answer" type="TextArea" height="100"/>
+    <text label="Initial Text" type="script" height="100"/>
+    <prompt label="Answer Prompt" type="script" height="100"/>
+    <answer label="Model Answer" type="script" height="100"/>
 
     <answerHeaderTxt label="Instruction Header" type="textInput" divider="true" language="true"/>		
     <feedbackBtnTxt label="Button Label" type="textInput" language="true"/>

@@ -79,7 +79,7 @@
 		
 	</text>
 	
-	<canvas icon="icPallette" menuItem="Canvas" label="Canvas" remove="true" advanced="true">
+	<canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 	
 		<name type="TextInput" label="Name"/>
 		<id type="TextInput" label="ID"/>
@@ -96,7 +96,7 @@
 		
 	</script>
 	
-	<image icon="icImage" height="250" menuItem="Image" label="Text" remove="true">
+	<image icon="icImage" height="250" menuItem="Image" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
@@ -104,14 +104,14 @@
 		
 	</image>
 	
-	<audio icon="icSound" height="250" menuItem="Audio" label="Text" remove="true">
+	<audio icon="icSound" height="250" menuItem="Audio" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
 		
 	</audio>
 	
-	<video icon="icFilm" height="250" menuItem="Video" label="Text" remove="true">
+	<video icon="icFilm" height="250" menuItem="Video" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
