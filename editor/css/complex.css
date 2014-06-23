@@ -419,6 +419,10 @@ div.ui-layout-west div.header {
 	margin: 0;
 }
 
+.CodeMirror {
+    border: 1px solid #ddd;
+}
+
 div.inputtext {
     display: inline;
     background-color: white;
