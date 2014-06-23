@@ -58,6 +58,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
 
+    $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
+
     $rlo_url = $media_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
     $media_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
@@ -131,6 +133,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css" />
+
     <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
@@ -223,6 +227,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js"></script>
 
+<!-- load exactly the same codemirror scripts as needed by ckeditor -->
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.javascript.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/beautify.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js"></script>
+
 <script>
     <?php
     $_SESSION['KCFINDER']= array(
@@ -233,7 +245,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 
 
-    echo "xmlvariable=\"" . $preview_url . "\";\n";
+    echo "previewxmlurl=\"" . $preview_url . "\";\n";
+    echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
     echo "mediaurlvariable=\"" . $media_url . "\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
