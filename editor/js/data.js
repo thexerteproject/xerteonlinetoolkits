@@ -33,7 +33,7 @@ var EDITOR = (function ($, parent) {
     },
 
     process_data = function (xml) {
-        //console.log(xmlvariable + " is loaded...");
+        //console.log(previewxmlurl + " is loaded...");
 
         // replace all line breaks in attributes with ascii code
         // otherwise these are replaced with spaces when parsed to xml
@@ -50,13 +50,13 @@ var EDITOR = (function ($, parent) {
         }
         else if (step == 2)
         {
-            console.log(xmlvariable +  " is loaded...");
+            console.log(previewxmlurl +  " is loaded...");
             step2_xmlloaded = true;
             step2_data = data;
         }
         if (step1_languagesloaded && step2_xmlloaded)
         {
-            console.log("Start processing of " + xmlvariable);
+            console.log("Start processing of " + previewxmlurl);
             process_data(step2_data);
         }
 
@@ -78,7 +78,7 @@ var EDITOR = (function ($, parent) {
     };
 
     my.wait = wait;
-    init(xmlvariable);
+    init(previewxmlurl);
 
 
     return parent;

@@ -118,8 +118,8 @@ var EDITOR = (function ($, parent) {
 
     preview = function (e) {
         // ***************** TEMPORARY ****************
-        //if(xmlvariable.slice(-11) == "preview.xml") {
-        //    xmlvariable = xmlvariable.substring(0, xmlvariable.length-4) + "2.xml";
+        //if(previewxmlurl.slice(-11) == "preview.xml") {
+        //    previewxmlurl = previewxmlurl.substring(0, previewxmlurl.length-4) + "2.xml";
         //}
         // ***************** TEMPORARY ****************
 
@@ -137,8 +137,8 @@ var EDITOR = (function ($, parent) {
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
-                    fileupdate: 0,
-                    filename: xmlvariable,
+                    fileupdate: 0, //0= preview->preview.xml
+                    filename: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
@@ -163,13 +163,12 @@ var EDITOR = (function ($, parent) {
 
 
     publish = function () {
-        alert("Publish disabled for now to prevent accidental data overwrite!");
-        /*var json = build_json("treeroot");
+        var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
                 data: {
-                    fileupdate: 1,
-                    filename: xmlvariable,
+                    fileupdate: 1, // 1=publish -> data.xml
+                    filename: dataxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json))
                 },
                 //success: function(data){
@@ -186,7 +185,7 @@ var EDITOR = (function ($, parent) {
         })
         .fail(function() {
             alert( "error" );
-        });*/
+        });
     },
 
     getParent = function(key)
@@ -204,7 +203,11 @@ var EDITOR = (function ($, parent) {
 
         if(!ids.length) { return false; } // Something needs to be selected
 
-        id = ids[0];
+        var id = ids[0];
+        while (tree.get_parent(id) != 'treeroot')
+        {
+            id = tree.get_parent(id);
+        }
 
         if (lo_data[id]['attributes'].linkID)
             return lo_data[id]['attributes'].linkID;
