@@ -6,12 +6,11 @@ $success = true;
 echo file_get_contents("page_top");
 if (!isset($_POST['database_created']))
 {
-    require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
     global $xerte_toolkits_site;
     global $development;
     $xerte_toolkits_site = new stdClass();
-
+    $xerte_toolkits_site->database_type = "mysql";
     $xerte_toolkits_site->database_host = $_POST['host'];
     if ($xerte_toolkits_site->database_host == 'localhost')
     {
@@ -24,6 +23,8 @@ if (!isset($_POST['database_created']))
         $xerte_toolkits_site->database_username = $_POST['username'];
         $xerte_toolkits_site->database_password = $_POST['password'];
     }
+
+    require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
     $connection = database_connect();
     $_POST['account'] = $_POST['username'];
