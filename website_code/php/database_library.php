@@ -38,7 +38,7 @@ function database_connect()
 
     if($dsn == false) {
         // default to MySQL.
-        if ($xerte_toolkits_site->database_name)
+        if (isset($xerte_toolkits_site->database_name))
         {
             $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
         }
