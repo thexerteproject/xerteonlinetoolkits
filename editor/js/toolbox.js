@@ -120,11 +120,17 @@ var EDITOR = (function ($, parent) {
         $(xmlData[0].attributes).each(function() {
             attributes[this.name] = this.value;
         });
+        $.each(attributes, function(key, attribute){
+            if (attributes.type != 'media' && key != 'url')
+            {
+                attribute = makeAbsolute(attribute);
+            }
+        });
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
         if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
         {
-            lo_data[key]['data'] = xmlData[0].firstChild.data;
+            lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
         }
 
         // Build the JSON object for the treeview
@@ -363,7 +369,7 @@ var EDITOR = (function ($, parent) {
         var colnr = parseInt(postdata[idname]) - 1;
         jqGrGridData[key][colnr] = data;
         var xerte = convertjqGridData(jqGrGridData[key]);
-        setAttributeValue(key, name, xerte);
+        setAttributeValue(key, [name], [xerte]);
 
         // prepare postdata for tree grid
         if(grid_p.treeGrid === true) {
@@ -447,7 +453,7 @@ var EDITOR = (function ($, parent) {
             row['col_' + col] = defvalue;
         });
         var data = convertjqGridData(jqGrGridData[key]);
-        setAttributeValue(key, name, data);
+        setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key);
     },
 
@@ -459,7 +465,7 @@ var EDITOR = (function ($, parent) {
              delete row['col_' + (colnr-1)];
         });
         var data = convertjqGridData(jqGrGridData[key]);
-        setAttributeValue(key, name, data);
+        setAttributeValue(key, [name], [data]);
         parent.tree.showNodeData(key);
     },
 
@@ -1039,25 +1045,30 @@ var EDITOR = (function ($, parent) {
     //    });
     //},
 
-    setAttributeValue = function (key, name, value)
+    setAttributeValue = function (key, names, values)
     {
-        console.log([key, name, value]);
+        console.log([key, names, values]);
         // Get the node name
+
         var node_name = lo_data[key]['attributes'].nodeName;
 
         var node_options = wizard_data[node_name].node_options;
 
-        if (node_options['cdata'] && node_options['cdata_name'] == name)
-        {
-            lo_data[key]['data'] = value;
-        }
-        else
-        {
-            if (name in lo_data[key]['attributes'])
+        $.each(names, function(i, name){
+            console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
+            if (node_options['cdata'] && node_options['cdata_name'] == name)
             {
-                lo_data[key]['attributes'][name] = value;
+                lo_data[key]['data'] = values[i];
             }
-        }
+            else
+            {
+                if (name in lo_data[key]['attributes'])
+                {
+                    lo_data[key]['attributes'][name] = values[i];
+                }
+            }
+
+        });
     },
 
 
@@ -1074,7 +1085,7 @@ var EDITOR = (function ($, parent) {
         {
             value = 'false';
         }
-        setAttributeValue(key, name, value);
+        setAttributeValue(key, [name], [value]);
     },
 
 
@@ -1082,7 +1093,7 @@ var EDITOR = (function ($, parent) {
     {
         //console.log(id + ': ' + key + ', ' +  name);
 
-        setAttributeValue(key, name, value);
+        setAttributeValue(key, [name], [value]);
     },
 
 
@@ -1091,19 +1102,25 @@ var EDITOR = (function ($, parent) {
         console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
-        if (id.indexOf('textinput') >= 0)
+        if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
         {
             actvalue = value;
             actvalue = stripP(actvalue);
         }
-
         if (id.indexOf('color')>=0)
         {
             if (actvalue.indexOf('#') == 0)
                 actvalue = actvalue.substr(1);
             actvalue = '0x' + actvalue;
         }
-        setAttributeValue(key, name, actvalue);
+        if (actvalue.indexOf('FileLocation +') >=0)
+        {
+            // Make sure the &#39; is translated to a '
+            console.log("Convert " + actvalue);
+            actvalue = $('<textarea/>').html(actvalue).val();
+            console.log("    ..to " + actvalue);
+        }
+        setAttributeValue(key, [name], [actvalue]);
     },
 
     hotspotChanged = function(id, key, name, img, selection)
@@ -1172,10 +1189,7 @@ var EDITOR = (function ($, parent) {
                 w = $('#' + id + '_w').val(),
                 h = $('#' + id + '_h').val();
 
-            setAttributeValue(key, "x", x);
-            setAttributeValue(key, "y", y);
-            setAttributeValue(key, "w", w);
-            setAttributeValue(key, "h", h);
+            setAttributeValue(key, ["x", "y", "w", "h"], [x, y, w, h]);
         }
         current.close();
         parent.tree.showNodeData(key);
@@ -1200,15 +1214,34 @@ var EDITOR = (function ($, parent) {
         window.KCFinder.callBack = function(url) {
             // Actions with url parameter here
             console.log('Browse file: url=' + url);
-            var pos = url.indexOf(mediaurlvariable);
+            // Check thumbs first!
+            var pos = url.indexOf(mediaurlvariable + ".thumbs/");
             if (pos >=0)
-                url = "FileLocation + '" + url.substr(mediaurlvariable.length + 1) + "'";
+                url = "FileLocation + '" + url.substr(mediaurlvariable.length) + "'";
+            pos = url.indexOf(mediaurlvariable);
+            if (pos >=0)
+                url = "FileLocation + '" + url.substr(mediaurlvariable.length) + "'";
             var newvalue = '<p>' + url + '</p>';
             $('#' + id).html(newvalue);
-            setAttributeValue(key, name, url);
+            setAttributeValue(key, [name], [url]);
             window.KCFinder = null;
         };
         window.open('editor/kcfinder/browse.php?type=media', 'Browse file', "height=600, width=800");
+    },
+
+    makeAbsolute = function(html){
+        var temp = html;
+        var pos = temp.indexOf('FileLocation + \'');
+        while (pos >= 0)
+        {
+            var pos2 = temp.substr(pos+16).indexOf("'") + pos;
+            if (pos2>=0)
+            {
+                temp = temp.substr(0, pos) + mediaurlvariable + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
+            }
+            pos = temp.indexOf('FileLocation + \'');
+        }
+        return temp;
     },
 
     displayDataType = function (value, options, name, key) {
@@ -1473,11 +1506,8 @@ var EDITOR = (function ($, parent) {
                     hspattrs = lo_data[hsparent].attributes;
                 }
                 var url = hspattrs.url;
-                var pos = url.indexOf('FileLocation + \'');
-                if (pos >= 0)
-                {
-                    url = mediaurlvariable + '/' + url.substr(pos + 16, url.length - 17);
-                }
+                // Replace FileLocation + ' with full url
+                url = makeAbsolute(url);
                 // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
                 if (hspattrs.url != "")
                 {

@@ -139,7 +139,8 @@ var EDITOR = (function ($, parent) {
                 data: {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
-                    lo_data: encodeURIComponent(JSON.stringify(json))
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    absmedia: mediaurlvariable
                 },
                 //success: function(data){
                 //    alert("success");
@@ -169,7 +170,8 @@ var EDITOR = (function ($, parent) {
                 data: {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
-                    lo_data: encodeURIComponent(JSON.stringify(json))
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    absmedia: mediaurlvariable
                 },
                 //success: function(data){
                 //    alert("success");

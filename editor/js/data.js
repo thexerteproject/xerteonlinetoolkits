@@ -53,6 +53,7 @@ var EDITOR = (function ($, parent) {
             console.log(previewxmlurl +  " is loaded...");
             step2_xmlloaded = true;
             step2_data = data;
+
         }
         if (step1_languagesloaded && step2_xmlloaded)
         {
