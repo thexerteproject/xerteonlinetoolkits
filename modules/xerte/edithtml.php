@@ -248,7 +248,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
-    echo "mediaurlvariable=\"" . $media_url . "\";\n";
+    echo "mediaurlvariable=\"" . $media_url . "/\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";
