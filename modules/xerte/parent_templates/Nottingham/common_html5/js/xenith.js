@@ -904,16 +904,15 @@ function x_setUpPage() {
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
 
-    // Resolve all text box added <img> src tags to proper urls
-    $("#x_page" + x_currentPage + " img").each(function() {
+    // Resolve all text box added <img> and <a> src/href tags to proper urls
+    $("#x_page" + x_currentPage).find("img,a").each(function() {
         var $this = $(this),
-            src = $this.attr("src");
+            val = $this.attr("src") || $this.attr("href"),
+            attr_name = $this.attr("src") ? "src" : "href";
 
-        if (src.substring(0, 16) == "FileLocation + '") {
-            src = eval(src);
+        if (val.substring(0, 16) == "FileLocation + '") {
+            $this.attr(attr_name, eval(val));
         }
-
-        $this.attr("src", src);
     });
 
     $("#x_page" + x_currentPage)
