@@ -123,7 +123,7 @@ var EDITOR = (function ($, parent) {
         $.each(attributes, function(key, attribute){
             if (attributes.type != 'media' && key != 'url')
             {
-                attribute = makeAbsolute(attribute);
+                attributes[key] = makeAbsolute(attributes[key]);
             }
         });
         lo_data[key] = {};
@@ -627,6 +627,7 @@ var EDITOR = (function ($, parent) {
                 mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
+                extraAllowedContent: 'style'
                 //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
                 //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
                 //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
