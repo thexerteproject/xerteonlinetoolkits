@@ -772,7 +772,7 @@ var EDITOR = (function ($, parent) {
         {
             var nodekey = key;
             var nodeType = nodeName;
-            $.each(xmlData.children, function(nr, child){
+            $.each(xmlData.childNodes, function(nr, child){   // Was children
                 key = parent.tree.generate_lo_key();
                 if (child.nodeType == 1)
                 {
@@ -871,7 +871,7 @@ var EDITOR = (function ($, parent) {
             if (i < wizard_data['learningObject'].new_nodes.length)
             {
                 var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
-                $.each(xmlData.children, function(j, child)
+                $.each(xmlData.childNodes, function(j, child)       // Was children
                 {
                     if (child.nodeType == 1)
                     {
