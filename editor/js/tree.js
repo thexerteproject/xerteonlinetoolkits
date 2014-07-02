@@ -183,7 +183,7 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
-            alert( "success" );
+            //alert( "success" );
         })
         .fail(function() {
             alert( "error" );
