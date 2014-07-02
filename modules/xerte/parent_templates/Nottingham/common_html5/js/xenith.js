@@ -20,6 +20,19 @@ var x_languageData  = [],
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
+// Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
+// Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
+if (!$.fn.toggleClick) {
+    $.fn.toggleClick = function(){
+		var functions=arguments, iteration=0;
+
+		return this.click(function(){
+			functions[iteration].apply(this,arguments);
+			iteration = (iteration+1) % functions.length;
+		})
+    };
+}
+
 $(document).ready(function() {
 
     $x_mainHolder = $("#x_mainHolder");
