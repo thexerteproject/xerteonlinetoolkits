@@ -199,7 +199,7 @@ function edit_window(admin,edit){
 					
 					}else{
 
-						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
 
 					}
 
@@ -481,12 +481,12 @@ function preview_window(admin){
 					if(size.length!=1){
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=1" );
 						
 					}else{
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes");
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes,resizable=true");
 						
 					}
 
