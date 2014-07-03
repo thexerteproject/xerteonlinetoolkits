@@ -120,8 +120,19 @@ var EDITOR = (function ($, parent) {
         $(xmlData[0].attributes).each(function() {
             attributes[this.name] = this.value;
         });
+        // Expand FileLocation + to full path, except for attributes of type media
+        var options = wizard_data[xmlData[0].nodeName].node_options;
         $.each(attributes, function(key, attribute){
-            if (attributes.type != 'media' && key != 'url')
+            var attroptions = {};
+            for (var i=0; i<options.all.length; i++)
+            {
+                if (key == options.all[i].name)
+                {
+                    attroptions = options.all[i].value;
+                    break;
+                }
+            }
+            if (attroptions.type != 'media')
             {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
