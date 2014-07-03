@@ -125,6 +125,10 @@
 				setUpMedia();
 			});
 		}
+        else
+        {
+            setUpMedia();
+        }
 
 	};
 })(jQuery);
