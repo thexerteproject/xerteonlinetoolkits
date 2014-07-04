@@ -660,10 +660,14 @@ var EDITOR = (function ($, parent) {
                     // Editor is ready, attach onblur event
                     this.on('blur', function(){
                         // This is the call back when editor looses focus
-                        if (this.checkDirty())
-                        {
+                        //if (this.checkDirty())  Tom: CHECKDIRTY DOES NOT DO WHAT I EXPECTED!! It compares with the original value,
+                        //                             i.e., modify a field (add a 2) this istriggered
+                        //                                   remove the 2, this is NOT TRIGGERRED
+                        //                                   modify, add a 2, triggered
+                        //                                   change focus, come back in this filed, do NOT edit (just leave the 2, and change focus again: TRIGGERED
+                        //{
                             inputChanged(options.id, options.key, options.name, this.getData(), this);
-                        }
+                        //}
                     });
                 }, ckoptions);
             }
@@ -716,13 +720,13 @@ var EDITOR = (function ($, parent) {
                 // Editor is ready, attach onblur event
                 this.on('blur', function(){
                     // This is the call back when editor looses focus
-                    if (this.checkDirty())
-                    {
+                    //if (this.checkDirty())  // Se other comment about checkDirty()
+                    //{
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
 
                         inputChanged(options.id, options.key, options.name, thisValue, this);
-                    }
+                    //}
                 });
                 var lastValue = "";
                 this.on('change', function(event) {
