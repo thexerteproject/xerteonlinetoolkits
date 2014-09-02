@@ -62,9 +62,9 @@ function show_template($row_play){
 			var projectXML = "<?PHP echo $string_for_flash_xml ?>/"; //this is the file to read, not the xml
 
 		</script>
-		
-		<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>
-    
+
+		<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+
 	</head>
 
 	<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable">
