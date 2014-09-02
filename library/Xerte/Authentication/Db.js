@@ -62,8 +62,8 @@ function changepassword_authDb_user() {
 
         authdb_ajax_send_prepare(url);
 
-        var passwd = document.getElementById('authDb_changepassword').value;
-        var encodedpasswd = encodeURIComponent(document.getElementById('authDb_changepassword').value);
+        var passwd = document.getElementById('authDb_password').value;
+        var encodedpasswd = encodeURIComponent(passwd);
         xmlHttp.send('username=' + encodeURIComponent(document.getElementById('authDb_list_user').value) + '&password=' + encodeURIComponent(document.getElementById('authDb_password').value));
 
     }
