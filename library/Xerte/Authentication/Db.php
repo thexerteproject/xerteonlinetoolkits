@@ -44,10 +44,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
     public function check()
     {
         global $xerte_toolkits_site;
-        if (!function_exists('mysql_query')) {
-            $this->addError("MySQL not available?");
-            return false;
-        }
+        _debug("Calling check");
         // check for existence of the 'user' db table?
         $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
         if (empty($x)) {
@@ -55,29 +52,17 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
             $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
+                _debug("Failed: Does the user table exist?");
                 $this->addError("Does the user table exist?");
                 return false;
             }
             else
-                return true;
-        }
-        else
-        {
-            $row = mysql_fetch_array($x);
-            if(strpos($row[1], "email") === false)
             {
-
-                // Add column email
-                $x = db_query("ALTER TABLE {$xerte_toolkits_site->database_table_prefix}user ADD COLUMN `email` VARCHAR(45) NULL  AFTER `surname`");
-                if (empty($x))
-                {
-                    $this->addError("Could not add email column to the user table.");
-                    return false;
-                }
-                else
-                    return true;
+                _debug("Succeeded!");
+                return true;
             }
         }
+        _debug("Succeeded!");
 	    return true;
     }
 
