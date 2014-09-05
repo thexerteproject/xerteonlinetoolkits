@@ -1,0 +1,1577 @@
+<?xml version="1.0"?>
+<wizard menus="Tekst,Media,Nawigacja,Łącza,Wykresy,Interakcja,Gry,Inne">
+	<learningObject icon="icPackage" remove="false" duplicate="false">
+		<name type="TextInput" label="Tytuł obiektu nauczania"/>
+		<navigation type="ComboBox" options="Liniowy,Historyczny,Menu,Menu ze stroną kontrolną" data="Linear,Historic,Menu,Menu with Page Controls" label="Nawigacja" width="170"/>
+		<textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Domyślny rozmiar tekstu" width="100"/>
+		<visuals optional="true" type="ComboBox" options="Brak wizualizacji,Domyślna wizualizacja,Czysta wizualizacja bez tytułów,Czysta wizualizacja z tytułami" data="0,1,2,3" label="Silnik wizualizacji Flash" defaultValue="1" width="250"/>
+		<language type="LanguageList" label="Język" width="170"/>
+		<kblanguage type="ComboBox" options="Chiński,Chorwacki,Angielski,Francuski,Niemiecki,Włoski,Japoński,Polski,Portugalski,Rosyjski,Serbski,Słowieński,Hiszpański" width="120" label="Język klawiatury" optional="true"/>
+		<displayMode type="ComboBox" options="domyślny,pełny ekran,wypełnienie okna" data="default,full screen,fill window" label="Tryb wyświetlania" width="100"/>
+		<allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Rozmiar tytułu strony" defaultValue="24"/>
+		<media optional="true" type="media" label="Plik media"/>
+		<mediaImage optional="true" type="media" label="Obraz media"/>
+		<mediaTranscript optional="true" type="media" label="Transkrypcja media"/>
+		<mediaTiming optional="true" type="ComboBox" options="Tylko bieżący napis,Zatrzymaj poprzednie napisy,Pokaż wszystkie napisy" label="Chronometraż napisu media" defaultValue="current" width="175"/>
+		<mediaPosition optional="true" type="ComboBox" options="Poniżej,Prawy,Napisy - Góra,Napisy - Poniżej" label="Pozycja napisu media" defaultValue="below" width="175"/>
+		<mediaAlign optional="true" type="ComboBox" options="Lewy,Środek,Prawy" data="left,center,right" label="Wyrównanie napisu media" defaultValue="left" width="100"/>
+		<mediaColour optional="true" type="ColourPicker" label="Kolor napisu media" defaultValue="0x000000"/>
+		<mediaHighlight optional="true" type="CheckBox" label="Podświetlenie napisu media" defaultValue="true"/>
+		<mediaHighlightColour optional="true" type="ColourPicker" label="Kolor podświetlenia napisu media" defaultValue="0xFFFF00"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Styl obrazu media" options="Użyj panelu,Pełny ekran" data="Use Panel,Full Screen" width="100"/>
+		<menuImage optional="true" type="media" label="Obraz menu strony"/>
+		<ic optional="true" type="media" label="Ikon"/>
+		<nfo optional="true" label="Plik pomocy" type="media"/>
+		<glossary optional="true" label="Słownik" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="termin,definicja" newRow="termin,definicja" rendererOptions="none,none" defaultValue="termin|definicja"/>
+		<controller optional="true" label="Własny interfejs" type="media"/>
+		<background optional="true" type="media" label="Obraz tła"/>
+		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Przezroczystość tła"/>
+		<stylesheet optional="true" type="Media" label="Arkusz stylów"/>
+		<authorSupport label="Dodaj wsparcia autora" type="Checkbox" defaultValue="true" optional="true"/>
+		<trackingMode optional="true" label="Tryb śledzenia SCORM" width="250" type="ComboBox" options="Pełne śledzenie pierwszego przejścia,Minimalne śledzenie pierwszego przejścia,Pełne śledzenie ostatniego przejścia,Minimalne śledzenie ostatniego przejścia,Brak śledzenia" defaultValue="full_first"/>
+		<resume label="Włącz wznawianie" type="CheckBox" defaultValue="false" optional="true"/>
+		<newNodes>
+		<QRcode><![CDATA[<QRcode name="Wprowadź tytuł strony" url="Wprowadź lub wklej URL" tip="Wprowadź wskazówkę">Wprowadź tutaj tekst dla strony</QRcode>]]></QRcode><accNav><![CDATA[<accNav name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium"/>]]></accNav><annotatedDiagram><![CDATA[<annotatedDiagram name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" url="Wybierz obraz" tip="Wprowadź wskazówkę dla obrazu" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Wprowadź tytuł strony" sound="Wybierz plik dźwiękowy" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Wprowadź tytuł strony" align="Left" url="Wybierz obraz" tip="Wprowadź wskazówkę" imagesize="auto">Wprowadź tutaj tekst dla strony</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Wprowadź tytuł strony" delaySecs="1" showBullets="1" showPanel="1" panelWidth="Medium">Wprowadź tutaj tekst dla strony</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Wprowadź tytuł strony" instruction="Wprowadź instrukcje" prompt="Potwierdź monit" feedback="Wprowadź odpowiedź zwrotną" align="Left" panelWidth="Medium" label="Sprawdź" labelWidth="100"/>]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Wprowadź tytuł strony" text="Wprowadź tekst dla strony" intro="Wprowadź tutaj wprowadzenie" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Wprowadź tytuł strony" instruction="Wprowadź instrukcje" prompt="Potwierdź monit" align="Left" panelWidth="Medium" navSetting="none" confirmBtnTxt="Potwierdź" confirmBtnTip="Potwierdź wybór" confirmBtnWidth="100" reportTitle="Lista tytułów strony i pasujące ID strony" 
+		  pageLabel="Nr strony" titleLabel="Tytuł:" idLabel="ID strony:" notFoundMessage="nie może zostać znalezione w tym projekcie." notSetMessage="Docelowa strona nie może być ustawiona dla tego Połączenia" />]]></cMcq><captivate><![CDATA[<captivate name="Wprowadź tytuł strony" url="Wybierz plik Captivate SWF"/>]]></captivate><categories><![CDATA[<categories name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" feedback="Wprowadź tutaj odpowiedź zwrotną" buttonLabel="Sprawdź odpowiedzi" buttonWidth="120"/>]]></categories><chart><![CDATA[<chart name="Wprowadź tytuł strony" chartTitle="Tytuł wykresu" chartType="line" text="Wprowadź tekst strony" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Strona kolumny"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Wprowadź nazwę strony" text="Wprowadź tutaj tekst dla strony" textWidth="narrow" url="Wybierz obraz" tip="Wprowadź wskazówkę dla obrazu" hidePanel="false" highlight="false" hicol="0xFFFF00" align="Left" navSetting="none"
+		  reportTitle="Lista tytułów strony i pasujące ID strony" pageLabel="Nr strony" titleLabel="Tytuł:" idLabel="ID łącza:" notFoundMessage="nie może zostać znalezione w tym projekcie." notSetMessage="Docelowa strona nie może być ustawiona dla tego Połączenia" continueBtnTxt="Zamknij" continueBtnWidth="100"/>]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Wprowadź tytuł strony" navSetting="none" reportTitle="Lista tytułów strony i pasujące ID strony" pageLabel="Nr strony" titleLabel="Tytuł:" idLabel="ID łącza:" />]]></connectorMenu><customHotspots><![CDATA[<customHotspots name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true" hotspotsTxt="Zbadaj diagram. Kliknij na różne części aby dowiedzieć się więcej." labelsTxt="Przeciągnij szpilki dla każdej etykiety do poprawnej pozycji na diagramie. Możesz w razie czego ponownie rozmieścić etykiety." showMeTxt="Użyj strzałek aby dowiedzieć się więcej." regionsTxt="Pokaż regiony" nextTxt="Następny" priorTxt="Poprzedni" nextBtnTxt="Następny" nextBtnTip="Następne pytanie" nextBtnWidth="100" checkBtnTxt="Sprawdź" checkBtnTip="Sprawdź swoją odpowiedź" checkBtnWidth="100" beforeQuesCount="Pytanie" nQValue="n" betweenQuesCount="z" afterQuesCount="" questionTxt="Która pozycja jest podświetlona na diagramie? Wybierz z poniższych opcji" wrong1stTxt="Nie. " wrong2ndTxt="jest podświetlona na zielono. Poprawa odpowiedź to" noOptionTxt="Nie wybrałeś opcji." correctTxt="To jest poprawna odpowiedź." continueTxt="Przenieś do następnego pytania" scoreLabel="Wynik" beforeScore="Twój wynik" nSValue="s" betweenScore="z" afterScore="w quizie" onCompletion="Możesz w każdym momencie jeszcze raz wykonać quiz" restart="Restart">CDATA</customHotspots>]]></customHotspots><delicious><![CDATA[<delicious name="Wprowadź tytuł strony" text="Wprowadź tekst strony" search="recent" term="Wprowadź etykiety" results="20" headerTxt="Zakładki Delicious dla" />]]></delicious><dialog><![CDATA[<dialog name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" attempts="2" tryTxt="Spróbuj ponownie" correctTxt="Poprawna odpowiedź została pokazana." moveOnTxt="Wciśnij ENTER aby pójść dalej." submitBtnTxt="Wyślij" nextBtnTxt="Następny"/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" url="Wybierz obraz" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Wprowadź wskazówkę dla obrazu" tryAgainTxt="Spróbuj ponownie"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Zawartość osadzona" src="Wprowadź HTML lub URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Wprowadź tytuł strony" url="Wybierz plik Flash Paper SWF"/>]]></flashPaper><flickr><![CDATA[<flickr name="Wprowadź tytuł strony" keywords="Wprowadź tutaj słowa kluczowe do wyszukiwania" content="all use" deriv="unrestricted" nextTipTxt="Następny obraz" priorTipTxt="Poprzedni obraz" loadingTxt="Ładowanie..." imageTxt="Obraz {i} z {n} obrazów" >Wprowadź tutaj tekst dla strony</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" passage="Wprowadź tutaj interaktywny tekst. Aby zaznaczyć słowa dla ćwiczenia, wybierz słowo używając myszy i klikając przyciskiem myszy, wybierz z menu pozycję." interactivity="Przeciągnij i upuść" feedback="Wprowadź tutaj odpowiedź zwrotną" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Wprowadź tytuł strony" src="Wprowadź tutaj osadzony kod"/>]]></geocommons><hangman><![CDATA[<hangman name="Wprowadź tytuł strony" text="Wprowadź tekst strony" words="Wprowadź tutaj słowa, umieszczając każde w oddzielnej linii" nextBtnTxt="Następny" nextBtnTip="Następne pytanie" nextBtnWidth="100" quesCount="Ćwiczenie {i} z {n}" />]]></hangman><hotspotImage><![CDATA[<hotspotImage name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" url="Wybierz obraz" interactivity="Pokaż mnie" highlight="false" hicol="0xFFFF00" align="Left" tip="Wprowadź wskazówkę dla obrazu" nextTxt="Następny" priorTxt="Poprzedni" />]]></hotspotImage><iSpring><![CDATA[<iSpring name="Wprowadź tytuł strony" url="Wybierz film iSpring" version="Pro"/>]]></iSpring><imageViewer><![CDATA[<imageViewer name="Wprowadź tytuł strony" align="Left" url="Wybierz obraz" moveTip="Przenieś" zoomInTip="Powiększ" zoomOutTip="Zmniejsz" selectAreaTip="Wybierz obszar" resetImageTip="Reset obrazu" toggleScreenTip="Przełącza na pełny ekran">Wprowadź tutaj tekst dla strony</imageViewer>]]></imageViewer><inventory><![CDATA[<inventory name="Wprowadź tytuł strony" instructions="Wprowadź instrukcje dla użytkownika" feedback="Wprowadź odpowiedź zwrotną" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Tytuł wykresu" chartType="bar" chartColour="0xFFFF00"
+		  quesCount="Pytanie {i} z {n}" feedbackLabel="Odpowiedź zwrotna" testModeText="Klasa : Waga powyższych opcji (wyłącz Wsparcie Autora aby to ukryć)" submitBtnText="Wyślij" submitBtnTip="Wyślij odpowiedź" submitBtnWidth="100" 
+		  nextBtnText="Następny" nextBtnTip="Następne pytanie" nextBtnWidth="100" 
+		  restartBtnText="Restart" restartBtnTip="Restartuj quiz" restartBtnWidth="100"	  
+		  />]]></inventory><jing><![CDATA[<jing name="Wprowadź tytuł strony" url="Wybierz plik Jing SWF"/>]]></jing><jmol><![CDATA[<jmol name="Wprowadź tytuł strony" text="Wprowadź tekst dla strony" xyz="Wybierz plik XYZ" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Wprowadź tytuł strony" text="Wprowadź tekst strony" cols="3" height="80"/>]]></links><list><![CDATA[<list name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony"/>]]></list><map><![CDATA[<map name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" align="left" mapurl="Wklej tutaj link" maptype="roadmap" tooltip="Wprowadź wskazówkę" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Wprowadź tytuł strony" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Wprowadź tytuł strony" instruction="Wprowadź instrukcje" prompt="Potwierdź monit" type="Odpowiedź pojedyncza" align="Left" panelWidth="Medium"
+		  feedbackLabel="Odpowiedź zwrotna" singleRight="Twoja odpowiedź jest poprawna!" singleWrong="Twoja odpowiedź jest niepoprawna!" multiRight="Podałeś wszystkie poprawne odpowiedzi" multiWrong="Nie wybrałeś wszystkich poprawnych odpowiedzi" checkBtnTxt="Sprawdź" checkBtnTip="Sprawdź odpowiedź" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Wprowadź tytuł strony" resetBtnTxt="Losuj karty"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" prompt="Wprowadź tutaj monit" feedback="Wprowadź tutaj odpowiedź zwrotną" panelWidth="Medium" align="left" feedbackBtnTxt="Odpowiedź zwrotna" feedbackBtnTip="Odpowiedź zwrotna" feedbackBtnWidth="80" instructHeaderATxt="Instrukcja i pytanie na stronie" instructHeaderBTxt="był:" responseHeaderTxt="Twoja odpowiedź to:" noAnswerHeaderTxt="Nie odpowiedziałeś na to pytanie." exampleHeaderTxt="Przykładowa odpowiedź to:" copyBtnLabel="Wybierz tekst" copyShortcutTxt="Naciśnij Ctrl + C aby skopiować" closeBtnTxt="zamknij"/>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Wprowadź tytuł strony" copyBtnTxt="Kopiuj do schowka" copyBtnTip="Kopiuj do schowka" copyBtnWidth="130" copyBtnLabel="Wybierz tekst" 
+		  copypasteinfo="Uwaga: Kliknij przycisk 'Wybierz tekst' aby podświetlić tekst na prawo i wtedy Ctrl + C aby skopiować ten tekst do schowka. Wtedy wklej (Ctrl + V) do innej aplikacji tj. LibreOffice, Word lub email aby zapisać to w przyszłości."
+		  >Wprowadź tutaj tekst dla strony</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Wprowadź tytuł"  instruction="Dostarcz tutaj instrukcje" text="Dostarcz tutaj początkowy tekst" prompt="dostarcz monit" answer="Dostarcz tutaj model odpowiedzi" answerHeaderTxt="Napisz tutaj swoją odpowiedź:" feedbackBtnTxt="Odpowiedź zwrotna" feedbackBtnTip="Odpowiedź zwrotna" feedbackBtnWidth="80"
+		  />]]></modify><morphImages><![CDATA[<morphImages name="Wprowadź tytuł strony" text="Wprowadź tekst strony" url="Wybierz obraz" tip1="Wprowadź wskazówkę dla obrazu 1" url2="Wybierz obraz" tip2="Wprowadź wskazówkę dla obrazu 2" zoomSpeed="3" buttonLabel="Powiększ" zoomBtnTip="Odpowiedź zwrotna" zoomBtnWidth="80"><hotspot name="powiększenie regionu" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="Nowe okno" text="Wprowadź tekst dla strony" url="Wprowadź URL do uruchomienia" previewImage="Wybierz obraz podglądowy" tip="Wprowadź podpowiedź" windowWidth="550" windowHeight="400"/>]]></newWindow><orient><![CDATA[<orient name="Wprowadź tytuł strony" goalsHeader="Cele i zadania" goals="Wymień cele dla tej treści"
+		  audienceHeader="Docelowa grupa odbiorców" audience="Opisz docelową grupą odbiorców"
+		  prereqHeader="Warunki wstępne" prereq="Podaj jakąś wstępną wiedzę lub doświadczenie"
+		  howtoHeader="Jak użyć tego zasobu" howto="Opisz jak użytkownik może najlepiej użyć zasób"/>]]></orient><perspectives><![CDATA[<perspectives name="Wprowadź tytuł strony" backBtnTip="Powrót" nextBtnTip="Naprzód" videoTip="Klip filmowy" soundTip="Klip dźwiękowy"/>]]></perspectives><quiz><![CDATA[<quiz name="Wprowadź tytuł strony" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Dostarcz tutaj instrukcje" judge="true" showfeedback="true" feedback="Dostarcz tutaj odpowiedź zwrotną"  
+		  quesCount="Pytanie {i} z {n}" feedbackLabel="Odpowiedź zwrotna" 
+		  singleRight="Twoja odpowiedź jest poprawna!" singleWrong="Twoja odpowiedź jest niepoprawna" multiRight="Wybrałeś wszystkie poprawne odpowiedzi" 
+		  multiWrong="Nie wybrałeś poprawnej kombinacji zaznaczonych odpowiedzi" 
+		  onCompletion="Pomyślnie ukończyłeś to ćwiczenie" score="Twój wynik {i} / {n}" 
+		  submitBtnText="Wyślij" submitBtnTip="Wyślij odpowiedź" submitBtnWidth="100" 
+		  nextBtnText="Następny" nextBtnTip="Następne pytanie" nextBtnWidth="100" restartBtnText="Restartuj" restartBtnTip="Restartuj quiz" restartBtnWidth="100"
+		  />]]></quiz><raptivity><![CDATA[<raptivity name="Wprowadź tytuł strony" url="Wybierz plik Raptivity SWF"/>]]></raptivity><rss><![CDATA[<rss name="Wprowadź tytuł strony" text="Wprowadź tekst strony" url="Wprowadź URL Kanału" align="Left"/>]]></rss><scenario><![CDATA[<scenario name="Nazwa scenariusza" title="Tytuł scenariusza" description="Opis scenariusza" navSetting="none" imageButtonShow="Pokaż media" imageButtonHide="Ukryj media" imageButtonWidth="100" continueButtonLabel="Kontynuuj" continueButtonWidth="100" scenarioPropsTitle="Możesz zobaczyć..." scenarioPropsName="pozycji" inventoryEmpty="Nic" inventoryTitle="Masz przy sobie.." inventoryItemName="pozycji"
+		   actionTitle="Akcje które możesz wykonać..." scoresTitle="Wyniki"
+		   scoresDebugMessage="Proszę otworzyć ten kreator formularza i dodaj sekcję konfiguracji wyniku, aby zdefiniować które wyniki chcesz wyświetlić"
+		   reportTitle="Lista tytułów strony i pasujących ID strony" pageLabel="Nr strony" titleLabel="Tytuł:" idLabel="ID łącza:" notFoundMessage="nie może zostać znalezione w tym projekcie."
+		   notSetMessage="Docelowa strona nie może być ustawiona dla tego Połączenia"><gameSetup name="Konfiguracja wyniku"
+		   score1Use="1" score1Label="Etykieta dla wyniku 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min"
+		   score1WinMessage="Koniec scenariusza - twój wynik 1" score1LoseMessage="Koniec scenariusza - wynik 1 jest zbyt niski" score1WinEndID="" score1LoseEndID=""
+		   score2Use="1" score2Label="Etykieta dla wyniku 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min"
+		   score2WinMessage="Koniec scenariusza - twój wynik 2" score2LoseMessage="Koniec scenariusza - wynik 2 jest zbyt niski" score2WinEndID="" score2LoseEndID=""
+		   score3Use="1" score3Label="Etykieta dla wyniku 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
+		   score3WinMessage="Koniec scenariusza - twój wynik 3" score3LoseMessage="Koniec scenariusza - wynik 3 jest zbyt niski" score3WinEndID=""
+		   score3LoseEndID="" /><scenarioActions name="Lista akcji scenariusza" /><propList name="Lista rekwizytów w scenariuszu" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium" nextBtnTip="Następny" priorBtnTip="Poprzedni" slideCount="Slajd {i} z {n}"/>]]></slideshow><summary><![CDATA[<summary name="Wprowadź tytuł strony" summaryHeader="Podsumowanie" summary="Omówienie kluczowych punktów" nextstepsHeader="Następne kroki" nextsteps="Zasugeruj jak wiedza może być użycia i podaj inne użyteczne kroki"/>]]></summary><tabNav><![CDATA[<tabNav name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Wprowadź tytuł strony" tabWidth="100"/>]]></tabNavExtra><table><![CDATA[<table name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" align="left" loadingPrompt="Ładowanie danych..."><tableData name="Nazwa tabeli" data="dane|dane" size="medium" borders="simple" header="nagłówek" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Wprowadź tytuł strony">Wprowadź tutaj tekst dla strony</text>]]></text><textDrawing><![CDATA[<textDrawing name="Wprowadź tytuł strony" desc="Wprowadź opis" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Wprowadź tytuł strony" align="Left" imagesize="auto" url="Wybierz obraz" tip="Wprowadź wskazówkę" transcriptbuttonlabel="Transkrypcja">Wprowadź tutaj tekst dla strony</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Wprowadź tytuł" text="Dostarcz tutaj instrukcje" correctMessage="Poprawne odpowiedzi zostały pokazane" submitBtnTxt="Wyślij" submitBtnTip="Wyślij" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Wprowadź tytuł strony" align="Left" url="Wybierz plik SWF" tip="Wprowadź wskazówkę" >Wprowadź tutaj tekst dla strony</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Wprowadź tytuł strony" align="Left" url="Wybierz wideo" tip="Wprowadź wskazówkę" reset="true" transcriptTabTxt="Transkrypcja" transcriptTabTip="Transkrypcja" transcriptTabWidth="90">Wprowadź tutaj tekst dla strony</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Wprowadź tytuł strony" text="Wprowadź tekst dla strony" nextBtnTip="Następny" priorBtnTip="Poprzedni"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Wprowadź tytuł strony" text="Wprowadź tutaj tekst dla strony" interactivity="Oś czasu" feedback="Wprowadź tutaj odpowiedź zwrotną" checkBtnTxt="Sprawdź odpowiedzi" checkBtnTip="Sprawdź odpowiedzi" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Wprowadź tytuł strony" size="30">Wprowadź tutaj tytuł</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Wprowadź tytuł strony" sound="Wybierz plik dźwiękowy" text="Wprowadź tutaj tekst dla strony" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Wprowadź tytuł strony" url="Wybierz film" text="Wprowadź tutaj tekst dla strony" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Wprowadź tytuł strony" text="Wprowadź tekst strony" url="Wprowadź URL artykułu" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Wprowadź tytuł strony" modelFile="Wybierz model" errorTxt="Nie możesz wyświetl ten typ zawartości w przeglądarce HTML." />]]></xerteModel><youtube><![CDATA[<youtube name="Wprowadź tytuł strony" text="Wprowadź tekst strony" launchvideo="Uruchom wideo">Wprowadź tutaj osadzony kod</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Wprowadź tytuł strony" text="Wprowadź tekst strony" url="Wprowadź szukane hasło" results="20"
+		  resultsTxt="Rezultaty YouTube dla szukanego hasła"/>]]></youtuberss></newNodes>
+	</learningObject>
+
+	<!-- MENU TEKST -->
+	<bullets menu="Tekst" menuItem="Punktory" hint="Strona animowanych punktów." label="Tekst strony" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<delaySecs label="Opóźnienie (s)" type="NumericStepper" min="1" max="10" step="0.25" width="100" defaultValue="1"/>
+		<showBullets label="Dodaj punkty do tekstu" options="Tak,Nie" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
+		<showPanel label="Wyświetl biały panel" options="Tak,Nie" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</bullets>
+ 
+	 <orient menu="Tekst" menuItem="Orientacja" hint="Strona dla orientacji użytkowników przed rozpoczęciem pracy z zawartością" icon="icPageWhiteInfo" remove="true" thumb="thumbs/orient.jpg">
+		<name label="Tytuł strony" type="TextInput"/>
+		<goalsHeader label="Nagłówek celów" type="TextInput"/>
+		<goals label="Cele" type="TextArea" height="100"/>
+		<audienceHeader label="Nagłówek publiczności" type="TextInput"/>	
+		<audience label="Publiczność docelowa" type="TextArea" height="100"/>
+		<prereqHeader label="Nagłówek wymagań wstępnych" type="TextInput"/>	
+		<prereq label="Wymagania wstępne" type="TextArea" height="100"/>
+		<howtoHeader label="Jak stosować nagłówek" type="TextInput"/>
+		<howto label="Jak stosować" type="TextArea" height="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</orient>
+  
+	<summary menu="Tekst" menuItem="Podsumowanie" hint="Strona przedstawiająca kluczowe punkty podsumowania i sugestii" icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
+		<name label="Tytuł strony" type="TextInput"/>
+		<summaryHeader label="Nagłowek podsumowania" type="TextInput"/>
+		<summary label="Podsumowanie" type="TextArea" height="100"/>
+		<nextstepsHeader label="Nagłówek następnych kroków" type="TextInput"/>
+		<nextsteps label="Następne kroki" type="TextArea" height="100"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</summary>
+  
+	<text label="Tekst strony" type="text" height="360" menu="Tekst" menuItem="Zwykły tekst" hint="Zwykła i prosta strona tekstu." icon="icPageWhiteText" thumb="thumbs/plaintext.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<textWidth label="Szerokość tekstu" options="Mały,Średni,Duży,Pełny" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
+		<subSuper label="Wsparcie SuperSkryptu" type="CheckBox" defaultValue="false" optional="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</text>
+  
+  
+	<title menu="Tekst" menuItem="Strona tytułowa" hint="Prosta strona dla wyświetlania tytułu" label="Tekst tytułu" icon="icPageWhiteText" thumb="thumbs/title.jpg" type="text" height="22" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<size label="Rozmiar tekstu" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<bgImage label="Obraz tła" type="media" optional="true"/>
+		<bgImageAlpha label="Alfa tła" type="NumericStepper" min="10" max="100" step="10" defaultValue="50" optional="true"/>
+		<bgImageVAlign label="Wyrównanie pionowe tła" options="Góra,Środek,Dół" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
+		<bgImageHAlign label="Wyrównanie poziome tła" options="Lewy,Środek,Prawy" type="ComboBox" width="120" data="left,centre,right" defaultValue="centre" optional="true"/>
+		<bgImageVConstrain label="Max. wysokość tła" type="NumericStepper" min="10" max="500" step="10" defaultValue="500" optional="true"/>
+		<bgImageHConstrain label="Max. szerokość tła" type="NumericStepper" min="10" max="800" step="10" defaultValue="800" optional="true"/>
+		<titleVAlign label="Wyrównanie pionowe tytułu" options="Góra,Środek,Dół" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
+		<titleHAlign label="Wyrównanie poziome tytułu" options="Lewy,Środek,Prawy" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
+		<titleTextColour label="Kolor tekstu tytułu" type="ColourPicker" defaultValue="0x016A71" optional="true"/>
+	</title>
+  
+  	<!-- MENU MEDIA --> 
+	<audioSlideshow menu="Media" menuItem="Pokaz slajdów dźwiękowych" hint="Sekwencja serii obrazów z podkładem dźwiękowym" icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<sound label="Plik dźwiękowy" type="Media"/>
+		<text label="Tekst strony" type="TextArea" height="200"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" data="Small,Medium,Large,Full" defaultValue="Small" type="ComboBox" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+			<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość dla panelu" align="Top" synch="0"/>]]></nestedPage>
+		</newNodes>
+	</audioSlideshow>
+
+	<bleedingImage menu="Media" menuItem="Zaawansowany obraz" hint="Strona tekstu i grafiki z elastycznym szablonem włączając krwawiący obraz jednej z krawędzi fazy lub dodając margines." label="Tekst strony" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Góra,Dół" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox" width="100"/>
+		<imagesize label="Rozmiar obrazu" options="auto,pełny ekran" data="auto,full screen" defaultValue="auto" type="ComboBox" width="100"/>
+		<url label="Obraz" type="media"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<linktarget label="Docelowy link, np. _blank" type="textInput" width="70" optional="true"/>
+		<link label="Link i ikona" type="textInput" optional="true"/>
+		<linkIntro label="Link tekstu wprowadzającego" type="textInput" optional="true"/>	
+		<sound label="Dźwięk" type="media" optional="true"/>
+		<magnifier label="Lupa" type="checkBox" defaultValue="false" optional="true"/>
+		<addmargin label="Margines obrazu" type="Checkbox" defaultValue="false" optional="true"/>
+		<size label="Rozmiar tekstu" type="ComboBox" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>    
+	</bleedingImage>
+
+	<captivate menu="Media" menuItem="Film Captivate" hint="Strona zawierająca Captivate SWF. Captivate dostarcza prostą drogę wyświetlania zrzutów ekranu w twojej prezentacji." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Plik Captivate SWF" type="media"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>	
+	</captivate>
+
+	<flashPaper menu="Media" menuItem="Papier Flash" hint="Strona dla włączenia Papieru Flash SWF. Papier Flash dostarcza prostą drogę wyświetlenia plików Word lub PowerPoint w twojej prezentacji." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Plik Papieru Flash SWF" type="media"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</flashPaper> 
+
+	<iSpring menu="Media" menuItem="Film iSpring" hint="Dodawanie filmu iSpring, który może mieć max. 685x514 pikseli." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="film iSpring" type="Media"/>
+		<version label="Wersja" options="Darmowy,Pro" type="ComboBox" data="Free,Pro" defaultValue="Free" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</iSpring>
+
+	<imageViewer menu="Media" menuItem="Przeglądarka obrazu" hint="Pozwala użytkownikowi powiększać i zmniejszać duży obraz i wybrać obszary. Użyteczna droga prezentacji dużych obrazów na małym ekranie." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Tekst strony" type="text" height="250" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>  
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Góra,Dół" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
+		<url label="Obraz" type="media"/>
+		<moveTip label="Wskazówka Przycisku Przenieś" type="textInput" divider="true" language="true"/>	
+		<zoomInTip label="Wskazówka Przycisku Powiększ" type="textInput" language="true"/>
+		<zoomOutTip label="Wskazówka Przycisku Zmniejsz" type="textInput" language="true"/>
+		<selectAreaTip label="Wskazówka Przycisku Wybierz" type="textInput" language="true"/>
+		<resetImageTip label="Wskazówka Przycisku Reset" type="textInput" language="true"/>
+		<toggleScreenTip label="Wskazówka Przycisku Przełącz" type="textInput" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</imageViewer>
+  
+	<jing menu="Media" menuItem="Film Jing" hint="Strona dla filmów Jing, które dostarczają prostą i darmową drogę do wyświetlania zrzutów ekranu w twojej prezentacji." icon="icLightbulb" thumb="thumbs/jing.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Plik Jing SWF" type="media"/>
+		<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</jing>
+	
+	<jmol menu="Media" menuItem="Przeglądarka JMOL" hint="Dostarcza przeglądarkę dla plików JMOL" icon="icAtom" thumb="thumbs/jmol.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="150"/>
+		<xyz label="Plik modelu" type="Media"/>
+		<size type="ComboBox" options="Mały,Średni,Duży" label="Rozmiar modelu" defaultData="Medium" width="100"/>
+		<initLook label="Początkowy wygląd" options="CPK,Piłka i kij,Kije,Szkielet,Rysunek,Kręgosłup" type="ComboBox" data="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" defaultData="Ball and Stick" width="120"/>
+		<colour type="ComboBox" options="domyślny,element,aminokwas,łańcuch,struktura wtórna" label="Początkowy kolor" defaultValue="Default" width="140"/>
+		<controls label="Pokaż pasek kontrolny" type="CheckBox" defaultValue="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<cartoonOpt label="Opcje rysunku" type="CheckBox" defaultValue="true" optional="true"/>	
+		<backOpt label="Opcje kręgosłupa" type="CheckBox" defaultValue="true" optional="true"/>
+		<colourOpt type="CheckBox" label="Pasek kontrolny - kolor" optional="true"/>	
+		<labelOpt type="CheckBox" label="Pasek kontrolny - etykieta" optional="true"/>
+		<surfaceOpt type="CheckBox" label="Pasek kontrolny - powierzchnia" optional="true"/>
+		<scriptOpt type="CheckBox" label="Pasek kontrolny - skrypt" optional="true"/>
+		<initScript type="TextInput" label="Początkowy skrypt Jmol" optional="true"/>
+		<bgColour label="Kolor tła" type="ComboBox" options="Biały,Czarny,Niebieski" width="120" optional="true"/>
+		<initSpin label="Wir" type="CheckBox" optional="true"/>
+		<xyz2 label="Plik 2. modelu" type="Media" optional="true"/>	
+	</jmol>  
+	
+	<morphImages menu="Media" menuItem="Morfing obrazów" hint="Zezwala jednemu obrazkowi na zamianę w drugi" icon="icZoomIn" thumb="thumbs/morphImages.png" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<url label="Pierwszy obraz" type="media"/>
+		<tip1 label="Wskazówka 1" type="TextInput"/>
+		<url2 label="Drugi obraz" type="media"/>
+		<tip2 label="Wskazówka 2" type="TextInput"/>
+		<zoomSpeed label="Szybkość powiększenia" type="NumericStepper" min="1" max="10" step="1" defaultValue="3"/>
+		<buttonLabel label="Etykieta przycisku" type="TextInput" divider="true" language="true"/>
+		<zoomBtnTip label="Wskazówka przycisku" type="textInput" language="true"/>	
+		<zoomBtnWidth label="Szerokość przycisku" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true"/>		
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</morphImages>
+	
+	<perspectives menu="Media" menuItem="Wiele perspektyw" hint="Strona dla wielu wideo i klipów muzycznych, które mogą być przeglądane i porównywane." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<backBtnTip label="Wskazówka przycisku Wstecz" type="TextInput" language="true"/>
+		<nextBtnTip label="Wskazówka przycisku Następny" type="TextInput" language="true"/>	
+		<videoTip label="Ogólna wskazówka wideo" type="TextInput" language="true"/>	
+		<soundTip label="Ogólna wskazówka dźwięku" type="TextInput" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		<movie><![CDATA[<movie txt="Wprowadź tutaj tekst dla strony" src="Wybierz wideo" name="Video"></movie>]]></movie>
+		<sound><![CDATA[<sound txt="Wprowadź tutaj tekst dla strony" src="Wybierz dźwięk" name="Sound"></sound>]]></sound>
+		<image><![CDATA[<image txt="Wprowadź tutaj tekst dla strony" src="Wybierz obraz" name="Image" tooltip="Wprowadź wskazówkę"></image>]]></image>	  
+		</newNodes>
+	</perspectives>
+		<movie menuItem="Wideo" icon="icPageWhiteFilm" duplicate="true" remove="true">
+			<name label="Tytuł" type="TextInput"/>
+			<txt label="Tekst" type="TextArea" height="300"/>
+			<src label="Plik wideo" type="media"/>
+			<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		</movie>
+		<sound menuItem="Dźwięk" icon="icSound" duplicate="true" remove="true">
+			<name label="Tytuł" type="TextInput"/>
+			<txt label="Tekst" type="TextArea" height="300"/>
+			<src label="Plik dźwięku" type="media"/>
+			<img label="Obraz" type="media" optional="true"/>
+			<tooltip label="Wskazówka obrazka" type="TextInput" optional="true"/>
+		</sound>
+		<image menuItem="Obraz" icon="icImage" duplicate="true" remove="true">
+			<name label="Tytuł" type="TextInput"/>
+			<txt label="Tekst" type="TextArea" height="300"/>
+			<src label="Plik obrazka" type="media"/>
+			<tooltip label="Wskazówka obrazka" type="TextInput"/>
+		</image>
+
+	<raptivity menu="Media" menuItem="Raptivity SWF" hint="Strona dla włączenia SWF Raptivity." icon="icRaptivity" thumb="thumbs/raptivity.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Plik Raptivity SWF" type="media"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</raptivity>
+
+	<textDrawing menu="Media" menuItem="Rysunek" hint="Użyj narzędzia rysunku aby załączać swoje diagramy, obrazy opatrzone komentarzami i własną zawartością graficzną." label="Edytuj rysunek" type="drawing" icon="icPageWhiteEdit" thumb="thumbs/textDrawing.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<desc label="Tekst strony" type="textArea" height="300"/>
+		<align label="Wyrównanie" options="Lewy,Prawy" type="comboBox" data="left,right" defaultValue="left" width="100"/>
+		<interactivity label="Interaktywność" options="Wyłączona,Włączona" type="ComboBox" data="off,on" defaultValue="off" width="100"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</textDrawing>
+
+	<textGraphics menu="Media" menuItem="Grafika i dźwięk" hint="Strona dla prezentacji tekstu i grafiki. Możesz także dodatkowo dodać dla tej strony dźwięk." label="Tekst strony" type="text" height="300" icon="icPageWhitePicture" thumb="thumbs/textGraphics.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Góra,Dół" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
+		<imagesize label="Rozmiar obrazka" options="auto,aktualny rozmiar,pełny ekran" type="ComboBox" data="auto,actual size,full screen" defaultValue="auto" width="100"/>
+		<url label="Obraz" type="media"/>
+		<tip label="Podpowiedź dla obrazka" type="TextInput"/>
+		<transcriptbuttonlabel label="Etykieta przycisku Przezroczystości" type="textInput" divider="true" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<transcript label="Przezroczystość" type="textArea" height="100" optional="true"/>
+		<hidePanel label="Ukryj panel" type="checkBox" defaultValue="false" optional="true"/>
+		<magnifier label="Lupa" type="checkBox" defaultValue="false" optional="true"/>
+		<sound label="Dźwięk" type="media" optional="true"/>
+	</textGraphics>
+
+	<textSWF menu="Media" menuItem="Animacje Flash" hint="Strona integrująca animacje Flash i filmy z twoją stroną." label="Tekst strony" icon="icPageWhiteFlash" thumb="thumbs/textSWF.jpg" type="text" height="300" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<url label="Plik SWF" type="media"/>
+		<tip label="Podpowiedź dla obrazka" type="TextInput"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<movieSize label="Rozmiar wideo" type="textInput" optional="true"/>
+		<controls label="Interaktywność" options="Pasek kontrolny,Natywny SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+		<initObject label="Obiekt początkowy" type="TextArea" height="60" optional="true"/>
+	</textSWF>
+
+	<textVideo menu="Media" menuItem="Wideo" hint="Strona integrująca pliki wideo FLV z twoją prezentacją" label="Tekst strony" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Góra,Dół" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
+		<url label="Plik wideo" type="media"/>
+		<tip label="Wskazówka wideo" type="TextInput"/>
+		<reset label="Resetowanie po zakończeniu" type="Checkbox" defaultValue="false"/>
+		<transcriptTabTxt label="Etkieta przezroczystej zakładki" type="textInput" divider="true" language="true"/>
+		<transcriptTabTip label="Wskazówka przycisku Sprawdzania" type="textInput" language="true"/>
+		<transcriptTabWidth label="Szerokość przycisku Sprawdzania" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true"/>
+		<startFrame label="Czas startu" type="textInput" defaultValue="0" optional="true"/>
+		<endFrame label="Czas zakończenia" type="textInput" defaultValue="0" optional="true"/>
+		<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		<transcript label="Przezroczystość" type="textArea" height="150" optional="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</textVideo>
+
+	<transcriptReader menu="Media" menuItem="Czytnik transkrypcji" hint="Strona która odtwarza dźwięk synchronizowany z zapisem" icon="icTranscript" thumb="thumbs/transcriptReader.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<sound label="Plik dźwiękowy" type="Media"/>
+		<text label="Tekst strony" type="TextArea" height="200"/>
+		<panelWidth label="Szerokość panela" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
+		<timedText label="Tekstowy plik czasu" type="Media" optional="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+		<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość panelu" align="Top" synch="0"/>]]></nestedPage>
+		</newNodes>
+	</transcriptReader>
+
+	<videoSynch menu="Media" menuItem="Zsynchronizowane wideo" hint="Synchronizuje fragmenty tekstu do filmu." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Film" type="Media"/>
+		<text label="Tekst strony" type="TextArea" height="200"/>
+		<pause label="Zatrzymaj na punktach synchronizacji" options="Prawda,Fałsz" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
+		<erase label="Wymaż" options="Prawda,Fałsz" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
+		<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		<timedText label="Tekstowy plik czasu" type="Media" optional="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+		<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość panelu" align="Top" synch="0"/>]]></nestedPage>
+		</newNodes>
+	</videoSynch>
+
+	<xerteModel menu="Media" menuItem="Zawartość Xerte" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Dodaj własną treść Xerte do prezentacji. Własna treść Xerte pozwala dodawać funkcjonalność nie dostępną w szablonach stron i utworzyć dedykowaną interaktywność.">
+		<name type="TextInput" label="Tytuł strony"/>
+		<modelFile type="media" label="Model Xerte"/>
+		<initObject type="TextInput" label="Obiekt początkowy" optional="true"/>
+		<errorTxt label="Tekst błędu" type="TextInput" divider="true" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID dla tej strony" type="TextInput" optional="true"/>
+	</xerteModel>
+
+  	<!-- MENU NAWIGACJA -->
+	<accNav menu="Nawigacja" menuItem="Nawigacja akordeonowa" hint="Nawigacja akordeonowa pozwala tobie na stworzenie grupy paneli do prezentowania powiązanego tekstu i zawartości graficznej." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		  <nestedPage><![CDATA[<nestedPage name="name" text="Zawartość dla panelu" align="Top"/>]]></nestedPage>
+		</newNodes>
+	</accNav>
+  
+	<nestedPage menuItem="Strona zagnieżdżona" icon="icBullet" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst strony" type="TextArea" height="250"/>
+		<align label="Wyrównanie tekstu" options="Góra,Dół" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
+		<linktarget label="Link z obrazka" options="Brak,Oryginalny obraz,Określony URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+		<link label="Określony URL" type="textInput"/>	  
+		<url label="Obraz" type="media" optional="true"/>
+		<tip label="Wskazówka obrazka" type="textInput" optional="true"/>
+		<synch label="Punkt sychronizacji" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100" optional="true"/>
+		<initObject label="Obiekt początkowy" type="TextInput" optional="true"/>
+		<controls label="Interaktywność" options="Pasek kontrolny,Natywny SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+	</nestedPage>
+
+	<buttonNav menu="Nawigacja" menuItem="Przycisk nawigacji" hint="Prezentuje serię stron powiązanego tekstu i zawartości graficznej kontrolowanych przez pasek kontrolny." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<buttonWidth label="Szerokość przycisku" type="NumericStepper" min="20" max="250" step="10" defaultValue="100" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		  <nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość dla panelu" align="Top"/>]]></nestedPage>
+		</newNodes>
+	</buttonNav>
+	
+	<columnPage menu="Nawigacja" menuItem="Strona kolumn" hint="Prezentuje stronę z serią kolumn tekstu i dodatkowymi obrazami." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+		<name type="TextInput" label="Tytuł strony"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<header label="Tekst nagłówka" type="TextArea" height="100" optional="true"/>
+		<newNodes>
+		  <nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość dla panelu" align="Top"/>]]></nestedPage>
+		</newNodes>
+	</columnPage>
+	
+	<embedDiv menu="Nawigacja" menuItem="Osadzona zawartość" hint="Pozwala na załączanie każdej strony web, lub dodanie kodu osadzonego do twojego projektu" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+		<name type="TextInput" label="Tytuł strony"/>
+		<src label="Osadzony kod lub URL" type="TextArea" height="300"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<text label="Tekst" type="TextArea" height="150" optional="true"/>
+		<windowWidth label="Szerokość okna" options="Mały,Średni,Duży" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
+	</embedDiv>
+
+	<links menu="Nawigacja" menuItem="Hiperłącza" hint="Linki strony pozwalają na łatwe zmontowanie strony dostępnych linków klawiatury" icon="icWorld" remove="true" thumb="thumbs/links.jpg">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tytuł strony" type="TextArea" height="100"/>
+		<cols label="Liczba kolumn" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
+		<height label="Szerokość linku" options="Mały,Średni,Duży" type="ComboBox" data="55,80,105" defaultValue="80" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		<link><![CDATA[<link name="tytuł linku" text="opis linku" url="Link URL"/>]]></link>
+		</newNodes>
+	</links>
+	<link icon="icTagGreen">
+		<name label="tytuł linku" type="TextInput"/>
+		<text label="opis linku" type="TextArea" height="100"/>
+		<url label="URL" type="TextInput"/>
+	</link>
+
+	<newWindow menu="Nawigacja" menuItem="Nowe okno" hint="Pozwala użytkownikowi uruchamiać nowe okno z adresem URL" icon="icApplication" thumb="thumbs/newWin.png" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="150"/>
+		<url label="URL" type="TextInput"/>
+		<previewImage label="Obraz podglądowy" type="media"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<windowWidth label="Szerokość okna" type="NumericStepper" min="100" max="980" step="10" defaultValue="550" width="100"/>
+		<windowHeight label="Wysokość okna" type="NumericStepper" min="100" max="720" step="10" defaultValue="400" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<htm label="HTML" type="textArea" height="150" optional="true"/>
+	</newWindow>
+
+	<slideshow menu="Nawigacja" menuItem="Pokaz slajdów" hint="Prezentuje sekwencję stron powiązanego tekstu i zawartość graficzną nawigowanych przy użyciu dwóch strzałek." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<panelWidth label="Szerokość panela" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<nextBtnTip label="Wskazówka przycisku Następny" type="textInput" divider="true" language="true"/>
+		<priorBtnTip label="Wskazówka przycisku Poprzedni" type="textInput" language="true"/>
+		<slideCount label="Slajd {i} z {n} slajdów" type="textInput" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+		<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość panelu" align="Top"/>]]></nestedPage>
+		</newNodes>
+	</slideshow>
+
+	<tabNav menu="Nawigacja" menuItem="Nawigator zakładek" hint="Nawigator zakładek pozwala na stworzenie serii zakładkowych stron, aby zaprezentować powiązany tekst i zawartość graficzną." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<panelWidth label="Szerokość panela" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<tabWidth label="Szerokość zakładki" type="NumericStepper" min="20" max="250" step="10" width="100" defaultValue="100"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+			<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość panelu" align="Top"/>]]></nestedPage>
+		</newNodes>
+	</tabNav>
+	
+	<tabNavExtra menu="Nawigacja" menuItem="Nawigator zakładek +" hint="Nawigator zakładek + pozwala na stworzenie listy linków tematu. Każy temat wyświetla serię stron z zakładkami, aby przedstawić tekst i grafikę." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<tabWidth label="Szerokość zakładki" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100"/>
+		<rememberTab label="Zostań na obecnej zakładce" type="CheckBox" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+			<topic><![CDATA[<topic name="Wpisz nazwę tematu"><nestedTab name="Wpisz nazwę zakładki"><nestedPage name="Nazwa strony zagnieżdżonej" text="Zawartość panelu"/></nestedTab></topic>]]></topic>
+		</newNodes>
+	</tabNavExtra>
+	<topic menuItem="Temat" icon="icFolderPage">
+		<name label="Nazwa tematu" type="TextInput"/>
+		<newNodes>
+		  <nestedTab><![CDATA[<nestedTab name="Wprowadź nazwę zakładki"><nestedPage name="Nazwa strony zagnieżdżonej" text="Zawartość panelu"/></nestedTab>]]></nestedTab>
+		</newNodes>
+	</topic>
+	<nestedTab menuItem="Zakładka">
+		<name label="Nazwa panelu" type="TextInput"/>
+		<newNodes>
+			<nestedPage><![CDATA[<nestedPage name="Nazwa strony zagnieżdżonej" text="Zawartość panelu"/>]]></nestedPage>
+		</newNodes>
+	</nestedTab>
+	
+	<thumbnailViewer menu="Nawigacja" menuItem="Przeglądarka miniatur" hint="Prezentuje serię miniatur obrazów w celu przeglądnięcia przez użytkownika." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<nextBtnTip label="Wskazówka przycisku Następny" type="textInput" divider="true" language="true"/>
+		<priorBtnTip label="Wskazówa przycisku Poprzedni" type="textInput" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+			<nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość panelu" align="Top" url="" linktarget="none" link=""/>]]></nestedPage>
+		</newNodes>
+	</thumbnailViewer>
+	
+  	<!-- MENU ŁĄCZA -->
+	<cMcq menu="Łącza" menuItem="Złącze wielokrotnego wyboru" icon="icConMCQ" hint="Stwarza pytanie wielokrotnego wyboru z wieloma opcjami. Każda opcja odpowiedzi posiada przypisanej do niej stronę docelową" thumb="thumbs/connectorMCQ.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<instruction label="Instrukcje" type="TextArea" height="100"/>	
+		<prompt label="Monit" type="TextArea" height="100"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" width="100"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
+		<confirmBtnTxt label="Etykieta przycisku potwierdzenia" type="textInput" divider="true" language="true"/>
+		<confirmBtnTip label="Wskazówka przycisku potwierdzenia" type="textInput" language="true"/>	
+		<confirmBtnWidth label="Szerokość przycisku potwierdzenia" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+		<notFoundMessage label="Nie znaleziono wiadomości" type="TextInput" language="true"/>
+		<notSetMessage label="Nie ustawiono wiadomości" type="TextInput" language="true"/>	
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<info><![CDATA[<b>W celu uzyskania szczegółów jak użyć stronę złącza wielokrotnego wyboru <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">kliknij tutaj</a></u></b>]]></info>
+		<newNodes>
+		  <cOption><![CDATA[<cOption name="nazwa" text="tutaj jest opcja" destination="" />]]></cOption>
+		</newNodes>
+	</cMcq>
+	<cOption menuItem="Opcja" icon="icBullet" remove="true">
+		<name label="Tytuł opcji" type="TextInput"/>
+		<text label="Opcja" type="TextArea" height="100"/>
+		<destination label="Strona docelowa" type="pageList" defaultValue=""/>
+	</cOption>
+	
+	<connectorHotspotImage menu="Łącza" menuItem="Złącze gorących punktów obrazka" hint="Interakcja pozwalająca tobie na zaznaczanie obszarów obrazka i przypisywanie im docelowych stron." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="200"/>
+		<textWidth label="Min. szerokość tekstu" options="Brak tekstu,Mały,Średni,Max. dostępny" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
+		<url label="Obraz" type="media"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<hidePanel label="Ukryj panel" type="CheckBox" defaultValue="false"/>	
+		<highlight label="Podświetlenie gorących punktów" type="CheckBox" defaultValue="false"/>
+		<hicol label="Kolor podświetlenia" type="ColourPicker" defaultValue="0xFFFF00"/> 
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<notFoundMessage label="nie znaleziono wiadomości" type="TextInput" divider="true" language="true"/>
+		<notSetMessage label="nie ustawiono wiadomości" type="TextInput" language="true"/>
+		<continueBtnTxt label="etykieta przycisku zamykającego" type="TextInput" language="true"/>
+		<continueBtnWidth label="Szerokość przycisku zamykającego" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="100" language="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+		<popUpVAlign label="Wyskakujące pionowe wyrównanie" options="Góra,Środek,Dół" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
+		<popUpHAlign label="Wyskakujące poziome wyrównanie" options="Lewy,Środek,Prawy" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
+		<imageTransition label="Przejście obrazu" options="rolety,rozpuszczenie,blaknięcie,frunięcie,przesłona,ściśnięcie,przecierać,powiększyć" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<info><![CDATA[<b>W celu uzyskania szczegółów jak użyć strony złącza gorących punktów obrazka <u><a href="http://xerte.org.uk/docs/xot/help/HotspotImageConnectorPageGuide.pdf" target="_blank">kliknij tutaj</a></u></b>]]></info>
+		<newNodes>
+		  <cHotspot><![CDATA[<cHotspot name="nazwa" destination="Wprowadź ID strony aby przejść do" exitNav="all" text="Opis dla gorącego punktów" x="0" y="0" w="100" h="100" />]]></cHotspot>
+		</newNodes>
+	</connectorHotspotImage>
+
+	<cHotspot menuItem="Gorący punkt" label="Edytuj gorący punkt" type="hotSpot" icon="icLayers" remove="true">
+		<name label="Tytuł gorącego punktu" type="TextInput"/>
+		<destination label="Strona docelowa" type="pageList" defaultValue="" optional="true"/>
+		<hotspotSound label="Dźwięk" type="media" optional="true"/>
+		<hotspotMovie label="Wideo" type="media" optional="true"/>
+		<startFrame label="Początkowy start wideo" type="textInput" defaultValue="0" optional="true"/>
+		<endFrame label="Końcowy start wideo" type="textInput" defaultValue="0" optional="true"/>
+		<movieSize label="Rozmiar wideo (szerokość,wysokość)" type="textInput" defaultValue="320,240" optional="true"/>
+		<tip label="Wskazówka wideo" type="TextInput" optional="true"/>	
+		<reset label="Na końcu resetuj wideo" type="Checkbox" defaultValue="false" optional="true"/>	
+		<windowURL label="URL do zewnętrznej strony" type="TextInput" optional="true"/>
+		<windowWidth label="Szerokość okna URL" type="NumericStepper" min="100" max="1030" step="10" defaultValue="550" width="100" optional="true"/>
+		<windowHeight label="Wysokość okna URL" type="NumericStepper" min="100" max="1030" step="10" defaultValue="400" width="100" optional="true"/>
+		<htm label="URL HTML" type="textArea" height="150" optional="true"/>	
+		<relNav label="Względne połączenie" options="Pierwsza strona,Poprzednia strona,Następna strona,Ostatnia strona" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true"/>
+		<hotspotPopUp label="Wyskakujący tekst" type="TextArea" height="200" optional="true"/>
+	</cHotspot>
+
+	<connectorMenu menu="Łącza" menuItem="Złącze menu" hint="Strona która generuje menu dla wszystkich lub wybranych stron w projekcie" icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+		<itemHeight label="Wysokość pozycji menu" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true"/>
+		<itemSpacingX label="Odstęp poziomy" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true"/>
+		<itemSpacingY label="Odstęp pionowy" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true"/>	
+		<startPageID label="Pierwsze wprowadzenie tytułu strony" type="pageList" defaultValue="" optional="true"/>
+		<endPageID label="Ostatnie wprowadzenie tytułu strony" type="pageList" defaultValue="" optional="true"/>
+		<menuLineCol label="Kolor linii" type="ColourPicker" defaultValue="0x84A2C6" optional="true"/>
+		<menuFillCol label="Kolor wypełnienia" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
+		<menuOverLineCol label="Kolor linii (przez)" type="ColourPicker" defaultValue="0x456287" optional="true"/>	
+		<menuOverFillCol label="Kolor wypełnienia (przez)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
+		<listToClip label="Wyjściowa lista kontrolna" options="Nie wysyłaj tytułu strony i ID danych do schowka,Wyślij tytuł strony i listę ID do schowka (tylko tryb dewelopera),Wyślij tytuł HTML i tabelę ID do schowka (tylko tryb dewelopera)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<info><![CDATA[<b>W celu uzyskania szczegółów jak użyć stronę złącza menu <u><a href="http://xerte.org.uk/docs/xot/help/MenuConnectorPageGuide.pdf" target="_blank">kliknij tutaj</a></u></b>]]></info>
+		<newNodes>
+		  <cMenuListedPage><![CDATA[<cMenuListedPage name="strona" pageID=""/>]]></cMenuListedPage>
+		</newNodes>
+	</connectorMenu>
+		<cMenuListedPage menuItem="Wpis strony menu" remove="true">
+			<name label="Tytuł strony" type="TextInput"/>  
+			<pageID label="Wybierz stronę z listy" type="pageList" defaultValue=""/>	
+		</cMenuListedPage> 
+  
+	<scenario menu="Łącza" menuItem="Łącze Scenariusza" hint="Strona, która pozwala ustawić kompletne scenariusze ze scenami, rekwizyty, zdarzenia warunkowe i efekty, które mogą wziąć użytkownik do innych stron" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true">
+		<name label="Nazwa scenariusza" type="TextInput" width="200"/>
+		<title label="Tytuł scenariusza" type="TextInput" width="200"/>
+		<description label="Opis" type="textArea" height="120"/>
+		<imageButtonShow label="Pokaż przycisk Media" type="TextInput" width="200" divider="true" language="true"/>
+		<imageButtonHide label="Ukryj przycisk Media" type="TextInput" width="200" language="true"/>
+		<imageButtonWidth label="Szerokość przycisku Media" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="0" language="true"/>
+		<continueButtonLabel label="Przycisk Kontynuuj" type="TextInput" width="200" language="true"/>
+		<continueButtonWidth label="Szerokość przycisku Kontynuuj" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="0" language="true"/>
+		<scenarioPropsTitle label="Tytuł rekwizytów scenariusza" type="TextInput" width="200" language="true"/>
+		<scenarioPropsName label="Nazwa rekwizytów scenariusza" type="TextInput" width="200" language="true"/>
+		<inventoryEmpty label="Tekst pustego inwentarza" type="TextInput" width="200" language="true"/>
+		<inventoryTitle label="Tytuł inwentarza" type="TextInput" width="200" language="true"/>
+		<inventoryItemName label="Nazwa pozycji inwentarza" type="TextInput" width="200" language="true"/>
+		<actionTitle label="Tytuł akcji" type="TextInput" width="200" language="true"/>
+		<scoresTitle label="Tytuł wyników" type="TextInput" width="200" language="true"/>
+		<scoresDebugMessage label="Wiadomość testowania wyniku" type="TextArea" height="60" language="true"/>
+		<notFoundMessage label="Nie znaleziono wiadomości" type="TextInput" language="true"/>
+		<notSetMessage label="Nie ustanowiono wiadomości" type="TextInput" language="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<hideButtonPos label="Przycisk ukrywania Media" options="pod Media (lewy dolny), Taki sam jak Pokaż Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true"/>
+		<url label="Plik FLV, SWF lub obrazu" type="media" optional="true"/>
+		<reset label="Resetuj przy zakończeniu" type="Checkbox" defaultValue="true" optional="true"/>
+		<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		<controls label="Interaktywność" options="Pasek kontrolny,Natywny SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+		<initObject label="Obiekt początkowy" type="TextArea" height="60" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<info><![CDATA[<b>Aby uzyskać więcej szczegółów na temat użycia Stron Łącza Scenariusza <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">kliknij tutaj</a></u></b>]]></info>
+		<newNodes>
+			<gameSetup><![CDATA[<gameSetup name="Konfiguracja wyniku" score1Use="1" score1Label="Etykieta dla wyniku 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min"
+			score1WinMessage="Koniec scenariusza - twój wynik 1" score1LoseMessage="Koniec scenariusza - wynik 1 jest za niski" score1WinEndID="" score1LoseEndID=""
+			score2Use="1" score2Label="Etykieta dla wyniku 2" score2Min="0" score2Max="100" score2Start="0" score2ProgressBar="1" score2BarColour="0x6699CC" score2Win="max" score2Lose="min"
+			score2WinMessage="Koniec scenariusza - twój wynik 2" score2LoseMessage="Koniec scenariusza - wynik 2 jest za niski" score2WinEndID="" score2LoseEndID=""
+			score3Use="1" score3Label="Etykieta dla wyniku 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
+			score3WinMessage="Koniec scenariusza - twój wynik 3" score3LoseMessage="Koniec scenariusza - wynik 3 jest za niski" score3WinEndID="" score3LoseEndID="" />]]></gameSetup>
+			<scenarioActions><![CDATA[<scenarioActions name="Lista akcji scenariusza" />]]></scenarioActions>
+			<propList><![CDATA[<propList name="Lista rekwizytów w scenariuszu" />]]></propList>
+		</newNodes>	
+	</scenario>
+		<gameSetup menuItem="Konfiguracja wyników" remove="true" max="1">
+			<name label="Ustawianie Scenariusza" type="TextInput" width="200"/>
+			<score1Use label="Wyświetlenie wyniku 1" options="Tak,Nie" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
+			<score1Label label="Etykieta wyniku 1" type="TextInput" width="200"/>
+			<score1Min label="Wynik 1 min." type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0"/>
+			<score1Max label="Wynik 1 max." type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100"/>
+			<score1Start label="Wynik 1 zacznij od" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0"/>
+			<score1ProgressBar label="Wyświetl pasek postępu" options="Tak,Nie" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
+			<score1BarColour label="Kolor paska postępu" type="ColourPicker" defaultValue="0x6699CC"/>
+			<score1Win label="Wynik do wygrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="max" data="max,min,none" width="100"/>
+			<score1Lose label="Wynik do przegrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
+			<score1WinMessage label="Wynik 1 wiadomość wygrania" type="TextArea" height="60"/>
+			<score1LoseMessage label="Wynik 1 wiadomość przegrania" type="TextArea" height="60"/>
+			<score1WinEndID label="Wynik 1 wygrania przejdź do" type="pageList" default=""/>
+			<score1LoseEndID label="Wynik 1 przegrania idź do" type="pageList" default=""/>
+			<score2Use label="Wyświetl wynik 2" options="Tak,Nie" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
+			<score2Label label="Etykieta wyniku 2" type="TextInput" width="200"/>
+			<score2Min label="Wynik 2 min." type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0"/>
+			<score2Max label="Wynik 2 max." type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100"/>
+			<score2Start label="Wynik 2 rozpocznij od" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0"/>
+			<score2ProgressBar label="Wyświetl pasek postępu" options="Tak,Nie" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
+			<score2BarColour label="Kolor paska postępu" type="ColourPicker" defaultValue="0x6699CC"/>
+			<score2Win label="Wynik do wygrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="max" data="max,min,none" width="100"/>
+			<score2Lose label="Wynik do przegrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
+			<score2WinMessage label="Wynik 2 wiadomość wygrana" type="TextArea" height="60"/>
+			<score2LoseMessage label="Wynik 2 wiadomość przegranej" type="TextArea" height="60"/>
+			<score2WinEndID label="Wynik 2 wygrana idź do" type="pageList" default=""/>
+			<score2LoseEndID label="Wynik 2 przegrana idź do" type="pageList" default=""/>
+			<score3Use label="Wyświetl wynik 3" type="ComboBox" options="Tak,Nie" defaultValue="0" data="1,0" width="100"/>
+			<score3Label label="Etykieta wyniku 3" type="TextInput" width="200"/>
+			<score3Min label="Wynik 3 min." width="100" type="NumericStepper" min="0" max="500" step="10" defaultValue="0"/>
+			<score3Max label="Wynik 3 max." type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="100"/>
+			<score3Start label="Wynik 3 rozpocznij od" type="NumericStepper" min="0" max="500" step="10" width="100" defaultValue="0"/>
+			<score3ProgressBar label="Wyświetl pasek postępu" options="Tak,Nie" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
+			<score3BarColour label="Kolor paska postępu" type="ColourPicker" defaultValue="0x6699CC"/>
+			<score3Win label="Wynik do wygrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="max" data="max,min,none" width="100"/>
+			<score3Lose label="Wynik do przegrania" options="Max,Min,Żaden" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
+			<score3WinMessage label="Wynik 3 wiadomość wygranej" type="TextArea" height="60"/>
+			<score3LoseMessage label="Wynik 3 wiadomość przegranej" type="TextArea" height="60"/>
+			<score3WinEndID label="Wynik 3 wygrana idź do" type="pageList" default=""/>
+			<score3LoseEndID label="Wynik 3 przegrana idź do" type="pageList" default=""/>
+			<winEffect label="Plik dźwiękowy wygrania" type="media" optional="true"/>
+			<loseEffect label="Plik dźwiękowy przegrania" type="media" optional="true"/>
+		</gameSetup>
+		<propList menuItem="Lista rekwizytów w scenariuszu" remove="true" max="1">
+			<name label="Rekwizyty w scenariuszu" type="TextInput" width="200"/>
+			<newNodes>
+				<prop><![CDATA[<prop name="ID rekwizytu" title="Tytuł rekwizytu" description="Opis rekwizytu" state="visible" />]]></prop>
+			</newNodes>
+		</propList>
+		<prop menuItem="Rekwizyt" remove="true">
+			<name label="unikalny ID rekwizytu" type="TextInput" width="200"/>
+			<title label="Tytuł rekwizytu" type="TextInput" width="200"/>
+			<description label="Opis" type="textArea" height="200"/>
+			<state label="Stan rekwizytu" options="Widoczny,Ukryty" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100"/>
+			<info><![CDATA[<li>Kliknij na <b>Nowa akcja użytkownika</b> aby dodać akcję dla tej właściwości</li><li>Możesz także dodać tyle akcji ile sobie życzysz</li><li>Akcje zwyczajowo zawierają czasownik i rzeczownik, np "Weź miecz", "Łaskocz lwa"</li>]]></info>
+			<newNodes>
+				<userAction><![CDATA[<userAction name="Akcja" title="Tytuł akcji" actionText="Działania podjęte lub opis efektu" actionType="action"/>]]></userAction>
+			</newNodes>
+		</prop>
+		<scenarioActions menuItem="List of scenario Actions" remove="true" max="1">
+			<name label="Actions at this scenario" type="TextInput" width="200"/>	
+			<info><![CDATA[<li>Click on "<b>New User Action</b>" to add an action for this scenario</li><li>Add as many actions as you wish</li>]]></info>
+			<newNodes>  
+			  <userAction><![CDATA[<userAction name="Action" title="Action Title" actionText="Action taken or description of effect" actionType="action"/>]]></userAction>
+			</newNodes>    
+		</scenarioActions>
+		<userAction menuItem="Akcja użytkownika" remove="true">
+			<name label="ID unikalnej akcji" type="TextInput" width="200"/>
+			<title label="Tytuł akcji" type="TextInput" width="200"/>
+			<actionText label="Co się dzieje" type="textArea" height="200"/>
+			<actionType label="Typ akcji" options="Akcja,Efekt" type="ComboBox" defaultValue="action" data="action,effect" width="100"/>
+			<info><![CDATA[<li>Kliknij na "<b>Nowy warunek</b>" aby dodać warunek do tej akcji</li><li>Akcje są tylko wyświetlane użytkownikowi jeżeli warunki są prawdziwe</li><li>Kliknij na "<b>Nowy rezultat</b>" aby dodać nowy rezultat dla tej akcji</li><li>Rezultaty są kiedy akcja jest zaznaczona przez użytkownika</li>]]></info>
+			<newNodes>
+				<actionCondition><![CDATA[<actionCondition name="Warunek akcji"  />]]></actionCondition>
+				<actionOutcome><![CDATA[<actionOutcome name="Rezultat akcji" outcomeText="Rezultat efektu akcji" />]]></actionOutcome>
+			</newNodes>
+		</userAction>
+		<actionCondition menuItem="Warunek akcji" remove="true">
+			<name label="Nazwa warunku" type="TextInput" width="200"/>
+			<propName label="Unikalne ID rekwizytu" type="TextInput" width="200" optional="true"/>
+			<propState label="Status rekwizytu" options="Widoczny,Ukryty" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
+			<propLoc label="Lokalizacja rekwizytu" options="Na scenie,Przewożony,Wyłączona scena,Nie na scenie,Nie przewożony,W scenie" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true"/>
+			<scenarioID label="ID strony scenariusza" type="TextInput" width="200" optional="true"/>
+			<scenarioState label="Status scenariusza" options="Bieżący,Nie bieżący" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+			<scoreNumber label="Wynik lub Licznik" options="Jeden,Dwa,Trzy,Przewożonych przedmiotów" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
+			<scoreVal label="Wynik / Wartość licznika" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true"/>
+			<scoreComp label="Wynik / Porównanie licznika" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Mniejszy niż,Większy niż,Równy" width="100" optional="true"/>
+			<chanceAct label="Poza 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
+		</actionCondition>
+		<actionOutcome menuItem="Rezultat akcji" remove="true">
+			<name label="Tytuł rezultatu" type="TextInput" width="200"/>
+			<outcomeText label="Tekst rezultatu" type="textArea" height="120"/>
+			<score1Inc label="Zmień wynik 1" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/>
+			<score2Inc label="Zmień wynik 2" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/>
+			<score3Inc label="Zmień wynik 3" type="NumericStepper" min="-501" max="501" step="1" defaultValue="10" width="100" optional="true"/>
+			<propName label="Unikalny ID rekwizyty" type="TextInput" width="200" optional="true"/>
+			<propState label="Stan rekwizytu" options="Widoczny,Ukryty" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
+			<propAction label="Akcja rekwizytu" options="Przenieś,Upuść,Wyślij do określonej lokalizacji,Zniszcz" type="ComboBox" defaultValue="carry" data="carry,drop,specified,destroy" width="200" optional="true"/>
+			<specifiedLoc label="Docelowa strona ID rekwizytu" type="TextInput" width="200" optional="true"/>
+			<destination label="Strona docelowa" type="pageList" default="" optional="true"/>
+			<soundEffect label="Plik dźwiękowy" type="media" optional="true"/>
+			<newNodes>
+				<outcomeCondition><![CDATA[<outcomeCondition name="Warunek rezultatu"  />]]></outcomeCondition>
+			</newNodes>
+		</actionOutcome>
+		<outcomeCondition menuItem="Warunek rezultatu" remove="true">
+			<name label="Nazwa warunku" type="TextInput" width="200"/>
+			<propName label="Unikalne ID rekwizytu" type="TextInput" width="200" optional="true"/>
+			<propState label="Stan rekwizytu" options="Widoczne,Ukryty" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
+			<<propLoc label="Lokalizacja rekwizytu" options="Na scenie,Przewożony,Wyłączona scena,Nie na scenie,Nie przewożony,W scenie" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true"/>
+			<scenarioID label="Strona scenariusza" type="pageList" default="" optional="true"/>
+			<scenarioState label="Status scenariusza" options="Bieżący,Nie bieżący" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
+			<scoreNumber label="Wynik lub Licznik" options="Jeden,Dwa,Trzy,Przewożonych przedmiotów" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
+			<scoreVal label="Wynik / Wartość licznika" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true"/>
+			<scoreComp label="Wynik / Porównanie licznika" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Mniejszy niż,Większy niż,Równy" width="100" optional="true"/>
+			<chanceAct label="Poza 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
+		</outcomeCondition>
+  
+  	<!-- MENU WYKRESY --> 
+	<chart menu="Wykresy" menuItem="Wykres podstawowy" hint="Strona dla wykresu podstawowego. Możesz wybrać wykres liniowy, słupkowy, skumulowany słupkowy lub kołowy i dodaj do wykresu kilka serii danych" icon="icChart" thumb="thumbs/charts.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst strony" type="TextArea" height="300"/>
+		<chartTitle label="Tytuł wykresu" type="TextInput"/>
+		<chartType label="Typ wykresu" options="liniowy,słupkowy,skumulowany słupkowy,kołowy" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		  <series><![CDATA[<series name="nazwa serii" data="etykieta|dane" colour="0xFF0000"/>]]></series>
+		</newNodes>	
+	</chart>
+		<series remove="true">
+			<name label="Nazwa serii" type="TextInput"/>
+			<data label="Dane wykresu" headers="X,Y" newRow="etykieta,dane" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
+			<colour label="Kolor" type="colourPicker" defaultValue="0xFF0000"/>
+		</series>
+	<table menu="Wykresy" menuItem="Tabela" hint="Strona dla tabel podstawowych." icon="icTable" remove="true" thumb="thumbs/table.jpg">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="300" width="380"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Góra,Dół" type="ComboBox" data="left,right,top,bottom" defaultValue="left" width="100"/>
+		<loadingPrompt label="Wiadomość ładowania" type="TextInput" divider="true" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</table>
+		<tableData menuItem="Tabela danych" duplicate="false" remove="false">
+			<name label="Nazwa tabeli" type="TextInput"/>
+			<data label="Tabela danych" newRow="dane,dane" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false"/>
+			<size label="Rozmiar tabeli" options="mały,średni,duży,pełny ekran" type="ComboBox" data="small,medium,large,full screen" defaultValue="medium" width="120"/>
+			<borders label="Obramowanie" options="żadne,pełna siatka,proste,tylko poziome,tylko pionowe,obramowanie" type="ComboBox" data="none,full,simple,horizontal,vertical,outside" defaultValue="simple" width="120"/>
+			<header label="Nagłówek/Stopka wierszy" options="żaden,nagłówek,stopka,oba" type="ComboBox" data="none,header,footer,both" defaultValue="header" width="120"/>
+			<shadeHeader label="Cień Nagłówek/Stopka" type="Checkbox" defaultValue="true"/>
+			<shade label="Cień alternatywnych wierszy" type="Checkbox" defaultValue="true"/>
+			<caption label="Przypis" type="TextInput" optional="true"/>
+			<alt label="Tekst alternatywny" type="TextInput" optional="true"/>
+			<url label="Plik CSV" type="Media" optional="true"/>
+		</tableData>
+
+  	<!-- MENU INTERAKCJA --> 
+	<annotatedDiagram menu="Interakcja" menuItem="Schemat z adnotacjami" hint="Interakcja do badania etykiet diagramu." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg">
+		<name label="Tytuł strony" type="TextInput"/>    
+		<text label="Tekst" type="TextArea" height="250"/>
+		<url label="Obraz" type="media"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<colour label="Kolor podświetlenia" type="ColourPicker" defaultValue="0xFFFF00"/>
+		<shape label="Kształt" type="ComboBox" options="Brak,Owal,Prostokąt,Strzałka" defaultValue="None" width="120"/>
+		<align label="Wyrównanie" type="ComboBox" options="Lewy,Góra" data="Left,Top" defaultValue="Left" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>	
+		<movieSize label="Rozmiar filmu (szerokość,wysokość)" type="textInput" defaultValue="320,240" optional="true"/>
+		<newNodes>
+		  <hotspotGroup><![CDATA[<hotspotGroup name="nazwa" text="Opis dla gorącego punktu"/>]]></hotspotGroup>
+		  <hotspot><![CDATA[<hotspot name="nazwa" text="Opis dla gorącego punktu" x="0" y="0" w="100" h="100" />]]></hotspot>
+		</newNodes>
+	</annotatedDiagram>
+		<hotspotGroup menuItem="Grupa gorących punktów" icon="icGroup" remove="true">
+			<name label="Tytuł grupy" type="TextInput"/>
+			<text label="Tekst" type="TextArea" height="250"/>
+			<newNodes>
+			  <hotspot><![CDATA[<hotspot name="nazwa" x="0" y="0" w="100" h="100" />]]></hotspot>
+			</newNodes>
+		</hotspotGroup>
+		<hotspot type="hotSpot" label="Edytuj gorący punkt" menuItem="Gorący punkt" icon="icLayers" remove="true">
+			<name label="Tytuł gorącego punktu" type="TextInput"/>
+			<text label="Tekst" type="TextArea" height="250"/>
+		</hotspot>
+
+	<buttonQuestion menu="Interakcja" menuItem="Pytanie stymulujące" hint="Stwarza pytanie stymulujące dla uczącego się, z możliwością odpowiedzi zwrotnej przez przycisk." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<instruction label="Instrukcje" type="TextArea" height="50"/>
+		<prompt label="Pytanie" type="TextArea" height="150"/>
+		<feedback label="Odpowiedź zwrotna" type="TextArea" height="150"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<label label="Etykieta przycisku" type="TextInput" divider="true" language="true"/>
+		<labelWidth label="Szerokość przycisku" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	</buttonQuestion>
+	  
+	<buttonSequence menu="Interakcja" menuItem="Sekwencja przycisku" hint="Prezentuje sekwencję interakcji przycisku z tekstem" icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="200"/>
+		<intro label="Wprowadzenie" type="TextArea" height="100"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <button><![CDATA[<button name="nazwa" text="Odpowiedź zwrotna" buttonWidth="140"/>]]></button>
+		</newNodes>
+	</buttonSequence>
+		<button menuItem="Przycisk" icon="icBulletBlue" remove="true">
+			<name label="Etykieta przycisku" type="TextInput"/>
+			<buttonWidth label="Szerokość przycisku" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100"/>	
+			<text label="Odpowiedź zwrotna" type="TextArea" height="250"/>
+		</button>
+
+	<categories menu="Interakcja" menuItem="Kategorie" hint="Interakcja pozwalająca użytkownikowi posortować pozycje w liczbie kategorii." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
+		<name label="Tytuł strony" type="TextInput"/>    
+		<text label="Tekst" type="TextArea" height="200"/>
+		<feedback label="Odpowiedź zwrotna" type="TextArea" height="100"/>
+		<buttonLabel label="Etykieta przycisku" type="TextInput" divider="true" language="true"/>
+		<buttonWidth label="Szerokość przycisku" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <category><![CDATA[<category name="nazwa kategorii"/>]]></category>
+		</newNodes>
+	</categories>
+		<category menuItem="Kategoria" icon="icGroup" remove="true">
+			<name label="Kategoria" type="TextInput"/>    
+			<newNodes>
+			  <item><![CDATA[<item name="pozycja"/>]]></item>
+			</newNodes>
+		</category>
+		<item menuItem="Pozycja" icon="icBullet">
+			<name label="Tekst pozycji" type="TextInput"/> 
+		</item>
+
+	<customHotspots menu="Interakcja" menuItem="Interaktywny diagram" hint="Bardziej złożony diagram oparty o gorące punkty" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
+		<name label="Nazwa" type="TextInput"/>
+		<text label="Tekst strony" type="TextArea" height="200"/>
+		<highlightColour label="Kolor podświetlenia" type="ColourPicker" defaultValue="0xFFFF00"/>
+		<lineWidth label="Szerokość podświetlenia" type="NumericStepper" min="0" max="5" step="1" defaultValue="1"/>
+		<interactivity label="Interakcja" options="Gorące punkty,Etykiety,Pokaż Mi,MCQ" type="ComboBox" data="Hotspots,Labels,Show Me,MCQ" defaultValue="Hotspots" width="100"/>
+		<showShapes label="Pokaż kształty" type="CheckBox" defaultValue="true"/>
+		<hotspotsTxt label="Tekst gorących punktów" type="textInput" divider="true" language="true"/>
+		<labelsTxt label="Tekst etykiet" type="textInput" language="true"/> 
+		<showMeTxt label="Tekst Pokaż Mi" type="textInput" language="true"/> 
+		<regionsTxt label="Tekst Pokaż Regiony" type="textInput" language="true"/> 
+		<nextTxt label="Etykieta Następnej Strzałki" type="textInput" language="true"/>
+		<priorTxt label="Etykieta Wcześniejszej Strzałki" type="textInput" language="true"/>
+		<nextBtnTxt label="Etykieta Przycisku Następny" type="textInput" language="true"/>
+		<nextBtnTip label="Wskazówka Przycisku Następny" type="textInput" language="true"/>		
+		<nextBtnWidth label="Szerokość Przycisku Następny" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<checkBtnTxt label="Etykieta Przycisku Sprawdzania" type="textInput" language="true"/>
+		<checkBtnTip label="Wskazówka Przycisku Sprawdzania" type="textInput" language="true"/>		
+		<checkBtnWidth label="Szerokość Przycisku Sprawdzania" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<beforeQuesCount label="PYTANIE n z m pytań" type="textInput" language="true"/>
+		<nQValue label="Liczba poprzedzająca liczenie" options="Tak,Nie" type="ComboBox" defaultValue="n" data="n,c" width="200" language="true"/>	
+		<betweenQuesCount label="pytanie n z m pytań" type="textInput" language="true"/> 
+		<afterQuesCount label="pytanie n z m PYTAŃ" type="textInput" language="true"/> 
+		<questionTxt label="Tekst pytania" type="textInput" language="true"/>	
+		<wrong1stTxt label="Wstęp złej odpowiedzi zwrotnej" type="textInput" language="true"/>
+		<wrong2ndTxt label="Główna zła odpowiedź zwrotna" type="textInput" language="true"/>
+		<noOptionTxt label="Tekst braku opcji" type="textInput" language="true"/>		
+		<correctTxt label="Tekst pytania" type="textInput" language="true"/>		
+		<continueTxt label="Instrukcje kontynuacji" type="textInput" language="true"/>		
+		<scoreLabel label="Etykieta odpowiedzi zwrotnej" type="textInput" language="true"/> 
+		<beforeScore label="TWÓJ WYNIK n z m zaznaczonych" type="textInput" language="true"/>
+		<nSValue label="Wynik przed maksimum" options="Tak,Nie" type="ComboBox" defaultValue="s" data="s,m" width="200" language="true"/>	
+		<betweenScore label="twój wynik n Z m zaznaczonych" type="textInput" language="true"/>    
+		<afterScore label="twój wynik n z m ZAZNACZONYCH" type="textInput" language="true"/>    
+		<onCompletion label="Tekst zakończenia" type="textInput" language="true"/>    
+		<restart label="Tekst przycisku resetowania" type="textInput" language="true"/> 
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</customHotspots>
+	
+	<dialog menu="Interakcja" menuItem="Dialog" hint="Interakcja tworząca sekwencję interakcji tekstu wprowadzającego tworzących dialog." icon="icSCript" thumb="thumbs/dialog.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>    
+		<text label="Tekst" type="TextArea" height="100"/>
+		<attempts label="Próby przed wskazówką" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
+		<tryTxt label="Tekst Spróbuj ponownie" type="TextInput" divider="true" language="true"/> 
+		<correctTxt label="Tekst Poprawny" type="TextInput" language="true"/> 
+		<moveOnTxt label="Tekst Przejść dalej" type="TextInput" language="true"/>
+		<submitBtnTxt label="Tekst Przycisku Wysyłania" type="textInput" language="true"/>	
+		<nextBtnTxt label="Tekst Przycisku Następny" type="textInput" language="true"/>	
+		<answerDelimeter label="Separator odpowiedzi" type="textInput" defaultValue="," optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <dialogStep><![CDATA[<dialogStep name="pytanie" question="Napisz tutaj swoje pytanie." answer="Wprowadź odpowiedź" hint="Wprowadź podpowiedź"/>]]></dialogStep>
+		</newNodes>
+	</dialog>
+		<dialogStep menuItem="Pytanie" icon="icComment" remove="true" max="12">
+			<question label="Pytanie" type="TextArea" height="100"/> 
+			<answer label="Odpowiedź" type="TextInput"/> 
+			<commentary label="Komentarz" type="TextArea" height="100"/> 
+			<hint label="Podpowiedź" type="TextInput"/> 
+		</dialogStep>
+
+	<dragDropLabel menu="Interakcja" menuItem="Przeciągnij i upuść oznaczenie" hint="Interaktywne ćwiczenie oznaczania. Oznacz obraz regionami i  dodaj do każdego regionu tytuł i opis." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<url label="Obraz" type="media"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<highlightColour label="Kolor podświetlenia" type="ColourPicker" defaultValue="0xFFFF00"/>
+		<showHighlight label="Pokaż regiony" type="CheckBox" defaultValue="true"/>
+		<tryAgainTxt label="Tekst Spróbuj ponownie" type="TextInput" divider="true" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <hotspot><![CDATA[<hotspot name="nazwa" text="Opis dla gorącego punktu" x="0" y="0" w="100" h="100" />]]></hotspot>
+		</newNodes>
+	</dragDropLabel>  
+  
+	<gapFill menu="Interakcja" menuItem="Wypełnienie luki" hint="Interakcja tworząca ćwiczenie przeciągnij i upuść wypełnienia luki." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>    
+		<text label="Tekst wprowadzający" type="TextArea" height="100"/>
+		<passage label="Tekst wypełnienia luki" type="TextArea" height="150"/>
+		<interactivity label="Interaktywność" options="Przeciągnij i upuść,Wypełnij lukę" type="ComboBox" data="Drag Drop,Fill in Blank" defaultValue="Drag Drop" width="100"/>
+		<feedback label="Odpowiedź zwrotna" type="TextArea" height="50"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<noise label="Rozpierające" type="TextArea" height="50" optional="true" defaultValue="Dodaj listę słów rozpierających oddzielając je spacjami"/>
+		<showHint label="Pokaż podpowiedź" type="CheckBox" defaultValue="true" optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	</gapFill>
+  
+	<hotspotImage menu="Interakcja" menuItem="Gorący Punkt" hint="Interakcja pozwala na zaznaczanie regionami obrazka i powiązanie dla każdego regionu objaśnienia. Może być różny typ interakcji." icon="icPicture" thumb="thumbs/hotspotImage.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>    
+		<text label="Tekst" type="TextArea" height="250"/>
+		<url label="Obraz" type="media"/>
+		<interactivity label="Interakcja" options="Pokaż mi,Kliknij przeglądaj" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
+		<highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
+		<hicol label="Kolor podświetlenia" type="ColourPicker" defaultValue="0xFFFF00"/> 
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<tip label="Wskazówka obrazka" type="TextInput"/>
+		<nextTxt label="Etykieta Strzałki Następny" type="textInput" divider="true" language="true"/>
+		<priorTxt label="Etykieta Strzałki Poprzedni" type="textInput" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Wprowadź unikatowe ID, dzięki któremu Złącze Stron odnajdzie tę stronę" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <hotspot><![CDATA[<hotspot name="nazwa" text="Opis dla gorącego punktu" x="0" y="0" w="100" h="100" />]]></hotspot>
+		</newNodes>
+	</hotspotImage>
+	
+	<inventory menu="Interakcja" icon="icInventory" menuItem="Inwentarz" hint="Użyj inwentarza aby przedstawić badanie, gdzie odpowiedzi są mapowane do różnych kategorii, pytania pojedynczego lub wielokrotnego wyboru." thumb="thumbs/inventory.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<instructions label="Instrukcje" type="textArea" height="100"/>
+		<feedback label="Odpowiedź zwrotna inwentarza" type="textArea" height="100"/>
+		<order label="Kolejność odpowiedzi" options="sekwencyjny,mieszany" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
+		<align label="Wyrównanie" options="Lewy,Prawy" type="comboBox" data="left,right" defaultValue="left" width="120"/>
+		<classes label="Kategorie (max 10)" type="TextInput"/>
+		<scoreType label="Typ wyniku" options="absolutny,procent indywidualny,procent relatywny" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
+		<chartTitle label="Tytuł wykresy" type="TextInput"/>
+		<chartType label="Typ wykresu" options="słupkowy,kołowy,liniowy" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120"/>	
+		<chartColour label="Kolor" type="colourPicker"/>	
+		<quesCount label="{i} z {n} pytań" type="textInput" divider="true" language="true"/>	
+		<feedbackLabel label="Etykieta odpowiedzi zwrotnej" type="textInput" language="true"/> 
+		<testModeText label="Tekst trybu testu" type="textInput" language="true"/>
+		<submitBtnText label="Etykieta Przycisku Wysyłania" type="textInput" language="true"/>
+		<submitBtnTip label="Wskazówka Przycisku Wysyłania" type="textInput" language="true"/>	
+		<submitBtnWidth label="Szerokość Przycisku Wysyłania" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<nextBtnText label="Etykieta Przycisku Następny" type="textInput" language="true"/>
+		<nextBtnTip label="Wskazówka Przycisku Następny" type="textInput" language="true"/>	
+		<nextBtnWidth label="Szerokość Przycisku Następny" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<restartBtnText label="Etykieta Przycisku Restart" type="textInput" language="true"/>
+		<restartBtnTip label="Wskazówka Przycisku Restart" type="textInput" language="true"/>
+		<restartBtnWidth label="Szerokość Przycisku Restart" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Wprowadź unikalny ID wg którego Złącze Stron będzie mógł znaleźć tę stronę" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<info><![CDATA[<b>W celu uzyskania szczegółów jak użyć strony inwentarza <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">kliknij tutaj</a></u></b>]]></info>
+		<newNodes>
+		  <invQuestion><![CDATA[<invQuestion prompt="Tutaj jest monit" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+		</newNodes>
+	</inventory>
+		<invQuestion>
+			<prompt label="Monit" type="TextArea" height="100"/>
+			<type label="Typ pytania" options="Pojedyncza odpowiedź,Wielokrotna odpowiedź" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
+			<questionFeedback label="Wyświetlanie odpowiedzi zwrotnej" options="no,yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
+			<image label="Obraz" type="Media" optional="true"/>
+			<tip label="Wskazówka obrazka" type="textInput" optional="true"/>
+			<newNodes>
+			  <invOption><![CDATA[<invOption text="tutaj jest opcja" class="0" feedback="odpowiedź zwrotna dla tej opcji"   weight="1"/>]]></invOption>
+			</newNodes>
+		</invQuestion>
+		<invOption>
+			<text label="Opcja" type="TextArea" height="100"/>
+			<class label="Klasyfikacja" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>	
+			<feedback label="Odpowiedź zwrotna" type="TextArea" height="100"/>
+			<weight label="Waga lub wynik" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
+		</invOption>
+
+	<list menu="Interakcja" menuItem="Interaktywna lista" hint="Prezentuje interaktywną listę." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst strony" type="TextArea" height="200"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		  <nestedPage><![CDATA[<nestedPage name="nazwa" text="Zawartość dla listy pozycji"/>]]></nestedPage>
+		</newNodes>
+	</list>
+
+	<mcq menu="Interakcja" menuItem="Pytanie wielokrotnego wyboru" hint="Prezentuje pytanie wielokrotnego wyboru z wieloma opcjami. Tworzy pytania typu prawda/fałsz, lub bardzie złożone pytania z wieloma poprawnymi odpowiedziami." icon="icComments" thumb="thumbs/mcq.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<instruction label="Instrukcje" type="TextArea" height="100"/>
+		<prompt label="Monit" type="TextArea" height="100"/>
+		<type label="Typ pytania" options="Pojedyncza odpowiedź,Wielokrotna odpowiedź" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<trackingWeight label="Waga śledzenia wyniku (0=wyłączony)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+		<feedbackLabel label="Etykieta odpowiedzi zwrotnej" type="textInput" divider="true" language="true"/>	
+		<singleRight label="Poprawna pojedyncza odpowiedź" type="textInput" language="true"/>     
+		<singleWrong label="Zła pojedyncza odpowiedź" type="textInput" language="true"/>
+		<multiRight label="Poprawna wielokrotna odpowiedź" type="textInput" language="true"/>    
+		<multiWrong label="Zła wielokrotna odpowiedź" type="textInput" language="true"/>    
+		<checkBtnTxt label="Etykieta Przycisku Sprawdź" type="textInput" language="true"/>
+		<checkBtnTip label="Wskazówka Przycisku Sprawdź" type="textInput" language="true"/>	
+		<checkBtnWidth label="Szerokość Przycisku Sprawdź" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>		
+		<answerOrder label="Kolejność odpowiedzi" options="Sekwencyjny,Mieszany" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<feedback type="TextArea" height="40" label="Odpowiedź zwrotna" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <option><![CDATA[<option text="tutaj jest opcja" feedback="odpowiedź zwrotna dla tej opcji" correct="false"/>]]></option>
+		</newNodes>
+	</mcq>
+		<option menuItem="Opcja">
+			<text label="Opcja" type="TextArea" height="100"/>
+			<feedback label="Odpowiedź zwrotna" type="TextArea" height="100"/>
+			<correct label="Poprawny" options="prawda,fałsz" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+		</option>
+
+	<modelAnswer menu="Interakcja" menuItem="Model odpowiedzi" hint="Interacja tekstu wprowadzającego, z odpowiedzią zwrotną i opcją wklejania odpowiedzi do schowka" icon="icComment" thumb="thumbs/modelAnswer.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="100"/>
+		<prompt label="Tekst" type="TextArea" height="100"/>
+		<feedback label="Odpowiedź zwrotna" type="TextArea" height="100"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<feedbackBtnTxt label="Etykieta przycisku Sprawdzania" type="textInput" divider="true" language="true"/>
+		<feedbackBtnTip label="Wskazówka przycisku Sprawdzania" type="textInput" language="true"/>	
+		<feedbackBtnWidth label="Szerokość przycisku Sprawdzania" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<instructHeaderATxt label="Nagłówek instrukcji (a)" type="textInput" language="true"/>
+		<instructHeaderBTxt label="Nagłówek instrukcji (b)" type="textInput" language="true"/>
+		<responseHeaderTxt label="Nagłówek odpowiedzi" type="textInput" language="true"/>
+		<noAnswerHeaderTxt label="Nagłówek braku odpowiedzi" type="textInput" language="true"/>
+		<exampleHeaderTxt label="Nagłówek przykładu" type="textInput" language="true"/>
+		<copyBtnLabel label="Etykieta przycisku Wyboru" type="textInput" language="true"/>
+		<copyShortcutTxt label="Tekst Kopiuj skrót" type="textInput" language="true"/>
+		<closeBtnTxt label="Etykieta przycisku Zamknij" type="textInput" language="true"/>
+		<copypasteinfo label="Informacja Kopiuj &amp; Wklej" defaultValue="Informacja: instrukcja i pytanie, twoja odpowiedź i przykładowa odpowiedź, zostały skopiowane do schowka, gdzie możesz wkleić (ctrl + v) do innej aplikacji, tj. LibreOffice, Word lub email, aby przyszłości przeglądać." type="TextArea" height="50" optional="true"/>
+		<copypasteinfo2 label="Informacja Kopiuj &amp; wklej (HTML)" defaultValue="Informacja: Kliknij przycisk 'Wybierz tekst' do podświetlenia instrukcji, pytania, twojej odpowiedzi i przykładowej odpowiedzi, wtedy naciśnij Ctrl + C, aby skopiować ten tekst do schowka. Możesz wtedy wkleić (Ctrl + V) do innej aplikacji, tj. LibreOffice, Word lub email, aby przyszłości przeglądać." type="TextArea" height="50" optional="true"/>
+		<label label="Etykieta przycisku" defaultValue="przestarzały - tylko w celu zgodności wstecznej" type="TextInput" optional="true"/>
+		<image label="Obraz" type="media" optional="true"/>	
+		<tooltip label="Wskazówka obrazka" type="TextInput" optional="true"/>	
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	</modelAnswer>
+
+	<modelAnswerResults menu="Interakcja" menuItem="Model rezultatu odpowiedzi" hint="Dodaj stronę do wyświetlenia posortowanych wyników ze wszystkich stron poprzednio zmodelowych odpowiedzi, które następnie mogą być kopiowane do schowka lub po prostu recenzowane." icon="icPageWhiteText" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page text/Instructions" height="280" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<copyBtnTxt label="Etykieta przycisku kopiowania" type="textInput" divider="true" language="true"/>
+		<copyBtnTip label="Wskazówka przycisku kopiowania" type="textInput" language="true"/>	
+		<copyBtnWidth label="Szerokość przycisku kopiowania" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="130" language="true"/>
+		<copyBtnLabel label="Etykieta przycisku Wyboru" type="textInput" language="true"/>
+		<copypasteinfo label="Informacja Kopiuj &amp; Wklej" type="TextArea" height="50" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</modelAnswerResults>
+
+	<modify menu="Interakcja" menuItem="Modyfikuj ćwiczenia" hint="Przedstawia jakiś tekst, który użytkownik musi zmodyfikować w pewien sposób, na przykład poprzez zmianę czasu." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<instruction label="Instrukcje" type="TextArea" height="100"/>
+		<text label="Tekst początkowy" type="TextArea" height="100"/>
+		<prompt label="Monit odpowiedzi" type="TextArea" height="100"/>
+		<answer label="Model odpowiedzi" type="TextArea" height="100"/>
+		<answerHeaderTxt label="Nagłówek instrukcji" type="textInput" divider="true" language="true"/>		
+		<feedbackBtnTxt label="Etykieta przycisku" type="textInput" language="true"/>
+		<feedbackBtnTip label="Wskazówka przycisku" type="textInput" language="true"/>	
+		<feedbackBtnWidth label="Szerokość przycisku" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	</modify>
+
+	<quiz menu="Interakcja" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Użyj quizu aby przedstawić ocenianie kształtujące związane z szeregiem jednej odpowiedzi lub wielu odpowiedzi pytań wielokrotnego wyboru.">
+		<name label="Tytuł quizu" type="textInput"/>    
+		<order label="Kolejność pytania" options="sekwencyjny,mieszany" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
+		<numQuestions label="Liczba pytań (*=Wszystkie)" type="TextInput" width="120"/>
+		<align label="Wyrównanie" options="Lewy,Prawy" type="comboBox" data="left,right" defaultValue="left" width="120"/>
+		<panelWidth label="Szerokość panelu" options="Mały,Średni,Duży,Pełny" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
+		<instructions label="Instrukcje" type="textArea" height="120"/>
+		<judge label="Pytania sędziego" type="CheckBox" defaultValue="true"/>
+		<showfeedback label="Pokaż odpowiedź zwrotną" type="CheckBox" defaultValue="true"/>
+		<feedback label="Odpowiedź zwrotna" type="textArea" height="120"/>
+		<trackingWeight label="Waga śledzenia wyniku (0=wyłączone)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+		<quesCount label="{i} z {n} pytań" type="textInput" divider="true" language="true"/>
+		<feedbackLabel label="Etykieta odpowiedzi zwrotnej" type="textInput" language="true"/> 
+		<singleRight label="Pojedyncza poprawna odpowiedź" type="textInput" language="true"/>     
+		<singleWrong label="Pojedyncza zła odpowiedź" type="textInput" language="true"/>
+		<multiRight label="Wielokrotna poprawna odpowiedź" type="textInput" language="true"/>    
+		<multiWrong label="Wielokrotna zła odpowiedź" type="textInput" language="true"/>    
+		<onCompletion label="Tekst zakończenia" type="textInput" language="true"/>    
+		<score label="Twój wynik {i} z {n} zaznaczonych" type="textInput" language="true"/>
+		<submitBtnText label="Etykieta przycisku Wysyłania" type="textInput" language="true"/>
+		<submitBtnTip label="Wskazówka przycisku Wysyłania" type="textInput" language="true"/>	
+		<submitBtnWidth label="Szerokość przycisku Wysyłania" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<nextBtnText label="Etykieta przycisku Następny" type="textInput" language="true"/>
+		<nextBtnTip label="Wskazówka przycisku Następny" type="textInput" language="true"/>	
+		<nextBtnWidth label="Szerokość przycisku Następny" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<restartBtnText label="Etykieta przycisku Restart" type="textInput" language="true"/>
+		<restartBtnTip label="Wskazówka przycisku Restart" type="textInput" language="true"/>
+		<restartBtnWidth label="Szerokość przycisku Restart" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+		<img label="Obraz" type="media" optional="true"/>
+		<imgSize label="Rozmiar obrazu" type="textInput" defaultValue="320,240" optional="true"/>
+		<video label="Wideo" type="media" optional="true"/>
+		<movieSize label="Rozmiar wideo" type="textInput" defaultValue="320,240" optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Wprowadź unikalne ID, dzięki któremu Łącze Stron będzie mógł znaleźć tę stronę" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+		  <question><![CDATA[<question  prompt="Tutaj jest monit" type="Pojedyncza odpowiedź" />]]></question>
+		</newNodes>
+	</quiz>
+		<question menuItem="Pytanie">
+			<prompt label="Monit" type="TextArea" height="100"/>
+			<type label="Typ pytania" options="Pojedyncza odpowiedź,Wielokrotna odpowiedź" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
+			<answerOrder label="Kolejność odpowiedzi" options="Sekwencyjny,Mieszany" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+			<image label="Obraz" type="Media" optional="true"/>
+			<tip label="Podpowiedź dla obrazka" type="TextInput" optional="true"/>		
+			<sound label="Dźwięk" type="Media" optional="true"/>
+			<newNodes>
+				<option><![CDATA[<option text="tutaj jest opcja" feedback="odpowiedź zwrotna dla tej opcji" correct="false"/>]]></option>
+			</newNodes>
+		</question>
+  
+	<textMatch menu="Interakcja" menuItem="Pasujące teksty" hint="Interakcja dla użytkownika w celu dopasowania fragmentów tekstu" icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="TextArea" height="100"/>
+		<correctMessage label="Wiadomość poprawna" type="TextInput" divider="true" language="true"/>
+		<submitBtnTxt label="Etykieta przycisku Sprawdzania" type="textInput" language="true"/>
+		<submitBtnTip label="Wskazówka przycisku Sprawdzania" type="textInput" language="true"/>
+		<submitBtnWidth label="Szerokość przycisku Sprawdzania" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="80" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<newNodes>
+			<sentence><![CDATA[<sentence name="Wprowadź nazwę" p1="Napisz tutaj pierwszą część zdania" p2="Napisz tutaj drugą część zdania" hint="Dostarcz wskazówkę"/>]]></sentence>
+		</newNodes>
+	</textMatch>
+		<sentence menuItem="Zdanie" icon="icPageWhiteText" remove="true" max="5">
+			<name label="Nazwa" type="TextInput"/>
+			<p1 label="Część 1" type="TextArea" height="50"/>
+			<hint label="Wskazówka" type="TextArea" height="50"/>
+			<p2 label="Część 2" type="TextArea" height="50"/>
+		</sentence>
+
+	<timeline menu="Interakcja" menuItem="Oś czasu / Pasujące pary" hint="Interakcja tworząca interaktywną oś czasu." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Tekst" type="TextArea" height="250"/>
+		<interactivity label="Interaktywność" options="Oś czasu,Pasujące Pary" type="ComboBox" data="Timeline,Matching Pairs" defaultValue="Timeline" width="120"/>
+		<feedback label="Odpowiedź" type="TextArea" height="100"/>
+		<checkBtnTxt label="Etykieta przycisku Sprawdzania" type="textInput" divider="true" language="true"/>
+		<checkBtnTip label="Wskazówka przycisku Sprawdzania" type="textInput" language="true"/>
+		<checkBtnWidth label="Szerokość przycisku Sprawdzania" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+		<timer label="Odmierzacz czasu strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+		<newNodes>
+			<timelinedate><![CDATA[<timelinedate name="Wprowadź pozycję" text="Wprowadź opis"/>]]></timelinedate>
+		</newNodes>
+	</timeline>
+		<timelinedate menuItem="Pozycja" icon="icPageWhite" max="12" remove="true">
+			<name label="Cel" type="TextInput"/>
+			<text label="Etykieta" type="TextArea" height="100"/>
+		</timelinedate>  
+  
+  	<!-- MENU GRY -->  
+	<hangman menu="Gry" menuItem="Wisielec" hint="Gra wisielec. Utwórz listę słów dla uczącego się." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="TextArea" height="100"/>
+		<words label="Słowa" type="TextArea" height="100"/>
+		<nextBtnTxt label="Etykieta Przycisku Następny" type="textInput" divider="true" language="true"/>
+		<nextBtnTip label="Podpowiedź Przycisku Następny" type="textInput" language="true"/>		
+		<nextBtnWidth label="Szerokość Przycisku Następny" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+		<quesCount label="{i} z {n} słów" type="textInput" language="true"/>	
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<timer label="Czas strony" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+	</hangman> 
+  
+	<memory menu="Gry" menuItem="Gra pamięć" hint="Interakcja dla użytkownika w celu dopasowania kawałków tekstu" icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<resetBtnTxt label="Etykieta Przycisku Resetowania" type="textInput" language="true"/>
+		<newNodes>
+		  <matchItem><![CDATA[<matchItem name="Wprowadź etykietę" url="Wybierz obraz"/>]]></matchItem>
+		</newNodes>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</memory>
+		<matchItem menuItem="Pozycja" icon="icPageWhite" remove="true" max="9">
+			<name label="Etykieta" type="TextInput"/>
+			<url label="Obraz" type="Media"/>
+			<url2 label="Etykieta obrazu" type="Media" optional="true"/>
+		</matchItem>  
+  
+  	<!-- MENU INNE -->  
+	<QRcode menu="Inne" menuItem="Kod QR Code" hint="Strona generująca i przedstawiająca kody QR Code. Możesz także dodać do tej strony dźwięk." label="Tekst strony" icon="icQRCode" thumb="thumbs/QRcode.jpg" type="text" height="300" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<url label="Wprowadź lub wklej URL" type="TextInput"/>
+		<tip label="Wskazówka kodu QR code" type="TextInput"/>
+		<sound label="Dźwięk" type="media" optional="true"/>
+		<narrationNavigate label="Przejdź do narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski narracji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy,Ukryj tekst" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
+	</QRcode>
+	 
+	<delicious menu="Inne" menuItem="Zakładki Delicious" hint="Załącza zakładki Delicious w twojej prezentacji." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="textArea" height="300"/>
+		<term label="Wyszukaj hasło" type="textInput"/>
+		<search label="Wyszukaj w" options="najnowsze,popularne,użytkownik" type="ComboBox" data="recent,popular,user" defaultValue="recent" width="100"/>
+		<results label="Liczba wyników" type="NumericStepper" min="5" max="100" step="1" defaultValue="20"/>
+		<headerTxt label="Tekst wyników" type="textInput" divider="true" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</delicious>
+  
+	<flickr menu="Inne" menuItem="Pokaz slajdów Flickr" hint="Użyj pokazu slajdów Flickr to włączenia darmowej, dostępnej zawartości graficznej ze strony dzielenia się zdjęciami Flickr." label="PageText" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<keywords label="Słowa kluczowe" type="TextInput"/>
+		<content label="Zawartość dla" options="użycie wszystkich,użycie niekomercyjne" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
+		<deriv label="Ponowne użycie" options="nieograniczony,niebędące instrumentami pochodnymi,na tych samych warunkach" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
+		<nextTipTxt label="Wskazówka Przycisku Następny" type="TextInput" divider="true" language="true"/>	
+		<priorTipTxt label="Wskazówka Przycisku Poprzedni" type="TextInput" language="true"/>	
+		<loadingTxt label="Wiadomość Ładowania" type="TextInput" language="true"/>
+		<imageTxt label="Obraz {i} z {n} obrazów" type="textInput" language="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</flickr>
+
+	<geocommons menu="Inne" menuItem="Mapa GeoCommons" hint="Osadzona Mapa GeoCommons" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<src label="Kod IFrame" type="TextInput"/>
+		<description label="Opis" type="TextInput" optional="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Wprowadź unikatowe ID, dzięki któremu Złącze Stron odnajdzie tę stronę" type="TextInput" optional="true"/>
+	</geocommons>
+
+	<map icon="icMap" menu="Inne" menuItem="Mapa Google" hint="Użyj w prezentacji interaktywnej mapy. Możesz dodać także do mapy warstwy danych KML." thumb="thumbs/googleMap.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="textArea" height="300"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
+		<mapurl label="Link mapy" type="textInput"/>
+		<maptype label="Typ mapy" options="drogowa,satelita,terenowa,hybrydowa" type="ComboBox" data="roadmap,satellite,terrain,hybrid" defaultValue="roadmap" width="100"/>
+		<tooltip label="Wskazówka do mapy" type="TextInput"/>
+		<link label="Link do mapy" type="checkbox" defaultValue="true"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</map>
+
+	<mapstraction icon="icMap2" menu="Inne" menuItem="Mapa Mapstraction" remove="true" thumb="thumbs/googleMap.jpg" hint="Użyj mapy z API mapstraction.">
+		<name type="TextInput" label="Tytuł strony"/>
+		<provider type="ComboBox" label="Typ mapy" options="google,yahoo,openlayers,microsoft" width="100"/>
+		<lat type="TextInput" label="Szerokość"/>
+		<lng type="TextInput" label="Długość"/>
+		<zoom type="TextInput" label="Powiększenie"/>
+		<narrationNavigate type="CheckBox" label="Przejdź do nawigacji" optional="true"/>
+		<playNarration type="CheckBox" label="Autoodtwarzanie narracji" optional="true"/>
+		<narration type="media" label="Narracja" optional="true"/>
+		<flickr type="TextInput" optional="true" label="Wyszukiwanie Flickr"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+		<newNodes>
+		  <overlay><![CDATA[<overlay name="Wprowadź nazwę" url="wprowadź url do KML lub geoRSS"/>]]></overlay>
+		</newNodes>
+	</mapstraction>
+		<overlay duplicate="true" menuItem="Nakładka" remove="true" icon="icPageWhite">
+			<name type="TextInput" label="Tytuł"/>
+			<url type="TextInput" label="Nakładka"/>
+		</overlay>
+		
+	<rss menuItem="Kanał RSS" menu="Inne" hint="Włącza kanały RSS w twoich prezentacjach. Kanały RSS pozwala tobie dodać zawawartość dynamiczną z różnych źródeł. Możesz stworzyć własny kanał RSS używając szablonu kanału RSS." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="textArea" height="300"/>
+		<url label="URL kanału" type="textInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<narrationNavigate label="Przejdź do nawigacji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Poprzedni i Następny,Tylko Poprzedni,Tylko Następny,Żaden" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikatowe ID dla tej strony" type="TextInput" optional="true"/>
+	</rss>
+
+	<wiki menuItem="Artykuł Wikipedii" menu="Inne" hint="Załącza artykuły Wikipedii do twoich prezentacji." thumb="thumbs/wiki.jpg" icon="icGreenFeed" remove="true">
+		<name label="Tytuł strony" type="TextInput"/>
+		<text label="Instrukcje" type="textArea" height="300"/>
+		<url label="URL artykułu" type="textInput"/>
+		<align label="Wyrównanie tekstu" options="Lewy,Prawy" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID na tej stronie" type="TextInput" optional="true"/>
+	</wiki>
+	
+	<youtube type="text" height="100" label="Kod osadzony" menuItem="Wideo YouTube" menu="Inne" remove="true" thumb="thumbs/youtube.jpg" hint="Pozwala na proste załączenie wideo z YouTube." icon="icYoutube">&gt;
+		<name type="TextInput" label="Tytuł strony"/>
+		<text type="textArea" label="Instrukcje" height="300"/>
+		<autoplay type="Checkbox" label="Autoplay" optional="true"/>
+		<toggle type="Checkbox" label="Przełącz na pełny ekran" optional="true"/>
+		<videoSize type="TextInput" label="Rozmiar wideo" optional="true"/>
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narracja" type="media" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID dla tej strony" type="TextInput" optional="true"/>
+		<launchvideo label="Uruchom link wideo" type="textInput" divider="true" language="true"/>
+	</youtube>
+
+	<youtuberss menuItem="Kanał YouTube" menu="Inne" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Włącza wideo YouTube do prezentacji. Wprowadź szukane słowo do wyświetlenia pasujących klipów z YouTube." icon="icYoutube">
+		<name type="TextInput" label="Tytuł strony"/>
+		<text type="textArea" label="Instrukcje" height="200"/>
+		<url type="textInput" label="Wyszukaj termin"/>
+		<results type="NumericStepper" min="5" max="50" step="1" label="Liczba wyników"/>
+		<resultsTxt label="Tekst wyników" type="textInput" divider="true" language="true"/>	
+		<narrationNavigate label="Nawigacja po narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Autoodtwarzanie narracji" type="CheckBox" defaultValue="false" optional="true"/>
+		<navSetting label="Przyciski nawigacji" options="Wszystkie,Wstecz i Następny,Tylko wstecz,Tylko następny,Żadne" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+		<pageID label="ID strony" defaultValue="Unikalny ID którego Łącze Stron może znaleźć" type="TextInput" optional="true"/>
+	</youtuberss> 
+  </wizard>

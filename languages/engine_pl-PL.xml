@@ -1,0 +1,143 @@
+<language name="Polski">
+
+  <nextButton label="Następny" description="Przycisk Następnej Strony"/>
+  
+  <backButton label="Poprzedni" description="Prycisk Poprzedniej Strony"/>
+  
+  <tocButton label="Spis" description="Przycisk Spisu Treści"/>
+  
+  <helpButton label="Pomoc" description="Przycisk Pomocy. "/>
+
+  <mediaButton label="Media" description="Przycisk Mediów. "/>
+  
+  <homeButton label="Strona główna" description="Przycisk strony głównej. "/>
+  
+  <pageHelp name="Strona Pomocy" description="Strona Pomocy" toClose="Wciśnij Spację, aby zamknąć pomoc"/>
+  
+  <glossaryButton label="Słownik" description="Przycisk słownika. "/>
+  
+  <continueButton label="Kontynuuj" description="Przycisk Kontynuowania"/>
+  
+  <toc label="Spis Treści" description="spis treści. Użyj strzałek, aby wybrać stronę. Naciśnij spację, aby przejść na tą stronę.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="przycisk zamykania spisu treści"/>
+	  <gotoPageButton label="Idź do Strony" description="Przycisk Idź do Strony"/>
+  </toc>
+  
+  <glossary label="Słownik" description="Lista słów i ich definicji.">
+	  <closeButton label="" description="Przycisk zamknięcia słownika"/>
+  </glossary>
+  
+  <kbLanguage label="Specjalne znaki" description="Lista przycisków które dodają specjalne znaki do obszaru tekstu">
+	  <closeButton label="" description="Przycisk zamykania listy specjalnych znaków"/>
+	  <dialog instruction="Użyj CAPS LOCK i SHIFT" on="ON" off="OFF" caps="Caps"/>
+  </kbLanguage>
+  
+  <textToSpeech label="pusty" description="Tekst Na Mowę"/>
+  
+  <errorProject label="Dane projektu nie zostały załadowane."/>
+  
+  <errorPage label="Żaden szablon nie jest obecnie dostępny dla tego typu strony."/>
+  
+  <errorBrowser label="Twoja przeglądarka w pełni nie obsługuje ten typ strony."/>
+  
+  <errorFlash label="Musisz zainstalować Flash Player aby przeglądać tę zawartość." description="Pobierz Flash Player"/>
+  
+  <tick label="Zaznacz"/>
+  
+  <cross label="Odznacz"/>
+  
+  <themes label="--Schematy Kolorowania--" description="Opcje Schematu Koloru">
+    <item>domyślny</item>
+    <item>niebieski</item>
+    <item>zielony</item>
+    <item>czerwony</item>
+    <item>pomarańczowy</item>
+    <item>purpurowy</item>
+    <item>szary</item>
+    <item>wysoki kontrast 1</item>
+    <item>wysoki kontrast 2</item>
+  </themes>
+ 
+  <sizes label="--Rozmiar Ekranu--" description="Opcje rozmiaru ekranu">
+	<item>domyślny</item>
+	<item>duży</item>
+	<item>większy</item>
+	<item>pełny ekran</item>
+	<item>wypełnienie okna</item>
+  </sizes>
+  
+  <fonts label="--Czcionka tekstu--" description="Opcje kroju pisma">
+	  <item>domyślne</item>
+  </fonts>
+  
+  <textSizes label="--Rozmiar tekstu--" description="Opcje rozmiaru tekstu">
+	  <item>domyślny</item>
+	  <item>mały</item>
+	  <item>średni</item>
+	  <item>duży</item>
+	  <item>większy</item>
+  </textSizes>
+  
+  <volumeControl label="Gł:" description="Kontrola głośności"/>
+  <volumeControlSlider label="" description="Suwak kontroli głośności"/>
+  
+  <vocab>
+	  <page>Strona</page>
+	  <of>z</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Zatrzymanie Dźwięku" description="Przycisk Zatrzymania Dźwięku"/>
+	<playButton label="Odtwarzanie Dźwięku" description="Przycisk Odtwarzania Dźwięku"/>
+	<pauseButton label="Pauza Dźwięku" description="Przycisk Pauzy Dźwięku"/>
+	<rwndButton label="Przewiń Dźwięk" description="Przycisk Przewijania Dźwięku"/>
+	<ffwdButton label="Przewiń Dźwięk" description="Przycisk Przewijania Dźwięku"/>
+	<loader label="Ładowanie: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Zatrzymaj Film" description="Przycisk Zatrzymania Filmu"/>
+	<playButton label="Odtwórz Film" description="Przycisk Odtwarzania Filmu"/>
+	<pauseButton label="Pauzuj Film" description="Przycisk Pauzowania Filmu"/>
+	<rwndButton label="Przewiń Film" description="Przycisk Przewijania Filmu"/>
+	<ffwdButton label="Przewiń Film" description="Przycisk Przewijania Filmu"/>
+	<loader label="Ładowanie: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Stop" description="Przycisk zatrzymania"/>
+	<playPauseButton label="Odtwórz/Zatrzymaj" description="Przycisk odtwarzania/zatrzymywania"/>
+	<muteButton label="Przełącz na wyciszenie" description="Przycisk przełączania na wyciszenie"/>
+	<fullscreenButton label="Pełny ekran" description="Przycisk pełnego ekranu"/>
+	<captionsButton label="Napisy/podpisy" description="Przycisk pokazywania napisów"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Przycisk"/>
+	  <radioButton selected="zaznaczony. Użyj strzałek, aby wybrać z opcji"/>
+	  <checkBox selected="selected" deselected="odznacz"/>
+	  <comboBox name="Pole wyboru" options="Opcje." selected="zaznaczony." selectedOptions="zaznaczony. Użyj strzałek, aby zaznaczyć" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Naciśnij spację, aby wybrać." selected="Hot Spot zaznaczony"/>
+	  <hotObject name="HotObject" toSelect="Naciśnij spację, aby wybrać." selected="Hot Object zaznaczony"/>
+	  <textEntry name="Pole Wprowadzania Tekstu" selected="Pole wprowadzania tekstu zaznaczony"/>
+	  <targetArea name="Obszar docelowy" description="Strefa upustu dla" toSelect="Naciśnij spację, aby upuścić zaznaczoną pozycję."/>
+	  <draggableItem name="Pozycja przeciągalna" selected="Pozycja zaznaczona" toSelect="Naciśnij spację, aby zaznaczyć" deSelected="Żadna pozycja nie jest zaznaczona." />
+  </interactions>
+
+  <fetchResults label="Pobieranie wyników..."/>
+  <errorResults label="Wystąpił błąd podczas pobierania wyników"/>
+  <loadError label="Błąd ładowania"/>
+  <noResults label="Brak zwróconych wyników"/>
+  
+  <timer>
+	  <remaining name="Pozostały czas"/>
+	  <timeUp name="Czas minął"/>
+	  <seconds name="sekund"/>
+  </timer>
+
+  <colourChanger label="Zmieniacz kolorów" description="Zmieniacz kolorów.">
+	  <closeButton label="" description="Zamknij zmieniacza kolorów"/>
+  </colourChanger>
+
+</language>
