@@ -319,6 +319,10 @@ function x_setUp() {
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
+						
+					// Rip out the title attribute
+					$this.data('title', $this.attr('title'));
+					$this.attr('title', '');
 					
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
@@ -343,6 +347,10 @@ function x_setUp() {
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
 					$x_glossaryHover.remove();
+					
+					// Put back the title attribute
+					$this = $(this);
+					$this.attr('title', $this.data('title'));
 				})
 				.on("mousemove", ".x_glossary", function(e) {
 					var 	leftPos,
