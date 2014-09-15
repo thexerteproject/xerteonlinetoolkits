@@ -131,6 +131,22 @@ $(document).ready(function() {
 
 });
 
+// Make absolute urls from urls with FileLocation + ' in their strings
+x_makeAbsolute = function(html){
+    var temp = html;
+    var pos = temp.indexOf('FileLocation + \'');
+    while (pos >= 0)
+    {
+        var pos2 = temp.substr(pos+16).indexOf("'") + pos;
+        if (pos2>=0)
+        {
+            temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
+        }
+        pos = temp.indexOf('FileLocation + \'');
+    }
+    return temp;
+}
+
 // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
 function x_fixLineBreaks(text) {
     var     split_up = text.split(/<\!\[CDATA\[|\]\]>/),
@@ -299,7 +315,7 @@ function x_setUp() {
 
         for (i=0, len=items.length; i<len; i++) {
             item = items[i].split("|"),
-            word = {word:item[0], definition:item[1]};
+            word = {word:item[0], definition:x_makeAbsolute(item[1])};
 
             if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
                 x_glossary.push(word);
@@ -335,11 +351,7 @@ function x_setUp() {
 
                     for (i=0, len=x_glossary.length; i<len; i++) {
                         if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
-                            myDefinition = "<b>" + myText + ":</b><br/>"
-                            if (x_glossary[i].definition.substring(0, 16) == "FileLocation + '")
-                                myDefinition += "<img src=\"" + eval(x_glossary[i].definition) +"\">";
-                            else
-                                myDefinition += x_glossary[i].definition;
+                            myDefinition = "<b>" + myText + ":</b><br/>" + x_glossary[i].definition;
                         }
                     }
                     $x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
