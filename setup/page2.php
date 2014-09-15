@@ -26,6 +26,8 @@ if (!isset($_POST['database_created']))
 
     require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
+    // $xerte_toolkits_site->database_name should NOT be set
+    // We need to contect the server first and create it if needed
     $connection = database_connect();
     $_POST['account'] = $_POST['username'];
     $_POST['accountpw'] = $_POST['password'];
@@ -41,6 +43,24 @@ if (!isset($_POST['database_created']))
     <?php
         $success = false;
     }
+    if ($success)
+    {
+        $query = "create database if not exists " . $_POST['database_name'];
+        try{
+            $statement = $connection->query($query);
+        }
+        catch(PDOException $e) {
+            _debug("Failed to connect to db: {$e->getMessage()}");
+            ?>
+                <p>Sorry, the attempt to create the database to the database has failed. MySQL reports the following error -</p>
+                <p class="error"><?php echo  $connection->errorInfo();?>
+                </p>
+                <br/>
+                $success = false;
+            <?php
+        }
+    }
+
     if ($success)
     {
         $xerte_toolkits_site->database_name = $_POST['database_name'];
