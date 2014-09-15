@@ -1193,11 +1193,11 @@ function tutorial_created(){
 				
 				if(data[1]=="*"){
 				
-					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
+					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
 					
 				}else{
 				
-					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
+					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
 						
 				}
                 new_file = xmlHttp.responseText;
