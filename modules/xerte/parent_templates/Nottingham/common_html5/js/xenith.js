@@ -408,8 +408,7 @@ function x_setUp() {
 					$(this).trigger("mouseenter");
 				})
 				.on("focusout", ".x_glossary", function(e) {
-					$x_mainHolder.off("click.glossary");
-					$x_glossaryHover.remove();
+					$(this).trigger("mouseleave");
 				});
 		}
 	}
