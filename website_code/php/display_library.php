@@ -174,7 +174,7 @@ function list_folders_in_this_folder($folder_id, $sort_type){
 
   foreach($query_response as $row) { 
 
-    $query_for_folder_content = "select template_id from {$prefix}templaterights where folder=? " . 
+    $query_for_folder_content = "select template_id from {$prefix}templaterights where folder=? " .
         " UNION SELECT folder_id FROM {$prefix}folderdetails where folder_parent=?";
 
     $params = array($row['folder_id'], $row['folder_id']);

@@ -22,7 +22,7 @@ function get_template_screen_size($filename, $type){
 
     if($place==11){
 
-        return "800~600";
+        return "800~620";
 
     }else{
 

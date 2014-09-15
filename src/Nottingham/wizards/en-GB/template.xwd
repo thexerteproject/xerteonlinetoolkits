@@ -12,7 +12,7 @@
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <displayMode type="ComboBox" options="default,full screen,fill window" data="default,full screen,fill window" label="Display Mode" width="100"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page title size" defaultValue="24"/>
-   
+	
 	<media optional="true" type="media" label="Media File"/>
 	<mediaImage optional="true" type="media" label="Media Image"/>
     <mediaTranscript optional="true" type="media" label="Media Transcript"/>
@@ -37,12 +37,21 @@
     <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Tooltip" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showBullets="1" showPanel="1" panelWidth="Medium">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" labelWidth="100"/>]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter page Title" text="Enter Text for the page" intro="Enter Introduction here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Tooltip">Enter text for the page here</QRcode>]]></QRcode><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a tooltip for the image" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Tooltip" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showBullets="1" showPanel="1" panelWidth="Medium">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" labelWidth="100"/>]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter page Title" text="Enter Text for the page" intro="Enter Introduction here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" pageID="Unique ID for this page" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  navSetting="none"
 	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm Selection" confirmBtnWidth="100" reportTitle="List of page titles and matching pageIDs" 
 	  pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this Connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" buttonWidth="120"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Name" text="Enter text for the page here" textWidth="narrow" url="Select an image" tip="Enter a tooltip for the image" hidePanel="false" highlight="false" hicol="0xFFFF00" align="Left" navSetting="none"
-	  reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection" continueBtnTxt="Close" continueBtnWidth="100"/>]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" navSetting="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
+	  notSetMessage="A destination page has not been set for this Connection" />]]></cMcq><cRedirector><![CDATA[<cRedirector name="Enter Page Title" pageID="Unique ID for this page" destination="Page ID of page to redirect to." endText="You have completed this section."
+	  textWidth="wide" align="Left" navSetting="none" continueBtnTxt="Continue" continueBtnTip="Click to Continue" continueBtnWidth="100"
+	  reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:"
+	  notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection"/>]]></cRedirector><cTabNav><![CDATA[<cTabNav name="Enter Page Title" pageID="Unique ID for this page" text="Enter text for the page here" panelWidth="full" tabWidth="110" 
+	  navSetting="none"
+	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm Selection" confirmBtnWidth="100" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" 
+	  notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection" />]]></cTabNav><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers" buttonWidth="120"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Name" pageID="Unique ID for this page" text="Enter text for the page here" textWidth="narrow" url="Select an image" tip="Enter a tooltip for the image" hidePanel="false" highlight="false" hicol="0xFFFF00" align="Left" navSetting="none"
+	  reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection" continueBtnTxt="Close" continueBtnWidth="100"/>]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" pageID="Unique ID for this page" navSetting="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" />]]></connectorMenu><connectorPlainText><![CDATA[<connectorPlainText name="Enter Page Title" pageID="Unique ID for this page"
+	  navSetting="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" 
+	  notFoundMessage="could not be found in this project." notSetMessage="A destination page has not been set for this Connection"
+	  >Right click on a word then select Hyperlink, type or paste into the url box the following "asfunction:_level0.engine.fnTextCon,pageID" but replacing pageID with the page ID of your destination page.</connectorPlainText>]]></connectorPlainText><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
 	  showMeTxt="Use the arrows to learn more."
@@ -78,7 +87,8 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><indexChanger><![CDATA[<indexChanger name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
+	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm your selection" confirmBtnWidth="100" />]]></indexChanger><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  testModeText="Class : Weight of above options (turn Author Support off to hide this)"
 	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
@@ -90,7 +100,8 @@
 	  checkBtnTxt="Check" checkBtnTip="Check Answer" checkBtnWidth="100"/>]]></mcq><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
 	  feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
 	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
-	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:" copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" closeBtnTxt="close"
+	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
+	  copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" closeBtnTxt="close"
 	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" copyBtnTxt="Copy to clipboard" copyBtnTip="Copy to clipboard" copyBtnWidth="130"
 	  copyBtnLabel="Select Text" 
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
@@ -107,12 +118,12 @@
 	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
 	  nextBtnText="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
 	  restartBtnText="Restart" restartBtnTip="Restart Quiz" restartBtnWidth="100"
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><rss><![CDATA[<rss name="Enter Page Title" text="Enter Page text" url="Enter Feed URL" align="Left"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" pageID="Unique ID for this page" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
 	   scoresDebugMessage="Please open this page's Wizard Form and add the Configure Scores section, to define what scores you wish to display"
-	   reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" notFoundMessage="could not be found in this project."
+	   reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" notFoundMessage="could not be found in this project."
 	   notSetMessage="A destination page has not been set for this Connection"><gameSetup name="Score Configuration"
 	   score1Use="1" score1Label="Label for Score 1" score1Min="0" score1Max="100" score1Start="0" score1ProgressBar="1" score1BarColour="0x6699CC" score1Win="max" score1Lose="min"
 	   score1WinMessage="Scenario over - you have a winning score 1" score1LoseMessage="Scenario over - score 1 is to low" score1WinEndID="" score1LoseEndID=""
@@ -319,31 +330,113 @@
   </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it" thumb="thumbs/connectorMCQ.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
+    <pageID label="Page ID" type="TextInput"/>
     <instruction label="Instruction" type="TextArea" height="100"/>	
     <prompt label="Prompt" type="TextArea" height="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 
     <confirmBtnTxt label="Confirm Button Label" type="textInput" divider="true" language="true"/>
     <confirmBtnTip label="Confirm Button Tip" type="textInput" language="true"/>	
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+    <reportTitle label="Report Title" type="TextInput" language="true"/>	
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
     <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
-
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+	
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cOption><![CDATA[<cOption name="name" text="here is an option" destination="" />]]></cOption>
+      <cOption><![CDATA[<cOption name="name" text="here is an option" destination="destination Page ID" />]]></cOption>
     </newNodes>
 	
   </cMcq><cOption menuItem="Option" icon="icBullet" remove="true">
     <name label="Option Title" type="TextInput"/>
     <text label="Option" type="TextArea" height="100"/>
-	<destination label="Destination Page" type="pageList" defaultValue=""/>
-  </cOption><captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true">
+	<destination label="Go to Page ID" type="TextArea" height="25"/>
+  </cOption><cRedirector menu="Connectors" menuItem="Redirector Connector" icon="icConRedirector" hint="This page redirects the project flow to a specified page, use it at the end of a sequence of none connector pages to return to the main flow of the learning object." thumb="thumbs/connectorRedirector.jpg" remove="true">
+    <name label="Page Title" type="TextInput"/>
+    <pageID label="Page ID" type="TextInput"/>
+    <destination label="Destination Page ID" type="TextInput"/>
+    <endText label="Instructions / Message" type="textArea" height="200"/>
+    <textWidth label="Min Text Width" options="Small,Medium,Max Available" type="ComboBox" data="narrow,wide,max" defaultValue="narrow" width="200"/>		
+    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="200"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
+
+    <continueBtnTxt label="Continue Button Label" type="textInput" divider="true" language="true"/>
+    <continueBtnTip label="Continue Button Tip" type="textInput" language="true"/>	
+    <continueBtnWidth label="Continue Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+    <reportTitle label="Report Title" type="TextInput" language="true"/>
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
+    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
+    <notSetMessage label="Not Set Message" type="TextInput" language="true"/>
+
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>	
+    <url label="Image" type="media" optional="true"/>
+    <tip label="Image Tooltip" type="TextInput" optional="true"/>		
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
+    <info><![CDATA[<b>For full details on how to use the Redirector Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/RedirectorConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
+
+  </cRedirector><cTabNav menu="Connectors" menuItem="Tabbed Navigator Connector" icon="icConTabbedNav" hint="The page allows you to create a series of tabbed pages to present related text and graphical content, with options that link to other pages in your project." thumb="thumbs/connectorTabNav.jpg" remove="true">
+    <name label="Page Title" type="TextInput"/>
+    <pageID label="Page ID" type="TextInput"/>
+    <text label="Text" type="TextArea" height="250"/>
+    <panelWidth label="Panel Width" options="Small (300),Medium (450),Large (600),Full (760)" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100"/>
+    <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="10" width="100"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
+
+    <confirmBtnTxt label="Check Button Label" type="textInput" divider="true" language="true"/>
+    <confirmBtnTip label="Check Button Tip" type="textInput" language="true"/>	
+    <confirmBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+    <reportTitle label="Report Title" type="TextInput" language="true"/>
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
+    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
+    <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
+	
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <info><![CDATA[<b>For full details on how to use the Tabbed Navigator Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/TabbedNavigatorConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
+
+    <newNodes>
+	  <cTabScreen><![CDATA[<cTabScreen name="Tab Label" text="Content for the pane" />]]></cTabScreen>
+    </newNodes>
+	
+  </cTabNav><cTabScreen menuItem="Tab Panel" icon="icBullet" remove="true">
+
+    <name label="Tab Label" type="TextInput"/>
+    <text label="Tab Text" type="TextArea" height="250"/>
+	
+    <textOffset label="Tab Text x,y,w" type="TextInput" optional="true"/>
+    <optionVOffset label="Text to Option Gap" type="NumericStepper" min="0" max="400" step="5" width="100" defaultValue="20" optional="true"/>	
+    <url label="Image" type="media" optional="true"/>
+    <tip label="Image Tooltip" type="TextInput" optional="true"/>
+    <initObject label="Init Object" type="TextInput" optional="true"/>
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+    <movieSize label="Image x,y,w,h" type="TextInput" optional="true"/>
+    <movieTransition label="Image transition" options="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true"/>
+    <isFlashPaper label="Is image flashPaper" options="false,true" type="ComboBox" data="false,true" defaultValue="false" width="100" optional="true"/>
+	
+    <newNodes>
+      <cTabExit><![CDATA[<cTabExit name="name" destination="pageID of destination page" text="here is an option" />]]></cTabExit>
+    </newNodes>
+
+  </cTabScreen><cTabExit menuItem="Exit option" icon="icBullet" remove="true">
+    <name label="Option Title" type="TextInput"/>
+    <text label="Text for option" type="TextArea" height="100"/>
+	<destination label="Go to Page ID" type="TextInput"/>
+  </cTabExit><captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
     <url label="Captivate SWF File" type="media"/>
@@ -423,6 +516,7 @@
 
   </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions and associate a destination page with each region." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput"/>	
     <text label="Text" type="TextArea" height="200"/>
     <textWidth label="Min Text Width" options="No Text,Small,Medium,Max Available" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
     <url label="Image" type="media"/>
@@ -431,16 +525,21 @@
     <highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
     <hicol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/> 
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 	
-    <notFoundMessage label="Not Found Message" type="TextInput" divider="true" language="true"/>
+    <reportTitle label="Report Title" type="TextInput" divider="true" language="true"/>
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
+    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" language="true"/>
     <continueBtnTxt label="Close Button Label" type="TextInput" language="true"/>
     <continueBtnWidth label="Close Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="100" language="true"/>		
-
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+	
     <popUpVAlign label="Pop Up Vertical Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
     <popUpHAlign label="Pop Up Horizontal Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
     <imageTransition label="Image transition" options="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" type="ComboBox" data="blinds,dissolve,fade,fly,iris,squeeze,wipe,zoom" defaultValue="wipe" width="100" optional="true"/>
+    <listToClip label="Output Check List" options="Do not send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Hotspot Image Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/HotspotImageConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
@@ -452,7 +551,7 @@
   </connectorHotspotImage><cHotspot menuItem="HotSpot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
     <name label="Hotspot Title" type="TextInput"/>
 
-	<destination label="Destination Page" type="pageList" defaultValue="" optional="true"/>
+	<destination label="Go to Page ID" type="TextInput" optional="true"/>
     <hotspotSound label="Sound" type="media" optional="true"/>
 	<hotspotMovie label="Video" type="media" optional="true"/>
     <startFrame label="Video Start Time" type="textInput" defaultValue="0" optional="true"/>
@@ -469,13 +568,19 @@
   </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
+	<pageID label="Page ID" type="TextInput" width="200"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+    <reportTitle label="Report Title" type="TextInput" divider="true" language="true"/>
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
+	
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true"/>
 	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true"/>
 	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true"/>	
-	<startPageID label="First Entry Page Title" type="pageList" defaultValue="" optional="true"/>
-	<endPageID label="Last Entry Page Title" type="pageList" defaultValue="" optional="true"/>
+	<startPageID label="First Entry Page ID" type="TextInput" defaultValue="Enter Page ID of the first page to include in the menu" optional="true"/>
+	<endPageID label="Last Entry Page ID" type="TextInput" defaultValue="Enter Page ID of the last page to include in the menu" optional="true"/>
     <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true"/>
     <menuFillCol label="Fill Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
     <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true"/>	
@@ -491,8 +596,26 @@
 	
   </connectorMenu><cMenuListedPage menuItem="Menu Page Entry" remove="true">
     <name label="Page Title" type="TextInput"/>  
-    <pageID label="Select Page From List" type="pageList" defaultValue=""/>	
-  </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="A more complex hotspot based-diagram" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
+    <pageID label="Page ID to include" type="TextInput"/>	
+  </cMenuListedPage><connectorPlainText menu="Connectors" menuItem="Plain Text Connector" icon="icConPlainText" hint="A simple text page in which links can be made to other pages in the project." thumb="thumbs/connectorPlainText.jpg" type="text" label="Page Text1" height="250" remove="true">
+    <name label="Page Title" type="TextInput"/>
+    <pageID label="Page ID" type="TextInput"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
+	
+    <reportTitle label="Report Title" type="TextInput" divider="true" language="true"/>
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
+    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
+    <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
+
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
+    <textWidth type="comboBox" label="Text Width" options="Small,Medium,Large,Full" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>	
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <info><![CDATA[<b>For full details on how to use the Plain Text Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/PlainTextConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
+
+  </connectorPlainText><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="A more complex hotspot based-diagram" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
     <name label="Name" type="TextInput"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
@@ -556,7 +679,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icSCript" thumb="thumbs/dialog.jpg" remove="true">
+  </delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>    
     <text label="Text" type="TextArea" height="100"/>
@@ -611,7 +734,7 @@
   </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="Allows you to include any web page, or to add any embed code to your project" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
     
     <name type="TextInput" label="Page Title"/>
-    <src label="Embed Code or URL" type="TextArea" height="300"/>
+    <src label="Embed Code or URL" type="script" height="300"/>
 
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -687,7 +810,7 @@
   </geocommons><hangman menu="Games" menuItem="Hangman" hint="A Hangman game. Create a list of words for the learner to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <text label="Instructions" type="TextArea" height="100"/>
-    <words label="Words" type="TextArea" height="100"/>
+    <words label="Words" type="script" height="100"/>
     
 	<nextBtnTxt label="Next Button Label" type="textInput" divider="true" language="true"/>
     <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
@@ -758,11 +881,35 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </imageViewer><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions." thumb="thumbs/inventory.jpg" remove="true">
+  </imageViewer><indexChanger menu="Misc" menuItem="Index Changer" hint="Poses a question with several options, selection of which changes the project index. Use only for Xerte Desktop Page Projects" icon="icIndexChanger" thumb="thumbs/indexChanger.jpg" remove="true">
+    <name label="Page Title" type="TextInput"/>
+    <instruction label="Instruction" type="TextArea" height="100"/>	
+    <prompt label="Prompt" type="TextArea" height="100"/>
+	
+    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
+    <confirmBtnTxt label="Confirm Button Label" type="textInput" divider="true" language="true"/>
+    <confirmBtnTip label="Confirm Button Tip" type="textInput" language="true"/>	
+    <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
+
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+	
+    <newNodes>
+      <icOption><![CDATA[<icOption name="name" text="here is an option" feedback="enter confirmation text"/>]]></icOption>
+    </newNodes>
+	
+  </indexChanger><icOption menuItem="Option" icon="icBullet" remove="true">
+    <name label="Option Title" type="TextInput"/>
+    <text label="Option" type="TextArea" height="100"/>
+    <feedback label="Confirmation text" type="TextArea" height="100"/>	
+  </icOption><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions." thumb="thumbs/inventory.jpg" remove="true">
     <name label="Page Title" type="TextInput"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
-    <order label="Question Order" options="sequence,random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
+    <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <align label="Alignment" options="left,right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
 	<classes label="Classes (max 10)" type="TextInput"/>
 	<scoreType label="Score Type" options="absolute,individual percent,relative percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
@@ -950,6 +1097,7 @@
     <checkBtnTip label="Check Button Tip" type="textInput" language="true"/>	
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
 	
+	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
@@ -1012,8 +1160,8 @@
     <copyShortcutTxt label="Copy Shortcut Text" type="textInput" language="true"/>
 	<closeBtnTxt label="Close Button Label" type="textInput" language="true"/>
 
-    <copypasteinfo label="Copy & paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
-	<copypasteinfo2 label="Copy & paste info (HTML)" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+    <copypasteinfo label="Copy &amp; paste info" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+	<copypasteinfo2 label="Copy &amp; paste info (HTML)" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" optional="true"/>
     <image label="Image" type="media" optional="true"/>	
     <tooltip label="Image Tooltip" type="TextInput" optional="true"/>	
@@ -1024,14 +1172,13 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
-
   </modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Add this page to display collated results from all the preceeding model answer pages which can then be copied to clipboard or just reviewed." icon="icPageWhiteText" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page text/Instructions" height="280" remove="true">
     <name label="Page Title" type="TextInput"/>
     <copyBtnTxt label="Copy Button Label" type="textInput" divider="true" language="true"/>
     <copyBtnTip label="Copy Button Tip" type="textInput" language="true"/>	
     <copyBtnWidth label="Copy Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="130" language="true"/>
 	<copyBtnLabel label="Select Button Label" type="textInput" language="true"/>
-	<copypasteinfo label="Copy & Paste Info" type="TextArea" height="50" language="true"/>
+	<copypasteinfo label="Copy &amp; Paste Info" type="TextArea" height="50" language="true"/>
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -1043,9 +1190,9 @@
     
     <name label="Page Title" type="TextInput"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
-    <text label="Initial Text" type="TextArea" height="100"/>
-    <prompt label="Answer Prompt" type="TextArea" height="100"/>
-    <answer label="Model Answer" type="TextArea" height="100"/>
+    <text label="Initial Text" type="script" height="100"/>
+    <prompt label="Answer Prompt" type="script" height="100"/>
+    <answer label="Model Answer" type="script" height="100"/>
 
     <answerHeaderTxt label="Instruction Header" type="textInput" divider="true" language="true"/>		
     <feedbackBtnTxt label="Button Label" type="textInput" language="true"/>
@@ -1154,7 +1301,7 @@
     <tooltip label="Image Tooltip" type="TextInput"/>
   </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
     <name label="Quiz Title" type="textInput"/>    
-	<order label="Question Order" options="sequence,random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
+	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <align label="Alignment" options="left,right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
@@ -1199,9 +1346,11 @@
 
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
+	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <image label="Image" type="Media" optional="true"/>
     <tip label="Image Tooltip" type="TextInput" optional="true"/>
-
+    <sound label="Sound" type="Media" optional="true"/>
+		
     <newNodes>
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
     </newNodes>
@@ -1232,8 +1381,10 @@
 
   </rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true">
 	<name label="Scenario Name" type="TextInput" width="200"/>
+	<pageID label="Unique Page ID" type="TextInput" width="200"/>	
 	<title label="Scenario Title" type="TextInput" width="200"/>	
 	<description label="Description" type="textArea" height="120"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 
 	<imageButtonShow label="Show Media Button" type="TextInput" width="200" divider="true" language="true"/>	
 	<imageButtonHide label="Hide Media Button" type="TextInput" width="200" language="true"/>	
@@ -1248,10 +1399,14 @@
 	<actionTitle label="Action Title" type="TextInput" width="200" language="true"/>
 	<scoresTitle label="Scores Title" type="TextInput" width="200" language="true"/>	
     <scoresDebugMessage label="Score debug message" type="TextArea" height="60" language="true"/>
+    <reportTitle label="Report Title" type="TextInput" language="true"/>	
+    <pageLabel label="Page Label" type="TextInput" language="true"/>
+    <titleLabel label="Title Label" type="TextInput" language="true"/>	
+    <idLabel label="PageID Label" type="TextInput" language="true"/>
     <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
 
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true"/>
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
     <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true"/>
     <url label="FLV, SWF or Image File" type="media" optional="true"/>
     <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
@@ -1287,8 +1442,8 @@
 	<score1Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>
     <score1WinMessage label="Score 1 Win Message" type="TextArea" height="60"/>	
     <score1LoseMessage label="Score 1 Lose Message" type="TextArea" height="60"/>
-	<score1WinEndID label="Score 1 Win go to" type="pageList" default=""/>	
-	<score1LoseEndID label="Score 1 Lose go to" type="pageList" default=""/>	
+	<score1WinEndID label="Score 1 Win go to ID" type="TextInput" width="200"/>	
+	<score1LoseEndID label="Score 1 Lose go to ID" type="TextInput" width="200"/>	
 	
     <score2Use label="Display Score 2" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100"/>
 	<score2Label label="Score 2 Label" type="TextInput" width="200"/>	
@@ -1301,8 +1456,8 @@
 	<score2Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score2WinMessage label="Score 2 Win Message" type="TextArea" height="60"/>	
     <score2LoseMessage label="Score 2 Lose Message" type="TextArea" height="60"/>		
-	<score2WinEndID label="Score 2 Win go to" type="pageList" default=""/>	
-	<score2LoseEndID label="Score 2 Lose go to" type="pageList" default=""/>
+	<score2WinEndID label="Score 2 Win go to ID" type="TextInput" width="200"/>	
+	<score2LoseEndID label="Score 2 Lose go to ID" type="TextInput" width="200"/>
 	
     <score3Use label="Display Score 3" type="ComboBox" options="Yes,No" defaultValue="0" data="1,0" width="100"/>
 	<score3Label label="Score 3 Label" type="TextInput" width="200"/>	
@@ -1315,8 +1470,8 @@
 	<score3Lose label="Score to Lose" options="Max,Min,None" type="ComboBox" defaultValue="min" data="max,min,none" width="100"/>	
     <score3WinMessage label="Score 3 Win Message" type="TextArea" height="60"/>	
     <score3LoseMessage label="Score 3 Lose Message" type="TextArea" height="60"/>
-	<score3WinEndID label="Score 3 Win go to" type="pageList" default=""/>	
-	<score3LoseEndID label="Score 3 Lose go to" type="pageList" default=""/>
+	<score3WinEndID label="Score 3 Win go to ID" type="TextInput" width="200"/>	
+	<score3LoseEndID label="Score 3 Lose go to ID" type="TextInput" width="200"/>
 	
     <winEffect label="Win Sound File" type="media" optional="true"/>
     <loseEffect label="Lose Sound File" type="media" optional="true"/>		
@@ -1381,7 +1536,7 @@
     <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
     <propAction label="Prop Action" options="Carry,Drop,Send to Specified Location,Destroy" type="ComboBox" defaultValue="carry" data="carry,drop,specified,destroy" width="200" optional="true"/>
 	<specifiedLoc label="Prop Destination Page ID" type="TextInput" width="200" optional="true"/>
-	<destination label="Destination Page" type="pageList" default="" optional="true"/>
+	<destination label="Destination Page ID" type="TextInput" width="200" optional="true"/>
     <soundEffect label="Sound File" type="media" optional="true"/>	
  
 	<newNodes>  
@@ -1395,7 +1550,7 @@
     <propState label="Prop State" options="Visible,Hidden" type="ComboBox" defaultValue="visible" data="visible,hidden" width="100" optional="true"/>
     <propLoc label="Prop Location" options="On Stage,Carried,Off Stage,Not On Stage,Not Carried,In Scene" type="ComboBox" defaultValue="onStage" data="onStage,carried,offStage,notOnStage,notCarried,inScene" width="100" optional="true"/>
 
-	<scenarioID label="Scenario Page" type="pageList" default="" optional="true"/>
+	<scenarioID label="Scenario Page ID" type="TextInput" width="200" optional="true"/>
     <scenarioState label="Scenario State" options="Current,Not Current" type="ComboBox" defaultValue="current" data="current,notCurrent" width="100" optional="true"/>
     <scoreNumber label="Score or Counter" options="One,Two,Three,Items Carried" type="ComboBox" defaultValue="1" data="1,2,3,4" width="100" optional="true"/>
 	<scoreVal label="Score / Counter Value" type="NumericStepper" min="-50" max="500" step="1" width="100" optional="true"/>
@@ -1509,7 +1664,7 @@
     <alt label="Alternative Text" type="TextInput" optional="true"/>
     <url label="CSV File" type="Media" optional="true"/>
 
-  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plaintext.jpg" remove="true">
+  </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
 
     <name label="Page Title" type="TextInput"/>
 

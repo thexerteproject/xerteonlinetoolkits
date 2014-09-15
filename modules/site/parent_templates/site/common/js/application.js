@@ -309,7 +309,17 @@ function parseContent(pageIndex){
 
 		//add the section to the document
 		$('#mainContent').append(section);
-					
+		
+		// Resolve all text box added <img> and <a> src/href tags to proper urls
+		$('#mainContent').find('img,a').each(function() {
+			var $this = $(this),
+				val = $this.attr('src') || $this.attr('href'),
+				attr_name = $this.attr('src') ? 'src' : 'href';
+
+			if (val.substring(0, 16) == "FileLocation + '") {
+				$this.attr(attr_name, eval(val));
+			}
+		});
 	});
 	
 	//finish initialising the piece now we have the content loaded

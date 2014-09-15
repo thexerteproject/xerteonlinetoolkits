@@ -108,6 +108,13 @@ if ($fullArchive) {
         _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
         array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
 
+        /* Add glossary if used */
+        if ($xml->glossaryUsed())
+        {
+            _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
+            array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
+        }
+
         export_folder_loop($parent_template_path . "common_html5/");
     }
     array_push($file_array, array($parent_template_path . $row['template_name'] . ".rlt", ""));

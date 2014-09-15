@@ -103,7 +103,7 @@
 			
 			$controlPanel.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/img_viewer_btns.png")');
 			
-			$moveBtn.toggle(
+			$moveBtn.toggleClick(
 				function() { // turn move on
 					$controlPanel.find("label[for='move']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
 					
@@ -249,7 +249,7 @@
 			}
 			
 			
-			$selectBtn.toggle(
+			$selectBtn.toggleClick(
 				function() { // turn select on
 					$controlPanel.find("label[for='selectArea']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
 					
@@ -395,7 +395,7 @@
 			});
 			
 			
-			$fullBtn.toggle(
+			$fullBtn.toggleClick(
 				function() { // full screen on
 					$controlPanel.find("label[for='toggleScreen']").addClass("ui-state-active"); // add manually as it doesn't appear if selected without mouse (touchscreen or keyboard)
 					
