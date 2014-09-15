@@ -30,9 +30,24 @@
 		
 		var setUpMedia = function() {
 			opts.source = eval(opts.source);
-			thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + mimeType + '" src="' + opts.source + '" /></' + opts.type + '>');
+			//thisMedia.append('<' + opts.type + ' preload="metadata"' + dimensionsString + '><source type="' + mimeType + '" src="' + opts.source + '" /></' + opts.type + '>');
+            var element = $('<' + opts.type + '>')
+                .attr('preload', 'metadata');
+            if (opts.height != undefined)
+            {
+                element.attr('width', opts.width);
+                element.attr('height', opts.height);
+            }
+            element.append($('<source>')
+                .attr('type', mimeType)
+                .attr('src', opts.source)
+            );
+            thisMedia.append(element);
+
+            var elementobj = thisMedia.find(opts.type);
+            console.log(elementobj);
 			
-			thisMedia.find(opts.type).mediaelementplayer({
+			elementobj.mediaelementplayer({
 				startVolume:		x_volume,
 				alwaysShowControls:	true,
 				pauseOtherPlayers:	true,
@@ -42,7 +57,9 @@
 				fullscreenText:		x_mediaText[3].label,
 				stopText:			x_mediaText[0].label,
 				tracksText:			x_mediaText[4].label,
-				success:	function (mediaElement, domObject) {
+                enablePluginDebug:  true,
+                success:	function (mediaElement, domObject) {
+                    mediaElement.setSrc(opts.source);
 					if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
 						mediaElement.addEventListener("ended", function() {
 							$x_nextBtn.trigger("click");
@@ -95,36 +112,43 @@
 					if (opts.pageName) {
 						eval(opts.pageName).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
 					}
-				}
-			});
-		};
+				},
+                error: function(mediaElement) {
+                    console.log('medialement problem is detected: %o', mediaElement);
+                }
 
-
-		var fileExists = function(url, resultCallback) {
-			$.ajax({
-				url: url,
-				type: 'HEAD',
-				success: function() {
-					resultCallback(true);
-				}, error: function() {
-					resultCallback(false);
-				}
-			});
-		};
-
-
-		if (fileInfo['1'] !== 'mp4') {
-			var url = eval(fileInfo[0] + ".mp4'");
-
-			fileExists(url, function(exists) {
-				if (exists) {
-					opts.source = fileInfo[0] + ".mp4'";
-					mimeType = 'video/mp4';
-				}
-
-				setUpMedia();
-			});
+            });
 		}
 
-	};
+
+		var checkFileType = function() {
+			// if video is flv look for alternative mp4 file to use as this can play in flash player or video tag
+			$.ajax({
+				url:	eval(fileInfo[0] + ".mp4'"),
+				type:	"HEAD",
+				success: function() {
+					// mp4 version exists - use this instead
+					opts.source = fileInfo[0] + ".mp4'";
+                    mimeType = 'video/mp4';
+					fileInfo.splice(1, 1, "mp4");
+					if (thisMedia.data("src") != undefined) { // save this new src so it doesn't have to check again if page returned to
+						thisMedia.data("src", opts.source);
+					}
+					setUpMedia();
+				},
+				error:	function() {
+					// no mp4 version to use - continue with flv
+					setUpMedia();
+				}
+			});
+		}
+		
+		
+		if (opts.type == "video" && fileInfo[1] == "flv") {
+			checkFileType();
+		} else {
+			setUpMedia();
+		}
+		
+	}
 })(jQuery);

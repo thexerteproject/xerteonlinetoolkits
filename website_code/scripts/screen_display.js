@@ -349,7 +349,14 @@ function button_check(){
 
 			editbtn.removeAttribute("disabled");
             editbtn.className = "xerte_button";
-			editbtn.onclick=function(){edit_window()};
+			editbtn.onclick=function(e){
+				if (e.shiftKey) {
+                    edit_window(false, "edit");
+				}
+				else {
+					edit_window(false, "edithtml");
+				}
+			};
 
 			previewbtn.removeAttribute("disabled");
             previewbtn.className = "xerte_button";

@@ -31,6 +31,29 @@ function getLanguages()
     return $langs;
 }
 
+function getWizardfile($langcode)
+{
+    libxml_use_internal_errors(true);
+    $xml = simplexml_load_file(dirname(__FILE__) . "/../../languages/language-config.xml");
+    $xml_langs = $xml->xpath('/*/language');
+    $wizardFile="";
+    foreach ($xml_langs as $xml_lang)
+    {
+        if ((string)$xml_lang['code'] == $langcode)
+        {
+            $wizardFile = "languages/" . (string)$xml_lang['wizardfile'];
+            break;
+        }
+        if ((string)$xml_lang['code'] == "en-GB")
+        {
+            $fallback = "languages/" . (string)$xml_lang['wizardfile'];
+        }
+    }
+    if (!$wizardFile)
+        $wizardFile = $fallback;
+    return $wizardFile;
+}
+
 function display_language_selectionform($formclass)
 {
     if ($formclass != "")
