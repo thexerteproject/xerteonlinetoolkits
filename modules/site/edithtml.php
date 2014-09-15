@@ -38,37 +38,22 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 	$preview_filename = "preview.xml";
 
-    $preview = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview.xml";
-
-    $data    = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
+    $rlo_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
+    $media_path = $rlo_path . "/media/";
+    $preview = $rlo_path . "/preview.xml";
+    $data    = $rlo_path . "/data.xml";
 
     if(!file_exists($preview) && file_exists($data)){
         copy($data, $preview);
         chmod($preview, 0777);
     }
 
-    //************ TEMPORARY ****************
-
-    //$preview2 = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/preview2.xml";
-    //if(file_exists($preview2)) {
-    //	$preview_filename = "preview2.xml";
-    //}
-
-    //***************************************
-
     $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
-
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
-
-    $rlo_url = $media_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-
-    $media_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/media/";
-
-    $rlo_path = $xerte_toolkits_site->users_file_area_full . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
-
+    $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
-
     $xwd_path = $xerte_toolkits_site->root_file_path . "/modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['template_name'] . "/";
+
     if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
     {
         $xwd_file_url = $xwd_url . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd";
@@ -248,7 +233,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
-    echo "mediaurlvariable=\"" . $media_url . "/\";\n";
+    echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
+    echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";

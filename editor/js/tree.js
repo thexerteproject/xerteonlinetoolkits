@@ -140,7 +140,7 @@ var EDITOR = (function ($, parent) {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
-                    absmedia: mediaurlvariable
+                    absmedia: rlourlvariable
                 },
                 //success: function(data){
                 //    alert("success");
@@ -171,7 +171,7 @@ var EDITOR = (function ($, parent) {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
-                    absmedia: mediaurlvariable
+                    absmedia: rlourlvariable
                 },
                 //success: function(data){
                 //    alert("success");
