@@ -635,7 +635,7 @@ var EDITOR = (function ($, parent) {
                 filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
-                mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style'
@@ -762,7 +762,7 @@ var EDITOR = (function ($, parent) {
                 filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
-                mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
+                mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
                 //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
                 //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
                 //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
@@ -1231,12 +1231,12 @@ var EDITOR = (function ($, parent) {
             // Actions with url parameter here
             console.log('Browse file: url=' + url);
             // Check thumbs first!
-            var pos = url.indexOf(mediaurlvariable + ".thumbs/");
+            var pos = url.indexOf(rlourlvariable + ".thumbs/");
             if (pos >=0)
-                url = "FileLocation + '" + url.substr(mediaurlvariable.length) + "'";
-            pos = url.indexOf(mediaurlvariable);
+                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
+            pos = url.indexOf(rlourlvariable);
             if (pos >=0)
-                url = "FileLocation + '" + url.substr(mediaurlvariable.length) + "'";
+                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
             var newvalue = '<p>' + url + '</p>';
             $('#' + id).html(newvalue);
             setAttributeValue(key, [name], [url]);
@@ -1253,11 +1253,74 @@ var EDITOR = (function ($, parent) {
             var pos2 = temp.substr(pos+16).indexOf("'") + pos;
             if (pos2>=0)
             {
-                temp = temp.substr(0, pos) + mediaurlvariable + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
+                temp = temp.substr(0, pos) + rlourlvariable + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
             }
             pos = temp.indexOf('FileLocation + \'');
         }
         return temp;
+    },
+
+    editDrawing = function(id, key, name, value){
+        console.log('Edit drawing: ' + id + ': ' + key + ', ' +  name);
+        window.XOT = {};
+        window.XOT.callBack = function(key, name, xmldata) {
+            // Actions with url parameter here
+            console.log('Save drawing file: ' + key + ', ' + name);
+            setAttributeValue(key, [name], [xmldata]);
+            // Refresh form, otherwise the value passed by the Edit button to the drawingEditor when the button is paused again
+            parent.tree.showNodeData(key);
+        };
+        window.XOT.close = function()
+        {
+            window.XOT = null;
+        };
+        // Make a form with hidden fields we want to post
+        var drawingForm = $('<form>')
+            .attr('id', 'form_'+ key)
+            .attr('target', 'Drawing Editor')
+            .attr('method', 'POST')
+            .attr('action', 'drawingjs.php');
+
+        var input = $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', 'rlofile')
+            .attr('value', rlopathvariable);
+
+        drawingForm.append(input);
+
+        input = $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', 'data')
+            .attr('value', value);
+        drawingForm.append(input);
+
+        input = $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', 'key')
+            .attr('value', key);
+        drawingForm.append(input);
+
+        input = $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', 'name')
+            .attr('value', name);
+
+        drawingForm.append(input);
+
+        // Add the form to body
+        $('body').append(drawingForm);
+
+        var de = window.open('', 'Drawing Editor', "height=680, width=800");
+
+        if (de)
+        {
+            drawingForm.submit();
+        }
+        else
+        {
+            alert("You must allow popups for the drawing editor to work!");
+        }
+        $('#' + 'form_'+ key).remove();
     },
 
     displayDataType = function (value, options, name, key) {
@@ -1715,6 +1778,20 @@ var EDITOR = (function ($, parent) {
                 datagrids.push({id: id, key: key, name: name, options: options});
                 break;
             case 'drawing': // Not implemented
+                var id = 'drawing_' + form_id_offset;
+                form_id_offset++;
+                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                html = $('<button>')
+                    .attr('id', id)
+                    .attr('title', language.edit.$tooltip)
+                    .addClass("xerte_button")
+                    .click({id:id, key:key, name:name, value:value}, function(event)
+                        {
+                            editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
+                        }
+                    )
+                    .append(language.edit.$label);
+                break;
             case 'datefield': // Not used??
             case 'webpage':  //Not used??
             default:
