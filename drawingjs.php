@@ -63,6 +63,7 @@ Version 2.2
                 : false);
             var key="<?php echo $_POST['key'];?>";
             var name="<?php echo $_POST['name'];?>";
+            var closed=0;
             var saveDrawing = function(xmlData)
             {
                 if (saveDrawingCallBack)
@@ -72,10 +73,18 @@ Version 2.2
             }
             var closeDrawingEditor = function()
             {
-                if (closeDrawEditorCallBack)
-                {
+                if (closeDrawEditorCallBack) {
                     closeDrawEditorCallBack();
                 }
+            }
+            var exitSaveDrawingEditor = function()
+            {
+                drawingEdit = document.getElementById("mymovie");
+                drawingEdit.saveDrawing();
+                if (closeDrawEditorCallBack) {
+                    closeDrawEditorCallBack();
+                }
+                window.close();
             }
         </script>
 
@@ -91,6 +100,12 @@ Version 2.2
 
         <div id="flashcontent">
             This text is replaced by the Flash movie.
+        </div>
+        <div class="bottombar" style="width: 800px">
+            <div style="float: right; margin-right: 10px;     padding-top: 3px;">
+                <button type="button" class="xerte_button_c_no_width" onclick="exitSaveDrawingEditor();">Save and Exit</button>
+                <button type="button" class="xerte_button_c_no_width" onclick="window.close();">Cancel</button>
+            </div>
         </div>
 
 
