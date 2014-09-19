@@ -1310,7 +1310,7 @@ var EDITOR = (function ($, parent) {
         // Add the form to body
         $('body').append(drawingForm);
 
-        var de = window.open('', 'Drawing Editor', "height=680, width=800");
+        var de = window.open('', 'Drawing Editor', "height=710, width=800");
 
         if (de)
         {
