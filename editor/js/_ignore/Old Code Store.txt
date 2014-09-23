@@ -1,0 +1,170 @@
+
+
+
+
+
+	xmlData.children().each(function() {
+		
+		var attributes = [{ name: 'nodeName', value: $(this)[0].nodeName }];
+		$($(this)[0].attributes).each(function() {
+			attributes.push({name: this.name, value: this.value});
+		});
+	}
+	return new_data;
+}
+	
+	
+	var key = generate_lo_key();
+	
+	var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
+	$(xmlData[0].attributes).each(function() {
+		attributes.push({name: this.name, value: this.value});
+	});
+
+	var my_json = {
+		state: "open",
+		data: {
+			title : xmlData[0].attributes['name'].value
+		},
+		metadata: {
+			id: key
+		},
+		children : []
+	};
+	lo_data[key] = attributes;
+
+	parent_id = key;
+	xmlData.children().each(function() {
+
+		var attributes = [{ name: 'nodeName', value: $(this)[0].nodeName }];
+		$(this.attributes).each(function() {
+			attributes.push({name: this.name, value: this.value});
+		});
+
+		key = generate_lo_key();
+		var child = {
+			data: {
+				title : $(this)[0].attributes['name'].value,
+				icon : 'img/page_types/' + $(this)[0].nodeName + '.png'
+			},
+			metadata: {
+				id: key,
+				parent_id: parent_idif ($(this).children()[0]) {
+			}
+		};
+		lo_data[key] = attributes;
+
+		parent = key;
+		
+			key = generate_lo_key();
+			child.children = [{
+				data: {
+					title : 'Test',
+					icon : 'img/page_types/text.png'
+				},
+				metadata: {
+					id: key,
+					parent_id: parent
+				}
+			}];
+			lo_data[key] = { nodeName : 'nodeName' };
+
+			//var $child = $($(this).children()[0]);
+			//var child_attributes = { nodeName : $child[0].nodeName };
+			//child.children.push({
+			//	attributes: {
+			//		id : 'child'
+			//	},
+			//	data: {
+			//		title : 'Test',
+			//		icon : 'img/page_types/text.png'
+			//	},
+			//	metadata : {
+			//		attributes : child_attributes
+			//	}
+			//});
+
+			//console.log($(this)[0].nodeName + " DOES have children.");
+		}
+
+		my_json.children.push(child);
+	});
+	
+	
+			var xmlData = $($.parseXML(newString)).find("learningObject");
+
+			var attributes = [{ name: 'nodeName', value: xmlData[0].nodeName }];
+			$(xmlData[0].attributes).each(function() {
+				attributes.push({name: this.name, value: this.value});
+			});
+			
+			var parent_id;
+			var key = generate_lo_key();
+			var my_json = {
+				state: "open",
+				data: {
+					title : xmlData[0].attributes['name'].value
+				},
+				metadata: {
+					id: key
+				},
+				children : []
+			};
+			lo_data[key] = attributes;
+			
+			parent_id = key;
+			xmlData.children().each(function(i) {
+			
+				var attributes = [{ name: 'nodeName', value: $(this)[0].nodeName }];
+				$(this.attributes).each(function() {
+					attributes.push({name: this.name, value: this.value});
+				});
+				
+				key = generate_lo_key();
+				var child = {
+					data: {
+						title : $(this)[0].attributes['name'].value,
+						icon : 'img/page_types/' + $(this)[0].nodeName + '.png'
+					},
+					metadata: {
+						id: key,
+						parent_id: parent_id
+					}
+				};
+				lo_data[key] = attributes;
+				
+				parent = key;
+				if ($(this).children()[0]) {
+					key = generate_lo_key();
+					child.children = [{
+						data: {
+							title : 'Test',
+							icon : 'img/page_types/text.png'
+						},
+						metadata: {
+							id: key,
+							parent_id: parent
+						}
+					}];
+					lo_data[key] = { nodeName : 'nodeName' };
+					
+					//var $child = $($(this).children()[0]);
+					//var child_attributes = { nodeName : $child[0].nodeName };
+					//child.children.push({
+					//	attributes: {
+					//		id : 'child'
+					//	},
+					//	data: {
+					//		title : 'Test',
+					//		icon : 'img/page_types/text.png'
+					//	},
+					//	metadata : {
+					//		attributes : child_attributes
+					//	}
+					//});
+					
+					//console.log($(this)[0].nodeName + " DOES have children.");
+				}
+				
+				my_json.children.push(child);
+			});

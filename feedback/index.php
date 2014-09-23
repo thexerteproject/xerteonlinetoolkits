@@ -10,7 +10,15 @@
  */
 
 require_once("../config.php");
-	_load_language_file("/feedback/index.inc");
+_load_language_file("/feedback/index.inc");
+
+$edit_site_logo = $xerte_toolkits_site->site_logo;
+$pos = strrpos($edit_site_logo, '/') + 1;
+$edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
+
+$edit_organisational_logo = $xerte_toolkits_site->organisational_logo;
+$pos = strrpos($edit_organisational_logo, '/') + 1;
+$edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
 
 ?>
 
@@ -27,8 +35,8 @@ require_once("../config.php");
 <body>
 
     <div class="topbar">
-        <img src="../website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
-        <img src="../website_code/images/UofNLogo.jpg" style="margin-right:0px; float:right" />
+        <img src="<?php echo $edit_site_logo;?>" style="margin-left:10px; float:left" />
+        <img src="<?php echo $edit_organisational_logo;?>" style="margin-right:10px; float:right" />
     </div>
     <div class="mainbody"><?PHP
 	

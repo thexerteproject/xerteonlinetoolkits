@@ -1,0 +1,368 @@
+	<learningObject background="FileLocation + 'media/Trent.jpg'" name="Toolkits Page Types" textSize="12">
+		<title name="Text - Title Page" size="30"><![CDATA[Welcome to Xerte Online Toolkits]]></title>
+		<orient linkID="PG1233064090686" name="Text - Orientation" goals="This sample piece demonstrates all the page types available in Xerte's Online Toolkit. You will see examples of each type of page, and hopefully get some idea about how you could use these tools to present your own learning materials." audience="This piece is intended for all Xerte Online Templates users. It serves as an introduction to the types of content that Xerte Online Toolkits can produce." prereq="There is no pre-requisite knowledge or experience to progress through this piece." howto="As you browse through the examples, think about the sort of content you might want to produce using Xerte Online Toolkits. You can return to this resources as many times as you like." />
+		<bullets name="Text - Bullets" size="12"><![CDATA[Xerte Online Toolkits is an easy way to produce interactive content for your learners. It is avaible to all users of the University's network - including students.
+
+You create content in Xerte Online Toolkits by assembling different types of pages, and filling in a simple form to configure the page template. There are a wide range of templates available, providing support for a wide range of media and interactivity.
+
+This piece provides examples of all the page types available in toolkits. As you browse the pages, you might like to think about how you could use similar content with your students.
+
+This is the bullets page type, which presents a series of simple bullet points.]]></bullets>
+		<text name="Text - Plain Text" size="12"><![CDATA[This page just shows plain text. The image you can see is a background image for the learning object, and is visible on all the pages. The remaining text on this page is just a placeholder.
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.]]></text>
+		<textGraphics sound="FileLocation + 'media/cold frosty M.mp3'" name="Media - Graphics and Sound" align="Left" imagesize="auto" url="FileLocation + 'media/DSC_0137.JPG'" tip="This is Clag Glas on the Isle of Skye" size="12"><![CDATA[This page is used to show text and graphics, and optionally, provide a sound for the user to listen to as well. You can choose from a number of different layouts.
+
+Graphics will usually look best if they are cropped in portrait orientation.
+
+The sound files you upload should be in .mp3 format.]]></textGraphics>
+		<textDrawing linkID="PG1243025702109" name="Media - Drawing" desc="Xerte Online Toolkits contains some simple drawing tools. Here they have been used to annotate a photograph with additional information.
+
+The drawing tools are quiet simple - you may prefer to rely on a more sophisticated graphics package to produce high quality images and illustrations." align="left" size="12" interactivity="off"><![CDATA[<shapes><shape type="rect" x="100" y="411" x2="57" y2="34" lw="3" lc="0xFFFFFF"></shape><shape type="image" x="0" y="0" p="media/DSC_0137.JPG"></shape><shape type="free" x="140" y="316" lw="3" lc="0xFFFF00" p="0,0~0,0~0,0~0,0~0,0~0,0~0,0~0,0~0,0~0,-3~0,-7~0,-9~0,-11~0,-11~0,-11~0,-15~0,-15~0,-15~0,-18~0,-18~0,-18~-2,-19~-3,-20~-3,-20~-4,-21~-9,-24~-12,-25~-12,-25~-12,-25~-12,-25~-15,-25~-17,-25~-17,-25~-18,-26~-19,-26~-19,-26~-19,-26~-20,-27~-20,-28~-20,-29~-20,-29~-21,-31~-21,-32~-21,-34~-21,-35~-21,-37~-21,-39~-21,-40~-21,-42~-20,-43~-19,-44~-18,-46~-17,-47~-16,-48~-14,-49~-14,-51~-13,-52~-13,-54~-13,-55~-13,-56~-12,-57~-10,-58~-9,-59~-8,-61~-7,-61~-6,-62~-6,-63~-6,-65~-6,-67~-6,-68~-6,-70~-6,-72~-6,-72~-6,-74~-6,-74~-6,-75~-6,-75~-6,-75~-8,-75~-9,-76~-9,-76~-9,-76~-12,-78~-13,-79~-14,-79~-16,-80~-17,-81~-17,-81~-18,-81~-20,-81~-20,-81~-20,-81~-20,-81~-20,-82~-19,-84~-18,-84~-18,-85~-17,-86~-17,-86~-17,-88~-16,-89~-15,-89~-14,-90~-13,-91~-12,-92~-11,-94~-10,-94~-9,-95~-7,-96~-6,-96~-6,-97~-5,-97~-3,-97~-3,-98~-1,-98~0,-99~1,-99~1,-99~2,-101~3,-101~3,-102~3,-104~5,-104~6,-106~7,-106~7,-107~9,-108~9,-109~10,-109~10,-110~11,-111~12,-111~14,-113~15,-113~15,-115~16,-115~16,-115~16,-116~16,-117~16,-118~16,-119~16,-119~16,-120~16,-120~16,-121~14,-122~14,-123~13,-124~12,-126~10,-127~10,-128~10,-129~10,-130~9,-132~9,-132~9,-133~9,-133~9,-134~7,-135~4,-137~1,-138~1,-138~1,-138~-1,-139~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-140~-2,-141~-1,-142~-1,-143~-1,-144~-1,-144~-1,-144~0,-145~0,-146~1,-147~3,-148~3,-149~4,-149~5,-150~5,-151~6,-151~7,-152~7,-152~7,-153~7,-155~7,-155~7,-155~7,-155~7,-157~7,-157~5,-159~4,-160~4,-160~4,-160~4,-160~4,-160~1,-161~1,-161~1,-161~1,-161~1,-161~1,-161~1,-162~1,-162~1,-162~1,-162~3,-163~5,-164~6,-164~6,-164~7,-164~9,-164~9,-164~9,-164~12,-164~17,-164~17,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164~18,-164"></shape><shape type="text" x="7" y="8" x2="284" y2="NaN" lw="3" lc="0xFFFF00" s="14" t="Showing our route on Clag Glas" f="Arial" b="1"></shape></shapes>]]></textDrawing>
+		<textVideo linkID="PG1243939417124" transcript="dfgsfg dfg dg dfg dfgdf gdfg dg dg " name="Media - Video" align="Left" url="FileLocation + 'media/xerte-promo.flv'" tip="Enter a Tooltip" size="12"><![CDATA[You can easily include video in your projects using the video page. The video should be encoded to .flv format. 
+
+There are a number of pieces of software that can convert your video into this format if your video is in a different format.]]></textVideo>
+		<audioSlideshow name="Media - Audio Slideshow" sound="FileLocation + 'media/cold frosty M.mp3'" text="The audio slideshow allows you to synch the presentation of text and images to a soundtrack. You could present images or bullet points to accompany some narration, or text to accompany a piece of music.
+
+Audio Files should be in .mp3 format." size="12" panelWidth="Small" erase="True">
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="Slide 1" text="Looking across Glen Sligachan towards the distinctive mountain Sgurr an Fheandain" align="Top" synch="0" />
+			<nestedPage url="FileLocation + 'media/DSC_0074.JPG'" name="Slide 2" text="The stacks off the coast near Carbost" align="Top" synch="5" />
+			<nestedPage url="FileLocation + 'media/DSC_0088.JPG'" name="Slide 3" text="Sunset over the Isle of Skye" align="Top" synch="10" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="Slide 4" text="The approach to the intimidating scramble on Clag Glas" align="Top" synch="15" />
+		</audioSlideshow>
+		<transcriptReader name="Media - Transcript Reader" sound="FileLocation + 'media/12713-m-3.mp3'" text="This is a transcript reader. It allows you to synch up an audio sound track to blocks of highlighted text." size="12" panelWidth="Medium">
+			<nestedPage name="name" text="There passed a weary time. Each throat
+Was parched, and glazed each eye.
+A weary time ! a weary time !
+How glazed each weary eye,
+When looking westward, I beheld
+A something in the sky." align="Top" synch="5" />
+			<nestedPage name="name" text="At first it seemed a little speck,
+And then it seemed a mist ;
+It moved and moved, and took at last
+A certain shape, I wist." align="Top" synch="24" />
+			<nestedPage name="name" text="A speck, a mist, a shape, I wist !
+And still it neared and neared :
+As if it dodged a water-sprite,
+It plunged and tacked and veered." align="Top" synch="37" />
+			<nestedPage name="name" text="With throats unslaked, with black lips baked,
+We could nor laugh nor wail ;
+Through utter drought all dumb we stood !
+I bit my arm, I sucked the blood,
+And cried, A sail ! a sail !" align="Top" synch="49" />
+			<nestedPage name="name" text="With throats unslaked, with black lips baked,
+Agape they heard me call :
+Gramercy ! they for joy did grin,
+And all at once their breath drew in,
+As they were drinking all." align="Top" synch="67" />
+			<nestedPage name="name" text="See ! see ! (I cried) she tacks no more !
+Hither to work us weal ;
+Without a breeze, without a tide,
+She steadies with upright keel !
+
+" align="Top" synch="81" />
+			<nestedPage name="name" text="The western wave was all a-flame.
+The day was well nigh done !
+Almost upon the western wave
+Rested the broad bright Sun ;
+When that strange shape drove suddenly
+Betwixt us and the Sun." align="Top" synch="94" />
+			<nestedPage name="name" text="And straight the Sun was flecked with bars,
+(Heaven's Mother send us grace !)
+As if through a dungeon-grate he peered
+With broad and burning face.
+" align="Top" synch="131" />
+			<nestedPage name="name" text="Alas ! (thought I, and my heart beat loud)
+How fast she nears and nears !
+Are those her sails that glance in the Sun,
+Like restless gossameres ?" align="Top" synch="127" />
+			<nestedPage name="name" text="And those her ribs through which the Sun
+Did peer, as through a grate ?
+And is that Woman all her crew ?
+Is that a DEATH ? and are there two ?
+Is DEATH that woman's mate ?" align="Top" synch="141" />
+			<nestedPage name="name" text="Her lips were red, her looks were free,
+Her locks were yellow as gold :
+Her skin was as white as leprosy,
+The Night-mare LIFE-IN-DEATH was she,
+Who thicks man's blood with cold." align="Top" synch="157" />
+			<nestedPage name="name" text="The naked hulk alongside came,
+And the twain were casting dice ;
+`The game is done ! I've won ! I've won !'
+Quoth she, and whistles thrice." align="Top" synch="172" />
+			<nestedPage name="name" text="The Sun's rim dips ; the stars rush out :
+At one stride comes the dark ;
+With far-heard whisper, o'er the sea,
+Off shot the spectre-bark." align="Top" synch="188" />
+			<nestedPage name="name" text="We listened and looked sideways up !
+Fear at my heart, as at a cup,
+My life-blood seemed to sip !
+The stars were dim, and thick the night,
+The steerman's face by his lamp gleamed white ;
+From the sails the dew did drip--
+Till clomb above the eastern bar
+The hornéd Moon, with one bright star
+Within the nether tip." align="Top" synch="199" />
+			<nestedPage name="name" text="One after one, by the star-dogged Moon,
+Too quick for groan or sigh,
+Each turned his face with a ghastly pang,
+And cursed me with his eye." align="Top" synch="228" />
+			<nestedPage name="name" text="Four times fifty living men,
+(And I heard nor sigh nor groan)
+With heavy thump, a lifeless lump,
+They dropped down one by one." align="Top" synch="240" />
+			<nestedPage name="name" text="The souls did from their bodies fly,--
+They fled to bliss or woe !
+And every soul, it passed me by,
+Like the whizz of my cross-bow !" align="Top" synch="256" />
+		</transcriptReader>
+		<imageViewer name="Media - Image Viewer" align="Left" url="FileLocation + 'media/DSC_0137.JPG'" size="12"><![CDATA[The image viewer is useful when you want to present highly detailed images on the screen. It allows the user to zoom in and out and select regions of the images to select.
+
+]]></imageViewer>
+		<morphImages linkID="PG1298025649083" name="Media - Morph Images" text="This page allows you to morph between two images, allowing you to zoom between two views, or show greater detail of a subject." url="FileLocation + 'media/DSC_0016.JPG'" tip1="Enter tooltip for image 1" url2="FileLocation + 'media/top.jpg'" tip2="Enter tooltip for image 2" buttonLabel="Zoom" zoomSpeed="3">
+			<hotspot name="zoom region" x="163" y="124" w="38" h="27" />
+		</morphImages>
+		<videoSynch name="Media - Synched Video" url="FileLocation + 'media/einstein.flv'" text="This page type allows you to synch the presentation of text to a video. A number of options allow to determine whether to let the text build up on the screen, and whether to pause the video when synch points are found." size="12" pause="False" erase="False">
+			<nestedPage name="name" text="This is Albert Einstein." align="Top" synch="0" />
+			<nestedPage name="name" text="He was a smart guy." align="Top" synch="3" />
+			<nestedPage name="name" text="He realised that energy was equal to mass multiplied by the speed of light..." align="Top" synch="6" />
+			<nestedPage name="name" text="...which was the most profound leap of the imagination" align="Top" synch="9" />
+			<nestedPage name="name" text="Einstein became extremely famous..." align="Top" synch="12" />
+			<nestedPage name="name" text="...but died an unhappy man having failed to find a unifying theory of everything." align="Top" synch="15" />
+			<nestedPage name="name" text="His work made possible many technologies we take for granted today." align="Top" synch="18" />
+		</videoSynch>
+		<textSWF linkID="PG1235487761815" name="Media - Flash Animation" align="Right" url="FileLocation + 'media/CJSubtractionVid.swf'" tip="Chris Jones" size="12"><![CDATA[This page type allwos you to include Flash movies in your presentations. Flash movies can bring interactivity and animation to your learning objects, and allow them to include custom content not possible with toolkits natively.
+
+This example is some Flash video from a suite of learning objects that address numerical skills.
+
+Flash is also great for producing animation and interactivity.]]></textSWF>
+		<flashPaper name="Media - Flash Paper" url="FileLocation + 'media/Xerte Toolkits Guide.swf'" />
+		<jmol linkID="PG1313662230476" name="Media - JMOL VIewer" text="THis page allows you to open a new window with JMol Viewer. JMol Viewer is a java applet for displaying 3D models of molecular structures, and takes .xyz files, a file format that ChemDraw / IsisDraw can export.
+
+Here you can launch the viewer and see the Ethanol molecule." xyz="FileLocation + 'media/Ethanol.xyz'" previewImage="FileLocation + 'media/ethanol.png'" tip="Ethanol Molecule" />
+		<perspectives linkID="PG1300804753511" name="Media - Multiple Perspectives">
+			<movie txt="The multiple perspectives page type allows you to presenta  number of different videos on one page, for learners to compare and contrast different point of view.
+
+You might find other uses for this page. Click each video in the menu above to select it." src="FileLocation + 'media/xerte-promo.flv'" name="Video One" />
+			<movie txt="The multiple perspectives page type allows you to presenta  number of different videos on one page, for learners to compare and contrast different point of view.
+
+You might find other uses for this page. Click each video in the menu above to select it." src="FileLocation + 'media/xerte-promo.flv'" name="Video Two" />
+			<movie txt="The multiple perspectives page type allows you to presenta  number of different videos on one page, for learners to compare and contrast different point of view.
+
+You might find other uses for this page. Click each video in the menu above to select it." src="FileLocation + 'media/xerte-promo.flv'" name="Video Three" />
+			<movie txt="The multiple perspectives page type allows you to presenta  number of different videos on one page, for learners to compare and contrast different point of view.
+
+You might find other uses for this page. Click each video in the menu above to select it." src="FileLocation + 'media/xerte-promo.flv'" name="Video Four" />
+		</perspectives>
+		<chart linkID="PG1237380968678" name="Charts - Line Charts" chartTitle="Basic Line Chart" chartType="line" text="There are templates for anumber of different types of chart. Here's an example showing how several series can be plotted as lines." align="left">
+			<series name="Web Site Visits" data="Jan|28||Feb|40||Mar|50||Apr|65||May|80||Jun|110||Jul|140||Aug|380||Sep|450||Oct|480||Nov|500||Dec|650" colour="0x66cc" />
+			<series name="Downloads" data="Jan|20||Feb|30||Mar|40||Apr|50||May|65||Jun|80||Jul|110||Aug|200||Sep|250||Oct|300||Nov|330||Dec|390" colour="0x339933" />
+		</chart>
+		<chart linkID="PG1237380968678" name="Charts - Bar Charts" chartTitle="Basic Bar Chart" chartType="bar" text="There are templates for anumber of different types of chart. Here's an example showing how several series can be plotted on a bar chart." align="right">
+			<series name="A" data="Jan|28||Feb|40||Mar|50||Apr|65||May|80||Jun|110||Jul|140||Aug|380||Sep|450||Oct|480||Nov|500||Dec|650" colour="0xffcc00" />
+			<series name="B" data="Jan|25||Feb|26||Mar|27||Apr|29||May|34||Jun|37||Jul|46||Aug|53||Sep|61||Oct|70||Nov|82||Dec|95" colour="0x336699" />
+			<series name="C" data="Jan|20||Feb|30||Mar|40||Apr|50||May|65||Jun|80||Jul|110||Aug|200||Sep|250||Oct|300||Nov|330||Dec|390" colour="0xcc3333" />
+		</chart>
+		<chart linkID="PG1237380968678" name="Charts - Stacked Bar Charts" chartTitle="Basic Stacked Bar Chart" chartType="stacked bar" text="There are templates for anumber of different types of chart. Here's an example showing how several series can be plotted on a bar chart." align="left">
+			<series name="A" data="2002|20||2003|40||2004|70||2005|110||2006|160||2007|230||2008|300" colour="0x993333" />
+			<series name="B" data="2002|20||2003|40||2004|70||2005|110||2006|160||2007|230||2008|300" colour="0x3366cc" />
+			<series name="C" data="2002|20||2003|40||2004|70||2005|110||2006|160||2007|230||2008|300" colour="0x6633" />
+		</chart>
+		<chart linkID="PG1237380968678" name="Charts - Pie Charts" chartTitle="Basic Pie Chart" chartType="pie" text="There are templates for anumber of different types of chart. Here's an example showing how several series can be plotted on a bar chart." align="right">
+			<series name="Pie Chart" data="A|65||B|20||C|12||D|3" colour="0xFF0000" />
+		</chart>
+		<table linkID="PG1322840705597" name="Charts - Table" text="Create and display tables of data" align="left">
+			<tableData name="Projected Users" data="Year|Value||2011|123||2012|231||2013|983||2014|237||2015|989" size="medium" borders="simple" colour="0x999999" header="header" shadeHeader="true" shade="true" />
+		</table>
+		<columnPage name="Navigators - Column Page" size="12">
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="name" text="The navigators section provides numourous ways to present related items of content together. This page type is a 'Column Page'" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0095.JPG'" name="name" text="The navigators section provides numourous ways to present related items of content together. This page type is a 'Column Page'" align="Bottom" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="name" text="The navigators section provides numourous ways to present related items of content together. This page type is a 'Column Page'" align="Top" />
+		</columnPage>
+		<tabNav name="Navigators - Tabbed Navigator" text="THis is a tabbed navigator. It presents a series of tabs for presented related items. Each tab can contain text and images." size="12" panelWidth="Medium" tabWidth="120">
+			<nestedPage url="FileLocation + 'media/DSC_0095.JPG'" name="Sgurr nan Gilean" text="The navigators section provides numourous ways to present related items of content together." align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="Sgurr an Fheandain" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="Glag Glas" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+		</tabNav>
+		<accNav name="Navigators - Accordion" text="This is a accordion navigator. It presents a series of tabs for presented related items. Each tab can contain text and images." size="12" panelWidth="Medium">
+			<nestedPage url="FileLocation + 'media/DSC_0095.JPG'" name="Sgurr nan Gilean" text="The navigators section provides numourous ways to present related items of content together." align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="Sgurr an Fheandain" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="Glag Glas" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+		</accNav>
+		<slideshow name="Navigators - Slideshow" text="This is a slideshow navigator. It presents a series of slides for presented related items. Each tab can contain text and images.
+
+The slideshow isn't constrained by physical size in the same wya the tabbed and accordion navigators are - you an have as many slides as you like." size="12" panelWidth="Medium">
+			<nestedPage url="FileLocation + 'media/DSC_0095.JPG'" name="Sgurr nan Gilean" text="The navigators section provides numourous ways to present related items of content together." align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="Sgurr an Fheandain" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="Glag Glas" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+		</slideshow>
+		<thumbnailViewer linkID="PG1307617628261" name="Navigators - Thumbnail Viewer" text="Enter text for the page">
+			<nestedPage url="FileLocation + 'media/DSC_0002.jpg'" name="name" text="Setting out from Glen Brittle" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0032.jpg'" name="name" text="View from Sgurr a Greadaidh" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0049.jpg'" name="name" text="Scrmabler on the fine ridge to Sgurr a Mheadaidh" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0059.jpg'" name="name" text="Summit!" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0079.jpg'" name="name" text="Skurr Nan Gilean from Glen Sligachan" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0104.jpg'" name="name" text="Sunset" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0218.jpg'" name="name" text="The more difficult sections of the West Ramp on Sgurr Sgumain" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0221.jpg'" name="name" text="Continuing on the Sgumain West Ramp" align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0234.jpg'" name="name" text="View towards Sgurr Dearg from the col between Sgurr Sgumain and Sgurr Alistair" align="Top" />
+		</thumbnailViewer>
+		<newWindow linkID="PG1308143187950" name="Navigators -New Window" text="The New Window Page allows you to link to any other web based content so it can be launched from your Learning Object. 
+
+This allows you to integrate all sorts of content that is not compatible with Xerte directly, such as Slideshare presentations, 3D Model viewers, and other multimedia and document formats such as pdf.
+
+If you have the source files you can upload them into the project; otherwise you can link to any other content on the web, bringing a great deal of flxibility to your content." url="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=xerte-moodlesaviour-110407061145-phpapp02" previewImage="FileLocation + 'media/newWin.png'" tip="Slideshare Presentation" windowWidth="600" windowHeight="400" />
+		<buttonNav name="Navigators - Button Navigators" text="This is a button navigator. It presents a series of tabs for presented related items. Each tab can contain text and images." size="12" panelWidth="Medium" buttonWidth="140">
+			<nestedPage url="FileLocation + 'media/DSC_0095.JPG'" name="Sgurr nan Gilean" text="The navigators section provides numourous ways to present related items of content together." align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0022.JPG'" name="Sgurr an Fheandain" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+			<nestedPage url="FileLocation + 'media/DSC_0140.JPG'" name="Glag Glas" text="The navigators section provides numourous ways to present related items of content together. " align="Top" />
+		</buttonNav>
+		<embedDiv linkID="PG1313761665729" name="Navigators - Embed Content" src="http://www.nottingham.ac.uk" />
+		<buttonQuestion name="Interactivity - Stimulating Question" instruction="This is a really simple question and answer interaction." prompt="Think about the tools you've usd before to create online learning content. Which have been the best to use?" label="Let's See" feedback="There are many tools available. Xerte Online Toolkits makes it quite easy to produce content, but remember it is peeople that make great content, not the tools, and it still takes a degree of care to create effective materials. Effective materials are often simple." align="Left" panelWidth="Medium" />
+		<buttonSequence linkID="PG1298025995825" name="Interactivity - Button Sequence" text="Ths page allows a dialog through a sequence of buttons. It might be helpful for breaking a concept into small chunks and creating a sense of dialog with the user." intro="Xerte Online Toolkits is a toolf ro creating interactive learning materials quickly and easily..." align="Left" panelWidth="Medium">
+			<button name="more..." text="...content is created using a bank of templates. Over 40 different types of page can be authored..." />
+			<button name="more..." text="...Xerte Online Toolkits is noted for high levels of native accessibility..." />
+			<button name="more..." text="...and in 2010 Xerte Online Toolkits won the IMS Platinum Impact Award" />
+		</buttonSequence>
+		<list linkID="PG1298026773887" name="Interactivity - Interactive List" text="This is a simple interactive list">
+			<nestedPage name="Item One" text="Information about item one" />
+			<nestedPage name="Item One" text="Information about item one" />
+			<nestedPage name="Item One" text="Information about item one" />
+		</list>
+		<mcq name="Interactivity - MCQ" instruction="Here is a simple - but effective - multiple choice question. It is good practice to think about the feedback you provide through the question, as this online content is likely to be used in a  formative context by the student." prompt="What sort of experience do you have in developing interactive content?" type="single Answer" align="Left" panelWidth="Medium">
+			<option text="I've never created any online materials" feedback="Xerte Online Toolkits makes it easy to create materials. If you need any help, just ask." correct="false" />
+			<option text="I've created some simple web pages" feedback="Toolkits help you develop materials by providing a range of solutions for issues such as accessibility and takes care of all the layout and design issues for you. Creating materials is very fast." correct="false" />
+			<option text="I develop materials using a wide range of tools." feedback="You can extend the functionality of toolkits in a number of ways. If you are a Flash developer, you can create your own content to include alongside the assorted page templates." correct="false" />
+		</mcq>
+		<hotspotImage name="Interactivity - Hot Spot Image" text="This interaction allows you to present an image with hotspot regions for the user to explore." url="FileLocation + 'media/ready-fretless.jpg'" interactivity="Show Me" align="Left" tip="A Fretless Banjo">
+			<hotspot name="Tuners" text="Provide explanatory text for the hotspot here." x="138" y="24" w="59" h="78" />
+			<hotspot name="Neck" text="Provide explanatory text for the hotspot here." x="155" y="88" w="32" h="208" />
+			<hotspot name="Pot" text="Provide explanatory text for the hotspot here." x="89" y="294" w="132" h="137" />
+			<hotspot name="Bridge" text="Provide explanatory text for the hotspot here." x="144" y="360" w="43" h="22" />
+		</hotspotImage>
+		<annotatedDiagram name="Interactivity - Annotated Diagram" text="The annotated diagram is similar to hotspot image, but allows the user to select from a list of terms on the page. It also allows howspots to be grouped together." url="FileLocation + 'media/ready-fretless.jpg'" tip="A Fretless Banjo" colour="0xFFFF00" shape="None">
+			<hotspotGroup name="Tuners" text="Description for the hotspot">
+				<hotspot name="name" x="139" y="43" w="16" h="19" />
+				<hotspot name="name" x="144" y="68" w="16" h="17" />
+				<hotspot name="name" x="172" y="51" w="13" h="12" />
+				<hotspot name="name" x="177" y="67" w="12" h="16" />
+				<hotspot name="name" x="147" y="145" w="23" h="22" />
+			</hotspotGroup>
+			<hotspot name="Neck" text="Provide explanatory text for the hotspot here." x="155" y="88" w="32" h="208" />
+			<hotspot name="Pot" text="Provide explanatory text for the hotspot here." x="89" y="294" w="132" h="137" />
+			<hotspot name="Bridge" text="Provide explanatory text for the hotspot here." x="144" y="360" w="43" h="22" />
+		</annotatedDiagram>
+		<timeline name="Interactivity - Timeline / Matching Pairs" text="The timeline / matching pairs interation allows the user to either put things in order, such as steps ina  process, or match pairs of items together.
+
+This interaction asks the user to consider the order of events in designing some online materials." interactivity="Timeline" feedback="Did you find it easy? If not, there are a number of resourcse online that you could explore.">
+			<timelinedate name="Step 1" text="Design the general structure of the learning object" />
+			<timelinedate name="Step 2" text="Produce the media required" />
+			<timelinedate name="Step 3" text="Author the piece using toolkits" />
+			<timelinedate name="Step 4" text="Publicise it to your learners" />
+			<timelinedate name="Step 5" text="Collect learner's feedback and refine the design" />
+		</timeline>
+		<textMatch linkID="PG1313662602996" name="Interactivity - Matching Texts" text="This interaction allows the user to match pieces of text together: possibly the beginning snand ends of sentences, or words and their definitions." showMedia="false">
+			<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" />
+			<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" />
+			<sentence name="Enter Name" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" />
+		</textMatch>
+		<modify linkID="PG1313662788705" name="Interactivity: Modify" instruction="The modify exercise allows you to present a peice of text that the learner must re-write and compare to a model answer. This could be used in many ways: changing the tense, or correcting spellings, or re-interpreting something." text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here" />
+		<gapFill linkID="PG1236073708392" name="Interactivity - Gap Fill" text="This asks the user to fill in the missing words, either by typing them in, or dragging and dropping them. This version uses the drag and drop setting. The text is the opening page of George Orwell's '1984'." passage="It was a bright |cold| day in |April| , and the clocks were striking |thirteen| . Winston Smith, his chin |nuzzled| into his breast in an effort to escape the |vile| wind, slipped |quickly| through the glass doors of |Victory| Mansions, though not quickly enough to prevent a swirl of |gritty| dust from entering along with him. " interactivity="Drag Drop" feedback="Well done!" size="12" panelWidth="Medium" />
+		<categories name="Interactivity - Categories" text="This interaction allows learners to sort items into a number of different categories. You can have as many categories as there is space for on the screen." labelSize="Small">
+			<category name="Stringed Instruments">
+				<item name="Guitar" />
+				<item name="Banjo" />
+				<item name="Mandolin" />
+				<item name="Fiddle" />
+			</category>
+			<category name="Woodwind Instruments">
+				<item name="Oboe" />
+				<item name="Clarinet" />
+				<item name="Bassoon" />
+				<item name="item" />
+			</category>
+			<category name="Brass Instruments">
+				<item name="Trumpet" />
+				<item name="Trombone" />
+				<item name="Cornet" />
+				<item name="Tuba" />
+			</category>
+			<category name="Percussion Instruments">
+				<item name="Kettle Drum" />
+				<item name="Snare Drum" />
+				<item name="Timpani" />
+				<item name="Chimes" />
+			</category>
+		</categories>
+		<dialog name="Interactivity - Dialog" text="The dialog interaction presents a series of text entry interactions for the user to answer. Hints are provided after a number of attempts has passed." attempts="2">
+			<dialogStep name="question" question="The capital of the United Kingdom is " answer="London" hint="Provide a hint to your learners if you wish" />
+			<dialogStep name="question" question="The capital of the France is " answer="Paris" hint="Provide a hint to your learners if you wish" />
+			<dialogStep name="question" question="The capital of the United States is " answer="Washington" hint="Provide a hint to your learners if you wish" />
+			<dialogStep name="question" question="The capital of Outer Mongolia is " answer="Ulan Bator" hint="Provide a hint to your learners if you wish" />
+		</dialog>
+		<dragDropLabel name="Interactivity - Drag and Drop labelling" text="The drag and drop labelling interaction allows to test the user's ability to label a diagram, and include information related to teach of the labels.
+
+Try dragging the labels to this diagram. The regions are highlighted in yellow to help." url="FileLocation + 'media/ready-fretless.jpg'" align="Left" tip="A Fretless Banjo">
+			<hotspot name="Bridge" text="Provide explanatory text for the hotspot here." x="144" y="360" w="43" h="22" />
+			<hotspot name="Pot" text="Provide explanatory text for the hotspot here." x="89" y="294" w="132" h="137" />
+			<hotspot name="Neck" text="Provide explanatory text for the hotspot here." x="155" y="88" w="32" h="208" />
+			<hotspot name="Tuners" text="Provide explanatory text for the hotspot here." x="135" y="25" w="63" h="78" />
+		</dragDropLabel>
+		<quiz name="Interactivity - Quiz" order="random" align="left" panelWidth="Medium" instructions="The quiz provides the user with a series of multiple choice questions to answer. It can be used in a number of ways. The learner gets quite detailed feedback from a quiz.
+
+The questions can be randomised, and you can determine feedback options." judge="true" feedback="The quiz is complete.">
+			<question prompt="It is easy to develop materials using Xerte Online Toolkits" type="Single Answer">
+				<option text="true" feedback="It is quite easy, yes. It takes some time to develop effective materials, even with very efficient tools. You might need to use a graphics program to edit images, and possibly need to record and edit some sound." correct="true" />
+				<option text="false" feedback="It is quite easy, compared to other tools that produce the same quality output. If you're struggling ask for help!" correct="false" />
+			</question>
+			<question prompt="In order to develop engaging materials, Xerte Online Toolkits supports which of the following types of media?" type="Multiple Answer">
+				<option text="Sound" feedback="Sound is supported in a number of ways, and can provide the basis for a number of differnt types of page creeated in Toolkits." correct="true" />
+				<option text="Images" feedback="Images really brighten up the piece and we'd encourage you to use them as much as possible. You might need to use some graphics software to crop the images to fit the pages nicely." correct="true" />
+				<option text="Video" feedback="Video is an easy way to produce really engaging content. Toolkits can also play video directly from Youtube." correct="true" />
+			</question>
+		</quiz>
+		<map linkID="PG1236779295975" name="Misc - Google Map" text="This is a Google Map page. You can use Google Maps to produce rich, interactive maps and link to them from here.
+
+This example links to a map of the University's campus.
+
+" align="left" mapurl="http://maps.google.com" maptype="hybrid" tooltip="The Unviersity of Nottingham Google Map" link="true" />
+		<flickr linkID="PG1323420017369" name="Misc - Flickr Slideshow" keywords="nottingham university" content="all use" deriv="unrestricted"><![CDATA[Flickr is a photo-sharing website. You can include images from flickr by simply entering a search term. Up to 500 images will be available for users to browse.
+
+Here are images found for The University of Nottingham
+
+Click on the image to view in Flickr]]></flickr>
+		<rss name="Misc - RSS Feed" text="RSS Feeds allow you to include up to date information in your learning objects. You can also create RSS feeds using Xerte Online Toolkits. RSS feeds are very simple technology with great application for elearning.
+
+Here is the Xerte newsfeed." url="http://www.nottingham.ac.uk/xerte/rss/rssfeed.xml" align="Right" />
+		<wiki linkID="PG1254475269359" name="Misc - Wikipedia Article" text="You can include a short version of a wikipedia article, making it easy to include a detailed description andlinks to further resources about anything covered by wikipedia.
+
+Here is the wikipedia article for the University of Nottingham." url="http://en.wikipedia.org/wiki/Nottingham_University" align="Left" />
+		<youtuberss name="Misc - Youtube Feed" text="You can include a number of videos from youtube on one page, using a search term.
+
+Here are a number of videos from youtube that match the search term 'cuillin mountains'" url="cuillin mountains" results="25" />
+		<youtube name="Misc - Youtube Video" text="You can include pages with a single video from youtube as well - just paste the embed code from youtube into toolkits. This allows you to very precisely determine the youtube content that is shown.
+
+This video recent developments in Nottingham's Second Life virtual campus." align="Left"><![CDATA[<object width="480" height="295"><param name="movie" value="http://www.youtube.com"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="295"></embed></object>]]></youtube>
+		<youtube name="Misc - Youtube Video" text="Here's another youtube clip showing students using Xerte in class." align="Left"><![CDATA[<iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/WC7qk8NSJxc" frameborder="0" allowfullscreen></iframe>]]></youtube>
+		<translation linkID="PG1313662465056" name="Misc - Translation" instruction="THe translation tool allows the user to translate between any two languages using Google's 'translate' API. The results are not always perfect - this is machine translation - but they are good for the world's more widely spoken languages, and the tools are improving all the time." showMedia="false" />
+		<delicious name="Misc - Delicious Bookmarks" text="Delicious bookmarks." search="tags" term="cuillin" results="20" />
+		<hangman linkID="PG1313662692116" name="Games - Hangman" text="Some games might be useful for your learners: this is hangman!" words="Xerte Online Toolkits" />
+		<memory linkID="PG1314279643687" name="Games - Memory">
+			<matchItem name="Accordion" url="FileLocation + 'media/addordion.jpg'" />
+			<matchItem name="Banjo" url="FileLocation + 'media/banjo.jpg'" />
+			<matchItem name="Dulcimer" url="FileLocation + 'media/dulcimer.jpg'" />
+			<matchItem name="Fiddle" url="FileLocation + 'media/fiddle.jpg'" />
+			<matchItem name="Guitar" url="FileLocation + 'media/guitar.jpg'" />
+			<matchItem name="Harmonica" url="FileLocation + 'media/harmonica.jpg'" />
+			<matchItem name="Mandolin" url="FileLocation + 'media/mandolin.jpg'" />
+			<matchItem name="Oud" url="FileLocation + 'media/oud.jpg'" />
+			<matchItem name="Ukelele" url="FileLocation + 'media/ukelele.jpg'" />
+		</memory>
+		<summary linkID="PG1233064849561" name="Text - Summary" summary="You have now seen all of the different page types available in the template. You'll have seen how they can be used to present all sorts of different media in a number of different ways, and how some basic interactivity can easily be created. You've also seen how the template can be extended with customised content developed in Xerte, or Flash.
+
+Hopefully you have some ideas about how you can produce your own materials quickly and easily using Xerte Online Toolkits." nextsteps="To start creating content with Xerte Online Toolkits, visit the &lt;a href= &quot;http://www.nottingham.ac.uk/xerte&quot; target=&quot;_blank&quot;&gt;Xerte Web Site&lt;/a&gt;.
+
+All our software is free and open-source, and is supported by a growing community of users and developers." />
+	</learningObject>

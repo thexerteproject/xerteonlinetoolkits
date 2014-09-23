@@ -1,5 +1,12 @@
 <language name="English" code="en-GB">
-	<btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
+    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
+    <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
+    <insertDialog>
+        <insertBefore label="Insert before" tooltip="Insert before selected node"/>
+        <insertAfter label="Insert after" tooltip="Insert after selected node"/>
+        <insertAtEnd label="Insert at end" tooltip="Insert as last node"/>
+    </insertDialog>
+    <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
 	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
 	<browseImportFile title="Select file to import...">
@@ -16,6 +23,8 @@
 	</kblanguage>
 	<newLink label="New {i}" />
 	<helpLink tooltip="Click for Help"/>
+    <btnAddColumn label="Add Column" tooltip="Add a column to the right of the grid"/>
+    <btnDelColumn label="Del Column" tooltip="Delete the selected column"/>
 	<btnInsert label="Insert" tooltip="Insert"/>
 	<btnAddChild tooltip="add some children"/>
 	<btnDuplicate label="Copy" tooltip="Clone"/>
@@ -28,8 +37,9 @@
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
 	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
-	<chkShowLanguage label="Show Language Options" />
-	<chkShowAdvanced label="Show Advanced Options" />
+	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
+	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
+    <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview"/>
 	<filemenu title="File">
