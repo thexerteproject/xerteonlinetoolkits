@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard runtime="preview_site.php">
+<wizard menus="website" runtime="preview_site.php">
 
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
@@ -17,7 +17,7 @@
 
 	</learningObject>
   
-	<page icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
+	<page menu="website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
 	
 		<name type="TextInput" label="Page Title"/>
 		<subtitle type="TextInput" label="Page Subtitle"/>
@@ -33,7 +33,7 @@
 		<name type="TextInput" label="Section Title"/>
 		
 		<newNodes>
-			<markup><![CDATA[<markup name="Name">Enter HTML Code</markup>]]></markup>
+			<markup><![CDATA[<markup name="Name">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
@@ -79,7 +79,7 @@
 		
 	</text>
 	
-	<canvas icon="icPallette" menuItem="Canvas" label="Canvas" remove="true" advanced="true">
+	<canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 	
 		<name type="TextInput" label="Name"/>
 		<id type="TextInput" label="ID"/>
@@ -96,7 +96,7 @@
 		
 	</script>
 	
-	<image icon="icImage" height="250" menuItem="Image" label="Text" remove="true">
+	<image icon="icImage" height="250" menuItem="Image" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
@@ -104,14 +104,14 @@
 		
 	</image>
 	
-	<audio icon="icSound" height="250" menuItem="Audio" label="Text" remove="true">
+	<audio icon="icSound" height="250" menuItem="Audio" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>
 		
 	</audio>
 	
-	<video icon="icFilm" height="250" menuItem="Video" label="Text" remove="true">
+	<video icon="icFilm" height="250" menuItem="Video" remove="true">
 	
 		<name type="TextInput" label="Name"/>
 		<url type="Media" label="Image File"/>

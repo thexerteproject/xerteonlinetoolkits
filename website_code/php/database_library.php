@@ -50,7 +50,13 @@ function database_connect()
 
     $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
 
-    $db_connection = new PDO($dsn, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $options); 
+    try
+    {
+        $db_connection = new PDO($dsn, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $options);
+    }
+    catch(PDOException $e) {
+        _debug("Failed to connect to db: {$e->getMessage()}");
+    }
 //    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     return $db_connection;

@@ -31,80 +31,98 @@ var edit_window_open = new Array();
 
 function url_return(url,parameter){
 
-    switch(url){
+    switch (url) {
 
-        case "edit": if(site_apache=="true"){
+        case "edit":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php?template_id=" + parameter;
 
-        }
-        break;
-        case "preview": if(site_apache=="true"){
+            }
+        case "edithtml":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php?template_id=" + parameter;
 
-        }
-        break;
-        case "play": if(site_apache=="true"){
+            }
+            break;
+        case "preview":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php?template_id=" + parameter;
 
-        }
-        break;
-        case "properties": if(site_apache=="true"){
+            }
+            break;
+        case "play":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php?template_id=" + parameter;
 
-        }
-        break;
-        case "folderproperties": if(site_apache=="true"){
+            }
+            break;
+        case "properties":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php?template_id=" + parameter;
 
-        }
-        break;
-        case "workspaceproperties": if(site_apache=="true"){
+            }
+            break;
+        case "folderproperties":
+            if (site_apache == "true") {
 
-            return url; 
+                return url + "_" + parameter;
 
-        }else{
+            } else {
 
-            return url + ".php"
+                return url + ".php?template_id=" + parameter;
 
-        }
-        case "publishproperties": if(site_apache=="true"){
+            }
+            break;
+        case "workspaceproperties":
+            if (site_apache == "true") {
 
-            return url + "_" + parameter;
+                return url;
 
-        }else{
+            } else {
 
-            return url + ".php?template_id=" + parameter;
+                return url + ".php"
 
-        }
-        break;
+            }
+        case "publishproperties":
+            if (site_apache == "true") {
+
+                return url + "_" + parameter;
+
+            } else {
+
+                return url + ".php?template_id=" + parameter;
+
+            }
+            break;
 
 
-        default:break;
+        default:
+            break;
 
     }
 }
@@ -159,7 +177,7 @@ function toggle(tag){
  * @author Patrick Lockley
  */
 
-function edit_window(admin){
+function edit_window(admin,edit){
 
     if(!admin){
 
@@ -172,14 +190,16 @@ function edit_window(admin){
                 if(drag_manager.selected_items[x].parentNode.id!="folderchild_recyclebin"){
 				
 					size = drag_manager.selected_items[x].getAttribute("editor_size").split(",");
+                    //window.location = site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id;
+
 					
 					if(size.length==1){
 					
-						var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
+						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
 					
 					}else{
 
-						var NewEditWindow = window.open(site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
 
 					}
 
@@ -232,6 +252,7 @@ function edit_window(admin){
                         edit_window_open.push(drag_manager.selected_items[x].id);
 
                     }
+
 
                 }else{
 
@@ -460,12 +481,12 @@ function preview_window(admin){
 					if(size.length!=1){
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] );
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=1" );
 						
 					}else{
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes");
+						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes,resizable=true");
 						
 					}
 
@@ -1172,11 +1193,11 @@ function tutorial_created(){
 				
 				if(data[1]=="*"){
 				
-					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
+					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
 					
 				}else{
 				
-					var neweditorwindow = window.open(site_url + url_return("edit" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
+					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
 						
 				}
                 new_file = xmlHttp.responseText;

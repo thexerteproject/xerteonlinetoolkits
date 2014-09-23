@@ -1,5 +1,11 @@
 <language name="Nederlands" code="nl-NL">
-	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
+    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" />
+    <edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
+    <insertDialog>
+        <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
+        <insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
+        <insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
+    </insertDialog>    <btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
 	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
@@ -19,7 +25,7 @@
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
-	<btnDelete label="Verwijder" tooltip="Verwijderen"/>
+	<btnDelete label="Wis" tooltip="Verwijder het geselecteerde item"/>
 	<btnMoveUp tooltip="Verplaats naar boven"/>
 	<btnMoveDown tooltip="Verplaats naar beneden"/>
 	<btnNext tooltip="Volgende item"/>
@@ -28,8 +34,9 @@
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
-	<chkShowLanguage label="Toon Taal Opties" />
-	<chkShowAdvanced label="Toon Geavanceerde Opties" />
+	<chkShowLanguage label="Toon Taal Opties" tooltip="Laat de taal opties zien als die er zijn."/>
+	<chkShowAdvanced label="Toon Geavanceerde Opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
+    <chkShowToolbar label="Toon Knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
 	<compMedia tooltip="Importeer Media"/>
 	<compPreview tooltip="Voorvertoning"/>
 	<filemenu title="Bestand">

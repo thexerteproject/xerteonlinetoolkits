@@ -47,7 +47,7 @@ if (isset($xerte_toolkits_site)) {
 
 
 // create new generic object to hold all our config stuff in....
-$xerte_toolkits_site = new StdClass();
+$xerte_toolkits_site = new stdClass();
 
 
 /** 

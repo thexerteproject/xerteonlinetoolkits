@@ -96,7 +96,7 @@ function make_new_template($type,$zip_path){
         "engine=javascript");
 
     $ok = db_query($query_for_new_template, $params);
-    if($ok) {
+    if($ok!==false) {
 
         /*
          * Are we importing into a folder
@@ -111,11 +111,11 @@ function make_new_template($type,$zip_path){
         $query_for_template_rights = "INSERT INTO {$prefix}templaterights"
         . " (template_id,user_id,role, folder)"
         . "VALUES (?,?,?,?)";
-        $params($maximum_template_id+1, $_SESSION['toolkits_logon_id'],"creator" ,$folder_id);
+        $params = array($maximum_template_id+1, $_SESSION['toolkits_logon_id'],"creator" ,$folder_id);
 
         $ok = db_query($query_for_template_rights, $params);
         
-        if($ok) {
+        if($ok!==false) {
 
             /*
              * Make the folders and copy the files in
