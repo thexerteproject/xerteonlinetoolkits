@@ -114,6 +114,55 @@ $(document).ready(function() {
                     x_pageInfo.splice(0, 0, {type:'menu', built:false});
                 }
             }
+			
+			if (x_params.fixDisplay != undefined) {
+				if ($.isNumeric(x_params.fixDisplay.split(",")[0]) == true && $.isNumeric(x_params.fixDisplay.split(",")[1]) == true) {
+					x_params.displayMode = x_params.fixDisplay.split(",");
+					x_fillWindow = false; // overrides fill window for touchscreen devices
+				}
+			}
+			
+			// sort any parameters in url - these will override those in xml
+			var tempUrlParams = window.location.search.substr(1,window.location.search.length).split("&");
+			var urlParams = {};
+			for (i=0; i<tempUrlParams.length; i++) {
+				urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+			}
+			
+			// url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
+			if (urlParams.display != undefined) {
+				if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
+					x_params.displayMode = urlParams.display.split(",");
+					x_fillWindow = false; // overrides fill window for touchscreen devices
+					
+				} else if (urlParams.display == "fixed" || urlParams.display == "default" || urlParams.display == "full" || urlParams.display == "fill") {
+					if (x_browserInfo.touchScreen == true) {
+						x_fillWindow = true;
+					}
+					if (urlParams.display == "fixed" || urlParams.display == "default") { // default fixed size using values in css (800,600)
+						x_params.displayMode = "default";
+					} else if (urlParams.display == "full" || urlParams.display == "fill") {
+						x_params.displayMode = "full screen"
+					}
+				}
+			}
+			
+			// url hide parameter will remove x_headerBlock &/or x_footerBlock divs
+			if (urlParams.hide != undefined) {
+				if (urlParams.hide == "none") {
+					x_params.hideHeader = "false";
+					x_params.hideFooter = "false";
+				} else if (urlParams.hide == "both") {
+					x_params.hideHeader = "true";
+					x_params.hideFooter = "true";
+				} else if (urlParams.hide == "bottom") {
+					x_params.hideHeader = "false";
+					x_params.hideFooter = "true";
+				} else if (urlParams.hide == "top") {
+					x_params.hideHeader = "true";
+					x_params.hideFooter = "false";
+				}
+			}
 
             x_getLangData(x_params.language);
 
@@ -215,6 +264,27 @@ function x_setUp() {
 	
 	$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 	
+	
+	// hides header/footer if set in url
+	if (x_params.hideHeader == "true") {
+		$x_headerBlock.hide().height(0);
+	}
+	if (x_params.hideFooter == "true") {
+		$x_footerBlock.hide().height(0);
+	}
+	if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
+		$x_mainHolder.css("border", "none");
+	}
+	
+	// sets initial size if set in url e.g. display=500,500
+	if ($.isArray(x_params.displayMode)) {
+		$x_mainHolder.css({
+			"width"		:x_params.displayMode[0],
+			"height"	:x_params.displayMode[1]
+		});
+	}
+	
+	
 	if (screen.width <= 550) {
 		x_browserInfo.mobile = true;
 		x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css");
@@ -239,10 +309,19 @@ function x_setUp() {
 					if (x_fillWindow == false) {
 						x_setFillWindow();
 					} else {
-						$x_mainHolder.css({
-							"width"		:"",
-							"height"	:""
+						// minimised size to come from display size specified in xml or url param
+						if ($.isArray(x_params.displayMode)) {
+							$x_mainHolder.css({
+								"width"		:x_params.displayMode[0],
+								"height"	:x_params.displayMode[1]
 							});
+						// minimised size to come from css (800,600)
+						} else {
+							$x_mainHolder.css({
+								"width"		:"",
+								"height"	:""
+								});
+						}
 						$x_body.css("overflow", "auto");
 						$(this).button({
 							icons:	{primary: "x_maximise"},
