@@ -489,7 +489,7 @@ img.optional {
     text-align: left;
 }
 
-.xerte_button.disabled img {
+.btnInsertOptParam.disabled img {
     filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='grayscale'><feColorMatrix%20type='matrix'%20values='0.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200%200%200%201%200'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
     filter: grayscale(100%); /* Current draft standard */
     -webkit-filter: grayscale(100%); /* New WebKit */
@@ -499,7 +499,7 @@ img.optional {
     filter: gray; /* IE6+ */
 }
 
-.xerte_button.disabled {
+.btnInsertOptParam.disabled {
     color: gray;
 }
 
