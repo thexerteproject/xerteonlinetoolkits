@@ -93,6 +93,7 @@ if ($fullArchive) {
         array_push($file_array, array($parent_template_path . "models/menu.rlm", ""));
 
         export_folder_loop($parent_template_path . "common/");
+        array_push($file_array, array($parent_template_path . $row['template_name'] . ".rlt", ""));
     }
     if ($export_html5) {
         _debug("  use html5");
@@ -107,7 +108,9 @@ if ($fullArchive) {
         /* Always add colourChanger.html */
         _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
         array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
-
+        /* Always add language.html */
+        _debug("copy model " . $parent_template_path . "models_html5/language.html");
+        array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
         /* Add glossary if used */
         if ($xml->glossaryUsed())
         {
@@ -117,7 +120,7 @@ if ($fullArchive) {
 
         export_folder_loop($parent_template_path . "common_html5/");
     }
-    array_push($file_array, array($parent_template_path . $row['template_name'] . ".rlt", ""));
+
 }
 if (isset($_GET['local'])) {
     if ($_GET['local'] == "true") {
