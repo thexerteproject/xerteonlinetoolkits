@@ -515,14 +515,17 @@ var EDITOR = (function ($, parent) {
                 { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
                 { name: 'colors' },
                 { name: 'insert' }],
-            filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-            filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-            filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
+            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
+            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+            //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+            //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+            //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
             mathJaxClass :  'mathjax',
-            mathJaxLib :    'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+            mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
             height : 200,
             resize_enabled: false,
@@ -628,12 +631,15 @@ var EDITOR = (function ($, parent) {
 
             };
             var ckoptions = {
-                filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+                // filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                // filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                // filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                // filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                // filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                // filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
@@ -755,12 +761,15 @@ var EDITOR = (function ($, parent) {
             }, { toolbarGroups : [
                 { name: 'basicstyles', groups: [ 'basicstyles' ] },
                 { name: 'colors' }],
-                filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+                //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
                 //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
@@ -1226,6 +1235,24 @@ var EDITOR = (function ($, parent) {
     browseFile = function (id, key, name, value, obj)
     {
         console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+
+
+        window.elFinder = {};
+        window.elFinder.callBack = function(file) {
+            // Actions with url parameter here
+            var url = file.url;
+            console.log('Browse file: url=' + url);
+            pos = url.indexOf(rlourlvariable);
+            if (pos >=0)
+                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
+            var newvalue = '<p>' + url + '</p>';
+            $('#' + id).html(newvalue);
+            setAttributeValue(key, [name], [url]);
+            window.elFinder = null;
+        };
+        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2), 'Browse file', "height=600, width=800");
+
+        /*
         window.KCFinder = {};
         window.KCFinder.callBack = function(url) {
             // Actions with url parameter here
@@ -1243,6 +1270,7 @@ var EDITOR = (function ($, parent) {
             window.KCFinder = null;
         };
         window.open('editor/kcfinder/browse.php?type=media', 'Browse file', "height=600, width=800");
+        */
     },
 
     makeAbsolute = function(html){
