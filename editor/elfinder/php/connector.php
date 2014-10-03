@@ -50,7 +50,8 @@ $opts = array(
 			'URL'           => $rooturl . "/media", // URL to files (REQUIRED)
 			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
             'tmbPath'       => $rootpath . "/media//.tmb",
-            'tmbURL'        => $rooturl . "/media/.tmb"
+            'tmbURL'        => $rooturl . "/media/.tmb",
+            'tmbCrop'       => false
 		)
 	)
 );
