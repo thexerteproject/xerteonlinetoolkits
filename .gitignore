@@ -6,3 +6,6 @@ USER-FILES/
 
 # Ignore import/ folder changes
 /import/
+
+# Ignore PhPEditor 
+.idea/
