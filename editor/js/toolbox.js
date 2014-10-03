@@ -528,7 +528,7 @@ var EDITOR = (function ($, parent) {
             mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
             height : 200,
-            resize_enabled: false,
+            resize_enabled: false
         };
 
         $('#col_1').ckeditor(function(){

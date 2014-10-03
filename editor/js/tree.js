@@ -52,6 +52,7 @@ var EDITOR = (function ($, parent) {
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/play.png', id:'preview_button', click:preview},
+            {name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
             {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/publish.png', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
@@ -170,6 +171,7 @@ var EDITOR = (function ($, parent) {
                 data: {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
+                    preview: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
                     absmedia: rlourlvariable
                 },
@@ -188,6 +190,33 @@ var EDITOR = (function ($, parent) {
         .fail(function() {
             alert( "error" );
         });
+    },
+
+    savepreview = function () {
+        var json = build_json("treeroot");
+        var ajax_call = $.ajax({
+                url: "editor/upload.php",
+                data: {
+                    fileupdate: 0, // 1=publish -> data.xml
+                    filename: previewxmlurl,
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    absmedia: rlourlvariable
+                },
+                //success: function(data){
+                //    alert("success");
+                //},
+                //error: function(data, status, error){
+                //    alert(status + ': ' + error);
+                //},
+                dataType: "json",
+                type: "POST"
+            }
+        ).done(function() {
+                //alert( "success" );
+            })
+            .fail(function() {
+                alert( "error" );
+            });
     },
 
     getParent = function(key)

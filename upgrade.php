@@ -304,4 +304,64 @@ function upgrade_4()
 
 }
 
+function upgrade_5_step1()
+{
+    $table = table_by_key('configdetails');
+    $error1 = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$table` (
+      `config_key` char(255) NOT NULL,
+      `value` text NOT NULL,
+      `description_key` text DEFAULT NULL,
+      `mandatory` smallint(1) DEFAULT 1,
+      `category` char(255) DEFAULT NULL,
+      `base64encoded`smallint(1) DEFAULT 0,
+      PRIMARY KEY (`config_key`) ) ");
+
+    return "Creating lti tables - ok ? " . ( $error1 ? 'true' : 'false' );
+}
+
+function upgrade_5_step2()
+{
+    global $xerte_toolkits_site;
+
+    // Convert sitedetails table to configdetails
+    if (!database_connect("", "")) {
+        die("database.php isn't correctly configured; cannot connect to database; have you run /setup?");
+    }
+
+    $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
+
+    $table = table_by_key('configdetails');
+    foreach ($row as $key => $value) {
+        $extraflags = "";
+        if ($key == 'demonstration_page' || $key == 'news_text' || $key=='pod_one' || $key=='pod_two' || $key=='form_string' || $key=='peer_form_string' || $key == 'play_edit_preview_query')
+        {
+            $extraflags = ", base64encoded=1";
+        }
+        else if ($key == 'site_text')
+        {
+            $site_texts = explode("~~~", $value);
+            $value = $site_texts[0];
+            $tutorialkey = "tutorial_text";
+            if (count($site_texts) > 1)
+            {
+                $tutorial = $site_texts[1];
+            }
+            else
+            {
+                $tutorial = "";
+            }
+            db_query_one("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraparams);
+        }
+        db_query_one("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
+    }
+    return true;
+}
+
+function upgrade_5()
+{
+    upgrade_5_step1();
+    upgrade_5_step2();
+    return true;
+}
+
 ?>
