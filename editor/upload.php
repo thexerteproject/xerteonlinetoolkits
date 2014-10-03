@@ -5,13 +5,16 @@ $tst = file_get_contents("php://stdin");
 $fileupdate = $_POST["fileupdate"];
 $filename = $_POST["filename"];
 $mode = $fileupdate ? "publish" : "preview";
-
+if ($mode == 'publish')
+{
+    $preview = dirname(dirname(__FILE__)) . '/' . $_POST["preview"];
+}
 $filename = dirname(dirname(__FILE__)) . '/' . $filename;
 
 $absjson = make_refs_local(urldecode($_POST["lo_data"]), $_POST['absmedia']);
 
-file_put_contents("unprocessed_$mode.txt", print_r(urldecode($_POST["lo_data"]), true));
-file_put_contents("local_refs_$mode.txt", print_r($absjson, true));
+//file_put_contents("unprocessed_$mode.txt", print_r(urldecode($_POST["lo_data"]), true));
+//file_put_contents("local_refs_$mode.txt", print_r($absjson, true));
 
 $relreffedjson = json_decode($absjson);
 
@@ -19,10 +22,14 @@ $json = json_decode(urldecode($_POST["lo_data"]));
 
 
 $data = process($relreffedjson);
-file_put_contents("decoded_unprocessed_$mode.txt", print_r($json, true));
-file_put_contents("decoded_local_refs_$mode.txt", print_r($relreffedjson, true));
-file_put_contents("processed_$mode.xml", $data->asXML());
+//file_put_contents("decoded_unprocessed_$mode.txt", print_r($json, true));
+//file_put_contents("decoded_local_refs_$mode.txt", print_r($relreffedjson, true));
+//file_put_contents("processed_$mode.xml", $data->asXML());
 file_put_contents($filename, $data->asXML());
+if ($mode == "publish")
+{
+    file_put_contents($preview, $data->asXML());
+}
 
 echo true;
 

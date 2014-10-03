@@ -67,9 +67,10 @@ var EDITOR = (function ($, parent) {
         // Start loading of the data file
 
         var _this = this;
+        var now = new Date().getTime();
         $.ajax({
             type: "GET",
-            url: xmlurl,
+            url: xmlurl + "?t=" + now,
             dataType: "text",
             success: function (data) {
                 wait(2, data);
