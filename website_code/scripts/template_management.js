@@ -1196,8 +1196,10 @@ function tutorial_created(){
 					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
 					
 				}else{
-				
-					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + data[2] + ", width=" + data[1]);
+				    var url=site_url + url_return("edithtml" , data[0]);
+                    var title="editwindow" + data[0];
+                    var options="height=" + data[2].trim() + ", width=" + data[1].trim();
+					var neweditorwindow = window.open(url, title, options);
 						
 				}
                 new_file = xmlHttp.responseText;
