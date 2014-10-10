@@ -1,0 +1,17 @@
+<wizard menus="website" runtime="preview_site.php">
+
+	<learningObject icon="icLayout" remove="false" duplicate="false">
+  
+		<name type="TextInput" label="Learning Object Title"/>
+		<header type="Media" optional="true" label="Header Image"/>
+		<headerColour type="TextInput" optional="true" label="Header Colour"/>
+		<headerTextColour type="TextInput" optional="true" label="Header Text Colour"/>
+		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
+		<stylesheet type="Media" optional="true" label="Stylesheet"/>
+		<styles type="TextArea" height="200" optional="true" label="Styles"/>
+		
+		<newNodes>
+		</newNodes>
+
+	</learningObject>
+</wizard>
