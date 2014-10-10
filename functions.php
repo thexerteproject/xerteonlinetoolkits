@@ -122,6 +122,7 @@ function _load_language_file($file_path) {
 function _include_javascript_file($file_path) {
 
     global $xerte_toolkits_site;
+    global $development;
     $languages = 'languages/';
 
     if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
