@@ -56,6 +56,7 @@ function database_connect()
     }
     catch(PDOException $e) {
         _debug("Failed to connect to db: {$e->getMessage()}");
+        return false;
     }
 //    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -75,6 +76,8 @@ function database_is_setup($xerte_toolkits_site) {
     $connection = false;
     try {
         $connection = database_connect();
+        if ($connection === false)
+            return false;
         return true;
     }
     catch(PDOException $e) {
