@@ -1,0 +1,140 @@
+<language name="Cymraeg" code="cy-GB">
+	<btnSaveXerte label="Cadw" tooltip="Cadw Prosiect" description="Botwm Cadw"/>
+	<btnPublishXot label="Cyhoeddi" tooltip="Cyhoeddi Prosiect" description="Botwm Cyhoeddi"/>
+	<popupFileUpload title="Lanlwytho Ffeil" cancelLabel="Canslo"/>
+	<browseImportFile title="Dewiswch ffeil i'w mewnforio...">
+		<dialogFilter>Holl Ffeiliau|*.*|JPG|*.jpg|PNG|*.png|Ffeiliau SWF|*.swf|Sain|*.mp3|Fideo|*.flv</dialogFilter>
+		<buttontext>Mewnforio</buttontext>
+	</browseImportFile>
+	<kblanguage title="Pad Llythrennau" tooltip="Pad Llythrennau" description="Allweddellau Ieithoedd">
+		<item>Ffrangeg</item>
+		<item>Almaeneg</item>
+		<item>Eidaleg</item>
+		<item>Pwyleg</item>
+		<item>Portiwgaleg</item>
+		<item>Sbaeneg</item>
+	</kblanguage>
+	<newLink label="Newydd {i}" />
+	<helpLink tooltip="Pwyswch am gymorth"/>
+	<btnInsert label="Mewnosod" tooltip="Mewnosod"/>
+	<btnAddChild tooltip="ychwanegwch blant"/>
+	<btnDuplicate label="Copïo" tooltip="Dyblygwch"/>
+	<btnDelete label="Dileu" tooltip="Dileu"/>
+	<btnMoveUp tooltip="Symud i fyny"/>
+	<btnMoveDown tooltip="Symud i lawr"/>
+	<btnNext tooltip="Eitem Nesaf"/>
+	<btnPreview label="Chwarae" tooltip="Rhagweld"/>
+	<btnPrev tooltip="Eitem Blaenorol"/>
+	<icDelete tooltip="Dileu" prompt="Dileu'r Eitem?"/>
+	<addProp label="Ychwanegu" tooltip="ychwanegu" />
+	<optionalProp label="Priodweddau Dewisol:"/>
+	<chkShowLanguage label="Dangos Dewisiadau Iaith" />
+	<chkShowAdvanced label="Dangos Dangosiadau Pellach" />
+	<compMedia tooltip="Mewnforio Cyfryngau"/>
+	<compPreview tooltip="Rhagweld"/>
+	<filemenu title="Ffeil">
+		<menuNew>Prosiect Newydd…</menuNew>
+		<menuOpen>Agor...</menuOpen>
+		<menuSave>Cadw</menuSave>
+		<menuExit>Gadael</menuExit>
+	</filemenu>
+	<menuOpen title="Dewiswch Brosiect">
+		<dialogText>Dewis ffeil</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Templedi Dysgu|*.rlt|Ffeiliau MXML|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Golwg">
+		<menuPreview>Rhagweld</menuPreview>
+	</viewmenu>
+	<publishmenu title="Cyhoeddi">
+		<menuPublish>Cyhoeddi</menuPublish>
+		<menuPackage>Creu Pecyn</menuPackage>
+	</publishmenu>
+	<menuPackage title="Creu Pecyn SCORM 1.2">
+		<dialogText>Dewis ffeil</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Ffeiliau Zip|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Cymorth">
+		<menuHelp>Cymorth</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Bydd ffeil gymorth ar gael cyn hir.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Holl ffeiliau (*.*)</allfiles>
+			<images>Delweddau (*.jpg, *.jpeg, *.png)</images>
+			<flash>Ffeiliau Flash (*.swf)</flash>
+			<sound>Ffeiliau Sain (*.mp3)</sound>
+			<video>Ffeiliau Fideo (*.flv)</video>
+		</filters>
+		<title>Dewis ffeil i'w mewnforio...</title>
+		<filter>Holl ffeiliau|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sain|*.mp3|Fideo|*.flv</filter>
+		<btnimport>Mewnforio</btnimport>
+		<btncancel>Canslo</btncancel>
+		<fileexists>
+			<prompt>Mae'r ffeil {f} eisoes ar gael.\r\rYdych chi am drosysgrifo'r ffeil hon?</prompt>
+			<title>Cadarnhau</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Iawn</oklabel>
+		<cancellabel>Canslo</cancellabel>
+		<nolabel>Nac ydw</nolabel>
+		<yeslabel>Ydw</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Rhowch yr URL am y ddolen</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Ni chewch ond ychwanegu {m} {i}</prompt>
+				<title>Gwall</title>
+			</max>
+			<mixedcontent>
+				<prompt>Ni chewch gymysgu cynnwys yma.</prompt>
+				<title>Gwall</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Nid yw'r ffolder honno'n wag. Ydych chi'n siwr eich bod am ei defnyddio ar gyfer y prosiect newydd?</prompt>
+			<title>Cadarnhau</title>
+		</newproject>
+		<openproject>
+			<prompt>Ydych chi am agor y prosiect newydd?</prompt>
+			<title>Cadarnhau</title>
+		</openproject>
+		<initpreview>
+			<prompt>Rhaid ichi ddewis cyfryngau cyn y cewch eu rhagweld.</prompt>
+			<title>Gwybodaeth</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Ni chewch ddyblygu'r eitem.</prompt>
+			<title>Gwall</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Ydych chi am ddileu'r eitem?</prompt>
+				<title>Cadarnhau</title>
+			</confirm>
+			<error>
+				<prompt>Ni chewch ddileu'r eitem</prompt>
+				<title>Gwall</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>Ni lwyddwyd i fformadu'r XML, ac ni chadwyd y newidiadau. Ailedrychwch ar eich newidiadau diweddar.</prompt>
+		</savefile>
+        <upload>
+            <successful>Lanlwythwyd yn llwyddiannus</successful>
+            <failed>
+                <permissions>Methwyd lanlwytho: Ailedrychwch ar y caniatâd</permissions>
+                <HTTPError>Methwyd lanlwytho: Gwall HTTP</HTTPError>
+                <IOError>Methwyd lanlwytho: Gwall IO</IOError>
+                <security>Methwyd lanlwytho: Gwall Diogelwch</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>
