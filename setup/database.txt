@@ -10,6 +10,11 @@
  */
 
 /*
+* Database type
+*/
+$xerte_toolkits_site->database_type = "DATABASE_TYPE";
+
+/*
  * Host where database is
  */
 $xerte_toolkits_site->database_host = "DATABASE_HOST";
