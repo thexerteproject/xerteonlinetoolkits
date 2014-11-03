@@ -39,7 +39,6 @@ function update_access_time($row_edit){
 
 if(!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
     _debug("Template id is not numeric. ->" . $_GET['template_id']);
-    require_once(dirname(__FILE__) . '/modules/xerte/module_functions.php');
     dont_show_template();
     exit(0);
 }
