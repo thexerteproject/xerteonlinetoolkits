@@ -10,6 +10,7 @@ global $xerte_toolkits_site;
 global $development;
 $xerte_toolkits_site = new stdClass();
 
+$xerte_toolkits_site->database_type = "mysql";
 $xerte_toolkits_site->database_host = $_SESSION['DATABASE_HOST'];
 $xerte_toolkits_site->database_name = $_SESSION['DATABASE_NAME'];
 $xerte_toolkits_site->database_prefix = $_SESSION['DATABASE_PREFIX'];
@@ -66,11 +67,12 @@ if ($success)
 
     $buffer = file_get_contents("database.txt");
 
-    $buffer = str_replace("DATABASE_HOST", $_SESSION['DATABASE_HOST'],$buffer);
-    $buffer = str_replace("DATABASE_NAME", $_SESSION['DATABASE_NAME'],$buffer);
-    $buffer = str_replace("DATABASE_PREFIX", $_SESSION['DATABASE_PREFIX'],$buffer);
-    $buffer = str_replace("DATABASE_USERNAME",$_POST['account'],$buffer);
-    $buffer = str_replace("DATABASE_PASSWORD",$_POST['accountpw'],$buffer);
+    $buffer = str_replace("DATABASE_TYPE", $xerte_toolkits_site->database_type,$buffer);
+    $buffer = str_replace("DATABASE_HOST", $xerte_toolkits_site->database_host,$buffer);
+    $buffer = str_replace("DATABASE_NAME", $xerte_toolkits_site->database_name,$buffer);
+    $buffer = str_replace("DATABASE_PREFIX", $xerte_toolkits_site->database_prefix,$buffer);
+    $buffer = str_replace("DATABASE_USERNAME",$xerte_toolkits_site->database_username,$buffer);
+    $buffer = str_replace("DATABASE_PASSWORD",$xerte_toolkits_site->database_password,$buffer);
     if (file_put_contents('../database.php', $buffer) === false)
     {
         die("database.php could not be created");
