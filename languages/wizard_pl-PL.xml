@@ -1,0 +1,139 @@
+<language name="Polish" code="pl-PL">
+	<btnSaveXerte label="Zapisz" tooltip="Zapisz projekt" description="Przycisk zapisu"/>
+	<btnPublishXot label="Publikuj" tooltip="Publikuj projekt" description="Przycisk publikacji"/>
+	<popupFileUpload title="Załaduj plik" cancelLabel="Anuluj"/>
+	<browseImportFile title="Wybierz plik do zaimportowania...">
+		<dialogFilter>Wszystkie pliki|*.*|JPG|*.jpg|PNG|*.png|Pliki SWF|*.swf|Dźwięki|*.mp3|Wideo|*.flv</dialogFilter>
+		<buttontext>Importuj</buttontext>
+	</browseImportFile>
+	<kblanguage title="Zestaw znaków" tooltip="Zestaw znaków" description="Język układu klawiatury">
+		<item>Francuski</item>
+		<item>Niemiecki</item>
+		<item>Włoski</item>
+		<item>Polski</item>
+		<item>Portugalski</item>
+		<item>Hiszpański</item>
+	</kblanguage>
+	<newLink label="Nowy " />
+	<helpLink tooltip="Kliknij po pomoc"/>
+	<btnInsert label="Wstaw" tooltip="Wstaw"/>
+	<btnAddChild tooltip="dodaj jakieś dzieci"/>
+	<btnDuplicate label="Kopiuj" tooltip="Klonuj"/>
+	<btnDelete label="Usuń" tooltip="Usuń"/>
+	<btnMoveUp tooltip="Przenieś do góry"/>
+	<btnMoveDown tooltip="Przenieś na dół"/>
+	<btnNext tooltip="Następna pozycja"/>
+	<btnPreview label="Odtwórz" tooltip="Podgląd"/>
+	<btnPrev tooltip="Poprzednia pozycja"/>
+	<icDelete tooltip="Usuń" prompt="Usuń pozycję?"/>
+	<addProp label="Dodaj" tooltip="dodaj"/>
+	<optionalProp label="Dodatkowe właściwości:"/>
+	<chkShowLanguage label="Pokaż opcje języka" />
+	<chkShowAdvanced label="Pokaż zaawansowane opcje" />
+	<compMedia tooltip="Zaimportuj media"/>
+	<compPreview tooltip="Podgląd"/>
+	<filemenu title="Plik">
+		<menuNew>Nowy projekt...</menuNew>
+		<menuOpen>Otwórz...</menuOpen>
+		<menuSave>Zapisz</menuSave>
+		<menuExit>Wyjdź</menuExit>
+	</filemenu>
+	<menuOpen title="Proszę wybrać projekt">
+		<dialogText>Wybierz plik</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Szablony nauczania|*.rlt|Pliki MXML|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Widok">
+		<menuPreview>Podgląd</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publikacja">
+		<menuPublish>Publikuj</menuPublish>
+		<menuPackage>Paczka</menuPackage>
+	</publishmenu>
+	<menuPackage title="Zapisz paczkę SCORM 1.2">
+		<dialogText>Wybierz plik</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Pliki ZIP|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Pomoc">
+		<menuHelp>Pomoc</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Pomoc niedługo nadejdzie.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Wszystkie pliki (*.*)</allfiles>
+			<images>Obrazy (*.jpg, *.jpeg, *.png)</images>
+			<flash>Pliki Flash (*.swf)</flash>
+			<sound>Pliki dźwiękowe (*.mp3)</sound>
+			<video>Pliki wideo (*.flv)</video>
+		</filters>
+		<title>Wybierz plik do importu...</title>
+		<filter>Wszystkie pliki|*.*|JPG|*.jpg|PNG|*.png|Pliki SWF|*.swf|Dźwięki|*.mp3|Wideo|*.flv</filter>
+		<btnimport>Importuj</btnimport>
+		<btncancel>Anuluj</btncancel>
+		<fileexists>
+			<prompt>Plik {f} już istnieje.\r\rNadpisać ten plik?</prompt>
+			<title>Potwierdź</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Anuluj</cancellabel>
+		<nolabel>Nie</nolabel>
+		<yeslabel>Tak</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Wprowadź URL dla linku</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Może tylko dodać {m} {i}</prompt>
+				<title>Błąd</title>
+			</max>
+			<mixedcontent>
+				<prompt>Nie możesz tutaj mieszać zawartości.</prompt>
+				<title>Błąd</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Ten folder nie jest pusty. Czy na pewno chcesz tego użyć dla nowego projektu?</prompt>
+			<title>Potwierdź</title>
+		</newproject>
+		<openproject>
+			<prompt>Czy chcesz otworzyć nowy projekt?</prompt>
+			<title>Potwierdź</title>
+		</openproject>
+		<initpreview>
+			<prompt>Musisz najpierw wybrać media przed jego podglądem.</prompt>
+			<title>Info</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Nie możesz powielić tej pozycji.</prompt>
+			<title>Błąd</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Czy na pewno chcesz skasować tę pozycję?</prompt>
+				<title>Potwierdzenie</title>
+			</confirm>
+			<error>
+				<prompt>Nie możesz skasować tej pozycji</prompt>
+				<title>Błąd</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>XML nie może być sformatowany, i zmiany nie mogą być zapisane. Sprawdź swoje zmiany.</prompt>
+		</savefile>
+        <upload>
+            <successful>Pomyślnie załadowano</successful>
+            <failed>
+                <permissions>Załadowanie niepowiodło się: Sprawdź uprawnienia</permissions>
+                <HTTPError>Załadowanie niepowiodło się: błąd HTTP</HTTPError>
+                <IOError>Załadowanie niepowiodło się: błąd wejścia/wyjścia</IOError>
+                <security>Załadowanie niepowiodło się: błąd zabezpieczeń</security>
+            </failed>
+        </upload>
+	</Alert>
+</language>
