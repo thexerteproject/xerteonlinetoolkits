@@ -106,12 +106,12 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         if ($xot_language_found && !file_exists($xerte_toolkits_site->root_file_path . "languages/" . $lang_dir))
         {
-            mkdir($xerte_toolkits_site->root_file_path . "languages/" . $lang_dir);
+            mkdir($xerte_toolkits_site->root_file_path . "languages/" . $lang_dir, 0755, true);
         }
 
         if ($nottingham_language_found && !file_exists($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir))
         {
-            mkdir($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir);
+            mkdir($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir. 0755, true);
         }
 
         /*
