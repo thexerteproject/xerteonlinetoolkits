@@ -16,10 +16,6 @@ limitations under the License.
 
 This software includes other third party elements:
 
-PHP
-http://php.net/
-Licensed under the PHP License
-
 jQuery
 http://jquery.com/
 Licensed under MIT License
@@ -28,29 +24,29 @@ jQueryUI
 http://jqueryui.com/
 Licensed under MIT License
 
+FontAwesome
+http://fortawesome.github.io/Font-Awesome/
+Licensed under MIT License
+
+MediaElement
+http://mediaelementjs.com/
+Licensed under MIT License
+
+SWFObject
+Licensed under MIT License
+https://code.google.com/p/swfobject/
+
 Bootstrap
 http://getbootstrap.com/
 Licensed under Apache 2.0 License 
 
-fontawesome
-http://fortawesome.github.io/Font-Awesome/
-Licensed under MIT License
-
-mediaelement
-http://mediaelementjs.com/
-Licensed under MIT License
-
 popcornJS
-http://popcornjs.org/
+https://github.com/mozilla/popcorn-js
 Licensed under the Mozilla Public License
 
 Silk Icons
 http://www.famfamfam.com/lab/icons/silk/
 Licensed under Creative Commons Attribution 2.5 License.
-
-SCORM API Wrappers
-http://www.adlnet.gov
-Licensed under Creative Commons Attribution-ShareAlike 3.0 (CC BY-SA 3.0)
 
 Unzip2.inc.php: Alexandre Tedeschi
 http://tunes.org/legalese/bugroff.html
@@ -59,18 +55,21 @@ Moovrelocator
 https://code.google.com/p/moovrelocator/
 Licensed under New BSD License
 
-imageLens
-https://github.com/philister/imageLens
-Licensed under a Creative Commons Attribution 3.0 license
-
 Zend
 http://framework.zend.com/
 Licensed under New BSD License
 
-SWFObject
-Licensed under MIT License
-https://code.google.com/p/swfobject/
+imageLens
+https://github.com/philister/imageLens
+Licensed under a Creative Commons Attribution 3.0 license
 
+SCORM API Wrappers
+http://www.adlnet.gov
+Licensed under Creative Commons Attribution-ShareAlike 3.0 (CC BY-SA 3.0)
+
+PHP
+http://php.net/
+Licensed under the PHP License
 
 
 [third-party legal notices as required]
