@@ -59,7 +59,7 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
-                .addClass("xerte_button")
+                .addClass("xerte_button_dark")
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -67,6 +67,8 @@ var EDITOR = (function ($, parent) {
         });
         $('.ui-layout-west .header').append(buttons);
 
+        // Page type
+        $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
@@ -78,9 +80,10 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
-                .addClass("xerte_button")
+                .addClass("xerte_button_dark")
                 .click(function(e){
-                    setTimeout(value.click(e), 250);
+                    $('#loader').show();
+                    setTimeout(function(){ value.click(e); }, 250);
                 })
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -175,9 +178,11 @@ var EDITOR = (function ($, parent) {
         .done(function() {
             //alert( "success" );
             // We would also launch the preview window from here
+            $('#loader').hide();
             window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes" );
         })
         .fail(function() {
+            $('#loader').hide();
             alert( "error" );
         });
     },
@@ -204,9 +209,11 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
+            $('#loader').hide();
             //alert( "success" );
         })
         .fail(function() {
+            $('#loader').hide();
             alert( "error" );
         });
     },
@@ -231,9 +238,11 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
+                $('#loader').hide();
                 //alert( "success" );
             })
             .fail(function() {
+                $('#loader').hide();
                 alert( "error" );
             });
     },
@@ -322,7 +331,7 @@ var EDITOR = (function ($, parent) {
         parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
         parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
 
-        tree.copy_node(current_node, parent_node, 'last');
+        tree.copy_node(current_node, parent_node, 'after');
 
         return true; // Successful
 
@@ -374,6 +383,11 @@ var EDITOR = (function ($, parent) {
         var node_name = attributes.nodeName;
         var node_label = '';
 
+        var menu_options = wizard_data[node_name].menu_options;
+        if (menu_options.menu && menu_options.menuItem) {
+            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
+        }
+
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -418,34 +432,47 @@ var EDITOR = (function ($, parent) {
         {
             attribute_name = node_options['optional'][i].name;
             attribute_label = "  " + node_options['optional'][i].value.label;
-            // Create button for right panel
-            var button = $('<button>')
-                .attr('id', 'insert_opt_' + attribute_name)
-                .addClass('btnInsertOptParam')
-                .click({key:key, attribute:attribute_name, default:(node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")},
-                    function(event){
+            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
+            if (!node_options['optional'][i].value.deprecated) {
+                // Create button for right panel
+                var button = $('<button>')
+                    .attr('id', 'insert_opt_' + attribute_name)
+                    .addClass('btnInsertOptParam')
+                    .addClass('xerte_button')
+                    .click({
+                        key: key,
+                        attribute: attribute_name,
+                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")
+                    },
+                    function (event) {
                         parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
                     })
-                .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
-                .append(attribute_label);
-            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-            if (attribute_value.found)
-            {
+                    .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                    .append(attribute_label);
+                if (node_options['optional'][i].value.tooltip)
+                {
+                    button.attr('title', node_options['optional'][i].value.tooltip);
+                }
+                if (attribute_value.found) {
+                    // Add disabled button to right panel
+                    button.prop('disabled', true)
+                        .addClass('disabled');
+                }
+                else {
+                    // Add enabled button to the right panel
+                    button.prop('disabled', false)
+                        .addClass('enabled');
+                }
+                var tablerow = $('<tr>')
+                    .append($('<td>')
+                        .append(button));
+                table.append(tablerow);
+            }
+            if (attribute_value.found) {
+                // Add paramter to the wizard
                 toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
-                // Add disabled button to right panel
-                button.prop('disabled', true)
-                    .addClass('disabled');
             }
-            else
-            {
-                // Add enabled button to the right panel
-                button.prop('disabled', false)
-                    .addClass('enabled');
-            }
-            var tablerow = $('<tr>')
-                .append($('<td>')
-                    .append(button));
-            table.append(tablerow);
         }
         html.append(table);
         if (node_options['optional'].length > 0)
@@ -458,6 +485,7 @@ var EDITOR = (function ($, parent) {
         {
             attribute_name = node_options['normal'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);

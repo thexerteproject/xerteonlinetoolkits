@@ -5,7 +5,7 @@
     <name type="TextInput" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
-    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250"/>
+    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
     <language type="LanguageList" label="Language" width="170"/>
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false" />
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false" />

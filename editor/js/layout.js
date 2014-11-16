@@ -89,8 +89,7 @@ var EDITOR = (function ($, parent) {
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "click",
-                    initClosed:             false,
-                    fxSettings_open:        { easing: "easeOutBounce" }
+                    initClosed:             false
                 },
                 east: {
                     size:                   200,
