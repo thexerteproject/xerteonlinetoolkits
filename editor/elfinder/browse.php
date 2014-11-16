@@ -75,7 +75,7 @@ if (isset($_REQUEST['langCode']))
                         // ['home', 'up'],
                         ['home'],
                         //['mkdir', 'mkfile', 'upload'],
-                        ['mkdir', 'upload'],
+                        ['upload'],
                         //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
@@ -115,7 +115,7 @@ if (isset($_REQUEST['langCode']))
 
                     // current directory menu
                     //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
-                    cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
+                    cwd    : ['reload', '|', 'upload', 'paste', '|', 'info'],
 
                     // current directory file menu
                     //files  : [
