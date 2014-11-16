@@ -28,6 +28,15 @@ var EDITOR = (function ($, parent) {
         fallback_language = {},
 
     parse_wizard_xml = function (wizard_xml) {
+
+        var compare = function(a,b) {
+            if (a.name < b.name)
+                return -1;
+            if (a.name > b.name)
+                return 1;
+            return 0;
+        };
+
         // Build the page menu object
         var j, temp_menu_data = [],
             categories = String(wizard_xml[0].attributes.menus.value).split(',');
@@ -83,16 +92,27 @@ var EDITOR = (function ($, parent) {
                 })(attributes.menu));
 
                 if (lookup > -1) {
+                    var item = {
+                        "item"  : main_node,
+                        "name"  : attributes.menuItem,
+                        "hint"  : attributes.hint,
+                        "thumb" : attributes.thumb,
+                        "icon"  : attributes.icon
+                    }
+                    if (attributes.deprecated)
+                    {
+                        item["deprecated"] = attributes.deprecated;
+                    }
                     menu_data.menu[lookup].submenu.push(
-                        {
-                            "item"  : main_node,
-                            "name"  : attributes.menuItem,
-                            "hint"  : attributes.hint,
-                            "thumb" : attributes.thumb,
-                            "icon"  : attributes.icon
-                        }
+                        item
                     );
                 }
+            }
+
+            // Sort menuItems
+            for (i in menu_data.menu)
+            {
+                menu_data.menu[i].submenu.sort(compare);
             }
 
             $($(this).children()).each(function() {
@@ -303,6 +323,7 @@ var EDITOR = (function ($, parent) {
         parent.data.wait(1, {});
         parent.layout.setup();
         toolbox.create_insert_page_menu();
+        $('#loader').hide();
     },
 
     init = function () {
