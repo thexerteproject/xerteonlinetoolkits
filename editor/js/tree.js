@@ -387,6 +387,35 @@ var EDITOR = (function ($, parent) {
         if (menu_options.menu && menu_options.menuItem) {
             $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
         }
+        else if (menu_options.menuItem)
+        {
+            // This is not a page, but a sub-page
+            // Build crumb path by walking up the tree
+            var crumb = menu_options.menuItem;
+            var tree = $.jstree.reference("#treeview");
+            var id = key;
+            do
+            {
+                var current_node = tree.get_node(id, false);
+                var id = tree.get_parent(current_node);
+
+                attributes = lo_data[id]['attributes'];
+                // Get the node name
+                node_name = attributes.nodeName;
+                menu_options = wizard_data[node_name].menu_options;
+                if (menu_options.menuItem)
+                {
+                    crumb = menu_options.menuItem + ' > ' + crumb;
+                }
+            }
+            while (!menu_options.menuItem || id == 'treeroot');
+            if (menu_options.menu)
+            {
+                crumb = menu_options.menu + ' > ' + crumb;
+            }
+            $('#pagetype').html(crumb);
+
+        }
 
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
