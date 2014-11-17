@@ -165,7 +165,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <div class="hide ui-layout-east">
 
-    <div class="header"><span style="color:#d2e4e8">Optional parameters</span></div>
+    <div class="header"><div id="optional_title">Optional parameters</div></div>
 
     <div id="optionalParams" class="content">
         <p>...</p>
