@@ -1,0 +1,349 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+html, body {
+	height:		100%;
+	overflow-x:	hidden;
+}
+
+body {
+	font-family:	Arial, sans-serif;
+	font-size:		10pt;
+	margin:			0px;
+	color:			#131313;
+	background-color:	#f0f0f0;
+}
+
+#mainHolder.full {
+	height:	100%;
+}
+
+p {
+	font-size:	1em;
+}
+
+.ui-widget {
+    font-family:	Arial,sans-serif;
+    font-size:		1em;
+}
+
+.stepImg {
+	background-color:	white;
+	float:				right;
+	padding:			2px;
+	margin-left:		10px;
+	margin-bottom:		10px;
+	max-width:			500px;
+	max-height:			400px;
+}
+
+.stepImg.small {
+	float:		none;
+	margin:		10px;
+	max-width:	250px;
+	max-height:	250px;
+}
+
+#submitBtn {
+	clear:	both;
+}
+
+
+/* _____HEADER_&_TITLES_____ */
+
+#headerBlock {
+	width:		100%;
+	background:	#FFFFFF;
+}
+
+#headerBlock #titles {
+	color:		#8dbf59;
+}
+
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.4em;
+	margin:		10px 0px 0px;
+}
+
+h3 {
+	font-size:	1.1em;
+}
+
+#headerBlock #titles, #contentHolder {
+	padding:	10px;
+}
+
+#btnHolder {
+	border-top:		2px solid #f0f0f0;
+	background-color:	#f9f9f9;
+	padding-left:	10px;
+	padding-top:	2px;
+	padding-bottom:	2px;
+}
+
+#btnHolder button, #overviewBtnHolder button {
+	color:		#cccccc;
+	border: 	0px;
+	padding: 	0px;
+	background:	none;
+}
+
+#btnHolder button {
+	
+}
+
+#overviewBtnHolder button {
+	margin-top:		-5px;
+	padding-right:	5px;
+}
+
+#btnHolder button:hover, #btnHolder button:focus, #overviewBtnHolder button:hover, #overviewBtnHolder button:focus {
+	color:	#ffa500;
+	cursor:	pointer;
+}
+
+#btnHolder button:active, #overviewBtnHolder button:active {
+	color:	#999999;
+}
+
+#btnHolder button .btnLabel, #overviewBtnHolder button .btnLabel {
+	font-size:		0;
+	line-height:	0;
+}
+
+#btnHolder button:disabled, #overviewBtnHolder button:disabled {
+	opacity:	0.3;
+    filter:		Alpha(opacity=30); /* IE8 and earlier */
+}
+
+#btnHolder button:disabled:hover, #btnHolder button:disabled:focus, #overviewBtnHolder button:disabled:hover, #overviewBtnHolder button:disabled:focus {
+	color:	#cccccc;
+	cursor:	default;
+}
+
+#btnHolder #group2 button {
+	margin-left:	1px;
+	padding-left:	3px;
+	border-left:	2px solid #f0f0f0;
+}
+
+a[href="#"]:visited { 
+   color:	#0000EE;
+}
+
+.section h3 {
+	margin:		0px;
+	padding:	0.2em 0.5em;
+}
+
+.light {
+	color:	white;
+}
+
+.dark {
+	color:	#131313;
+}
+
+.cursorPointer {
+	cursor:		pointer;
+}
+
+.sectionIcon {
+	padding-right:	0.5em;
+}
+
+img.sectionIcon {
+	height:			1.1em;
+	vertical-align:	middle;
+}
+
+
+/* _____STEPS_____ */
+
+#stepHolder .step {
+	padding-bottom:	10px;
+}
+
+#stepHolder .step .fa-border {
+	background-color:	#e0e0e0;
+	border-color:		white;
+	color:				white;
+	border-radius:		0.2em;
+}
+
+#stepHolder .instruction, #stepHolder .info, #stepHolder .result {
+	padding-top:	10px;
+}
+
+#stepHolder .radioAnswers {
+	clear:			left;
+	padding:		10px 0px 0px;
+}
+
+#stepHolder .radioAnswers div {
+	padding:		5px 6px;
+}
+
+#stepHolder .radioAnswers input {
+	display:		block;
+	float:			left;
+	margin:			1px 0px;
+	margin-left:	10px;
+}
+
+#stepHolder .optionTxt {
+	cursor:			pointer;
+	display:		block;
+	position:		relative;
+	margin-left:	30px;
+}
+
+#stepHolder .dropDownAnswer {
+	clear:		left;
+	padding:	10px 0;
+}
+
+ #labelHolder {
+	clear:		both;
+	padding:	10px 0;
+}
+
+#labelHolder input {
+	border:	1px solid #e0e0e0;
+	margin-right:	10px;
+	margin-left:	10px;
+}
+
+#slider {
+	margin:	10px;
+}
+
+#amount {
+	border:			0;
+	color:			#f6931f;
+	font-weight:	bold;
+}
+
+#helpBtn, #viewThisBtn {
+	margin-top:	1.5em;
+	clear:		left;
+}
+
+#helpBtn span.fa, #viewThisBtn span.fa {
+	padding-right:	0.3em;
+}
+
+.collatedResult {
+	margin-top:	1em;
+}
+
+
+/* _____INTRO_____ */
+
+#introHolder h3 {
+	margin:		0 0 5px;
+	padding:	0px;
+}
+
+#introHolder .closeBtn, #overviewHolder .closeBtn {
+	height:		20px;
+    padding: 	1px;
+    width: 		20px;
+}
+
+
+/* _____OVERVIEW_____ */
+
+#overviewHolder h3 {
+	margin:		0 0 10px;
+	padding:	0px;
+}
+
+#overviewHolder .decisionInfo .fa {
+	border-width:	2px;
+	margin:	0 5px 5px 0;
+	border-radius:	0.2em;
+}
+
+#overviewHolder .overviewStep {
+	background-color:	white;
+	padding:		0.5em;
+	margin-bottom:	1em;
+	overflow:		hidden;
+}
+
+#overviewHolder .overviewAnswer {
+	padding-left:	1em;
+}
+
+#overviewHolder .extraInfo {
+	color:			gray;
+	padding-left:	2em;
+}
+
+#overviewHolder .decisionInfo {
+	margin-bottom:	1em;
+}
+
+#overviewHolder .stepImg {
+	max-width:	200px;
+	max-height:	200px;
+}
+
+
+/* _____FOOTER_____ */
+
+#footerBlock {
+	width:		100%;
+	margin-top:	2.5em;
+	bottom:		0px;
+	background:	#FFFFFF;
+	overflow:	hidden;
+}
+
+#footerBlock img {
+	padding:	0.5em;
+}
+
+
+.highlight {
+	background-color:	white;
+}
+
+.error {
+	color:	red;
+}
+
+.hint {
+	color:			red;
+	font-weight:	bold;
+}
+
+.floatR {
+	float:	right;
+}
+
+.floatL {
+	float:	left;
+}
