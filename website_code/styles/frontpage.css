@@ -493,6 +493,10 @@ div#file_area div p{
 	background-image:url(../images/Icon_Page_site.gif); 
 }
 
+.template_icon.decision {
+	background-image:url(../images/Icon_Page_decision.gif); 
+}
+
 .template_desc{
 	float:left; 
 	position:relative; 
