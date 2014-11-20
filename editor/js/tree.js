@@ -394,27 +394,40 @@ var EDITOR = (function ($, parent) {
             var crumb = menu_options.menuItem;
             var tree = $.jstree.reference("#treeview");
             var id = key;
+            var node;
+            var lattributes;
+            var lmenu_options;
+            var topmenu;
             do
             {
                 var current_node = tree.get_node(id, false);
                 var id = tree.get_parent(current_node);
 
-                attributes = lo_data[id]['attributes'];
+                topmenu = false;
+                lattributes = lo_data[id]['attributes'];
                 // Get the node name
-                node_name = attributes.nodeName;
-                menu_options = wizard_data[node_name].menu_options;
-                if (menu_options.menuItem)
+                node = lattributes.nodeName;
+                lmenu_options = wizard_data[node].menu_options;
+                if (lmenu_options.menuItem)
                 {
-                    crumb = menu_options.menuItem + ' > ' + crumb;
+                    crumb = lmenu_options.menuItem + ' > ' + crumb;
+                }
+                if (lmenu_options.menu)
+                {
+                    topmenu = true;
                 }
             }
-            while (!menu_options.menuItem || id == 'treeroot');
-            if (menu_options.menu)
+            while (!topmenu || id == 'treeroot');
+            if (lmenu_options.menu)
             {
-                crumb = menu_options.menu + ' > ' + crumb;
+                crumb = lmenu_options.menu + ' > ' + crumb;
             }
             $('#pagetype').html(crumb);
 
+        }
+        else
+        {
+            $('#pagetype').html('');
         }
 
         var node_options = wizard_data[node_name].node_options;
