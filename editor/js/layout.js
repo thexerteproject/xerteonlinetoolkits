@@ -88,8 +88,11 @@ var EDITOR = (function ($, parent) {
                     togglerTip_open:        closetooltip,
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
-                    slideTrigger_open:      "click",
-                    initClosed:             false
+                    slideTrigger_open:      "mouseover",
+                    initClosed:             false,
+                    fxName:                 "drop",
+                    fxSpeed:                "normal",
+                    fxSettings:             { easing: "" } // remove default
                 },
                 east: {
                     size:                   200,
@@ -104,7 +107,7 @@ var EDITOR = (function ($, parent) {
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "mouseover",
-                    initClosed:             false,
+                    initClosed:             true,
                     fxName:                 "drop",
                     fxSpeed:                "normal",
                     fxSettings:             { easing: "" } // remove default
