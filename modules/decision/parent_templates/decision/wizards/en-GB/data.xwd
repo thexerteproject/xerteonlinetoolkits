@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<wizard menus="">
+
+	<learningObject icon="icPackage" remove="false" duplicate="false">
+  
+		<name label="Project Title" type="TextInput"/>
+		
+		<stylesheet label="Stylesheet" type="Media" optional="true"/>
+		<authorSupport label="Author Support" type="CheckBox" default="true" optional="true"/>
+		<logo label="Logo" type="Media" optional="true"/>
+		<logoAlt label="Logo Alt Text" type="TextInput" optional="true"/>
+		
+		<newBtnLabel label="New Button" type="TextInput" language="true"/>
+		<viewThisBtn label="Overview Button" type="TextInput" language="true"/>
+		<backBtn label="Back Button" type="TextInput" language="true"/>
+		<fwdBtn label="Forward Button" type="TextInput" language="true"/>
+		<emailBtn label="Email Button" type="TextInput" language="true"/>
+		<printBtn label="Print Button" type="TextInput" language="true"/>
+		<closeBtn label="Close Button" type="TextInput" language="true"/>
+		
+		<posAnswerString label="Other Answers Label" type="TextInput" language="true"/>
+		<fromRangeString label="Slider Range Label" type="TextInput" language="true"/>
+		<resultString label="Solution Label" type="TextInput" language="true"/>
+		<resultEndString label="Final Instruction" type="TextInput" language="true"/>
+		<overviewString label="Overview Label" type="TextInput" language="true"/>
+		<viewAllString label="Overview All Label" type="TextInput" language="true"/>
+		<errorString label="Error Label" type="TextInput" language="true"/>
+		<moreInfoString label="More Information" type="TextInput" language="true"/>
+		<lessInfoString label="Less Information" type="TextInput" language="true"/>
+		<helpString label="Question Help Label" type="TextInput" language="true"/>
+		
+		<warningTitle label="Warning Title" type="TextInput" language="true"/>
+		<warningString label="Warning Information" type="TextInput" language="true"/>
+		<okBtn label="OK Button" type="TextInput" language="true"/>
+		<cancelBtn label="Cancel Button" type="TextInput" language="true"/>
+		
+	</learningObject>
+	
+	
+	<quiz icon="icPageWhiteGear" remove="false" duplicate="false" menuItem="Steps">
+		
+		<name label="Title" type="TextInput"/>
+		<text label="Intro Text" type="TextArea" height="100"/>
+		<firstStep label="First Step ID" type="TextInput"/>
+		<title label="Intro Heading" type="TextInput"/>
+		
+		<print label="Print Overview Option" type="CheckBox" optional="true"/>
+		<email label="Email Overview Option" type="CheckBox" optional="true"/>
+		
+		<newNodes>
+			<section><![CDATA[<section name="Enter Section Name" show="false"/>]]></section>
+		</newNodes>
+		
+	</quiz>
+	
+	
+	<section icon="icFolder" remove="true" duplicate="true" menuItem="Section">
+		
+		<name label="Name" type="TextInput"/>
+		<show label="Show Section" type="CheckBox"/>
+		
+		<colour label="Colour" type="ColourPicker" optional="true"/>
+		<img label="Icon" type="media" optional="true"/>
+		<description label="Description" type="TextArea" height="100" optional="true"/>
+		
+		<newNodes>
+			<result><![CDATA[<result name="e.g. R1" text="Enter result text here"/>]]></result>
+			<info><![CDATA[<info name="e.g. I1" target="e.g. Q2" text="Enter text here" btnLabel="Next"/>]]></info>
+			<slider><![CDATA[<slider name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0" btnLabel="Next"/>]]></slider>
+			<mcq><![CDATA[<mcq name="e.g. Q1" text="Enter question here" format="radio" btnLabel="Next"/>]]></mcq>
+		</newNodes>
+		
+		<info><![CDATA[Check the 'Show Section' box to make section names visible in your project.<br/>Alternatively, you can just use sections to organise steps within the editor.]]></info>
+		
+	</section>
+	
+	
+	<mcq icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
+		
+		<name label="Unique ID" type="TextInput"/>
+		<text label="Question" type="TextArea" height="100"/>
+		<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
+		
+		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+		<img label="Image" type="media" default="Select an Image" optional="true"/>
+		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+	
+		<newNodes>
+			<option><![CDATA[<option name="Enter answer here" target="e.g. Q2"/>]]></option>
+		</newNodes>
+		
+	</mcq>
+	
+	<option icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+		<name label="Answer Option" type="TextInput"/>
+		<target label="Target ID" type="TextInput"/>
+		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+		
+		<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+		
+	</option>
+	
+	
+	<slider icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
+	
+		<name label="Unique ID" type="TextInput"/>
+		<text label="Question" type="TextArea" height="100"/>
+		<unit label="Unit of answer" type="TextInput"/>
+		<min label="Minimum value" type="TextInput"/>
+		<max label="Maximum value" type="TextInput"/>
+		<step label="Increment" type="TextInput"/>
+		<value label="Initial value" type="TextInput"/>
+		
+		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+		<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
+		<img label="Image" type="media" default="Select an Image" optional="true"/>
+		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+	
+		<newNodes>
+			<sOption><![CDATA[<sOption min="0" max="1" target="e.g. Q2"/>]]></sOption>
+		</newNodes>
+		
+	</slider>
+	
+	<sOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+		<min label="Range minimum" type="TextInput"/>
+		<max label="Range maximum" type="TextInput"/>
+		<target label="Target ID" type="TextInput"/>
+		<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+		
+		<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+		
+	</sOption>
+	
+	
+	<info icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
+		
+		<name label="Unique ID" type="TextInput"/>
+		<text label="Text" type="TextArea" height="100"/>
+		<target label="Target ID" type="TextInput"/>
+		
+		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="exclamation" width="100" optional="true"/>
+		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+		<lastStep label="Last Step" type="CheckBox" optional="true"/>
+		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
+		<img label="Image" type="media" default="Select an Image" optional="true"/>
+		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+		
+	</info>
+	
+	
+	<result icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
+		
+		<name label="Unique ID" type="TextInput"/>
+		<text label="Text" type="TextArea" height="100"/>
+		
+		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="lightbulb-o" width="100" optional="true"/>
+		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
+		<img label="Image" type="media" default="Select an Image" optional="true"/>
+		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		
+	</result>
+	
+</wizard>

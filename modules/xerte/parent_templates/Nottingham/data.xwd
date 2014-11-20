@@ -837,7 +837,7 @@
     <size type="ComboBox" options="Small,Medium,Large" label="Model Size" defaultData="Medium" width="100"/>
     <initLook label="Initial Appearance" options="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" type="ComboBox" data="CPK,Ball and Stick,Sticks,Wireframe,Cartoon,Backbone" defaultData="Ball and Stick" width="120"/>
     <colour type="ComboBox" options="Default,Element,Amino Acid,Chain,Secondary Structure" label="Initial Colour" defaultValue="Default" width="140"/>
-      <controls label="Show Control Bar" type="CheckBox" defaultValue="true"/>
+      <controls label="Show Default Controls" type="CheckBox" defaultValue="true"/>
     
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -856,8 +856,16 @@
     <initSpin label="Spin" type="CheckBox" optional="true"/>
     <xyz2 label="2nd Model File" type="Media" optional="true"/>
     
+	<newNodes>
+      <jmolOption><![CDATA[<jmolOption name="Enter option label here" script="Enter Jmol script here"/>]]></jmolOption>
+    </newNodes>
 
-  </jmol><links menu="Navigators" menuItem="Hyperlinks" hint="The links page allows you to easily assemble a page of keyboard accessible links" icon="icWorld" remove="true" thumb="thumbs/links.jpg">
+  </jmol><jmolOption menuItem="Script Option" icon="icBullet" remove="true">
+  
+	<name label="Label" type="TextInput"/>
+	<script label="Jmol Script" type="TextArea" height="100"/>
+  
+  </jmolOption><links menu="Navigators" menuItem="Hyperlinks" hint="The links page allows you to easily assemble a page of keyboard accessible links" icon="icWorld" remove="true" thumb="thumbs/links.jpg">
     
     <name label="Page Title" type="TextInput"/>
     <text label="Page Title" type="TextArea" height="100"/>
