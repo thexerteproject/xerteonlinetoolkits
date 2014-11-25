@@ -81,7 +81,7 @@ foreach(array('site_url', 'apache', 'mimetypes', 'LDAP_preference', 'LDAP_filter
     }
 }
 
-$ldap_fields = array('ldap_filter' => 'LDAP_filter', 'ldap_filter_attr' => 'LDAP_preference', 'ldap_host' => 'ldap_host', 'ldap_port' => 'ldap_port', 
+$ldap_fields = array('ldap_filter' => 'LDAP_filter', 'ldap_filter_attr' => 'LDAP_preference', 'ldap_knownname' => 'ldap_host', 'ldap_host' => 'ldap_host', 'ldap_port' => 'ldap_port', 
                      'ldap_password' => 'bind_pwd', 'ldap_basedn' => 'basedn', 'ldap_username' => 'bind_dn');
 $comma = '';
 $query = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}ldap (" . implode(',', array_keys($ldap_fields)) . ") VALUES (";
