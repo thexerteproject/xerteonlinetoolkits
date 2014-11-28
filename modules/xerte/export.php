@@ -50,6 +50,9 @@ $scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_fra
 $scorm2004_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm2004.3rd/";
 $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/js/";
 
+$export_html5 = false;
+$export_flash = false;
+
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
 }
@@ -251,8 +254,8 @@ if ($scorm == "true") {
             $query = "SELECT * FROM {$prefix}templatesyndication WHERE template_id = ? ";
             $metadata = db_query_one($query, array($_GET['template_id']));
 
-            $query = "SELECT * FROM {$prefix}templaterights "
-                    . "{$prefix}logindetails  WHERE template_id = ? and login_id = user_id ";
+            $query = "SELECT * FROM {$prefix}templaterights t, "
+                    . "{$prefix}logindetails l WHERE t.template_id = ? and t.user_id = l.login_id ";
 
             $params = array($_GET['template_id']);
 
