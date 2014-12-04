@@ -249,12 +249,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
-    //echo "mediavariable=\"" . $media_path . "\";\n";
-    //echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
-    //echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
-	echo "mediavariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham/media/\";\n";
-    echo "rlourlvariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham//\";\n";
-    echo "rlopathvariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham//\";\n";
+    echo "mediavariable=\"" . $media_path . "\";\n";
+    echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
+    echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";
