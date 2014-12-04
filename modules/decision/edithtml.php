@@ -43,7 +43,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     require_once("config.php");
     require_once("website_code/php/language_library.php");
 
-    _load_language_file("/modules/xerte/edit.inc");
+    _load_language_file("/modules/decision/edit.inc");
 
     $row_username = db_query_one("select username from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?" , array($row_edit['user_id']));
 
@@ -249,9 +249,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
-    echo "mediavariable=\"" . $media_path . "\";\n";
-    echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
-    echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
+    //echo "mediavariable=\"" . $media_path . "\";\n";
+    //echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
+    //echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
+	echo "mediavariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham/media/\";\n";
+    echo "rlourlvariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham//\";\n";
+    echo "rlopathvariable=\"C:/xampp/htdocs/xertetoolkits/USER-FILES/6-guest2-Nottingham//\";\n";
     echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
     echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
     echo "originalpathvariable=\"" . $xwd_url . "\";\n";
