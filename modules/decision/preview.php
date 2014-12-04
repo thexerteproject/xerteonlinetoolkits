@@ -31,6 +31,15 @@ function show_preview_code($row){
 
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile);
+	
+	if (strlen($xmlFixer->getName()) > 0)
+    {
+        $title = $xmlFixer->getName();
+    }
+    else
+    {
+        $title = XERTE_PREVIEW_TITLE;
+    }
 
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
@@ -50,7 +59,7 @@ function show_preview_code($row){
 		<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title><?PHP echo DECISION_PREVIEW_TITLE;  ?></title>
+		<title><?PHP echo $title  ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
