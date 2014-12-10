@@ -144,17 +144,37 @@
 						perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
 						
 					} else if (this.nodeName == "movie") {
-						$thisThumbMedia.html('<div class="thumbVideo" title="' + videoTip + '"></div>');
+						if (this.getAttribute("tooltip") != undefined) {
+							imgTip = this.getAttribute("tooltip");
+						} else {
+							imgTip = videoTip;
+						}
 						
-						var $thisVideo = $thisThumbMedia.find("div");
-						$thisVideo
-							.data({
-								"src"		:this.getAttribute("src"),
-								"dimensions":[$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5]
-							})
-							.attr("disabled", "disabled");
-						
-						perspectives.loadVideo($thisVideo);
+						// defaults to use video.jpg as thumbnail
+						// unless an img is uploaded
+						// or the useVidThumb optional property is set so 1st frame in video shows (not default any more as often takes too long for them all to load)
+						if (this.getAttribute("useVidThumb") == "true") {
+							$thisThumbMedia.html('<div class="thumbVideo" title="' + imgTip + '"></div>');
+							
+							var $thisVideo = $thisThumbMedia.find("div");
+							$thisVideo
+								.data({
+									"src"		:this.getAttribute("src"),
+									"dimensions":[$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5]
+								})
+								.attr("disabled", "disabled");
+							
+							perspectives.loadVideo($thisVideo);
+							
+						} else {
+							imgSrc = x_templateLocation + "common_html5/video.jpg";
+							if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
+								imgSrc = eval(this.getAttribute("img"));
+							}
+							
+							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
+							perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
+						}
 					}
 				}
 			});
