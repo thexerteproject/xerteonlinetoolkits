@@ -1298,6 +1298,9 @@
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Video File" type="media"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+	<img label="Image" type="media" optional="true"/>
+    <tooltip label="Tooltip" type="TextInput" optional="true"/>
+	<useVidThumb label="1st Frame as Thumbnail" type="Checkbox" optional="true"/>
   </movie><sound menuItem="Sound" icon="icSound" duplicate="true" remove="true">
     <name label="Title" type="TextInput"/>
     <txt label="Text" type="TextArea" height="300"/>
