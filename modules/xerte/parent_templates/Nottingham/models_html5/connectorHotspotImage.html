@@ -174,8 +174,27 @@
 					var hsType,	// what does hs do when clicked?
 						hsInfo;
 					
+					// open dialog popup
+					if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
+						hsType = "dialog";
+						hsInfo = "video";
+					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
+						hsType = "dialog";
+						hsInfo = "sound";
+					} else if (this.getAttribute("hotspotPopUp") != undefined && this.getAttribute("hotspotPopUp") != "") {
+						hsType = "dialog";
+						hsInfo = "text";
+					
+					// open new window
+					} else if (this.getAttribute("htm") != undefined && this.getAttribute("htm") != "") {
+						hsType = "newWindow";
+						hsInfo = "html";
+					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
+						hsType = "newWindow";
+						hsInfo = "url";
+					
 					// go to page in LO
-					if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
+					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
 						hsType = "pageLink";
 						hsInfo = this.getAttribute("destination");
 					} else if (this.getAttribute("relNav") != undefined && this.getAttribute("relNav") != "") {
@@ -193,25 +212,6 @@
 						} else { // next page
 							hsInfo = $(x_pageInfo)[x_currentPage + 1].linkID;
 						}
-					
-					// open dialog popup
-					} else if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
-						hsType = "dialog";
-						hsInfo = "video";
-					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
-						hsType = "dialog";
-						hsInfo = "sound";
-					} else if (this.getAttribute("hotspotPopUp") != undefined && this.getAttribute("hotspotPopUp") != "") {
-						hsType = "dialog";
-						hsInfo = "text";
-					
-					// open new window
-					} if (this.getAttribute("htm") != undefined && this.getAttribute("htm") != "") {
-						hsType = "newWindow";
-						hsInfo = "html";
-					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
-						hsType = "newWindow";
-						hsInfo = "url";
 					}
 					
 					if (hsType != undefined) {
