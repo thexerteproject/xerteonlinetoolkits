@@ -151,42 +151,52 @@
 		}
 		
 		// function called from mediaPlayer.js when video player has been set up
-		this.mediaFunct = function(mediaElement) {
+		this.mediaFunct = function(mediaElement, mediaSrc, eventType, data) {
+			if (mediaSrc != "vimeo") {
+				$("#pageContents").data("mediaElement", mediaElement);
+				
+				mediaElement.addEventListener("timeupdate", function(e) {
+					videoSynch.timeUpdate(mediaElement, mediaElement.currentTime);
+				});
+				
+			} else {
+				// VIMEO
+				if (eventType == "playProgress") {
+					videoSynch.timeUpdate(mediaElement, data, mediaSrc);
+				}
+			}
+		}
+		
+		this.timeUpdate = function(mediaElement, currentTime, mediaSrc) {
 			var $captions 	= $($("#pageContents").data("captions")),
 				pause 		= x_currentPageXML.getAttribute("pause"),
 				erase    	= x_currentPageXML.getAttribute("erase");
 			
-			$("#pageContents").data("mediaElement", mediaElement);
-			
-			mediaElement.addEventListener("timeupdate", function(e) {
-				var currentTime = mediaElement.currentTime;
-				
-				$captions.each(function(){
-					var $thisCaption = $(this);
-					if (erase == "False") {
-						if (currentTime > $thisCaption.data("synch")) {
-							if ($thisCaption.is(":hidden") == true) {
-								$thisCaption.show();
-								if (pause == "True") {
-									mediaElement.pause();
-								}
+			$captions.each(function(){
+				var $thisCaption = $(this);
+				if (erase == "False") {
+					if (currentTime > $thisCaption.data("synch")) {
+						if ($thisCaption.is(":hidden") == true) {
+							$thisCaption.show();
+							if (pause == "True") {
+								mediaElement.pause();
 							}
-						} else {
-							$thisCaption.hide();
 						}
 					} else {
-						if (currentTime > $thisCaption.data("synch") && (currentTime < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
-							if ($thisCaption.is(":hidden") == true) {
-								$thisCaption.show();
-								if (pause == "True") {
-									mediaElement.pause();
-								}
-							}
-						} else {
-							$thisCaption.hide();
-						}
+						$thisCaption.hide();
 					}
-				})
+				} else {
+					if (currentTime > $thisCaption.data("synch") && (currentTime < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
+						if ($thisCaption.is(":hidden") == true) {
+							$thisCaption.show();
+							if (pause == "True") {
+								mediaElement.pause();
+							}
+						}
+					} else {
+						$thisCaption.hide();
+					}
+				}
 			});
 		}
 	}
