@@ -638,7 +638,7 @@
         this.processShapeData = function() {
         	if ($(x_currentPageXML).text().length > 1) {
 				var xml;
-				if (jQuery.browser.msie) { // Had to add this in to get IE to parse <shapes> correctly
+				if (navigator.appName == 'Microsoft Internet Explorer') { // Had to add this in to get IE to parse <shapes> correctly
 					var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
 					xmlDoc.loadXML($(x_currentPageXML).text());
 					xml = xmlDoc;
