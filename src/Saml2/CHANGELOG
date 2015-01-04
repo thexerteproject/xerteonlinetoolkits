@@ -1,0 +1,39 @@
+CHANGELOG
+=========
+
+v.2.2.0
+-------
+* Fix bug with Encrypted nameID on LogoutRequest
+* Fixed usability bug. SP will inform about AuthFail status after process a Response.
+* Added SessionIndex support on LogoutRequest, and know is accesible from the Auth class.
+* LogoutRequest and LogoutResponse classes now accept non deflated xml
+* Improved the XML metadata/ Decrypted Assertion output. (prettyprint)
+* Fix bug in formatPrivateKey method, the key could be not RSA
+* Explicit warning message for signed element problem
+* Decrypt method improved
+* Support more algorithm at the SigAlg in the Signed LogoutRequests and LogoutResponses
+* AuthNRequest now stores ID (it can be retrieved later)
+* Fixed a typo on the 'NameIdPolicy' attribute that appeared at the README and settings_example file.
+
+v.2.1.0
+-------
+
+* The isValid method of the Logout Request is now non-static. (affects processSLO method of Auth.php)
+* Logout Request constructor now accepts encoded logout requests
+* Now after validate a message, if fails a method getError of the object will return the cause
+* Fix typos
+* Added extra parameters option to login and logout methods.
+* Improve Test (new test, use the new getError method for testing)
+* Bugfix namespace problem when getting Attributes
+
+
+v.2.0.0
+-------
+
+New PHP SAML Toolkit (SLO, Sign, Encryptation)
+
+
+v.1.0.0
+-------
+
+Old PHP SAML Toolkit

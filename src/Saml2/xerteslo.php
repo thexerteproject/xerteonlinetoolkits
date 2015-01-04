@@ -17,21 +17,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 session_start();
-if (isset($_GET['response']))
-{
-    $response = urldecode($_GET['response']);
-    $_SESSION['saml2session'] = $response;
-    $decoded = json_decode($response);
-    if ($decoded->saml2reqid == $_SESSION['saml2reqid']) {
-        header("Location: " . $_GET['site']);
-    }
-    else
-    {
-        die("Invalid login request");
-    }
+
+require_once '_toolkit_loader.php';
+
+$samlSettings = new OneLogin_Saml2_Settings();
+
+$idpData = $samlSettings->getIdPData();
+if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
+    $sloUrl = $idpData['singleLogoutService']['url'];
+} else {
+    throw new Exception("The IdP does not support Single Log Out");
 }
-else
-{
-    die("Invalid login request");
+
+if (isset($_SESSION['IdPSessionIndex']) && !empty($_SESSION['IdPSessionIndex'])) {
+    $logoutRequest = new OneLogin_Saml2_LogoutRequest($samlSettings, null, $_SESSION['IdPSessionIndex']);
+} else {
+    $logoutRequest = new OneLogin_Saml2_LogoutRequest($samlSettings);
 }
+
+$samlRequest = $logoutRequest->getRequest();
+
+$parameters = array('SAMLRequest' => $samlRequest);
+
+$url = OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
+
+header("Location: $url");
