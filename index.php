@@ -136,7 +136,7 @@ _include_javascript_file("website_code/scripts/import.js");
 					<div style="float:right; margin:0; margin-right:10px;color:#a01a13;">
 					<?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
 					echo $_SESSION['toolkits_firstname'] ." " .$_SESSION['toolkits_surname'];?>
-					<button type="button" class="xerte_button_c" onclick="javascript:logout()" >
+					<button type="button" class="xerte_button_c" onclick="javascript:logout(<?php echo ($xerte_toolkits_site->authentication_method=="Saml2" ? "true" : "false"); ?>)">
 					<?PHP echo INDEX_BUTTON_LOGOUT; ?></button></div>
 					<div style="clear:both;"></div>
 				</div>
