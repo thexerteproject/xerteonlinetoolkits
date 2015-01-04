@@ -17,6 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-session_start();
+require_once("config.php");
+
+$authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+
+if ($authmech->hasLogout())
+{
+    _debug("Single Logout");
+    $authmech->logout();
+}
+
 session_destroy();

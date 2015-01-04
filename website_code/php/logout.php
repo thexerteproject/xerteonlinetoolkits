@@ -29,4 +29,11 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 
+$authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+
+if ($authmech->hasLogout())
+{
+    _debug("Single Logout");
+    $authmech->logout();
+}
 session_destroy();
