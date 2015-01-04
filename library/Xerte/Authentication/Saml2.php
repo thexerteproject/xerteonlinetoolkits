@@ -18,19 +18,6 @@
  * limitations under the License.
  */
 
-/**
- * For this to work, you'll need to have at least one entry in the XOT 'ldap' table. Example values (which work for me) are below :
- * 
- * ldap_host = localhost
- * ldap_port = 389
- * ldap_username = cn=admin,dc=blah,dc=com
- * ldap_password = <plain text password which you can connect to ldap with>
- * ldap_basedn = ou=xot,dc=blah,dc=com  -- this is where in the LDAP tree your XOT stuff lives. 
- * ldap_filter = cn    - field we try to do a match for the end user's username on.
- * ldap_filter_attr = uid 
- * 
- *  
- */
 
 class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
 {
