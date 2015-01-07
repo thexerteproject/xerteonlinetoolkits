@@ -72,6 +72,11 @@
 				$splitScreen.remove();
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
+				
+				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+					$textHolder.find("a.x_glossary").contents().unwrap();
+				}
+				
 				var textAlign = x_currentPageXML.getAttribute("align");
 				if (textAlign != "Right") {
 					if (panelWidth == "Small") {
@@ -100,6 +105,10 @@
 			}
 
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
+			
+			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				$("#question").find("a.x_glossary").contents().unwrap();
+			}
 
 			var $optionHolder = $("#optionHolder");
 			if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
@@ -174,6 +183,10 @@
 						.attr("for", "option" + i)
 						.data("option", $thisOption)
 						.html(thisOption.text);
+					
+					if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+						$thisOptionTxt.find("a.x_glossary").contents().unwrap();
+					}
 				});
 
 
@@ -264,6 +277,11 @@
 						feedbackLabel = "Feedback";
 					}
 					$("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
+					
+					if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+						$("#feedback").find("a.x_glossary").contents().unwrap();
+					}
+					
                     $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
 
                     // Queue reparsing of MathJax - fails if no network connection
