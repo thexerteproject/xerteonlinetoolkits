@@ -1,3 +1,22 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // *******************
 // *     Language    *
 // *******************
@@ -9,6 +28,15 @@ var EDITOR = (function ($, parent) {
         fallback_language = {},
 
     parse_wizard_xml = function (wizard_xml) {
+
+        var compare = function(a,b) {
+            if (a.name < b.name)
+                return -1;
+            if (a.name > b.name)
+                return 1;
+            return 0;
+        };
+
         // Build the page menu object
         var j, temp_menu_data = [],
             categories = String(wizard_xml[0].attributes.menus.value).split(',');
@@ -64,16 +92,27 @@ var EDITOR = (function ($, parent) {
                 })(attributes.menu));
 
                 if (lookup > -1) {
+                    var item = {
+                        "item"  : main_node,
+                        "name"  : attributes.menuItem,
+                        "hint"  : attributes.hint,
+                        "thumb" : attributes.thumb,
+                        "icon"  : attributes.icon
+                    }
+                    if (attributes.deprecated)
+                    {
+                        item["deprecated"] = attributes.deprecated;
+                    }
                     menu_data.menu[lookup].submenu.push(
-                        {
-                            "item"  : main_node,
-                            "name"  : attributes.menuItem,
-                            "hint"  : attributes.hint,
-                            "thumb" : attributes.thumb,
-                            "icon"  : attributes.icon
-                        }
+                        item
                     );
                 }
+            }
+
+            // Sort menuItems
+            for (i in menu_data.menu)
+            {
+                menu_data.menu[i].submenu.sort(compare);
             }
 
             $($(this).children()).each(function() {
@@ -284,6 +323,7 @@ var EDITOR = (function ($, parent) {
         parent.data.wait(1, {});
         parent.layout.setup();
         toolbox.create_insert_page_menu();
+        $('#loader').hide();
     },
 
     init = function () {

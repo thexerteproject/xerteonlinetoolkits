@@ -6,7 +6,7 @@
   </pageWizard>
   
   <!-- MAPSTRACTION=============================== -->
-  <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API.">
+  <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="Not supported anymore">
 
     <name type="TextInput" label="Page Title"/>
     <provider type="ComboBox" label="Map Type" options="google,yahoo,openlayers,microsoft" width="100"/>

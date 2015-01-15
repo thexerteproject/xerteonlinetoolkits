@@ -1,4 +1,22 @@
 <script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -45,6 +63,15 @@
 				size		= x_currentPageXML.getAttribute("size"),
 				dimensions	= [];
 			
+			// if child nodes are added (script options) then there will be radio buttons on control bar - each applying a different script
+			var scriptRadios = "";
+			$(x_currentPageXML).children("jmolOption").each(function(i) {
+				scriptRadios += this.getAttribute("name") + "~" + this.getAttribute("script");
+				if (i + 1 < $(x_currentPageXML).children("jmolOption").length) {
+					scriptRadios += "~";
+				}
+			});
+			
 			// size of iFrame
 			if (size == undefined) {
 				size = "Medium";
@@ -59,6 +86,7 @@
 			if (size == "Small") {
 				controls = false; // no space for control bar when model is small
 				scriptOpt = false;
+				scriptRadios = "";
 				$iFrameHolder.addClass("x_floatRight");
 				dimensions = [250,250];
 			} else if (size == "Medium") {
@@ -86,7 +114,7 @@
 				} else {
 					myFile = x_currentPageXML.getAttribute("xyz2");
 				}
-				var url = "JMolViewer/"+playertype+".htm?xyz=../" + eval(myFile) + ",spin=" + x_currentPageXML.getAttribute("initSpin") + ",controls=" + controls + ",bgColour=" + x_currentPageXML.getAttribute("bgColour") + ",initLook=" + x_currentPageXML.getAttribute("initLook") + ",cartoonOpt=" + x_currentPageXML.getAttribute("cartoonOpt") + ",backOpt=" + x_currentPageXML.getAttribute("backOpt") + ",initColour=" + x_currentPageXML.getAttribute("colour") + ",initScript=" + x_currentPageXML.getAttribute("initScript") + ",scriptOpt=" + scriptOpt + ",surfaceOpt=" + x_currentPageXML.getAttribute("surfaceOpt") + ",labelOpt=" + x_currentPageXML.getAttribute("labelOpt") + ",colourOpt=" + x_currentPageXML.getAttribute("colourOpt") + ",width=" + dimensions[0] + ",height=" + dimensions[1];
+				var url = "JMolViewer/"+playertype+".htm?xyz=../" + eval(myFile) + ",spin=" + x_currentPageXML.getAttribute("initSpin") + ",controls=" + controls + ",bgColour=" + x_currentPageXML.getAttribute("bgColour") + ",initLook=" + x_currentPageXML.getAttribute("initLook") + ",cartoonOpt=" + x_currentPageXML.getAttribute("cartoonOpt") + ",backOpt=" + x_currentPageXML.getAttribute("backOpt") + ",initColour=" + x_currentPageXML.getAttribute("colour") + ",initScript=" + x_currentPageXML.getAttribute("initScript") + ",scriptOpt=" + scriptOpt + ",surfaceOpt=" + x_currentPageXML.getAttribute("surfaceOpt") + ",labelOpt=" + x_currentPageXML.getAttribute("labelOpt") + ",colourOpt=" + x_currentPageXML.getAttribute("colourOpt") + ",width=" + dimensions[0] + ",height=" + dimensions[1] + ",scriptRadios=" + scriptRadios;
 				var iFrameTag = '<iframe id="iFrame' + i + '" src="' + url + '" width="' + dimensions[0] + '" height="' + dimensions[1] + '"></iframe>';
 				$iFrameHolder.append(iFrameTag);
 			}

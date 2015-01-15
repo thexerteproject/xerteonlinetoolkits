@@ -1,3 +1,22 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // *******************
 // *     Toolbox    *
 // *******************
@@ -37,7 +56,9 @@ var EDITOR = (function ($, parent) {
             if (itemData.submenu != undefined) {
                 var subList = $("<ul>");
                 $.each(itemData.submenu, function () {
-                    subList.append(getMenuItem(this));
+                    if (!this.deprecated) {
+                        subList.append(getMenuItem(this));
+                    }
                 });
                 item.append(subList);
             }
@@ -48,9 +69,11 @@ var EDITOR = (function ($, parent) {
             id: 'menu'
         });
         $.each(menu_data.menu, function () {
-            $menu.append(
-                getMenuItem(this)
-            );
+            if (!this.deprecated) {
+                $menu.append(
+                    getMenuItem(this)
+                )
+            };
         });
         $("#insert-buttons").html("");
         buttons = $('<div />').attr('id', 'insert_buttons');
@@ -90,18 +113,18 @@ var EDITOR = (function ($, parent) {
     },
 
     insert_page_before = function(){
-        parent.tree.addNode($('#selected-item').val(), 'before');
         $( "#insert-dialog").dialog("close");
+        parent.tree.addNode($('#selected-item').val(), 'before');
     }
 
     insert_page_after = function(){
-        parent.tree.addNode($('#selected-item').val(), 'after');
         $( "#insert-dialog").dialog("close");
+        parent.tree.addNode($('#selected-item').val(), 'after');
     }
 
     insert_page_end = function(){
-        parent.tree.addNode($('#selected-item').val(), 'end');
         $( "#insert-dialog").dialog("close");
+        parent.tree.addNode($('#selected-item').val(), 'end');
     }
 
 
@@ -155,6 +178,10 @@ var EDITOR = (function ($, parent) {
         {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+        }
+        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
+        {
+            treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
         }
         var this_json = {
             id : key,
@@ -236,36 +263,76 @@ var EDITOR = (function ($, parent) {
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
+        var deprecated = false;
         if (options != null)
         {
             //var output_string;
+            var flashonly = $('<img>')
+                .attr('src', 'editor/img/flashonly.png')
+                .attr('title', 'Flash only attribute');
             var tr = $('<tr>');
-            if (options.optional == 'true')
-            {
-                tr.attr('id', 'opt_'+ name)
+            if (options.deprecated) {
+                var td = $('<td>')
+                    .addClass("deprecated")
+                    .append($('<img>')
+                        .attr('id', 'deprbtn_' + name)
+                        .attr('src', 'editor/img/deprecated.png')
+                        .attr('title', options.deprecated)
+                        .addClass("deprecated"));
+                if (options.flashonly)
+                {
+                    td.addClass('flashonly');
+                    td.append(flashonly);
+                }
+                tr.attr('id', 'depr_' + name)
                     .addClass("wizardattribute")
-                    .append($('<td>')
-                        .addClass("wizardoptional")
-                        .append($('<img>')
-                            .attr('id', 'optbtn_' + name)
-                            .attr('src', 'editor/img/optional.png')
-                            .addClass("optional"))
-                    );
+                    .addClass("wizarddeprecated")
+                    .append(td);
+                deprecated = true;
+            }
+            else if (options.optional == 'true') {
+                var td = $('<td>')
+                    .addClass("wizardoptional")
+                    .append($('<img>')
+                        .attr('id', 'optbtn_' + name)
+                        .attr('src', 'editor/img/optional.png')
+                        .addClass("optional"));
+                if (options.flashonly)
+                {
+                    td.addClass('flashonly');
+                    td.append(flashonly);
+                }
+                tr.attr('id', 'opt_' + name)
+                    .addClass("wizardattribute")
+                    .append(td);
                 //output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
                 //output_string += '<td class="wizardoptional"><img id="optbtn_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
             }
+
             else
             {
+                var td = $('<td>')
+                    .addClass("wizardparameter");
+                if (options.flashonly)
+                {
+                    td.addClass('flashonly');
+                    td.append(flashonly);
+                }
                 tr.attr('id', 'param_'+ name)
                     .addClass("wizardattribute")
-                    .append($('<td>')
-                        .addClass("wizardparameter"));
+                    .append(td);
                 //output_string += '<tr class="wizardattribute">';
                 //output_string += '<td class="wizardparameter"></td>';
             }
-            tr.append($('<td>')
-                .addClass("wizardlabel")
-                .append(label))
+            var tdlabel = $('<td>')
+                .addClass("wizardlabel");
+            if (deprecated)
+            {
+                tdlabel.addClass("wizarddeprecated")
+            }
+            tdlabel.append(label);
+
+            tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
                     .append(displayDataType(value, options, name, key)));
@@ -273,7 +340,13 @@ var EDITOR = (function ($, parent) {
             //output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
             //output_string += '</tr>';
             $(id).append(tr);
-            if (options.optional == 'true') {
+            if (options.deprecated) {
+                $("#deprbtn_"+ name).on("click", function () {
+                    var this_name = name;
+                    removeDeprecatedProperty(this_name);
+                });
+            }
+            else if (options.optional == 'true') {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
@@ -282,6 +355,26 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+
+    removeDeprecatedProperty = function (name) {
+        if (!confirm('Are you sure?')) {
+            return;
+        }
+
+        // Need to remove row from the screen
+        var $row = $("#depr_" + name).remove();
+
+        // Find the property in the data store
+        var key = parent.tree.getSelectedNodeKeys();
+
+        if (name in lo_data[key]["attributes"])
+        {
+            delete lo_data[key]["attributes"][name];
+        };
+
+        console.log(lo_data[key]["attributes"]);
+
+    },
 
     removeOptionalProperty = function (name) {
         if (!confirm('Are you sure?')) {
@@ -1389,7 +1482,7 @@ var EDITOR = (function ($, parent) {
                 //html += '</select>';
                 html = $('<select>')
                     .attr('id', id)
-                    .click({id:id, key:key, name:name}, function(event)
+                    .change({id:id, key:key, name:name}, function(event)
                     {
                         selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                     });

@@ -1,3 +1,22 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // Tree : Add the tree object to the editor
 var EDITOR = (function ($, parent) {
 
@@ -40,7 +59,7 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
-                .addClass("xerte_button")
+                .addClass("xerte_button_dark")
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -48,6 +67,8 @@ var EDITOR = (function ($, parent) {
         });
         $('.ui-layout-west .header').append(buttons);
 
+        // Page type
+        $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
@@ -59,9 +80,10 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
-                .addClass("xerte_button")
+                .addClass("xerte_button_dark")
                 .click(function(e){
-                    setTimeout(value.click(e), 250);
+                    $('#loader').show();
+                    setTimeout(function(){ value.click(e); }, 250);
                 })
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
@@ -156,9 +178,11 @@ var EDITOR = (function ($, parent) {
         .done(function() {
             //alert( "success" );
             // We would also launch the preview window from here
+            $('#loader').hide();
             window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes" );
         })
         .fail(function() {
+            $('#loader').hide();
             alert( "error" );
         });
     },
@@ -185,9 +209,11 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
+            $('#loader').hide();
             //alert( "success" );
         })
         .fail(function() {
+            $('#loader').hide();
             alert( "error" );
         });
     },
@@ -212,9 +238,11 @@ var EDITOR = (function ($, parent) {
                 type: "POST"
             }
         ).done(function() {
+                $('#loader').hide();
                 //alert( "success" );
             })
             .fail(function() {
+                $('#loader').hide();
                 alert( "error" );
             });
     },
@@ -288,7 +316,7 @@ var EDITOR = (function ($, parent) {
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
     duplicateSelectedNodes = function () {
-    var tree = $.jstree.reference("#treeview");
+        var tree = $.jstree.reference("#treeview");
         var copy_node, new_node, id, ids = tree.get_selected();
 
         if(!ids.length) { return false; } // Something needs to be selected
@@ -298,12 +326,54 @@ var EDITOR = (function ($, parent) {
         if (id == "treeroot") { return false; } // Can't copy the root node
 
         console.log(id);
+        // This will be the key for the new node
+        var key = parent.tree.generate_lo_key();
 
-        current_node = tree.get_node(id, false); console.log(current_node);
-        parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-        parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        // Duplicate the node data
+        lo_data[key] = lo_data[id];
 
-        tree.copy_node(current_node, parent_node, 'last');
+        // Give unique linkID
+        if (lo_data[key].attributes['linkID']) {
+            var linkID = 'PG' + new Date().getTime();
+            lo_data[key].attributes['linkID'] = linkID;
+        }
+
+        // Create the tree node
+        var current_node = tree.get_node(id, false); console.log(current_node);
+        var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+        var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        var this_json = {
+            id : key,
+            text : current_node.text,
+            type : current_node.type
+        }
+        console.log(this_json);
+
+        // Determine pos
+        var pos;
+
+        id = ids[0];
+
+        // Walk and count children of 'treeroot' to figure out pos
+        var i = 0;
+        $.each(tree.get_children_dom(parent_node_id), function () {
+            if (this.attributes['id'].nodeValue == id)
+                pos = i;
+            i++;
+        });
+        pos++;
+
+        // Add the node
+        if (validateInsert(parent_node.type, current_node.type, tree))
+        {
+            var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
+                tree.deselect_all();
+                tree.select_node(key);
+            });
+        }
+
+
+        //tree.copy_node(current_node, parent_node, 'after');
 
         return true; // Successful
 
@@ -355,6 +425,53 @@ var EDITOR = (function ($, parent) {
         var node_name = attributes.nodeName;
         var node_label = '';
 
+        var menu_options = wizard_data[node_name].menu_options;
+        if (menu_options.menu && menu_options.menuItem) {
+            $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
+        }
+        else if (menu_options.menuItem)
+        {
+            // This is not a page, but a sub-page
+            // Build crumb path by walking up the tree
+            var crumb = menu_options.menuItem;
+            var tree = $.jstree.reference("#treeview");
+            var id = key;
+            var node;
+            var lattributes;
+            var lmenu_options;
+            var topmenu;
+            do
+            {
+                var current_node = tree.get_node(id, false);
+                var id = tree.get_parent(current_node);
+
+                topmenu = false;
+                lattributes = lo_data[id]['attributes'];
+                // Get the node name
+                node = lattributes.nodeName;
+                lmenu_options = wizard_data[node].menu_options;
+                if (lmenu_options.menuItem)
+                {
+                    crumb = lmenu_options.menuItem + ' > ' + crumb;
+                }
+                if (lmenu_options.menu)
+                {
+                    topmenu = true;
+                }
+            }
+            while (!topmenu || id == 'treeroot');
+            if (lmenu_options.menu)
+            {
+                crumb = lmenu_options.menu + ' > ' + crumb;
+            }
+            $('#pagetype').html(crumb);
+
+        }
+        else
+        {
+            $('#pagetype').html('');
+        }
+
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -399,34 +516,47 @@ var EDITOR = (function ($, parent) {
         {
             attribute_name = node_options['optional'][i].name;
             attribute_label = "  " + node_options['optional'][i].value.label;
-            // Create button for right panel
-            var button = $('<button>')
-                .attr('id', 'insert_opt_' + attribute_name)
-                .addClass('btnInsertOptParam')
-                .click({key:key, attribute:attribute_name, default:(node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")},
-                    function(event){
+            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
+            if (!node_options['optional'][i].value.deprecated) {
+                // Create button for right panel
+                var button = $('<button>')
+                    .attr('id', 'insert_opt_' + attribute_name)
+                    .addClass('btnInsertOptParam')
+                    .addClass('xerte_button')
+                    .click({
+                        key: key,
+                        attribute: attribute_name,
+                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")
+                    },
+                    function (event) {
                         parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
                     })
-                .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
-                .append(attribute_label);
-            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-            if (attribute_value.found)
-            {
+                    .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                    .append(attribute_label);
+                if (node_options['optional'][i].value.tooltip)
+                {
+                    button.attr('title', node_options['optional'][i].value.tooltip);
+                }
+                if (attribute_value.found) {
+                    // Add disabled button to right panel
+                    button.prop('disabled', true)
+                        .addClass('disabled');
+                }
+                else {
+                    // Add enabled button to the right panel
+                    button.prop('disabled', false)
+                        .addClass('enabled');
+                }
+                var tablerow = $('<tr>')
+                    .append($('<td>')
+                        .append(button));
+                table.append(tablerow);
+            }
+            if (attribute_value.found) {
+                // Add paramter to the wizard
                 toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
-                // Add disabled button to right panel
-                button.prop('disabled', true)
-                    .addClass('disabled');
             }
-            else
-            {
-                // Add enabled button to the right panel
-                button.prop('disabled', false)
-                    .addClass('enabled');
-            }
-            var tablerow = $('<tr>')
-                .append($('<td>')
-                    .append(button));
-            table.append(tablerow);
         }
         html.append(table);
         if (node_options['optional'].length > 0)
@@ -439,6 +569,7 @@ var EDITOR = (function ($, parent) {
         {
             attribute_name = node_options['normal'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);

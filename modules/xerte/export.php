@@ -1,4 +1,22 @@
 <?php
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Export a LO - e.g. from properties.
@@ -31,6 +49,9 @@ $scorm_language_relpath = $xerte_toolkits_site->module_path . $row['template_fra
 $scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm2004.3rd/";
 $scorm2004_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm2004.3rd/";
 $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/js/";
+
+$export_html5 = false;
+$export_flash = false;
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -233,8 +254,8 @@ if ($scorm == "true") {
             $query = "SELECT * FROM {$prefix}templatesyndication WHERE template_id = ? ";
             $metadata = db_query_one($query, array($_GET['template_id']));
 
-            $query = "SELECT * FROM {$prefix}templaterights "
-                    . "{$prefix}logindetails  WHERE template_id = ? and login_id = user_id ";
+            $query = "SELECT * FROM {$prefix}templaterights t, "
+                    . "{$prefix}logindetails l WHERE t.template_id = ? and t.user_id = l.login_id ";
 
             $params = array($_GET['template_id']);
 

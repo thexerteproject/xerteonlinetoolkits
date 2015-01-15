@@ -6,6 +6,7 @@
     margin-left: -32px; /* -1 * image width / 2 */
     margin-top: -32px;  /* -1 * image height / 2 */
     display: block;
+    z-index: 10;
 }
 
 button
@@ -112,14 +113,15 @@ table {
 
 /* inner divs inside Outer East/West panes */
 .header { 
-	background: #80ade5 url(../img/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
+	background: #4d585e url(../img/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
 	border-bottom: 1px solid #777;
-	font-weight: bold;
+	/* font-weight: bold; */
 	text-align: center;
-	/*padding: 2px 0 4px;*/
+	padding: 2px 0 0 0;
 	position: relative;
 	overflow: hidden;
 	height: 26px;
+    color: #fff;
 }
 .subhead ,
 .footer {
@@ -232,13 +234,14 @@ table {
 */
 .resizer-west-closed ,
 .resizer-east-closed {
-	background: #D1E6FC url(../img/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
+	/*background: #D1E6FC url(../img/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat; */
+    background: #4d585e url(../img/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
 	border-top: 1px solid #777;
 	border-bottom: 1px solid #777;
 }
 .resizer-west-closed:hover ,
 .resizer-east-closed:hover {
-	background: #D1E6FC;
+	background: #4d585e;
 }
 
 /*
@@ -321,22 +324,22 @@ span.button-pin-west	{ right: 1px; }
 span.button-pin-east	{ left:	 1px; }
 
 /* CUSTOM pin-buttons */
-span.button-pin-up 		  		{ background: url(../img/pin-up-off.gif) no-repeat center; }
-span.button-pin-up:hover   		{ background: url(../img/pin-up-on.gif)  no-repeat center; }
-span.button-pin-down 	  		{ background: url(../img/pin-dn-off.gif) no-repeat center; }
-span.button-pin-down:hover 		{ background: url(../img/pin-dn-on.gif)  no-repeat center; }
+span.button-pin-up 		  		{ background: url(../img/pin-up-off.gif) no-repeat center; margin-top:3px;}
+span.button-pin-up:hover   		{ background: url(../img/pin-up-on.gif)  no-repeat center; margin-top:3px;}
+span.button-pin-down 	  		{ background: url(../img/pin-dn-off.gif) no-repeat center; margin-top:3px;}
+span.button-pin-down:hover 		{ background: url(../img/pin-dn-on.gif)  no-repeat center; margin-top:3px;}
 
 /* CUSTOM close-buttons */
-span.button-close-west			{ background: url(../img/go-lt-off.gif) no-repeat center; }
-span.button-close-west:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; }
-span.button-close-east			{ background: url(../img/go-rt-off.gif) no-repeat center; }
-span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; }
+span.button-close-west			{ background: url(../img/go-lt-off.gif) no-repeat center; margin-top:3px;}
+span.button-close-west:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; margin-top:3px;}
+span.button-close-east			{ background: url(../img/go-rt-off.gif) no-repeat center; margin-top:3px;}
+span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; margin-top:3px;}
 
 /* STANDARD toggler-buttons - when the east/west panes are 'closed' */
-.toggler-west-closed		{ background: url(../img/go-rt-off.gif) no-repeat center; }
-.toggler-west-closed:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; }
-.toggler-east-closed		{ background: url(../img/go-lt-off.gif) no-repeat center; }
-.toggler-east-closed:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; }
+.toggler-west-closed		{ background: url(../img/go-rt-off.gif) no-repeat center; margin-top:3px !important;}
+.toggler-west-closed:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; margin-top:3px !important;}
+.toggler-east-closed		{ background: url(../img/go-lt-off.gif) no-repeat center; margin-top:3px !important;}
+.toggler-east-closed:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; margin-top:3px !important;}
 
 
 /*
@@ -390,6 +393,19 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
     float: right;
 }
 
+#optional_title
+{
+    margin-top: 4px;
+
+}
+
+#pagetype
+{
+    margin-left:10px;
+    margin-top: 4px;
+    float: left;
+}
+
 #checkbox_outer .td {
     vertical-align: text-bottom;
 }
@@ -414,11 +430,12 @@ div.ui-layout-north div.content {
 div.ui-layout-north div.content img {
 	margin:0 15px 0 15px;
 }
-div.ui-layout-west div.header { 
-	padding: 0;
+/*
+div.ui-layout-west div.header {
+	padding: 2px 0 0 0;
 	margin: 0;
 }
-
+*/
 .CodeMirror {
     border: 1px solid #ddd;
 }
@@ -430,11 +447,12 @@ div.inputtext {
 }
 
 .inputtext p{
-    padding: 0;
+    padding: 4px;
     margin: 0;
-    border: 1px solid #000000;
+    border: 1px solid lightgray;
     background-color: white;
 }
+
 table.wizard{
     vertical-align: middle;
     width: 100%;
@@ -454,13 +472,23 @@ img.optional {
 	cursor: pointer;
 }
 
-.inputtext p{
-    padding:2px 2px 2px 4px;
+img.deprecated {
+    cursor: pointer;
 }
 
-.inputtext p {
-    border: 1px solid lightgray;
+span.deprecated {
+    padding: 0 4px 0 4px;
+    background: rgba(248, 103, 24, 0.33);
 }
+
+td.wizarddeprecated {
+    background: rgba(248, 103, 24, 0.33);
+}
+
+td.flashonly {
+    width: 32px;
+}
+
 #optionalParams.content{
     padding: 2px;
 
@@ -500,7 +528,7 @@ img.optional {
 }
 
 .btnInsertOptParam.disabled {
-    color: gray;
+    color: #000;
 }
 
 .newNodesContainer {
@@ -533,6 +561,8 @@ img.optional {
 
 .media_container table{
     width:100%;
+    border-spacing: 0px;
+
 }
 
 .clickableHotspot

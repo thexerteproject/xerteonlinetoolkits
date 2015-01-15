@@ -88,12 +88,14 @@
 		}
 		var scriptOpt  = str.split(',')[9].split('scriptOpt=')[1];
 		
+		var scriptRadios = str.split(',')[15].split('scriptRadios=')[1].split("~");
+		
 		
 		// Jmol window size
 		var windowW = Number(str.split(',')[13].split('width=')[1])-2;
 		var windowH = Number(str.split(',')[14].split('height=')[1])-2;
-		windowW = this.parent.jmol.calcWidth();
-		windowH = this.parent.jmol.calcHeight()* 0.8 - 20;
+		//windowW = this.parent.jmol.calcWidth();
+		//windowH = this.parent.jmol.calcHeight()* 0.8 - 20;
 		var modelW = windowW;//-4;
 		var modelH = windowH;//-4;
 		
@@ -211,6 +213,11 @@
 				document.getElementById("scriptInput").value = "";
 			}
 			
+			var radios = document.getElementsByTagName("input");
+			for (i=0; i<radios.length; i++) {
+				radios[i].checked = false;
+			}
+			
 			if (controls == "true") {
 				setValues();
 			}
@@ -238,12 +245,22 @@
 		
 			// remove control bar elements not needed
 			var remove = new Array();
-			if (controls != "true" && scriptOpt != "true") {
+			if (controls != "true" && scriptOpt != "true" && scriptRadios.length < 2) {
 				remove.push("controlBar");
-			} else if (controls != "true" && scriptOpt == "true") {
-				remove.push("normalControls");
-			} else if (controls == "true" && scriptOpt != "true") {
-				remove.push("scriptHolder");
+			} else {
+				if (controls != "true") {
+					remove.push("normalControls");
+				}
+				if (scriptOpt != "true") {
+					remove.push("scriptHolder");
+				}
+				if (scriptRadios.length < 2) {
+					remove.push("radioOptions");
+				} else {
+					if (controls != "true") {
+						remove.push("resetBtn");
+					}
+				}
 			}
 			if (controls == "true") {
 				if (colourOpt != "true") {
@@ -266,6 +283,26 @@
 			for (i=0; i<remove.length; i++) {
 				var tag = document.getElementById(remove[i]);
 				if (tag!=null) tag.parentNode.removeChild(tag);
+			}
+			
+			// creates radio buttons to apply scripts
+			if (scriptRadios.length > 1) {
+				var holder = document.getElementById("radioOptions");
+				var radioGroup = holder.getElementsByClassName("radioGroup")[0];
+				
+				for (i=0; i<scriptRadios.length/2; i++) {
+					var copy;
+					if (i != 0) {
+						copy = radioGroup.cloneNode(true);
+						holder.appendChild(copy);
+					} else {
+						copy = radioGroup;
+					}
+					copy.getElementsByTagName("input")[0].id = "radio" + i;
+					copy.getElementsByTagName("label")[0].innerHTML = scriptRadios[i * 2];
+					copy.getElementsByTagName("label")[0].setAttribute("for", "radio" + i);
+					copy.getElementsByTagName("input")[0].setAttribute("onclick", "javascript:Jmol.script(jmolApplet0,'" + scriptRadios[(i * 2) + 1] + "');");
+				}
 			}
 			
 			// set init values
@@ -335,6 +372,10 @@
 		padding-bottom: 5px;
 	}
 	
+	.radioGroup {
+		padding-right: 5px;
+	}
+	
 	.block {
 		display:inline-block;
 		padding-left: 10px;
@@ -398,8 +439,12 @@
 			
 			<label id="scriptHolder" class="block"><input type="text" name="scriptInput" id="scriptInput" /><button onclick="scriptChg();">Apply script</button></label>
 			
+			<span id="radioOptions" class="block">
+				<span class="radioGroup"><input type="radio" name="radioGroup"/><label></label></span>
+			</span>
+			
 			<span class="block">
-				<button onclick="resetBtn();">Reset</button>
+				<button id="resetBtn" onclick="resetBtn();">Reset</button>
 			</span>
 			
 		</div>

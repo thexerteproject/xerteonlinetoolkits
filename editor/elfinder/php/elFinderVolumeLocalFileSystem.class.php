@@ -73,6 +73,7 @@ class elFinderVolumeLocalFileSystem extends elFinderVolumeDriver {
 		// chek thumbnails path
 		if ($this->options['tmbPath']) {
 			$this->options['tmbPath'] = strpos($this->options['tmbPath'], DIRECTORY_SEPARATOR) === false
+                                        && strpos($this->options['tmbPath'], '/') === false  // TOR: Ugly fix for Windows where paths are specified as '/', specifically XAMPP
 				// tmb path set as dirname under root dir
 				? $this->root.DIRECTORY_SEPARATOR.$this->options['tmbPath']
 				// tmb path as full path

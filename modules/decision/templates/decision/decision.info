@@ -1,0 +1,8 @@
+display name: Decision Tree Template
+description: A template for presenting a series of questions to reach a solution to a problem.
+editor size: 800,665
+preview size: 800,665
+preview filename: preview.xml
+public filename: data.xml
+supports: media,give,xml
+requires: xerte
