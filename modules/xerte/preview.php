@@ -24,7 +24,6 @@
 * @author Patrick Lockley
 * @version 1.0
 * @params array row_play - The array from the last mysql query
-* @copyright Copyright (c) 2008,2009 University of Nottingham
 * @package
 */
 

@@ -26,9 +26,8 @@
  *
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
- * @package
  */
+ 
 /**
  * $xerte_toolkits_site variable
  * Variable used to hold database settings

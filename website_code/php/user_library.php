@@ -25,7 +25,6 @@
  * @version 1.0
  * @params string user's username
  * @return bool - Is this the users first time (have we ever come across this user before in XOT)
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 function check_if_first_time($username){
@@ -46,7 +45,6 @@ function check_if_first_time($username){
  * @author Patrick Lockley
  * @version 1.0
  * @return number - The user's database id
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 function get_user_info(){
@@ -71,7 +69,6 @@ function get_user_info(){
  * @author Patrick Lockley
  * @version 1.0
  * @return number - The user's database id
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 function get_user_id(){
@@ -95,7 +92,6 @@ function get_user_id(){
  * @author Patrick Lockley
  * @version 1.0
  * @return number - the user id
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -124,7 +120,6 @@ function create_user_id($username, $firstname, $surname){
  * looks for a reycle bin and if can't find one, make it.
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -165,7 +160,6 @@ function recycle_bin() {
  * @author Patrick Lockley
  * @version 1.0
  * @return number - folder id for the recycle bin
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -189,7 +183,6 @@ function get_recycle_bin(){
  * Creates the root folder for the user
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -220,7 +213,6 @@ function create_a_virtual_root_folder(){
  * Modify the time the user last accessed the system
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -264,7 +256,6 @@ function update_user_logon_time(){
  * Get the id for the users root folder
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -299,7 +290,6 @@ function get_user_root_folder(){
  * @author Patrick Lockley
  * @version 1.0
  * @return bool - Is this the user an administrator
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 function is_user_admin(){

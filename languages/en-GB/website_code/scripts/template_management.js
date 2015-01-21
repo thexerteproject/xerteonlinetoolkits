@@ -4,7 +4,6 @@
 	 *
 	 * @author Patrick Lockley
 	 * @version 1.0
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
 	 * @package
 	 *
 	 * PLEASE USE DOUBLE QUOTES IN THESE FILES, OTHERWISE XERTE TRANS DOES NOT WORK!
