@@ -316,7 +316,7 @@ var EDITOR = (function ($, parent) {
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
     duplicateSelectedNodes = function () {
-    var tree = $.jstree.reference("#treeview");
+        var tree = $.jstree.reference("#treeview");
         var copy_node, new_node, id, ids = tree.get_selected();
 
         if(!ids.length) { return false; } // Something needs to be selected
@@ -326,12 +326,54 @@ var EDITOR = (function ($, parent) {
         if (id == "treeroot") { return false; } // Can't copy the root node
 
         console.log(id);
+        // This will be the key for the new node
+        var key = parent.tree.generate_lo_key();
 
-        current_node = tree.get_node(id, false); console.log(current_node);
-        parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-        parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        // Duplicate the node data
+        lo_data[key] = lo_data[id];
 
-        tree.copy_node(current_node, parent_node, 'after');
+        // Give unique linkID
+        if (lo_data[key].attributes['linkID']) {
+            var linkID = 'PG' + new Date().getTime();
+            lo_data[key].attributes['linkID'] = linkID;
+        }
+
+        // Create the tree node
+        var current_node = tree.get_node(id, false); console.log(current_node);
+        var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+        var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
+        var this_json = {
+            id : key,
+            text : current_node.text,
+            type : current_node.type
+        }
+        console.log(this_json);
+
+        // Determine pos
+        var pos;
+
+        id = ids[0];
+
+        // Walk and count children of 'treeroot' to figure out pos
+        var i = 0;
+        $.each(tree.get_children_dom(parent_node_id), function () {
+            if (this.attributes['id'].nodeValue == id)
+                pos = i;
+            i++;
+        });
+        pos++;
+
+        // Add the node
+        if (validateInsert(parent_node.type, current_node.type, tree))
+        {
+            var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
+                tree.deselect_all();
+                tree.select_node(key);
+            });
+        }
+
+
+        //tree.copy_node(current_node, parent_node, 'after');
 
         return true; // Successful
 
@@ -386,6 +428,48 @@ var EDITOR = (function ($, parent) {
         var menu_options = wizard_data[node_name].menu_options;
         if (menu_options.menu && menu_options.menuItem) {
             $('#pagetype').html(menu_options.menu + ' > ' + menu_options.menuItem);
+        }
+        else if (menu_options.menuItem)
+        {
+            // This is not a page, but a sub-page
+            // Build crumb path by walking up the tree
+            var crumb = menu_options.menuItem;
+            var tree = $.jstree.reference("#treeview");
+            var id = key;
+            var node;
+            var lattributes;
+            var lmenu_options;
+            var topmenu;
+            do
+            {
+                var current_node = tree.get_node(id, false);
+                var id = tree.get_parent(current_node);
+
+                topmenu = false;
+                lattributes = lo_data[id]['attributes'];
+                // Get the node name
+                node = lattributes.nodeName;
+                lmenu_options = wizard_data[node].menu_options;
+                if (lmenu_options.menuItem)
+                {
+                    crumb = lmenu_options.menuItem + ' > ' + crumb;
+                }
+                if (lmenu_options.menu)
+                {
+                    topmenu = true;
+                }
+            }
+            while (!topmenu || id == 'treeroot');
+            if (lmenu_options.menu)
+            {
+                crumb = lmenu_options.menu + ' > ' + crumb;
+            }
+            $('#pagetype').html(crumb);
+
+        }
+        else
+        {
+            $('#pagetype').html('');
         }
 
         var node_options = wizard_data[node_name].node_options;

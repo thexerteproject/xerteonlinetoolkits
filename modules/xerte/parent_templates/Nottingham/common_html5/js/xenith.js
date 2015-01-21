@@ -443,6 +443,8 @@ function x_setUp() {
 			
 			$x_pageDiv
 				.on("mouseenter", ".x_glossary", function(e) {
+					$(this).trigger("mouseleave");
+					
 					var $this = $(this),
 						myText = $this.text(),
 						myDefinition, i, len;
@@ -473,14 +475,17 @@ function x_setUp() {
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					$x_glossaryHover.remove();
+					
+					if ($x_glossaryHover != undefined) {
+						$x_glossaryHover.remove();
+					}
 					
 					// Put back the title attribute
 					$this = $(this);
 					$this.attr('title', $this.data('title'));
 				})
 				.on("mousemove", ".x_glossary", function(e) {
-					var 	leftPos,
+					var leftPos,
 						topPos = e.pageY + 20;
 					
 					if (x_browserInfo.mobile == false) {
@@ -1328,13 +1333,13 @@ function x_insertText(node) {
     if (x_glossary.length > 0) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
             var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
-        //  tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
-            tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$2</a>$3');
+			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
-        //for (var k=0, len=x_glossary.length; k<len; k++) {
-        //  var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
-        //  tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
-        //}
+        for (var k=0, len=x_glossary.length; k<len; k++) {
+			var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
+			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
+			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+        }
     }
 
     // check text for LaTeX tags - if found replace with image

@@ -175,7 +175,7 @@ function move_file($files_to_move,$destination){
 
                         $prefix = $xerte_toolkits_site->database_table_prefix;
                         
-                        $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE (template_id = ?  AND user_id = = ? ";
+                        $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE template_id = ?  AND user_id = ?";
 
                         $params = array($destination, $new_files_array[$x], $_SESSION['toolkits_logon_id']); 
                         

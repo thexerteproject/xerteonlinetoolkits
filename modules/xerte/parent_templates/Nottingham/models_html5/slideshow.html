@@ -33,7 +33,11 @@
 					$btnHolder = $("#btnHolder");
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				if ($btnHolder.length > 0) {
+					$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				} else {
+					$("#infoHolder").height($panel.height());
+				}
 			}
 			
 			var $pageContents = $("#pageContents");
@@ -185,8 +189,12 @@
 				})
 				.trigger("click");
 			
-			if (x_browserInfo.mobile == true) {
-				$("#pageContents .panel").prepend($("#btnHolder"));
+			if ($(x_currentPageXML).children().length < 2) {
+				$("#slideTxt, #btnHolder").remove();
+			} else {
+				if (x_browserInfo.mobile == true) {
+					$("#pageContents .panel").prepend($("#btnHolder"));
+				}
 			}
 			
 			if ($panelPage.find(".pageImg img").length > 0) {
