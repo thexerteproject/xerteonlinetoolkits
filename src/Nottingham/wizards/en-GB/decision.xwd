@@ -1,0 +1,117 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" />]]></decision>
+    </newNodes>
+  </pageWizard>
+
+  <!-- DECISION============================ -->
+  <decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions" icon="icDecision">
+	
+	<name type="TextInput" label="Page Title"/>
+	<text label="Intro Text" type="TextArea" height="100"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
+	<firstStep label="First Step ID" type="TextInput"/>
+	
+	<copy label="Copy Overview Option" type="CheckBox" optional="true"/>
+	
+	<newBtnLabel label="Refresh Button" type="TextInput" language="true"/>
+	<viewThisBtn label="Overview Button" type="TextInput" language="true"/>
+	<backBtn label="Back Button" type="TextInput" language="true"/>
+	<fwdBtn label="Forward Button" type="TextInput" language="true"/>
+	<copyBtn label="Copy Button" type="TextInput" language="true"/>
+	<copyShortcutTxt label="Copy Instructions" type="TextInput" language="true"/>
+	<posAnswerString label="Other Answers Label" type="TextInput" language="true"/>
+	<fromRangeString label="Slider Range Label" type="TextInput" language="true"/>
+	<resultString label="Solution Label" type="TextInput" language="true"/>
+	<resultEndString label="Final Instruction" type="TextInput" language="true"/>
+	<overviewString label="Overview Label" type="TextInput" language="true"/>
+	<helpString label="Question Help Label" type="TextInput" language="true"/>
+	<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+	
+	<closeBtn label="Close Button" type="TextInput" language="true"/>
+	<errorString label="Error Label" type="TextInput" language="true"/>
+	
+	<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+	
+	<newNodes>
+		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
+		<infoStep><![CDATA[<infoStep name="e.g. I1" target="e.g. Q2" text="Enter text here"/>]]></infoStep>
+		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
+		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="Enter question here" format="radio"/>]]></mcqStep>
+	</newNodes>
+	
+  </decision>
+  
+  <mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
+	
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Question" type="TextArea" height="100"/>
+	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+
+	<newNodes>
+		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" target="e.g. Q2"/>]]></mcqStepOption>
+	</newNodes>
+	
+  </mcqStep>
+
+  <mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+	<name label="Answer Option" type="TextInput"/>
+	<target label="Target ID" type="TextInput"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </mcqStepOption>
+
+  <sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Question" type="TextArea" height="100"/>
+	<unit label="Unit of answer" type="TextInput"/>
+	<min label="Minimum value" type="TextInput"/>
+	<max label="Maximum value" type="TextInput"/>
+	<step label="Increment" type="TextInput"/>
+	<value label="Initial value" type="TextInput"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
+	
+	<newNodes>
+		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" target="e.g. Q2"/>]]></sliderStepOption>
+	</newNodes>
+	
+  </sliderStep>
+
+  <sliderStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+	<min label="Range minimum" type="TextInput"/>
+	<max label="Range maximum" type="TextInput"/>
+	<target label="Target ID" type="TextInput"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </sliderStepOption>
+
+  <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Text" type="TextArea" height="100"/>
+	<target label="Target ID" type="TextInput"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </infoStep>
+
+  <resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Text" type="TextArea" height="100"/>
+	
+	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
+	<destination label="Go to Page ID" type="TextInput" optional="true"/>
+	
+	<destinationBtn label="Go Button Label" type="TextInput" language="true"/>
+  </resultStep>
+
+
+</wizard>
