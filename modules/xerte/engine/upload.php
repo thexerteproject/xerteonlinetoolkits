@@ -24,7 +24,6 @@
  *
  * @author Patrick Lockley, tweaked by John Smith, GCU
  * @version 1.2
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 /**

@@ -27,7 +27,6 @@ _load_language_file("/management.inc");
  *
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 function mgt_page($xerte_toolkits_site, $extra)

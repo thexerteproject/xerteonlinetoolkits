@@ -24,8 +24,7 @@
  *
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
- & @return string with the size in separated by a ~
+ * @return string with the size in separated by a ~
  * @package
  */
 

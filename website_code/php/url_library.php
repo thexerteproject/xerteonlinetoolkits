@@ -27,7 +27,6 @@
 	 * @params number $string - the action we need the new url for play, edit, preview etc
  	 * @params number $template_number - the template number we are providing the link for.
  	 * @return string - the URL
-	 * @copyright Copyright (c) 2008,2009 University of Nottingham
 	 * @package
 	 */
 

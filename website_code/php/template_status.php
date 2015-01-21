@@ -26,7 +26,7 @@
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - is template in the RSS
- * @copyright Copyright (c) 2008,2009 University of Nottingham
+ * 
  * @package
  */
 
@@ -50,7 +50,6 @@ function is_template_rss($template_id){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - is template syndicated
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -74,7 +73,6 @@ function is_template_syndicated($template_id){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - is template syndicated
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -97,7 +95,6 @@ function is_template_exportable($template_id){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - is template shared
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -121,7 +118,6 @@ function is_template_shared($template_id){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - has the template multiple editors
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -183,7 +179,6 @@ function has_template_multiple_editors($template_id){
  * @params number $template_id - the template ID
  * @params number $user_id - the current user ID
  * @return bool - does this ID have rights to this template
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -207,7 +202,6 @@ function has_rights_to_this_template($template_id, $user_id){
  * @params number $template_id - the template ID
  * @params number $user_id - the current user ID
  * @return bool - is the user an editor of this file
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -240,7 +234,6 @@ function is_user_an_editor($template_id, $user_id){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return string - the value in access to whom for this template
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -267,7 +260,6 @@ function template_access_settings($id){
  * @params number $template_id - the template ID
  * @params number $user_id - the current user ID
  * @return bool - does this ID have rights to this template
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 
@@ -292,7 +284,6 @@ function template_access_settings_temp(){
  * @version 1.0
  * @params number $template_id - the template ID
  * @return bool - Is this user the creator
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 

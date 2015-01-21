@@ -33,7 +33,6 @@ _load_language_file("/index.inc");
  *
  * @author Patrick Lockley
  * @version 1.0
- * @copyright Copyright (c) 2008,2009 University of Nottingham
  * @package
  */
 include $xerte_toolkits_site->php_library_path . "display_library.php";
