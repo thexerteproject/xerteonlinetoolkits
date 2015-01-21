@@ -95,6 +95,15 @@ abstract class Xerte_Authentication_Abstract
         return true;
     }
 
+    public function hasLogout() {
+        return false;
+    }
+
+    public function logout()
+    {
+        return true;
+    }
+
     /**
      * canManageUser
      *

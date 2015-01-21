@@ -54,19 +54,19 @@ function logout_ajax_send_prepare(url){
 
 function logout_stateChanged(){ 
 
-	if (xmlHttp.readyState==4){ 
-		
-		if(window.location){
+    if (xmlHttp.readyState == 4) {
 
-			window.location = site_url;
+        if (window.location) {
 
-		}else{
+            window.location = site_url;
 
-			window.location(site_url);	
+        } else {
 
-		}
-		
-	}
+            window.location(site_url);
+
+        }
+
+    }
 }
 
 	 /**
@@ -77,42 +77,54 @@ function logout_stateChanged(){
 	 * @author Patrick Lockley
 	 */
 
-function logout(){
+function logout(slo){
 	
 	/*
 	* Check no windows are open
 	*/
 
-	if(edit_window_open.length!=0){
+    var url = "logout.php";
+    if (slo)
+    {
+        if (window.location) {
 
-		var answer = confirm(OPEN_WINDOWS_START + edit_window_open.length + OPEN_WINDOWS_END);
+            window.location = ajax_php_path + url;
 
-		if(answer){
+        } else {
 
-			if(setup_ajax()!=false){
-    
-				var url="logout.php";
+            window.location(ajax_php_path + url);
 
-				logout_ajax_send_prepare(url);
-	
-				xmlHttp.send(null); 
+        }
+    }
+    else {
+        if (edit_window_open.length != 0) {
 
-			}
+            var answer = confirm(OPEN_WINDOWS_START + edit_window_open.length + OPEN_WINDOWS_END);
 
-		}
+            if (answer) {
 
-	}else{
+                if (setup_ajax() != false) {
 
-		if(setup_ajax()!=false){
-    
-			var url="logout.php";
+                    logout_ajax_send_prepare(url);
 
-			logout_ajax_send_prepare(url);
-	
-			xmlHttp.send(null); 
+                    xmlHttp.send(null);
 
-		}
+                }
 
-	}
+            }
 
+        } else {
+
+            if (setup_ajax() != false) {
+
+                var url = "logout.php";
+
+                logout_ajax_send_prepare(url);
+
+                xmlHttp.send(null);
+
+            }
+
+        }
+    }
 }
