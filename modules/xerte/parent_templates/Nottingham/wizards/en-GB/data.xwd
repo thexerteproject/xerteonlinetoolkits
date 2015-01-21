@@ -135,7 +135,7 @@
 	   score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
 	   score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID=""
 	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left" loadingPrompt="Loading table data..."><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Tooltip" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" correctMessage="Correct answers are shown" submitBtnTxt="Submit" submitBtnTip="Submit" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Tooltip" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Tooltip" reset="true" transcriptTabTxt="Transcript" transcriptTabTip="Transcript" transcriptTabWidth="90">Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" checkBtnTip="Check Answers" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" launchvideo="Launch Video">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"
-	  resultsTxt="Youtube results for term"/>]]></youtuberss></newNodes>
+	  resultsTxt="Youtube results for term"/>]]></youtuberss><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" />]]></decision></newNodes>
 
   </learningObject>
 
@@ -1959,4 +1959,109 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
 
-  </youtuberss></wizard>
+  </youtuberss><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions" icon="icDecision">
+	
+	<name type="TextInput" label="Page Title"/>
+	<text label="Intro Text" type="TextArea" height="100"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
+	<firstStep label="First Step ID" type="TextInput"/>
+	
+	<copy label="Copy Overview Option" type="CheckBox" optional="true"/>
+	
+	<newBtnLabel label="Refresh Button" type="TextInput" language="true"/>
+	<viewThisBtn label="Overview Button" type="TextInput" language="true"/>
+	<backBtn label="Back Button" type="TextInput" language="true"/>
+	<fwdBtn label="Forward Button" type="TextInput" language="true"/>
+	<copyBtn label="Copy Button" type="TextInput" language="true"/>
+	<copyShortcutTxt label="Copy Instructions" type="TextInput" language="true"/>
+	<posAnswerString label="Other Answers Label" type="TextInput" language="true"/>
+	<fromRangeString label="Slider Range Label" type="TextInput" language="true"/>
+	<resultString label="Solution Label" type="TextInput" language="true"/>
+	<resultEndString label="Final Instruction" type="TextInput" language="true"/>
+	<overviewString label="Overview Label" type="TextInput" language="true"/>
+	<helpString label="Question Help Label" type="TextInput" language="true"/>
+	<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+	
+	<closeBtn label="Close Button" type="TextInput" language="true"/>
+	<errorString label="Error Label" type="TextInput" language="true"/>
+	
+	<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+	
+	<newNodes>
+		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
+		<infoStep><![CDATA[<infoStep name="e.g. I1" target="e.g. Q2" text="Enter text here"/>]]></infoStep>
+		<sliderStep><![CDATA[<sliderStep name="e.g. Q1" text="Enter question here" unit="e.g. £" min="0" max="100" step="1" value="0"/>]]></sliderStep>
+		<mcqStep><![CDATA[<mcqStep name="e.g. Q1" text="Enter question here" format="radio"/>]]></mcqStep>
+	</newNodes>
+	
+  </decision>
+  
+  <mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
+	
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Question" type="TextArea" height="100"/>
+	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+
+	<newNodes>
+		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" target="e.g. Q2"/>]]></mcqStepOption>
+	</newNodes>
+	
+  </mcqStep>
+
+  <mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+	<name label="Answer Option" type="TextInput"/>
+	<target label="Target ID" type="TextInput"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </mcqStepOption>
+
+  <sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Question" type="TextArea" height="100"/>
+	<unit label="Unit of answer" type="TextInput"/>
+	<min label="Minimum value" type="TextInput"/>
+	<max label="Maximum value" type="TextInput"/>
+	<step label="Increment" type="TextInput"/>
+	<value label="Initial value" type="TextInput"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
+	
+	<newNodes>
+		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" target="e.g. Q2"/>]]></sliderStepOption>
+	</newNodes>
+	
+  </sliderStep>
+
+  <sliderStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
+	<min label="Range minimum" type="TextInput"/>
+	<max label="Range maximum" type="TextInput"/>
+	<target label="Target ID" type="TextInput"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </sliderStepOption>
+
+  <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Text" type="TextArea" height="100"/>
+	<target label="Target ID" type="TextInput"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	
+	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
+  </infoStep>
+
+  <resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
+	<name label="Unique ID" type="TextInput"/>
+	<text label="Text" type="TextArea" height="100"/>
+	
+	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
+	<destination label="Go to Page ID" type="TextInput" optional="true"/>
+	
+	<destinationBtn label="Go Button Label" type="TextInput" language="true"/>
+  </resultStep></wizard>

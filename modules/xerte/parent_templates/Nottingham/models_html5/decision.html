@@ -1,0 +1,1018 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// BASED ON THE DECISION TREE MODULE (this is a simplified version)
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var decision = new function() {
+		
+		var $pageContents, $backBtn, $fwdBtn, $stepHolder, $submitBtn, $helpBtn, $overviewHolder,
+			currentStepInfo;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents	= $("#pageContents");
+			$backBtn		= $("#backBtn");
+			$fwdBtn			= $("#fwdBtn");
+			$stepHolder		= $("#stepHolder");
+			$submitBtn		= $("#submitBtn");
+			$helpBtn		= $("#helpBtn");
+			$overviewHolder	= $("#overviewHolder");
+			currentStepInfo = $pageContents.data("currentStepInfo");
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel"),
+					$btnHolder = $("#btnHolder");
+				
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$("#contentHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+			}
+		}
+		
+		this.init = function() {
+			$pageContents	= $("#pageContents");
+			$backBtn		= $("#backBtn");
+			$fwdBtn			= $("#fwdBtn");
+			$stepHolder		= $("#stepHolder");
+			$submitBtn		= $("#submitBtn");
+			$helpBtn		= $("#helpBtn");
+			$overviewHolder	= $("#overviewHolder");
+			
+			// set up the data that needs to be saved between page changes
+			$pageContents.data({
+				"allSteps": [], // array containing an object with details for each possible step
+				"decisionHistory": [],	// array containing ids & options selected
+				"storedResultTxt": [],	// array containing text stored until presented as a collated result (optional)
+				"currentStep": 0,
+				"currentStepInfo": 0
+			});
+			
+			// page layout
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so accordion on right is small
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
+			
+			// get info for all steps
+			$(x_currentPageXML).children().each(function() {
+				var step = {
+					type:		this.nodeName,
+					built:		false
+				};
+				
+				for (var i=0; i<this.attributes.length; i++) {
+					step[this.attributes[i].name] = this.attributes[i].value;
+				}
+				
+				// if it's a question, get the options - otherwise, get the text
+				if (step.type == "mcqStep" || step.type == "sliderStep") {
+					step.options = $(this).children();
+				} else {
+					step.text = $(this).attr("text");
+				}
+				
+				$pageContents.data("allSteps").push(step);
+			});
+			
+			
+			// _____ SET UP MAIN BUTTONS IN PANEL _____
+			
+			// _____ HISTORY BACK BTN _____
+			$backBtn
+				.button({
+					icons: { primary: "ui-icon-triangle-1-w" },
+					label:	x_currentPageXML.getAttribute("backBtn") ? x_currentPageXML.getAttribute("backBtn") : "Previous Step",
+					text:	false
+				})
+				.click(function() {
+					if ($overviewHolder.is(":visible")) {
+						decision.showHideHolders($stepHolder);
+						if ($pageContents.data("currentStep") == 0) {
+							$(this).button("disable");
+						}
+						if ($pageContents.data("currentStep") + 1 >= $pageContents.data("decisionHistory").length) {
+							$fwdBtn.button("disable");
+						}
+					} else {
+						$pageContents.data("currentStep", $pageContents.data("currentStep") - 1);
+						decision.setUpStep($pageContents.data("decisionHistory")[$pageContents.data("currentStep")].id);
+					}
+					$(".x_popupDialog").parent().detach();
+				});
+			
+			
+			// _____ HISTORY FWD BTN _____
+			$fwdBtn
+				.button({
+					icons: { primary: "ui-icon-triangle-1-e" },
+					label:	x_currentPageXML.getAttribute("fwdBtn") ? x_currentPageXML.getAttribute("fwdBtn") : "Next Step",
+					text:	false
+				})
+				.click(function() {
+					if ($overviewHolder.is(":visible")) {
+						decision.showHideHolders($stepHolder);
+						if ($pageContents.data("currentStep") == 0) {
+							$backBtn.button("disable");
+						}
+						if ($pageContents.data("currentStep") + 1 >= $pageContents.data("decisionHistory").length) {
+							$(this).button("disable");
+						}
+					} else {
+						$pageContents.data("currentStep", $pageContents.data("currentStep") + 1);
+						decision.setUpStep($pageContents.data("decisionHistory")[$pageContents.data("currentStep")].id);
+					}
+					$(".x_popupDialog").parent().detach();
+				});
+			
+			
+			// _____ NEW BTN _____
+			$("#newBtn")
+				.button({
+					icons: { primary: "ui-icon-refresh" },
+					label:	x_currentPageXML.getAttribute("newBtnLabel") ? x_currentPageXML.getAttribute("newBtnLabel") : "Restart",
+					text:	false
+				})
+				.click(function() {
+					$("#contentHolder").scrollTop(0);
+					decision.startNewDecision();
+				});
+			
+			
+			// _____ SUBMIT BTN _____
+			$submitBtn
+				.button({
+					label:	x_currentPageXML.getAttribute("btnLabel") ? x_currentPageXML.getAttribute("btnLabel") : "Next"
+				})
+				.click(function() {
+					if ($pageContents.data("currentStep") + 1 != $pageContents.data("decisionHistory").length) {
+						$pageContents.data("decisionHistory", $pageContents.data("decisionHistory").slice(0, $pageContents.data("currentStep") + 1));
+						$pageContents.data("storedResultTxt", $pageContents.data("storedResultTxt").slice(0, $pageContents.data("currentStep") + 1));
+					}
+					
+					currentStepInfo = $pageContents.data("currentStepInfo");
+					
+					// button does different things depending on type of currentStep
+					if (currentStepInfo.type == "mcqStep") {
+						// save answer and load the new step associated with it
+						var $step = $stepHolder.children(".step"),
+							answer, target;
+						
+						if (currentStepInfo.format == "menu") {
+							answer = $step.find("select").prop("selectedIndex");
+							target = $step.find("select #opt" + answer).data("target");
+							
+							// store resultTxt (optional) so it can be shown as collated result at the end
+							$pageContents.data("storedResultTxt").push($step.find("select #opt" + answer).data("resultTxt"));
+							
+						} else {
+							answer = $step.find("input").index($step.find("input:checked"))
+							target = $step.find("input:checked").data("target");
+							
+							// store resultTxt (optional) so it can be shown as collated result at the end
+							$pageContents.data("storedResultTxt").push($step.find("input:checked").data("resultTxt"));
+						}
+						
+						$pageContents.data("decisionHistory")[$pageContents.data("decisionHistory").length-1].option = answer;
+						
+						decision.setUpStep(target, true);
+						
+					} else if (currentStepInfo.type == "sliderStep") {
+						// save value, work out which option it falls in to (between min & max values) and load the new step associated with it
+						$pageContents.data("decisionHistory")[$pageContents.data("decisionHistory").length-1].option = $stepHolder.find("#amount").val();
+						
+						currentStepInfo.options.each(function(i) {
+							var $this = $(this),
+								$slider = $stepHolder.find("#slider");
+							
+							if ($slider.slider("value") >= $this.attr("min") && $slider.slider("value") <= $this.attr("max")) {
+								// store resultTxt associated with this answer (optional) so it can be shown as collated result at the end
+								$pageContents.data("storedResultTxt").push($this.attr("resultTxt"));
+								
+								decision.setUpStep($this.attr("target"), true);
+								return false;
+							}
+						})
+						
+					} else if (currentStepInfo.type == "infoStep") {
+						// there can't be any resultTxt stored for info steps so store empty string
+						$pageContents.data("storedResultTxt").push("");
+						
+						// load new step
+						decision.setUpStep(currentStepInfo.target, true);
+					}
+					
+					$(".x_popupDialog").parent().detach();
+					$("#contentHolder").scrollTop(0);
+				});
+			
+			
+			// _____ HELP BTN _____
+			$helpBtn
+				.button({
+					label:	x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information"
+				})
+				.click(function() {
+					$(".x_popupDialog").parent().detach();
+					currentStepInfo = $pageContents.data("currentStepInfo");
+					
+					if ((currentStepInfo.helpTxt.indexOf("http://") == 0 || currentStepInfo.helpTxt.indexOf("https://") == 0) && currentStepInfo.helpTxt.indexOf(" ") == -1) {
+						// treat helpString as link - open straight away
+						window.open(currentStepInfo.helpTxt);
+					} else {
+						// show helpString in dialog
+						$(".x_popupDialog").parent().detach();
+						$("#pageContents").append('<div id="helpDialog" class="x_popupDialog"/>');
+						var $helpDialog = $("#helpDialog");
+						
+						$dialog = $helpDialog
+							.dialog({
+								closeOnEscape:  true,
+								title:		x_currentPageXML.getAttribute("helpString") ? x_currentPageXML.getAttribute("helpString") : "More information",
+								closeText:	x_currentPageXML.getAttribute("closeBtn") ? x_currentPageXML.getAttribute("closeBtn") : "Close"
+								})
+							.html(x_addLineBreaks(currentStepInfo.helpTxt));
+						
+						x_setDialogSize($dialog);
+					}
+				});
+			
+			
+			// _____ COPY BTN _____
+			$("#copyBtn")
+				.button({
+					icons: { primary: "ui-icon-copy" },
+					label:	x_currentPageXML.getAttribute("copyBtn") ? x_currentPageXML.getAttribute("copyBtn") : "Copy Overview",
+					text:	false
+				})
+				.click(function() {
+					// we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
+					$(".x_popupDialog").parent().detach(); // removes any dialogs already open
+					var $dialog = $('<div id="copyDialog" class="x_popupDialog">' + decision.createDecStr("copy") + '</div>').appendTo($x_body);
+					
+					$dialog.dialog({
+						closeOnEscape:	true,
+						title:	x_currentPageXML.getAttribute("copyShortcutTxt") ? x_currentPageXML.getAttribute("copyShortcutTxt") : "Press Ctrl + C to copy",
+						closeText:	x_currentPageXML.getAttribute("closeBtn") ? x_currentPageXML.getAttribute("closeBtn") : "close"
+					});
+					
+					x_setDialogSize($dialog);
+					x_selectText("copyDialog");
+				});
+			
+			this.sizeChanged();
+			this.startNewDecision();
+			
+			// call this function in every model once everything has loaded
+			x_pageLoaded();
+		}
+		
+		
+		// _____ START NEW DECISION FROM 1st STEP _____
+		this.startNewDecision = function() {
+			$pageContents.data("currentStep", 0);
+			$pageContents.data("decisionHistory", []);
+			$pageContents.data("storedResultTxt", []);
+			
+			$submitBtn.button("disable");
+			
+			// set up 1st step - use firstStep from xml if valid id, otherwise use first step in array
+			var firstStep = this.findStep(x_currentPageXML.getAttribute("firstStep")) ? x_currentPageXML.getAttribute("firstStep") : $pageContents.data("allSteps")[0].name;
+			this.setUpStep(firstStep, true);
+			
+			this.showHideHolders($stepHolder);
+		}
+		
+		
+		// _____ SET UP STEP _____
+		this.setUpStep = function(stepID, isNew) {
+			$stepHolder.children(".step").detach();
+			
+			currentStepInfo = this.findStep(stepID);
+			$pageContents.data("currentStepInfo", currentStepInfo);
+			
+			// set up step depending on its type
+			if (currentStepInfo != null) {
+				
+				if (isNew) { // new step (not part of history)
+					if ($pageContents.data("decisionHistory").length > 0) {
+						$pageContents.data("currentStep", $pageContents.data("currentStep") + 1);
+					} else {
+						// info only gets added to this array when submit button clicked so add blank first entry so it keeps same length as decisionHistory
+						$pageContents.data("storedResultTxt").push("");
+					}
+					$pageContents.data("decisionHistory").push({id: currentStepInfo.name});
+				}
+				
+				if (currentStepInfo.type == "mcqStep" || currentStepInfo.type == "sliderStep") {
+					this.setUpQ(isNew);
+				} else if (currentStepInfo.type == "infoStep") {
+					this.setUpI();
+				} else if (currentStepInfo.type == "resultStep") {
+					this.setUpR();
+				}
+				
+				// enable/disable fwd & bck history btns
+				if ($pageContents.data("currentStep") + 1 >= $pageContents.data("decisionHistory").length) {
+					$fwdBtn.button("disable");
+				} else {
+					$fwdBtn.button("enable");
+				}
+				
+				if ($pageContents.data("currentStep") == 0) {
+					$backBtn.button("disable");
+				} else {
+					$backBtn.button("enable");
+				}
+				
+			} else {
+				// step matching ID not found
+				var errorString = x_currentPageXML.getAttribute("errorString") ? x_currentPageXML.getAttribute("errorString") : "ERROR! Invalid ID";
+				$stepHolder.prepend('<div class="step alert" >' + errorString + ' "' + stepID + '"</div>');
+				
+				if ($pageContents.data("decisionHistory").length > 0) {
+					$pageContents.data("currentStep", $pageContents.data("currentStep") + 1);
+				}
+				
+				$submitBtn.button("disable");
+			}
+		}
+		
+		
+		// _____ BUILD QUESTION STEP (mcq/slider) _____
+		this.setUpQ = function(isNew) {
+			$submitBtn.show();
+			
+			if (currentStepInfo.built != false) {
+				
+				// _____ Q ALREADY BUILT - RELOAD IT _____
+				$stepHolder.prepend(currentStepInfo.built);
+				
+				var $thisStep = $stepHolder.children(".step");
+				var currentStep = $pageContents.data("currentStep");
+				
+				// reset if it's being viewed fresh rather than via history
+				if (isNew == true) {
+					
+					if (currentStepInfo.type == "mcqStep") {
+						
+						// should an option be selected by default?
+						var defaultSelect = -1;
+						currentStepInfo.options.each(function(i) {
+							if ($(this).attr("selected") == "true") {
+								defaultSelect = i;
+							}
+						});
+						
+						if (currentStepInfo.format == "menu") {
+							$thisStep.find("select").prop("selectedIndex", defaultSelect);
+						} else {
+							if (defaultSelect == -1) {
+								$thisStep.find("input:checked").prop("checked", false);
+							} else {
+								$thisStep.find("#opt" + defaultSelect).prop("checked", true);
+							}
+						}
+						
+						if (defaultSelect != -1) {
+							$submitBtn.button("enable");
+						} else {
+							$submitBtn.button("disable");
+						}
+						
+					} else if (currentStepInfo.type == "sliderStep") {
+						var $slider = $thisStep.find("#slider");
+						$slider.slider({value: Number(currentStepInfo.value)});
+						$thisStep.find("#labelHolder #amount").val($slider.slider("value"));
+						
+						$submitBtn.button("enable");
+					}
+				
+				// if part of history make sure it's showing the correct answer
+				} else {
+					if (currentStepInfo.type == "mcqStep") {
+						var answer = $pageContents.data("decisionHistory")[currentStep].option;
+						if (answer == undefined) {
+							answer = -1;
+							$submitBtn.button("disable");
+						} else {
+							$submitBtn.button("enable");
+						}
+						
+						if (currentStepInfo.format == "menu") {
+							$thisStep.find("select").prop("selectedIndex", answer);
+							
+						} else {
+							$thisStep.find("input").prop("checked", false);
+							$($thisStep.find("input")[answer]).prop("checked", true);
+						}
+						
+					} else if (currentStepInfo.type == "sliderStep") {
+						var $slider = $thisStep.find("#slider");
+						if (currentStep + 1 >= $pageContents.data("decisionHistory").length) {
+							// there is no value stored for this - set value to initial value
+							$slider.slider({value: Number(currentStepInfo.value)});
+							$thisStep.find("#labelHolder #amount").val($slider.slider("value"));
+						} else {
+							$slider.slider({value: Number($pageContents.data("decisionHistory")[currentStep].option)});
+							$thisStep.find("#labelHolder #amount").val($pageContents.data("decisionHistory")[currentStep].option);
+						}
+						
+						$submitBtn.button("enable");
+					}
+				}
+			
+			
+			} else {
+				
+				// _____ BUILD NEW Q _____				
+				var authorSupport = "";
+				if (x_params.authorSupport == "true") {
+					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
+				}
+				
+				$stepHolder.prepend('<div class="step"><p class="instruction">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + '</p></div>');
+				
+				var $thisStep = $stepHolder.children(".step");
+				
+				if (currentStepInfo.type == "mcqStep") {
+					
+					// _____ MCQ _____
+					var select = -1;
+					$submitBtn.button("disable");
+					
+					// set up answer options
+					currentStepInfo.options.each(function(i) {
+						var	$this = $(this);
+						
+						var authorSupport = "";
+						if (x_params.authorSupport == "true") {
+							var	bracket1 = currentStepInfo.format == "menu" ? "(" : "" ,
+								bracket2 = currentStepInfo.format == "menu" ? ")" : "" ;
+							authorSupport =  '<span class="alert"> ' + bracket1 + $this.attr("target") + bracket2 + '</span>';
+						}
+						
+						// is answer given via drop down menu or radio buttons
+						if (currentStepInfo.format == "menu") {
+							if (i == 0) {
+								$thisStep.append('<div class="dropDownAnswer"><select></select></div>');
+							}
+							
+							$thisStep.find("select").append('<option id="opt' + i + '">' + $this.attr("name") + authorSupport + '</option>');
+							
+							if ($this.attr("selected") == "true") {
+								select = i;
+								$thisStep.find("select").prop("selectedIndex", select);
+								$submitBtn.button("enable");
+							}
+							
+						} else {
+							var $parent = $thisStep;
+							if (i == 0) {
+								$parent = $('<div class="radioAnswers"/>').appendTo($thisStep);
+							} else {
+								$parent = $thisStep.find(".radioAnswers");
+							}
+							
+							$parent.append('<div class="optionGroup"><input type="radio" name="option" id="opt' + i + '" value="' + $this.attr("name") + '"/><label class="optionTxt" for="opt' + i + '">' + x_addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
+							
+							if ($this.attr("selected") == "true") {
+								$thisStep.find("#opt" + i).prop("checked", true);
+								$submitBtn.button("enable");
+							}
+						}
+						
+						// store destination in option data
+						$thisStep.find("#opt" + i).data({
+							"target":		 $this.attr("target"),
+							"resultTxt":	$this.attr("resultTxt")
+						});
+					});
+					
+					// disable $submitBtn when no answer is selected
+					if (currentStepInfo.format == "menu") {
+						$thisStep.find("select").change(function() {
+							if ($thisStep.find("select").prop("selectedIndex") != -1) {
+								$submitBtn.button("enable");
+							} else {
+								$submitBtn.button("disable");
+							}
+						});
+						
+						if (select == -1) {
+							$thisStep.find("select").prop("selectedIndex", -1);
+						}
+						
+					} else {
+						$thisStep.find("input")
+							.change(function() {
+								if ($thisStep.find("input:checked").length > 0) {
+									$submitBtn.button("enable");
+								} else {
+									$submitBtn.button("disable");
+								}
+								$(".x_popupDialog").parent().detach();
+							})
+							.focusin(function() {
+								$(this).parent().addClass("highlight");
+							})
+							.focusout(function() {
+								$(this).parent().removeClass("highlight");
+							});
+					}
+					
+				} else if (currentStepInfo.type == "sliderStep") {
+					
+					// _____ SLIDER _____
+					var answerBox = '<input type="text" id="amount"/><label for="amount">' + currentStepInfo.unit + '</label>';
+					if (currentStepInfo.unitPos == "start") {
+						answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
+					}
+					
+					// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
+					var inputW;
+					if (currentStepInfo.step.split('.').length > 1) {
+						if (currentStepInfo.max.split('.').length > 1) {
+							if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
+								inputW = currentStepInfo.max.length;
+							} else {
+								inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
+							}
+						} else {
+							inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
+						}
+					} else {
+						inputW = currentStepInfo.max.length;
+					}
+					
+					var authorSupport = "";
+					if (x_params.authorSupport == "true") {
+						authorSupport += '<span class="alert">';
+						currentStepInfo.options.each(function(i) {
+							var $this = $(this);
+							authorSupport += "<p>" + $this.attr("min") + " - " + $this.attr("max") + " : " + $this.attr("target") + "</p>";
+						});
+						authorSupport += '</span>';
+					}
+					
+					$thisStep
+						.append('<div id="labelHolder">' + authorSupport + answerBox + '</div><div id="slider"></div>')
+						.find("#amount").css("width", inputW + "em");
+					
+					var $slider = $thisStep.find("#slider"),
+						$amount = $thisStep.find("#labelHolder #amount");
+					
+					$slider.slider({
+						value:	Number(currentStepInfo.value),
+						min:	Number(currentStepInfo.min),
+						max:	Number(currentStepInfo.max),
+						step:	Number(currentStepInfo.step),
+						slide:	function(event, ui) {
+							$amount.val(ui.value);
+							
+							$(".x_popupDialog").parent().detach();
+						}
+					})
+					
+					$amount
+						.val($slider.slider("value"))
+						.change(function() {
+							var value = $(this).val();
+							if (value > currentStepInfo.max) {
+								value = currentStepInfo.max;
+								$amount.val(value);
+							} else if (value < currentStepInfo.min) {
+								value = currentStepInfo.min;
+								$amount.val(value);
+							}
+							$slider.slider({value: value});
+							
+							$(".x_popupDialog").parent().detach();
+						});
+					
+					$submitBtn.button("enable");
+				}
+				
+				// save reference to this step so it can be reloaded later if needed
+				$pageContents.data("allSteps")[currentStepInfo.index].built = $thisStep;
+			}
+			
+			if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
+				$helpBtn.show();
+			} else {
+				$helpBtn.hide();
+			}
+		}
+		
+		
+		// _____ BUILD INFORMATION STEP _____
+		this.setUpI = function() {
+			if (currentStepInfo.built != false) {
+				
+				// _____ INFO ALREADY BUILT - RELOAD IT _____
+				$stepHolder.prepend(currentStepInfo.built);
+				
+			} else {
+				
+				// _____ BUILD NEW INFO _____
+				var authorSupport = "";
+				if (x_params.authorSupport == "true") {
+					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
+				}
+				
+				$stepHolder.prepend('<div class="step"><div class="info">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + '</div></div>');
+				
+				// save reference to this step so it can be reloaded later if needed
+				$pageContents.data("allSteps")[currentStepInfo.index].built = $stepHolder.children(".step");
+			}
+			
+			if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
+				$helpBtn.show();
+			} else {
+				$helpBtn.hide();
+			}
+			
+			$submitBtn
+				.show()
+				.button("enable");
+		}
+		
+		
+		// _____ BUILD RESULT STEP _____
+		this.setUpR = function() {
+			if (currentStepInfo.built != false && currentStepInfo.collate != "true") {
+				
+				// _____ RESULT ALREADY BUILT - RELOAD IT _____
+				$stepHolder.prepend(currentStepInfo.built);
+				
+			} else {
+				
+				// _____ BUILD NEW RESULT _____
+				var authorSupport = "";
+				if (x_params.authorSupport == "true") {
+					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
+				}
+				var goBtn = "";
+				if (currentStepInfo.destination != undefined && currentStepInfo != "") {
+					goBtn = '<button id="goBtn"/>';
+				}
+				
+				var resultEndString = x_currentPageXML.getAttribute("resultEndString") ? '<p>' + x_currentPageXML.getAttribute("resultEndString") + '</p>' : "";
+				$stepHolder.prepend('<div class="step"><div class="result">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + decision.collateResult(currentStepInfo.collate, "html") + resultEndString + '</div>' + goBtn + '<button id="viewThisBtn" /></div>');
+				
+				// set up view overview & jump to page buttons
+				$("#viewThisBtn")
+					.button({
+						label:	x_currentPageXML.getAttribute("viewThisBtn") ? x_currentPageXML.getAttribute("viewThisBtn") : "Overview"
+					})
+					.click(function() {
+						$overviewHolder.find(".decisionInfo").parent().remove();
+						decision.showHideHolders($overviewHolder);
+						
+						// _____ DISPLAY STEPS TAKEN IN DECISION _____
+						$overviewHolder.append('<div id="dec">' + decision.createDecStr("html") + '</div>');
+						$(".x_popupDialog").parent().detach();
+						$overviewHolder.scrollTop(0);
+					});
+				
+				$("#goBtn")
+					.button({
+						label:	x_currentPageXML.getAttribute("destinationBtn") ? x_currentPageXML.getAttribute("destinationBtn") : "Continue"
+					})
+					.click(function() {
+						if (x_lookupPage("linkID", $pageContents.data("currentStepInfo").destination) != null) { // destination found
+							x_navigateToPage(false, {type:"linkID", ID:$pageContents.data("currentStepInfo").destination});
+						}
+					});
+				
+				// save reference to this step so it can be reloaded later if needed
+				$pageContents.data("allSteps")[currentStepInfo.index].built = $stepHolder.children(".step");
+			}
+			
+			$helpBtn.hide();
+			$submitBtn.hide();
+		}
+		
+		
+		// _____ COLLATE RESULT TEXT FROM STORED STRINGS _____
+		this.collateResult = function(collate, type) {
+			if (collate == "true") {
+				var storedResultTxt = $pageContents.data("storedResultTxt");
+				var string = "";
+				
+				for (var i=0; i<storedResultTxt.length; i++) {
+					if (storedResultTxt[i] != "" && storedResultTxt[i] != undefined) {
+						if (type == "html") {
+							string += '<div class="collatedResult">' + x_addLineBreaks(storedResultTxt[i]) + '</div>';
+						} else {
+							string += '<p>' + x_addLineBreaks(storedResultTxt[i]) + '</p>';
+						}
+					}
+				}
+				
+				return string;
+			} else {
+				return "";
+			}
+		}
+		
+		
+		// _____ CREATE OVERVIEW STRING FOR COPY & OVERVIEW _____
+		// string is formatted differently depending on whether it's for copying or overview shown in browser
+		this.createDecStr = function(type) {
+			var decisionHistory = $pageContents.data("decisionHistory");
+			var string = "";
+			
+			if (type == "html") {
+				string += '<div class="decisionInfo"><h3>' + (x_currentPageXML.getAttribute("overviewString") ? x_currentPageXML.getAttribute("overviewString") : "Overview") + ':</h3>';
+			} else {
+				string += '<p>' + (x_currentPageXML.getAttribute("overviewString") ? x_currentPageXML.getAttribute("overviewString") : "Overview") + '</p>';
+			}
+			
+			// add details of each step in decision to string
+			for (var i=0; i<decisionHistory.length; i++) {
+				var thisStep = this.findStep(decisionHistory[i].id);
+				
+				if (type == "html") {
+					string += '<div class="overviewStep">';
+				}
+				
+				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
+					if (type == "html") {
+						string += '<div><span class="ui-icon ui-icon-help"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+					} else {
+						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+					}
+					
+					if (thisStep.type == "mcqStep") {
+						if (type == "html") {
+							// include details of answers which weren't chosen too
+							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
+							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
+							
+							thisStep.options.each(function(j) {
+								if (j != decisionHistory[i].option) {
+									string += x_addLineBreaks($(thisStep.options[j]).attr("name"));
+									
+									if (j+1 == thisStep.options.length || (j+1 == decisionHistory[i].option && j+2 == thisStep.options.length)) {
+									} else {
+										string += ', ';
+									}
+								}
+							});
+							
+							string += '</div>';
+							
+						} else {
+							string += '<p> >> ' + $(thisStep.options[decisionHistory[i].option]).attr("name") + '</p>';
+							string += '<p>-------------------------------------------------</p>';
+						}
+						
+					} else if (thisStep.type == "sliderStep") {
+						var	answer = decisionHistory[i].option + ' ' + thisStep.unit,
+							posAnswer = thisStep.min + ' - ' + thisStep.max + ' ' + thisStep.unit;
+						
+						if (thisStep.unitPos == "start") {
+							answer = thisStep.unit + ' ' + decisionHistory[i].option;
+							posAnswer = thisStep.unit + ' ' + thisStep.min + ' - ' + thisStep.max;
+						}
+						
+						if (type == "html") {
+							string += '<div class="overviewAnswer"><span class="ui-icon ui-icon-carat-1-e"/>' + answer + '</div>';
+							string += '<div class="extraInfo"><span class="ui-icon ui-icon-carat-1-e"/>' + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + ' ' + posAnswer + '</div>';
+						} else {
+							string += '<p> >> ' + answer + '</p>';
+							string += '<p>-------------------------------------------------</p>';
+						}
+						
+					}
+					
+				} else if (thisStep.type == "infoStep") {
+					if (type == "html") {
+						string += '<div><span class="ui-icon ui-icon-notice"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+					} else {
+						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+						string += '<p>-------------------------------------------------</p>';
+					}
+					
+				} else if (thisStep.type == "resultStep") {
+					if (type == "html") {
+						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+					} else {
+						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
+						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+						string += '<p>-------------------------------------------------</p>';
+					}
+					
+					string += decision.collateResult(thisStep.collate, type);
+				}
+				
+				if (type == "html") {
+					string += '</div>';
+				}
+			}
+			
+			return string;
+		}
+		
+		
+		// _____ RETURN STEP WITH REQUESTED ID _____
+		this.findStep = function(stepID) {
+			for (var i=0; i<$pageContents.data("allSteps").length; i++) {
+				if ($pageContents.data("allSteps")[i].name == stepID) {
+					var thisStep = $pageContents.data("allSteps")[i];
+					thisStep.index = i;
+					return thisStep;
+				}
+			}
+			return null;
+		}
+		
+		
+		// _____ TOGGLE HOLDER VISIBILITY _____
+		this.showHideHolders = function($show) {
+			$overviewHolder.hide();
+			$stepHolder.hide();
+			$show.show();
+			
+			$overviewHolder.is(":visible") && x_currentPageXML.getAttribute("copy") == "true" ? $("#copyBtn").show() : $("#copyBtn").hide();
+		}
+		
+	}
+	
+	decision.init();
+	
+</script>
+
+<style type="text/css">
+
+	#stepHolder p:first-of-type {
+		margin-top:	0px;
+	}
+
+	#pageContents #btnHolder {
+		text-align:		center;
+		margin-top:		10px;
+		margin-right:	0px; /* over-ride ui style */
+		padding-top:	2px;
+		padding-bottom:	2px;
+		overflow:		auto;
+	}
+	
+	#pageContents #btnFloatR {
+		float:		right;
+	}
+	
+	#pageContents #btnFloatL {
+		float:		left;
+	}
+	
+	#contentHolder {
+		overflow:	auto;
+	}
+	
+	
+	#pageContents .radioAnswers, #pageContents .dropDownAnswer {
+		margin-top:	15px;
+	}
+	
+	#pageContents .radioAnswers input {
+		float:		left;
+		display:	block;
+	}
+	
+	#pageContents .radioAnswers .optionGroup {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+	
+	#pageContents .radioAnswers .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		display:		block;
+	} 
+	
+	#pageContents #labelHolder {
+		margin:	15px;
+	}
+	
+	#pageContents #labelHolder input {
+		margin-left:	10px;
+		margin-right:	10px;
+	}
+	
+	#pageContents #slider {
+		margin:	15px;
+	}
+	
+	#pageContents #submitBtn, #pageContents #viewThisBtn, #pageContents #helpBtn, #pageContents #goBtn {
+		margin:	10px;
+	}
+	
+	#pageContents #submitBtn, #pageContents #viewThisBtn, #pageContents #goBtn {
+		float:	right;
+	}
+	
+	#pageContents #helpBtn {
+		float:	left;
+	}
+	
+	#helpDialog {
+		padding:	10px;
+	}
+	
+	#overviewHolder .ui-icon {
+		float:	left;
+		clear:	both;
+		margin:	0 5px 5px 0;
+		border:	1px solid #eeeeee;
+	}
+	
+	#overviewHolder .overviewAnswer, #overviewHolder .extraInfo {
+		margin-left:	10px;
+	}
+	
+	#overviewHolder .overviewAnswer .ui-icon, #overviewHolder .extraInfo .ui-icon {
+		border:	0px;
+	}
+	
+	#overviewHolder .overviewStep {
+		border-bottom:	1px solid #cccccc;
+	}
+	
+	#overviewHolder .overviewStep, #overviewHolder .overviewAnswer {
+		padding-top:	10px;
+		padding-bottom:	10px;
+	}
+
+</style>
+
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left" tabindex="1"></div>
+		
+		<div class="right">
+			<div class="panel">
+				
+				<div id="contentHolder">
+					
+					<div id="stepHolder">
+						<button id="helpBtn"></button>
+						<button id="submitBtn"></button>
+					</div>
+					
+					<div id="overviewHolder">
+					</div>
+					
+				</div>
+				
+				<div id="btnHolder">
+					<div id="btnFloatL">
+						<button id="copyBtn"></button>
+					</div>
+					<div id="btnFloatR">
+						<button id="backBtn"></button>
+						<button id="newBtn"></button>
+						<button id="fwdBtn"></button>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
