@@ -264,7 +264,8 @@
 										.appendTo(canvas)
 										.data({
 											"label"	:attr.label,
-											"info"	:x_addLineBreaks(attr.info)
+											"info"	:x_addLineBreaks(attr.info),
+											"group"	:attr.group
 										});
 					canvas = newCanvas[0].getContext("2d");
 					
@@ -388,7 +389,8 @@
 					// get xy pos of click relative to position of canvas
 					var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
 						xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
-						hit = false;
+						hit = false,
+						group;
 					
 					// check each hotspot canvas to see if a non-alpha pixel in it has been hit
 					$hsHolder.find("canvas").each(function() {
@@ -404,6 +406,9 @@
 							$hsInfoLabel.html($this.data("label"));
 							$hsInfoTxt.html($this.data("info"));
 							hit = true;
+							if ($this.data("group") != undefined && $this.data("group") != "") {
+								group = $this.data("group");
+							}
 						} else {
 							$this.removeClass("visible");
 						}
@@ -413,6 +418,15 @@
 							$hsInfoTxt.html("");
 						}
 					});
+					
+					// show all associated shapes
+					if (hit == true && group != undefined) {
+						$hsHolder.find("canvas").each(function() {
+							if ($(this).data("group") == group) {
+								$(this).addClass("visible");
+							}
+						});
+					}
 				});
 				
 				// you can tab through hotspots to highlight them instead of clicking on them
@@ -422,9 +436,16 @@
 						$this.addClass("visible");
 						$hsInfoLabel.html($this.data("label"));
 						$hsInfoTxt.html($this.data("info"));
+						if ($this.data("group") != undefined && $this.data("group") != "") {
+							$("#hsHolder").find("canvas").each(function() {
+								if ($(this).data("group") == $this.data("group")) {
+									$(this).addClass("visible");
+								}
+							});
+						}
 						})
 					.focusout(function() {
-						$(this).removeClass("visible");
+						$("#hsHolder").find("canvas.visible").removeClass("visible");
 						$hsInfoLabel.html("");
 						$hsInfoTxt.html("");
 						});
@@ -451,14 +472,43 @@
 				
 				var $labelHolder = $("#labelHolder");
 				
-				// create label for each hotspot canvas
-				var $hsCanvases = $("#hsHolder canvas");
-				$hsCanvases.each(function(i) {
-					var $this = $(this);
+				// create label for each hotspot canvas group
+				var $hsCanvases = [],
+					hsCanvasGroups = [],
+					hsCanvasGroupInfo = [];
+				
+				$("#hsHolder canvas").each(function () {
+					if ($(this).data("group") == "" || $(this).data("group") == undefined) {
+						// label not part of a group
+						$hsCanvases.push(this);
+					} else if ($.inArray($(this).data("group"), hsCanvasGroups) == -1) {
+						// label is part of a new group
+						$hsCanvases.push(this);
+						hsCanvasGroups.push($(this).data("group"));
+						hsCanvasGroupInfo.push({
+							name:	$(this).data("group"),
+							canvas:	[$(this)]
+							});
+					} else {
+						// label is part of an existing group
+						var index = $.inArray($(this).data("group"), hsCanvasGroups);
+						hsCanvasGroupInfo[index].canvas.push($(this));
+					}
+				});
+				
+				//var $hsCanvases = $("#hsHolder canvas");
+				$($hsCanvases).each(function(i) {
+					var $this = $(this),
+						correct = [$this];
+					if ($this.data("group") != "" && $this.data("group") != undefined) {
+						// get all correct canvases for this label
+						correct = hsCanvasGroupInfo[$.inArray($this.data("group"), hsCanvasGroups)].canvas;
+					}
+					
 					// label tabindex leaves space for dropped pins
 					$('<div class="label panel" tabindex="' + ((i*2)+2) + '" title="' + labelTxt1 + '"><img class="pinImg visible" src="' + x_templateLocation + 'common_html5/pin_blue.png"/>' + (i + 1) + ". " + $this.data("label") + '</div>')
 						.appendTo($labelHolder)
-						.data("correct", $this);
+						.data("correct", correct);
 					
 					$this.attr("tabindex", ($hsCanvases.length * 2) + 2 + i);
 				});
@@ -574,18 +624,20 @@
 								xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
 								$thisHSCanvas = ui.draggable.data("correct");
 							
-							// get pixel data from the whole canvas - and then from pixel dropped on
-							var pix = $thisHSCanvas[0].getContext("2d").getImageData(0, 0, $thisHSCanvas.width(), $thisHSCanvas.height()),
-								dataPos = ((xyCoords[1] * $thisHSCanvas.width()) + xyCoords[0]) * 4;
-							
-							if (pix.data[dataPos+3] > 0) { // is it transparent?
-								customHotspots.dropLabel($thisHSCanvas, ui.draggable, ui.helper);
+							for (var i=0; i<$thisHSCanvas.length; i++) {
+								// get pixel data from the whole canvas - and then from pixel dropped on
+								var pix = $thisHSCanvas[i][0].getContext("2d").getImageData(0, 0, $thisHSCanvas[i].width(), $thisHSCanvas[i].height()),
+									dataPos = ((xyCoords[1] * $thisHSCanvas[i].width()) + xyCoords[0]) * 4;
+								
+								if (pix.data[dataPos+3] > 0) { // is it transparent?
+									customHotspots.dropLabel($thisHSCanvas[i], ui.draggable, ui.helper);
+								}
 							}
 						}
 					});
 				
 				// only for when using keyboard controls so you can focus and drop on individual shapes
-				$hsCanvases
+				$($hsCanvases)
 					.focusin(function(e) {
 						var $this = $(this);
 						if ($("#labelHolder .label:eq(" + $this.index() + ")").data("success") != true) {
@@ -669,19 +721,35 @@
 						text:	false
 					})
 					.click(function() {
-						var $hsCanvas = $("#hsHolder canvas, #hsHolder div");
+						$("#hsHolder").find("canvas.visible").removeClass("visible");
+						var hsCanvas = [],
+							hsCanvasGroups = [];
 						
-						if ($pageContents.data("counter") != 0) {
-							$($hsCanvas[$pageContents.data("counter") - 1]).removeClass("visible");
+						$("#hsHolder canvas, #hsHolder div").each(function () {
+							if ($(this).data("group") == "" || $(this).data("group") == undefined) {
+								hsCanvas.push(this);
+							} else if ($.inArray($(this).data("group"), hsCanvasGroups) == -1) {
+								hsCanvas.push(this);
+								hsCanvasGroups.push($(this).data("group"));
+							}
+						});
+						
+						var thisCanvas = $(hsCanvas[$pageContents.data("counter")]);
+						if (thisCanvas.data("group") != undefined && thisCanvas.data("group") != "") {
+							$("#hsHolder").find("canvas").each(function() {
+								if ($(this).data("group") == thisCanvas.data("group")) {
+									$(this).addClass("visible");
+								}
+							});
+						} else {
+							thisCanvas.addClass("visible");
 						}
-						var thisCanvas = $($hsCanvas[$pageContents.data("counter")]);
-						thisCanvas.addClass("visible");
 						$hsInfoLabel.html(thisCanvas.data("label"));
 						$hsInfoTxt.html(thisCanvas.data("info"));
 						
 						$pageContents.data("counter", $pageContents.data("counter") + 1);
 						
-						if ($pageContents.data("counter") == $hsCanvas.length) {
+						if ($pageContents.data("counter") == hsCanvas.length) {
 							$(this).button("disable");
 						}
 						$("#prevBtn").button("enable");
@@ -697,12 +765,30 @@
 						disabled:	true
 					})
 					.click(function() {
-						var $hsCanvas = $("#hsHolder canvas, #hsHolder div");
+						$("#hsHolder").find("canvas.visible").removeClass("visible");
+						var hsCanvas = [],
+							hsCanvasGroups = [];
 						
-						$($hsCanvas[$pageContents.data("counter") - 1]).removeClass("visible");
+						$("#hsHolder canvas, #hsHolder div").each(function () {
+							if ($(this).data("group") == "" || $(this).data("group") == undefined) {
+								hsCanvas.push(this);
+							} else if ($.inArray($(this).data("group"), hsCanvasGroups) == -1) {
+								hsCanvas.push(this);
+								hsCanvasGroups.push($(this).data("group"));
+							}
+						});
+						
 						if ($pageContents.data("counter") != 1) {
-							var thisCanvas = $($hsCanvas[$pageContents.data("counter") - 2]);
-							thisCanvas.addClass("visible");
+							var thisCanvas = $(hsCanvas[$pageContents.data("counter") - 2]);
+							if (thisCanvas.data("group") != undefined && thisCanvas.data("group") != "") {
+								$("#hsHolder").find("canvas").each(function() {
+									if ($(this).data("group") == thisCanvas.data("group")) {
+										$(this).addClass("visible");
+									}
+								});
+							} else {
+								thisCanvas.addClass("visible");
+							}
 							$hsInfoLabel.html(thisCanvas.data("label"));
 							$hsInfoTxt.html(thisCanvas.data("info"));
 						} else {
@@ -892,6 +978,18 @@
 			var $hsHolder = $("#hsHolder");
 			$hsHolder.find("canvas.visible").removeClass("visible");
 			$target.addClass("visible");
+			var correct = [$target];
+			
+			// show all associated shapes
+			if ($target.data("group") != "" && $target.data("group") != undefined) {
+				$("#hsHolder canvas").each(function() {
+					if ($target.data("group") == $(this).data("group")) {
+						$(this).addClass("visible");
+						correct.push($(this));
+					}
+				});
+			}
+			
 			$hsInfoLabel.html($target.data("label"));
 			$hsInfoTxt.html($target.data("info"));
 			
@@ -928,7 +1026,7 @@
 			$pin
 				.appendTo("#pinHolder")
 				.removeClass("ui-draggable-dragging")
-				.data("correct", $target)
+				.data("correct", correct)
 				.css("cursor", "pointer");
 			
 			// stop label being draggable but make pin and label clickable
@@ -940,10 +1038,11 @@
 			$pin.add($label)
 				.on("click", function() {
 					$("#hsHolder canvas").removeClass("visible");
-					var $thisHSCanvas = $(this).data("correct");
-					$thisHSCanvas.addClass("visible");
-					$hsInfoLabel.html($thisHSCanvas.data("label"));
-					$hsInfoTxt.html($thisHSCanvas.data("info"));
+					for (var i=0; i<$(this).data("correct").length; i++) {
+						$(this).data("correct")[i].addClass("visible");
+					}
+					$hsInfoLabel.html($(this).data("correct")[0].data("label"));
+					$hsInfoTxt.html($(this).data("correct")[0].data("info"));
 				});
 		};
 		
