@@ -391,7 +391,7 @@
 				.attr("title", labelTxt1)
 				.removeClass("selected")
 				.css({
-					"top"	:$thisTarget.find("h3").position().top,
+					"top"	:$thisTarget.find("h3").position().top + $("div#x_pageHolder").scrollTop(),
 					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.width() + 5
 				});
 		}
