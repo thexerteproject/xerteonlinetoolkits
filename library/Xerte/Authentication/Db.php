@@ -225,7 +225,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $query="insert into {$xerte_toolkits_site->database_table_prefix}user set firstname=?, surname=?, username=?, password=?, email=?";
         $params = array($firstname, $surname, $username, $spassword, $email);
         $res = db_query($query, $params);
-        if ($res)
+        if ($res !== false)
             return "";
         else
             return "<li>" . AUTH_DB_USERADDFAILED . "</li>";
@@ -273,7 +273,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 
         $query="update {$xerte_toolkits_site->database_table_prefix}user set " . $set . " where iduser=" . $row['iduser'];
         $res = db_query($query, $params);
-        if ($res)
+        if ($res !== false)
             return "";
         else
             return "<li>" . AUTH_DB_USERMODFAILED . "</li>";
@@ -285,7 +285,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $query="delete from {$xerte_toolkits_site->database_table_prefix}user where username=?";
         $params = array($username);
         $res = db_query($query, $params);
-        if ($res)
+        if ($res !== false)
             return "";
         else
             return "<li>" . AUTH_DB_USERDELFAILED . "</li>";
@@ -299,7 +299,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $query="update {$xerte_toolkits_site->database_table_prefix}user set password=? where username=?";
         $params = array($spassword, $username);
         $res = db_query($query, $params);
-        if ($res)
+        if ($res !== false)
             return "";
         else
             return "<li>" . AUTH_DB_CHANGEPASSWORDFAILED . "</li>";
