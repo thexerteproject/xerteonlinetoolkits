@@ -279,6 +279,13 @@ var EDITOR = (function ($, parent) {
                         .attr('src', 'editor/img/deprecated.png')
                         .attr('title', options.deprecated)
                         .addClass("deprecated"));
+                if (options.optional == 'true') {
+                    var opt = $('<img>')
+                            .attr('id', 'optbtn_' + name)
+                            .attr('src', 'editor/img/optional.png')
+                            .addClass("optional");
+                    td.append(opt);
+                }
                 if (options.flashonly)
                 {
                     td.addClass('flashonly');
@@ -340,13 +347,7 @@ var EDITOR = (function ($, parent) {
             //output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
             //output_string += '</tr>';
             $(id).append(tr);
-            if (options.deprecated) {
-                $("#deprbtn_"+ name).on("click", function () {
-                    var this_name = name;
-                    removeDeprecatedProperty(this_name);
-                });
-            }
-            else if (options.optional == 'true') {
+            if (options.optional == 'true') {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
