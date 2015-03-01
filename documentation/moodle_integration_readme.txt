@@ -29,9 +29,13 @@ Note: the different authentication options are enabled/disabled at the bottom of
 Step 2. 
 Either by using the management page or by editing sitedetails in the database add the path to your moodle installation to the integration config path field
 e.g. this might be something like the following: 
-require("/home/youraccountname/public_html/config.php");
-For a xampp/maxos install this should be something like: 
-require("/xampp/htdocs/moodle/config.php");
+
+/home/youraccountname/public_html/config.php
+or
+/home/youraccountname/public_html/moodle/config.php
+or
+for a xampp/maxos install this should be something like: 
+/xampp/htdocs/moodle/config.php
 
 Step 3.
 In the XOT auth_config.php comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
