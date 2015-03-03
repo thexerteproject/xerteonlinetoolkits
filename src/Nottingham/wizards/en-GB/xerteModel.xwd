@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- XERTE CONTENT=========================== -->
-  <xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity.">
+  <xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
 
     <name type="TextInput" label="Page Title"/>
     <modelFile type="media" label="Xerte Model"/>
