@@ -19,7 +19,7 @@
   </pageWizard>
   
   <!-- SCENARIO PAGE============================== -->
-  <scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true">
+  <scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is no longer supported">
 	<name label="Scenario Name" type="TextInput" width="200"/>
 	<pageID label="Unique Page ID" type="TextInput" width="200"/>	
 	<title label="Scenario Title" type="TextInput" width="200"/>	

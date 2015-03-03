@@ -6,7 +6,7 @@
   </pageWizard>
   
     <!-- GEOCOMMONS ================================ -->
-  <geocommons  menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true">
+  <geocommons  menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput"/>
     <src label="IFrame code" type="TextInput"/>
