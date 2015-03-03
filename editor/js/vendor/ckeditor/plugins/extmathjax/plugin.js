@@ -12,7 +12,7 @@
 ( function() {
 
     //	var cdn = 'http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-AMS_HTML';
-    var cdn = 'https:\/\/c328740.ssl.cf1.rackcdn.com\/mathjax\/latest\/MathJax.js?config=TeX-MML-AM_HTMLorMML-full';
+    var cdn = 'https:\/\/cdn.mathjax.org\/mathjax\/latest\/MathJax.js?config=TeX-MML-AM_HTMLorMML-full';
 
 	CKEDITOR.plugins.add( 'extmathjax', {
 		lang: 'ca,cs,cy,de,el,en,en-gb,es,fa,fi,hu,ja,km,nb,nl,no,pl,pt,ro,ru,sv,uk,zh,zh-cn', // %REMOVE_LINE_CORE%
