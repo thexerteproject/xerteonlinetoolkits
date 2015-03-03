@@ -1,1 +1,0 @@
-	<LO templateData="FileLocation + 'pbl.xml'" name="Learning Object">		<IFC name="Interface" title="My Learning Object" visuals="1">			<PG name="[Untitled]" title="Page Title" help="Page Help" />		</IFC>		<BIN undefined="" name="Deleted Items" />	</LO>
