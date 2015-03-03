@@ -472,10 +472,6 @@ img.optional {
 	cursor: pointer;
 }
 
-img.deprecated {
-    cursor: pointer;
-}
-
 span.deprecated {
     padding: 0 4px 0 4px;
     background: rgba(248, 103, 24, 0.33);
@@ -485,7 +481,7 @@ td.wizarddeprecated {
     background: rgba(248, 103, 24, 0.33);
 }
 
-td.flashonly {
+td.flashonly, td.deprecated{
     width: 32px;
 }
 
