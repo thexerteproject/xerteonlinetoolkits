@@ -10,16 +10,18 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			$("#pdfPage").height(pdf.calcHeight());
+		
+			$("#pdfDoc").height(pdf.calcHeight());
 		}
 		
 		this.init = function() {
-		
-			var height = pdf.calcHeight();
 			
-			$('#pdfPage').html('<object data="' + eval(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + height + '">');
-						
+			var height = pdf.calcHeight();
+
+			$('#pdfPage').html('<iframe id="pdfDoc" src="http://www.nottingham.ac.uk/toolkits/USER-FILES/10671-cczjrt-Nottingham/media/roundy_or_squary.pdf" type="application/pdf" width="100%" height="' + height + '"></iframe>');
+				
 			x_pageLoaded();
+
 		}
 		
 		this.calcHeight = function() {
