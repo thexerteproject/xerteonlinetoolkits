@@ -60,6 +60,7 @@
 			}
 			
 			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue),
+				text = text.replace(/<\/p>/g,"</p><br \/>")
 				bulletArray = text.split("<br />"),
 				contentsStr = "",
 				startTag = '<p class="bullet">',
