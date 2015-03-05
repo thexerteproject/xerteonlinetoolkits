@@ -5,21 +5,27 @@
 	var pdf = new function() {		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+		
+			var height = pdf.calcHeight();
 			
+			$('#pdfPage').html('<object id="pdfDoc" data="' + eval(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + height + '"><param name="src" value="' + eval(x_currentPageXML.getAttribute("url")) + '"></object>');
+
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 		
 			$("#pdfDoc").height(pdf.calcHeight());
+
 		}
 		
 		this.init = function() {
-			
-			var height = pdf.calcHeight();
 
-			$('#pdfPage').html('<iframe id="pdfDoc" src="http://www.nottingham.ac.uk/toolkits/USER-FILES/10671-cczjrt-Nottingham/media/roundy_or_squary.pdf" type="application/pdf" width="100%" height="' + height + '"></iframe>');
-				
+			var height = pdf.calcHeight();
+						
+			//object - works first time in IE.
+			$('#pdfPage').html('<object id="pdfDoc" data="' + eval(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + height + '"><param name="src" value="' + eval(x_currentPageXML.getAttribute("url")) + '"></object>');
+
 			x_pageLoaded();
 
 		}
