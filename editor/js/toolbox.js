@@ -1710,7 +1710,7 @@ var EDITOR = (function ($, parent) {
                 // Replace FileLocation + ' with full url
                 url = makeAbsolute(url);
                 // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                if (hspattrs.url != "")
+                if (url.substring(0,4) == "http")
                 {
                     div.append($('<img>')
                         .attr('id', 'inner_img_' + id)
