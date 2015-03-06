@@ -812,11 +812,34 @@ var EDITOR = (function ($, parent) {
             return val;
         }
     },
+    
+    
+    disableTextInputEditor = function (options) {
+    	var name = options.name.toLowerCase();
+    	var type = options.options.type.toLowerCase();
+    	
+    	//console.log('...'); console.log(options); console.log('...');
+    	
+    	switch (type) {
+
+    		case 'media':
+    			return true;
+
+    		case 'textinput':
+    			switch (name) {
+    				case 'tip':
+    				case 'url':
+    					return true;
+    			}
+    	}
+    	
+    	return false;
+    },
 
 
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
-            if (options.options.type != 'media') {
+            if ( ! disableTextInputEditor(options) ) {
                 $('#'+options.id).ckeditor(function(){
                     // Editor is ready, attach onblur event
                     this.on('blur', function(){
