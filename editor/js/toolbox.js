@@ -1597,7 +1597,15 @@ var EDITOR = (function ($, parent) {
                         .attr('value', value)
                         .change({id:id, key:key, name:name}, function(event)
                         {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        	if (this.value <= max &&  this.value >= min) {
+                        		if (this.value == '') {
+                        			this.value = (min + max) / 2; // choose midpoint for NaN
+                        		}
+                            	inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            }
+                            else { // set to max or min if out of range
+                            	this.value = Math.max(Math.min(this.value, max), min);
+                            }
                         });
                 }
                 break;
