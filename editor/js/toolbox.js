@@ -816,60 +816,60 @@ var EDITOR = (function ($, parent) {
 
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
-            $('#'+options.id).ckeditor(function(){
-                // Editor is ready, attach onblur event
-                this.on('blur', function(){
-                    // This is the call back when editor looses focus
-                    //if (this.checkDirty())  // Se other comment about checkDirty()
-                    //{
-                        var thisValue = this.getData();
-                        thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+            if (options.options.type != 'media') {
+                $('#'+options.id).ckeditor(function(){
+                    // Editor is ready, attach onblur event
+                    this.on('blur', function(){
+                        // This is the call back when editor looses focus
+                        //if (this.checkDirty())  // Se other comment about checkDirty()
+                        //{
+                            var thisValue = this.getData();
+                            thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+                            inputChanged(options.id, options.key, options.name, thisValue, this);
+                        //}
+                    });
+                    var lastValue = "";
+                    this.on('change', function(event) {
+                        if (options.name == 'name') {
+                            var thisValue = this.getData();
+                            thisValue = stripP(thisValue.substr(0, thisValue.length-1));
+                            if (lastValue != thisValue) {
+                                lastValue = thisValue;
 
-                        inputChanged(options.id, options.key, options.name, thisValue, this);
-                    //}
-                });
-                var lastValue = "";
-                this.on('change', function(event) {
-                    if (options.name == 'name') {
-                        var thisValue = this.getData();
-                        thisValue = stripP(thisValue.substr(0, thisValue.length-1));
-                        if (lastValue != thisValue) {
-                            lastValue = thisValue;
+                                // Rename the node
+                                var tree = $.jstree.reference("#treeview");
+                                tree.rename_node(tree.get_node(options.key, false), thisValue);
 
-                            // Rename the node
-                            var tree = $.jstree.reference("#treeview");
-                            tree.rename_node(tree.get_node(options.key, false), thisValue);
-
-                            if ($('#mainleveltitle'))
-                            {
-                                $('#mainleveltitle').html(thisValue);
+                                if ($('#mainleveltitle'))
+                                {
+                                    $('#mainleveltitle').html(thisValue);
+                                }
                             }
-
                         }
-                    }
+                    });
+                    // Fix for known issue in webkit browsers that cahnge contenteditable when an outer div is hidden
+                    this.on('focus', function () {
+                        this.setReadOnly(false);
+                    });
+                }, { toolbarGroups : [
+                    { name: 'basicstyles', groups: [ 'basicstyles' ] },
+                    { name: 'colors' }],
+                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
+                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
+                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+                    //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                    //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                    //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
+                    //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                    //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                    //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
+                    mathJaxClass :  'mathjax',
+                    mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
+                    //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
+                    //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
+                    //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
                 });
-                // Fix for known issue in webkit browsers that cahnge contenteditable when an outer div is hidden
-                this.on('focus', function () {
-                    this.setReadOnly(false);
-                });
-            }, { toolbarGroups : [
-                { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                { name: 'colors' }],
-                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
-                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
-                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
-                //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                mathJaxClass :  'mathjax',
-                mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
-                //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
-                //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
-                //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
-            });
+            }
         });
     },
 
@@ -879,7 +879,6 @@ var EDITOR = (function ($, parent) {
         $.each(colorpickers, function (i, options){
             var myPicker = new jscolor.color(document.getElementById(options.id), {})
             myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
-
         });
     },
 
