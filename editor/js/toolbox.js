@@ -828,7 +828,12 @@ var EDITOR = (function ($, parent) {
     		case 'textinput':
     			switch (name) {
     				case 'tip':
+    				case 'tooltip':
     				case 'url':
+    				case 'term':
+    				case 'keywords':
+    				case 'src':
+    				case 'mapurl':
     					return true;
     			}
     	}
