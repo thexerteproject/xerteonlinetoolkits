@@ -1457,11 +1457,10 @@ var EDITOR = (function ($, parent) {
                 html = $('<input>')
                     .attr('id', id)
                     .attr('type',  "checkbox")
+                    .prop('checked', value && value == 'true')
                     .click({id:id, key:key, name:name}, function(event){
                         cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                     });
-                if (value || value == 'true')
-                    html.prop('checked', true);
                 break;
             case 'combobox':
                 var id = 'select_' + form_id_offset;
