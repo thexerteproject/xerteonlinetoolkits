@@ -1,0 +1,886 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var mediaLesson = new function() {
+		var	$panelHolder,
+			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
+			numLoaded = 0;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$panelHolder = $("#panelHolder");
+			
+			// if audio is in footer (outside pageHolder) it will need reloading on every page change
+			if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
+				this.loadAudioInFooter();
+			}
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			this.resizePanels();
+		}
+		
+		this.resizePanels = function() {
+			// make sure no scroll bars are on screen during panel sizing
+			$x_pageHolder.css("overflow", "hidden");
+			
+			var numTileH = $("#panelHolder .panel.tileH").length,
+				numTileV = $("#panelHolder .panel.tileV").length;
+			
+			if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
+				numTileH = $("#panelHolder .top .panel.tileH").length;
+			}
+			
+			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseInt($panelHolder.find(".panel.tileH").css("margin-right"));
+			
+			$panelHolder.find(".panel.tileH")
+				.width(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH - 1))) / numTileH - 2);
+			
+			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
+			
+			$panelHolder.find(".panel.tileV")
+				.height((($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - ((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
+			
+			$panelHolder.find(".panel.fullH")
+				.height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
+			
+			$panelHolder.find(".panel.halfH")
+				.height(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) / 2 - 2);
+			
+			$x_pageHolder.css("overflow", "auto");
+			
+			this.resizeMedia();
+			
+			$panelHolder.find(".panel .fullH").each(function() {
+				mediaLesson.resizeContent($(this));
+			});
+		}
+		
+		// function resizes media controls
+		this.resizeMedia = function($holder) {
+			// resize if the media is now the wrong size for its holder
+			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+			
+			// ** need to tidy this resize function up - not done in the best way?
+			var triggerResize = true;
+			$(".popcornMedia video").each(function(i) {
+				var	$this = $(this),
+					$popcornMedia = $this.closest(".popcornMedia");
+				
+				var tempW = $popcornMedia.data("max-width"), tempH = $popcornMedia.data("max-height");
+				if (tempW > $popcornMedia.closest(".panel").width()) {
+					var scale = $popcornMedia.closest(".panel").width() / tempW;
+					tempW = $popcornMedia.closest(".panel").width();
+					tempH = tempH * scale;
+				}
+				if (tempH > $popcornMedia.closest(".panel").height()) {
+					var scale = $popcornMedia.closest(".panel").height() / tempH;
+					tempH = $popcornMedia.closest(".panel").height();
+					tempW = tempW * scale;
+				}
+				
+				$popcornMedia.css({
+						"max-width"	:tempW,
+						"max-height":tempH
+					});
+				
+				if ($this.width() != $popcornMedia.width() && triggerResize == true) {
+					triggerResize = false;
+					$x_window.resize();
+				}
+				if ($popcornMedia.next().hasClass("transcriptHolder")) {
+					$popcornMedia.next().width($popcornMedia.width());
+				}
+			});
+			
+			$(".audioImg").each(function() {
+				var $this = $(this);
+				x_scaleImg($this, $this.closest(".panel").width(), $this.closest(".panel").height() - x_audioBarH, true, false);
+				$this.closest(".mediaHolder").width($this.width());
+			});
+			
+			$(".popcornMedia audio").each(function(i) {
+				var audioBarW = 0;
+				$(this).closest(".mejs-inner").find(".mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				if (audioBarW != $(this).closest(".popcornMedia").width() && triggerResize == true) {
+					triggerResize = false;
+					$x_window.resize();
+				}
+			});
+		}
+		
+		// function resizes contentBlocks that should fill available space
+		this.resizeContent = function($holder) {
+			var excludeH = $holder.data("exclude") != undefined ? $holder.data("exclude").outerHeight(true) : 0,
+				$panel = $holder.parents(".panel");
+			
+			$holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
+			
+			if ($holder.hasClass("googlemapHolder")) {
+				//google.maps.event.trigger($holder.find(".gm-style")[0], "resize");
+			}
+		}
+		
+		// function called when page first loads
+		this.init = function() {
+			// load popcorn library and plugins 
+			var loadFiles = true;
+			for (var i=0; i<x_pageInfo.length; i++) {
+				if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
+					// a page of this type has already been loaded - don't reload popcorn files
+					loadFiles = false;
+					break;
+				}
+			}
+			
+			if (loadFiles == true) {
+				this.loadJS();
+			} else {
+				this.setUp();
+			}
+		}
+		
+		// function loads the popcorn files
+		this.loadJS = function() {
+			if (numLoaded == plugins.length + 1) {
+				// all files have loaded
+				this.setUp();
+			} else {
+				var fileToLoad;
+				if (numLoaded == 0) {
+					fileToLoad = "popcorn-complete.min";
+				} else {
+					fileToLoad = "plugins/popcorn." + plugins[numLoaded - 1];
+					x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
+				}
+				
+				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")
+					.done(function(script, textStatus) {
+						numLoaded++;
+						mediaLesson.loadJS();
+					})
+					.fail(function( jqxhr, settings, exception ) {
+						console.log("Failed to load Popcorn.js & plugins");
+					});
+			}
+		}
+		
+		// function called when popcorn.js & plugin files have all loaded
+		this.setUp = function() {
+			
+			// _____ SORT PAGE LAYOUT _____
+			
+			$panelHolder = $("#panelHolder");
+			
+			var	panelData = $(x_currentPageXML).children(),
+				panelLayout = x_currentPageXML.getAttribute("layout");
+			
+			var	mediaFile = $(x_currentPageXML).children("mediaPanel").attr("media"),
+				mediaType = "video",
+				maxPanels = 4,
+				mediaPanelIndex;
+			
+			// get index of media panel
+			for (var i=0; i<panelData.length; i++) {
+				if (panelData[i].nodeName == "mediaPanel") {
+					mediaPanelIndex = i;
+					break;
+				}
+			}
+			
+			// get type of media (video/audio)
+			if (mediaFile.indexOf(".mp3") != -1) {
+				mediaType = "audio";
+				
+				// if audio, will it appear in its own panel? (only if there's no additional content or transcript to show with it)
+				if ($(panelData[mediaPanelIndex]).children().length - $(panelData[mediaPanelIndex]).children("synchCue").length == 0 && (panelData[mediaPanelIndex].getAttribute("transcript") == "" || panelData[mediaPanelIndex].getAttribute("transcript") == undefined) && (panelData[mediaPanelIndex].getAttribute("audioImage") == "" || panelData[mediaPanelIndex].getAttribute("audioImage") == undefined)) {
+					// audio not in panel - set it up along the bottom (full width) - as if it were narration for the page
+					$("#pageContents").data("audioBar",true);
+					this.loadAudioInFooter();
+					
+					panelData.splice(mediaPanelIndex, 1);
+					mediaPanelIndex = -1;
+				}
+				
+			} else if (mediaFile.indexOf(".") == -1) {
+				// no media
+				mediaType = undefined;
+				panelData.splice(mediaPanelIndex, 1);
+				mediaPanelIndex = -1;
+			}
+			
+			// if media is in a panel then make sure the number of panels doesn't exceed maxPanels
+			if (mediaPanelIndex != -1 && panelData.length > maxPanels) {
+				if (mediaPanelIndex >= maxPanels) {
+					panelData.splice(maxPanels - 1, 0, panelData[mediaPanelIndex]);
+					panelData.splice(mediaPanelIndex + 1, 1);
+					mediaPanelIndex = maxPanels - 1;
+				}
+				panelData.splice(maxPanels, panelData.length - maxPanels);
+			}
+			
+			// set up accordion if there's some intro text
+			if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
+				var $contentCover = $("#contentCover");
+				$contentCover
+					.css("background-image", 'url("' + x_templateLocation + 'common_html5/highlight.png")')
+					.hide();
+				
+				var $infoHolder = $("#infoHolder"),
+					closeTxt = x_currentPageXML.getAttribute("introClose") != undefined && x_currentPageXML.getAttribute("introClose") != "" ? x_currentPageXML.getAttribute("introClose") : "close";
+				
+				$infoHolder.find(".accContent").html('<div>' + x_addLineBreaks(x_currentPageXML.getAttribute("intro")) + '</div><div class="closeTxt"><a href="#">' + closeTxt + '</a></div>');
+				$infoHolder.find(".accTitle a").html(x_currentPageXML.getAttribute("introTitle"));
+				
+				$infoHolder.accordion({
+					collapsible:	true,
+					heightStyle:	"content",
+					beforeActivate:function(event, ui){
+						if($(this).find("h3").hasClass("ui-state-active")) { //  close
+							$contentCover.fadeOut();
+						} else { // open
+							$contentCover.fadeIn();
+						}
+					}
+				});
+				
+				$infoHolder.find(".closeTxt a").add($contentCover).on("click", function() {
+					$infoHolder.accordion("option", "active", false);
+				});
+				
+				$contentCover.show();
+			
+			} else {
+				// no introduction text - remove accordion
+				$("#infoHolder").remove();
+				$("#contentCover").hide();
+			}
+			
+			// create all panels
+			for (var i=0; i<panelData.length; i++) {
+				var title = "";
+				if (panelData[i].getAttribute("name") != "") {
+					title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
+				}
+				$('<div class="panel">' + title + '</div>')
+					.appendTo($panelHolder)
+					.attr("id", "panel" + i);
+			}
+			
+			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
+			if (panelLayout == "tileH") {
+				$panelHolder.find(".panel").addClass("tileH fullH");
+				
+			} else if (panelLayout == "tileV") {
+				$panelHolder.find(".panel").addClass("tileV fullW");
+				
+			} else if (panelLayout == "grid") {
+				if (panelData.length > 2) {
+					$panelHolder.append('<div class="top"></div><div class="bottom"></div>');
+					
+					var panels = $panelHolder.find(".panel");
+					
+					for (var i=0; i<panels.length; i++) {
+						if (i < 2) {
+							$(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
+						} else {
+							$(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
+						}
+					}
+					
+				} else if (panelData.length > 1) {
+					$panelHolder.find(".panel").addClass("tileH fullH");
+					
+				} else {
+					$panelHolder.find(".panel").addClass("fullH");
+				}
+			
+			// layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
+			} else if (panelLayout == "top" || panelLayout == "bottom") {
+				$panelHolder.append('<div class="top"></div><div class="bottom"></div>');
+				
+				var panels = $panelHolder.find(".panel");
+				
+				if (panelLayout == "top") {
+					for (var i=0; i<panels.length; i++) {
+						if (i == 0) {
+							$(panels[i]).appendTo($panelHolder.find(".top")).addClass("fullW halfH");
+						} else {
+							$(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
+						}
+					}
+					
+				} else if (panelLayout == "bottom") {
+					for (var i=0; i<panels.length; i++) {
+						if (i == panels.length - 1) {
+							$(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("fullW halfH");
+						} else {
+							$(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
+						}
+					}
+				}
+				
+			} else {
+				$panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
+				
+				var panels = $panelHolder.find(".panel");
+				
+				if (panelLayout == "left") {
+					for (var i=0; i<panels.length; i++) {
+						if (i == 0) {
+							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
+						} else {
+							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
+						}
+					}
+					
+				} else if (panelLayout == "right") {
+					for (var i=0; i<panels.length; i++) {
+						if (i == panels.length - 1) {
+							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
+						} else {
+							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
+						}
+					}
+				}
+			}
+			
+			this.resizePanels();
+			
+			
+			// loadMedia & sortPopcorn are called below & also in the media plus plugin which deals with additional media added to panels
+			
+			// _____ LOAD MEDIA _____
+			
+			var mediaPanelData = $(x_currentPageXML).children("mediaPanel");
+			
+			if (mediaPanelIndex != -1) {
+				this.loadMedia(
+					$("#panel" + mediaPanelIndex),
+					mediaType,
+					{	tip: mediaPanelData.attr("tip"),
+						width: mediaPanelData.attr("width"), 
+						height: mediaPanelData.attr("height"), 
+						media: mediaPanelData.attr("media"), 
+						autoplay: mediaPanelData.attr("autoplay"), 
+						transcript: mediaPanelData.attr("transcript"), 
+						transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
+						audioImage: mediaPanelData.attr("audioImage"),
+						audioImageTip: mediaPanelData.attr("audioImageTip")
+					},
+					true
+					);
+			}
+			
+			$(".panel").each(function(i) {
+				$('<div id="panelContent' + i + '" class="panelContent"/>').appendTo($(this));
+			});
+			
+			// _____ SORT & CREATE SYNCH POINT EVENTS FOR EACH PANEL _____
+			
+			if (mediaType != undefined) {
+				panelData.each(function(i) {
+					mediaLesson.sortPopcorn($(this).children(), "panel" + i, mediaPanelIndex == i ? true : false, ".mainMedia " + mediaType);
+				});
+			}
+			
+			x_pageLoaded();
+		}
+		
+		// function loads media - can be either main media in media panel or additional media to appear in another panel (called from media plugin)
+		this.loadMedia = function($holder, mediaType, mediaData, mainMedia) {
+			var $mediaHolder;
+			var classes = "popcornMedia";
+			if (mainMedia == true) {
+				classes += " mainMedia";
+			}
+			
+			if (mediaType == "video") {
+				// load video - max dimensions set in mediaMetaData function below when dimensions received
+				$mediaHolder = $holder;
+				var $myVideo = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+				
+				$myVideo
+					.attr("title", mediaData.tip)
+					.css("margin", "0 auto")
+					.mediaPlayer({
+						type		:"video",
+						source		:mediaData.media,
+						width		:"100%",
+						height		:"100%",
+						autoPlay	:mediaData.autoplay,
+						pageName	:"mediaLesson"
+					});
+				
+			} else if (mediaType == "audio") {
+				// load audio in panel - width is either with of audioImage (if exists) or full width of panel
+				$mediaHolder = $('<div class="mediaHolder"></div>').appendTo($holder);
+				var $myAudio = $('<div class="' + classes + '"/>').appendTo($mediaHolder);
+				
+				$myAudio
+					.attr("title", mediaData.tip)
+					.mediaPlayer({
+						type		:"audio",
+						source		:mediaData.media,
+						width       :"100%",
+						autoPlay    :mediaData.autoplay
+					});
+				
+				if (mediaData.audioImage != "" && mediaData.audioImage != undefined) {
+					var $imgHolder = $('<div class="audioImgHolder"></div>').insertBefore($myAudio),
+						$img = $('<img class="audioImg" style="visibility: hidden" />').appendTo($imgHolder);
+					
+					$img
+						.one("load", function() {
+							/*if (!$holder.hasClass("panel")) {
+								$holder.width($holder.closest(".panel").width()).height($holder.closest(".panel").height());
+							}*/
+							x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
+							$mediaHolder.width($(this).width());
+						})
+						.attr("src", eval(mediaData.audioImage))
+						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+							if (this.complete) {
+								$(this).trigger("load");
+							}
+						});
+					
+					if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
+						$img.attr("alt", mediaData.audioImageTip);
+					}
+				}
+			}
+			
+			// add transcript to media panel if required
+			if (mediaData.transcript != "" && mediaData.transcript != undefined) {
+				$mediaHolder.append('<div class="transcriptHolder"><div class="transcript">' + x_addLineBreaks(mediaData.transcript) + '</div><button class="transcriptBtn"></button></div>');
+				$mediaHolder.find(".transcript").hide();
+				$mediaHolder.find(".transcriptBtn")
+					.button({
+						label:	mediaData.transcriptBtnTxt != undefined && mediaData.transcriptBtnTxt != "" ? mediaData.transcriptBtnTxt : "Transcript"
+					})
+					.click(function() {
+						// transcript slides in and out of view on click
+						var $transcript = $(this).prev(".transcript");
+						if ($transcript.is(":hidden") == true) {
+							$transcript.slideDown();
+						} else {
+							$transcript.slideUp();
+						}
+					});
+				
+				if (mediaType == "video") {
+					$mediaHolder.find(".transcriptHolder")
+						.width($mediaHolder.find(".popcornMedia").width())
+						.css("margin", "0 auto");
+				}
+			}
+		}
+		
+		// function loads audio in the footer bar (like narration) when it doesn't go in a panel
+		this.loadAudioInFooter = function() {
+			var $mainAudio = $('<div class="x_pageNarration popcornMedia mainMedia"/>').insertBefore($("#x_footerBlock div:first"));
+			 $mainAudio
+				.attr("title", $(x_currentPageXML).children("mediaPanel").attr("tip"))
+				.mediaPlayer({
+					type		:"audio",
+					source		:$(x_currentPageXML).children("mediaPanel").attr("media"),
+					width       :"100%",
+					autoPlay    :$(x_currentPageXML).children("mediaPanel").attr("autoplay")
+				});
+			
+			x_updateCss(false);
+		}
+		
+		
+		// function sorts synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
+		// can be called for mainMedia & additional media from mediaPlus plugin
+		this.sortPopcorn = function(synchData, targetRef, isMedia, mediaRef) {
+			var data = new Array(); // array of objects containing details of a synch point event
+			
+			$(synchData).each(function(j) {
+				// ignore the media synchCues as they will be set up separately
+				if (isMedia == false || this.nodeName != "synchCue") {
+					data.push({
+						type:		this.nodeName,
+						start:		$.isNumeric(this.getAttribute("synchStart")) ? Number(this.getAttribute("synchStart")) : 0,
+						end:		$.isNumeric(this.getAttribute("synchEnd")) ? Number(this.getAttribute("synchEnd")) : undefined,
+						target:		targetRef + "_" + j,
+						allInfo:	this
+					});
+					
+					if ($(this).children().length > 0) {
+						if (this.nodeName == "synchMediaPlus") {
+							// store child data of media content as they aren't synced to the mainMedia
+							data[data.length-1].childNodes = $(this).children();
+							
+						} else {
+							var $parent = $(this),
+								syncChildren = true;
+							
+							$parent.children().each(function(k) {
+								// if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
+								// e.g. for subtitles the parent creates a holder and 1st caption - the children then have their own synch points and load in the same holder
+								if (this.getAttribute("synchStart") == undefined) {
+									syncChildren = false;
+									
+								} else {
+									// if no end point is set force it to be at the start of the next child - otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
+									var end = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? Number($parent[0].getAttribute("synchEnd")) : undefined;
+									this.setAttribute("child", true);
+									
+									data.push({
+										type:		$(this).parent()[0].nodeName,
+										start:		$.isNumeric(this.getAttribute("synchStart")) ? Number(this.getAttribute("synchStart")) : 0,
+										end:		$.isNumeric(this.getAttribute("synchEnd")) ? Number(this.getAttribute("synchEnd")) : end,
+										target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
+										allInfo:	this
+									});
+								}
+							});
+							
+							// store child data if children aren't being synced to media so plugin can use it
+							if (syncChildren == false) {
+								data[data.length-1].childNodes = $(this).children();
+							}
+						}
+					}
+				}
+			});
+			
+			// sort panel synch events into order (of start synch point)
+			data.sort(function (a, b) {
+				if (a.start > b.start) {
+					return 1;
+				}
+				if (a.start < b.start) {
+					return -1;
+				}
+				return 0;
+			});
+			
+			// add end points for content already on panel if they are to be removed with "Empty Panel" or because new content clears panel
+			for (var j=0; j<data.length; j++) {
+				// is content to be cleared?
+				if (data[j].type == "synchEmpty" || data[j].allInfo.getAttribute("clearPanel") == "true") {
+					var thisStart = data[j].start;
+					for (var k=0; k<j; k++) {
+						// does previous content need end time added because it's being cleared by next content block?
+						if ((data[k].end == undefined || data[k].end > thisStart) && (data[k].type != "synchEmpty" && data[k].type != "synchCue" && data[k].type != "synchSubtitlePlus")) {
+							data[k].end = thisStart;
+						}
+					}
+				}
+			}
+			
+			// set end point to after end of media if still undefined
+			for (var j=0; j<data.length; j++) {
+				if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
+					data[j].end = 9999;
+				}
+			}
+			
+			
+			// _____ ADD EVENTS FOR EACH SYNCH POINT _____
+			
+			var popcornInstance = Popcorn(mediaRef);
+			
+			// add pause points for mainMedia/mediaPlus
+			if (isMedia == true) {
+				for (var j=0; j<synchData.length; j++) {
+					if (synchData[j].nodeName == "synchCue") {
+						mediaLesson.setUpPopcornCue(popcornInstance, synchData[j]);
+					}
+				}
+			}
+			
+			// add all other synch events
+			for (var j=0; j<data.length; j++) {
+				// each synch event
+				var thisContent = data[j],
+					pluginName = thisContent.type.split("synch")[1].toLowerCase();
+				
+				if (thisContent.type != "synchEmpty") {
+					var pluginAttributes = {
+						start	:thisContent.start,
+						end		:thisContent.end,
+						target	:thisContent.target
+					};
+					
+					// add other info to pluginAttributes
+					$.each(thisContent.allInfo.attributes, function(i, attrib) {
+						// ignore attributes that aren't needed or are dealt with here rather than in individual plugins
+						if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel" && attrib.name != "pauseMedia" && attrib.name != "linkID") {
+							pluginAttributes[attrib.name] = attrib.value;
+						}
+					});
+					if (thisContent.childNodes) { // used in some plugins e.g. mediaPlus
+						pluginAttributes.childNodes = thisContent.childNodes;
+					}
+					
+					// create the holder for the content if it doesn't exist & position it correctly
+					var $target = $("#" + targetRef);
+					if ($target.find("#" + pluginAttributes.target).length == 0) {
+						var $holder,
+							$targetDiv = $("#" + targetRef + " .panelContent").length > 0 ? $("#" + targetRef + " .panelContent") : $target;
+							// ^^ targetDiv is different if it's content to show on top of additional media
+						
+						if (pluginAttributes.position == "top") {
+							$holder = $('<div>').prependTo($targetDiv);
+						} else {
+							$holder = $('<div>').appendTo($targetDiv);
+						}
+						
+						$holder
+							.addClass("contentBlock " + pluginName + "Holder")
+							.attr("id", pluginAttributes.target)
+							//.hide(); // ** this needs to be here ideally but messes up audioImage sizing
+					}
+					
+					popcornInstance[pluginName](pluginAttributes);
+					// ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
+					// ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
+					
+					if ($.inArray(pluginName, plugins) == -1) {
+						// plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
+						popcornInstance["sortholder"](pluginAttributes);
+					}
+					
+					// pauses media at synch point if needed
+					if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
+						popcornInstance.cue(thisContent.start, function() {
+							this.pause();
+						});
+					}
+				}
+			}
+		}
+		
+		// function sets up the popcorn sync events for pausing and skipping the media
+		this.setUpPopcornCue = function(popcornInstance, synchData) {
+			popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
+				// pause / play media
+				if (synchData.getAttribute("pauseMedia") == "true") {
+					this.pause();
+				} else {
+					this.play();
+				}
+				
+				// disable media controls
+				if (synchData.getAttribute("disable") == "true") {
+					mediaLesson.enableControls(this.media, false);
+				}
+				
+				// skip media
+				if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
+					this.currentTime(synchData.getAttribute("destination"));
+				}
+			});
+		}
+		
+		// function disables / enables media controls
+		this.enableControls = function(media, enable) {
+			if (enable == true) {
+				// enable
+				if (media.player) {
+					media.player.controlsEnabled = true;
+					media.player.options.clickToPlayPause = true;
+					if (media.nodeName == "VIDEO") {
+						$(media).parent().parent().find(".mejs-controls").show()
+						$(media).parent().parent().find(".mejs-layers").show();
+					} else {
+						$(media).parent().parent().find(".mejs-controls").children("div").show();
+					}
+				}
+			} else {
+				// disable
+				if (media.player) {
+					media.player.controlsEnabled = false;
+					media.player.options.clickToPlayPause = false;
+					if (media.nodeName == "VIDEO") {
+						$(media).parent().parent().find(".mejs-controls").hide()
+						$(media).parent().parent().find(".mejs-layers").hide();
+					} else {
+						$(media).parent().parent().find(".mejs-controls").children("div").hide();
+					}
+				}
+			}
+		}
+		
+		// function receives dimensions of video from mediaPlayer.js to set its max dimensions
+		this.mediaMetadata = function($video, dimensions) {
+			$video.closest(".popcornMedia")
+				.css({
+					"max-width"	:dimensions[0],
+					"max-height":dimensions[1]
+				})
+				.data({
+					"max-width"	:dimensions[0],
+					"max-height":dimensions[1]
+				});
+			
+			this.resizeMedia();
+		}
+	}
+	
+	mediaLesson.init();
+	
+</script>
+
+<style type="text/css">
+	
+	.popcornMedia {
+		overflow:	hidden;
+	}
+	
+	/* PANEL LAYOUT */
+	
+	#panelHolder .panel.tileH {
+		display:	inline-block;
+	}
+	
+	#panelHolder .panel.fullW {
+		display:	block;
+	}
+	
+	#panelHolder .panel {
+		vertical-align:	top;
+		overflow:		auto;
+	}
+	
+	#panelHolder .top .panel.halfH {
+		margin-bottom:	15px;
+	}
+	
+	#panelHolder .panel.tileH:not(:last-of-type) {
+		margin-right:	15px;
+	}
+	
+	#panelHolder .panel.tileV:not(:last-of-type) {
+		margin-bottom:	15px;
+	}
+	
+	.mediaHolder {
+		margin: 0 auto;
+	}
+	
+	.splitScreen .right {
+		margin-left:	15px;
+	}
+	
+	.audioImgHolder {
+		position:	relative;
+		overflow:	hidden;
+	}
+	
+	.transcript {
+		padding-top:	10px;
+		text-align:		left;
+	}
+	
+	.transcriptBtn {
+		margin-top:	10px;
+		margin-bottom:	10px;
+	}
+	
+	.panel h3 {
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	10px;
+		margin-bottom:	10px;
+	}
+	
+	.panel h4 {
+		margin-top:		10px;
+		margin-bottom:	5px;
+	}
+	
+	.panel h5 {
+		font-size:		1em;
+		margin-bottom:	0.5em;
+		margin-top:		0.5em;
+	}
+	
+	hr {
+		border: none;
+		background-color: #CCCCCC;
+		height: 1px;
+	}
+	
+	.panel .contentBlock {
+		width:			100%;
+		margin-bottom:	5px;
+	}
+	
+	
+	/* ACCORDION STYLES */
+	
+	#infoHolder {
+		position:	absolute;
+		top:		0px;
+		left:		0px;
+		width:		100%;
+		z-index:	999;
+	}
+	
+	#infoHolder .accTitle {
+		margin-top:	0px;
+		z-index:	1000;
+	}
+	
+	#infoHolder .ui-corner-all, #infoHolder .ui-corner-bottom, #infoHolder .ui-corner-top {
+		border-radius:	0px;
+	}
+	
+	#infoHolder .accContent .closeTxt {
+		float:	right;
+	}
+	
+	#contentCover {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+		top:		0px;
+		left:		0px;
+		z-index:	998;
+	}
+	
+	#infoHolder .ui-state-active {
+		background:	url("images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #e6e6e6;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="infoHolder">
+		<h3 class="accTitle"><a href="#"></a></h3>
+		<div class="accContent"></div>
+	</div>
+	
+	<div id="contentCover"></div>
+	
+	<div id="panelHolder"></div>
+	
+</div>

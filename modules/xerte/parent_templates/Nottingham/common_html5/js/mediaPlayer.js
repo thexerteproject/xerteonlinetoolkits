@@ -149,9 +149,16 @@
 							mediaElement.play();
 						}
 						
-						if (opts.pageName) {
-							eval(opts.pageName).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
+						if (opts.type == "video") {
+							mediaElement.addEventListener("loadedmetadata", function() {
+								try {
+									eval(x_pageInfo[x_currentPage].type).mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]); // send dimensions details back to page
+								} catch(e) {};
+							});
 						}
+						try {
+							eval(x_pageInfo[x_currentPage].type).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
+						} catch(e) {};
 					},
 					
 					error: function(mediaElement) {
@@ -245,10 +252,8 @@
 						post("addEventListener", "finish");
 					}
 					
-					if (opts.pageName) {
-						// set up listener so page can keep track of what's going on
-						post("addEventListener", "playProgress");
-					}
+					// set up listener so page can keep track of what's going on
+					post("addEventListener", "playProgress");
 				}
 				
 				function onPlayProgress(data) {
@@ -259,10 +264,9 @@
 						}
 					}
 					
-					// does page want to keep track of media events?
-					if (opts.pageName) {
-						eval(opts.pageName).mediaFunct(data.player_id, "vimeo", "playProgress", data.data.seconds);
-					}
+					try {
+						eval(x_pageInfo[x_currentPage].type).mediaFunct(data.player_id, "vimeo", "playProgress", data.data.seconds);
+					} catch(e) {};
 				}
 				
 				function onFinish() {

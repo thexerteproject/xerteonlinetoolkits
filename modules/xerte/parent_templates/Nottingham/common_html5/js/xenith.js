@@ -842,7 +842,7 @@ function x_changePage(x_gotoPage) {
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
         $("#pageBg").remove();
-        $("#x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -1064,7 +1064,7 @@ function x_pageLoaded() {
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-        $("#x_footerBlock div:first").before('<div id="x_pageNarration"></div>');
+        $("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
         $("#x_footerBlock #x_pageNarration").mediaPlayer({
             type        :"audio",
             source      :x_currentPageXML.getAttribute("narration"),
