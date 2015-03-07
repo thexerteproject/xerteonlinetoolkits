@@ -636,6 +636,15 @@ div#folder_workspace, div#recyclebin{
 	margin:0;
 }
 
+#sort-selector {
+    background-color:#f86718;
+    color:#fff;
+    border-radius:4px;
+    border:#fff 1px solid;
+    padding:2px;
+    margin:0;
+}
+
 .xerte_button_c {
 	background-color:#f86718;	
 	color:#fff;
