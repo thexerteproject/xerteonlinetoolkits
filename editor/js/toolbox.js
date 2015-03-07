@@ -1208,10 +1208,7 @@ var EDITOR = (function ($, parent) {
             }
             else
             {
-                if (name in lo_data[key]['attributes'])
-                {
-                    lo_data[key]['attributes'][name] = values[i];
-                }
+                lo_data[key]['attributes'][name] = values[i];
             }
 
         });

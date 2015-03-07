@@ -7,6 +7,7 @@
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
     <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
     <language type="LanguageList" label="Language" width="170"/>
+    <theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false" />
 	<hideFooter optional="true" type="CheckBox" label="Hide Footer" defaultValue="false" />
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" />
@@ -36,7 +37,6 @@
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <trackingMode optional="true" label="SCORM tracking mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
-    <theme optional="true" type="ThemeList" label="Theme" defaultValue=""/>
     <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
 
     <newNodes>

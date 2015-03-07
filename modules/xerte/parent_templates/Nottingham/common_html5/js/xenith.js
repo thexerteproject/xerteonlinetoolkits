@@ -229,6 +229,16 @@ x_makeAbsolute = function(html){
         }
         pos = temp.indexOf('FileLocation + \'');
     }
+    var pos = temp.indexOf('FileLocation%20+%20\'');
+    while (pos >= 0)
+    {
+        var pos2 = temp.substr(pos+20).indexOf("'") + pos;
+        if (pos2>=0)
+        {
+            temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 20, pos2-pos) + temp.substr(pos2+21);
+        }
+        pos = temp.indexOf('FileLocation%20+%20\'');
+    }
     return temp;
 }
 
@@ -395,7 +405,7 @@ function x_setUp() {
 	if (x_params.stylesheet != undefined) {
 		x_insertCSS(eval(x_params.stylesheet));
 	}
-    if (x_params.theme != undefined) {
+    if (x_params.theme != undefined && x_params.theme != "default") {
         x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
     }
 	
@@ -950,7 +960,7 @@ function x_changePage(x_gotoPage) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
         XTEnterPage(x_currentPage, pageTitle);
 
-        var builtPage = x_pageInfo[x_currentPage].built;
+        var builtPage = x_makeAbsolute(x_pageInfo[x_currentPage].built);
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();

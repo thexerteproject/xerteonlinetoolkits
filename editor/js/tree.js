@@ -575,6 +575,10 @@ var EDITOR = (function ($, parent) {
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
             }
+            else if (node_options['normal'][i].value.mandatory)
+            {
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
+            }
         }
 
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
