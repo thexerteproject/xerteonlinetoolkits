@@ -777,32 +777,34 @@ var EDITOR = (function ($, parent) {
         //setTimeout($('#mainPanel').animate({scrollTop: 0}, 500));
     },
 
-    addSubNode = function (event)
+    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
     {
-        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
-        var tree = $.jstree.reference("#treeview");
-        var node = tree.get_node(event.data.key, false);
-        var nodeName = event.data.node;
-        var key = parent.tree.generate_lo_key();
-        var xmlData = $.parseXML(event.data.defaultnode);
-        // Parse the attributes and store in the data store
+        var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        $(xmlData.firstChild.attributes).each(function() {
+        var extranodes = false;
+        $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
-        lo_data[key] = {};
-        lo_data[key]['attributes'] = attributes;
-        if (xmlData.firstChild.firstChild && xmlData.firstChild.firstChild.nodeType == 3)  // becomes a cdata-section
+        lo_data[lkey] = {};
+        lo_data[lkey]['attributes'] = attributes;
+        if (xmlData.firstChild)
         {
-            lo_data[key]['data'] = xmlData.firstChild.firstChild.data;
+            if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
+            {
+                lo_data[key]['data'] = xmlData.firstChild.data;
+            }
+            else if (xmlData.firstChild.nodeType == 1) // extra node
+            {
+                extranodes = true;
+            }
         }
         // Build the JSON object for the treeview
         // For version 3 jsTree
 
         var treeLabel = nodeName;
-        if (xmlData.firstChild.attributes['name'])
+        if (xmlData.attributes['name'])
         {
-            treeLabel = xmlData.firstChild.attributes['name'].value;
+            treeLabel = xmlData.attributes['name'].value;
         }
         else
         {
@@ -810,20 +812,43 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
         var this_json = {
-            id : key,
+            id : lkey,
             text : treeLabel,
             type : nodeName
         }
-        console.log(this_json);
+        console.log("Adding " + this_json);
         // Add the node
-        if (validateInsert(event.data.key, nodeName, tree))
+        if (validateInsert(key, nodeName, tree))
         {
-            var newkey = tree.create_node(event.data.key, this_json, 'last', function(){
-                tree.deselect_all();
-                tree.select_node(key);
+            var newkey = tree.create_node(key, this_json, pos, function(){
+                if (select) {
+                    tree.deselect_all();
+                    tree.select_node(lkey);
+                }
             });
         }
-        console.log(key);
+        // Any children to add
+        if (extranodes)
+        {
+            $.each(xmlData.childNodes, function(nr, child) {   // Was children
+                if (child.nodeType == 1)
+                {
+                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false);
+                }
+            });
+        }
+    },
+
+    addSubNode = function (event)
+    {
+        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node(event.data.key, false);
+        var nodeName = event.data.node;
+        //var key = parent.tree.generate_lo_key();
+        var xmlData = $.parseXML(event.data.defaultnode);
+        // Parse the attributes and store in the data store
+        addNodeToTree(event.data.key,'last',nodeName,xmlData.firstChild,tree,true);
 
     },
 
@@ -883,107 +908,8 @@ var EDITOR = (function ($, parent) {
         if (i >= wizard_data['learningObject'].new_nodes.length)
             return; // not found!!
         var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
-        // Parse the attributes and store in the data store
-        var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        $(xmlData.attributes).each(function() {
-            attributes[this.name] = this.value;
-        });
-        lo_data[key] = {};
-        lo_data[key]['attributes'] = attributes;
-        if (xmlData.firstChild)
-        {
-            if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
-            {
-                lo_data[key]['data'] = xmlData.firstChild.data;
-            }
-            else if (xmlData.firstChild.nodeType == 1) // extra node
-            {
-                extranodes = true;
-            }
-        }
 
-        // Build the JSON object for the treeview
-        // For version 3 jsTree
-
-        var treeLabel = nodeName;
-        if (xmlData.attributes['name'])
-        {
-            treeLabel = xmlData.attributes['name'].value;
-        }
-        else
-        {
-            if (wizard_data[treeLabel].menu_options.menuItem)
-                treeLabel = wizard_data[treeLabel].menu_options.menuItem;
-        }
-        var this_json = {
-            id : key,
-            text : treeLabel,
-            type : nodeName
-        }
-        console.log(this_json);
-        // Add the node
-        if (validateInsert('treeroot', nodeName, tree))
-        {
-            var newkey = tree.create_node('treeroot', this_json, pos, function(){
-                tree.deselect_all();
-                tree.select_node(key);
-            });
-        }
-        // Any children to add?
-        if (extranodes)
-        {
-            var nodekey = key;
-            var nodeType = nodeName;
-            $.each(xmlData.childNodes, function(nr, child){   // Was children
-                key = parent.tree.generate_lo_key();
-                if (child.nodeType == 1)
-                {
-                    nodeName = child.nodeName;
-
-                    // Parse the attributes and store in the data store
-                    attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-                    $(child.attributes).each(function() {
-                        attributes[this.name] = this.value;
-                    });
-                    lo_data[key] = {};
-                    lo_data[key]['attributes'] = attributes;
-                    if (child.firstChild)
-                    {
-                        if(child.firstChild.nodeType == 3)  // becomes a cdata-section
-                        {
-                            lo_data[key]['data'] = child.firstChild.data;
-                        }
-                    }
-
-                    // Build the JSON object for the treeview
-                    // For version 3 jsTree
-
-                    var treeLabel = nodeName;
-                    if (child.attributes['name'])
-                    {
-                        treeLabel = child.attributes['name'].value;
-                    }
-                    else
-                    {
-                        if (wizard_data[treeLabel].menu_options.menuItem)
-                            treeLabel = wizard_data[treeLabel].menu_options.menuItem;
-                    }
-                    var this_json = {
-                        id : key,
-                        text : treeLabel,
-                        type : nodeName
-                    }
-                    console.log(this_json);
-                    // Add the node
-                    if (validateInsert(nodekey, nodeName, tree))
-                    {
-                        newkey = tree.create_node(nodekey, this_json, 'last', function(){
-                            console.log("subnode " + nodeName + " added as well");
-                        });
-                    }
-                }
-            });
-        }
+        addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
     validateInsert = function(key, newNode, tree)
