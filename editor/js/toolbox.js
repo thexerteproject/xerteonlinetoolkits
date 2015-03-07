@@ -1721,6 +1721,53 @@ var EDITOR = (function ($, parent) {
                     html.append(option);
                 }
                 break;
+            case 'themelist':
+                var id = 'select_' + form_id_offset;
+                form_id_offset++;
+                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                //for (var i=0; i<installed_languages.length; i++) {
+                //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                //}
+                //html += '</select>';
+                html = $('<select>')
+                    .attr('id', id)
+                    .click({id:id, key:key, name:name}, function(event)
+                    {
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                    });
+                for (var i=0; i<theme_list.length; i++) {
+                    var option = $('<option>')
+                        .attr('value', theme_list[i].name);
+                    if (theme_list[i].name==value)
+                        option.prop('selected', true);
+                    option.append(theme_list[i].display_name);
+                    /** Can't place table in selection (yet)
+                    var display = $('<table>')
+                        .addClass('themeentry')
+                        .append($('<tr>')
+                            .append($('<td>')
+                                .attr('colspan', 2)
+                                .append($('<p>')
+                                    .append(theme_list[i].display_name)
+                            )
+                                .append($('<p>')
+                                    .append(theme_list[i].description)
+                            )
+                        )
+                            .append($('<td>')
+                                .append($('<img>')
+                                    .attr('src', theme_list[i].preview)
+                                    .attr('width',  "100px")
+                            )
+                        )
+                    );
+                    option.append(display);
+                    */
+
+
+                    html.append(option);
+                }
+                break;
             case 'hotspot':
                 var id = 'hotspot_' + form_id_offset;
                 form_id_offset++;
