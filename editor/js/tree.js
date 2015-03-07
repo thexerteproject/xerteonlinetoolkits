@@ -357,14 +357,14 @@ var EDITOR = (function ($, parent) {
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
         $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes['id'].nodeValue == id)
+            if (this.attributes.id == id)
                 pos = i;
             i++;
         });
         pos++;
 
         // Add the node
-        if (validateInsert(parent_node.type, current_node.type, tree))
+        if (validateInsert(parent_node.id, current_node.type, tree))
         {
             var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
                 tree.deselect_all();
@@ -388,13 +388,14 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         id = ids[0];
+        var nodeName = lo_data[id].attributes.nodeName;
 
-        if (id == "treeroot") {  // Can't remove the root node
-            alert("You can't remove the LO node");
+        if (wizard_data[nodeName].menu_options.remove == "false") {  // Can't remove the root node
+            alert(language.Alert.deletenode.error.prompt);
             return false;
         }
 
-        if (!confirm('Are you sure you want to delete this page?')) {
+        if (!confirm(language.Alert.deletenode.confirm.prompt)) {
             return;
         }
 
@@ -920,7 +921,7 @@ var EDITOR = (function ($, parent) {
         }
         console.log(this_json);
         // Add the node
-        if (validateInsert('learningObject', nodeName, tree))
+        if (validateInsert('treeroot', nodeName, tree))
         {
             var newkey = tree.create_node('treeroot', this_json, pos, function(){
                 tree.deselect_all();
@@ -973,7 +974,7 @@ var EDITOR = (function ($, parent) {
                     }
                     console.log(this_json);
                     // Add the node
-                    if (validateInsert(nodeType, nodeName, tree))
+                    if (validateInsert(nodekey, nodeName, tree))
                     {
                         newkey = tree.create_node(nodekey, this_json, 'last', function(){
                             console.log("subnode " + nodeName + " added as well");
@@ -989,28 +990,36 @@ var EDITOR = (function ($, parent) {
         if (wizard_data[newNode]['menu_options'].max)
         {
             var max = wizard_data[newNode]['menu_options'].max;
-            var nrchildren = tree.get_children_dom(key).length;
-            if (max == nrchildren)
-            {
-                var mesg = language.Alert.validate.max.$prompt;
-                var pos = mesg.indexOf("{m}");
-                mesg = mesg.substr(0, pos) + max + mesg.substr(pos+3, mesg.length);
-                pos = mesg.indexOf("{i}");
-                mesg = mesg.substr(0, pos) + wizard_data[newNode]['menu_options'].menuItem + mesg.substr(pos+3, mesg.length);
-                alert(mesg);
-                return false;
+            var children = tree.get_children_dom(key);
+            var numNodes =0;
+            for (var i=0; i<children.length; i++) {
+                if (lo_data[children[i].id].attributes.nodeName == newNode) {
+                    numNodes++;
+                    if (max == numNodes) {
+                        var mesg = language.Alert.validate.max.prompt;
+                        var pos = mesg.indexOf("{m}");
+                        mesg = mesg.substr(0, pos) + max + mesg.substr(pos + 3, mesg.length);
+                        pos = mesg.indexOf("{i}");
+                        mesg = mesg.substr(0, pos) + wizard_data[newNode]['menu_options'].menuItem + mesg.substr(pos + 3, mesg.length);
+                        alert(mesg);
+                        return false;
+                    }
+                }
             }
         }
-        //if (wizard_data[key]['menu_options'].mixedContent === "false") {
-        //    $.each(tree.get_children_dom(key), function(){
-        //        if (this.attributes['nodeName'].nodeValue != newNode)
-        //        {
-        //            // title is in language.Alert.validate.mixedcontent.$title
-        //            alert(language.Alert.validate.mixedcontent.$prompt);
-        //            return false;
-        //        }
-        //    });
-        //}
+        if (wizard_data[lo_data[key].attributes.nodeName]['menu_options'].mixedContent === "false")
+        {
+            var children = tree.get_children_dom(key);
+            for (var i=0; i<children.length; i++)
+            {
+                if (lo_data[children[i].id].attributes.nodeName != newNode)
+                {
+                    // title is in language.Alert.validate.mixedcontent.$title
+                    alert(language.Alert.validate.mixedcontent.prompt);
+                    return false;
+                }
+            }
+        }
         return true;
     },
     // Build the tree once the data has loaded
