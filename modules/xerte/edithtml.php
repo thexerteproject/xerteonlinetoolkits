@@ -109,6 +109,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
     $ThemeList = array();
+    // Add default theme
+    $ThemeList[] = array(name => "default", display_name => "Xerte Online Toolkits", description => "Xerte Online Toolkits", preview => "");
     $d = opendir($theme_folder);
     while($f = readdir($d)){
         if(is_dir($theme_folder . $f)){
