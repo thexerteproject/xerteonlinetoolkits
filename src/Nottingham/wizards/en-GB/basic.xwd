@@ -36,6 +36,7 @@
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <trackingMode optional="true" label="SCORM tracking mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+    <theme optional="true" type="ThemeList" label="Theme" defaultValue=""/>
     <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
 
     <newNodes>
