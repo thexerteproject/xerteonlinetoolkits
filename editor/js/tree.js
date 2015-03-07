@@ -659,7 +659,8 @@ var EDITOR = (function ($, parent) {
                 level = level.append(leveltitle);
 
                 var advnodes_level = false;
-                for (var i=0; i<new_nodes.length; i++)
+                // Weird, the flash editor showed the nodes in reversed order
+                for (var i=new_nodes.length-1; i>=0; i--)
                 {
                     var item = new_nodes[i];
                     var itemname = item;
