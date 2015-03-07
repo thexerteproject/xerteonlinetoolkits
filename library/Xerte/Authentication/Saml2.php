@@ -25,9 +25,8 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
     private $_record = array();
 
     private $_saml2config = array(
-        'ssourl' => 'https://sso.12change.eu/xertesso.php',
-        // 'slourl' => 'https://sso.12change.eu/xerteslo.php',
-        'slourl' => 'https://engine.surfconext.nl/logout',
+        'ssourl' => '<php-saml site>/xertesso.php',
+        'slourl' => '<php-saml-site>/xerteslo.php',
     );
 
     public function getUsername() {
