@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,6 +79,7 @@ class XerteXWDBuilder
 			}
 		}
 		array_push($this->menuattrs, $attr);
+
 		$str = "";
 		$count = count($this->menuattrs);
 		for($i=0; $i<$count; $i++)
@@ -124,7 +125,7 @@ class XerteXWDBuilder
 		{
 			if ($verbose == 'true')
 			{
-				print("The root element 'wizard' should have an attribute 'menus'\n");
+				print("The root element 'wizard' should have an attribute 'menus'. Skipped!\n");
 			}
 			else
 			{
@@ -132,6 +133,18 @@ class XerteXWDBuilder
 			}
 			return -1;
 		}
+        if ($xwd['restrict'] == 'develop')
+        {
+                if ($verbose == 'true')
+                {
+                    print("This 'wizard' is only suitable for develop mode! Skipped!\n");
+                }
+                else
+                {
+                    print("    Develop mode only: skipped!\n");
+                }
+          return -1;
+        }
 		$this->addMenuAttr((string)$xwd['menus']);
 		$newnode = $xwd->xpath('/wizard/pageWizard/newNodes/*');
 		if (count($newnode) == 0)
@@ -139,10 +152,17 @@ class XerteXWDBuilder
 			print("No elements found in element 'newNodes' of element pageWizard.\n");
 			return -1;
 		}
-        // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file
+        // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file or the 'modelFile' attribute
         $found = 'false';
-        $pos = strrpos($fname, '.');
-        $nodeName = substr($fname, 0, $pos);
+        if (strlen($xwd['modelFile']) == 0)
+        {
+            $pos = strrpos($fname, '.');
+            $nodeName = substr($fname, 0, $pos);
+        }
+        else
+        {
+            $nodeName = $xwd['modelFile'];
+        }
         foreach($newnode as $child)
         {
           if ($nodeName == $child->getName())
@@ -152,7 +172,7 @@ class XerteXWDBuilder
         }
         if ($found == 'false')
         {
-          print("No element '" . $child->getName() . "' found in 'newNodes' of element pageWizard.\nThis model will not work, skipped!\n");
+          print("No element '" . $nodeName . "' found in 'newNodes' of element pageWizard.\nThis model will not work, skipped!\n");
           return -1;
         }
 		// loop over the newnodes in wizard xwd, and add it to the learningObject element of the pagetemplate
