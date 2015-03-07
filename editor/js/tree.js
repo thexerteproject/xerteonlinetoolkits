@@ -460,7 +460,7 @@ var EDITOR = (function ($, parent) {
                     topmenu = true;
                 }
             }
-            while (!topmenu || id == 'treeroot');
+            while (!topmenu && id != 'treeroot');
             if (lmenu_options.menu)
             {
                 crumb = lmenu_options.menu + ' > ' + crumb;
@@ -762,7 +762,26 @@ var EDITOR = (function ($, parent) {
             }
         }
     */
+        //finally, do the help, if it exists...
+        /*
+        if (nodeInfo.info != undefined){
 
+
+            var comp = addComponent(TextArea,  {_x:250, _y:ctrlY + 20, html:true, wordWrap:true, hScrollPolicy:'off'});
+            comp.setSize(540, 576 - ctrlY + 20 - 50); //to the bottom of the form
+            comp.setStyle('color', 0x0066CC);
+            comp.setStyle('backgroundColor', 0xE0E0E0);
+            comp.setStyle('borderStyle', 'none');
+
+            var helpStr = '<font color="#0066CC">' + nodeInfo.info + '</font>';
+
+            //append the image src...
+            if (wizard.nfoObject.wizard[obj.target.selectedNode.nodeName].info.image != undefined){
+                helpStr += '<img src= "' + nodeInfo.info.image + '"/>'
+            }
+            comp.text = helpStr;
+        }
+        */
         //$('textarea.ckeditor').ckeditor(function(){}, { customConfig: 'config.js' });
         //$('textarea.ckeditor').ckeditor();
         toolbox.convertTextAreas();
