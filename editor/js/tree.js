@@ -67,6 +67,13 @@ var EDITOR = (function ($, parent) {
         });
         $('.ui-layout-west .header').append(buttons);
 
+        // If the menu is empty, disable insert
+        if (menu_data.menu.length == 1 && menu_data.menu[0].name == "")
+        {
+            $('#insert_button').prop('disabled', true);
+            $('#insert_button').addClass('disabled');
+        }
+
         // Page type
         $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
