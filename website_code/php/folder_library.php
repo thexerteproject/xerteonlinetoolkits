@@ -49,7 +49,7 @@ function make_new_folder($folder_id,$folder_name){
         
     }else{
 
-        $query = "INSERT INTO {prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
         $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
     }
 
