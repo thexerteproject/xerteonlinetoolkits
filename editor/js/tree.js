@@ -731,38 +731,11 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        // schedule MathJax
-        // Queue reparsing of MathJax - fails if no network connection
-       // try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-        // The optional parameters (what to do here, only enable the not used entries)
-
-    /*
-        for (var i=0; i<attributes.length; i++) {
-            if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
-                var attribute_name = attributes[i].name;
-                var attribute_value = attributes[i].value;
-
-                var options = getOptionValue(node_options['all'], attribute_name);
-                if (options != null)
-                {
-                    var output_string = '<tr class="wizardattribute">';
-                    if (options.optional == 'true')
-                    {
-                        output_string += '<td class="wizardoptional"><img src="img/optional.gif" />&nbsp;</td>';
-                    }
-                    else
-                    {
-                        output_string += '<td class="wizardparameter"></td>';
-                    }
-                    output_string += '<td class="wizardlabel">' + options.label + ' : </td>';
-                    output_string += '<td class="wizardvalue">' + displayDataType(attribute_value, options) + '</td>';
-                    output_string += '</tr>';
-                    $('#mainContent').append(output_string);
-                }
-            }
-        }
-    */
         //finally, do the help, if it exists...
+        if (wizard_data[node_name].info.length > 0)
+        {
+            $('#info').append(wizard_data[node_name].info);
+        }
         /*
         if (nodeInfo.info != undefined){
 

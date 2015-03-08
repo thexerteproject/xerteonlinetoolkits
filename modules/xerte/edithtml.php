@@ -237,6 +237,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="insert_subnodes">
 
             </div>
+            <div class="nodeInfo" id="info">
+
+            </div>
         </div>
         <div id="main_footer" class="footer">
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
