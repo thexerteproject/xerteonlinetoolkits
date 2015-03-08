@@ -741,7 +741,11 @@ var EDITOR = (function ($, parent) {
         //finally, do the help, if it exists...
         if (wizard_data[node_name].info.length > 0)
         {
-            $('#info').append(wizard_data[node_name].info);
+            $('#info').html(wizard_data[node_name].info);
+        }
+        else
+        {
+            $('#info').html("");
         }
         /*
         if (nodeInfo.info != undefined){
