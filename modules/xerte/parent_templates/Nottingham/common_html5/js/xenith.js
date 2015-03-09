@@ -37,6 +37,11 @@ var x_languageData  = [],
     x_mediaText     = [],
     x_timer;        // use as reference to any timers in page models - they are cancelled on page change
 
+if (typeof modelfilestrs == 'undefined')
+{
+    modelfilestrs = [];
+}
+
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
@@ -93,111 +98,123 @@ $(document).ready(function() {
     }
 
     // get xml data and sort it
-    $.ajax({
-        type: "GET",
-        url: x_projectXML,
-        dataType: "text",
-        success: function(text) {
-            var     newString = x_fixLineBreaks(text),
-                xmlData = $($.parseXML(newString)).find("learningObject"),
-                i, len;
-
-            for (i=0, len=xmlData[0].attributes.length; i<len; i++) {
-                x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
+    if (typeof dataxmlstr != 'undefined')
+    {
+        var newString = x_fixLineBreaks(dataxmlstr),
+        xmlData = $($.parseXML(newString)).find("learningObject");
+        x_projectDataLoaded(xmlData);
+    }
+    else {
+        $.ajax({
+            type: "GET",
+            url: x_projectXML,
+            dataType: "text",
+            success: function (text) {
+                var newString = x_fixLineBreaks(text),
+                    xmlData = $($.parseXML(newString)).find("learningObject");
+                x_projectDataLoaded(xmlData);
+            },
+            error: function () {
+                // can't have translation for this as if it fails to load we don't know what language file to use
+                $("body").append("<p>The project data has not loaded.</p>");
             }
-
-            x_pages = xmlData.children();
-            x_pages.each(function() {
-                var     linkID = $(this)[0].getAttribute("linkID"),
-                    pageID = $(this)[0].getAttribute("pageID"),
-                    page = {type:$(this)[0].nodeName, built:false};
-                if (linkID != undefined) {
-                    page.linkID = linkID;
-                }
-                if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
-                    page.pageID = pageID;
-                }
-                x_pageInfo.push(page);
-            });
-
-
-            if (x_pages.length < 2) {
-                // don't show navigation options if there's only one page
-                $("#x_footerBlock .x_floatRight").remove();
-            } else {
-                if (x_params.navigation == undefined) {
-                    x_params.navigation = "Linear";
-                }
-                if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
-                    x_pages.splice(0, 0, "menu");
-                    x_pageInfo.splice(0, 0, {type:'menu', built:false});
-                }
-            }
-			
-			if (x_params.fixDisplay != undefined) {
-				if ($.isNumeric(x_params.fixDisplay.split(",")[0]) == true && $.isNumeric(x_params.fixDisplay.split(",")[1]) == true) {
-					x_params.displayMode = x_params.fixDisplay.split(",");
-					x_fillWindow = false; // overrides fill window for touchscreen devices
-				}
-			}
-			
-			// sort any parameters in url - these will override those in xml
-			var tempUrlParams = window.location.search.substr(1,window.location.search.length).split("&");
-			var urlParams = {};
-			for (i=0; i<tempUrlParams.length; i++) {
-				urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
-			}
-			
-			// url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
-			if (urlParams.display != undefined) {
-				if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
-					x_params.displayMode = urlParams.display.split(",");
-					x_fillWindow = false; // overrides fill window for touchscreen devices
-					
-				} else if (urlParams.display == "fixed" || urlParams.display == "default" || urlParams.display == "full" || urlParams.display == "fill") {
-					if (x_browserInfo.touchScreen == true) {
-						x_fillWindow = true;
-					}
-					if (urlParams.display == "fixed" || urlParams.display == "default") { // default fixed size using values in css (800,600)
-						x_params.displayMode = "default";
-					} else if (urlParams.display == "full" || urlParams.display == "fill") {
-						x_params.displayMode = "full screen"
-					}
-				}
-			}
-			
-			// url hide parameter will remove x_headerBlock &/or x_footerBlock divs
-			if (urlParams.hide != undefined) {
-				if (urlParams.hide == "none") {
-					x_params.hideHeader = "false";
-					x_params.hideFooter = "false";
-				} else if (urlParams.hide == "both") {
-					x_params.hideHeader = "true";
-					x_params.hideFooter = "true";
-				} else if (urlParams.hide == "bottom") {
-					x_params.hideHeader = "false";
-					x_params.hideFooter = "true";
-				} else if (urlParams.hide == "top") {
-					x_params.hideHeader = "true";
-					x_params.hideFooter = "false";
-				}
-			}
-
-            x_getLangData(x_params.language);
-
-            // Setup nr of pages for tracking
-            XTSetOption('nrpages', x_pageInfo.length);
-            if (x_params.trackingMode != undefined) {
-                XTSetOption('tracking-mode', x_params.trackingMode);
-            }
-        },
-        error: function() {
-            // can't have translation for this as if it fails to load we don't know what language file to use
-            $("body").append("<p>The project data has not loaded.</p>");
-        }
-    });
+        });
+    }
 
 });
+
+x_projectDataLoaded = function(xmlData) {
+    var i, len;
+
+    for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
+        x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
+    }
+
+    x_pages = xmlData.children();
+    x_pages.each(function () {
+        var linkID = $(this)[0].getAttribute("linkID"),
+            pageID = $(this)[0].getAttribute("pageID"),
+            page = {type: $(this)[0].nodeName, built: false};
+        if (linkID != undefined) {
+            page.linkID = linkID;
+        }
+        if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
+            page.pageID = pageID;
+        }
+        x_pageInfo.push(page);
+    });
+
+
+    if (x_pages.length < 2) {
+        // don't show navigation options if there's only one page
+        $("#x_footerBlock .x_floatRight").remove();
+    } else {
+        if (x_params.navigation == undefined) {
+            x_params.navigation = "Linear";
+        }
+        if (x_params.navigation != "Linear" && x_params.navigation != "Historic" && x_params.navigation != undefined) { // 1st page is menu
+            x_pages.splice(0, 0, "menu");
+            x_pageInfo.splice(0, 0, {type: 'menu', built: false});
+        }
+    }
+
+    if (x_params.fixDisplay != undefined) {
+        if ($.isNumeric(x_params.fixDisplay.split(",")[0]) == true && $.isNumeric(x_params.fixDisplay.split(",")[1]) == true) {
+            x_params.displayMode = x_params.fixDisplay.split(",");
+            x_fillWindow = false; // overrides fill window for touchscreen devices
+        }
+    }
+
+    // sort any parameters in url - these will override those in xml
+    var tempUrlParams = window.location.search.substr(1, window.location.search.length).split("&");
+    var urlParams = {};
+    for (i = 0; i < tempUrlParams.length; i++) {
+        urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
+    }
+
+    // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
+    if (urlParams.display != undefined) {
+        if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
+            x_params.displayMode = urlParams.display.split(",");
+            x_fillWindow = false; // overrides fill window for touchscreen devices
+
+        } else if (urlParams.display == "fixed" || urlParams.display == "default" || urlParams.display == "full" || urlParams.display == "fill") {
+            if (x_browserInfo.touchScreen == true) {
+                x_fillWindow = true;
+            }
+            if (urlParams.display == "fixed" || urlParams.display == "default") { // default fixed size using values in css (800,600)
+                x_params.displayMode = "default";
+            } else if (urlParams.display == "full" || urlParams.display == "fill") {
+                x_params.displayMode = "full screen"
+            }
+        }
+    }
+
+    // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
+    if (urlParams.hide != undefined) {
+        if (urlParams.hide == "none") {
+            x_params.hideHeader = "false";
+            x_params.hideFooter = "false";
+        } else if (urlParams.hide == "both") {
+            x_params.hideHeader = "true";
+            x_params.hideFooter = "true";
+        } else if (urlParams.hide == "bottom") {
+            x_params.hideHeader = "false";
+            x_params.hideFooter = "true";
+        } else if (urlParams.hide == "top") {
+            x_params.hideHeader = "true";
+            x_params.hideFooter = "false";
+        }
+    }
+
+    x_getLangData(x_params.language);
+
+    // Setup nr of pages for tracking
+    XTSetOption('nrpages', x_pageInfo.length);
+    if (x_params.trackingMode != undefined) {
+        XTSetOption('tracking-mode', x_params.trackingMode);
+    }
+}
 
 // Make absolute urls from urls with FileLocation + ' in their strings
 x_makeAbsolute = function(html){
@@ -211,6 +228,16 @@ x_makeAbsolute = function(html){
             temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
         }
         pos = temp.indexOf('FileLocation + \'');
+    }
+    var pos = temp.indexOf('FileLocation%20+%20\'');
+    while (pos >= 0)
+    {
+        var pos2 = temp.substr(pos+20).indexOf("'") + pos;
+        if (pos2>=0)
+        {
+            temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 20, pos2-pos) + temp.substr(pos2+21);
+        }
+        pos = temp.indexOf('FileLocation%20+%20\'');
     }
     return temp;
 }
@@ -240,26 +267,35 @@ function x_fixLineBreaks(text) {
 
 // function gets data from language file
 function x_getLangData(lang) {
-    if (lang == undefined || lang == "undefined") {
-        lang = "en-GB";
+    if (typeof langxmlstr != 'undefined')
+    {
+        // We have a off-line object with the language definition in a string
+        // Convert to an XML object and continue like before
+        x_languageData = $($.parseXML(langxmlstr)).find("language");
+        x_setUp();
     }
-    $.ajax({
-        type: "GET",
-        url: "languages/engine_" + lang + ".xml",
-        dataType: "xml",
-        success: function(xml) {
-            x_languageData = $(xml).find("language");
-            x_setUp();
-        },
-        error: function() {
-            if (lang != "en-GB") { // no language file found - try default GB one
-                x_getLangData("en-GB");
-            } else { // hasn't found GB language file - set up anyway, will use fallback text in code
-                x_languageData = $("");
-                x_setUp();
-            }
+    else {
+        if (lang == undefined || lang == "undefined") {
+            lang = "en-GB";
         }
-    });
+        $.ajax({
+            type: "GET",
+            url: "languages/engine_" + lang + ".xml",
+            dataType: "xml",
+            success: function (xml) {
+                x_languageData = $(xml).find("language");
+                x_setUp();
+            },
+            error: function () {
+                if (lang != "en-GB") { // no language file found - try default GB one
+                    x_getLangData("en-GB");
+                } else { // hasn't found GB language file - set up anyway, will use fallback text in code
+                    x_languageData = $("");
+                    x_setUp();
+                }
+            }
+        });
+    }
 }
 
 
@@ -369,6 +405,9 @@ function x_setUp() {
 	if (x_params.stylesheet != undefined) {
 		x_insertCSS(eval(x_params.stylesheet));
 	}
+    if (x_params.theme != undefined && x_params.theme != "default") {
+        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
+    }
 	
 	
 	if (x_pageInfo[0].type == "menu") {
@@ -634,35 +673,45 @@ function x_setUp() {
 		});
 	
 	if (x_params.kblanguage != undefined) {
-		$.ajax({
-			type: "GET",
-			url: x_templateLocation + "common_html5/charPad.xml",
-			dataType: "xml",
-			success: function(xml) {
-				x_dialogInfo.push({type:'language', built:false});
-				
-				var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
-					specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
-					specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
-				
-				for (var i=0, len=specCharsLower.length; i<len; i++) {
-					x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
-				}
-				
-				$x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
-					var $this = $(this);
-					if ($this.attr("readonly") == undefined) { // focus is on editable text field
-						x_inputFocus = this;
-						if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
-							x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
-						}
-					}
-				});
-			},
-			error: function() {
-				delete x_params["kblanguage"];
-			}
-		});
+        if (typeof charpadstr != 'undefined')
+        {
+            var xml = $($.parseXML(charpadstr));
+            x_charmapLoaded(xml);
+        }
+        else {
+            $.ajax({
+                type: "GET",
+                url: x_templateLocation + "common_html5/charPad.xml",
+                dataType: "xml",
+                success: function (xml) {
+                    x_charmapLoaded(xml);
+                    /*
+                     x_dialogInfo.push({type:'language', built:false});
+
+                     var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
+                     specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
+                     specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
+
+                     for (var i=0, len=specCharsLower.length; i<len; i++) {
+                     x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
+                     }
+
+                     $x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
+                     var $this = $(this);
+                     if ($this.attr("readonly") == undefined) { // focus is on editable text field
+                     x_inputFocus = this;
+                     if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
+                     x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
+                     }
+                     }
+                     });
+                     */
+                },
+                error: function () {
+                    delete x_params["kblanguage"];
+                }
+            });
+        }
 	}
 	
 	
@@ -769,6 +818,29 @@ function x_setUp() {
     x_navigateToPage(true, x_startPage);
 }
 
+function x_charmapLoaded(xml)
+{
+    x_dialogInfo.push({type:'language', built:false});
+
+    var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
+        specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
+        specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
+
+    for (var i=0, len=specCharsLower.length; i<len; i++) {
+        x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
+    }
+
+    $x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
+        var $this = $(this);
+        if ($this.attr("readonly") == undefined) { // focus is on editable text field
+            x_inputFocus = this;
+            if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
+                x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
+            }
+        }
+    });
+}
+
 function x_dialog(text){
 
     window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + text + '</p>');
@@ -842,7 +914,7 @@ function x_changePage(x_gotoPage) {
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
         $("#pageBg").remove();
-        $("#x_pageNarration").remove(); // narration flash / html5 audio player
+        $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
@@ -888,7 +960,7 @@ function x_changePage(x_gotoPage) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
         XTEnterPage(x_currentPage, pageTitle);
 
-        var builtPage = x_pageInfo[x_currentPage].built;
+        var builtPage = x_makeAbsolute(x_pageInfo[x_currentPage].built);
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
@@ -932,7 +1004,15 @@ function x_changePage(x_gotoPage) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
         XTEnterPage(x_currentPage, pageTitle);
 
-        $("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + x_pageInfo[x_currentPage].type + ".html", x_loadPage);
+        var modelfile = x_pageInfo[x_currentPage].type;
+        if (typeof modelfilestrs[modelfile] != 'undefined')
+        {
+            $("#x_page" + x_currentPage).html(modelfilestrs[modelfile]);
+            x_loadPage("", "success", "");
+        }
+        else {
+            $("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
+        }
     }
 
     // Queue reparsing of MathJax - fails if no network connection
@@ -1064,7 +1144,7 @@ function x_pageLoaded() {
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-        $("#x_footerBlock div:first").before('<div id="x_pageNarration"></div>');
+        $("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
         $("#x_footerBlock #x_pageNarration").mediaPlayer({
             type        :"audio",
             source      :x_currentPageXML.getAttribute("narration"),
@@ -1194,7 +1274,18 @@ function x_openDialog(type, title, close, position, load) {
                     .parent().hide();
 
                 if (load == undefined) { // load dialog contents from a file in the models_html5 folder called [type].html
-                    $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function() {x_setDialogSize($x_popupDialog, position)});
+                    if (typeof modelfilestrs[type] != 'undefined')
+                    {
+                        load = modelfilestrs[type];
+                        $x_popupDialog.html(load);
+                        x_setDialogSize($x_popupDialog, position);
+                    }
+                    else
+                    {
+                        $x_popupDialog.load(x_templateLocation + "models_html5/" + type + ".html", function () {
+                            x_setDialogSize($x_popupDialog, position)
+                        });
+                    }
 
                 } else {
                     $x_popupDialog.html(load);

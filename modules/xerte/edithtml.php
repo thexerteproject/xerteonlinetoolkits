@@ -105,6 +105,44 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
 
     /**
+     * build an array of available themes for this template
+     */
+    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
+    $ThemeList = array();
+    // Add default theme
+    $ThemeList[] = array(name => "default", display_name => "Xerte Online Toolkits", description => "Xerte Online Toolkits", preview => "");
+    $d = opendir($theme_folder);
+    while($f = readdir($d)){
+        if(is_dir($theme_folder . $f)){
+            if (file_exists($theme_folder . $f . "/" . $f . ".info"))
+            {
+                $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
+                $themeProperties = new StdClass();
+                foreach ($info as $line) {
+                    $attr_data = explode(":", $line, 2);
+                    if (empty($attr_data) || sizeof($attr_data) != 2) {
+                        continue;
+                    }
+                    switch (trim(strtolower($attr_data[0]))) {
+                        case "name" : $themeProperties->name = trim($attr_data[1]);
+                            break;
+                        case "display name" : $themeProperties->display_name = trim($attr_data[1]);
+                            break;
+                        case "description" : $themeProperties->description = trim($attr_data[1]);
+                            break;
+                        case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
+                            break;
+                        case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['template_name'] . "/" . $f . "/" . trim($attr_data[1]);
+                            break;
+                    }
+                }
+                if (substr($themeProperties->enabled, 0, 1) == "y") {
+                    $ThemeList[] = array(name => $themeProperties->name, display_name => $themeProperties->display_name, description => $themeProperties->description, preview => $themeProperties->preview);
+                }
+            }
+        }
+    }
+    /**
      * sort of the screen sies required for the preview window
      */
 
@@ -199,6 +237,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="insert_subnodes">
 
             </div>
+            <div class="nodeInfo" id="info">
+
+            </div>
         </div>
         <div id="main_footer" class="footer">
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
@@ -265,6 +306,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
+    echo "theme_list=" . json_encode($ThemeList) . ";\n";
     ?>
 </script>
 <script type="text/javascript" src="editor/js/data.js"></script>

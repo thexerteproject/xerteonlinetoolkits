@@ -38,7 +38,7 @@ var EDITOR = (function ($, parent) {
         };
 
         // Build the page menu object
-        var j, temp_menu_data = [],
+        var j, temp_menu_data = [], info = "",
             categories = String(wizard_xml[0].attributes.menus.value).split(',');
 
         for (j=0; j<categories.length; j++) {
@@ -54,7 +54,7 @@ var EDITOR = (function ($, parent) {
         // Parse the xml
         $(wizard_xml.children()).each(function(i) {
             var main_node = $(this)[0].nodeName;
-            //console.log("Main node: " + main_node);
+            console.log("Main node: " + main_node);
             var menu_options = {};
             for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
                 menu_options[a[j].name] = a[j].value;
@@ -68,6 +68,12 @@ var EDITOR = (function ($, parent) {
                 new_nodes_defaults.push($(this)[0].firstChild.data);
             });
 
+            // info
+            info = "";
+            if ($(this).children('info').length > 0)
+            {
+                info = $(this).children('info')[0].firstChild.data;
+            }
             // collect and organize the options
             var node_options = {};
             var all_options = [];
@@ -116,7 +122,7 @@ var EDITOR = (function ($, parent) {
             }
 
             $($(this).children()).each(function() {
-                //console.log("   sub node: " + $(this)[0].nodeName);
+                console.log("   sub node: " + $(this)[0].nodeName);
                 var node_params = {};
                 for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
                     //console.log("      attr: " + a[j].name + ":" + a[j].value);
@@ -178,7 +184,7 @@ var EDITOR = (function ($, parent) {
             node_options['optional'] = opt_options;
             node_options['all'] = all_options;
 
-            wizard_data[main_node] = {menu_options : menu_options,  new_nodes: new_nodes, new_nodes_defaults: new_nodes_defaults, node_options : node_options};
+            wizard_data[main_node] = {menu_options : menu_options,  new_nodes: new_nodes, new_nodes_defaults: new_nodes_defaults, node_options : node_options, info : info};
         });
         //wizard_data.menus = String(wizard_xml[0].attributes["menus"].value).split(',');
 
