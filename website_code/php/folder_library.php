@@ -49,13 +49,13 @@ function make_new_folder($folder_id,$folder_name){
         
     }else{
 
-        $query = "INSERT INTO {prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+        $query = "INSERT INTO {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
         $params = array($_SESSION['toolkits_logon_id'], $folder_id, $folder_name, date('Y-m-d'));
     }
 
     $ok = db_query($query, $params);
     
-    if($ok) {
+    if($ok !== false) {
 
         receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder creation succeeded for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
 
@@ -89,10 +89,6 @@ function delete_folder($folder_id){
 
     $database_id = database_connect("Delete folder database connect success","Delete folder database connect failed");
 
-    $folder_id = substr($folder_id,strpos($folder_id,"_")+1,strlen($folder_id));
-
-    //echo $folder_id;
-
     $prefix = $xerte_toolkits_site->database_table_prefix;
     
     $query_to_delete_folder = "delete from {$prefix}folderdetails where folder_id=?";
@@ -101,13 +97,13 @@ function delete_folder($folder_id){
     //echo $query_to_delete_folder;
 
     $ok = db_query($query_to_delete_folder, $params);
-    if($ok) {
+    if($ok !== false) {
 
-        receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " deleted for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
+        receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " deleted for " . $_SESSION['toolkits_logon_username'], "Folder deletion succeeded for " . $_SESSION['toolkits_logon_username']);
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder " . $folder_id . " not deleted for " . $_SESSION['toolkits_logon_username'], "Folder creation succeeded for " . $_SESSION['toolkits_logon_username']);
+        receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Folder " . $folder_id . " not deleted for " . $_SESSION['toolkits_logon_username'], "Folder deletion falied for " . $_SESSION['toolkits_logon_username']);
 
     }
 
@@ -123,111 +119,70 @@ function delete_folder($folder_id){
  * @author Patrick Lockley
  */
 
-function move_file($files_to_move,$destination){
+function move_file($template_id,$destination)
+{
 
     global $xerte_toolkits_site;
 
     $mysql_id = database_connect("Move file database connect success", "Move file database connect failure");
 
-    $new_files_array=explode(",",$files_to_move);
 
-    /*
-     * Files array can be complicated, and this thread can lock the system, so limit max files to 50
-     */
+    if (($destination != "")) {
 
-    if((count($new_files_array)!=0)&&(count($new_files_array)<=50)){
 
         /*
-         * check their is a destination
+         * Move files in the database
          */
 
-        if(($destination!="")){
+        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-            for($x=0;$x!=count($new_files_array);$x++){
+        $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE template_id = ?  AND user_id = ?";
+        $params = array($destination, $template_id, $_SESSION['toolkits_logon_id']);
 
-                // check there are files
+        $ok = db_query($query_file, $params);
 
-                if($new_files_array[$x]!=""){
+        if ($ok !== false) {
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
 
-                    if($new_files_array[$x+1]=="file"){
+        } else {
 
-                        if($new_files_array[$x+2]=="folder_workspace"){
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $template_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
 
-                            $parent = get_user_root_folder();				
+        }
+    }
+}
 
-                        }
+function move_folder($folder_id,$destination)
+{
 
-                        if($destination=="folder_workspace"){
+    global $xerte_toolkits_site;
 
-                            $destination = get_user_root_folder();				
+    $mysql_id = database_connect("Move file database connect success", "Move file database connect failure");
 
-                        }
 
-                        if($destination=="recyclebin"){
+    if (($destination != "")) {
 
-                            $destination = get_recycle_bin();				
 
-                        }
+        /*
+         * Move folder in database
+         */
 
-                        /*
-                         * Move files in the database
-                         */
+        $prefix = $xerte_toolkits_site->database_table_prefix;
 
-                        $prefix = $xerte_toolkits_site->database_table_prefix;
-                        
-                        $query_file = "UPDATE {$prefix}templaterights SET folder = ? WHERE template_id = ?  AND user_id = ?";
+        $query_folder = "UPDATE {$prefix}folderdetails SET folder_parent = ? WHERE (folder_id = ?  )";
+        $params = array($destination, $folder_id);
 
-                        $params = array($destination, $new_files_array[$x], $_SESSION['toolkits_logon_id']); 
-                        
-                        $ok = db_query($query_file, $params);
-                        
-                        if($ok) {
-                            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
+        $ok = db_query($query_folder, $params);
+        if ($ok) {
 
-                        }else{
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $folder_id . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x] . " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
 
-                            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $new_files_array[$x]. " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x]. " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
+        } else {
 
-                        }
-
-                    }else{
-
-                        /*
-                         * destination is the root folder
-                         */
-
-                        if($destination=="folder_workspace"){
-
-                            $destination = get_user_root_folder();				
-
-                        }
-                        $prefix = $xerte_toolkits_site->database_table_prefix;
-
-                        $query_folder = "UPDATE {$prefix}folderdetails SET folder_parent = ? WHERE (folder_id = ?  )";
-                        $params = array($destination, $new_files_array[$x]);
-
-                        $ok = db_query($query_folder, $params);
-                        if($ok) {
-
-                            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "Folder " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "File " . $new_files_array[$x]. " moved into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
-
-                        }else{
-
-                            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $new_files_array[$x]. " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Folder " . $new_files_array[$x]. " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);	
-
-                        }
-
-                    }
-
-                    $x+=2;		
-
-                }
-
-            }
+            receive_message($_SESSION['toolkits_logon_username'], "USER", "SUCCESS", "File " . $folder_id . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username'], "Folder " . $new_files_array[$x] . " failed to move into " . $destination . " for " . $_SESSION['toolkits_logon_username']);
 
         }
 
     }
-
-
 }
+

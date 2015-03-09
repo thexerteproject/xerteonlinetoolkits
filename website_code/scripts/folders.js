@@ -39,7 +39,8 @@ function file_status_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 		
-		screen_refresh();
+		//screen_refresh();
+        refresh_workspace();
 		
 	}
 }
@@ -61,7 +62,7 @@ function folder_status_stateChanged(){
 
 		document.getElementById("folder_feedback").innerHTML = xmlHttp.responseText;
 
-		screen_refresh();
+		refresh_workspace();
 
 		folder_timeout = setTimeout("popup_close()",500);
 
@@ -118,38 +119,28 @@ function create_folder(){
 			/*
 			* if a folder is selected, create the folder in that folder
 			*/
+            var tree = $.jstree.reference("#workspace"),
+                ids = tree.get_selected();
+			if(ids.length==1){
+                var node = workspace.nodes[ids[0]];
+                if(node.xot_type == "folder"){
+                    /*
+                    * Open this folder
+                    */
 
-			if(drag_manager.selected_items.length==1){
+                    setTimeout(function () {tree.open_node(node.id)}, 250);
 
-				if(drag_manager.last_selected.id!=undefined){
 
-					if(drag_manager.last_selected.id.indexOf("folder_")!=-1){
+                    xmlHttp.send('folder_id=' + node.xot_id + '&folder_name=' + foldername);
 
-						drag_manager.last_selected.open = true;
-						
-						/*
-						* Add this folder to the open array
-						*/
-					
-						open_folders.push(drag_manager.last_selected);
+                }else{
 
-						xmlHttp.send('folder_id=' + drag_manager.last_selected.id.substr(drag_manager.last_selected.id.indexOf("_")+1,drag_manager.last_selected.id.length) + '&folder_name=' + foldername);
+                    xmlHttp.send('folder_id=file_area&folder_name=' + foldername);
 
-					}else{
-
-						xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
-
-					}
-
-				}else{
-
-					xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
-
-				}
-
+                }
 			}else{
 
-				xmlHttp.send('folder_id=' + "file_area" + '&folder_name=' + foldername);
+				xmlHttp.send('folder_id=file_area&folder_name=' + foldername);
  
 			}
 
@@ -177,7 +168,7 @@ function make_new_folder(){
 	/*
 	* place the folder popup
 	*/
-
+/*
 	tag = document.getElementById("file_area");
 
 	x=0;
@@ -201,9 +192,9 @@ function make_new_folder(){
 	} 
 	
 	file_area_width = document.getElementById("file_area").offsetWidth;
-
-	document.getElementById("message_box").style.left = x + (file_area_width/2) - 150 + "px";
-	document.getElementById("message_box").style.top = y + 100 +"px";	
+*/
+	document.getElementById("message_box").style.left = "250px"; // x + (file_area_width/2) - 150 + "px";
+	document.getElementById("message_box").style.top = "150px";  // y + 100 +"px";
 	document.getElementById("message_box").style.display = "block";
 
 	//document.getElementById("message_box").innerHTML = '<div class="corner" style="background-image:url(website_code/images/MessBoxTL.gif); background-position:top left;">		</div><div class="central" style="background-image:url(website_code/images/MessBoxTop.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxTR.gif); background-position:top right;"></div><div class="main_area_holder_1"><div class="main_area_holder_2"><div class="main_area" id="dynamic_section"><p>What would you like to call your folder?</p><form id="foldernamepopup" name="foldercreateform" action="javascript:create_folder()" method="post" enctype="text/plain" style="display:inline"><div style="margin-left: 30px;"><input type="text" width="200" id="foldername" name="foldername" /><br/><input type="image" src="website_code/images/Bttn_CreateOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CreateOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CreateClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CreateOff.gif\'" style="padding:3px" /><img src="website_code/images/Bttn_CancelOff.gif" onmouseover="this.src=\'website_code/images/Bttn_CancelOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_CancelClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_CancelOff.gif\'" onclick="javascript:popup_close()" style="padding:3px" /></div></form><p><span id="folder_feedback"></span></p></div></div></div><div class="corner" style="background-image:url(website_code/images/MessBoxBL.gif); background-position:top left;"></div><div class="central" style="background-image:url(website_code/images/MessBoxBottom.gif);"></div><div class="corner" style="background-image:url(website_code/images/MessBoxBR.gif); background-position:top right;"></div>';
@@ -243,54 +234,14 @@ function popup_close(){
 	 * @author Patrick Lockley
 	 */
 
-function copy_to_folder(items,items_type,items_parent,destination){
+function copy_to_folder(data){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
 
-	files_string = "";
-
-	for(x=0;x!=items.length;x++){
-
-		/*
-		* move through the array, formatting the string
-		*/
-
-		if(document.getElementById(items[x]).parentNode!=document.getElementById(destination)){
-
-			if(String(items[x]).indexOf("_")!=-1){
-		
-				items[x]=String(items[x]).substr(String(items[x]).indexOf("_")+1,String(items[x]).length);
-			
-			}
-
-			/*
-			* create the string - file id, then the type, then its parent
-			*/
-
-			if(files_string==""){
-				files_string=items[x]+","+items_type[x]+","+items_parent[x];
-
-			}else{
-				files_string+=","+items[x]+","+items_type[x]+","+items_parent[x];
-			}
-
-
-		}
-
-	}
-
-	if(destination!="folder_workspace"){
-	
-		if(destination=="folderchild_workspace"){
-
-			destination = "folder_workspace";
-
-		}else{
-
-			destination = destination.substr(destination.indexOf("_")+1,destination.length);
-
-		}
-
-	}
-
+    // node to move
+    var node = workspace.nodes[data.node.id];
+    var destination = workspace.nodes[data.parent];
+    setTimeout(function () {tree.open_node(destination.id)}, 250);
 	if(setup_ajax()!=false){
     
 		var url="website_code/php/folders/copy_to_new_folder.php";
@@ -299,7 +250,13 @@ function copy_to_folder(items,items_type,items_parent,destination){
 		xmlHttp.onreadystatechange=file_status_stateChanged;
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		xmlHttp.send('files=' + files_string + '&destination=' + destination); 
+        if (node.xot_type == "folder") {
+            xmlHttp.send('folder_id=' + node.xot_id + '&destination=' + destination.xot_id);
+        }
+        else
+        {
+            xmlHttp.send('template_id=' + node.xot_id + '&destination=' + destination.xot_id);
+        }
 
 	}
 	

@@ -42,6 +42,15 @@ database_connect("New template connect","new template fail");
 
 $root_folder_id = get_user_root_folder();
 
+if (isset($_POST["folder_id"]) && strlen($_POST["folder_id"]) > 0)
+{
+    $folder_id = $_POST["folder_id"];
+}
+else
+{
+    $folder_id = $root_folder_id;
+}
+
 /*
  * get the maximum id number from templates, as the id for this template
  */
@@ -67,7 +76,7 @@ $lastid = db_query($query_for_new_template, array($new_template_id, $_SESSION['t
 if($lastid !== false) {
     _debug("Created new template entry in db");
     $query_for_template_rights = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
-    $lastid = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", "" . $root_folder_id));
+    $lastid = db_query($query_for_template_rights, array($new_template_id, $_SESSION['toolkits_logon_id'], "creator", "" . $folder_id));
 
     // templaterights doesn't have a AI field, so $lastid returns always 0, check explicitly for false
     if($lastid !==false) {
