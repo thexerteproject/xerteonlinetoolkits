@@ -199,26 +199,24 @@ function edit_window(admin,edit){
 
     if(!admin){
 
-        x=0;
+        var tree = $.jstree.reference("#workspace"),
+            ids = tree.get_selected();
+        if (ids.length == 0)
+            return;
 
-        while(x!=drag_manager.selected_items.length){
+        for(var i=0; i<ids.length; i++)
+        {
+            var node = workspace.nodes[ids[i]];
+            if(node.xot_type == "file"){
 
-            if(drag_manager.selected_items[x].className=="file"){
-
-                if(drag_manager.selected_items[x].parentNode.id!="folderchild_recyclebin"){
+                if(node.parent != workspace.recyclebin_id){
 				
-					size = drag_manager.selected_items[x].getAttribute("editor_size").split(",");
-                    //window.location = site_url + url_return("edit", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id;
+					size = node.editor_size.split(",");
 
-					
 					if(size.length==1){
-					
-						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id );
-					
+						var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id );
 					}else{
-
-						var NewEditWindow = window.open(site_url + url_return(edit, (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "editwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
-
+						var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
 					}
 
                     try{
@@ -226,17 +224,11 @@ function edit_window(admin,edit){
                         xmlHttp=new XMLHttpRequest();
 
                     }catch (e){    // Internet Explorer    
-
                         try{
-
                             xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-
-                        }catch (e){      
-
-                            try{        
-
+                        }catch (e){
+                            try{
                                 xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-
                             }catch (e){
 
                             }      
@@ -249,7 +241,7 @@ function edit_window(admin,edit){
 					
                     NewEditWindow.focus();
 
-                    window_id = "editwindow" + drag_manager.selected_items[x].id;
+                    window_id = "editwindow" + node.id;
 
                     window_open = false;
 					if (typeof(edit_window_open) != 'undefined') {
@@ -267,7 +259,7 @@ function edit_window(admin,edit){
 
                     if(!window_open){
 
-                        edit_window_open.push(drag_manager.selected_items[x].id);
+                        edit_window_open.push(node_id);
 
                     }
 
@@ -487,24 +479,28 @@ function preview_window(admin){
     if(!admin){
 
         if(setup_ajax()!=false){
+            var tree = $.jstree.reference("#workspace"),
+                ids = tree.get_selected();
+            if (ids.length == 0)
+                return;
 
-            x=0;
+            for(var i=0; i<ids.length; i++)
+            {
+                var node = workspace.nodes[ids[i]];
 
-            while(x!=drag_manager.selected_items.length){
+                if(node.xot_type=="file"){
 
-                if(drag_manager.selected_items[x].className=="file"){
-
-					size = drag_manager.selected_items[x].getAttribute("preview_size").split(",");
+					size = node.preview_size.split(",");
 					
 					if(size.length!=1){
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=" + size[1] + ", width=" + size[0] + ", resizable=1" );
+						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=1" );
 						
 					}else{
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), "previewwindow" + drag_manager.selected_items[x].id, "height=768,width=1024,scrollbars=yes,resizable=true");
+						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=768,width=1024,scrollbars=yes,resizable=true");
 						
 					}
 
@@ -587,66 +583,40 @@ function publishproperties_window(admin){
  * @author Patrick Lockley
  */
 
-function properties_window(admin){
+function properties_window(admin) {
+    if (!admin) {
+        var tree = $.jstree.reference("#workspace"),
+            ids = tree.get_selected();
+        if (ids.length == 0)
+            return;
 
-    if(!admin){
-
-        if(document.getElementById("folder_workspace").mainhighlight){
-
-            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=600, width=635" );
-
+        if (workspace.nodes[ids[0]].type == "workspace") {
+            var NewWindow = window.open(site_url + url_return("workspaceproperties", null), "workspace", "height=600, width=635");
             NewWindow.window_reference = self;
-
             NewWindow.focus();
-
-        }else{
-
-            x=0;
-
-            while(x!=drag_manager.selected_items.length){
-
-                if(drag_manager.selected_items[x].className=="file"){
-
-                    if(drag_manager.selected_items[x].parentNode.id!="folderchild_recyclebin"){
-
-                        var NewWindow = window.open(site_url + url_return("properties", (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length))), (drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_")+1,drag_manager.selected_items[x].id.length)), "height=600, width=635" );
-
+        } else {
+            for (var i = 0; i < ids.length; i++) {
+                if (workspace.nodes[ids[i]].type != "folder") {
+                    if (workspace.nodes[ids[i]].parent != workspace.recyclebin_id) {
+                        var NewWindow = window.open(site_url + url_return("properties", workspace.nodes[ids[i]].xot_id), workspace.nodes[ids[i]].xot_id, "height=600, width=635");
                         NewWindow.window_reference = self;
-
                         NewWindow.focus();
-
-                    }else{
-
+                    } else {
                         alert(RECYCLE_PROPERTIES);
-
                     }
-
-                }else{
-
-                    var NewWindow = window.open(site_url + url_return("folderproperties", (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder")), (drag_manager.selected_items[x].id.substr(7,drag_manager.selected_items[x].id.length)+"_folder"), "height=600, width=635" );
-
+                } else {
+                    var NewWindow = window.open(site_url + url_return("folderproperties", workspace.nodes[ids[i]].xot_id + "_folder"), workspace.nodes[ids[i]].xot_id + "_folder", "height=600, width=635");
                     NewWindow.window_reference = self;
-
                     NewWindow.focus();
-					
                 }
-
-                x++;
-
             }
-
         }
-
-    }else{
-
-        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=600, width=630" );
+    } else {
+        var NewWindow = window.open(site_url + url_return("properties", admin), admin, "height=600, width=630");
 
         NewWindow.window_reference = self;
-
         NewWindow.focus();
-
     }
-
 }
 
 /**
@@ -658,19 +628,15 @@ function properties_window(admin){
  */
 
 
-function selection_changed(){
-
+function refresh_workspace(){
     if(setup_ajax()!=false){
-
-        var url="website_code/php/templates/sort_templates.php";
+        var url="website_code/php/templates/get_templates_sorted.php";
 
         xmlHttp.open("post",url,true);
-        xmlHttp.onreadystatechange=selectionchanged_stateChanged;
+        xmlHttp.onreadystatechange=refreshworkspace_stateChanged;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('sort_type=' + document.sorting.type.value); 
-
     }
-
 }
 
 /**
@@ -682,17 +648,50 @@ function selection_changed(){
  */
 
 
-function selectionchanged_stateChanged(){ 
+function refreshworkspace_stateChanged(){
 
     if (xmlHttp.readyState==4){ 
 
-        document.getElementById('file_area').innerHTML = xmlHttp.responseText;
+        //document.getElementById('file_area').innerHTML = xmlHttp.responseText;
 
-        sort_display_settings();	
+        var response=xmlHttp.responseText;
+        workspace = JSON.parse(response);
+        init_workspace();
 
     }
 
-} 
+}
+
+function getProjectInformation(user_id, template_id){
+    if(setup_ajax()!=false){
+        var url="website_code/php/templates/get_template_info.php";
+
+        xmlHttp.open("post",url,true);
+        xmlHttp.onreadystatechange=getProjectInformation_stateChanged;
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xmlHttp.send('user_id=' + user_id + '&template_id=' + template_id);
+    }
+}
+
+/**
+ *
+ * Function selection changed state changed
+ * This function redisplays the file area after sorting
+ * @version 1.0
+ * @author Patrick Lockley
+ */
+
+
+function getProjectInformation_stateChanged(){
+
+    if (xmlHttp.readyState==4){
+
+        document.getElementById('project_information').innerHTML = xmlHttp.responseText;
+
+    }
+
+}
+
 
 /**
  * 
@@ -752,7 +751,8 @@ function recycle_bin_remove_all_template(template_id){
 
                 }else{
 
-                    screen_refresh();
+                    //screen_refresh();
+                    refresh_workspace();
 
                 }						
 
@@ -812,7 +812,8 @@ function delete_stateChanged(){
 
         }		
 
-        screen_refresh();
+        //screen_refresh();
+        refresh_workspace();
 
     }
 
@@ -827,12 +828,15 @@ function delete_stateChanged(){
  */
 
 function duplicate_template(){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
 
-    if(drag_manager.selected_items.length==1){
+    if(ids.length==1){
 
-        if(drag_manager.selected_items[0].id.indexOf("folder")==-1){	
+        var node = workspace.nodes[ids[0]];
+        if(node.xot_type=="file"){
 
-            if(drag_manager.selected_items[0].parentNode.id!="folderchild_recyclebin"){
+            if(node.parent!= workspace.recyclebin_id){
 
                 /*
                  * code to prevent folders being dupped
@@ -842,11 +846,11 @@ function duplicate_template(){
 
                     var url="website_code/php/templates/duplicate_template.php";
 
-                    template_id = drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length);
+                    template_id = node.xot_id;
 
-                    template_name = drag_manager.selected_items[0].innerHTML.substr(drag_manager.selected_items[0].innerHTML.indexOf(">")+1,drag_manager.selected_items[0].innerHTML.length);
+                    template_name = node.text;
 
-                    folder_id = drag_manager.selected_items[0].parentNode.id.substr(drag_manager.selected_items[0].parentNode.id.indexOf("_")+1,drag_manager.selected_items[0].parentNode.id.length);
+                    folder_id = workspace.nodes[node.parent].xot_id;
 
                     xmlHttp.open("post",url,true);
                     xmlHttp.onreadystatechange=duplicate_stateChanged;
@@ -867,7 +871,7 @@ function duplicate_template(){
 
         }
 
-    }else if(drag_manager.selected_items.length==0){
+    }else if(ids.length==0){
 
         alert(DUPLICATE_PROMPT_OTHER);
 
@@ -897,7 +901,8 @@ function duplicate_stateChanged(){
 
         }
 
-        screen_refresh();
+        //screen_refresh();
+        refresh_workspace();
 
     }
 
@@ -969,115 +974,65 @@ function publish_stateChanged(){
 
 function remove_this(){
 
-    if(drag_manager.selected_items.length==0){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
+    if (ids.length == 0)
+        return;
 
-        if(document.getElementById("recyclebin").mainhighlight){
-		
-            var response = confirm(RECYCLE_EMPTY);
+    if(ids[0] == workspace.recyclebin_id) {
+        var response = confirm(RECYCLE_EMPTY);
 
-            if(response){
+        if (response) {
+            var node = workspace.nodes[ids[0]];
+            var folder_node = tree.get_node(node.id, false);
 
-                x=0;
-
-                number_of_files_to_delete = document.getElementById("folderchild_recyclebin").childNodes.length;
-
-                while(x!=document.getElementById("folderchild_recyclebin").childNodes.length){
-
-                    recycle_bin_remove_all_template(document.getElementById("folderchild_recyclebin").childNodes[x].id.substr(document.getElementById("folderchild_recyclebin").childNodes[x].id.indexOf("_"),document.getElementById("folderchild_recyclebin").childNodes[x].id.length));
-
-                    x++;
-
-                }
-
-                //screen_refresh();
-
-
+            number_of_files_to_delete =folder_node.children.length;
+            for (var i=0; i<folder_node.children.length; i++)
+            {
+                recycle_bin_remove_all_template(workspace.nodes[folder_node.children[i]].xot_id);
             }
-
         }
+    }
+    else if (ids[0] == workspace.workspace_id)
+    {
+        alert(WORKSPACE_DELETE);
+    }else{
 
-        if(document.getElementById("folder_workspace").mainhighlight){
-            alert(WORKSPACE_DELETE);
-        }
-
-    }else{	
-
-        if(drag_manager.selected_items.length!=1){
-
+        if(ids.length!=1){
             var response = confirm(DELETE_PROMPT);
-
         }else{
-
-            data_string = drag_manager.selected_items[0].innerHTML;
-
-            name_string = data_string.split(">");
-			
-			if(name_string.length==4){
-			
-				var response = confirm(name_string[2].split("<").shift() + "\n\n" + DELETE_PROMPT);
-				
-			}else{
-			
-				var response = confirm(name_string[1] + "\n\n" + DELETE_PROMPT);
-			
-			}
-
+            var response = confirm(workspace.nodes[ids[0]].text + "\n\n" + DELETE_PROMPT);
         }
 
         if(response){
-
-            x=0;
-
-            while(x!=drag_manager.selected_items.length){
-
-                if(drag_manager.selected_items[x].className=="file"){
-
-                    if(drag_manager.selected_items[x].parentNode.id=="folderchild_recyclebin"){
-
-                        var answer = confirm(DELETE_PERMENANT_PROMPT + " - " + drag_manager.selected_items[x].innerHTML.substr(drag_manager.selected_items[x].innerHTML.indexOf(">")+1,drag_manager.selected_items[x].innerHTML.length));
-
+            for(var i=0; i<ids.length; i++)
+            {
+                var node = workspace.nodes[ids[i]];
+                if(node.xot_type=="file"){
+                    if(node.parent==workspace.recyclebin_id){
+                        var answer = confirm(DELETE_PERMENANT_PROMPT + " - " + node.text);
                         if(answer){
-
-                            remove_template(drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_"),drag_manager.selected_items[x].id.length));			
+                            remove_template(node.xot_id);
                         }
-
                     }else{
-
-                        delete_template(drag_manager.selected_items[x].id.substr(drag_manager.selected_items[x].id.indexOf("_"),drag_manager.selected_items[x].id.length));				
-
+                        delete_template(node.xot_id);
                     }
-
                 }else{
+                    var folder_node = tree.get_node(node.id, false);
 
-                    content_folder = "folderchild_" + String(drag_manager.selected_items[x].id).substr(String(drag_manager.selected_items[x].id).indexOf("_")+1,String(drag_manager.selected_items[x].id).length);
-
-                    folder_children = document.getElementById(content_folder).childNodes.length;
+                    var folder_children = folder_node.children.length;
 
                     if(folder_children!=0){
 
                         alert(DELETE_FOLDER_NOT_EMPTY);
 
                     }else{
-
-                        parent_name = document.getElementById(drag_manager.selected_items[x].id).parentNode.id;
-
-                        document.getElementById(parent_name).removeChild(document.getElementById(drag_manager.selected_items[x].id));
-                        document.getElementById(parent_name).removeChild(document.getElementById(content_folder));
-
-                        delete_folder(drag_manager.selected_items[x].id);				
-
-                    }				
-
+                        delete_folder(node.xot_id);
+                    }
                 }
-
-                x++;		
-
             }
-
         }
-
     }
-
 }
 
 var lock = "false";
@@ -1156,6 +1111,7 @@ function templates_stateChanged(){
 
 var active_div=null;
 var new_file=null;
+var new_template_folder=null;
 
 
 /**
@@ -1176,14 +1132,8 @@ function tutorials_stateChanged(){
 
             template_toggle(active_div);
             active_div="";
-            document.getElementById('file_area').innerHTML = xmlHttp.responseText;
 
-            sort_display_settings();
-
-            update_templates();
-
-            single_click(document.getElementById("file_" + new_file));
-            drag_manager.last_selected = "file_" + new_file;
+            refresh_workspace();
 
         }
 
@@ -1223,13 +1173,33 @@ function tutorial_created(){
                 new_file = xmlHttp.responseText;
                 neweditorwindow.window_reference = self;
 				
-                neweditorwindow.focus();		
+                neweditorwindow.focus();
+                open_created_node(data[0], new_template_folder);
                 update_your_projects();
             }
         }
     }
 } 
 
+function open_created_node(template_id, folder_id)
+{
+    setTimeout(function(){
+        // Hope workspace has been updated in the mean time,
+        // Search the template, and open the node
+        var tree = $.jstree.reference("#workspace");
+        var node;
+        for (var i=0; i<workspace.items.length; i++)
+        {
+            if (workspace.items[i].xot_id == template_id)
+            {
+                node = workspace.items[i];
+                tree.select_node(node.id);
+                break;
+            }
+
+        }
+    }, 1000);
+}
 
 /**
  * 
@@ -1244,16 +1214,30 @@ function create_tutorial(tutorial){
     if(setup_ajax()!=false){
         var url="website_code/php/templates/new_template.php";
         active_div=tutorial;
+
+        /*
+         * if a folder is selected, create the folder in that folder
+         */
+        var tree = $.jstree.reference("#workspace"),
+            ids = tree.get_selected();
+        new_template_folder = "";
+        if(ids.length==1) {
+            var node = workspace.nodes[ids[0]];
+            if (node.xot_type == "folder") {
+                new_template_folder = node.xot_id;
+            }
+        }
         xmlHttp.open("post",url,true);
         xmlHttp.onreadystatechange=tutorial_created;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         if(is_ok_name(document.getElementById(tutorial).childNodes[1].filename.value)){
-            xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value);
+            xmlHttp.send('tutorialid=' + tutorial + '&tutorialname=' + document.getElementById(tutorial).childNodes[1].filename.value + '&folder_id=' + new_template_folder);
         }else{
             alert(NAME_FAIL);
         }
     }
 }
+
 
 /********** CHECK **************/
 

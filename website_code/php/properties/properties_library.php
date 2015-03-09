@@ -25,6 +25,7 @@ require_once("../template_library.php");
 
 _load_language_file("/website_code/php/properties/publish.inc");
 _load_language_file("/website_code/php/properties/properties_library.inc");
+_load_language_file("/website_code/php/properties/sharing_status_template.inc");
 _load_language_file("/properties.inc");
 
 function xml_template_display($xerte_toolkits_site,$change){
@@ -388,7 +389,7 @@ function syndication_display($xerte_toolkits_site, $change){
 
     $query_categories_response = db_query($query_for_categories);
 
-    foreach($query_categories_response as $row) {
+    foreach($query_categories_response as $row_categories) {
 
         echo "<option value=\"" . $row_categories['category_name'] . "\"";
 
@@ -457,6 +458,228 @@ function syndication_display_fail(){
 
     echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_FAIL . "</p>";
 
+}
+
+function project_info($template_id){
+
+    global $xerte_toolkits_site;
+
+    echo "<p class=\"info_header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
+        . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
+
+    $params = array($template_id);
+    $row = db_query_one($query_for_names, $params);
+
+    $query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
+    $params = array($template_id);
+
+    $row_template_name = db_query_one($query_for_template_name, $params);
+
+    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . ": " . $row_template_name['template_name'] . "</p>";
+
+    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_CREATE . " " . $row['date_created'] . "<br>";
+
+    echo PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
+
+    include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
+
+    echo "<p>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . ": ";
+
+    if (get_default_engine($template_id) == 'flash')
+    {
+        echo PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    }
+    else
+    {
+        echo PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
+    }
+
+    if(template_access_settings($template_id)!='Private'){
+
+        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . " ";
+
+        echo "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
+            url_return("play", $_POST['template_id']) . "'>" .
+            $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
+
+        $template = explode("_", get_template_type($_POST['template_id']));
+
+
+        if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
+
+            require_once($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php");
+
+            show_play_links($template[1]);
+
+        }
+
+        // Get the template screen size
+
+        $query_for_template_name = "select {$prefix}originaltemplatesdetails.template_name, "
+            . "{$prefix}originaltemplatesdetails.template_framework from "
+            . "{$prefix}originaltemplatesdetails, {$prefix}templatedetails where"
+            . " {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND template_id = ?";
+
+        $params = array($template_id);
+
+        $row_name = db_query_one($query_for_template_name, $params);
+
+
+        if(isset($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size)){
+
+            if($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size!="*"){
+
+                $temp_string = $xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size;
+
+            }else{
+
+                $temp_string = "100%,100%";
+
+            }
+
+        }else{
+
+            $temp_string = "100%,100%";
+
+        }
+
+        $temp_array = explode(",",$temp_string);
+
+        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
+
+    }
+
+}
+
+function media_quota_info($template_id)
+{
+    global $xerte_toolkits_site;
+
+    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " .
+            "{$prefix}originaltemplatesdetails, {$prefix}templatedetails, {$prefix}templaterights, {$prefix}logindetails WHERE " .
+            "{$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id AND " .
+            "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id AND " .
+            "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " .
+            "{$prefix}templatedetails.template_id = ? AND role = ? ";
+
+        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator'));
+
+        $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
+
+        /**
+         * Set the paths
+         */
+
+        $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path . "/media";
+
+        $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path . "/data.xml";
+
+        $previewpath = $xerte_toolkits_site->users_file_area_full . $end_of_path . "/preview.xml";
+
+        if (file_exists($xerte_toolkits_site->users_file_area_full . $end_of_path . "/preview.xml")) {
+
+            $quota = filesize($xerte_toolkits_site->users_file_area_full . $end_of_path . "/data.xml")
+                + filesize($xerte_toolkits_site->users_file_area_full . $end_of_path . "/preview.xml");
+
+        }
+
+        $d = opendir($dir_path);
+
+        while ($f = readdir($d)) {
+            $full = $dir_path . "/" . $f;
+            if (!is_dir($full)) {
+                $quota += filesize($full);
+            }
+        }
+        echo "<p class=\"info_header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
+        echo "<div style=\"clear:both;\"></div>";
+        echo "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+    }
+}
+
+function sharing_info($template_id)
+{
+    global $xerte_toolkits_site;
+
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+        return;
+    }
+
+    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
+        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
+        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? AND user_id != ?";
+
+    $query_sharing_rows = db_query($sql, array($template_id, $_SESSION['toolkits_logon_id']));
+
+    echo "<p class=\"info_header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
+
+    if(sizeof($query_sharing_rows)==0){
+        echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
+        exit(0);
+    }
+
+    echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
+    foreach($query_sharing_rows as $row) {
+        echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (";
+        switch($row['role'])
+        {
+            case "creator":
+                echo SHARING_CREATOR;
+                break;
+            case "editor":
+                echo SHARING_EDITOR;
+                break;
+            case "read-only":
+                echo SHARING_READONLY;
+                break;
+        }
+
+        echo ")</span></p>";
+    }
+}
+
+function access_info($template_id){
+
+    global $xerte_toolkits_site;
+
+    $prefix =  $xerte_toolkits_site->database_table_prefix ;
+    $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
+    $params = array($template_id);
+
+    $row_access = db_query_one($query_for_template_access, $params);
+
+    echo "<p class=\"info_header\"><span>" . PROPERTIES_TAB_ACCESS . "</span></p>";
+
+    $accessStr = template_access_settings($_POST['template_id']);
+    switch ($accessStr)
+    {
+        case "Public":
+            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PUBLIC;
+            break;
+        case "Private":
+            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PRIVATE;
+            break;
+        case "Password":
+            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PASSWORD;
+            break;
+        default:
+            if (substr(template_access_settings($template_id),0,5) == "Other")
+            {
+                $accessStr = "Other";
+                $accessTranslation = PROPERTIES_LIBRARY_ACCESS_OTHER;
+            }
+            else
+            {
+                return;
+            }
+    }
+    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . $accessTranslation . "</span></p>";
 }
 
 function access_display($xerte_toolkits_site, $change){

@@ -1,4 +1,5 @@
 /**
+/**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
@@ -35,7 +36,7 @@ body{
 	background-image:url(../images/TopBar.jpg);
 	background-repeat:repeat-x;
 	margin:0 auto;
-	width:910px;
+	/* width:910px; */
 }
 
 .bottombar,.edit_bottombar{
@@ -314,7 +315,7 @@ body{
 
 .userbar{
 	margin:0 auto; 
-	width:910px;
+	/* width:910px; */
 	padding-top:10px;
 	padding-bottom:5px;
 	background-color:#ededed; 
@@ -343,18 +344,22 @@ body{
 .heading{
 	color:#ffffff; 
 	padding:0px; 
-	margin:5px;
+	margin:10px;
 	margin-bottom:10px;
+    text-align:left;
 }
 
 .file_mgt_area_middle{
 	float:left; 
 	position:relative; 
-	width:98%; 
+	width:98%;
 	border:1px #f3eee2 solid; 
 	background-color:#fff; 
-	margin:0px; 
+	margin:5px;
 	padding:5px;
+    /* height: 100%;
+    overflow : hidden;
+    */
 }
 
 .file_mgt_area_middle_button img, .file_mgt_area_middle_button button {
@@ -386,7 +391,7 @@ div#file_area div p{
 }
 
 .file_mgt_area_bottom{
-	width:573px; 
+	width:100%;
 	float:left; 
 	position:relative;
 	background:#4d585e;
@@ -418,6 +423,7 @@ div#file_area div p{
 	height:150px;
 	min-height:150px;
 	overflow:visible;
+    text-align: left;
 }
 
 .highlightbox {
@@ -425,10 +431,11 @@ div#file_area div p{
 	margin-right:10px;
 	height:150px;
 	border-radius:3px;
+    text-align: left;
 }
 
 .new_template_area{
-	width:270px; 
+	width:270px;
 	margin:0px;
 	margin-right:10px;
 	background-color:#86999d; 
@@ -455,9 +462,9 @@ div#file_area div p{
 	float:left; 
 	position:relative; 
 	width:100%; 
-	overflow:scroll;
+	/* overflow:scroll;
 	overflow-x:hidden;
-	height:372px;
+	height:372px; */
 }
 
 .template{
@@ -501,14 +508,14 @@ div#file_area div p{
 	float:left; 
 	position:relative; 
 	font-size:85%; 
-	width:220px; 
+	width:80%;
 	margin-top:5px
 }
 
 .template_name{
 	margin:0px;
 	font-weight:bold;
-	width:200px;
+	/* width:200px; */
 }
 
 .template_desc_p{
@@ -570,14 +577,23 @@ div#file_area div p{
 }
 
 div#file_area{
-	height:300px; 
-	overflow:scroll; 
+	/* height:300px; */
+	/* overflow:scroll; */
 	float:left; 
 	position:relative; 
 	width:100%;
 	background-color:#fff;
 }
 
+.info_header{
+    background-color:#4d585e;
+    color:#fff;
+    padding:4px;
+}
+
+.projectInformationContainer p{
+    padding: 4px;
+}
 .folder{
 	float:left;
 	position:relative;
@@ -607,6 +623,30 @@ div#folder_workspace, div#recyclebin{
 
 .workspace{
 	display:block;
+}
+
+.workspace_search
+{
+    margin:3px;
+    width:100%;
+}
+.workspace_search input{
+    padding: 3px;
+    width: 95%;
+    background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
+    background-position: right;
+}
+
+
+
+.treeview {
+    float: left;
+    width: 30%;
+
+}
+.project_information {
+    width:30%;
+    float:left;
 }
 
 .error {
