@@ -191,10 +191,10 @@ _include_javascript_file("website_code/scripts/import.js");
                 <div class="file_mgt_area_bottom">
 										<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
 											<?PHP echo INDEX_SORT; ?>
-												<select id="language-selector" name="type" onchange="selection_changed()">>
+												<select id="sort-selector" name="type" onchange="selection_changed()">>
 														<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 														<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
-														<option value="date_down"><?PHP echo INDEX_SORT_NEW; ?></option>
+														<option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
 														<option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
 												</select>
 												<!--<button type="button" class="xerte_button" onclick="javascript:selection_changed()"><?php echo INDEX_BUTTON_SORT; ?></button>-->

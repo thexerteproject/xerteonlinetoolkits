@@ -67,6 +67,13 @@ var EDITOR = (function ($, parent) {
         });
         $('.ui-layout-west .header').append(buttons);
 
+        // If the menu is empty, disable insert
+        if (menu_data.menu.length == 1 && menu_data.menu[0].name == "")
+        {
+            $('#insert_button').prop('disabled', true);
+            $('#insert_button').addClass('disabled');
+        }
+
         // Page type
         $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
@@ -357,14 +364,14 @@ var EDITOR = (function ($, parent) {
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
         $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes['id'].nodeValue == id)
+            if (this.attributes.id == id)
                 pos = i;
             i++;
         });
         pos++;
 
         // Add the node
-        if (validateInsert(parent_node.type, current_node.type, tree))
+        if (validateInsert(parent_node.id, current_node.type, tree))
         {
             var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
                 tree.deselect_all();
@@ -388,13 +395,14 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         id = ids[0];
+        var nodeName = lo_data[id].attributes.nodeName;
 
-        if (id == "treeroot") {  // Can't remove the root node
-            alert("You can't remove the LO node");
+        if (wizard_data[nodeName].menu_options.remove == "false") {  // Can't remove the root node
+            alert(language.Alert.deletenode.error.prompt);
             return false;
         }
 
-        if (!confirm('Are you sure you want to delete this page?')) {
+        if (!confirm(language.Alert.deletenode.confirm.prompt)) {
             return;
         }
 
@@ -459,7 +467,7 @@ var EDITOR = (function ($, parent) {
                     topmenu = true;
                 }
             }
-            while (!topmenu || id == 'treeroot');
+            while (!topmenu && id != 'treeroot');
             if (lmenu_options.menu)
             {
                 crumb = lmenu_options.menu + ' > ' + crumb;
@@ -574,6 +582,10 @@ var EDITOR = (function ($, parent) {
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
             }
+            else if (node_options['normal'][i].value.mandatory)
+            {
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
+            }
         }
 
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
@@ -658,7 +670,8 @@ var EDITOR = (function ($, parent) {
                 level = level.append(leveltitle);
 
                 var advnodes_level = false;
-                for (var i=0; i<new_nodes.length; i++)
+                // Weird, the flash editor showed the nodes in reversed order
+                for (var i=new_nodes.length-1; i>=0; i--)
                 {
                     var item = new_nodes[i];
                     var itemname = item;
@@ -725,38 +738,34 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        // schedule MathJax
-        // Queue reparsing of MathJax - fails if no network connection
-       // try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-        // The optional parameters (what to do here, only enable the not used entries)
-
-    /*
-        for (var i=0; i<attributes.length; i++) {
-            if ($.inArray(attributes[i].name, ['nodeName', 'linkID']) < 0) {
-                var attribute_name = attributes[i].name;
-                var attribute_value = attributes[i].value;
-
-                var options = getOptionValue(node_options['all'], attribute_name);
-                if (options != null)
-                {
-                    var output_string = '<tr class="wizardattribute">';
-                    if (options.optional == 'true')
-                    {
-                        output_string += '<td class="wizardoptional"><img src="img/optional.gif" />&nbsp;</td>';
-                    }
-                    else
-                    {
-                        output_string += '<td class="wizardparameter"></td>';
-                    }
-                    output_string += '<td class="wizardlabel">' + options.label + ' : </td>';
-                    output_string += '<td class="wizardvalue">' + displayDataType(attribute_value, options) + '</td>';
-                    output_string += '</tr>';
-                    $('#mainContent').append(output_string);
-                }
-            }
+        //finally, do the help, if it exists...
+        if (wizard_data[node_name].info.length > 0)
+        {
+            $('#info').html(wizard_data[node_name].info);
         }
-    */
+        else
+        {
+            $('#info').html("");
+        }
+        /*
+        if (nodeInfo.info != undefined){
 
+
+            var comp = addComponent(TextArea,  {_x:250, _y:ctrlY + 20, html:true, wordWrap:true, hScrollPolicy:'off'});
+            comp.setSize(540, 576 - ctrlY + 20 - 50); //to the bottom of the form
+            comp.setStyle('color', 0x0066CC);
+            comp.setStyle('backgroundColor', 0xE0E0E0);
+            comp.setStyle('borderStyle', 'none');
+
+            var helpStr = '<font color="#0066CC">' + nodeInfo.info + '</font>';
+
+            //append the image src...
+            if (wizard.nfoObject.wizard[obj.target.selectedNode.nodeName].info.image != undefined){
+                helpStr += '<img src= "' + nodeInfo.info.image + '"/>'
+            }
+            comp.text = helpStr;
+        }
+        */
         //$('textarea.ckeditor').ckeditor(function(){}, { customConfig: 'config.js' });
         //$('textarea.ckeditor').ckeditor();
         toolbox.convertTextAreas();
@@ -775,32 +784,34 @@ var EDITOR = (function ($, parent) {
         //setTimeout($('#mainPanel').animate({scrollTop: 0}, 500));
     },
 
-    addSubNode = function (event)
+    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
     {
-        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
-        var tree = $.jstree.reference("#treeview");
-        var node = tree.get_node(event.data.key, false);
-        var nodeName = event.data.node;
-        var key = parent.tree.generate_lo_key();
-        var xmlData = $.parseXML(event.data.defaultnode);
-        // Parse the attributes and store in the data store
+        var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        $(xmlData.firstChild.attributes).each(function() {
+        var extranodes = false;
+        $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
-        lo_data[key] = {};
-        lo_data[key]['attributes'] = attributes;
-        if (xmlData.firstChild.firstChild && xmlData.firstChild.firstChild.nodeType == 3)  // becomes a cdata-section
+        lo_data[lkey] = {};
+        lo_data[lkey]['attributes'] = attributes;
+        if (xmlData.firstChild)
         {
-            lo_data[key]['data'] = xmlData.firstChild.firstChild.data;
+            if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
+            {
+                lo_data[key]['data'] = xmlData.firstChild.data;
+            }
+            else if (xmlData.firstChild.nodeType == 1) // extra node
+            {
+                extranodes = true;
+            }
         }
         // Build the JSON object for the treeview
         // For version 3 jsTree
 
         var treeLabel = nodeName;
-        if (xmlData.firstChild.attributes['name'])
+        if (xmlData.attributes['name'])
         {
-            treeLabel = xmlData.firstChild.attributes['name'].value;
+            treeLabel = xmlData.attributes['name'].value;
         }
         else
         {
@@ -808,20 +819,43 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
         var this_json = {
-            id : key,
+            id : lkey,
             text : treeLabel,
             type : nodeName
         }
-        console.log(this_json);
+        console.log("Adding " + this_json);
         // Add the node
-        if (validateInsert(event.data.key, nodeName, tree))
+        if (validateInsert(key, nodeName, tree))
         {
-            var newkey = tree.create_node(event.data.key, this_json, 'last', function(){
-                tree.deselect_all();
-                tree.select_node(key);
+            var newkey = tree.create_node(key, this_json, pos, function(){
+                if (select) {
+                    tree.deselect_all();
+                    tree.select_node(lkey);
+                }
             });
         }
-        console.log(key);
+        // Any children to add
+        if (extranodes)
+        {
+            $.each(xmlData.childNodes, function(nr, child) {   // Was children
+                if (child.nodeType == 1)
+                {
+                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false);
+                }
+            });
+        }
+    },
+
+    addSubNode = function (event)
+    {
+        console.log('Add sub node ' + event.data.node + ' to ' + event.data.key);
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node(event.data.key, false);
+        var nodeName = event.data.node;
+        //var key = parent.tree.generate_lo_key();
+        var xmlData = $.parseXML(event.data.defaultnode);
+        // Parse the attributes and store in the data store
+        addNodeToTree(event.data.key,'last',nodeName,xmlData.firstChild,tree,true);
 
     },
 
@@ -881,107 +915,8 @@ var EDITOR = (function ($, parent) {
         if (i >= wizard_data['learningObject'].new_nodes.length)
             return; // not found!!
         var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
-        // Parse the attributes and store in the data store
-        var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        $(xmlData.attributes).each(function() {
-            attributes[this.name] = this.value;
-        });
-        lo_data[key] = {};
-        lo_data[key]['attributes'] = attributes;
-        if (xmlData.firstChild)
-        {
-            if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
-            {
-                lo_data[key]['data'] = xmlData.firstChild.data;
-            }
-            else if (xmlData.firstChild.nodeType == 1) // extra node
-            {
-                extranodes = true;
-            }
-        }
 
-        // Build the JSON object for the treeview
-        // For version 3 jsTree
-
-        var treeLabel = nodeName;
-        if (xmlData.attributes['name'])
-        {
-            treeLabel = xmlData.attributes['name'].value;
-        }
-        else
-        {
-            if (wizard_data[treeLabel].menu_options.menuItem)
-                treeLabel = wizard_data[treeLabel].menu_options.menuItem;
-        }
-        var this_json = {
-            id : key,
-            text : treeLabel,
-            type : nodeName
-        }
-        console.log(this_json);
-        // Add the node
-        if (validateInsert('learningObject', nodeName, tree))
-        {
-            var newkey = tree.create_node('treeroot', this_json, pos, function(){
-                tree.deselect_all();
-                tree.select_node(key);
-            });
-        }
-        // Any children to add?
-        if (extranodes)
-        {
-            var nodekey = key;
-            var nodeType = nodeName;
-            $.each(xmlData.childNodes, function(nr, child){   // Was children
-                key = parent.tree.generate_lo_key();
-                if (child.nodeType == 1)
-                {
-                    nodeName = child.nodeName;
-
-                    // Parse the attributes and store in the data store
-                    attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-                    $(child.attributes).each(function() {
-                        attributes[this.name] = this.value;
-                    });
-                    lo_data[key] = {};
-                    lo_data[key]['attributes'] = attributes;
-                    if (child.firstChild)
-                    {
-                        if(child.firstChild.nodeType == 3)  // becomes a cdata-section
-                        {
-                            lo_data[key]['data'] = child.firstChild.data;
-                        }
-                    }
-
-                    // Build the JSON object for the treeview
-                    // For version 3 jsTree
-
-                    var treeLabel = nodeName;
-                    if (child.attributes['name'])
-                    {
-                        treeLabel = child.attributes['name'].value;
-                    }
-                    else
-                    {
-                        if (wizard_data[treeLabel].menu_options.menuItem)
-                            treeLabel = wizard_data[treeLabel].menu_options.menuItem;
-                    }
-                    var this_json = {
-                        id : key,
-                        text : treeLabel,
-                        type : nodeName
-                    }
-                    console.log(this_json);
-                    // Add the node
-                    if (validateInsert(nodeType, nodeName, tree))
-                    {
-                        newkey = tree.create_node(nodekey, this_json, 'last', function(){
-                            console.log("subnode " + nodeName + " added as well");
-                        });
-                    }
-                }
-            });
-        }
+        addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
     validateInsert = function(key, newNode, tree)
@@ -989,28 +924,36 @@ var EDITOR = (function ($, parent) {
         if (wizard_data[newNode]['menu_options'].max)
         {
             var max = wizard_data[newNode]['menu_options'].max;
-            var nrchildren = tree.get_children_dom(key).length;
-            if (max == nrchildren)
-            {
-                var mesg = language.Alert.validate.max.$prompt;
-                var pos = mesg.indexOf("{m}");
-                mesg = mesg.substr(0, pos) + max + mesg.substr(pos+3, mesg.length);
-                pos = mesg.indexOf("{i}");
-                mesg = mesg.substr(0, pos) + wizard_data[newNode]['menu_options'].menuItem + mesg.substr(pos+3, mesg.length);
-                alert(mesg);
-                return false;
+            var children = tree.get_children_dom(key);
+            var numNodes =0;
+            for (var i=0; i<children.length; i++) {
+                if (lo_data[children[i].id].attributes.nodeName == newNode) {
+                    numNodes++;
+                    if (max == numNodes) {
+                        var mesg = language.Alert.validate.max.prompt;
+                        var pos = mesg.indexOf("{m}");
+                        mesg = mesg.substr(0, pos) + max + mesg.substr(pos + 3, mesg.length);
+                        pos = mesg.indexOf("{i}");
+                        mesg = mesg.substr(0, pos) + wizard_data[newNode]['menu_options'].menuItem + mesg.substr(pos + 3, mesg.length);
+                        alert(mesg);
+                        return false;
+                    }
+                }
             }
         }
-        //if (wizard_data[key]['menu_options'].mixedContent === "false") {
-        //    $.each(tree.get_children_dom(key), function(){
-        //        if (this.attributes['nodeName'].nodeValue != newNode)
-        //        {
-        //            // title is in language.Alert.validate.mixedcontent.$title
-        //            alert(language.Alert.validate.mixedcontent.$prompt);
-        //            return false;
-        //        }
-        //    });
-        //}
+        if (wizard_data[lo_data[key].attributes.nodeName]['menu_options'].mixedContent === "false")
+        {
+            var children = tree.get_children_dom(key);
+            for (var i=0; i<children.length; i++)
+            {
+                if (lo_data[children[i].id].attributes.nodeName != newNode)
+                {
+                    // title is in language.Alert.validate.mixedcontent.$title
+                    alert(language.Alert.validate.mixedcontent.prompt);
+                    return false;
+                }
+            }
+        }
         return true;
     },
     // Build the tree once the data has loaded

@@ -85,8 +85,34 @@
     text-decoration:none;
     font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
 }
+
+.xerte_button_dark.disabled {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8c8c8c), color-stop(1, #404040) );
+    background:-moz-linear-gradient( center top, #8c8c8c 5%, #404040 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#feffff', endColorstr='#ebebeb');
+    background-color:#404040;
+    border-radius:3px;
+    border:1px solid #404040;
+    display:inline-block;
+    color: #999999;
+    font-size:12px;
+    padding:3px 6px;
+    text-decoration:none;
+    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
+}
+
 .xerte_button img, .xerte_button_disabled img, .xerte_button_dark img {
     margin:0 3px -3px 0 !important;
     padding:0;
     border:none;
+}
+
+.xerte_button_dark.disabled img, .xerte_button.disabled img {
+    filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='grayscale'><feColorMatrix%20type='matrix'%20values='0.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200%200%200%201%200'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
+    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: gray; /* IE6+ */
 }

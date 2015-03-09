@@ -531,6 +531,13 @@ td.flashonly, td.deprecated{
     margin-left:188px;
 }
 
+.nodeInfo {
+    margin-left:34px;
+    margin-top: 10px;
+    color: #718ab6;
+
+}
+
 .newNodesLevel {
     padding: 5px 0px 5px 0px;
 }
