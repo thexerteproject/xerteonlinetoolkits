@@ -110,7 +110,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
     $ThemeList = array();
     // Add default theme
-    $ThemeList[] = array(name => "default", display_name => "Xerte Online Toolkits", description => "Xerte Online Toolkits", preview => "");
+    $ThemeList[] = array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => "");
     $d = opendir($theme_folder);
     while($f = readdir($d)){
         if(is_dir($theme_folder . $f)){
@@ -137,7 +137,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                     }
                 }
                 if (substr($themeProperties->enabled, 0, 1) == "y") {
-                    $ThemeList[] = array(name => $themeProperties->name, display_name => $themeProperties->display_name, description => $themeProperties->description, preview => $themeProperties->preview);
+                    $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
                 }
             }
         }
