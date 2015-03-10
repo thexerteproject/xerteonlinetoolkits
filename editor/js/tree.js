@@ -798,7 +798,7 @@ var EDITOR = (function ($, parent) {
         {
             if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
             {
-                lo_data[key]['data'] = xmlData.firstChild.data;
+                lo_data[lkey]['data'] = xmlData.firstChild.data;
             }
             else if (xmlData.firstChild.nodeType == 1) // extra node
             {
