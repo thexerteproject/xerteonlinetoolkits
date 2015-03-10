@@ -484,7 +484,6 @@ function setupMainLayout()
                 initClosed:             false,
                 fxName:                 "drop",
                 fxSpeed:                "normal",
-                onresize_end:           "resizeLayout",
                 slidable:               false,
                 fxSettings:             { easing: "" } // remove default
             },
@@ -616,11 +615,6 @@ function setupMainLayout()
 
 }
 
-function resizeLayout()
-{
-    $("body").layout("resizeAll");
-    $("#workspace_layout").layout("resizeAll");
-}
 
 function getIcon(nodetype)
 {
