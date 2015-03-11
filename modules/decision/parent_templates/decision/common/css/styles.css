@@ -27,6 +27,13 @@ body {
 	font-size:		10pt;
 	margin:			0px;
 	color:			#131313;
+}
+
+#mainHolder {
+	border:				2px solid #f0f0f0;
+}
+
+.bgColour {
 	background-color:	#f0f0f0;
 }
 
