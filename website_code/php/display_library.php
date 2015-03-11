@@ -471,6 +471,7 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
         $item->type = strtolower($row['template_name']);
         $item->xot_type = "file";
         $item->editor_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size;
+        $item->preview_size = $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size;
 
         $items[] = $item;
     }
