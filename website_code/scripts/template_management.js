@@ -259,7 +259,7 @@ function edit_window(admin,edit){
 
                     if(!window_open){
 
-                        edit_window_open.push(node_id);
+                        edit_window_open.push(node.id);
 
                     }
 
@@ -275,8 +275,6 @@ function edit_window(admin,edit){
                 alert(FOLDER_EDIT);
 
             }
-
-            x++;
 
         }
 
@@ -509,8 +507,6 @@ function preview_window(admin){
                     alert(PROJECT_SELECT);
 
                 }
-
-                x++;
 
             }
 
