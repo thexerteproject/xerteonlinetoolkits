@@ -1,0 +1,133 @@
+﻿<language name="Russian" code="ru-RU">
+	<btnSaveXerte label="Сохранить" tooltip="Сохранить проект" description="Кнопка сохранения"/>
+	<btnPublishXot label="Опубликовать" tooltip="Опубликовать проект" description="Кнопка публикации"/>
+	<popupFileUpload title="Файл загружен" cancelLabel="Закрыть"/>
+	<browseImportFile title="Выбрать файл для загрузки">
+		<dialogFilter>Tous les fichiers|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importer</buttontext>
+	</browseImportFile>
+	<kblanguage title="Раскладка клавиатуры" tooltip="Раскладка клавиатуры" description="Раскладка клавиатуры">
+		<item>Francais</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="New {i}" />
+	<helpLink tooltip="Нажмите для помощи"/>
+	<btnInsert label="Вставить" tooltip="Вставить"/>
+	<btnAddChild tooltip="Добавить вложения"/>
+	<btnDuplicate label="Копировать" tooltip="копировать"/>
+	<btnDelete label="Удалить" tooltip="Удалить"/>
+	<btnMoveUp tooltip="Вверх"/>
+	<btnMoveDown tooltip="Вниз"/>
+	<btnNext tooltip="Следующий"/>
+	<btnPreview label="Предварительный просмотр" tooltip="Предпросмотр"/>
+	<btnPrev tooltip="Предыдущий"/>
+	<icDelete tooltip="Удалить" prompt="Удалить элемент?"/>
+	<addProp label="Добавить" tooltip="Добавить" />
+	<optionalProp label="Дополнительные свойства:"/>
+	<chkShowLanguage label="Показать языковые настройки" />
+	<chkShowAdvanced label="Показать дополнительные опции" />
+	<compMedia tooltip="ИМпорт медиа"/>
+	<compPreview tooltip="Предпросмотр"/>
+	<filemenu title="Файл">
+		<menuNew>Новый проект...</menuNew>
+		<menuOpen>Открыть...</menuOpen>
+		<menuSave>Сохранить</menuSave>
+		<menuExit>Закрыть</menuExit>
+	</filemenu>
+	<menuOpen title="Пожалуйста выберите Проект">
+		<dialogText>Выберите файл</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Learning Templates|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Предварительный просмотр">
+		<menuPreview>Предпросмотр</menuPreview>
+	</viewmenu>
+	<publishmenu title="Опубликовать">
+		<menuPublish>Опубликовать</menuPublish>
+		<menuPackage>Пакет</menuPackage>
+	</publishmenu>
+	<menuPackage title="Сохранить как SCORM 1.2">
+		<dialogText>Выберите файл</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Файл Zip|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Помощь">
+		<menuHelp>Помощь</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Help файл скоро появится</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Все файлы(*.*)</allfiles>
+			<images>Картинки (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash файлы (*.swf)</flash>
+			<sound>Аудиофайлы (*.mp3)</sound>
+			<video>Видеофайлы (*.flv)</video>
+		</filters>
+		<title>Выберите файл для импорта...</title>
+		<filter>Все файлы|*.*|JPG|*.jpg|PNG|*.png|Fichiers SWF|*.swf|Sons|*.mp3|Videos|*.flv</filter>
+		<btnimport>Импортировать</btnimport>
+		<btncancel>Закрыть</btncancel>
+		<fileexists>
+			<prompt>Файл {f} уже существует.\r\Перезаписать?</prompt>
+			<title>Подтвердить</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Закрыть</cancellabel>
+		<nolabel>Нет</nolabel>
+		<yeslabel>Да</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Введите URL</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Вы можете добавить только {m} {i}</prompt>
+				<title>Ошибка</title>
+			</max>
+			<mixedcontent>
+				<prompt>Вы не можете смешивать содержимое.</prompt>
+				<title>Ошибка</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Папка не пуста. Вы уверены что хотите использовать ее для нового проекта?</prompt>
+			<title>Подтвердить</title>
+		</newproject>
+		<openproject>
+			<prompt>Вы хотите открыть новый поект?</prompt>
+			<title>Подтвердить</title>
+		</openproject>
+		<initpreview>
+			<prompt>Вы должны выбрать медиафайл перед просмотром.</prompt>
+			<title>Информация</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Вы не можете копировать элемент.</prompt>
+			<title>Ошибка</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Вы хотите удалить элемент?</prompt>
+				<title>Подтвердить</title>
+			</confirm>
+			<error>
+				<prompt>Вы не можете удалить этот элемент</prompt>
+				<title>Ошибка</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>XML файл не может быть отформатирован и изменения не были сохранены. проверьте ваши последние изменения.
+			</prompt>
+		</savefile>
+		
+	</Alert>
+</language>
+
