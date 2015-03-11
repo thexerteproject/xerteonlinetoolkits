@@ -2,39 +2,37 @@
 
 body {
 	font-family:	Arial, sans-serif;
-	color:		#7c097d;
 }
 
 #x_mainHolder {
-	border:		1px solid #ffffff;
-	background-color: #fffff0;
+	border:		1px solid #164883;
 }
 
 #x_headerBlock {
-	color:		#7c097d;
-	background:		#FFFFFF;
-	border-bottom: 1px solid #ffab38;
-	background-color: #fffff0;
-	background-image: none;
+	color:			#FFFFFF;
+	background:		#164883;
+	background-repeat:no-repeat;
+	background-position:right; 
+	background-image:	none; 
+}
+x_headerBlock.x_floatLeft{
+	float: right;
 }
 
 #x_footerBlock {
 	font-size:		1em;
 	color:			#FFFFFF;
-	background:		#010101;
-	background-color: #fffff0;
-	border-top: 1px solid #ffab38;
-	background-image: none;
+	background:		#164883;
+	background-image:	none;
 }
 
 #x_footerBg {
-	background-image: none;
+	background-image:none;
+	/*background-repeat:	repeat-x;*/
 }
 
 #x_pageNo {
-	background:	#fffff0;
-	color:		#7c097d;
-	font-weight: bold;
+	background:	none;
 }
 
 h1 {
@@ -52,6 +50,8 @@ h3 {
 	margin:		0px;
 }
 
+/* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
+/* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
 
 .ui-button .ui-icon.x_help {					background-image: url("help.svg"); background-position: 0px 0px; }
 .ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }
@@ -103,16 +103,14 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -84px 0px; }
 
-.ui-button .ui-icon.x_colourChanger { background-image: url("colour_changer.svg"); background-position: 0px 0px;}
+.ui-button .ui-icon.x_colourChanger { background-image: url("colour_changer.svg");background-position: 0px 0px;}
 .ui-button.ui-state-hover .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
 
-
 .ui-dialog .ui-widget-header {
-border: 1px solid #7c097d;
-background: #7c097d;
-background-image: none;
+border: 1px solid #164883;
+background: #164883 url(ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat-x;
 color: #ffffff;
 font-weight: bold;
 }
