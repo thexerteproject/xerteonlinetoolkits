@@ -814,7 +814,7 @@ var EDITOR = (function ($, parent) {
     },
     
     
-    disableTextInputEditor = function (options) {
+    disableTextInputEditor = function (options) { return false;
     	var name = options.name.toLowerCase();
     	var type = options.options.type.toLowerCase();
     	
