@@ -818,7 +818,10 @@ var EDITOR = (function ($, parent) {
         var this_json = {
             id : lkey,
             text : treeLabel,
-            type : nodeName
+            type : nodeName,
+            state: {
+                opened: true
+            }
         }
         console.log("Adding " + this_json);
         // Add the node
