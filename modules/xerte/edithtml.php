@@ -110,7 +110,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
     $ThemeList = array();
     // Add default theme
-    $ThemeList[] = array(name => "default", display_name => "Xerte Online Toolkits", description => "Xerte Online Toolkits", preview => "");
+    $ThemeList[] = array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => "");
     $d = opendir($theme_folder);
     while($f = readdir($d)){
         if(is_dir($theme_folder . $f)){
@@ -138,7 +138,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                     }
                 }
                 if (substr($themeProperties->enabled, 0, 1) == "y") {
-                    $ThemeList[] = array(name => $themeProperties->name, display_name => $themeProperties->display_name, description => $themeProperties->description, preview => $themeProperties->preview);
+                    $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
                 }
             }
         }
@@ -260,6 +260,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
 <!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->

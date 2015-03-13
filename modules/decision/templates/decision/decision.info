@@ -4,5 +4,5 @@ editor size: 800,665
 preview size: 800,665
 preview filename: preview.xml
 public filename: data.xml
-supports: media,give,xml
+supports: media,give,xml,export
 requires: xerte

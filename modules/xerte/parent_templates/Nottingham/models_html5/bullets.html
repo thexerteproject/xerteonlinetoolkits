@@ -58,13 +58,30 @@
 					$pageContents.addClass("width80");
 				} // else full width
 			}
-			
+
+            /**
+             * Bullet pages in the Flash editor were separated with <br /> tags
+             * in the HTML editor enclosed in <p></p>
+             */
+
 			var text = x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue),
-				bulletArray = text.split("<br />"),
+				bulletArray,
 				contentsStr = "",
 				startTag = '<p class="bullet">',
 				endTag = "</p>";
-			
+
+            if (text.indexOf("<p>") >= 0)
+            {
+                // Assume enclosed in <p></P>
+                // First get rid of <p>
+                var textwithout = text.replace(/<p>/g, "");
+                // Then split on </p>
+                bulletArray = textwithout.split("</p>");
+            }
+            else
+            {
+                bulletArray = text.split("<br />")
+            }
 			if (x_currentPageXML.getAttribute("showBullets") != 0) {
 				contentsStr += "<ul>";
 				startTag = '<li class="bullet">';

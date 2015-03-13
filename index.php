@@ -83,6 +83,7 @@ recycle_bin();
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css" media="screen" type="text/css" rel="stylesheet"/>
+
     <?PHP
     echo "
         <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS

@@ -960,7 +960,7 @@ function x_changePage(x_gotoPage) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
         XTEnterPage(x_currentPage, pageTitle);
 
-        var builtPage = x_makeAbsolute(x_pageInfo[x_currentPage].built);
+        var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
