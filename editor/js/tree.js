@@ -336,8 +336,8 @@ var EDITOR = (function ($, parent) {
         // This will be the key for the new node
         var key = parent.tree.generate_lo_key();
 
-        // Duplicate the node data
-        lo_data[key] = lo_data[id];
+        // Duplicate the node data, make sure the node gets deep copied!
+        lo_data[key] = $.extend(true, {},lo_data[id]);
 
         // Give unique linkID
         if (lo_data[key].attributes['linkID']) {
@@ -358,13 +358,10 @@ var EDITOR = (function ($, parent) {
 
         // Determine pos
         var pos;
-
-        id = ids[0];
-
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
         $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes.id == id)
+            if (this.attributes.id.value == id)
                 pos = i;
             i++;
         });
