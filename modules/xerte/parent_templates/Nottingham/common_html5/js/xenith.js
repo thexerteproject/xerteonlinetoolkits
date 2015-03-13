@@ -298,6 +298,18 @@ function x_getLangData(lang) {
     }
 }
 
+function x_evalURL(url)
+{
+    var trimmedURL = url.trim();
+    if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
+    {
+        return eval(url)
+    }
+    else
+    {
+        return url;
+    }
+}
 
 // function sets up interface buttons and events
 function x_setUp() {
@@ -403,7 +415,7 @@ function x_setUp() {
 	
 	
 	if (x_params.stylesheet != undefined) {
-		x_insertCSS(eval(x_params.stylesheet));
+		x_insertCSS(x_evalURL(x_params.stylesheet));
 	}
     if (x_params.theme != undefined && x_params.theme != "default") {
         x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
@@ -435,7 +447,7 @@ function x_setUp() {
 				text:	false
 			})
 			.click(function() {
-				window.open(eval(x_params.nfo), "_blank");
+				window.open(x_evalURL(x_params.nfo), "_blank");
 				$(this)
 					.blur()
 					.removeClass("ui-state-focus")
@@ -495,10 +507,7 @@ function x_setUp() {
 					for (i=0, len=x_glossary.length; i<len; i++) {
 						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
 							myDefinition = "<b>" + myText + ":</b><br/>"
-							if (x_glossary[i].definition.substring(0, 16) == "FileLocation + '")
-								myDefinition += "<img src=\"" + eval(x_glossary[i].definition) +"\">";
-							else
-								myDefinition += x_glossary[i].definition;
+                            myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
 						}
 					}
 					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
@@ -578,7 +587,7 @@ function x_setUp() {
 	
 	
 	if (x_params.ic != undefined && x_params.ic != "") {
-		$x_headerBlock.prepend('<img src="' + eval(x_params.ic) + '" class="x_floatLeft" />');
+		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" />');
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
@@ -796,7 +805,7 @@ function x_setUp() {
 		if (x_params.backgroundopacity != undefined) {
 			alpha = x_params.backgroundopacity;
 		}
-		$x_background.append('<img id="x_mainBg" src="' + eval(x_params.background) + '"/>');
+		$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
 		$("#x_mainBg").css({
 			"opacity"	:Number(alpha/100),
 			"filter"	:"alpha(opacity=" + alpha + ")"
@@ -1130,7 +1139,7 @@ function x_pageLoaded() {
             attr_name = $this.attr("src") ? "src" : "href";
 
         if (val.substring(0, 16) == "FileLocation + '") {
-            $this.attr(attr_name, eval(val));
+            $this.attr(attr_name, x_evalURL(val));
         }
     });
 
@@ -1370,7 +1379,7 @@ function x_openMediaWindow() {
         captionDetails = undefined;
     }
 
-    window.open("mediaViewer/mediaHTML5.htm?media=" + eval(x_params.media) + ",transcript=../" + eval(x_params.mediaTranscript) + ",img=../" + eval(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+    window.open("mediaViewer/mediaHTML5.htm?media=" + x_evalURL(x_params.media) + ",transcript=../" + x_evalURL(x_params.mediaTranscript) + ",img=../" + x_evalURL(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
 }
 
 function x_openInfoWindow(text){

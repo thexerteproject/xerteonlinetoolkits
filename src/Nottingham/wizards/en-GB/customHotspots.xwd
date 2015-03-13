@@ -28,43 +28,43 @@
 
   <!-- CUSTOM HOSTPOTS======================= -->
   <customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="A more complex hotspot based-diagram" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
-    <name label="Name" type="TextInput"/>
+    <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
     <lineWidth label="Highlight Width" type="NumericStepper" min="0" max="5" step="1" defaultValue="1"/>
     <interactivity label="Interactivity" options="Hotspots,Labels,Show Me,MCQ" type="ComboBox" data="Hotspots,Labels,Show Me,MCQ" defaultValue="Hotspots" width="100"/>
     <showShapes label="Show Shapes" type="CheckBox" defaultValue="true"/>
 
-    <hotspotsTxt label="Hotspots text" type="textInput" divider="true" language="true"/>
-    <labelsTxt label="Labels text" type="textInput" language="true"/> 
-    <showMeTxt label="Show Me text" type="textInput" language="true"/> 
-    <regionsTxt label="Show Regions text" type="textInput" language="true"/> 
-    <nextTxt label="Next Arrow Label" type="textInput" language="true"/>
-	<priorTxt label="Prior Arrow Label" type="textInput" language="true"/>
-    <nextBtnTxt label="Next Button Label" type="textInput" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
+    <hotspotsTxt label="Hotspots text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <labelsTxt label="Labels text" type="TextInput" wysiwyg="true" language="true"/>
+    <showMeTxt label="Show Me text" type="TextInput" wysiwyg="true" language="true"/>
+    <regionsTxt label="Show Regions text" type="TextInput" wysiwyg="true" language="true"/>
+    <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
+    <nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <nextBtnTip label="Next Button Tip" type="TextInput" language="true"/>
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
-    <checkBtnTxt label="Check Button Label" type="textInput" language="true"/>
+    <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <checkBtnTip label="Check Button Tip" type="textInput" language="true"/>		
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
-    <beforeQuesCount label="QUESTION n of m questions" type="textInput" language="true"/>
+    <beforeQuesCount label="QUESTION n of m questions" type="TextInput" wysiwyg="true" language="true"/>
     <nQValue label="Number precedes Count" options="Yes,No" type="ComboBox"  defaultValue = "n" data="n,c" width="200" language="true"/>	
-    <betweenQuesCount label="question n OF m questions" type="textInput" language="true"/> 
-    <afterQuesCount label="question n of m QUESTIONS" type="textInput" language="true"/> 
+    <betweenQuesCount label="question n OF m questions" type="TextInput" wysiwyg="true" language="true"/>
+    <afterQuesCount label="question n of m QUESTIONS" type="TextInput" wysiwyg="true" language="true"/>
 
-    <questionTxt label="Question Text" type="textInput" language="true"/>	
-	<wrong1stTxt label="Wrong feedback intro" type="textInput" language="true"/>
-	<wrong2ndTxt label="Wrong feedback main" type="textInput" language="true"/>
-    <noOptionTxt label="No Option Text" type="textInput" language="true"/>		
-    <correctTxt label="Question Text" type="textInput" language="true"/>		
-    <continueTxt label="Continue instructions" type="textInput" language="true"/>		
-    <scoreLabel label="Feedback Label" type="textInput" language="true"/> 
-    <beforeScore label="YOU SCORED n out of m marks" type="textInput" language="true"/>
+    <questionTxt label="Question Text" type="TextInput" wysiwyg="true" language="true"/>
+	<wrong1stTxt label="Wrong feedback intro" type="TextInput" wysiwyg="true" language="true"/>
+	<wrong2ndTxt label="Wrong feedback main" type="TextInput" wysiwyg="true" language="true"/>
+    <noOptionTxt label="No Option Text" type="TextInput" wysiwyg="true" language="true"/>
+    <correctTxt label="Question Text" type="TextInput" wysiwyg="true" language="true"/>
+    <continueTxt label="Continue instructions" type="TextInput" wysiwyg="true" language="true"/>
+    <scoreLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
+    <beforeScore label="YOU SCORED n out of m marks" type="TextInput" wysiwyg="true" language="true"/>
     <nSValue label="Score before Maximum" options="Yes,No" type="ComboBox" defaultValue = "s" data="s,m" width="200" language="true"/>	
-    <betweenScore label="you scored n OUT OF m marks" type="textInput" language="true"/>    
-    <afterScore label="you scored n out of m MARKS" type="textInput" language="true"/>    
-    <onCompletion label="Completion Text" type="textInput" language="true"/>    
-    <restart label="Restart Button Text" type="textInput" language="true"/>  
+    <betweenScore label="you scored n OUT OF m marks" type="TextInput" wysiwyg="true" language="true"/>
+    <afterScore label="you scored n out of m MARKS" type="TextInput" wysiwyg="true" language="true"/>
+    <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
+    <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 
  	
 

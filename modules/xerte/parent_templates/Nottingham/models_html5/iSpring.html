@@ -35,7 +35,7 @@
 			// version attribute isn't being used - not sure what it's supposed to do
 			
 			var swfHeight = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", "100%", swfHeight, "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
+			swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", "100%", swfHeight, "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
 			
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));

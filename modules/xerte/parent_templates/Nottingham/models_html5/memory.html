@@ -190,7 +190,7 @@
 					
 					$('<div class="card" >' + div + '</div>')
 						.appendTo($cardBottomHolder)
-						.css("background-image", 'url("' + eval(cards[i].data) + '")')
+						.css("background-image", 'url("' + x_evalURL(cards[i].data) + '")')
 						.data("match", cards[i].match)
 						.find(".answer").css("opacity", 0);
 				}

@@ -65,18 +65,24 @@ ul {
 table {
 	border-color: #666;
 	}
-	th {
+th {
 		background-color: #EEE;
 		padding: 4px 7px 5px;
 		border-color: #666;
 		text-align: left;
 	}
-	td {
-		padding: 2px;
+td {
 		border-color: #666 #CCC;
 		vertical-align: top;
 	}
 
+input.media
+{
+    padding: 4px;
+    border: 1px solid lightgray;
+    width: 98%;
+    margin: 0px;
+}
 
 /*
 *	COMMON LAYOUT PANE FORMATTING
@@ -446,11 +452,19 @@ div.inputtext {
 
 }
 
-.inputtext p{
+.inlinewysiwyg p{
     padding: 4px;
     margin: 0;
     border: 1px solid lightgray;
     background-color: white;
+}
+
+input.inputtext{
+    padding: 4px;
+    margin: 0;
+    border: 1px solid lightgray;
+    background-color: white;
+    width:99%;
 }
 
 table.wizard{

@@ -481,7 +481,7 @@
 					imageViewer.imgLoaded();
 				})
 				.attr({
-					"src"	:eval(x_currentPageXML.getAttribute("url")),
+					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
 					"alt"	:x_currentPageXML.getAttribute("tip")
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger

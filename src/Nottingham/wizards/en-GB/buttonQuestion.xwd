@@ -8,14 +8,14 @@
   <!-- BUTTON QUESTION PAGE========================= -->
   <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Poses a stimulating question to the learner, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <instruction label="Instruction" type="TextArea" height="50" />
     <prompt label="Question" type="TextArea" height="150" />
     <feedback label="Feedback" type="TextArea" height="150" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-    <label label="Button Label" type="TextInput" divider="true" language="true" />
+    <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true"/>
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>

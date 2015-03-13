@@ -9,15 +9,15 @@
   <!-- DIALOG INTERACTION================================= -->
   <dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>    
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Text" type="TextArea" height="100"/>
     <attempts label="Attempts before hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 
-    <tryTxt label="Try Again Text" type="TextInput" divider="true" language="true"/> 
-    <correctTxt label="Correct Text" type="TextInput" language="true"/> 
-    <moveOnTxt label="Move On Text" type="TextInput" language="true"/>
-	<submitBtnTxt label="Submit Button Text" type="textInput" language="true" />	
-	<nextBtnTxt label="Next Button Text" type="textInput" language="true" />	
+    <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
+    <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
+	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
+	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
     <answerDelimeter label="Answer delimeter" type="textInput" defaultValue="," optional="true"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -36,9 +36,9 @@
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
     <question label="Question" type="TextArea" height="100"/> 
-    <answer label="Answer" type="TextInput"/> 
+    <answer label="Answer" type="TextInput" wysiwyg="true"/>
     <commentary label="Commentary" type="TextArea" height="100"/> 
-    <hint label="Hint" type="TextInput"/> 
+    <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
   </dialogStep>
 

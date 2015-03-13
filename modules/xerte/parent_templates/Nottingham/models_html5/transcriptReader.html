@@ -75,7 +75,7 @@
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 				$.ajax({
 					type: "GET",
-					url: eval(x_currentPageXML.getAttribute("timedText")),
+					url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
 					dataType: "xml",
 					success: function(xml) {
 						$(xml).find("P, p").each(function() {

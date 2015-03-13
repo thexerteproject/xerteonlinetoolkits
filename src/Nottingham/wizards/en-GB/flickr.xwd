@@ -8,15 +8,15 @@
   <!-- FLICKR SLIDESHOW=============================== -->
   <flickr menu="Misc" menuItem="Flickr Slideshow" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service." label="PageText" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
     <content label="Content for" options="all use,non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
     <deriv label="Reuse" options="unrestricted,non-derivative,share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
 
 	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	
-	<loadingTxt label="Loading Message" type="TextInput" language="true"/>
-    <imageTxt label="Image {i} of {n} images" type="textInput" language="true" />	
+	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true"/>
+    <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true" />
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>

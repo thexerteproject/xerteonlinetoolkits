@@ -15,9 +15,9 @@
 
   <!-- QUIZ=============================== -->  
     <quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
-    <name label="Quiz Title" type="textInput" />    
+    <name label="Quiz Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
-    <numQuestions label="Number of Questions (*=All)" type="TextInput"  width="120"/>
+    <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <align label="Alignment" options="left,right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
     <instructions label="Instructions" type="textArea"  height="120"/>
@@ -26,21 +26,21 @@
     <feedback label="Feedback" type="textArea"  height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
 	
-    <quesCount label="{i} of {n} questions" type="textInput" divider="true" language="true" />
-    <feedbackLabel label="Feedback Label" type="textInput" language="true" /> 
-    <singleRight label="Single Answer Correct" type="textInput" language="true" />     
-	<singleWrong label="Single Answer Wrong" type="textInput" language="true" />
-    <multiRight label="Multi Answer Correct" type="textInput" language="true" />    
-    <multiWrong label="Multi Answer Wrong" type="textInput" language="true" />    
-    <onCompletion label="Completion Text" type="textInput" language="true" />    
-    <score label="You scored {i} out of {n} marks" type="textInput" language="true" />
-    <submitBtnText label="Submit Button Label" type="textInput" language="true" />
+    <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
+    <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true" />
+	<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true" />
+    <multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true" />
+    <multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" language="true" />
+    <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
+    <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnTip label="Submit Button Tip" type="textInput" language="true" />	
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
-    <nextBtnText label="Next Button Label" type="textInput" language="true" />
+    <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true" />
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" />	
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
-    <restartBtnText label="Restart Button Label" type="textInput" language="true" />
+    <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true" />
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" />
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
 

@@ -113,9 +113,9 @@
 					var $img = $thisContents.find(".paneImg img");
 					if (i == 0) {
 						// don't set src of image that's visible until later as accordian needs to be fully set up for image scaling to work correctly
-						$img.data("src", eval(url));
+						$img.data("src", x_evalURL(url));
 					} else {
-						$img.attr("src", eval(url));
+						$img.attr("src", x_evalURL(url));
 					}
 					
 				} else if ($thisContents.find(".paneSWF").length > 0) {
@@ -127,7 +127,7 @@
 						}
 					}
 					
-					swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+					swfobject.embedSWF(x_evalURL(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
@@ -136,7 +136,7 @@
 					$thisContents.find(".jsHolder").data({
 						"savedDataIndex"	:x_pageInfo[x_currentPage].savedData.length - 1,
 						"built"				:false,
-						"url"				:eval(url)
+						"url"				:x_evalURL(url)
 					});
 				}
 			});

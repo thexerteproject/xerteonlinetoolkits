@@ -7,7 +7,7 @@
 
   <!-- BUTTON NAVIGATOR============================= -->
   <buttonNav menu="Navigators" menuItem="Button Navigator" hint="Presents a series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100"  width="100"/>
@@ -26,7 +26,7 @@
 
   <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="250" />
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox"  data="None,Original image,Specified URL" defaultValue="None" width="200"/>
