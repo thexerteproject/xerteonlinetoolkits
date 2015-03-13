@@ -336,8 +336,8 @@ var EDITOR = (function ($, parent) {
         // This will be the key for the new node
         var key = parent.tree.generate_lo_key();
 
-        // Duplicate the node data
-        lo_data[key] = lo_data[id];
+        // Duplicate the node data, make sure the node gets deep copied!
+        lo_data[key] = $.extend(true, {},lo_data[id]);
 
         // Give unique linkID
         if (lo_data[key].attributes['linkID']) {
@@ -358,13 +358,10 @@ var EDITOR = (function ($, parent) {
 
         // Determine pos
         var pos;
-
-        id = ids[0];
-
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
         $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes.id == id)
+            if (this.attributes.id.value == id)
                 pos = i;
             i++;
         });
@@ -741,7 +738,11 @@ var EDITOR = (function ($, parent) {
         //finally, do the help, if it exists...
         if (wizard_data[node_name].info.length > 0)
         {
-            $('#info').append(wizard_data[node_name].info);
+            $('#info').html(wizard_data[node_name].info);
+        }
+        else
+        {
+            $('#info').html("");
         }
         /*
         if (nodeInfo.info != undefined){
@@ -794,7 +795,7 @@ var EDITOR = (function ($, parent) {
         {
             if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
             {
-                lo_data[key]['data'] = xmlData.firstChild.data;
+                lo_data[lkey]['data'] = xmlData.firstChild.data;
             }
             else if (xmlData.firstChild.nodeType == 1) // extra node
             {
@@ -1008,7 +1009,7 @@ var EDITOR = (function ($, parent) {
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({
-            "plugins" : [ "types",  "dnd"],
+            "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types"] : ["types", "dnd"],
             "core" : {
                 "data" : tree_json,
                 "check_callback" : true, // Need this to allow the copy_node function to work...

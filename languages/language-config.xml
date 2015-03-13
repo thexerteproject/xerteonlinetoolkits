@@ -1,12 +1,13 @@
 ﻿<languages>
 
-  <language name="English (en-GB)" code="en-GB" file="engine_en-GB.xml" wizardfile="wizard_en-GB.xml" editorfile="editor_en-GB.xml" />
-  <language name="Nederlands (nl-NL)" code="nl-NL" file="engine_nl-NL.xml" wizardfile="wizard_nl-NL.xml" editorfile="editor_en-GB.xml" />
-  <language name="Vlaams (nl-BE)" code="nl-BE" file="engine_nl-BE.xml" wizardfile="wizard_nl-BE.xml" editorfile="editor_en-GB.xml" />
-  <language name="Français (fr-FR)" code="fr-FR" file = "engine_fr-FR.xml" wizardfile="wizard_fr-FR.xml" editorfile="editor_en-GB.xml" />
-  <language name="Español (en-ES)" code="es-ES" file = "engine_es-ES.xml" wizardfile="wizard_es-ES.xml" editorfile="editor_es-ES.xml" />
-  <language name="Czech (cs-CZ)" code="cs-CZ" file = "engine_cs-CZ.xml" wizardfile="wizard_cs-CZ.xml" editorfile="editor_cs-CZ.xml" />
-  <language name="Cymraeg (cy-GB)" code="cy-GB" file="engine_cy-GB.xml" wizardfile="wizard_cy-GB.xml" editorfile="editor_cy-GB.xml" />
-  <language name="Polish (pl-PL)" code="pl-PL" file="engine_pl-PL.xml" wizardfile="wizard_pl-PL.xml" editorfile="editor_en-GB.xml" />
+    <language name="English (en-GB)" code="en-GB" file="engine_en-GB.xml" wizardfile="wizard_en-GB.xml" editorfile="editor_en-GB.xml" />
+    <language name="Nederlands (nl-NL)" code="nl-NL" file="engine_nl-NL.xml" wizardfile="wizard_nl-NL.xml" editorfile="editor_en-GB.xml" />
+    <language name="Vlaams (nl-BE)" code="nl-BE" file="engine_nl-BE.xml" wizardfile="wizard_nl-BE.xml" editorfile="editor_en-GB.xml" />
+    <language name="Français (fr-FR)" code="fr-FR" file = "engine_fr-FR.xml" wizardfile="wizard_fr-FR.xml" editorfile="editor_en-GB.xml" />
+    <language name="Español (en-ES)" code="es-ES" file = "engine_es-ES.xml" wizardfile="wizard_es-ES.xml" editorfile="editor_es-ES.xml" />
+    <language name="Czech (cs-CZ)" code="cs-CZ" file = "engine_cs-CZ.xml" wizardfile="wizard_cs-CZ.xml" editorfile="editor_cs-CZ.xml" />
+    <language name="Cymraeg (cy-GB)" code="cy-GB" file="engine_cy-GB.xml" wizardfile="wizard_cy-GB.xml" editorfile="editor_cy-GB.xml" />
+    <language name="Polish (pl-PL)" code="pl-PL" file="engine_pl-PL.xml" wizardfile="wizard_pl-PL.xml" editorfile="editor_en-GB.xml" />
+    <language name="Russian (ru-RU)" code="ru-RU" file="engine_ru-RU.xml" wizardfile="wizard_ru-RU.xml" editorfile="editor_ru-RU.xml" />
 
 </languages>

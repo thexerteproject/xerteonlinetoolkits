@@ -174,7 +174,7 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 
 }
 
-function scorm2004_html5_page_create($type, $lo_name, $language){
+function scorm2004_html5_page_create($type, $template_name, $lo_name, $language){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -184,6 +184,7 @@ function scorm2004_html5_page_create($type, $lo_name, $language){
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js\"></script>\n";

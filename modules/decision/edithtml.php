@@ -221,6 +221,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
 <!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->

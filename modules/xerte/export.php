@@ -161,6 +161,16 @@ copy_parent_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
 copy_extra_files();
 
+/*
+ * Theme support
+ */
+$theme = $xml->getTheme();
+if ($theme != "" && $theme != "default")
+{
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    copy_extra_files();
+}
+
 if ($export_flash) {
     /*
      * Javascript js folder
@@ -268,7 +278,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm_html5_page_create($row['template_framework'], $lo_name, $xml->getLanguage());
+        scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -276,14 +286,14 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($row['template_framework'], $lo_name, $xml->getLanguage());
+        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
 } else {
     if ($export_flash) {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $lo_name);
+        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name);
     }
 }
 
