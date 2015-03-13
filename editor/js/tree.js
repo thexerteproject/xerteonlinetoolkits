@@ -320,19 +320,12 @@ var EDITOR = (function ($, parent) {
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
 
-    // Make a copy of the currently selected node
-    // Presently limited to first node if multiple selected
-    duplicateSelectedNodes = function () {
-        var tree = $.jstree.reference("#treeview");
-        var copy_node, new_node, id, ids = tree.get_selected();
-
-        if(!ids.length) { return false; } // Something needs to be selected
-
-        id = ids[0];
-
-        if (id == "treeroot") { return false; } // Can't copy the root node
-
+    duplicateNodes = function(tree, id, parent_id, pos, select)
+    {
         console.log(id);
+
+        var current_node = tree.get_node(id, false); console.log(current_node);
+
         // This will be the key for the new node
         var key = parent.tree.generate_lo_key();
 
@@ -346,38 +339,60 @@ var EDITOR = (function ($, parent) {
         }
 
         // Create the tree node
-        var current_node = tree.get_node(id, false); console.log(current_node);
-        var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
-        var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
         var this_json = {
             id : key,
             text : current_node.text,
-            type : current_node.type
+            type : current_node.type,
+            state: {
+                opened:true
+            }
         }
         console.log(this_json);
 
+        // Add the node
+        if (validateInsert(parent_id, current_node.type, tree))
+        {
+            var newkey = tree.create_node(parent_id, this_json, pos, function(){
+                if (select) {
+                    tree.deselect_all();
+                    tree.select_node(key);
+                }
+            });
+        }
+
+        // Also clone all sub-pages
+        $.each(current_node.children, function () {
+            duplicateNodes(tree, this, key, "last", false)
+        });
+    }
+
+    // Make a copy of the currently selected node
+    // Presently limited to first node if multiple selected
+    duplicateSelectedNodes = function () {
+        var tree = $.jstree.reference("#treeview");
+        var copy_node, new_node, id, ids = tree.get_selected();
+
+        if(!ids.length) { return false; } // Something needs to be selected
+
+        id = ids[0];
+
+        if (id == "treeroot") { return false; } // Can't copy the root node
+
         // Determine pos
         var pos;
+        var current_node = tree.get_node(id, false); console.log(current_node);
+        var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
+        var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
-        $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes.id.value == id)
+        $.each(parent_node.children, function () {
+            if (this == id)
                 pos = i;
             i++;
         });
         pos++;
 
-        // Add the node
-        if (validateInsert(parent_node.id, current_node.type, tree))
-        {
-            var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
-                tree.deselect_all();
-                tree.select_node(key);
-            });
-        }
-
-
-        //tree.copy_node(current_node, parent_node, 'after');
+        duplicateNodes(tree, id, parent_node_id, pos, true);
 
         return true; // Successful
 
