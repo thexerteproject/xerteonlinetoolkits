@@ -51,99 +51,12 @@ function show_preview_code($row){
 
 	_load_language_file("/modules/decision/preview.inc");
 
-	?>
+    // $engine is assumed to be html5 if flash is NOT set
+    $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player/rloObject.htm");
+    $page_content = str_replace("%TITLE%", $title, $page_content);
+    $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
+    $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
+    $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 
-
-	<!DOCTYPE html>
-	<html>
-		<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<title><?PHP echo $title  ?></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		
-		<!--jquery-->
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common/js/jquery/jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common/js/jquery/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="<?PHP echo $template_path_string ?>/common/js/jquery/jquery.ui.touch-punch.min.js"></script>
-
-		<!--styles -->
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/css/jquery-ui.min.css">
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/css/styles.css">
-		
-		<!--support for IE < 6-8 -->
-		<script src="<?PHP echo $template_path_string ?>/common/js/html5shiv.js"></script>
-		
-		<!--font awesome-->
-		<link rel="stylesheet" href="<?PHP echo $template_path_string ?>/common/css/font-awesome-4.1.0/css/font-awesome.min.css">
-		
-		<script type="text/javascript">
-		
-			var FileLocation = "<?PHP echo $string_for_flash ?>";
-			var templateLocation = "<?PHP echo $template_path_string ?>/";
-			var projectXML = "<?PHP echo $string_for_flash_xml ?>/"; //this is the file to read, not the xml
-
-		</script>
-
-	</head>
-
-	<body>
-		
-		<div id="mainHolder" style="visibility:hidden;">
-			
-			<div id="headerBlock">
-				
-				<div id="titles">
-					<h1> </h1>
-					<h2> </h2>
-				</div>
-				
-				<div id="btnHolder">
-					<span id="group1">
-						<button id="backBtn"><span class="fa fa-chevron-circle-left fa-2x"></span><span class="btnLabel"></span></button>
-						<button id="infoBtn"><span class="fa fa-info-circle fa-2x"></span><span class="btnLabel"></span></button>
-						<button id="fwdBtn"><span class="fa fa-chevron-circle-right fa-2x"></span><span class="btnLabel"></span></button>
-					</span>
-					<span id="group2">
-						<button id="newBtn"><span class="fa fa-plus-circle fa-2x"></span><span class="btnLabel"></span></button>
-					</span>
-				</div>
-				
-			</div>
-			
-			<div id="contentHolder">
-				
-				<div id="stepHolder">
-					<button id="submitBtn" class="floatR"></button>
-				</div>
-				
-				<div id="introHolder"></div>
-				
-				<div id="overviewHolder">
-					<div id="overviewBtnHolder">
-						<button id="emailBtn" class="floatR"><span class="fa fa-envelope fa-2x"></span><span class="btnLabel"></span></button>
-						<button id="printBtn" class="floatR"><span class="fa fa-print fa-2x"></span><span class="btnLabel"></span></button>
-					</div>
-				</div>
-				
-			</div>
-			
-		</div>
-		
-		<div id="footerBlock" />
-		
-		<!--initialise the application specific code-->
-		<script src="<?PHP echo $template_path_string ?>/common/js/decision.js"></script>
-		
-	<script type="text/javascript" language="JavaScript">
-	
-	<?PHP
-	
-	 echo "</script></body></html>";
-
-	}
-
-	?>
+    echo $page_content;
+}

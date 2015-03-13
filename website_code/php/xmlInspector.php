@@ -26,6 +26,7 @@ class XerteXMLInspector
     private $models;
     private $mediaIsUsed;
     private $language;
+    private $theme;
 
     private function addModel($model)
     {
@@ -176,6 +177,14 @@ class XerteXMLInspector
         if (strlen($str) > 0) {
             $this->mediaIsUsed = true;
         }
+        if (strlen((string)$this->xml['theme'])>0)
+        {
+            $this->theme=(string)$this->xml['theme'];
+        }
+        else
+        {
+            $this->theme = "default";
+        }
         if (function_exists('libxml_disable_entity_loader'))
         {
             libxml_disable_entity_loader($original_el_setting);
@@ -191,6 +200,11 @@ class XerteXMLInspector
     public function mediaIsUsed()
     {
         return $this->mediaIsUsed;
+    }
+
+    public function getTheme()
+    {
+        return $this->theme;
     }
 
     public function getLanguage()
