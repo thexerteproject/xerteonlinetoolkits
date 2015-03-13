@@ -1009,7 +1009,7 @@ var EDITOR = (function ($, parent) {
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({
-            "plugins" : [ "types",  "dnd"],
+            "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types"] : ["types", "dnd"],
             "core" : {
                 "data" : tree_json,
                 "check_callback" : true, // Need this to allow the copy_node function to work...
