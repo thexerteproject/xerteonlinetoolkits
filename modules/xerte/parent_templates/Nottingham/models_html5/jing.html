@@ -43,7 +43,7 @@
 				}
 			}
 			
-			swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
+			swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
 			
 			$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
 			$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));

@@ -97,7 +97,7 @@
 			if ($tableInfo[0].getAttribute("url") != undefined && $tableInfo[0].getAttribute("url") != "") {
 				$.ajax({
 					type: "GET",
-					url: eval($tableInfo[0].getAttribute("url")),
+					url: x_evalURL($tableInfo[0].getAttribute("url")),
 					dataType: "text",
 					success: function(csv) {
 						var csvData = csv.split("\r\n");

@@ -138,7 +138,7 @@
 							var	link = "#",
 								target = "";
 							if (thisData.getAttribute("linktarget") == "Original image") {
-								link = eval(thisData.getAttribute("url"));
+								link = x_evalURL(thisData.getAttribute("url"));
 								target = "_blank";
 							} else if (thisData.getAttribute("linktarget") == "Specified URL") {
 								if (thisData.getAttribute("link") != undefined && thisData.getAttribute("link") != "") {
@@ -240,7 +240,7 @@
 						"filter"	:'alpha(opacity=100)'
 					});
 				})
-				.attr("src", eval(src))
+				.attr("src", x_evalURL(src))
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
 						$(this).trigger("load");

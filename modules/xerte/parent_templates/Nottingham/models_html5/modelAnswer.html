@@ -127,7 +127,7 @@
 					.one("load", function() {
 						x_scaleImg(this, 200, 200, true, true);
 					})
-					.attr("src", eval(url))
+					.attr("src", x_evalURL(url))
 					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 						if (this.complete) {
 							$(this).trigger("load");
@@ -136,7 +136,7 @@
 			}
 			
 			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-				swfobject.embedSWF(eval(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
+				swfobject.embedSWF(x_evalURL(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
 			}
 			
 			

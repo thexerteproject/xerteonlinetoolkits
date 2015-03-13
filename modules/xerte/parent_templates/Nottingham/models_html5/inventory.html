@@ -226,7 +226,7 @@
 				url = thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
-				newString += '<img src="' + eval(url) + '" class="quizImg"';
+				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
 					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
 				}

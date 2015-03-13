@@ -8,29 +8,29 @@
   <!-- DECISION============================ -->
   <decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions" icon="icDecision">
 	
-	<name type="TextInput" label="Page Title"/>
+	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 	<firstStep label="First Step ID" type="TextInput"/>
 	
 	<copy label="Copy Overview Option" type="CheckBox" optional="true"/>
 	
-	<newBtnLabel label="Refresh Button" type="TextInput" language="true"/>
-	<viewThisBtn label="Overview Button" type="TextInput" language="true"/>
-	<backBtn label="Back Button" type="TextInput" language="true"/>
-	<fwdBtn label="Forward Button" type="TextInput" language="true"/>
-	<copyBtn label="Copy Button" type="TextInput" language="true"/>
-	<copyShortcutTxt label="Copy Instructions" type="TextInput" language="true"/>
-	<posAnswerString label="Other Answers Label" type="TextInput" language="true"/>
-	<fromRangeString label="Slider Range Label" type="TextInput" language="true"/>
-	<resultString label="Solution Label" type="TextInput" language="true"/>
-	<resultEndString label="Final Instruction" type="TextInput" language="true"/>
-	<overviewString label="Overview Label" type="TextInput" language="true"/>
-	<helpString label="Question Help Label" type="TextInput" language="true"/>
-	<btnLabel label="Next Button Label" type="TextInput" language="true"/>
+	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
+	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
+	<backBtn label="Back Button" type="TextInput" wysiwyg="true" language="true"/>
+	<fwdBtn label="Forward Button" type="TextInput" wysiwyg="true" language="true"/>
+	<copyBtn label="Copy Button" type="TextInput" wysiwyg="true" language="true"/>
+	<copyShortcutTxt label="Copy Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<posAnswerString label="Other Answers Label" type="TextInput" wysiwyg="true" language="true"/>
+	<fromRangeString label="Slider Range Label" type="TextInput" wysiwyg="true" language="true"/>
+	<resultString label="Solution Label" type="TextInput" wysiwyg="true" language="true"/>
+	<resultEndString label="Final Instruction" type="TextInput" wysiwyg="true" language="true"/>
+	<overviewString label="Overview Label" type="TextInput" wysiwyg="true" language="true"/>
+	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
+	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<closeBtn label="Close Button" type="TextInput" language="true"/>
-	<errorString label="Error Label" type="TextInput" language="true"/>
+	<closeBtn label="Close Button" type="TextInput" wysiwyg="true" language="true"/>
+	<errorString label="Error Label" type="TextInput" wysiwyg="true" language="true"/>
 	
 	<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -49,7 +49,7 @@
   
   <mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
-	<name label="Unique ID" type="TextInput"/>
+	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
@@ -61,7 +61,7 @@
   </mcqStep>
 
   <mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
-	<name label="Answer Option" type="TextInput"/>
+	<name label="Answer Option" type="TextInput" wysiwyg="true"/>
 	<target label="Target ID" type="TextInput"/>
 	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
 	
@@ -69,9 +69,9 @@
   </mcqStepOption>
 
   <sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
-	<name label="Unique ID" type="TextInput"/>
+	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
 	<text label="Question" type="TextArea" height="100"/>
-	<unit label="Unit of answer" type="TextInput"/>
+	<unit label="Unit of answer" type="TextInput" wysiwyg="true"/>
 	<min label="Minimum value" type="TextInput"/>
 	<max label="Maximum value" type="TextInput"/>
 	<step label="Increment" type="TextInput"/>
@@ -95,7 +95,7 @@
   </sliderStepOption>
 
   <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
-	<name label="Unique ID" type="TextInput"/>
+	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="100"/>
 	<target label="Target ID" type="TextInput"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
@@ -104,7 +104,7 @@
   </infoStep>
 
   <resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
-	<name label="Unique ID" type="TextInput"/>
+	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="100"/>
 	
 	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>

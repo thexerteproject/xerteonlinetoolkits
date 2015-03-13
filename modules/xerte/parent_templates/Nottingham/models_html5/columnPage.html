@@ -110,7 +110,7 @@
 						.one("load", function() {
 							columnPage.scaleImages($(this));
 						})
-						.attr("src", eval(this.getAttribute("url")))
+						.attr("src", x_evalURL(this.getAttribute("url")))
 						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 							if (this.complete) {
 								$(this).trigger("load");
@@ -126,14 +126,14 @@
 						}
 					}
 					
-					swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+					swfobject.embedSWF(x_evalURL(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 						$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 					}
 					
 				} else if ($thisColumn.find(".jsHolder").length > 0) {
 					$thisColumn.find(".jsHolder").data("savedDataIndex", x_pageInfo[x_currentPage].savedData.length - 1);
-					$thisColumn.find(".customHTMLHolder").load(eval(url));
+					$thisColumn.find(".customHTMLHolder").load(x_evalURL(url));
 				}
 			});
 			

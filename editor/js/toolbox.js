@@ -813,38 +813,9 @@ var EDITOR = (function ($, parent) {
         }
     },
     
-    
-    disableTextInputEditor = function (options) { return false;
-    	var name = options.name.toLowerCase();
-    	var type = options.options.type.toLowerCase();
-    	
-    	//console.log('...'); console.log(options); console.log('...');
-    	
-    	switch (type) {
-
-    		case 'media':
-    			return true;
-
-    		case 'textinput':
-    			switch (name) {
-    				case 'tip':
-    				case 'tooltip':
-    				case 'url':
-    				case 'term':
-    				case 'keywords':
-    				case 'src':
-    				case 'mapurl':
-    					return true;
-    			}
-    	}
-    	
-    	return false;
-    },
-
-
     convertTextInputs = function () {
         $.each(textinputs_options, function (i, options) {
-            if ( ! disableTextInputEditor(options) ) {
+            if (options) {
                 $('#'+options.id).ckeditor(function(){
                     // Editor is ready, attach onblur event
                     this.on('blur', function(){
@@ -1363,8 +1334,7 @@ var EDITOR = (function ($, parent) {
             pos = url.indexOf(rlourlvariable);
             if (pos >=0)
                 url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
-            var newvalue = '<p>' + url + '</p>';
-            $('#' + id).html(newvalue);
+            $('#' + id).attr("value", url);
             setAttributeValue(key, [name], [url]);
             window.elFinder = null;
         };
@@ -1738,30 +1708,6 @@ var EDITOR = (function ($, parent) {
                     if (theme_list[i].name==value)
                         option.prop('selected', true);
                     option.append(theme_list[i].display_name);
-                    /** Can't place table in selection (yet)
-                    var display = $('<table>')
-                        .addClass('themeentry')
-                        .append($('<tr>')
-                            .append($('<td>')
-                                .attr('colspan', 2)
-                                .append($('<p>')
-                                    .append(theme_list[i].display_name)
-                            )
-                                .append($('<p>')
-                                    .append(theme_list[i].description)
-                            )
-                        )
-                            .append($('<td>')
-                                .append($('<img>')
-                                    .attr('src', theme_list[i].preview)
-                                    .attr('width',  "100px")
-                            )
-                        )
-                    );
-                    option.append(display);
-                    */
-
-
                     html.append(option);
                 }
                 break;
@@ -1936,12 +1882,15 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 // a textinput with a browse buttons next to the type-in
                 var td1 = $('<td width="100%">')
-                    .append($('<div>')
-                    .attr('id', id)
-                    .addClass('inputtext')
-                    .attr('contenteditable', 'true')
-                    .append($('<p>')
-                        .append(value)));
+                    .append($('<input>')
+                        .attr('type', "text")
+                        .attr('id', id)
+                        .addClass('media')
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        })
+                        .attr('value', value));
                 var td2 = $('<td>')
                     .append($('<button>')
                     .attr('id', 'browse_' + id)
@@ -1959,7 +1908,6 @@ var EDITOR = (function ($, parent) {
                         .append($('<tr>')
                             .append(td1)
                             .append(td2)));
-                textinputs_options.push({id: id, key: key, name: name, options: options});
                 break;
             case 'datagrid':
                 var id = 'grid_' + form_id_offset;
@@ -2000,13 +1948,27 @@ var EDITOR = (function ($, parent) {
                 var id = 'textinput_' + form_id_offset;
                 form_id_offset++;
                 //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
-                html = $('<div>')
-                    .attr('id', id)
-                    .addClass('inputtext')
-                    .attr('contenteditable', 'true')
-                    .append($('<p>')
-                        .append(value));
-                textinputs_options.push({id: id, key: key, name: name, options: options});
+                if (options.wysiwyg && options.wysiwyg=="true")
+                {
+                    html = $('<div>')
+                        .attr('id', id)
+                        .addClass('inlinewysiwyg')
+                        .attr('contenteditable', 'true')
+                        .append($('<p>')
+                            .append(value));
+                    textinputs_options.push({id: id, key: key, name: name, options: options});
+                }
+                else {
+                    html = $('<input>')
+                        .attr('type', "text")
+                        .addClass('inputtext')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        })
+                        .attr('value', value);
+                }
         }
         return html;
     };

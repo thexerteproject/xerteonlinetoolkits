@@ -126,7 +126,7 @@
 			var url = $thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
-				newString += '<img src="' + eval(url) + '" class="quizImg"';
+				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
 					newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
 				}
@@ -340,7 +340,7 @@
 				imgSize = ' width="'+size_tmp[0]+'px" height="'+size_tmp[1]+'px"';
 			}
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
-				$textHolder.append('<img src="' + eval(x_currentPageXML.getAttribute("img")) + '"' + imgSize +'>');
+				$textHolder.append('<img src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + imgSize +'>');
 			}
 
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used

@@ -8,7 +8,7 @@
   <!-- PDF================================ -->
   <pdf menu="Media" menuItem="PDF File" hint="A page for incorporating PDF files." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
