@@ -212,7 +212,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $lo_name) {
+function basic_html5_page_create($type, $template_name, $lo_name) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -221,6 +221,7 @@ function basic_html5_page_create($type, $lo_name) {
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
+    $buffer = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$buffer);
 
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
 
@@ -243,7 +244,7 @@ function basic_html5_page_create($type, $lo_name) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($type, $lo_name, $language) {
+function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -252,6 +253,7 @@ function scorm_html5_page_create($type, $lo_name, $language) {
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$scorm_html_page_content);
 
     $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
