@@ -687,7 +687,7 @@ function init_workspace()
     }
     else {
         $("#workspace").jstree({
-            "plugins": ["types", "dnd", "search", "state",],
+            "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types", "search", "state"] : ["types", "dnd", "search", "state"],
             "core": {
                 "data": workspace.items,
                 "check_callback": true, // Need this to allow the copy_node function to work...
@@ -697,6 +697,11 @@ function init_workspace()
             "search": {
                 "show_only_matches": true,
                 "fuzzy": false
+            },
+            "dnd": {
+                "settings": {
+                    "threshold": /Android|AppleWebKit|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 50 : 5
+                }
             }
         })
             .bind('select_node.jstree', function (event, data) {

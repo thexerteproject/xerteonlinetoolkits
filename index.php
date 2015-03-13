@@ -74,6 +74,7 @@ recycle_bin();
     <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
     <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
+    <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
