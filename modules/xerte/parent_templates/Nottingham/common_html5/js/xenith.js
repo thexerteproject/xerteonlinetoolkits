@@ -100,7 +100,7 @@ $(document).ready(function() {
     // get xml data and sort it
     if (typeof dataxmlstr != 'undefined')
     {
-        var newString = x_fixLineBreaks(dataxmlstr),
+        var newString = x_makeAbsolute(x_fixLineBreaks(dataxmlstr)),
         xmlData = $($.parseXML(newString)).find("learningObject");
         x_projectDataLoaded(xmlData);
     }
@@ -110,7 +110,7 @@ $(document).ready(function() {
             url: x_projectXML,
             dataType: "text",
             success: function (text) {
-                var newString = x_fixLineBreaks(text),
+                var newString = x_makeAbsolute(x_fixLineBreaks(text)),
                     xmlData = $($.parseXML(newString)).find("learningObject");
                 x_projectDataLoaded(xmlData);
             },
@@ -218,27 +218,10 @@ x_projectDataLoaded = function(xmlData) {
 
 // Make absolute urls from urls with FileLocation + ' in their strings
 x_makeAbsolute = function(html){
-    var temp = html;
-    var pos = temp.indexOf('FileLocation + \'');
-    while (pos >= 0)
-    {
-        var pos2 = temp.substr(pos+16).indexOf("'") + pos;
-        if (pos2>=0)
-        {
-            temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
-        }
-        pos = temp.indexOf('FileLocation + \'');
-    }
-    var pos = temp.indexOf('FileLocation%20+%20\'');
-    while (pos >= 0)
-    {
-        var pos2 = temp.substr(pos+20).indexOf("'") + pos;
-        if (pos2>=0)
-        {
-            temp = temp.substr(0, pos) + FileLocation + temp.substr(pos + 20, pos2-pos) + temp.substr(pos2+21);
-        }
-        pos = temp.indexOf('FileLocation%20+%20\'');
-    }
+    var tempDecoded = decodeURIComponent(html);
+   // var tempDecoded = $('<textarea/>').html(tempURIDecoded).text();
+    var temp = tempDecoded.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+
     return temp;
 }
 
@@ -464,7 +447,7 @@ function x_setUp() {
 
 		for (i=0, len=items.length; i<len; i++) {
 			item = items[i].split("|"),
-			word = {word:item[0], definition:x_makeAbsolute(item[1])};
+			word = {word:item[0], definition:item[1]};
 
 			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
 				x_glossary.push(word);
@@ -1138,9 +1121,7 @@ function x_pageLoaded() {
             val = $this.attr("src") || $this.attr("href"),
             attr_name = $this.attr("src") ? "src" : "href";
 
-        if (val.substring(0, 16) == "FileLocation + '") {
-            $this.attr(attr_name, x_evalURL(val));
-        }
+        $this.attr(attr_name, x_evalURL(val));
     });
 
     $("#x_page" + x_currentPage)
@@ -1427,7 +1408,7 @@ function x_findText(pageXML) {
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
-    var tempText = node.nodeValue;
+    var tempText = node.value;
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
@@ -1463,7 +1444,7 @@ function x_insertText(node) {
         else
             return 'href="#" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\''+ p1 +'\'});return false;">';
     });
-    node.nodeValue = tempText;
+    node.value = tempText;
 }
 
 

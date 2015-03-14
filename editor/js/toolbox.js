@@ -1363,16 +1363,8 @@ var EDITOR = (function ($, parent) {
 
     makeAbsolute = function(html){
         var temp = html;
-        var pos = temp.indexOf('FileLocation + \'');
-        while (pos >= 0)
-        {
-            var pos2 = temp.substr(pos+16).indexOf("'") + pos;
-            if (pos2>=0)
-            {
-                temp = temp.substr(0, pos) + rlourlvariable + temp.substr(pos + 16, pos2-pos) + temp.substr(pos2+17);
-            }
-            pos = temp.indexOf('FileLocation + \'');
-        }
+        var temp = temp.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+
         return temp;
     },
 
