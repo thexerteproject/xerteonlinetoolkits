@@ -23,6 +23,9 @@ var EDITOR = (function ($, parent) {
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
+        defaultLanguage = false,
+        defaultAdvanced = false,
+
 
     // Called once document is ready
     setup = function (xml) {
@@ -294,11 +297,13 @@ var EDITOR = (function ($, parent) {
             // show
             $('#languagePanel').show();
             $('#languagePanel div.inputtext').attr('contenteditable', 'true');
+            defaultLanguage = true;
 
         }
         else
         {
             $('#languagePanel').hide();
+            defaultLanguage = false;
         }
     },
 
@@ -308,11 +313,13 @@ var EDITOR = (function ($, parent) {
             // show
             $('.advNewNodesLevel').show();
             //$('div.textinput').attr('contenteditable', 'true');
+            defaultAdvanced = true;
 
         }
         else
         {
             $('.advNewNodesLevel').hide();
+            defaultAdvanced = false;
         }
     },
 
@@ -617,18 +624,32 @@ var EDITOR = (function ($, parent) {
         if (nrlanguageoptions>0)
         {
             // Enable Advanced settings
-            $('#languagePanel').hide();
+            if (defaultLanguage)
+            {
+                $('#languagePanel').show();
+                $('#languagePanel div.inputtext').attr('contenteditable', 'true');
+            }
+            else
+            {
+                $('#languagePanel').hide();
+            }
             $('#language_cb_span').switchClass("disabled", "enabled");
             $('#language_cb').removeAttr("disabled");
-            $('#language_cb').prop('checked', false);
+            $('#language_cb').prop('checked', defaultLanguage);
         }
         else
         {
             // Hide the advanced panel and disable check box
-            $('#languagePanel').hide();
+            if (defaultAdvanced)
+            {
+                $('#languagePanel').show();
+            }
+            else {
+                $('#languagePanel').hide();
+            }
             $('#language_cb_span').switchClass("enabled", "disabled");
             $('#language_cb').attr("disabled", "disabled");
-            $('#language_cb').prop('checked', false);
+            $('#language_cb').prop('checked', defaultLanguage);
         }
 
         // Extra insert buttons
@@ -738,14 +759,14 @@ var EDITOR = (function ($, parent) {
                 $('.advNewNodesLevel').hide();
                 $('#advanced_cb_span').switchClass("disabled", "enabled");
                 $('#advanced_cb').removeAttr("disabled");
-                $('#advanced_cb').prop('checked', false);
+                $('#advanced_cb').prop('checked', defaultAdvanced);
             }
             else
             {
                 // Hide the advanced panel and disable check box
                 $('#advanced_cb_span').switchClass("enabled", "disabled");
                 $('#advanced_cb').attr("disabled", "disabled");
-                $('#advanced_cb').prop('checked', false);
+                $('#advanced_cb').prop('checked', defaultAdvanced);
                 $('.advNewNodesLevel').hide();
             }
         }
