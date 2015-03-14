@@ -283,6 +283,8 @@ function x_getLangData(lang) {
 
 function x_evalURL(url)
 {
+    if (url == null)
+        return null;
     var trimmedURL = url.trim();
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
     {
