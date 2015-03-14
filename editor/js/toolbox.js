@@ -1597,10 +1597,12 @@ var EDITOR = (function ($, parent) {
                     option.prop('selected', true);
                 option.append("&nbsp;");
                 html.append(option);
-                $.each(lo_data, function(i, data){
-                    var name = getAttributeValue(data['attributes'], 'name', [], i);
-                    var pageID = getAttributeValue(data['attributes'], 'pageID', [], i);
-                    var linkID = getAttributeValue(data['attributes'], 'linkID', [], i);
+                var tree = $.jstree.reference("#treeview");
+                var lo_node = tree.get_node("treeroot", false);
+                $.each(lo_node.children, function(i, key){
+                    var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+                    var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
                     if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
                     {
                         if (pageID.found)
