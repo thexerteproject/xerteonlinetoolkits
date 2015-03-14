@@ -136,6 +136,9 @@
 		<savefile>
 			<prompt>The XML could not be formatted, and changes have not been saved. Check your recent changes.</prompt>
 		</savefile>
+        <exitwizard>
+            <prompt>You are about to leave the editor.</prompt>
+        </exitwizard>
         <upload>
             <successful>Upload successful</successful>
             <failed>

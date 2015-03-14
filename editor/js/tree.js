@@ -33,6 +33,14 @@ var EDITOR = (function ($, parent) {
         do_bottom_buttons();
         do_buttons();
         build(xml);
+
+        jQuery(window).bind('beforeunload', function (e)
+        {
+            //save my data
+            savepreview();
+            e.returnValue = language.Alert.exitwizard.prompt;
+            return language.Alert.exitwizard.prompt;
+        });
     },
 
     // Add the buttons
@@ -83,7 +91,7 @@ var EDITOR = (function ($, parent) {
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/play.png', id:'preview_button', click:preview},
-            {name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
+            //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
             {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/publish.png', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
