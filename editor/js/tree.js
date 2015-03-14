@@ -1026,6 +1026,7 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+            console.log("Type: " + page_name + ", valid children: " + lchildren);
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
@@ -1036,9 +1037,11 @@ var EDITOR = (function ($, parent) {
         var node_types = {};
         node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
         $.each(wizard_data, function (key, value) {
+            /*
             if (key == "learningObject")
                 node_types['treeroot'] = create_node_type(key, value.new_nodes);
             else
+            */
                 node_types[key] = create_node_type(key, value.new_nodes);
         });
 
@@ -1062,25 +1065,6 @@ var EDITOR = (function ($, parent) {
         })
         .bind('select_node.jstree', function(event, data) {
             showNodeData(data.node.id);
-        })
-        .bind("copy_node.jstree", function (event, data) {
-            var new_id = generate_lo_key(),
-                original_id =  data.original.id,
-                tree = $('#treeview').jstree(true);
-
-            // Change the id
-            tree.set_id(data.node, new_id);
-
-            // Copy the lo_data from the old node to the new one
-            lo_data[new_id] = lo_data[original_id];
-
-            // Do the same for all the children
-            for(var i = 0, j = data.original.children_d.length; i < j; i++) {
-                new_id = generate_lo_key();
-                original_id =  data.original.children_d[i];
-                tree.set_id(data.node.children_d[i], new_id);
-                lo_data[new_id] = lo_data[original_id];
-            }
         })
         .bind('move_node.jstree', function(event, data) {
             console.log("move node");
