@@ -99,8 +99,10 @@ var EDITOR = (function ($, parent) {
     };
 
     my.wait = wait;
-    init(previewxmlurl);
 
+    $(document).ready(function () {
+        init(previewxmlurl);
+    });
 
     return parent;
 
