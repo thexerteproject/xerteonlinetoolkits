@@ -1408,7 +1408,7 @@ function x_findText(pageXML) {
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
-    var tempText = node.value;
+    var tempText = node.nodeValue;
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
@@ -1444,7 +1444,7 @@ function x_insertText(node) {
         else
             return 'href="#" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\''+ p1 +'\'});return false;">';
     });
-    node.value = tempText;
+    node.nodeValue = tempText;
 }
 
 
