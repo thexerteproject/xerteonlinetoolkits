@@ -64,7 +64,7 @@
 			if (mimeType != "video/vimeo") { // vimeo not supported by mediaelement.js
 				
 				if (uploadedFile == true) {
-					opts.source = eval(opts.source);
+					opts.source = evalURL(opts.source);
 				}
 				
 				var element = $('<' + opts.type + '>')
@@ -301,7 +301,19 @@
 				}
 			});
 		}
-		
+
+        var evalURL = function(url)
+        {
+            var trimmedURL = url.trim();
+            if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
+            {
+                return eval(url)
+            }
+            else
+            {
+                return url;
+            }
+        }
 		
 		if (opts.type == "video" && fileInfo[1] == "flv") {
 			checkFileType();
