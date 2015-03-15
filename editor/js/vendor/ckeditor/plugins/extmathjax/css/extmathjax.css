@@ -1,0 +1,14 @@
+span.mathjax-block
+{
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+/*
+span > span.mathjax.mathjax-block
+{
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+*/
