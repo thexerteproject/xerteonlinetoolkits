@@ -97,7 +97,7 @@
 					$thisThumb.data("index", i);
 					
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-						$thisThumbImg.attr("alt", this.getAttribute("tip"));
+						$thisThumbImg.attr("title", this.getAttribute("tip"));
 					}
 					
 					thumbnailViewer.loadImage($thisThumbImg, [$thisThumb.width(), $thisThumb.height()], this.getAttribute("url"));
@@ -156,7 +156,7 @@
 							$panelImg.html('<img class="centre" />');
 							var $img = $panelImg.find("img");
 							if (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") != "") {
-								$img.attr("alt", thisData.getAttribute("tip"));
+								$img.attr("title", thisData.getAttribute("tip"));
 							}
 							thumbnailViewer.loadImage($img, [$mainInfoHolder.width() - 40, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 55], thisData.getAttribute("url"));
 							

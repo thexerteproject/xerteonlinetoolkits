@@ -113,7 +113,7 @@
 					$("#labelHolder .label").each(function() {
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
-							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" title="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 						}
 					});
 				});

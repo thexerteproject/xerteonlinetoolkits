@@ -76,7 +76,7 @@
 				})
 				.attr({
 					"src":	x_evalURL(x_currentPageXML.getAttribute("url")),
-					"alt":	x_currentPageXML.getAttribute("tip1")
+					"title":	x_currentPageXML.getAttribute("tip1")
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -157,7 +157,7 @@
 				})
 				.attr({
 					"src":	x_evalURL(x_currentPageXML.getAttribute("url2")),
-					"alt":	x_currentPageXML.getAttribute("tip2")
+					"title":	x_currentPageXML.getAttribute("tip2")
 				})
 				.on("click", function() {
 					morphImages.zoom();
