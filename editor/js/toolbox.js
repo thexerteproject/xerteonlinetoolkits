@@ -1329,7 +1329,7 @@ var EDITOR = (function ($, parent) {
         window.elFinder = {};
         window.elFinder.callBack = function(file) {
             // Actions with url parameter here
-            var url = file.url;
+            var url = decodeURIComponent(file.url);
             console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
             if (pos >=0)
