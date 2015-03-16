@@ -270,6 +270,24 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     ?>
+
+    function bunload(){
+
+        path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
+
+        template = "<?PHP  echo $row_edit['template_id']; ?>";
+
+        if(typeof window_reference==="undefined"){
+
+            window.opener.edit_window_close(path,template);
+
+        }else{
+
+            window_reference.edit_window_close(path,template);
+
+        }
+
+    }
 </script>
 <script type="text/javascript" src="editor/js/data.js"></script>
 <script type="text/javascript" src="editor/js/application.js"></script>

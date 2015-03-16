@@ -38,8 +38,17 @@ var EDITOR = (function ($, parent) {
         {
             //save my data
             savepreview();
+            try{
+                bunload();
+            }
+            catch(err)
+            {
+                // ignore
+            }
+
             e.returnValue = language.Alert.exitwizard.prompt;
             return language.Alert.exitwizard.prompt;
+            //return false;
         });
     },
 
