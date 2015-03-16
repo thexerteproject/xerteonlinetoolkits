@@ -218,9 +218,9 @@ x_projectDataLoaded = function(xmlData) {
 
 // Make absolute urls from urls with FileLocation + ' in their strings
 x_makeAbsolute = function(html){
-    var tempDecoded = decodeURIComponent(html);
+    //var tempDecoded = decodeURIComponent(html);
    // var tempDecoded = $('<textarea/>').html(tempURIDecoded).text();
-    var temp = tempDecoded.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+    var temp = html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
 
     return temp;
 }
