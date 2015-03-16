@@ -8,10 +8,10 @@
     <!-- GEOCOMMONS ================================ -->
   <geocommons  menu="Misc" menuItem="GeoCommons Map" hint="Embed GeoCommons Maps" icon="icGeoComm" thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <src label="IFrame code" type="TextInput"/>
 	
-	<description label="Description" type="TextInput" optional="true"/>
+	<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>

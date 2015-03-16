@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>%TITLE%</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+    <!--jquery-->
+    <script src="%TEMPLATEPATH%common/js/jquery.js"></script>
+
+    <!--styles -->
+    <link href="%TEMPLATEPATH%common/css/bootstrap.css" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!--custom styles for this template-->
+    <link href="%TEMPLATEPATH%common/css/custom.css" rel="stylesheet">
+
+    <!--support for IE < 6-8 -->
+    <script src="%TEMPLATEPATH%common/js/html5shiv.js"></script>
+
+    <!--media element and initialisation-->
+    <script src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js"></script>
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer.min.css" />
+
+    <script type="text/javascript">
+
+        var FileLocation = "%XMLPATH%";
+        var templateLocation = "%TEMPLATEPATH%";
+        var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
+
+    </script>
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+
+</head>
+
+<body data-twttr-rendered="true" data-spy="scroll" data-target="#contentTable">
+
+<!--facebookAPI-->
+<div id="fb-root"></div>
+<script src="%TEMPLATEPATH%common/js/initFB.js" defer></script>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+
+        <div class="container">
+
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <div class="nav-collapse collapse">
+                <ul class="nav"id="nav">
+                    <!--<li class=""><a href="./index.html">Home</a></li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Learning Object Title-->
+<header class="jumbotron" id="overview">
+    <div class="container">
+
+        <div class="logo">
+            <img class="logo" src="%TEMPLATEPATH%common/img/logo.png"/>
+        </div>
+
+        <div class="titles">
+            <h1 id="pageTitle">Learning Object Title</h1>
+            <p id="pageSubTitle">Overview title for the content below</p>
+        </div>
+
+    </div>
+</header>
+
+<!--main page content: nav bar and sections-->
+<div class="container">
+    <div class="row-fluid">
+        <!--navigation-->
+        <div class="span3 bs-docs-sidebar" id="contentTable">
+
+            <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
+                <!--<li><a href="#section1ID">Section 1</a></li>-->
+            </ul>
+        </div>
+
+        <!--content-->
+        <div class="span9" id="mainContent">
+
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="addthis_toolbox addthis_default_style ">
+                    <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+                    <a class="addthis_button_tweet"></a>
+                    <a class="addthis_button_google_plusone"></a>
+                    <a class="addthis_button_linkedin_counter"></a>
+                    <a class="addthis_button_pinterest_pinit"></a>
+                    <a class="addthis_counter addthis_pill_style"></a>
+                </div>
+
+                <!--<script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>-->
+                <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" defer></script>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!--bootstrap script-->
+
+<script src="%TEMPLATEPATH%common/js/bootstrap.min.js"></script>
+
+<!--initialise the application specific code-->
+<script src="%TEMPLATEPATH%common/js/application.js"></script>
+
+<script type="text/javascript" language="JavaScript">
+
+</script>
+</body>
+</html>";

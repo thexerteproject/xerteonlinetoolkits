@@ -6,7 +6,8 @@
 		<name label="Project Title" type="TextInput"/>
 		
 		<stylesheet label="Stylesheet" type="Media" optional="true"/>
-		<authorSupport label="Author Support" type="CheckBox" default="true" optional="true"/>
+		<displayMode type="ComboBox" options="Fixed,Fill screen" data="fixed,fill" label="Display Mode" width="100"/>
+		<authorSupport label="Author Support" type="CheckBox" defaultValue="true" optional="true"/>
 		<logo label="Logo" type="Media" optional="true"/>
 		<logoAlt label="Logo Alt Text" type="TextInput" optional="true"/>
 		
@@ -83,8 +84,8 @@
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
 		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
-		<img label="Image" type="media" default="Select an Image" optional="true"/>
-		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<imgTip label="Image Alt Text" type="TextInput" defaultValue="Enter the Alt Text" optional="true"/>
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -116,8 +117,8 @@
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="question" width="100" optional="true"/>
 		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
 		<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
-		<img label="Image" type="media" default="Select an Image" optional="true"/>
-		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<imgTip label="Image Alt Text" type="TextInput" defaultValue="Enter the Alt Text" optional="true"/>
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 	
 		<newNodes>
@@ -147,8 +148,8 @@
 		<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
 		<lastStep label="Last Step" type="CheckBox" optional="true"/>
 		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
-		<img label="Image" type="media" default="Select an Image" optional="true"/>
-		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<imgTip label="Image Alt Text" type="TextInput" defaultValue="Enter the Alt Text" optional="true"/>
 		<btnLabel label="Next Button Label" type="TextInput" language="true"/>
 		
 	</info>
@@ -161,8 +162,8 @@
 		
 		<faIcon label="Icon" type="ComboBox" options="Action,Information,Question,Solution" data="cogs,exclamation,question,lightbulb-o" defaultValue="lightbulb-o" width="100" optional="true"/>
 		<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
-		<img label="Image" type="media" default="Select an Image" optional="true"/>
-		<imgTip label="Image Tooltip" type="TextInput" default="Enter a Tooltip" optional="true"/>
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<imgTip label="Image Alt Text" type="TextInput" defaultValue="Enter the Alt Text" optional="true"/>
 		
 	</result>
 	

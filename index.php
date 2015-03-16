@@ -67,7 +67,7 @@ recycle_bin();
         <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-				<link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
         <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet" />

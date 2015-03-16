@@ -8,8 +8,8 @@
   <!-- MEMORY============================== -->
   <memory menu="Games" menuItem="Memory Game" hint="An interaction for the user to match chunks of text" icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>
-	<resetBtnTxt label="Reset Button Label" type="textInput" language="true"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
@@ -26,7 +26,7 @@
 
   <matchItem menuItem="Item" icon="icPageWhite" remove="true" max="9">
 
-    <name label="Label" type="TextInput"/>
+    <name label="Label" type="TextInput" wysiwyg="true"/>
     <url label="Image" type="Media"/>
 	<url2 label="Label Image" type="Media" optional="true"/>
 

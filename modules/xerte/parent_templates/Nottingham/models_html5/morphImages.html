@@ -75,8 +75,8 @@
 					morphImages.setUpZoom();
 				})
 				.attr({
-					"src":	eval(x_currentPageXML.getAttribute("url")),
-					"alt":	x_currentPageXML.getAttribute("tip1")
+					"src":	x_evalURL(x_currentPageXML.getAttribute("url")),
+					"title":	x_currentPageXML.getAttribute("tip1")
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -156,8 +156,8 @@
 					"speed"		:Number(zoomSpeed * 1000)
 				})
 				.attr({
-					"src":	eval(x_currentPageXML.getAttribute("url2")),
-					"alt":	x_currentPageXML.getAttribute("tip2")
+					"src":	x_evalURL(x_currentPageXML.getAttribute("url2")),
+					"title":	x_currentPageXML.getAttribute("tip2")
 				})
 				.on("click", function() {
 					morphImages.zoom();

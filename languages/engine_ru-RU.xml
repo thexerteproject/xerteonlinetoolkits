@@ -1,0 +1,109 @@
+﻿<language name="Russian">
+<nextButton label="Следующий" description="Кнопка следующий"/>
+<backButton label="Предыдущий" description="Кнопка предыдущий"/>
+<tocButton label="Содержание" description="Кнопка содержание"/>
+<helpButton label="Помощь" description="Кнопка помощь"/>
+<mediaButton label="Мультимедиа" description="Кнопка мультимедиа. "/>
+<homeButton label="Главная" description="Кнопка главная страница. "/>
+<pageHelp name="Страница помощь" description="Страница помощь" toClose="Нажмите пробел для закрытия"/>
+<glossaryButton label="Глоссарий" description="Кнопка глоссрий. "/>
+<continueButton label="Продолжить" description="Кнопка продолжить"/>
+<toc label="Содержание" description="Содержание. Используйте стрелки для выбора страницы. Нажмите пробел для перехода на страницу.">
+<contentsList label="" description=""/>
+<closeButton label="" description="Кнопка закрыть содержание"/>
+<gotoPageButton label="Перейти на страницу" description="Кнопка перехода"/>
+</toc>
+<glossary label="Глоссарий" description="Список терминов и их определений.">
+<closeButton label="" description="Кнопка закрыть глоссарий"/>
+</glossary>
+<kbLanguage label="Специальные символы" description="Список специальных символов для вставки к текст">
+<closeButton label="" description="Кнопка закрыть список специальных терминов"/>
+<dialog instruction="Используйте CAPS и SHIFT" on="On" off="Off" caps="Caps"/>
+</kbLanguage>
+<textToSpeech label="null" description="Текст в речь"/>
+<errorProject label="Данные проекта не были загружены."/>
+<errorPage label="Внастоящее время шаблон не доступен для этого типа страниц."/>
+<errorBrowser label="Ваш браузер не поддерживает полностью данный тип страниц."/>
+<errorFlash label="Для просмотра элемента вам необходимо установить Flash Player." description="Установить Flash Player"/>
+<tick label="Галочка"/>
+<cross label="Крестик"/>
+<themes label="--Цветовая схема--" description="Настройки цветовой схемы">
+<item>стандартный</item>
+<item>blue</item>
+<item>green</item>
+<item>red</item>
+<item>orange</item>
+<item>purple</item>
+<item>grey</item>
+<item>Высокий контраст 1</item>
+<item>Высокий контраст 2</item>
+</themes>
+<sizes label="--Размер экрана--" description="Настройки размера экрана">
+<item>стандартный</item>
+<item>большой</item>
+<item>больше</item>
+<item>на весь экран</item>
+<item>на все окно</item>
+</sizes>
+<fonts label="--Шрифт--" description="Настройки шрифта">
+<item>стандартный</item>
+</fonts>
+<textSizes label="--Размер текста--" description="Настройки размера текста">
+<item>стандартный</item>
+<item>маленький</item>
+<item>средний</item>
+<item>большой</item>
+<item>больше</item>
+</textSizes>
+<volumeControl label="Звук:" description="Настройки звука"/>
+<volumeControlSlider label="" description="Регулятор громкости"/>
+<vocab>
+<page>Страница</page>
+<of>z</of>
+</vocab>
+<soundController>
+<stopButton label="Остановить" description="Кнопка остановить аудио"/>
+<playButton label="Проиграть" description="Кнопка пориграть аудио"/>
+<pauseButton label="Приостановить" description="Кнопка приостановить аудио "/>
+<rwndButton label="Вперед" description="Кнопка перемотки аудио"/>
+<ffwdButton label="Назад" description="Кнопка перемотки аудио"/>
+<loader label="Загрузка: "/>
+</soundController>
+<movieController>
+<stopButton label="Остановить" description="Кнопка остановить фильм"/>
+<playButton label="Проиграть" description="Кнопка прогирать фильм"/>
+<pauseButton label="Приостановить" description="Кнопка приостановить фильм"/>
+<rwndButton label="Вперед" description="Кнопка перемотки видео"/>
+<ffwdButton label="Назад" description="Кнопка перемотки видео"/>
+<loader label="Загрузка: "/>
+</movieController>
+<mediaElementControls>
+<stopButton label="Остановить" description="Кнопка остановить"/>
+<playPauseButton label="Воспроизвести/Приостановить" description="Кнопка воспроизвести/приостановить"/>
+<muteButton label="Переключить звук" description="Кнопка включения/выключения звука"/>
+<fullscreenButton label="На весь экран" description="Кнопка просмотра во весь экран"/>Кнопка скрытия/показа подписей"/>
+</mediaElementControls>
+<interactions>
+<button name="Кнопка"/>
+<radioButton selected="выбрано. Используйте стрелки для перехода между опциями"/>
+<checkBox selected="выбрано" deselected="не выбрано"/>
+<comboBox name="ComboBox" options="Настройки." selected="selected." selectedOptions="выбрано. Используйте стрелки для выбора"/>
+<hotSpot name="HotSpot" toSelect="Hot Spot. Нажмите пробел для выбора." selected="Выбран Hot Spot"/>
+<hotObject name="HotObject" toSelect="Нажмите пробел для выбора." selected="Выбран Hot Object"/>
+<textEntry name="Текстовое поле" selected="Текстовое поле выбрано"/>
+<targetArea name="Заданная область" description="Drop область" toSelect="Для просмотра выбранных параметров нажмите пробел."/>
+<draggableItem name="Подвижный элемент" selected="Элемент выбран" toSelect="Нажмите пробел для выбора" deSelected="Элемент не выбран."/>
+</interactions>
+<fetchResults label="Выборка результатов..."/>
+<errorResults label="Ошибка при загрузке результатов"/>
+<loadError label="Ошибка загрузки"/>
+<noResults label="Нет результатов"/>
+<timer>
+<remaining name="Оставшееся время"/>
+<timeUp name="время истекло"/>
+<seconds name="секунд"/>
+</timer>
+<colourChanger label="Изменение цвета" description="Изменение цвета.">
+<closeButton label="" description="Закрыть"/>
+</colourChanger>
+</language>

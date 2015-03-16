@@ -10,14 +10,14 @@
 
   <!-- HANGMAN============================== -->
   <hangman menu="Games" menuItem="Hangman" hint="A Hangman game. Create a list of words for the learner to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
     
-	<nextBtnTxt label="Next Button Label" type="textInput" divider="true" language="true" />
+	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" />		
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
-    <quesCount label="{i} of {n} words" type="textInput" language="true" />	
+    <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true" />
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>

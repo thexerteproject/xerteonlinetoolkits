@@ -81,7 +81,7 @@
 				
 				$panel.append('<div class="jsHolder"><div class="customHTMLHolder"></div></div>');
 				$panel.find(".jsHolder").data("savedDataIndex", 0);
-				$panel.find(".customHTMLHolder").load(eval(x_currentPageXML.getAttribute("url")), x_pageLoaded());
+				$panel.find(".customHTMLHolder").load(x_evalURL(x_currentPageXML.getAttribute("url")), x_pageLoaded());
 				
 			} else {
 				$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
@@ -137,7 +137,7 @@
 					}
 				}
 				
-				swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
+				swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
 					if (e.success == true) {
 						$("#pageContents").data("swf", x_getSWFRef("pageSWF")); // reference to swf
 						

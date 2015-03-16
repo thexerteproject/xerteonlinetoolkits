@@ -8,11 +8,11 @@
   <!-- XERTE CONTENT=========================== -->
   <xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity." deprecated="This page is no longer supported">
 
-    <name type="TextInput" label="Page Title"/>
+    <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <modelFile type="media" label="Xerte Model"/>
 
     <initObject type="TextInput" label="InitObject" optional="true"/>
-	<errorTxt label="Error Text" type="TextInput" divider="true" language="true"/> 
+	<errorTxt label="Error Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
     <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
     <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>

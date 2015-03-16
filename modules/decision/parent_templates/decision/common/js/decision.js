@@ -125,6 +125,15 @@ function setUpInterface() {
 		insertCSS(eval(allParams.stylesheet));
 	}
 	
+	if (allParams.displayMode == "fixed") {
+		$mainHolder
+			.width(800)
+			.height(600)
+			.addClass("bgColour");
+	} else {
+		$("body").addClass("bgColour");
+	}
+	
 	$headerBlock.find("#titles h1").html(allParams.name);
 	$headerBlock.find("#titles h2").html(allQParams.name);
 	

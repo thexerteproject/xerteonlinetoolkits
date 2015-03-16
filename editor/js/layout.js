@@ -54,11 +54,13 @@ var EDITOR = (function ($, parent) {
                     togglerTip_open:        closetooltip,
                     togglerTip_closed:      opentooltip,
                     resizerTip:             resizetooltip,
-                    fxName:                 "slide",
+                    fxName:                 "none"
+                    /*
                     fxSpeed_open:           750,
                     fxSpeed_close:          1500,
                     fxSettings_open:        { easing: "easeInQuint" },
                     fxSettings_close:       { easing: "easeOutQuint" }
+                    */
                 },
                 north: {
                     minSize:                65,
@@ -89,10 +91,12 @@ var EDITOR = (function ($, parent) {
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "mouseover",
-                    initClosed:             false,
+                    initClosed:             false
+                    /*
                     fxName:                 "drop",
                     fxSpeed:                "normal",
                     fxSettings:             { easing: "" } // remove default
+                    */
                 },
                 east: {
                     size:                   200,
@@ -107,10 +111,12 @@ var EDITOR = (function ($, parent) {
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "mouseover",
-                    initClosed:             true,
+                    initClosed:             true
+                    /*
                     fxName:                 "drop",
                     fxSpeed:                "normal",
                     fxSettings:             { easing: "" } // remove default
+                    */
                 },
                 center: {
                     /*paneSelector:           "#mainContent",*/

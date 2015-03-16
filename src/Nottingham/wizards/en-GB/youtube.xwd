@@ -7,7 +7,7 @@
 
   <youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
 
-    <name type="TextInput" label="Page Title"/>
+    <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
 
     <autoplay type="Checkbox" label="Autoplay" optional="true"/>

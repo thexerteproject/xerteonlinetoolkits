@@ -82,7 +82,7 @@
 				
 				var $pageBg = $('<img id="pageBg"/>');
 				$pageBg
-					.attr("src", eval(x_currentPageXML.getAttribute("bgImage")))
+					.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 					.css({
 						"opacity"		:Number(alpha/100),
 						"filter"		:"alpha(opacity=" + alpha + ")",

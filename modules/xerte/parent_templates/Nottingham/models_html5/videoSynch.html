@@ -41,7 +41,7 @@
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 				$.ajax({
 					type: "GET",
-					url: eval(x_currentPageXML.getAttribute("timedText")),
+					url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
 					dataType: "xml",
 					success: function(xml) {
 						$(xml).find("P, p").each(function() {
@@ -84,9 +84,9 @@
 					divString = "";
 				
 				if ($this.attr("url") != undefined && $this.attr("url") != "") {
-					imgStr += '<div class="myImg"><img src="' + eval($this.attr("url")) + '" ';
+					imgStr += '<div class="myImg"><img src="' + x_evalURL($this.attr("url")) + '" ';
 					if ($this.attr("tip") != undefined && $this.attr("tip") != "") {
-						imgStr += 'alt="' + $this.attr("tip") + '" ';
+						imgStr += 'title="' + $this.attr("tip") + '" ';
 					}
 					imgStr += ' /></div>';
 				}

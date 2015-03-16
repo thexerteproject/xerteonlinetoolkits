@@ -13,17 +13,17 @@
   <!-- MCQ PAGE =========================================== -->
   <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it"  thumb="thumbs/connectorMCQ.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <instruction label="Instruction" type="TextArea" height="100"/>	
     <prompt label="Prompt" type="TextArea" height="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
 
-    <confirmBtnTxt label="Confirm Button Label" type="textInput" divider="true" language="true" />
+    <confirmBtnTxt label="Confirm Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" />	
     <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
-    <notFoundMessage label="Not Found Message" type="TextInput" language="true"/>
-    <notSetMessage label="Not Set Message" type="TextInput" language="true"/>		
+    <notFoundMessage label="Not Found Message" type="TextInput" wysiwyg="true" language="true"/>
+    <notSetMessage label="Not Set Message" type="TextInput" wysiwyg="true" language="true"/>
 
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -37,7 +37,7 @@
   </cMcq>
 
   <cOption menuItem="Option" icon="icBullet" remove="true">
-    <name label="Option Title" type="TextInput"/>
+    <name label="Option Title" type="TextInput" wysiwyg="true"/>
     <text label="Option" type="TextArea" height="100"/>
 	<destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption>

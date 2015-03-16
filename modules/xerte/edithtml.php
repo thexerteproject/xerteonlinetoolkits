@@ -110,7 +110,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
     $ThemeList = array();
     // Add default theme
-    $ThemeList[] = array(name => "default", display_name => "Xerte Online Toolkits", description => "Xerte Online Toolkits", preview => "");
+    $ThemeList[] = array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => "");
     $d = opendir($theme_folder);
     while($f = readdir($d)){
         if(is_dir($theme_folder . $f)){
@@ -137,7 +137,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                     }
                 }
                 if (substr($themeProperties->enabled, 0, 1) == "y") {
-                    $ThemeList[] = array(name => $themeProperties->name, display_name => $themeProperties->display_name, description => $themeProperties->description, preview => $themeProperties->preview);
+                    $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
                 }
             }
         }
@@ -259,6 +259,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
 <!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
@@ -308,6 +309,25 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     ?>
+
+    function bunload(){
+
+        path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
+
+        template = "<?PHP  echo $row_edit['template_id']; ?>";
+
+        if(typeof window_reference==="undefined"){
+
+            window.opener.edit_window_close(path,template);
+
+        }else{
+
+            window_reference.edit_window_close(path,template);
+
+        }
+
+    }
+
 </script>
 <script type="text/javascript" src="editor/js/data.js"></script>
 <script type="text/javascript" src="editor/js/application.js"></script>

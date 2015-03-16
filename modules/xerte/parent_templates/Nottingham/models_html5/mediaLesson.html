@@ -460,7 +460,7 @@
 							x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
 							$mediaHolder.width($(this).width());
 						})
-						.attr("src", eval(mediaData.audioImage))
+						.attr("src", x_evalURL(mediaData.audioImage))
 						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 							if (this.complete) {
 								$(this).trigger("load");
@@ -468,7 +468,7 @@
 						});
 					
 					if (mediaData.audioImageTip != "" && mediaData.audioImageTip != undefined) {
-						$img.attr("alt", mediaData.audioImageTip);
+						$img.attr("title", mediaData.audioImageTip);
 					}
 				}
 			}
