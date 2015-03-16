@@ -45,7 +45,7 @@
 				
 				$("#pageContents").append('<div class="jsHolder"><div class="customHTMLHolder"></div></div>');
 				$("#pageContents .jsHolder").data("savedDataIndex", 0);
-				$("#pageContents .customHTMLHolder").load(eval(x_currentPageXML.getAttribute("modelFile")));
+				$("#pageContents .customHTMLHolder").load(x_evalURL(x_currentPageXML.getAttribute("modelFile")));
 				
 			} else {
 				// if language attributes aren't in xml will have to use english fall back

@@ -107,8 +107,8 @@
 						annotatedDiagram.imgLoaded();
 					})
 					.attr({
-						"src"	:eval(x_currentPageXML.getAttribute("url")),
-						"alt"	:x_currentPageXML.getAttribute("tip")
+						"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
+						"title"	:x_currentPageXML.getAttribute("tip")
 					})
 					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 						if (this.complete) {
@@ -132,7 +132,7 @@
 				
 				this.imgLoaded();
 				
-				swfobject.embedSWF(eval(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+				swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 				$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
 			}
 			

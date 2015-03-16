@@ -97,7 +97,7 @@
 					$thisThumb.data("index", i);
 					
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-						$thisThumbImg.attr("alt", this.getAttribute("tip"));
+						$thisThumbImg.attr("title", this.getAttribute("tip"));
 					}
 					
 					thumbnailViewer.loadImage($thisThumbImg, [$thisThumb.width(), $thisThumb.height()], this.getAttribute("url"));
@@ -138,7 +138,7 @@
 							var	link = "#",
 								target = "";
 							if (thisData.getAttribute("linktarget") == "Original image") {
-								link = eval(thisData.getAttribute("url"));
+								link = x_evalURL(thisData.getAttribute("url"));
 								target = "_blank";
 							} else if (thisData.getAttribute("linktarget") == "Specified URL") {
 								if (thisData.getAttribute("link") != undefined && thisData.getAttribute("link") != "") {
@@ -156,7 +156,7 @@
 							$panelImg.html('<img class="centre" />');
 							var $img = $panelImg.find("img");
 							if (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") != "") {
-								$img.attr("alt", thisData.getAttribute("tip"));
+								$img.attr("title", thisData.getAttribute("tip"));
 							}
 							thumbnailViewer.loadImage($img, [$mainInfoHolder.width() - 40, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 55], thisData.getAttribute("url"));
 							
@@ -240,7 +240,7 @@
 						"filter"	:'alpha(opacity=100)'
 					});
 				})
-				.attr("src", eval(src))
+				.attr("src", x_evalURL(src))
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
 						$(this).trigger("load");

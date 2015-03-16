@@ -8,7 +8,7 @@
   <!-- GAP FILL INTERACTION=============================== -->
   <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating a drag and drop gap-fill exercise." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>    
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
     <passage label="Gap Fill Text" type="TextArea" height="150"/>
     <interactivity label="Interactivity" options="Drag Drop,Fill in Blank" type="ComboBox" data="Drag Drop,Fill in Blank" defaultValue="Drag Drop" width="100"/>

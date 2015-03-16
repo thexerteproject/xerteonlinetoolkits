@@ -102,7 +102,7 @@
 									} else {
 										infoString += '<div class="paneImg"><img ';
 										if ($this.data("tip") != undefined && $this.data("tip") != "") {
-											infoString += 'alt="' + $this.data("tip") + '" ';
+											infoString += 'title="' + $this.data("tip") + '" ';
 										}
 										infoString += ' /></div>';
 									}
@@ -129,7 +129,7 @@
 										.one("load", function() {
 											list.scaleImages();
 										})
-										.attr("src", eval(url))
+										.attr("src", x_evalURL(url))
 										.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 											if (this.complete) {
 												$(this).trigger("load");
@@ -145,7 +145,7 @@
 										}
 									}
 									
-									swfobject.embedSWF(eval(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+									swfobject.embedSWF(x_evalURL(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
 									if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
 										$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 									}
@@ -161,7 +161,7 @@
 										// customHTML hasn't loaded here before - load it from file
 										var $thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($infoHolder.find(".jsHolder"));
 										$this.data("built", $thisCustomHTMLHolder);
-										$thisCustomHTMLHolder.load(eval(url));
+										$thisCustomHTMLHolder.load(x_evalURL(url));
 									}
 								}
 							}

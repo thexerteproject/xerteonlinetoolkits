@@ -9,9 +9,9 @@
 
   <chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. You may choose from line, bar, stacked bar or pie charts, and add several series of data to the chart" icon="icChart" thumb="thumbs/charts.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="300"/>
-    <chartTitle label="Chart Title" type="TextInput"/>
+    <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
     <chartType label="Chart Type" options="line,bar,stacked bar,pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
     <align label="Align Text" options="left,right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
 
@@ -28,7 +28,7 @@
   </chart>
 
   <series remove="true">
-    <name label="Series Name" type="TextInput"/>
+    <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
   </series>

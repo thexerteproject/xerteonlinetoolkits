@@ -1372,8 +1372,14 @@ function export_use_engine(tag)
 function property_tab_download(id,html5_tag, flash_tag, url)
 {
     var ifrm = document.getElementById(id);
-    var export_html5_engine = export_use_engine(html5_tag);
-    var export_flash_engine = export_use_engine(flash_tag);
+    var export_html5_engine="";
+    var export_flash_engine="";
+    if (html5_tag.length>0) {
+        export_html5_engine = export_use_engine(html5_tag);
+    }
+    if(flash_tag.length>0) {
+        export_flash_engine = export_use_engine(flash_tag);
+    }
     var urlparams = url.indexOf('?') !== false;
     ifrm.src = url + (urlparams ? '&' : '?') + 'html5='+export_html5_engine+'&flash='+export_flash_engine;
 }

@@ -13,27 +13,27 @@
   
   <!-- INVENTORY =============================== -->
   <inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions."  thumb="thumbs/inventory.jpg" remove="true">
-    <name label="Page Title" type="TextInput"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
     <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <align label="Alignment" options="left,right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
 	<classes label="Classes (max 10)" type="TextInput" />
 	<scoreType label="Score Type" options="absolute,individual percent,relative percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
-    <chartTitle label="Chart Title" type="TextInput"/>
+    <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
     <chartType label="Chart Type" options="bar,pie,line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120"/>	
     <chartColour label="Colour" type="colourPicker"/>	
 
-    <quesCount label="{i} of {n} questions" type="textInput" divider="true" language="true" />	
-    <feedbackLabel label="Feedback Label" type="textInput" language="true" /> 
-    <testModeText label="Test mode text" type="textInput" language="true" />
-    <submitBtnText label="Submit Button Label" type="textInput" language="true" />
+    <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
+    <testModeText label="Test mode text" type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnTip label="Submit Button Tip" type="textInput" language="true" />	
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
-    <nextBtnText label="Next Button Label" type="textInput" language="true" />
+    <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true" />
     <nextBtnTip label="Next Button Tip" type="textInput" language="true" />	
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
-    <restartBtnText label="Restart Button Label" type="textInput" language="true" />
+    <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true" />
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" />
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
 	

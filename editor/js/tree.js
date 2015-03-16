@@ -23,6 +23,9 @@ var EDITOR = (function ($, parent) {
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
+        defaultLanguage = false,
+        defaultAdvanced = false,
+
 
     // Called once document is ready
     setup = function (xml) {
@@ -30,6 +33,23 @@ var EDITOR = (function ($, parent) {
         do_bottom_buttons();
         do_buttons();
         build(xml);
+
+        jQuery(window).bind('beforeunload', function (e)
+        {
+            //save my data
+            savepreview();
+            try{
+                bunload();
+            }
+            catch(err)
+            {
+                // ignore
+            }
+
+            e.returnValue = language.Alert.exitwizard.prompt;
+            return language.Alert.exitwizard.prompt;
+            //return false;
+        });
     },
 
     // Add the buttons
@@ -80,7 +100,7 @@ var EDITOR = (function ($, parent) {
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/play.png', id:'preview_button', click:preview},
-            {name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
+            //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
             {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/publish.png', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
@@ -294,11 +314,13 @@ var EDITOR = (function ($, parent) {
             // show
             $('#languagePanel').show();
             $('#languagePanel div.inputtext').attr('contenteditable', 'true');
+            defaultLanguage = true;
 
         }
         else
         {
             $('#languagePanel').hide();
+            defaultLanguage = false;
         }
     },
 
@@ -308,17 +330,65 @@ var EDITOR = (function ($, parent) {
             // show
             $('.advNewNodesLevel').show();
             //$('div.textinput').attr('contenteditable', 'true');
+            defaultAdvanced = true;
 
         }
         else
         {
             $('.advNewNodesLevel').hide();
+            defaultAdvanced = false;
         }
     },
 
     showToolbar = function(){
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
+
+    duplicateNodes = function(tree, id, parent_id, pos, select)
+    {
+        console.log(id);
+
+        var current_node = tree.get_node(id, false); console.log(current_node);
+
+        // This will be the key for the new node
+        var key = parent.tree.generate_lo_key();
+
+        // Duplicate the node data, make sure the node gets deep copied!
+        lo_data[key] = $.extend(true, {},lo_data[id]);
+
+        // Give unique linkID
+        if (lo_data[key].attributes['linkID']) {
+            var linkID = 'PG' + new Date().getTime();
+            lo_data[key].attributes['linkID'] = linkID;
+        }
+
+        // Create the tree node
+        var this_json = {
+            id : key,
+            text : current_node.text,
+            type : current_node.type,
+            state: {
+                opened:true
+            }
+        }
+        console.log(this_json);
+
+        // Add the node
+        if (validateInsert(parent_id, current_node.type, tree))
+        {
+            var newkey = tree.create_node(parent_id, this_json, pos, function(){
+                if (select) {
+                    tree.deselect_all();
+                    tree.select_node(key);
+                }
+            });
+        }
+
+        // Also clone all sub-pages
+        $.each(current_node.children, function () {
+            duplicateNodes(tree, this, key, "last", false)
+        });
+    }
 
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
@@ -332,55 +402,21 @@ var EDITOR = (function ($, parent) {
 
         if (id == "treeroot") { return false; } // Can't copy the root node
 
-        console.log(id);
-        // This will be the key for the new node
-        var key = parent.tree.generate_lo_key();
-
-        // Duplicate the node data
-        lo_data[key] = lo_data[id];
-
-        // Give unique linkID
-        if (lo_data[key].attributes['linkID']) {
-            var linkID = 'PG' + new Date().getTime();
-            lo_data[key].attributes['linkID'] = linkID;
-        }
-
-        // Create the tree node
+        // Determine pos
+        var pos;
         var current_node = tree.get_node(id, false); console.log(current_node);
         var parent_node_id = tree.get_parent(current_node); console.log(parent_node_id);
         var parent_node = tree.get_node(parent_node_id, false); console.log(parent_node);
-        var this_json = {
-            id : key,
-            text : current_node.text,
-            type : current_node.type
-        }
-        console.log(this_json);
-
-        // Determine pos
-        var pos;
-
-        id = ids[0];
-
         // Walk and count children of 'treeroot' to figure out pos
         var i = 0;
-        $.each(tree.get_children_dom(parent_node_id), function () {
-            if (this.attributes.id == id)
+        $.each(parent_node.children, function () {
+            if (this == id)
                 pos = i;
             i++;
         });
         pos++;
 
-        // Add the node
-        if (validateInsert(parent_node.id, current_node.type, tree))
-        {
-            var newkey = tree.create_node(parent_node_id, this_json, pos, function(){
-                tree.deselect_all();
-                tree.select_node(key);
-            });
-        }
-
-
-        //tree.copy_node(current_node, parent_node, 'after');
+        duplicateNodes(tree, id, parent_node_id, pos, true);
 
         return true; // Successful
 
@@ -605,18 +641,32 @@ var EDITOR = (function ($, parent) {
         if (nrlanguageoptions>0)
         {
             // Enable Advanced settings
-            $('#languagePanel').hide();
+            if (defaultLanguage)
+            {
+                $('#languagePanel').show();
+                $('#languagePanel div.inputtext').attr('contenteditable', 'true');
+            }
+            else
+            {
+                $('#languagePanel').hide();
+            }
             $('#language_cb_span').switchClass("disabled", "enabled");
             $('#language_cb').removeAttr("disabled");
-            $('#language_cb').prop('checked', false);
+            $('#language_cb').prop('checked', defaultLanguage);
         }
         else
         {
             // Hide the advanced panel and disable check box
-            $('#languagePanel').hide();
+            if (defaultAdvanced)
+            {
+                $('#languagePanel').show();
+            }
+            else {
+                $('#languagePanel').hide();
+            }
             $('#language_cb_span').switchClass("enabled", "disabled");
             $('#language_cb').attr("disabled", "disabled");
-            $('#language_cb').prop('checked', false);
+            $('#language_cb').prop('checked', defaultLanguage);
         }
 
         // Extra insert buttons
@@ -726,14 +776,14 @@ var EDITOR = (function ($, parent) {
                 $('.advNewNodesLevel').hide();
                 $('#advanced_cb_span').switchClass("disabled", "enabled");
                 $('#advanced_cb').removeAttr("disabled");
-                $('#advanced_cb').prop('checked', false);
+                $('#advanced_cb').prop('checked', defaultAdvanced);
             }
             else
             {
                 // Hide the advanced panel and disable check box
                 $('#advanced_cb_span').switchClass("enabled", "disabled");
                 $('#advanced_cb').attr("disabled", "disabled");
-                $('#advanced_cb').prop('checked', false);
+                $('#advanced_cb').prop('checked', defaultAdvanced);
                 $('.advNewNodesLevel').hide();
             }
         }
@@ -798,7 +848,7 @@ var EDITOR = (function ($, parent) {
         {
             if(xmlData.firstChild.nodeType == 3)  // becomes a cdata-section
             {
-                lo_data[key]['data'] = xmlData.firstChild.data;
+                lo_data[lkey]['data'] = xmlData.firstChild.data;
             }
             else if (xmlData.firstChild.nodeType == 1) // extra node
             {
@@ -821,7 +871,10 @@ var EDITOR = (function ($, parent) {
         var this_json = {
             id : lkey,
             text : treeLabel,
-            type : nodeName
+            type : nodeName,
+            state: {
+                opened: true
+            }
         }
         console.log("Adding " + this_json);
         // Add the node
@@ -990,6 +1043,7 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+            console.log("Type: " + page_name + ", valid children: " + lchildren);
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
@@ -1000,9 +1054,11 @@ var EDITOR = (function ($, parent) {
         var node_types = {};
         node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
         $.each(wizard_data, function (key, value) {
+            /*
             if (key == "learningObject")
                 node_types['treeroot'] = create_node_type(key, value.new_nodes);
             else
+            */
                 node_types[key] = create_node_type(key, value.new_nodes);
         });
 
@@ -1012,7 +1068,7 @@ var EDITOR = (function ($, parent) {
         var treeview = $('<div />').attr('id', 'treeview');
         $(".ui-layout-west .content").append(treeview);
         $("#treeview").jstree({
-            "plugins" : [ "types",  "dnd"],
+            "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types"] : ["types", "dnd"],
             "core" : {
                 "data" : tree_json,
                 "check_callback" : true, // Need this to allow the copy_node function to work...
@@ -1026,25 +1082,6 @@ var EDITOR = (function ($, parent) {
         })
         .bind('select_node.jstree', function(event, data) {
             showNodeData(data.node.id);
-        })
-        .bind("copy_node.jstree", function (event, data) {
-            var new_id = generate_lo_key(),
-                original_id =  data.original.id,
-                tree = $('#treeview').jstree(true);
-
-            // Change the id
-            tree.set_id(data.node, new_id);
-
-            // Copy the lo_data from the old node to the new one
-            lo_data[new_id] = lo_data[original_id];
-
-            // Do the same for all the children
-            for(var i = 0, j = data.original.children_d.length; i < j; i++) {
-                new_id = generate_lo_key();
-                original_id =  data.original.children_d[i];
-                tree.set_id(data.node.children_d[i], new_id);
-                lo_data[new_id] = lo_data[original_id];
-            }
         })
         .bind('move_node.jstree', function(event, data) {
             console.log("move node");

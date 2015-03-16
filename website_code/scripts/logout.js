@@ -98,7 +98,7 @@ function logout(slo){
     else {
         if (edit_window_open.length != 0) {
 
-            var answer = confirm(OPEN_WINDOWS_START + edit_window_open.length + OPEN_WINDOWS_END);
+            var answer = confirm(OPEN_WINDOWS_START + ' ' + edit_window_open.length + ' ' + OPEN_WINDOWS_END);
 
             if (answer) {
 

@@ -21,7 +21,20 @@
 	
 	// media files uploaded to XOT or from YouTube will play using mediaelement.js
 	// videos from vimeo will play in their own player
-	
+
+    var evalURL = function(url)
+    {
+        var trimmedURL = url.trim();
+        if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
+        {
+            return eval(url)
+        }
+        else
+        {
+            return url;
+        }
+    }
+
 	$.fn.mediaPlayer = function(options) {
 		var defaults = {
 				type	:"audio",
@@ -31,11 +44,11 @@
 			mimeType = '',
 			uploadedFile = true,
 			thisMedia = this;
-		
-		var fileInfo = opts.source.split(".");
-		fileInfo.splice(1, 1, fileInfo[1].slice(0, -1));
-		mimeType = opts.type + "/" + fileInfo[1];
-		
+
+        var fileInfo = evalURL(opts.source);
+        fileInfo = fileInfo.split(".");
+        mimeType = opts.type + "/" + fileInfo[1];
+
 		// audio
 		if (opts.type == "audio") {
 			opts.height = x_audioBarH;
@@ -64,7 +77,7 @@
 			if (mimeType != "video/vimeo") { // vimeo not supported by mediaelement.js
 				
 				if (uploadedFile == true) {
-					opts.source = eval(opts.source);
+					opts.source = evalURL(opts.source);
 				}
 				
 				var element = $('<' + opts.type + '>')
@@ -301,8 +314,7 @@
 				}
 			});
 		}
-		
-		
+
 		if (opts.type == "video" && fileInfo[1] == "flv") {
 			checkFileType();
 		} else {

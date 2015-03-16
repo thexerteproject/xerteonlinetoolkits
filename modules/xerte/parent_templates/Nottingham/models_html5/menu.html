@@ -92,7 +92,7 @@
 							})
 							.attr({
 								"id":"pageImg",
-								"src":eval(x_params.menuImage)
+								"src":x_evalURL(x_params.menuImage)
 							})
 							.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 								if (this.complete) {
@@ -129,7 +129,7 @@
 						x_pageLoaded();
 					}
 				})
-				.attr("src", eval(x_params.menuImage))
+				.attr("src", x_evalURL(x_params.menuImage))
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
 						$(this).trigger("load");

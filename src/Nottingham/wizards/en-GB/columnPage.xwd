@@ -8,7 +8,7 @@
   <!-- COLUMN PAGE============================== -->
   <columnPage menu="Navigators" menuItem="Column Page" hint="Presents a page with a series of columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
-    <name type="TextInput" label="Page Title"/>
+    <name type="TextInput" wysiwyg="true" label="Page Title"/>
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -26,7 +26,7 @@
 
   <nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="250" />
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox"  data="None,Original image,Specified URL" defaultValue="None" width="200"/>

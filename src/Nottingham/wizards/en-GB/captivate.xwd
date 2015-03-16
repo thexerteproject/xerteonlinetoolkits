@@ -8,7 +8,7 @@
   <!-- CAPTIVATE=================================================== -->
   <captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true" deprecated="Captivate is no longer supported." >
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <url label="Captivate SWF File" type="media" />
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false"  optional="true"/>

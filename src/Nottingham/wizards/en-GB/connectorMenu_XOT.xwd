@@ -8,7 +8,7 @@
   <!-- MENU CONNECTOR PAGE ============================================= -->
   <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
 
-    <name label="Page Title" type="TextInput" />
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
 
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true"/>
@@ -32,7 +32,7 @@
   </connectorMenu>
 
   <cMenuListedPage menuItem="Menu Page Entry" remove="true" >
-    <name label="Page Title" type="TextInput" />  
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
     <pageID label="Select Page From List" type="pageList" defaultValue=""/>	
   </cMenuListedPage>
 

@@ -93,7 +93,7 @@
 				if (url != undefined && url != "") {
 					var newString = '<div class="pageImg"><img ';
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-						newString += 'alt="' + this.getAttribute("tip") + '" ';
+						newString += 'title="' + this.getAttribute("tip") + '" ';
 					}
 					if (this.getAttribute("align") != "Bottom") {
 						newString += 'class="padBottom" /></div>';
@@ -120,7 +120,7 @@
 						.one("load", function() {
 							audioSlideshow.scaleImages();
 						})
-						.attr("src", eval(url))
+						.attr("src", x_evalURL(url))
 						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 							if (this.complete) {
 								$(this).trigger("load");
@@ -132,7 +132,7 @@
 							"opacity"	:0,
 							"filter"	:'alpha(opacity=0)'
 						})
-						.attr("src", eval(url));
+						.attr("src", x_evalURL(url));
 				}
 				
 				if (this.getAttribute("synch") != "0") {

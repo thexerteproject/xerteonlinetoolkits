@@ -123,13 +123,13 @@
 							imgTip;
 						
 						if (this.nodeName == "image") {
-							imgSrc = eval(this.getAttribute("src"));
+							imgSrc = x_evalURL(this.getAttribute("src"));
 							imgTip = this.getAttribute("tooltip");
 							
 						} else { // sound - use default image / tip if none added
 							imgSrc = x_templateLocation + "common_html5/sound.jpg";
 							if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
-								imgSrc = eval(this.getAttribute("img"));
+								imgSrc = x_evalURL(this.getAttribute("img"));
 							}
 							
 							if (this.getAttribute("tooltip") != undefined) {
@@ -140,7 +140,7 @@
 						}
 						
 						// add img and scale it on load
-						$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
+						$thisThumbMedia.html('<img title="' + imgTip + '" class="centre" />');
 						perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
 						
 					} else if (this.nodeName == "movie") {
@@ -169,10 +169,10 @@
 						} else {
 							imgSrc = x_templateLocation + "common_html5/video.jpg";
 							if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
-								imgSrc = eval(this.getAttribute("img"));
+								imgSrc = x_evalURL(this.getAttribute("img"));
 							}
 							
-							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
+							$thisThumbMedia.html('<img title="' + imgTip + '" class="centre" />');
 							perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
 						}
 					}
@@ -218,7 +218,7 @@
 							
 							if (thisData.nodeName == "image") {
 								$mediaPanel.html('<img alt="' + $this.find("img").attr("alt") + '" class="centre" />');
-								perspectives.loadImage($mediaPanel.find("img"), [$mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 53], eval(thisData.getAttribute("src")));
+								perspectives.loadImage($mediaPanel.find("img"), [$mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 53], x_evalURL(thisData.getAttribute("src")));
 								
 							} else if (thisData.nodeName == "sound") {
 								$mediaPanel.html('<img alt="' + $this.find("img").attr("alt") + '" class="centre" /><div id="pageAudio"></div>');
