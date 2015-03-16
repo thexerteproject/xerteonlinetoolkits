@@ -290,7 +290,7 @@ function edit_window(admin,edit){
 
     }else{
 
-        var NewEditWindow = window.open(site_url + url_return("edit", admin), "editwindow" + admin, "height=665, width=800" );
+        var NewEditWindow = window.open(site_url + url_return("edithtml", admin), "editwindow" + admin, "height=665, width=800" );
 
         NewEditWindow.window_reference = self;			
 
