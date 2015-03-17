@@ -22,17 +22,19 @@
 $tst = file_get_contents("php://stdin");
 $fileupdate = $_POST["fileupdate"];
 $filename = $_POST["filename"];
+
 $mode = $fileupdate ? "publish" : "preview";
 if ($mode == 'publish')
 {
     $preview = dirname(dirname(__FILE__)) . '/' . $_POST["preview"];
 }
 $filename = dirname(dirname(__FILE__)) . '/' . $filename;
+$filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 $absjson = make_refs_local(urldecode($_POST["lo_data"]), $_POST['absmedia']);
 
 //file_put_contents("unprocessed_$mode.txt", print_r(urldecode($_POST["lo_data"]), true));
-//file_put_contents("local_refs_$mode.txt", print_r($absjson, true));
+file_put_contents($filenamejson, print_r($absjson, true));
 
 $relreffedjson = json_decode($absjson);
 
@@ -43,6 +45,16 @@ $data = process($relreffedjson);
 //file_put_contents("decoded_unprocessed_$mode.txt", print_r($json, true));
 //file_put_contents("decoded_local_refs_$mode.txt", print_r($relreffedjson, true));
 //file_put_contents("processed_$mode.xml", $data->asXML());
+
+// save round-robin queue of 5 xml's
+for ($i=10; $i>1; $i--)
+{
+    $j = $i-1;
+    if (file_exists($filename . "." . $j)) {
+        rename($filename . "." . $j, $filename . "." . $i);
+    }
+}
+rename($filename, $filename . ".1");
 file_put_contents($filename, $data->asXML());
 if ($mode == "publish")
 {
