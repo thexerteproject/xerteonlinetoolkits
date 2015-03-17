@@ -246,8 +246,8 @@
 			});
 			
 			$targetHolder.find(".target")
-				.width(maxW) // make targets fit longest word before clearing text from them
-				.height($targetHolder.find(".target").height())
+				.width(maxW + 30) // make targets fit longest word before clearing text from them
+				.height($targetHolder.find(".target").height() + 10)
 				.html("")
 				.droppable({
 					drop:	function(event, ui) {
@@ -365,11 +365,11 @@
 					}
 					})
 				.disableSelection();
-			
+
 			for (i=0; i<$("#targetHolder .target").length; i++) {
 				$("#targetHolder .target:eq(" + i + ")").droppable({
 					// only label with correct text can be dropped on target
-					accept:	$("#labelHolder .label").filter(function() {return $(this).html() == answerData[i]; })
+					accept:	$("#labelHolder .label").filter(function() { return $(this).html() == $('<textarea>').html(answerData[i]).text(); })
 				});
 			}
 			
