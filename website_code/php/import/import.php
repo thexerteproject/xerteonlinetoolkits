@@ -145,10 +145,6 @@ function make_new_template($type,$zip_path){
 
             chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type,0777);
 
-            mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/media/");
-
-            chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/media/",0777);
-
             copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
 
             echo IMPORT_SUCCESS . "****";
@@ -251,27 +247,20 @@ function copy_loop($zip_path, $final_path){
     global $xerte_toolkits_site;
 
     $d = opendir($zip_path);
-
     while($f = readdir($d)){
-
         if(is_dir($zip_path . $f)){
 
             if(($f!=".")&&($f!="..")){
-
+                mkdir($final_path . $f . "/");
+                chmod($final_path . $f . "/",0777);
                 copy_loop($zip_path . $f . "/", $final_path . $f . "/");
-
-            }			
+            }
 
         }else{
-
             rename($zip_path . $f, $final_path . $f);
-
         }
-
-    }	
-
+    }
     closedir($d);
-
 }
 
 /**

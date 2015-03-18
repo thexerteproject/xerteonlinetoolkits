@@ -118,6 +118,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             {
                 $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
                 $themeProperties = new StdClass();
+
                 foreach ($info as $line) {
                     $attr_data = explode(":", $line, 2);
                     if (empty($attr_data) || sizeof($attr_data) != 2) {
