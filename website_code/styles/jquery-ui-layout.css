@@ -116,11 +116,11 @@ table {
 	background: #4d585e url(../images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
 	border-bottom: 1px solid #777;
 	/* font-weight: bold; */
-	padding: 2px 0 0 0;
+	/*padding: 2px 0 0 0; */
 	position: relative;
 	overflow: hidden;
     color: #fff;
-    height: 82px;
+    /* height: 82px; */
 }
 
 #sortContainer {
