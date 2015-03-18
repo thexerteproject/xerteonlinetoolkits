@@ -15,5 +15,6 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $_SESSION['sort_type'] = $_POST['sort_type'];
 
-list_users_projects($_SESSION['sort_type']);
+$workspace = get_users_projects($_SESSION['sort_type']);
+echo $workspace;
 

@@ -94,11 +94,12 @@ function iframe_check(){
 			
 			if(typeof window_reference==="undefined"){
                 
-                window.opener.screen_refresh();
-                
+                //window.opener.screen_refresh();
+                window.opener.refresh_workspace();
             }else{
                 
-                window_reference.screen_refresh();
+                //window_reference.screen_refresh();
+                window_reference.refresh_workspace();
                 
             }
 

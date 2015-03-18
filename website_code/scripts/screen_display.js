@@ -65,7 +65,8 @@ function file_area_height(){
 
 	current_node=document.getElementById("file_area");
 
-	while(current_node.className!="pagecontainer"){
+	while(current_node!=null && current_node.id!="pagecontainer"){
+
 
 		total_height+=current_node.offsetTop;
 		
@@ -86,7 +87,7 @@ function file_area_height(){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+// TODO: depracate
 function page_load_sort(tag){
 
 	drag_manager.file_area_height = file_area_height();
@@ -114,7 +115,7 @@ function page_load_sort(tag){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+// TODO: depracate
 function folders_reopen(){
 
 	temp_folder_array = new Array();
@@ -171,7 +172,7 @@ function folders_reopen(){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+// TODO: depracate
 function file_area_redraw_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
@@ -190,7 +191,7 @@ function file_area_redraw_stateChanged(){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+// TODO: depracate
 function sort_display_settings(){
 		
 	document.getElementById("folder_workspace").open = true;
@@ -264,7 +265,7 @@ function sort_display_settings(){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+//TODO: depracate
 function screen_refresh_no_ajax(){
 
 	document.getElementById("file_area").innerHTML = file_area_html;
@@ -280,7 +281,7 @@ function screen_refresh_no_ajax(){
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
-
+//TODO : depracate
 function screen_refresh(){
 
 	if(setup_ajax()!=false){
@@ -313,113 +314,459 @@ function button_check(){
      var duplicatebtn = document.getElementById("duplicate");
      var publishbtn = document.getElementById("publish");
 
-	if(drag_manager.selected_items.length==0){
+     var tree = $.jstree.reference("#workspace"),
+         ids = tree.get_selected();
 
-		editbtn.disabled="disabled";
-        editbtn.className = "xerte_button_disabled";
-        editbtn.onclick="";
 
-		previewbtn.disabled="disabled";
-        previewbtn.className = "xerte_button_disabled";
-        previewbtn.onclick="";
 
-		deletebtn.disabled="disabled";
-		deletebtn.className="xerte_button_disabled";
-		deletebtn.onclick="";
+    editbtn.disabled="disabled";
+    editbtn.className = "xerte_button_disabled";
+    editbtn.onclick="";
 
-		duplicatebtn.disabled="disabled";
-        duplicatebtn.className = "xerte_button_disabled";
-		duplicatebtn.onclick="";
+    previewbtn.disabled="disabled";
+    previewbtn.className = "xerte_button_disabled";
+    previewbtn.onclick="";
 
-		publishbtn.disabled="disabled";
-        publishbtn.className = "xerte_button_disabled";
-		publishbtn.onclick="";
+    deletebtn.disabled="disabled";
+    deletebtn.className="xerte_button_disabled";
+    deletebtn.onclick="";
 
-		if(document.getElementById("folder_workspace").mainhighlight){
+    duplicatebtn.disabled="disabled";
+    duplicatebtn.className = "xerte_button_disabled";
+    duplicatebtn.onclick="";
 
-			propertiesbtn.removeAttribute("disabled");
-            propertiesbtn.className = "xerte_button";
-            propertiesbtn.onclick=function(){properties_window()};
+    publishbtn.disabled="disabled";
+    publishbtn.className = "xerte_button_disabled";
+    publishbtn.onclick="";
 
-		}else{
+    propertiesbtn.disabled="disabled";
+    propertiesbtn.className = "xerte_button_disabled";
+    propertiesbtn.onclick="";
 
-			propertiesbtn.disabled="disabled";
-            propertiesbtn.className = "xerte_button_disabled";
-            propertiesbtn.onclick="";
+    deletebtn.disabled="disabled";
+    deletebtn.className = "xerte_button_disabled";
+    deletebtn.onclick="";
 
-		}
+    if(ids.length==1) {
+        switch (workspace.nodes[ids[0]].type) {
+            case "workspace":
+                propertiesbtn.removeAttribute("disabled");
+                propertiesbtn.className = "xerte_button";
+                propertiesbtn.onclick = function () {
+                    properties_window()
+                };
+                break;
+            case "recyclebin":
+                deletebtn.removeAttribute("disabled");
+                deletebtn.className = "xerte_button";
+                deletebtn.onclick = function () {
+                    remove_this()
+                };
+                break;
+            case "folder":
+                propertiesbtn.removeAttribute("disabled");
+                propertiesbtn.className = "xerte_button";
+                propertiesbtn.onclick = function () {
+                    properties_window()
+                };
 
-		if(document.getElementById("recyclebin").mainhighlight){
+                deletebtn.removeAttribute("disabled");
+                deletebtn.className = "xerte_button";
+                deletebtn.onclick = function () {
+                    remove_this()
+                };
+                break;
+            default:
+                propertiesbtn.removeAttribute("disabled");
+                propertiesbtn.className = "xerte_button";
+                propertiesbtn.onclick = function () {
+                    properties_window()
+                };
 
-			if(document.getElementById("folderchild_recyclebin").childNodes.length!=0){
+                editbtn.removeAttribute("disabled");
+                editbtn.className = "xerte_button";
+                editbtn.onclick = function (e) {
+                    if (e.shiftKey) {
+                        edit_window(false, "edit");
+                    }
+                    else {
+                        edit_window(false, "edithtml");
+                    }
+                };
 
-				deletebtn.removeAttribute("disabled");
-				deletebtn.className = "xerte_button";
-				deletebtn.onclick=function(){remove_this()};
-				
-			}
+                previewbtn.removeAttribute("disabled");
+                previewbtn.className = "xerte_button";
+                previewbtn.onclick = function () {
+                    preview_window()
+                };
 
-		}	
+                deletebtn.removeAttribute("disabled");
+                deletebtn.className = "xerte_button";
+                deletebtn.onclick = function () {
+                    remove_this()
+                };
 
-	}else if(drag_manager.selected_items.length==1){
+                duplicatebtn.removeAttribute("disabled");
+                duplicatebtn.className = "xerte_button";
+                duplicatebtn.onclick = function () {
+                    duplicate_template()
+                };
 
-		if(drag_manager.selected_items[0].id.indexOf("folder")==-1){
+                publishbtn.removeAttribute("disabled");
+                publishbtn.className = "xerte_button";
+                publishbtn.onclick = function () {
+                    publish_this()
+                };
+        }
+    }
+    else
+    {
+        deletebtn.removeAttribute("disabled");
+        deletebtn.className = "xerte_button";
+        deletebtn.onclick = function () {
+            remove_this()
+        };
+    }
+}
 
-			editbtn.removeAttribute("disabled");
-            editbtn.className = "xerte_button";
-			editbtn.onclick=function(e){
-				if (e.shiftKey) {
-                    edit_window(false, "edit");
-				}
-				else {
-					edit_window(false, "edithtml");
-				}
-			};
+function setupMainLayout()
+{
+    var opentooltip = "Open this pane",
+        closetooltip = "Close this pane",
+        resizetooltip = "Resize this pane",
+        xertemain_layout,
+        xerteinner_layout,
+        xertemain_layout_settings = {
+            name: "xertemain_layout",
+            defaults: {
+                size:                   "auto",
+                minSize:                50,
+                paneClass:              "pane",
+                resizerClass:           "resizer",
+                togglerClass:           "toggler",
+                buttonClass:            "button",
+                contentSelector:        ".content",
+                contentIgnoreSelector:  "span",
+                togglerLength_open:     35,
+                togglerLength_closed:   35,
+                hideTogglerOnSlide:     true,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip:             resizetooltip,
+                fxName:                 "slide",
+                fxSpeed_open:           750,
+                fxSpeed_close:          1500,
+                fxSettings_open:        { easing: "easeInQuint" },
+                fxSettings_close:       { easing: "easeOutQuint" }
+            },
+            north: {
+                minSize:                65,
+                spacing_open:           1,
+                togglerLength_open:     0,
+                togglerLength_closed:   -1,
+                resizable:              false,
+                slidable:               false,
+                fxName:                 "none"
+            },
+            south: {
+                size:                   "auto",
+                minSize:                40,
+                maxSize:                250,
+                spacing_closed:         21,
+                spacing_open:           2,
+                togglerLength_closed:   21,
+                togglerLength_open:     0,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip_open:        resizetooltip,
+                slideTrigger_open:      "mouseover",
+                slidable:               false,
+                initClosed:             false,
+                fxName:                 "drop",
+                fxSpeed:                "normal",
+                slidable:               false,
+                fxSettings:             { easing: "" } // remove default
+            },
+            west: {
+                size:                   250,
+                minSize:                250,
+                maxSize:                450,
+                spacing_open:           4,
+                spacing_closed:         21,
+                togglerLength_closed:   21,
+                togglerAlign_closed:    "top",
+                togglerLength_open:     0,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip_open:        resizetooltip,
+                slideTrigger_open:      "click",
+                initClosed:             false,
+                fxSettings_open:        { easing: "easeOutBounce" }
+            },
 
-			previewbtn.removeAttribute("disabled");
-            previewbtn.className = "xerte_button";
-            previewbtn.onclick=function(){preview_window()};
+            east: {
+                size:                   250,
+                minSize:                150,
+                maxSize:                250,
+                spacing_open:           2,
+                spacing_closed:         21,
+                togglerLength_closed:   21,
+                togglerAlign_closed:    "top",
+                togglerLength_open:     0,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip_open:        resizetooltip,
+                slideTrigger_open:      "mouseover",
+                initClosed:             false,
+                fxName:                 "drop",
+                fxSpeed:                "normal",
+                fxSettings:             { easing: "" } // remove default
+            },
+            center: {
+                //paneSelector:           "#mainContent",
+                minWidth:               200,
+                minHeight:              200/*,
+                 contentSelector:        ".ui-layout-content"*/
+            }
+        },
+        xerteinner_layout_settings = {
+            name: "xerteinner_layout",
+            defaults: {
+                size:                   "auto",
+                minSize:                50,
+                paneClass:              "pane",
+                resizerClass:           "resizer",
+                togglerClass:           "toggler",
+                buttonClass:            "button",
+                contentSelector:        ".content",
+                contentIgnoreSelector:  "span",
+                togglerLength_open:     35,
+                togglerLength_closed:   35,
+                hideTogglerOnSlide:     true,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip:             resizetooltip,
+                fxName:                 "slide",
+                fxSpeed_open:           750,
+                fxSpeed_close:          1500,
+                fxSettings_open:        { easing: "easeInQuint" },
+                fxSettings_close:       { easing: "easeOutQuint" }
+            },
+            north: {
+                minSize:                65,
+                spacing_open:           1,
+                togglerLength_open:     0,
+                togglerLength_closed:   -1,
+                resizable:              false,
+                slidable:               false,
+                fxName:                 "none"
+            },
+            east: {
+                size:                   "60%",
+                minSize:                150,
+                spacing_open:           2,
+                spacing_closed:         21,
+                togglerLength_closed:   21,
+                togglerAlign_closed:    "top",
+                togglerLength_open:     0,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip_open:        resizetooltip,
+                slideTrigger_open:      "mouseover",
+                initClosed:             false,
+                fxName:                 "drop",
+                fxSpeed:                "normal",
+                fxSettings:             { easing: "" } // remove default
+            },
+            center: {
+                //paneSelector:           "#mainContent",
+                minWidth:               200,
+                minHeight:              200/*,
+                 contentSelector:        ".ui-layout-content"*/
+            }
+        };
+    ;
 
-			publishbtn.removeAttribute("disabled");
-			publishbtn.className = "xerte_button";
-			publishbtn.onclick=function(){publish_this()};
+    console.log("Setting up MainLayout...");
 
-			duplicatebtn.removeAttribute("disabled");
-			duplicatebtn.className = "xerte_button";
-			duplicatebtn.onclick=function(){duplicate_template()};
+    xertemain_layout = $("body").layout( xertemain_layout_settings );
+    xerteinner_layout = $("#pagecontainer").layout( xerteinner_layout_settings);
 
-		}else{
-			
-			editbtn.disabled="disabled";
-			editbtn.className = "xerte_button_disabled";
-			editbtn.onclick="";
+    var right_column = "body > .ui-layout-east";
+    var inner_right_column = "#pagecontainer > .ui-layout-east"
+    var south_pane = "body > .ui-layout-south";
 
-			previewbtn.disabled="disabled";
-			previewbtn.className = "xerte_button_disabled";
-			previewbtn.onclick="";
+    // ** Add pin buttons and wire them up **
+    $("<span></span>").addClass("pin-button").prependTo( right_column );
+    xertemain_layout.addPinBtn( right_column +" .pin-button", "east" );
+    //$("<span></span>").addClass("pin-button").prependTo( inner_right_column );
+    //xerteinner_layout.addPinBtn( inner_right_column +" .pin-button", "east" );
+    $("<span></span>").addClass("pin-button").prependTo( south_pane );
+    xertemain_layout.addPinBtn( south_pane +" .pin-button", "south" );
 
-			deletebtn.disabled="disabled";
-			deletebtn.className = "xerte_button_disabled";
-			deletebtn.onclick="";
- 
-			duplicatebtn.disabled="disabled";
-			duplicatebtn.className = "xerte_button_disabled";
-			duplicatebtn.onclick="";
+    // ** Add close buttons and wire them up **
+    $("<span></span>").attr("id", "east-closer").prependTo( right_column );
+    xertemain_layout.addCloseBtn("#east-closer", "east");
+    //$("<span></span>").attr("id", "east-closer").prependTo( inner_right_column );
+    //xerteinner_layout.addCloseBtn("#east-closer", "east");
+    $("<span></span>").attr("id", "south-closer").prependTo( south_pane );
+    xertemain_layout.addCloseBtn("#south-closer", "south");
 
-			publishbtn.disabled="disabled";
-			publishbtn.className = "xerte_button_disabled";
-			publishbtn.onclick="";
 
-		}
+}
 
-		propertiesbtn.removeAttribute("disabled");
-		propertiesbtn.className = "xerte_button";
-		propertiesbtn.onclick=function(){properties_window()};
 
-		deletebtn.removeAttribute("disabled");
-		deletebtn.className = "xerte_button";
-		deletebtn.onclick=function(){remove_this()};
+function getIcon(nodetype)
+{
+    switch(nodetype)
+    {
+        case "workspace":
+            icon = "website_code/images/folder_workspace.gif";
+            break;
+        case "recyclebin":
+            icon = "website_code/images/rb_empty.gif";
+            break;
+        case "folder":
+            icon = "website_code/images/Icon_Folder.gif";
+            break;
+        default:
+            icon = "website_code/images/Icon_Page_" + nodetype + ".gif";
+    }
+    return icon;
+};
 
-	}
+function create_node_type(nodetype, children) {
+    // clone children
+    var lchildren = children.slice();
 
+    return {
+        icon: getIcon(nodetype),
+        valid_children: lchildren
+    };
+};
+
+
+/**
+ * Initialise tree from workspace (a json structure that contains all the info to build the tree)
+ * information is in global variable workspace
+ */
+function init_workspace()
+{
+    // build Types structure for the types plugin
+    var node_types = {};
+    // root
+    node_types["#"] = create_node_type(null, ["workspace", "recyclebin"]); // Make sure that only the Workspace and recyclebin can be at root level
+
+    // workspace
+    var workspace_children = ["folder"];
+    workspace_children = workspace_children.concat(workspace.templates);
+    node_types["workspace"] = create_node_type("workspace", workspace_children);
+
+    //recyclebin
+    var recyclebin_children = ["folder"];
+    recyclebin_children = recyclebin_children.concat(workspace.templates);
+    node_types["recyclebin"] = create_node_type("recyclebin", recyclebin_children);
+
+    //folder
+    var folder_children = ["folder"];
+    folder_children = folder_children.concat(workspace.templates);
+    node_types["folder"] = create_node_type("folder", folder_children);
+
+    $.each(workspace.templates, function () {
+        node_types[this] = create_node_type(this, [""]);
+    });
+
+    console.log(node_types);
+    console.log(workspace.items);
+
+    var tree = $.jstree.reference("#workspace");
+    if (tree)
+    {
+        tree.settings.core.data = workspace.items;
+        tree.refresh();
+    }
+    else {
+        $("#workspace").jstree({
+            "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types", "search", "state"] : ["types", "dnd", "search", "state"],
+            "core": {
+                "data": workspace.items,
+                "check_callback": true, // Need this to allow the copy_node function to work...
+                "multiple": true // Need to disable this just now as nodes could be on different levels
+            },
+            "types": node_types,
+            "search": {
+                "show_only_matches": true,
+                "fuzzy": false
+            },
+            "dnd": {
+                "settings": {
+                    "threshold": /Android|AppleWebKit|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 50 : 5
+                }
+            }
+        })
+            .bind('select_node.jstree', function (event, data) {
+                showInformation(data.node);
+                button_check();
+            })
+            .bind('move_node.jstree',function(event,data)
+            {
+                console.log(event);
+                console.log(data);
+                copy_to_folder(data);
+            });
+
+        /*
+         .bind("copy_node.jstree", function (event, data) {
+         var new_id = generate_lo_key(),
+         original_id =  data.original.id,
+         tree = $('#treeview').jstree(true);
+
+         // Change the id
+         tree.set_id(data.node, new_id);
+
+         // Copy the lo_data from the old node to the new one
+         lo_data[new_id] = lo_data[original_id];
+
+         // Do the same for all the children
+         for(var i = 0, j = data.original.children_d.length; i < j; i++) {
+         new_id = generate_lo_key();
+         original_id =  data.original.children_d[i];
+         tree.set_id(data.node.children_d[i], new_id);
+         lo_data[new_id] = lo_data[original_id];
+         }
+         })
+         */
+
+        var to = false;
+        $('#workspace_search').keyup(function () {
+            if (to) {
+                clearTimeout(to);
+            }
+            to = setTimeout(function () {
+                var v = $('#workspace_search').val();
+                $('#workspace').jstree(true).search(v);
+            }, 250);
+        });
+    }
+}
+
+function showInformation(node)
+{
+    var type = node.type;
+    var id = node.id;
+    var xot_id = node.original.xot_id;
+
+    switch(type)
+    {
+        case "folder":
+            $("#project_information").html("Folder " + node.text);
+            break;
+        case "workspace":
+        case "recyclebin":
+            $("#project_information").html("");
+            break;
+        default:
+            getProjectInformation(workspace.user, xot_id);
+
+    }
 }
