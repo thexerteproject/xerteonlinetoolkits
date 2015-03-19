@@ -54,11 +54,13 @@ var EDITOR = (function ($, parent) {
 
     // Add the buttons
     do_buttons = function () {
-        $( "#insert-dialog" ).hide();
-        $( "#insert-buttons" ).hide();
-
         var insert_page = function() {
-            $( "#insert-dialog" ).dialog({ width: '60%'});
+			$("#insert_menu")
+				.css({
+					"top":	$(".pane-west").position().top + $(".pane-west .content").position().top,
+					"left":	$(".pane-west").position().left
+					})
+				.show();
         },
 
         delete_page = function() {
@@ -79,12 +81,14 @@ var EDITOR = (function ($, parent) {
             var button = $('<button>')
                 .attr('id', value.id)
                 .attr('title', value.tooltip)
+				.attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
                 .addClass("xerte_button_dark")
                 .click(value.click)
                 .append($('<img>').attr('src', value.icon).height(14))
                 .append(value.name);
             buttons.append(button);
         });
+		
         $('.ui-layout-west .header').append(buttons);
 
         // If the menu is empty, disable insert
@@ -1043,7 +1047,7 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
-            console.log("Type: " + page_name + ", valid children: " + lchildren);
+            //console.log("Type: " + page_name + ", valid children: " + lchildren);
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
