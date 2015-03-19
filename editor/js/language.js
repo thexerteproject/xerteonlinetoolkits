@@ -54,7 +54,7 @@ var EDITOR = (function ($, parent) {
         // Parse the xml
         $(wizard_xml.children()).each(function(i) {
             var main_node = $(this)[0].nodeName;
-            console.log("Main node: " + main_node);
+            //console.log("Main node: " + main_node);
             var menu_options = {};
             for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
                 menu_options[a[j].name] = a[j].value;
@@ -122,7 +122,7 @@ var EDITOR = (function ($, parent) {
             }
 
             $($(this).children()).each(function() {
-                console.log("   sub node: " + $(this)[0].nodeName);
+                //console.log("   sub node: " + $(this)[0].nodeName);
                 var node_params = {};
                 for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
                     //console.log("      attr: " + a[j].name + ":" + a[j].value);

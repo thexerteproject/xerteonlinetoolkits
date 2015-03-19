@@ -246,15 +246,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
         </div>
     </div>
-
-<div id="insert-dialog" class="hide" title="Insert Page">
-    <div id="insert-info">
-        <img class="thumb"/><br />
-        <span></span><br /><br />
-        <div id="insert-buttons"><button>Insert Before</button>&nbsp;<button>Insert After</button>&nbsp;<button>Insert (at end)</button></div>
-    </div>
-    <div id="insert-menu"></div>
-</div>
+	
+<div id="insert_menu" class="hide"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>

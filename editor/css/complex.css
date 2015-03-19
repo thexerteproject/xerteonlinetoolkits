@@ -424,6 +424,60 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
     color: black;
 }
 
+/* INSERT MENU STYLES */
+#insert_menu {
+	position: absolute;
+}
+
+#insert_menu #menu, #insert_menu #menu > li > ul > li  {
+	width:		auto;
+	font-size:	1em;
+}
+
+#insert_menu .ui-menu {
+	overflow-x: hidden;
+	overflow-y: auto;
+	direction:	rtl;
+}
+
+#insert_menu .ui-menu-item {
+	direction: ltr;
+	text-align: left;
+}
+
+#insert_menu .icon {
+	padding:	0 0.4em 0 0;
+	border:	none;
+}
+
+#insert_menu .ui-menu.details {
+	padding:	5px;
+	position:	fixed !important;
+}
+
+#insert_menu .ui-menu.details li {
+	margin:	0;
+}
+
+#insert_menu .ui-menu.details a {
+	background: none;
+	color:		none;
+	border: 	none;
+	padding:	0px;
+	margin:		0px;
+	cursor:		default;
+}
+
+#insert_menu .ui-menu.details hr {
+	border: none;
+	background-color: #CCCCCC;
+	height: 1px;
+}
+
+#insert_menu .insert_buttons button {
+	margin: 5px;
+}
+
 /* XERTE ADDITIONS */
 div.ui-layout-north div.content {
 	background-image:url(../img/TopBar.jpg);
