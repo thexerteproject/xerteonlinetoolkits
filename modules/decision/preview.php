@@ -45,14 +45,14 @@ function show_preview_code($row){
 
 	$string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
-	$template_path_string = "modules/decision/parent_templates/" . $row['template_name'];
+	$template_path_string = "modules/decision/parent_templates/" . $row['template_name'] . "/";
 
 	require_once("config.php");
 
 	_load_language_file("/modules/decision/preview.inc");
 
     // $engine is assumed to be html5 if flash is NOT set
-    $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player_html5/rloObject.htm");
+    $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
     $page_content = str_replace("%TITLE%", $title, $page_content);
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
