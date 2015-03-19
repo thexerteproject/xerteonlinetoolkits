@@ -1,7 +1,7 @@
 <language name="English" code="en-GB">
     <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
     <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
-    <insertDialog label="Insert {i} Page" preview="Preview">
+    <insertDialog label="Insert New {i}" preview="Preview">
         <insertBefore label="Before" tooltip="Insert before selected page"/>
         <insertAfter label="After" tooltip="Insert after selected page"/>
         <insertAtEnd label="At end" tooltip="Insert as last page"/>

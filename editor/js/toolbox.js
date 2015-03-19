@@ -58,8 +58,8 @@ var EDITOR = (function ($, parent) {
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? '<img alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
-				hint = hint != "" ? '<hr/><div>' + language.insertDialog.$preview + ':</div>' + hint : hint;
+				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
+				hint = hint != "" ? '<hr/>' + hint : hint;
 				
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
 					label = language.insertDialog.$label + ":",
