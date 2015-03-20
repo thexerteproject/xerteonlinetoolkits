@@ -183,12 +183,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <style type="text/css"> body { font-size: 85%; } </style>
     <![endif]-->
 
-    <style>
-        .ui-menu { width: 200px; }
-        #insert-info {width: 60%; display: block; float: right; }
-		.hide {display: none;}
-    </style>
-
 </head>
 <body>
 <img id="loader" src="editor/img/loading16.gif" />
@@ -246,7 +240,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
             <div id="checkbox_outer"><table><tr><td id="checkbox_holder"></td></tr></table></div>
         </div>
     </div>
-	
+
+<div id="shadow" class="dark" class="hide"></div>
 <div id="insert_menu" class="hide"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

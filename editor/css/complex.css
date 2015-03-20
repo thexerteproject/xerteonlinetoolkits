@@ -425,8 +425,30 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
 }
 
 /* INSERT MENU STYLES */
+.ui-menu {
+    width: 250px;
+}
+
+#insert-info {
+    width: 60%; display: block; float: right;
+}
+
+.hide {
+    display: none;
+}
+
+.dark{
+    width: 100%;
+    height: 100%;
+    background: rgba(20,20,20,0.4);
+    z-index: 1;
+    display: none;
+    position: absolute;
+}
+
 #insert_menu {
 	position: absolute;
+    z-index: 100;
 }
 
 #insert_menu #menu, #insert_menu #menu > li > ul > li  {
@@ -476,6 +498,10 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
 
 #insert_menu .insert_buttons button {
 	margin: 5px;
+}
+
+.preview_thumb {
+    width: 250px;
 }
 
 /* XERTE ADDITIONS */
@@ -654,3 +680,4 @@ td.flashonly, td.deprecated{
 .hotspotLightboxImg {
     width:400px;
 }
+
