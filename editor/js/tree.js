@@ -55,12 +55,14 @@ var EDITOR = (function ($, parent) {
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
+            $("#shadow").show();
 			$("#insert_menu")
 				.css({
 					"top":	$(".pane-west").position().top + $(".pane-west .content").position().top,
-					"left":	$(".pane-west").position().left
+					"left":	$("#insert_button").position().left
 					})
 				.show();
+
         },
 
         delete_page = function() {

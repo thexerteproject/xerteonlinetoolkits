@@ -58,7 +58,7 @@ var EDITOR = (function ($, parent) {
 			// it's a page type
             } else if (itemData.item != undefined) {
 				var hint = itemData.hint != undefined ? '<p>' + itemData.hint + '</p>' : "";
-				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
+				hint = itemData.thumb != undefined ? '<div>' + language.insertDialog.$preview + ':</div><img class="preview_thumb" alt="' + itemData.name + ' ' + language.insertDialog.$preview + '" src="modules/xerte/parent_templates/Nottingham/' + itemData.thumb + '" />' + hint : hint;
 				hint = hint != "" ? '<hr/>' + hint : hint;
 				
 				var $insertInfo = $('<ul class="details"><li><a href="#"><div class="insert_buttons"/>' + hint + '</a></li></ul>'),
@@ -110,8 +110,10 @@ var EDITOR = (function ($, parent) {
 			collapseAll: function(e) {
 				if (e.type == "click" && e.target.id != "insert_button") {
 					$("#insert_menu").hide();
+                    $("#shadow").hide();
 				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
 					$("#insert_menu").hide();
+                    $("#shadow").hide();
 					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
 				}
 				return this._super();
