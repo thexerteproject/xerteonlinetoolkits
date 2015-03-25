@@ -448,7 +448,8 @@ span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat c
 
 #insert_menu {
 	position: absolute;
-    z-index: 100;
+    z-index: 1;
+    width: 150px;
 }
 
 #insert_menu #menu, #insert_menu #menu > li > ul > li  {
