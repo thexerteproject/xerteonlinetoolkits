@@ -73,14 +73,19 @@ $xml = new XerteXMLInspector();
 $xml->loadTemplateXML($dir_path . 'template.xml');
 if ($fullArchive) {
     _debug("Full archive");
+    export_folder_loop($parent_template_path);
+
+    copy_parent_files();
 }
 else
 {
     _debug("Deployment archive");
-}
-export_folder_loop($parent_template_path);
+    export_folder_loop($parent_template_path . "common/");
 
-copy_parent_files();
+    copy_parent_files();
+}
+
+
 
 
 export_folder_loop($dir_path);

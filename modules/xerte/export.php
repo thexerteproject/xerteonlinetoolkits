@@ -100,6 +100,7 @@ $xml->loadTemplateXML($dir_path . 'template.xml');
 if ($fullArchive) {
     _debug("Full archive");
     export_folder_loop($parent_template_path);
+    copy_parent_files();
 } else /* Only copy used models and the common folder */ {
     _debug("Deployment archive");
     if ($export_flash) {
@@ -140,6 +141,7 @@ if ($fullArchive) {
         }
 
         export_folder_loop($parent_template_path . "common_html5/");
+        copy_parent_files();
     }
 
 }
@@ -152,7 +154,7 @@ if (isset($_GET['local'])) {
         fclose($fh);
     }
 }
-copy_parent_files();
+
 
 /*
  * Language support
