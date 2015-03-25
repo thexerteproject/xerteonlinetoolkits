@@ -387,6 +387,7 @@ function copy_parent_files() {
 
     while ($file = array_pop($file_array)) {
         $string = str_replace($parent_template_path, "", $file[0]);
+
         directory_maker($string);
         if ($string == "data.xwd") {
             $string = "template.xwd";
@@ -437,6 +438,23 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
     while ($file = array_pop($file_array)) {
         if (strpos($file[0], "data.xwd") === false || strpos($file[0], "data.xml") === false || strpos($file[0], "preview.xml") === false) {
             /* Check if this is a media file */
+            if (!$fullArchive) {
+                $skipfile = false;
+                // Skip extra copies
+                for ($i=1; $i<=10; $i++) {
+                    if (strpos($file[0], "." . $i) !== false)
+                    {
+                        $skipfile = true;
+                        break;
+                    }
+                }
+                if (!$skipfile && strpos($file[0], ".json") !== false)
+                {
+                    $skipfile = true;
+                }
+                if ($skipfile)
+                    continue;
+            }
             if (!$fullArchive && strpos($file[0], "/media/") !== false) {
 
                 /* only add file if used */
