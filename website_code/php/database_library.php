@@ -58,9 +58,13 @@ function database_connect()
         {
             $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
         }
-        else
+        else if (isset($xerte_toolkits_site->database_host))
         {
             $dsn = "mysql:host={$xerte_toolkits_site->database_host}";
+        }
+        else
+        {
+            return false;
         }
     }
 
