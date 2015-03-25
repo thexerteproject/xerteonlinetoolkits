@@ -74,8 +74,8 @@ if (!isset($_POST['database_created']))
                 <p class="error"><?php echo  $connection->errorInfo();?>
                 </p>
                 <br/>
-                $success = false;
             <?php
+                $success = false;
         }
     }
 
@@ -100,7 +100,7 @@ if (!isset($_POST['database_created']))
                 $ok = $statement->execute();
 
                 if ($ok === false) {
-                    _debug("Failed to execute query : $sql : " . print_r($connection->errorInfo(), true));
+                    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
 
 
                 ?>

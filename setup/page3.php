@@ -97,9 +97,9 @@ echo "<p>The short file area path is <textarea name=\"users_file_area_short\">US
 
 echo "<p>The php library path is <textarea name=\"php_library_path\">website_code/php/</textarea></p>";	
 
-echo "<p>The root file path is <textarea name=\"root_file_path\">" . substr(getcwd(),0,strlen(getcwd())-5) . "</textarea></p>";	
+echo "<p>The root file path is <textarea name=\"root_file_path\">" . str_replace('\\', '/', substr(getcwd(),0,strlen(getcwd())-5)) . "</textarea></p>";
 
-echo "<p>The import path (where imported files will be processed to check they are valid) is <textarea name=\"import_path\">" . substr(getcwd(),0,strlen(getcwd())-5) . "import/</textarea><br><br><b style=\"clear:left\"><br><br>You may wish to move this folder to be outside the webroot</b></p>";	
+echo "<p>The import path (where imported files will be processed to check they are valid) is <textarea name=\"import_path\">" . str_replace('\\', '/', substr(getcwd(),0,strlen(getcwd())-5)) . "import/</textarea><br><br><b style=\"clear:left\"><br><br>You may wish to move this folder to be outside the webroot</b></p>";
 
 echo "<br><br><h3 style=\"clear:left\">MySQL query string - The default string for many of the sites mysql queries</h3>";
 

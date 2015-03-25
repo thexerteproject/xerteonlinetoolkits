@@ -29,17 +29,28 @@ require("../functions.php");
  
 echo file_get_contents("page_top");
 
-$mysql_connect_id = mysql_connect("localhost", "root", "");
+global $xerte_toolkits_site;
+global $development;
+$xerte_toolkits_site = new stdClass();
+$xerte_toolkits_site->database_type = "mysql";
+$xerte_toolkits_site->database_host = "localhost";
+$xerte_toolkits_site->database_username = "root";
+$xerte_toolkits_site->database_password = "";
+require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
+
+// $xerte_toolkits_site->database_name should NOT be set
+// We need to contect the server first and create it if needed
+$connection = database_connect();
 
 // Check for connection and error if failed
 
 if(file_exists("../database.php")){
 
-	die("<p>You've already installed toolkits</p><p>Please go to <a href='http://" . $_SERVER['HTTP_HOST'] . str_replace("setup/xampp.php", "", $_SERVER['PHP_SELF']) . "'>Xerte Online Toolkits Install</a></p>");
+	die("<p>You've already installed toolkits</p><p>Please go to <a href='http://" . $_SERVER['HTTP_HOST'] . str_replace("setup/xampp.php", "", $_SERVER['PHP_SELF']) . "'>Xerte Online Toolkits</a></p>");
 
 }
 
-if(!$mysql_connect_id){
+if(!$connection){
 
 ?>
 
@@ -48,80 +59,76 @@ if(!$mysql_connect_id){
 <?PHP }
 
 $query = "create database if not exists toolkits_data";
+try{
+    $statement = $connection->query($query);
+}
+catch(PDOException $e) {
+    _debug("Failed to connect to db: {$e->getMessage()}");
+    ?>
+    <p>Sorry, the attempt to create the database to the database has failed. MySQL reports the following error -</p>
+    <p class="error"><?php echo  $connection->errorInfo();?>
+    </p>
+    <br/>
+    <?php
+    die;
+}
 
-$query_response = mysql_query($query);			
+$xerte_toolkits_site->database_name = 'toolkits_data';
+$connection = database_connect();
 
-if($query_response){
-
-
-}else{
-
-?>
-
-        <p>Sorry, the attempt to create the database to the database has failed. MySQL reports the following error - <?PHP echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id);?></p>
-
-<?PHP }
-
-$query = "USE toolkits_data";
-
-$query_response = mysql_query($query);			
-
-if($query_response){
-
-
-}else{
-
-?>
-
-        <p>Sorry, the attempt to specify which database we need to work on (the MySQL keyword - USE) has failed. MySQL reports the following error - <?PHP echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); echo "The query response was " . $query_response . "<br>"; ?></p>
-
-<?PHP }
-
-$temp = explode(";",file_get_contents("basic.sql")); 
-
+$temp = explode(";",file_get_contents("basic.sql"));
+$sql = file_get_contents("basic.sql");
+$sql = str_replace("$","",$sql);
+$sql = str_replace("<databasename>",'toolkits_data',$sql);
+$temp = explode(";", $sql);
 $x=0;
 
 while($x!=count($temp)){
-
-    $query = str_replace("$","",ltrim($temp[$x++]));
-
+    $query = $temp[$x++];
     if($query!=""){
 
-        $query_response = mysql_query($query);			
+        $statement = $connection->prepare($query);
+        $ok = $statement->execute();
 
+        if ($ok === false) {
+            _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+            ?>
+            <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+            <p class="error">
+                <?php echo $connection->errorInfo(); ?>
+            </p>
+            <br />
+            <?php
+            $statement = null;
+            $connection = null;
+            die;
+        }
     }
-
-    if($query_response){
-
-
-    }else{
-
-?>
-
-                <p>Sorry, The query <?PHP echo $query;  ?> has failed. MySQL reports the following error - <?PHP echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); ?></p>
-
-<?PHP }
-
-
 }
 
-$temp = file_get_contents("xampp.txt"); 
+$temp = file_get_contents("xampp.txt");
 
-$query_2 = substr($temp,3);
+$query = substr($temp,3);
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
 
-$query_response = mysql_query($query_2);			
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
 
-if($query_response){
 
-
-}else{
-
-?>
-
-            <p>Sorry, The query <?PHP echo $query;  ?> has failed. MySQL reports the following error - <?PHP echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); ?></p>
-
-<?PHP }
-
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
 
 /*
  * Create the database
@@ -146,18 +153,115 @@ if(!_is_writable('../index.php')) {
 $site_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname(dirname($_SERVER['REQUEST_URI']));
 
 $db_site_url = mysql_real_escape_string($site_url);
-mysql_query("UPDATE sitedetails SET site_url = '$db_site_url/' WHERE site_id = 1");
+
+$query= "UPDATE sitedetails SET site_url = '$db_site_url/' WHERE site_id = 1";
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
+
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
 
 $home = realpath(dirname(dirname(__FILE__)));
-$db_root_file_path = mysql_real_escape_string($home);
-$db_import_path = mysql_real_escape_string($home . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR);
-mysql_query("UPDATE sitedetails SET root_file_path = '$db_root_file_path/' WHERE site_id = 1");
-mysql_query("UPDATE sitedetails SET import_path = '$db_import_path/' WHERE site_id = 1");
+$home = str_replace('\\', '/', $home);
+$db_root_file_path = $home;
+$db_import_path = $home . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR;
+
+$query = "UPDATE sitedetails SET root_file_path = '$db_root_file_path/' WHERE site_id = 1";
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
+
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
+$query="UPDATE sitedetails SET import_path = '$db_import_path/' WHERE site_id = 1";
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
+
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
 
 $password = "password_" . time();
 
-mysql_query("UPDATE sitedetails SET admin_username = 'admin' WHERE site_id = 1");
-mysql_query("UPDATE sitedetails SET admin_password = '" . $password . "' WHERE site_id = 1");
+$query="UPDATE sitedetails SET admin_username = 'admin' WHERE site_id = 1";
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
+
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
+
+$query = "UPDATE sitedetails SET admin_password = '" . $password . "' WHERE site_id = 1";
+$statement = $connection->prepare($query);
+$ok = $statement->execute();
+
+if ($ok === false) {
+    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+
+
+    ?>
+    <p>Sorry, The query <?php echo $query;  ?> has failed. MySQL reports the following error -</p>
+    <p class="error">
+        <?php echo $connection->errorInfo(); ?>
+    </p>
+    <br />
+    <?php
+    $statement = null;
+    $connection = null;
+    die;
+}
+
+$statement = null;
+$connection = null;
 
 ?>
         <h2 style="margin-top:15px">
