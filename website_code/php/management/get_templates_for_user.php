@@ -81,7 +81,7 @@ if(is_user_admin()){
     if(sizeof($query_templates_response) > 0){
         // This user has templates, loop over them
         _debug("User " . $row['username'] . " (" . $row['login_id'] . ") has templates");
-        foreach($query_template_response as $row_templates) {
+        foreach($query_templates_response as $row_templates) {
             $debug_rec = print_r($row_templates, true);
             _debug($debug_rec);
 
