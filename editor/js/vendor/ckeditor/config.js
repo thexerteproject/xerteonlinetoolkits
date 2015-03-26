@@ -33,4 +33,8 @@ CKEDITOR.editorConfig = function( config ) {
     // Let's have it basic on dialogs as well.
     config.removeDialogTabs = 'link:advanced';
     config.toolbarCanCollapse = true;
+    config.allowedContent = true;
+    config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
+
 };
+CKEDITOR.dtd.$removeEmpty.i = 0;
