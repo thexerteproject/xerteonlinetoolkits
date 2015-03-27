@@ -140,7 +140,7 @@
 						}
 						
 						// add img and scale it on load
-						$thisThumbMedia.html('<img title="' + imgTip + '" class="centre" />');
+						$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
 						perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
 						
 					} else if (this.nodeName == "movie") {
@@ -172,7 +172,7 @@
 								imgSrc = x_evalURL(this.getAttribute("img"));
 							}
 							
-							$thisThumbMedia.html('<img title="' + imgTip + '" class="centre" />');
+							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
 							perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
 						}
 					}

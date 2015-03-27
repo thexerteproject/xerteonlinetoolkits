@@ -228,7 +228,7 @@
 				var newString = "";
 				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
-					newString += 'title="' + thisQ.getAttribute("tip") + '"';
+					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
 				}
 				newString += ' />';
 				infoString = newString + infoString;

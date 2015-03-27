@@ -134,7 +134,7 @@
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
 							// correct - show tick
-							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" title="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 							
 						} else {
 							// incorrect - remove label and show hint

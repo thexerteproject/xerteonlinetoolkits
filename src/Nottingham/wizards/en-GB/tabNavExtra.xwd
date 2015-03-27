@@ -51,7 +51,7 @@
     <link label="Specified URL" type="textInput"/>
 	  
     <url label="Image" type="media"  optional="true"/>
-    <tip label="Image Tooltip" type="textInput"  optional="true"/>
+    <tip label="Image Description" type="textInput"  optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100" optional="true"/>
     <initObject label="Init Object" type="TextInput"  optional="true"/>
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>

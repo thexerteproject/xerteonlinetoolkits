@@ -66,7 +66,7 @@
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <image label="Image" type="Media" optional="true" />
-    <tip label="Image Tooltip" type="TextInput" optional="true" />
+    <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>

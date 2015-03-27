@@ -1,7 +1,7 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Tooltip" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage>
+      <bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Description for Accessibility" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage>
     </newNodes>  
   </pageWizard>
 
@@ -12,7 +12,7 @@
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox"  width="100"/>
     <imagesize label="Image Size" options="auto,full screen" data="auto,full screen" defaultValue="auto" type="ComboBox"  width="100"/>
     <url label="Image" type="media" />
-    <tip label="Image Tooltip" type="TextInput" />
+    <tip label="Image Description" type="TextInput" />
 
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false"  optional="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false"  optional="true"/>
