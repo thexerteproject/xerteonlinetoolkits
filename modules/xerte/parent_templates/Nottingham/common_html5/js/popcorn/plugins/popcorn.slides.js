@@ -18,8 +18,14 @@
  */
 
 /* _____SLIDES POPCORN PLUGIN_____
+Creates a slideshow of images and captions
 	
+required: target start name pauseMedia* clearPanel*
+optional: end position* line overlay
 
+childNodes (synchSlide):
+required: start name url pauseMedia*
+optional: caption captionPosV captionPosH
 
 *dealt with in mediaLesson.html
 
@@ -29,39 +35,97 @@
 	Popcorn.plugin("slides", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target;
+		var $target, $slide;
 		
 		return {
 			_setup: function(options) {
 				// setup code, fire on initialisation
 				
-				/*
-				var txt = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
-				
-				if (options.line == "true") {
-					if (options.position == "top") {
-						txt = txt + "<hr/>";
+				// is this the slideshow holder? if so, just build holder div - no slides to add to it yet
+				if (!options.child) {
+					var txt = "";
+					
+					// is it to appear over media?
+					if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
+						$target = $("#" + options.target);
+						
+						txt += '<div class="slideHolder"></div>';
+						
+						var $parent;
+						if (this.video != undefined) {
+							$parent = $(this.media).parent();
+						} else {
+							$parent = $(this.media).closest(".mediaHolder").find(".audioImgHolder");
+						}
+						
+						// move slidesHolder to overlay media
+						$("#" + options.target)
+							.appendTo($parent)
+							.removeClass("contentBlock")
+							.addClass("overlay");
+						
+						$target = $("#" + options.target);
+						
 					} else {
-						txt = "<hr/>" + txt;
+						$target = $("#" + options.target);
+						
+						txt += options.name != "" ? '<h4>' + options.name + '</h4>' : "";
+						txt += '<div class="slideHolder"></div>';
+						
+						if (options.line == "true") {
+							if (options.position == "top") {
+								txt = txt + "<hr/>";
+							} else {
+								txt = "<hr/>" + txt;
+							}
+						}
 					}
+					
+					$target
+						.html(txt)
+						.hide();
+					
+				} else {
+					$target = $("#" + options.target + " .slideHolder");
+					
+					var pos = options.captionPosV != undefined ? " v" + options.captionPosV : " vbottom";
+					pos += options.captionPosH != undefined ? " h" + options.captionPosH : " hcentre";
+					
+					var caption = options.caption != "" && options.caption != undefined ? '<div class="caption' + pos + '"><div class="inner">' + options.caption + '</div></div>' : "";
+					
+					$slide = $('<div class="slide"><img src="' + options.url + '" alt="' + options.name + '" />' + caption + '</div>').appendTo($target);
+					
+					$slide.find("img")
+						.addClass("fullH")
+						.data({
+							"exclude": $("#" + options.target).find("h4"),
+							"max":true
+						});
+					
+					eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+					
+					$slide.hide();
 				}
-				
-				$target = $("#" + options.target)
-					.html(txt)
-					.hide();
-				*/
 			},
 			
 			start: function(event, options) {
 				// fire on options.start
 				
-				//$target.show();
+				if (!options.child) {
+					$target.show();
+				} else {
+					$slide.show();
+				}
 			},
 			
 			end: function(event, options) {
 				// fire on options.end
 				
-				//$target.hide();
+				if (!options.child) {
+					$target.hide();
+				} else {
+					$slide.hide();
+				}
 			}
 		};
 		

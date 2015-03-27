@@ -70,10 +70,6 @@
 			$x_pageHolder.css("overflow", "auto");
 			
 			this.resizeMedia();
-			
-			$panelHolder.find(".panel .fullH").each(function() {
-				mediaLesson.resizeContent($(this));
-			});
 		}
 		
 		// function resizes media controls
@@ -129,6 +125,10 @@
 					$x_window.resize();
 				}
 			});
+			
+			$panelHolder.find(".panel .fullH").each(function() {
+				mediaLesson.resizeContent($(this));
+			});
 		}
 		
 		// function resizes contentBlocks that should fill available space
@@ -136,7 +136,16 @@
 			var excludeH = $holder.data("exclude") != undefined ? $holder.data("exclude").outerHeight(true) : 0,
 				$panel = $holder.parents(".panel");
 			
-			$holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
+			// if content is overlay on media then use media for max sizes
+			if ($holder.parents(".panelContent").length == 0) {
+				$panel = $holder.parents(".overlay").parent();
+			}
+			
+			if (!$holder.data("max")) {
+				$holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
+			} else {
+				$holder.css("max-height", $panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
+			}
 			
 			if ($holder.hasClass("googlemapHolder")) {
 				//google.maps.event.trigger($holder.find(".gm-style")[0], "resize");
