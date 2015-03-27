@@ -39,10 +39,7 @@ required: target start name
 				
 				if (!options.child) {
 					if (options.fullH) {
-						// set up for content to fill available space (excluding heading)
-						$target.children(0)
-							.addClass("fullH")
-							.data("exclude", $target.find("h4"));
+						$target.children(0).addClass("fullH");
 					}
 					
 					if (options.name != "") {
@@ -58,6 +55,9 @@ required: target start name
 					}
 					
 					if (options.fullH) {
+						// set up for content to fill available space (excluding heading)
+						$target.children(".fullH").data("exclude", $target.find("h4"));
+						
 						// call function to make content fill available space
 						eval(parent.x_currentPageXML.nodeName).resizeContent($target.children(".fullH"));
 					}
