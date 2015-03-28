@@ -469,6 +469,13 @@ var EDITOR = (function ($, parent) {
     // Refresh the page when a new node is selected
     showNodeData = function (key) {
 
+
+        // Cleanup all current CKEDITOR instances!
+        for(name in CKEDITOR.instances)
+        {
+            CKEDITOR.instances[name].destroy(true);
+        }
+
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name

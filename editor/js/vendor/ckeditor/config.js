@@ -24,7 +24,8 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image2,codemirror,oembed,xotmarkword';
+
+    config.extraPlugins = 'dialog,widget,extmathjax,image2,codemirror,oembed,xotmarkword,fontawesome';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
@@ -35,6 +36,12 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
-
+    config.contentsCss = ['editor/js/vendor/ckeditor/contents.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css'
+    ];
 };
 CKEDITOR.dtd.$removeEmpty.i = 0;
+CKEDITOR.dtd.$removeEmpty.span = 0;
