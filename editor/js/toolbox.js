@@ -751,10 +751,11 @@ var EDITOR = (function ($, parent) {
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
-                extraAllowedContent: 'style'
+                extraAllowedContent: 'style',
                 //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
                 //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
                 //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
+                language : language.$code.substr(0,2)
             };
 
             if (options.options.height)
@@ -863,9 +864,18 @@ var EDITOR = (function ($, parent) {
                     this.on('focus', function () {
                         this.setReadOnly(false);
                     });
-                }, { toolbarGroups : [
+                }, { toolbar:
+                    [
+                        [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
+                        [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
+                        [ 'Sourcedialog' ]
+                    ],
+                    /*
+                    toolbarGroups : [
+                    { name: 'document' },
                     { name: 'basicstyles', groups: [ 'basicstyles' ] },
                     { name: 'colors' }],
+                    */
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
                     filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
@@ -876,10 +886,12 @@ var EDITOR = (function ($, parent) {
                     //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                     //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                     mathJaxClass :  'mathjax',
-                    mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
+                    mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
                     //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
                     //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
+                    extraPlugins : 'sourcedialog',
+                    language : language.$code.substr(0,2)
                 });
             }
         });
