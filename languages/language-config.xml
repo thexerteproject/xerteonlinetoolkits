@@ -9,5 +9,5 @@
     <language name="Cymraeg (cy-GB)" code="cy-GB" file="engine_cy-GB.xml" wizardfile="wizard_cy-GB.xml" editorfile="editor_cy-GB.xml" />
     <language name="Polish (pl-PL)" code="pl-PL" file="engine_pl-PL.xml" wizardfile="wizard_pl-PL.xml" editorfile="editor_en-GB.xml" />
     <language name="Russian (ru-RU)" code="ru-RU" file="engine_ru-RU.xml" wizardfile="wizard_ru-RU.xml" editorfile="editor_ru-RU.xml" />
-    <language name="Norsk bokmål (no-NB)" code="no-NB" file="engine_no-NB.xml" wizardfile="wizard_no-NB.xml" editorfile="editor_no-NB.xml" />
+    <language name="Norsk bokmål (nb-NO)" code="nb-NO" file="engine_nb-NO.xml" wizardfile="wizard_nb-NO.xml" editorfile="editor_nb-NO.xml" />
 </languages>
