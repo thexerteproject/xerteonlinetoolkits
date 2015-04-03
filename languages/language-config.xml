@@ -1,5 +1,4 @@
 ﻿<languages>
-
     <language name="English (en-GB)" code="en-GB" file="engine_en-GB.xml" wizardfile="wizard_en-GB.xml" editorfile="editor_en-GB.xml" />
     <language name="Nederlands (nl-NL)" code="nl-NL" file="engine_nl-NL.xml" wizardfile="wizard_nl-NL.xml" editorfile="editor_en-GB.xml" />
     <language name="Vlaams (nl-BE)" code="nl-BE" file="engine_nl-BE.xml" wizardfile="wizard_nl-BE.xml" editorfile="editor_en-GB.xml" />
@@ -10,4 +9,5 @@
     <language name="Polish (pl-PL)" code="pl-PL" file="engine_pl-PL.xml" wizardfile="wizard_pl-PL.xml" editorfile="editor_en-GB.xml" />
     <language name="Russian (ru-RU)" code="ru-RU" file="engine_ru-RU.xml" wizardfile="wizard_ru-RU.xml" editorfile="editor_ru-RU.xml" />
     <language name="Norsk bokmål (nb-NO)" code="nb-NO" file="engine_nb-NO.xml" wizardfile="wizard_nb-NO.xml" editorfile="editor_nb-NO.xml" />
+    <language name="Italiano (it-IT)" code="it-IT" file = "engine_it_IT.xml" wizardfile="wizard_it-IT.xml" editorfile="editor_it-IT.xml" />
 </languages>
