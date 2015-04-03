@@ -1,0 +1,153 @@
+<language name="日本語" code="ja-JP">
+    <layout closetooltip="このウィンドウを閉じる" opentooltip="このウィンドウを開く" resizetooltip="このウィンドウのサイズを変更する" />
+    <edit label="編集 ..." tooltip="このオプションを編集します" description="[編集]ボタン" />
+    <insertDialog>
+        <insertBefore label="前に挿入" tooltip="選択したノードの前に挿入します"/>
+        <insertAfter label="後に挿入" tooltip="選択したノードの後に挿入します"/>
+        <insertAtEnd label="最後に挿入" tooltip="最後のノードとして挿入します"/>
+    </insertDialog>
+    <btnSaveXerte label="保存" tooltip="プロジェクトを保存します" description="[保存]ボタン"/>
+	<btnPublishXot label="保存" tooltip="プロジェクトを保存します" description="[保存]ボタン"/>
+	<popupFileUpload title="ファイル アップロード" cancelLabel="キャンセル"/>
+	<browseImportFile title="インポートするファイルを選択...">
+		<dialogFilter>すべてのファイル|*.*|JPG|*.jpg|PNG|*.png|SWF ファイル|*.swf|サウンド ファイル|*.mp3|ビデオ ファイル|*.flv</dialogFilter>
+		<buttontext>インポート</buttontext>
+	</browseImportFile>
+	<kblanguage title="文字パッド" tooltip="文字パッド" description="キーボード レイアウトの言語">
+		<item>フランス語</item>
+		<item>ドイツ語</item>
+		<item>イタリア語</item>
+		<item>ポーランド語</item>
+		<item>ポルトガル語</item>
+		<item>スペイン語</item>
+	</kblanguage>
+	<newLink label="{i}を追加" />
+	<helpLink tooltip="クリックしてヘルプを表示します"/>
+    <btnAddColumn label="列の追加" tooltip="グリッドの右側に列を追加します"/>
+    <btnDelColumn label="列の削除" tooltip="選択した列を削除します"/>
+	<btnInsert label="挿入" tooltip="挿入します"/>
+	<btnAddChild tooltip="子を追加します"/>
+	<btnDuplicate label="コピー" tooltip="複製します"/>
+	<btnDelete label="削除" tooltip="削除します"/>
+	<btnMoveUp tooltip="上へ移動します"/>
+	<btnMoveDown tooltip="下へ移動します"/>
+	<btnNext tooltip="次のアイテム"/>
+	<btnPreview label="表示" tooltip="プレビューします"/>
+	<btnPrev tooltip="前のアイテム"/>
+	<icDelete tooltip="削除します" prompt="このアイテムを削除しますか?"/>
+	<addProp label="追加" tooltip="追加します" />
+	<optionalProp label="オプションのプロパティ:"/>
+	<chkShowLanguage label="言語オプションの表示" tooltip="言語オプションが利用可能なら表示します。"/>
+	<chkShowAdvanced label="詳細オプションの表示" tooltip="詳細オプションが利用可能なら表示します。"/>
+    <chkShowToolbar label="ツール バーの表示" tooltip="すべてのツール バーを標準で表示します。"/>
+	<compMedia tooltip="メディアをインポートします"/>
+	<compPreview tooltip="プレビューします"/>
+	<filemenu title="ファイル">
+		<menuNew>新規プロジェクト...</menuNew>
+		<menuOpen>開く...</menuOpen>
+		<menuSave>保存</menuSave>
+		<menuExit>終了</menuExit>
+	</filemenu>
+	<menuOpen title="プロジェクトを選択してください。">
+		<dialogText>ファイルを選択します</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>テンプレート|*.rlt|MXML ファイル|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="表示">
+		<menuPreview>プレビュー</menuPreview>
+	</viewmenu>
+	<publishmenu title="保存">
+		<menuPublish>保存</menuPublish>
+		<menuPackage>パッケージ化</menuPackage>
+	</publishmenu>
+	<menuPackage title="SCORM 1.2 パッケージを保存">
+		<dialogText>ファイルを選択します</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>ZIP ファイル|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="ヘルプ">
+		<menuHelp>ヘルプ</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>ヘルプ ファイルが準備中です。</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>すべてのファイル (*.*)</allfiles>
+			<images>画像ファイル (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash ファイル (*.swf)</flash>
+			<sound>サウンド ファイル (*.mp3)</sound>
+			<video>ビデオ ファイル (*.flv)</video>
+		</filters>
+		<title>インポートするファイルを選択...</title>
+		<filter>すべてのファイル|*.*|JPG|*.jpg|PNG|*.png|SWF ファイル|*.swf|サウンド ファイル|*.mp3|ビデオ ファイル|*.flv</filter>
+		<btnimport>インポート</btnimport>
+		<btncancel>キャンセル</btncancel>
+		<fileexists>
+			<prompt>{f} ファイルは既に存在します。\r\r既存のファイルを上書きしますか?</prompt>
+			<title>確認</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>OK</oklabel>
+		<cancellabel>キャンセル</cancellabel>
+		<nolabel>いいえ</nolabel>
+		<yeslabel>はい</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>リンクの URL を入力してください</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>{i}を{m}しか追加できません</prompt>
+				<title>エラー</title>
+			</max>
+			<mixedcontent>
+				<prompt>ここで違った種類のコンテンツを組み合わせることができません。</prompt>
+				<title>エラー</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>このフォルダーは空ではありません。本当にこのフォルダーを新しいプロジェクトに利用してよろしいですか?</prompt>
+			<title>確認</title>
+		</newproject>
+		<openproject>
+			<prompt>新しいプロジェクトを開きますか?</prompt>
+			<title>確認</title>
+		</openproject>
+		<initpreview>
+			<prompt>メディアを選択しないとプレビューできません。</prompt>
+			<title>情報</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>このアイテムは複製できません。</prompt>
+			<title>エラー</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>このアイテムを削除しますか?</prompt>
+				<title>確認</title>
+			</confirm>
+			<error>
+				<prompt>このアイテムは削除できません。</prompt>
+				<title>エラー</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>XMLをフォーマットできませんでした。変更が保存されていません。最近の変更を確認してください。</prompt>
+		</savefile>
+        <upload>
+            <successful>アップロードに成功しました</successful>
+            <failed>
+                <permissions>アップロードに失敗しました： 権限を確認してください</permissions>
+                <HTTPError>アップロードに失敗しました： HTTP エラー</HTTPError>
+                <IOError>アップロードに失敗しました： IO　エラー</IOError>
+                <security>アップロードに失敗しました： セキュリティ エラー</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>
+
+
+
