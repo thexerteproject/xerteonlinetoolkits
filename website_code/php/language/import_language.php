@@ -130,7 +130,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
 
         if ($nottingham_language_found && !file_exists($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir))
         {
-            mkdir($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir. 0755, true);
+            mkdir($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $lang_dir, 0755, true);
         }
 
         /*
