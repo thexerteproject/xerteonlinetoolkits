@@ -79,7 +79,7 @@ recycle_bin();
     <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
