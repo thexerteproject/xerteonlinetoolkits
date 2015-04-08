@@ -31,20 +31,24 @@ if ($mode == 'publish')
 $filename = dirname(dirname(__FILE__)) . '/' . $filename;
 $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
-$absjson = make_refs_local(urldecode($_POST["lo_data"]), $_POST['absmedia']);
+// This code miserably fails if get_magic_quotes_gpc is turned on
+// decoding the json doesn't work anymore
+if (get_magic_quotes_gpc())
+{
+    $lo_data=stripslashes($_POST["lo_data"]);
+}
+else
+{
+    $lo_data = $_POST["lo_data"];
+}
 
-//file_put_contents("unprocessed_$mode.txt", print_r(urldecode($_POST["lo_data"]), true));
-file_put_contents($filenamejson, print_r($absjson, true));
+$relreffedjsonstr = make_refs_local(urldecode($lo_data), $_POST['absmedia']);
 
-$relreffedjson = json_decode($absjson);
+file_put_contents($filenamejson, print_r($relreffedjsonstr, true));
 
-$json = json_decode(urldecode($_POST["lo_data"]));
-
+$relreffedjson = json_decode($relreffedjsonstr);
 
 $data = process($relreffedjson);
-//file_put_contents("decoded_unprocessed_$mode.txt", print_r($json, true));
-//file_put_contents("decoded_local_refs_$mode.txt", print_r($relreffedjson, true));
-//file_put_contents("processed_$mode.xml", $data->asXML());
 
 // save round-robin queue of 5 xml's
 for ($i=10; $i>1; $i--)

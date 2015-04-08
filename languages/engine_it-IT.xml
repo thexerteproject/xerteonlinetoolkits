@@ -1,0 +1,143 @@
+<language name="Italian">
+
+  <nextButton label="Avanti" description="Pulsante Pagina Succ."/>
+  
+  <backButton label="Indietro" description="Pulsante Pagina Prec"/>
+  
+  <tocButton label="Indice" description="Pulsante Indice."/>
+  
+  <helpButton label="Help" description="Pulsante Help. "/>
+
+  <mediaButton label="Media" description="Pulsante Media. "/>
+  
+  <homeButton label="Home" description="Pulsante Home. "/>
+  
+  <pageHelp name="Aiuto" description="Aiuto sulla pagina" toClose="Premi Spazio per chiudere la pagina "/>
+  
+  <glossaryButton label="Glossario" description="Pulsante Glossario."/>
+  
+  <continueButton label="Continua" description="Pulsante Continua."/>
+  
+  <toc label="Indice dei contenuti" description="indice dei contenuti. Usa i tasti freccia per scegliere la pagina. Permi spazio per selezionarla.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="Pulsante per chiudere l'indice"/>
+	  <gotoPageButton label="Vai alla pagina" description="Pulsante Vai alla pagina"/>
+  </toc>
+  
+  <glossary label="Glossario" description="Lista di parole completa delle definizioni.">
+	  <closeButton label="" description="Pulsante chiudi il glossario"/>
+  </glossary>
+  
+  <kbLanguage label="Caratteri speciali" description="Una lista di pulsanti per inserire caratteri speciali nei testi">
+	  <closeButton label="" description="Pulsante chiudi lista dei caratteri speciali"/>
+	  <dialog instruction="Usa Maiusc e SHIFT" on="ON" off="OFF" caps="Maiusc"/>
+  </kbLanguage>
+  
+  <textToSpeech label="null" description="Lettura testi"/>
+  
+  <errorProject label="I dati del progetto non sono stati caricati."/>
+  
+  <errorPage label="Non è disponibile alcun modello per questo tipo di pagina."/>
+  
+  <errorBrowser label="Il tuo browser non supporta completamente questo tipo di pagine."/>
+  
+  <errorFlash label="Per vedere questo contenuto è necessario installare Flash Player." description="Installa Flash Player"/>
+  
+  <tick label="Segna"/>
+  
+  <cross label="Croce"/>
+
+  <themes label="--Schemi dei colori--" description="Opzioni schemi dei colori">
+    <item>default</item>
+    <item>blue</item>
+    <item>green</item>
+    <item>red</item>
+    <item>orange</item>
+    <item>purple</item>
+    <item>grey</item>
+    <item>high contrast 1</item>
+    <item>high contrast 2</item>
+  </themes>
+ 
+  <sizes label="--Dimensioni schermo--" description="Opzioni dimensione schermo">
+	<item>default</item>
+	<item>large</item>
+	<item>larger</item>
+	<item>full screen</item>
+	<item>fill window</item>
+  </sizes>
+  
+  <fonts label="--Font del testo--" description="Opzioni carattere tipografico">
+	  <item>default</item>
+  </fonts>
+  
+  <textSizes label="--Dimensioni testo--" description="Opzioni dimensione testo">
+	  <item>default</item>
+	  <item>small</item>
+	  <item>medium</item>
+	  <item>large</item>
+	  <item>larger</item>
+  </textSizes>
+  
+  <volumeControl label="Vol:" description="Controllo Volume"/>
+  <volumeControlSlider label="" description="Cursore Volume"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>of</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Stop Audio" description="Pulsante Stop Audio"/>
+	<playButton label="Riprodurre Audio" description="Pulsante Riprodurre audio"/>
+	<pauseButton label="Pausa Audio" description="Pulsante Pausa Audio"/>
+	<rwndButton label="Riavvolgi Audio" description="Pulsante Riavvolgi Audio"/>
+	<ffwdButton label="Avanti Audio" description="Pulsante Avanti Audio"/>
+	<loader label="Loading: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Stop Video" description="Pulsante Stop Video"/>
+	<playButton label="Riproduci Video" description="Pulsante Riproduci Video"/>
+	<pauseButton label="Pausa Video" description="Pulsante Pausa Video"/>
+	<rwndButton label="Riavvolgi Video" description="Pulsante Riavvolgi Video"/>
+	<ffwdButton label="Avanti Video" description="Pulsante Avanti Video"/>
+	<loader label="Sto caricando: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Stop" description="Pulsante Stop"/>
+	<playPauseButton label="Riproduci/Pausa" description="Pulsante Riproduci/Pausa"/>
+	<muteButton label="Togli Audio" description="Pulsante Togli Audio"/>
+	<fullscreenButton label="A Pieno Schermo" description="Pulsante Pieno Schermo"/>
+	<captionsButton label="Didascalie/Sottotitoli" description="Pulsante Mostra/Nasconti Didascalie/Sottotitoli"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Pulsante"/>
+	  <radioButton selected="selezionato. Utilizza le frecce per muoverti tra le opzioni"/>
+	  <checkBox selected="selezionato" deselected="deselezionato"/>
+	  <comboBox name="ComboBox" options="Opzioni." selected="selezionato." selectedOptions="selezionato. Usa le frece per muoverti" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Premi spazio per selezionare." selected="Selezionato Hot Spot"/>
+	  <hotObject name="HotObject" toSelect="Premi spazio per selezionare." selected="Selezionato Hot Object"/>
+	  <textEntry name="Casella di testo" selected="Selezionata casella di testo"/>
+	  <targetArea name="Area Destinazione" description="Zona di aggancio per" toSelect="Premi spazio per rilasciare l'oggetto selezionato."/>
+	  <draggableItem name="Oggetto Trascinabile" selected="Oggetto Selezionato" toSelect="Premi Spazio per selezionare" deSelected="Nessun oggetto selezionato." />
+  </interactions>
+  
+  <fetchResults label="Sto recuperando i risultati..."/>
+  <errorResults label="Si è verificato un errore nel caricamento dei risultati"/>
+  <loadError label="Errore di caricamento"/>
+  <noResults label="Non è stato restituito alcun risultato"/>
+  
+  <timer>
+	  <remaining name="Tempo rimanente"/>
+	  <timeUp name="Fino a"/>
+	  <seconds name="secondi"/>
+  </timer>
+
+  <colourChanger label="Cambiare Colore" description="Per cambiare i colori.">
+	  <closeButton label="" description="Chiudi la personalizzazione dei colori"/>
+  </colourChanger>
+
+</language>

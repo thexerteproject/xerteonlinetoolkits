@@ -820,8 +820,20 @@ function error_show_template() {
 
 function output_locked_file_code($lock_file_creator) {
 
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<?php
+
   echo "<p>" . DISPLAY_EDITED . $lock_file_creator . "</p><p>" . DISPLAY_LOCKFILE_MESSAGE . "</p>";
 
   echo "<form action=\"\" method=\"POST\"><input type=\"hidden\" value=\"delete_lockfile\" name=\"lockfile_clear\" /><input type=\"submit\" value=\"" . DISPLAY_LOCKFILE_DELETE . "\" /></form>";
-
+?>
+</body>
+</html>
+<?php
 }
