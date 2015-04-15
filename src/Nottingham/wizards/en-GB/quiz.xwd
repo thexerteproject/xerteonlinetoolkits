@@ -77,7 +77,7 @@
 
   </question>
 
-  <option menuItem="Option">
+  <option menuItem="Option" icon="icBullet">
 
     <text label="Option" type="TextArea"  height="100"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>

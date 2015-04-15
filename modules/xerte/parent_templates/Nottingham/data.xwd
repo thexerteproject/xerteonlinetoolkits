@@ -1072,7 +1072,7 @@
       <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
-  </mcq><option menuItem="Option">
+  </mcq><option menuItem="Option" icon="icBullet">
 
     <text label="Option" type="TextArea" height="100"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
