@@ -285,7 +285,7 @@ function x_evalURL(url)
 {
     if (url == null)
         return null;
-    var trimmedURL = url.trim();
+    var trimmedURL = $.trim(url);
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
     {
         return eval(url)

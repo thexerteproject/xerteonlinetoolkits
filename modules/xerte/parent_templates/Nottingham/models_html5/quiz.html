@@ -33,7 +33,6 @@
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
-			quiz.loadAudio($thisQ.getAttribute("sound"));
 		}
 
 		// function called every time the size of the LO is changed
@@ -44,6 +43,16 @@
 			}
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
+			}
+			
+			if ($("#questionAudio").children().length > 0) {
+				var audioBarW = 0;
+				$("#questionAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				if (audioBarW < $("#questionAudio").width() - 5 || audioBarW > $("#questionAudio").width() + 5) {
+					$x_window.resize();
+				}
 			}
 		}
 
@@ -119,10 +128,13 @@
 			$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
 
 			var infoString = $thisQ.getAttribute("prompt");
-
+			
 			if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-				quiz.loadAudio($thisQ.getAttribute("sound"),true);
-			}	
+				quiz.loadAudio($thisQ.getAttribute("sound"));
+			} else {
+				$("#questionAudio").empty();
+			}
+			
 			var url = $thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
@@ -147,13 +159,13 @@
 			} else {
 				$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
 			}
-			var $option = $optionHolder.find("input");
-			var $optionTxt = $optionHolder.find(".optionTxt");
-			var $checkBtn = $("#checkBtn");
-			var $feedback = $("#feedback");
-            var correctOptions = [];
-            var correctAnswer = [];
-            var correctFeedback = [];
+			var $option = $optionHolder.find("input"),
+				$optionTxt = $optionHolder.find(".optionTxt"),
+				$checkBtn = $("#checkBtn"),
+				$feedback = $("#feedback"),
+				correctOptions = [],
+				correctAnswer = [],
+				correctFeedback = [];
             
             // Store the answers in a temporary array
 			this.currentAnswers = [];
@@ -221,7 +233,6 @@
 					}
 				});
             XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
-
 		}
 
         this.showResults = function() {
@@ -241,6 +252,7 @@
             }
 
             $("#qTxt").html(fbTxt);
+			$("#questionAudio").empty();
 			
 			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 				$("#qTxt").find("a.x_glossary").contents().unwrap();
@@ -258,20 +270,21 @@
         }
 
 		this.loadVideo = function() {
-			var $video = $("#pageVideo");
-			var videoDimensions = $video.data("dimensions");
-			var $textHolder = $("#textHolder");
-			var maxW = $textHolder.width() - parseInt($textHolder.find(".panel").css("padding-left")) * 2 - parseInt($textHolder.find(".panel").css("margin-left")) * 2;
+			var $video = $("#pageVideo"),
+				videoDimensions = $video.data("dimensions"),
+				$textHolder = $("#textHolder"),
+				maxW = $textHolder.width() - parseInt($textHolder.find(".panel").css("padding-left")) * 2 - parseInt($textHolder.find(".panel").css("margin-left")) * 2;
+			
 			if (maxW < videoDimensions[0]) {
 				var scale = maxW / videoDimensions[0];
 				videoDimensions = [videoDimensions[0] * scale, videoDimensions[1] * scale];
 			}
 
 			$video.mediaPlayer({
-				type			:"video",
-				source			:$video.data("src"),
-				width			:Number(videoDimensions[0]),
-				height			:Number(videoDimensions[1])
+				type	:"video",
+				source	:$video.data("src"),
+				width	:Number(videoDimensions[0]),
+				height	:Number(videoDimensions[1])
 			});
 		}
 
@@ -333,14 +346,10 @@
 				});
 				quiz.loadVideo();
 			}
-
-			var imgSize = '';
-			if (x_currentPageXML.getAttribute("imgSize") != undefined && x_currentPageXML.getAttribute("imgSize").indexOf(',')>-1) {
-				var size_tmp = x_currentPageXML.getAttribute("imgSize").split(',');
-				imgSize = ' width="'+size_tmp[0]+'px" height="'+size_tmp[1]+'px"';
-			}
+			
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
-				$textHolder.append('<img src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + imgSize +'>');
+				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? 'tip="' + x_currentPageXML.getAttribute("tip") + '"' : "";
+				$textHolder.append('<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
 			}
 
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
@@ -387,7 +396,7 @@
             }
 
             $("#pageContents").data({
-            "feedbackLabel"         :feedbackLabel,
+				"feedbackLabel"		:feedbackLabel,
 				"singleRight"		:singleRight,
 				"singleWrong"		:singleWrong,
 				"multiRight"		:multiRight,
@@ -413,7 +422,7 @@
 
                     var generalFeedback = "";
 
-                        // get feedback for selected options and check if they are correct
+                    // get feedback for selected options and check if they are correct
 					for (var i=0; i<selected.length; i++) {
                         var optionIndex = $(selected[i]).index()/2,
 							selectedOption = quiz.currentAnswers[optionIndex];
@@ -528,17 +537,14 @@
 			this.sizeChanged();
 			x_pageLoaded();
 		}
-		this.loadAudio = function(soundFile,firstLoad) {
-			console.log('audio',soundFile);
+		
+		this.loadAudio = function(soundFile) {
 			if (soundFile != undefined && soundFile != "") {
 				$("#questionAudio").mediaPlayer({
-					type		:"audio",
+					type	:"audio",
 					source	:soundFile,
-					width		:$("#pageImg").width()
+					width	:"100%"
 				});
-			}
-			if (firstLoad == true) {
-				x_pageLoaded();
 			}
 		}		
 	}
@@ -579,15 +585,27 @@
 		clear:		both;
 	}
 
-	#pageContents .quizImg {
+	#infoHolder .quizImg {
 		padding:	5px;
 		float:		right;
 		max-width:	50%;
 		height:		auto;
 	}
+	
+	#textHolder .quizImg {
+		padding:	5px;
+		max-width:	80%;
+		display:	block;
+		margin-left: auto;
+		margin-right:auto;
+	}
 
 	#textHolder p:first-child {
 		margin-top:	0px;
+	}
+	
+	#questionAudio {
+		clear:	both;
 	}
 
 </style>
