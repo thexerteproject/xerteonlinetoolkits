@@ -28,11 +28,27 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$panelHolder = $("#panelHolder");
+			$("#pageContents").data("mediaElement").setCurrentTime(0);
+			
 			
 			// if audio is in footer (outside pageHolder) it will need reloading on every page change
 			if ($("#pageContents").data("audioBar") == true && $x_footerBlock.find(".mainMedia").length == 0) {
 				this.loadAudioInFooter();
 			}
+		}
+		
+		// function called from mediaPlayer.js when video player has been set up
+		this.mediaFunct = function(mediaElement, mediaSrc/*, eventType, data*/) {
+			if (mediaSrc != "vimeo") {
+				if ($(mediaElement).closest(".mainMedia").length != 0) {
+					$("#pageContents").data("mediaElement", mediaElement);
+				}
+			}/* else {
+				// VIMEO
+				if (eventType == "playProgress") {
+					videoSynch.timeUpdate(mediaElement, data, mediaSrc);
+				}
+			}*/
 		}
 		
 		// function called every time the size of the LO is changed
