@@ -24,7 +24,7 @@
 
     var evalURL = function(url)
     {
-        var trimmedURL = url.trim();
+        var trimmedURL = $.trim(url);
         if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
         {
             return eval(url)
@@ -169,9 +169,14 @@
 								} catch(e) {};
 							});
 						}
-						try {
-							eval(x_pageInfo[x_currentPage].type).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
-						} catch(e) {};
+						
+						if (opts.pageName == "mediaHTML5") { // it's media from mediaViewer window not main interface 
+							mediaHTML5.mediaFunct(mediaElement);
+						} else {
+							try {
+								eval(x_pageInfo[x_currentPage].type).mediaFunct(mediaElement); // send mediaElement back to page so you can set up events for media
+							} catch(e) {};
+						}
 					},
 					
 					error: function(mediaElement) {
@@ -296,11 +301,11 @@
 		var checkFileType = function() {
 			// if video is flv look for alternative mp4 file to use as this can play in flash player or video tag
 			$.ajax({
-				url:	eval(fileInfo[0] + ".mp4'"),
+				url:	evalURL(fileInfo[0] + ".mp4"),
 				type:	"HEAD",
 				success: function() {
 					// mp4 version exists - use this instead
-					opts.source = fileInfo[0] + ".mp4'";
+					opts.source = fileInfo[0] + ".mp4";
                     mimeType = 'video/mp4';
 					fileInfo.splice(1, 1, "mp4");
 					if (thisMedia.data("src") != undefined) { // save this new src so it doesn't have to check again if page returned to

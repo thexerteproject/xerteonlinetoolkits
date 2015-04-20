@@ -24,6 +24,8 @@
 	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
   </toc>
   
+  <mediaWindow label="Media Viewer"/>
+  
   <glossary label="Glossary" description="A list of words and their definitions.">
 	  <closeButton label="" description="Close glossary list button"/>
   </glossary>
