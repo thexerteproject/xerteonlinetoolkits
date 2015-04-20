@@ -285,7 +285,7 @@ function x_evalURL(url)
 {
     if (url == null)
         return null;
-    var trimmedURL = url.trim();
+    var trimmedURL = $.trim(url);
     if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
     {
         return eval(url)
@@ -1361,8 +1361,9 @@ function x_openMediaWindow() {
     if (captionDetails == "") {
         captionDetails = undefined;
     }
-
-    window.open("mediaViewer/mediaHTML5.htm?media=" + x_evalURL(x_params.media) + ",transcript=../" + x_evalURL(x_params.mediaTranscript) + ",img=../" + x_evalURL(x_params.mediaImage) + ",caption=" + captionDetails, "_blank", 'MediaViewer', 'height=100,width=100,toolbar=0,menubar=0');
+	var mediaTxtStr = x_mediaText[0].label + "~" + x_mediaText[1].label + "~" + x_mediaText[2].label + "~" + x_mediaText[3].label + "~" + x_mediaText[4].label;
+	
+	window.open("mediaViewer/mediaHTML5.htm?media='" + x_evalURL(x_params.media) + "',transcript='" + x_evalURL(x_params.mediaTranscript) + "',img='" + x_evalURL(x_params.mediaImage) + "',imgTip='" + x_params.mediaImageTip + "',caption='" + captionDetails + "',title='" + x_getLangInfo(x_languageData.find("mediaWindow")[0], "label", "Media Viewer") + "',lang='" + mediaTxtStr + "'", "_blank", "height=100,width=100,toolbar=0,menubar=0");
 }
 
 function x_openInfoWindow(text){
