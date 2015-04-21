@@ -11,4 +11,5 @@
     <language name="Norsk bokmål (nb-NO)" code="nb-NO" file="engine_nb-NO.xml" wizardfile="wizard_nb-NO.xml" editorfile="editor_nb-NO.xml" />
     <language name="Italiano (it-IT)" code="it-IT" file="engine_it-IT.xml" wizardfile="wizard_it-IT.xml" editorfile="editor_it-IT.xml" />
     <language name="Japanese (ja-JP)" code="ja-JP" file="engine_ja-JP.xml" wizardfile="wizard_ja-JP.xml" editorfile="editor_ja-JP.xml" />
+    <language name="Portugues (pt-BR)" code="pt-BR" file="engine_pt-BR.xml" wizardfile="wizard_pt-BR.xml" editorfile="editor_pt-BR.xml" />
 </languages>
