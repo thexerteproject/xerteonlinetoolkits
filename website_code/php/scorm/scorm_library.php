@@ -436,18 +436,11 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
 
     _debug("Zipping up: " . $fullArchive);
     while ($file = array_pop($file_array)) {
-        if (strpos($file[0], "data.xwd") === false || strpos($file[0], "data.xml") === false || strpos($file[0], "preview.xml") === false) {
+        if (strpos($file[0], "data.xwd") === false && strpos($file[0], "data.xml") === false && strpos($file[0], "preview.xml") === false) {
             /* Check if this is a media file */
             if (!$fullArchive) {
                 $skipfile = false;
                 // Skip extra copies
-                for ($i=1; $i<=10; $i++) {
-                    if (strpos($file[0], "." . $i) !== false)
-                    {
-                        $skipfile = true;
-                        break;
-                    }
-                }
                 if (!$skipfile && strpos($file[0], ".json") !== false)
                 {
                     $skipfile = true;
