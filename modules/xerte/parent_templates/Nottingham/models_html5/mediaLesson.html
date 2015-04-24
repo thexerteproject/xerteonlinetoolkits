@@ -170,20 +170,26 @@
 		
 		// function called when page first loads
 		this.init = function() {
-			// load popcorn library and plugins 
-			var loadFiles = true;
-			for (var i=0; i<x_pageInfo.length; i++) {
-				if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
-					// a page of this type has already been loaded - don't reload popcorn files
-					loadFiles = false;
-					break;
+			if (!!document.createElement("canvas").getContext) {
+				// load popcorn library and plugins 
+				var loadFiles = true;
+				for (var i=0; i<x_pageInfo.length; i++) {
+					if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
+						// a page of this type has already been loaded - don't reload popcorn files
+						loadFiles = false;
+						break;
+					}
 				}
-			}
-			
-			if (loadFiles == true) {
-				this.loadJS();
+				
+				if (loadFiles == true) {
+					this.loadJS();
+				} else {
+					this.setUp();
+				}
 			} else {
-				this.setUp();
+				$("#infoHolder, #panelHolder, #contentCover").remove();
+				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
+				x_pageLoaded();
 			}
 		}
 		
