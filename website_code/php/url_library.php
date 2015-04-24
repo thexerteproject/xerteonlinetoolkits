@@ -91,7 +91,9 @@
 							return $xerte_toolkits_site->php_library_path . "scorm/export.php?full=true&scorm=false&template_id=" . $template_number;
 						}
 						break;
-
+            case "export_offline":
+                        return $xerte_toolkits_site->php_library_path . "scorm/export.php?offline=true&scorm=false&template_id=" . $template_number;
+                        break;
 			case "export_local":	if($xerte_toolkits_site->apache=="true"){
 							return $string . "_" . $template_number;
 						}else{

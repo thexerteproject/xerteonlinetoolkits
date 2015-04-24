@@ -155,7 +155,6 @@ class XerteXMLInspector
         }
 
         $this->xml = simplexml_load_string($xml);
-        $this->language = (string)$this->xml['language'];
         if (strlen((string)$this->xml['glossary'])>0)
         {
             $this->glossary = true;
@@ -164,6 +163,7 @@ class XerteXMLInspector
         {
             $this->glossary = false;
         }
+        $this->language = (string)$this->xml['language'];
         if (strlen($this->language) == 0)
             $this->language = 'en-GB';
         $this->name = (string)$this->xml['name'];
