@@ -22,6 +22,8 @@
  * Export a LO - e.g. from properties.
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
+
+
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
 $folder_id_array = array();
@@ -39,6 +41,26 @@ require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_si
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/url_library.php");
 
+
+function create_offline_file($varname, $sourcefile, $destfile)
+{
+    global $dir_path, $delete_file_array;
+
+    $source = file_get_contents($sourcefile);
+    // Remove comments from source
+    $source = preg_replace('!/\*.*?\*/!s', '', $source);
+    // If this is an xml file, remove the <? xml ... line
+    $source = preg_replace('/<\?.*\?>/', '', $source);
+
+    $dest = $varname . " = hereDoc(function(){/*!\n";
+    $dest .= $source;
+    $dest .= "\n*/});";
+
+    directory_maker($destfile);
+    file_put_contents($dir_path . $destfile, $dest);
+    array_push($delete_file_array, $dir_path . $destfile);
+}
+
 /*
  * Set up the paths
  */
@@ -52,6 +74,7 @@ $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'
 
 $export_html5 = false;
 $export_flash = false;
+$export_offline = false;
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -70,6 +93,16 @@ if (!$export_html5 && !$export_flash) {
         $export_html5 = true;
     }
 }
+
+if (isset($_REQUEST['offline']))
+{
+    $export_offline = true;
+    // offline is only supported by html5
+    $export_html5 = true;
+    $export_flash = false;
+    $fullArchive = false;
+}
+
 
 /*
  * Make the zip
@@ -120,26 +153,65 @@ if ($fullArchive) {
     if ($export_html5) {
         _debug("  use html5");
         $models = $xml->getUsedModels();
-        foreach ($models as $model) {
-            _debug("copy model " . $parent_template_path . "models_html5/" . $model . ".html");
-            array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
-        }
-        /* Always add menu.rlm */
-        _debug("copy model " . $parent_template_path . "models_html5/menu.html");
-        array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
-        /* Always add colourChanger.html */
-        _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
-        array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
-        /* Always add language.html */
-        _debug("copy model " . $parent_template_path . "models_html5/language.html");
-        array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
-        /* Add glossary if used */
-        if ($xml->glossaryUsed())
+        if ($export_offline)
         {
-            _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
-            array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
-        }
+            export_folder_loop($xerte_toolkits_site->root_file_path . "offline/");
+            copy_extra_files();
 
+            $offline_includes="";
+             // Create offline language file and replacement text
+            $language = $xml->getLanguage();
+            create_offline_file("langxmlstr", $xerte_toolkits_site->root_file_path . "languages/engine_" . $language . ".xml", "offline/offline_engine_" . $language . ".js");
+            $offline_includes .= "   <!-- Offline language -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_engine_" . $language . ".js\"></script>\n\n";
+
+            // Offline template
+            create_offline_file("dataxmlstr", $dir_path . "/template.xml", "offline/offline_template.js");
+            $offline_includes .= "   <!-- Offline templatexml -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_template.js\"></script>\n\n";
+
+            // Offline dialogs
+            create_offline_file("modelfilestrs['colourChanger']", $parent_template_path . "models_html5/colourChanger.html", "offline/offline_colourChanger.js");
+            $offline_includes .= "   <!-- Offline dialogs -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_colourChanger.js\"></script>\n";
+            create_offline_file("modelfilestrs['menu']", $parent_template_path . "models_html5/menu.html", "offline/offline_menu.js");
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_menu.js\"></script>\n";
+            create_offline_file("modelfilestrs['language']", $parent_template_path . "models_html5/language.html", "offline/offline_language.js");
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_language.js\"></script>\n";
+            if ($xml->glossaryUsed()) {
+                create_offline_file("modelfilestrs['glossary']", $parent_template_path . "models_html5/glossary.html", "offline/offline_glossary.js");
+                $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_glossary.js\"></script>\n";
+            }
+            $offline_includes .= "\n";
+
+            // Offline models
+            $offline_includes .= "   <!-- Offline models -->\n";
+            foreach($models as $model)
+            {
+                create_offline_file("modelfilestrs['" . $model . "']", $parent_template_path . "models_html5/" . $model . ".html", "offline/" . $model . ".js");
+                $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/" . $model . ".js\"></script>\n";
+            }
+        }
+        else {
+            foreach ($models as $model) {
+                _debug("copy model " . $parent_template_path . "models_html5/" . $model . ".html");
+                array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
+            }
+            /* Always add menu.rlm */
+            _debug("copy model " . $parent_template_path . "models_html5/menu.html");
+            array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
+            /* Always add colourChanger.html */
+            _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
+            /* Always add language.html */
+            _debug("copy model " . $parent_template_path . "models_html5/language.html");
+            array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
+            /* Add glossary if used */
+            if ($xml->glossaryUsed()) {
+                _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
+            }
+        }
         export_folder_loop($parent_template_path . "common_html5/");
         copy_parent_files();
     }
@@ -159,9 +231,10 @@ if (isset($_GET['local'])) {
 /*
  * Language support
  */
-
-export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
-copy_extra_files();
+if (!$export_offline) {
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
+    copy_extra_files();
+}
 
 /*
  * Theme support
@@ -295,7 +368,7 @@ if ($scorm == "true") {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name);
+        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $export_offline, $offline_includes);
     }
 }
 
