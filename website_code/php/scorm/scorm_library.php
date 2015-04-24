@@ -212,7 +212,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name) {
+function basic_html5_page_create($type, $template_name, $lo_name, $offline=false, $offline_includes="") {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -222,6 +222,20 @@ function basic_html5_page_create($type, $template_name, $lo_name) {
     $buffer = str_replace("%XMLPATH%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
     $buffer = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$buffer);
+
+    if ($offline) {
+        // Handle offline variables
+        $buffer = str_replace("%OFFLINESCRIPTS%", "    <script type=\"text/javascript\" src=\"offline/js/offlinesupport.js\"></script>", $buffer);
+        $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
+        $buffer = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $buffer);
+    }
+    else
+    {
+        // Handle offline variables
+        $buffer = str_replace("%OFFLINESCRIPTS%", "", $buffer);
+        $buffer = str_replace("%OFFLINEINCLUDES%", "", $buffer);
+        $buffer = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $buffer);
+    }
 
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
 
