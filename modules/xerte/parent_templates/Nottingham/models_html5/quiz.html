@@ -441,7 +441,7 @@
 					var rightWrongTxt = "";
 					if (x_currentPageXML.getAttribute("judge") != "false") {
 						// if all selected are correct - check that none of the unselected options should have been
-						if (correct != false) {
+						if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
 							var notSelected = $("#optionHolder input:not(:checked)");
 							for (var i=0; i<notSelected.length; i++) {
 								var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
