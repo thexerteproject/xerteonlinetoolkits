@@ -249,8 +249,6 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="header">
         <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
-
-        <p class="general_t"><?PHP echo INDEX_TEMPLATES; ?></p>
     </div>
     <div class="content">
         <div class="new_template_area_middle">
