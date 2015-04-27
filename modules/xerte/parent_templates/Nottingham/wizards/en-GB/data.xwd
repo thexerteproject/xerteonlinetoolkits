@@ -1963,6 +1963,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
+	<caption label="Image Caption" type="textInput" defaultValue="Enter a Caption for the Image" optional="true"/>
     <transcript label="Transcript" type="textArea" height="100" optional="true"/>    
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>

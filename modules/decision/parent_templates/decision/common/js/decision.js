@@ -27,7 +27,12 @@ var allParams		= {},	// all attributes of learningObject
 	currentDecision,
 	currentStep,
 	currentStepInfo,
-	currentSection;
+	currentSection,
+	
+	languageData	= [],
+	x_volume        = 1,
+	x_audioBarH     = 30,
+	x_mediaText     = [];
 
 var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog;
 
@@ -47,6 +52,7 @@ function init() {
 	$footerBlock	= $("#footerBlock");
 	$dialog			= $(".dialog");
 	
+	smallScreen = screen.width <= 550 ? true : false;
 	
 	// _____ GET & SORT XML DATA _____
 	$.ajax({
@@ -108,7 +114,7 @@ function init() {
 				});
 			});
 			
-			setUpInterface();
+			getLangData(allParams.language);
 		},
 		error: function() {
 			// can't have translation for this as if it fails to load we don't know what language file to use
@@ -118,14 +124,67 @@ function init() {
 }
 
 
+// _____ GET LANGUAGE DATA _____
+function getLangData(lang) {
+	if (lang == undefined || lang == "undefined") {
+		lang = "en-GB";
+	}
+	$.ajax({
+		type: "GET",
+		url: "languages/engine_" + lang + ".xml",
+		dataType: "xml",
+		success: function (xml) {
+			languageData = $(xml).find("language");
+			sortLangData();
+			setUpInterface();
+		},
+		error: function () {
+			if (lang != "en-GB") { // no language file found - try default GB one
+				getLangData("en-GB");
+			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
+				languageData = $("");
+				sortLangData();
+				setUpInterface()
+			}
+		}
+	});
+}
+
+function sortLangData() {
+	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
+	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+
+	for (var i=0, len=mediaElementText.length; i<len; i++) {
+		x_mediaText.push({
+			label: getLangInfo(languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
+			description: getLangInfo(languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
+		});
+	}
+}
+
+
+// _____ GET STRING FROM LANGUAGE FILE _____
+function getLangInfo(node, attribute, fallBack) {
+    var string = fallBack;
+    if (node != undefined && node != null) {
+        if (attribute == false) {
+            string = node.childNodes[0].nodeValue;
+        } else {
+            string = node.getAttribute(attribute);
+        }
+    }
+    return string;
+}
+
+
 // _____ SET UP INTERFACE _____
 function setUpInterface() {
 	// stylesheet can be added in editor
 	if (allParams.stylesheet != undefined) {
-		insertCSS(eval(allParams.stylesheet));
+		insertCSS(evalURL(allParams.stylesheet));
 	}
 	
-	if (allParams.displayMode == "fixed") {
+	if (allParams.displayMode == "fixed" && smallScreen == false) {
 		$mainHolder
 			.width(800)
 			.height(600)
@@ -142,18 +201,18 @@ function setUpInterface() {
 		if (allParams.logoAlt != undefined && allParams.logoAlt != "") {
 			alt = 'alt="' + allParams.logoAlt + '"';
 		}
-		$footerBlock.append('<img id="logo1" src="' + eval(allParams.logo) + '" ' + alt + ' />');
+		$footerBlock.append('<img id="logo1" src="' + evalURL(allParams.logo) + '" ' + alt + ' />');
 		
 		if (allParams.logo2 != undefined && allParams.logo2 != "") {
 			alt = "";
 			if (allParams.logoAlt2 != undefined && allParams.logoAlt2 != "") {
 				alt = 'alt="' + allParams.logoAlt2 + '"';
 			}
-			$footerBlock.append('<img id="logo2" class="floatR" src="' + eval(allParams.logo2) + '" ' + alt + ' />');
+			$footerBlock.append('<img id="logo2" class="floatR" src="' + evalURL(allParams.logo2) + '" ' + alt + ' />');
 		}
 		
 		// footerBlock's position should always be at bottom of window or content - which ever is lower
-		// trigger function that sorts thison window resize / device orientation change
+		// trigger function that sorts this on window resize / device orientation change
 		var $window = $(window);
 		$window.resize(function() {
 			if (this.resizeTo) {
@@ -494,6 +553,10 @@ function setUpQ(isNew) {
 		
 		setUpSection(currentStepInfo.section, $thisStep);
 		
+		if ($(".stepAudio audio, .stepVideo video").length > 0) {
+			$(".stepAudio audio, .stepVideo video")[0].setCurrentTime(0);
+		}
+		
 		// reset if it's being viewed fresh rather than via history
 		if (isNew == true) {
 			
@@ -578,22 +641,19 @@ function setUpQ(isNew) {
 			authorSupport =  '<span class="hint">' + currentStepInfo.name + ' </span>';
 		}
 		
-		var img = "";
-		if (currentStepInfo.img != undefined && currentStepInfo.img != "") {
-			var alt = "";
-			if (currentStepInfo.imgTip != undefined && currentStepInfo.imgTip != "") {
-				alt = ' alt="' + currentStepInfo.imgTip + '"';
-			}
-			var css = ' class="stepImg"';
-			if (screen.width <= 550) {
-				css = ' class="stepImg small"';
-			}
-			img = '<img src="' + eval(currentStepInfo.img) + '"' + alt + css + ' />';
-		}
+		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + img + authorSupport + addLineBreaks(currentStepInfo.text) + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="instruction">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
+		
+		if (mediaInfo[1] != undefined) {
+			var $stepMedia = $(".stepAudio, .stepVideo");
+			if ($stepMedia.hasClass("stepAudio")) {
+				$stepMedia.appendTo($stepMedia.parent());
+			}
+			window[mediaInfo[1]]($stepMedia, currentStepInfo.img);
+		}
 		
 		setUpSection(currentStepInfo.section, $thisStep);
 		
@@ -791,22 +851,19 @@ function setUpI() {
 			authorSupport =  '<span class="hint">' + currentStepInfo.name + ' </span>';
 		}
 		
-		var img = "";
-		if (currentStepInfo.img != undefined && currentStepInfo.img != "") {
-			var alt = "";
-			if (currentStepInfo.imgTip != undefined && currentStepInfo.imgTip != "") {
-				alt = ' alt="' + currentStepInfo.imgTip + '"';
-			}
-			var css = ' class="stepImg"';
-			if (screen.width <= 550) {
-				css = ' class="stepImg small"';
-			}
-			img = '<img src="' + eval(currentStepInfo.img) + '"' + alt + css + ' />';
-		}
+		var mediaInfo = checkForMedia();
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + img + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="info">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + '</div></div>');
 		
 		var $thisStep = $stepHolder.children(".step");
+		
+		if (mediaInfo[1] != undefined) {
+			var $stepMedia = $(".stepAudio, .stepVideo");
+			if ($stepMedia.hasClass("stepAudio")) {
+				$stepMedia.appendTo($stepMedia.parent());
+			}
+			window[mediaInfo[1]]($stepMedia, currentStepInfo.img);
+		}
 		
 		if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
 			setUpHelp($thisStep);
@@ -852,25 +909,23 @@ function setUpR() {
 			authorSupport =  '<span class="hint">' + currentStepInfo.name + ' </span>';
 		}
 		
-		var img = "";
-		if (currentStepInfo.img != undefined && currentStepInfo.img != "") {
-			var alt = "";
-			if (currentStepInfo.imgTip != undefined && currentStepInfo.imgTip != "") {
-				alt = ' alt="' + currentStepInfo.imgTip + '"';
-			}
-			var css = ' class="stepImg"';
-			if (screen.width <= 550) {
-				css = ' class="stepImg small"';
-			}
-			img = '<img src="' + eval(currentStepInfo.img) + '"' + alt + css + ' />';
-		}
-		
 		var resultEndString = "";
 		if (allParams.resultEndString != undefined && allParams.resultEndString != "") {
 			resultEndString = '<p>' + allParams.resultEndString + '</p>';
 		}
 		
-		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + img + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
+		var mediaInfo = checkForMedia();
+		
+		$stepHolder.prepend('<div class="step"><span class="fa ' + icon + ' fa-2x pull-left fa-border fa-fw"/><div class="result">' + mediaInfo[0] + authorSupport + addLineBreaks(currentStepInfo.text) + collateResult(currentStepInfo.collate, currentDecision, "html") + resultEndString + '</div><a id="viewThisBtn" href="javascript:viewThisClickFunct()" class="floatL">' + allParams.viewThisBtn + '</a></div>');
+		
+		if (mediaInfo[1] != undefined) {
+			var $stepMedia = $(".stepAudio, .stepVideo");
+			if ($stepMedia.hasClass("stepAudio")) {
+				$stepMedia.appendTo($stepMedia.parent());
+			}
+			window[mediaInfo[1]]($stepMedia, currentStepInfo.img);
+		}
+		
 		$newBtn.show();
 		
 		setUpSection(currentStepInfo.section, $stepHolder.children(".step"));
@@ -880,6 +935,103 @@ function setUpR() {
 	}
 	
 	$submitBtn.hide();
+}
+
+// _____ CREATE IMAGE / AUDIO / VIDEO TO INSERT IN STEP _____
+function checkForMedia() {
+	var mediaInfo = [],
+		alt = currentStepInfo.imgTip != undefined && currentStepInfo.imgTip != "" ? currentStepInfo.imgTip : "";
+	
+	if (currentStepInfo.img != undefined && currentStepInfo.img != "") {
+		// image
+		if (currentStepInfo.img.indexOf(".jpeg") != -1 || currentStepInfo.img.indexOf(".jpg") != -1 || currentStepInfo.img.indexOf(".gif") != -1 || currentStepInfo.img.indexOf(".png") != -1) {
+			var css = smallScreen == true ? ' class="stepImg small"' : ' class="stepImg"';
+			alt = alt != "" ? ' alt="' + alt + '"' : "";
+			mediaInfo.push('<img src="' + evalURL(currentStepInfo.img) + '"' + alt + css + ' />');
+			
+		// audio
+		} else if (currentStepInfo.img.indexOf(".mp3") != -1) {
+			alt = alt != "" ? ' title="' + alt + '"' : "";
+			mediaInfo.push('<div class="stepAudio" ' + alt + '></div>', "loadAudio");
+			
+		// video
+		} else {
+			alt = alt != "" ? ' title="' + alt + '"' : "";
+			mediaInfo.push('<div class="panel inline"><div class="stepVideo" ' + alt + '></div></div>', "loadVideo");
+		}
+	} else {
+		mediaInfo.push("");
+	}
+	
+	return mediaInfo;
+}
+
+function loadVideo($video, src) {
+	var w = "100%", h = "100%";
+	if (src.indexOf("//www.youtube.com") != -1 || src.indexOf("//youtu") != -1 || src.indexOf("vimeo.com") != -1) {
+		// youtube/vimeo videos won't trigger mediaMetadata() from mediaPlayer.js so size needs to be set initially
+		if ($video.closest(".overviewStep").length > 0 || smallScreen == true) {
+			w = 200; h = 150;
+		} else {
+			w = 320; h = 240;
+		}
+		
+	}else {
+		$video.css("visibility", "hidden");
+	}
+	
+	$video.mediaPlayer({
+		type	:"video",
+		source	:src,
+		width	:w,
+		height	:h,
+		pageName:"decisionTemplate"
+	});
+}
+
+
+function loadAudio($audio, src) {
+	$audio.mediaPlayer({
+		type	:"audio",
+		source	:src,
+		width	:"100%",
+		pageName:"decisionTemplate"
+	});
+}
+
+
+function mediaMetadata(video, dimensions) {
+	var maxW = 320,
+		maxH = 240,
+		imgW = dimensions[0],
+		imgH = dimensions[1];
+	
+	if ($(video).closest(".overviewStep").length > 0 || smallScreen == true) {
+		maxW = 200;
+		maxH = 150;
+	}
+	
+	if (imgW > maxW) {
+		var scale = maxW / imgW;
+		imgW = imgW * scale;
+		imgH = imgH * scale;
+	}
+	if (imgH > maxH) {
+		var scale = maxH / imgH;
+		imgH = imgH * scale;
+		imgW = imgW * scale;
+	}
+	imgW = Math.round(imgW);
+	imgH = Math.round(imgH);
+	
+	var $stepVideo = $(video).closest(".stepVideo")
+		.css({
+			"width"	: imgW + "px",
+			"height": imgH + "px"
+		});
+	
+	$(window).resize();
+	$stepVideo.css("visibility", "visible");
 }
 
 
@@ -949,6 +1101,14 @@ function showDecision(dec) {
 	
 	$overviewHolder.append(string);
 	
+	$overviewHolder.find(".stepAudio").each(function() {
+		loadAudio($(this), $(this).data("src"));
+	});
+	
+	$overviewHolder.find(".stepVideo").each(function() {
+		loadVideo($(this), $(this).data("src"));
+	});
+	
 	$(".extraInfo").hide();
 	
 	// link toggles extraInfo in and out
@@ -983,19 +1143,32 @@ function createDecStr(dec, type) {
 	// add details of each step in decision to string
 	for (var i=0; i<decisionHistory[dec].length; i++) {
 		var thisStep = findStep(decisionHistory[dec][i].id),
-			img = "";
+			media = "";
 		
 		if (type == "html") {
 			string += '<div class="overviewStep">';
 
-			// if the step has an image, get the tag ready to insert
+			// if the step has an image, audio or video get the tag ready to insert
 			if (thisStep.img != undefined && thisStep.img != "") {
-				var alt = "";
-				if (thisStep.imgTip != undefined && thisStep.imgTip != "") {
-					alt = ' alt="' + thisStep.imgTip + '"';
+				var alt = thisStep.imgTip != undefined && thisStep.imgTip != "" ? thisStep.imgTip : "";
+				
+				// image
+				if (thisStep.img.indexOf(".jpeg") != -1 || thisStep.img.indexOf(".jpg") != -1 || thisStep.img.indexOf(".gif") != -1 || thisStep.img.indexOf(".png") != -1) {
+					alt = alt != "" ? ' alt="' + alt + '"' : "";
+					media = '<img src="' + evalURL(thisStep.img) + '"' + alt + ' class="stepImg" />';
+					
+				// audio
+				} else if (thisStep.img.indexOf(".mp3") != -1) {
+					alt = alt != "" ? ' title="' + alt + '"' : "";
+					media = '<div class="stepAudio" ' + alt + ' data-src="' + thisStep.img + '"></div>';
+					
+				// video
+				} else {
+					alt = alt != "" ? ' title="' + alt + '"' : "";
+					media = '<div class="stepVideo" ' + alt + ' data-src="' + thisStep.img + '"></div>';
 				}
-				var css = ' class="stepImg"';
-				img = '<img src="' + eval(thisStep.img) + '"' + alt + ' class="stepImg" />';
+			} else {
+				mediaInfo.push("");
 			}
 		}
 		
@@ -1005,7 +1178,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + img + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1057,7 +1230,7 @@ function createDecStr(dec, type) {
 				if (thisStep.faIcon != undefined && thisStep.faIcon != "") {
 					icon = "fa-" + thisStep.faIcon;
 				}
-				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + img + addLineBreaks(thisStep.text) + '</div>';
+				string += '<div><span class="fa ' + icon + ' fa-fw"/>' + media + addLineBreaks(thisStep.text) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1074,7 +1247,7 @@ function createDecStr(dec, type) {
 				string += '\n' + allParams.resultString + ':';
 			}
 			if (type == "html") {
-				string += img + addLineBreaks(thisStep.text) + '</div>';
+				string += media + addLineBreaks(thisStep.text) + '</div>';
 			} else {
 				string += '\n' + thisStep.text;
 			}
@@ -1164,7 +1337,7 @@ function setUpSection(section, $step) {
 							// use font awesome icon
 							$section.find("h3").prepend('<span class="sectionIcon fa ' + allSections[i].img + '" title="' + allSections[i].name + '"></span>');
 						} else {
-							$section.find("h3").prepend('<img class="sectionIcon" src="' + eval(allSections[i].img) + '" alt="' + allSections[i].name + '"/>');
+							$section.find("h3").prepend('<img class="sectionIcon" src="' + evalURL(allSections[i].img) + '" alt="' + allSections[i].name + '"/>');
 						}
 						
 					}
@@ -1191,7 +1364,7 @@ function setUpSection(section, $step) {
 									if (allSections[i].img.substr(0,3) == "fa-") {
 										$sectionDialog.parent().find(".ui-dialog-title").prepend('<span class="sectionIcon fa ' + allSections[i].img + '" title="' + allSections[i].name + '"/>');
 									} else {
-										$sectionDialog.parent().find(".ui-dialog-title").prepend('<img class="sectionIcon" src="' + eval(allSections[i].img) + '" alt="' + allSections[i].name + '"/>');
+										$sectionDialog.parent().find(".ui-dialog-title").prepend('<img class="sectionIcon" src="' + evalURL(allSections[i].img) + '" alt="' + allSections[i].name + '"/>');
 									}
 								}
 							})
@@ -1256,11 +1429,18 @@ function showHideHolders($show) {
 	
 	$show.show();
 	
+	if ($(".stepAudio audio, .stepVideo video").length > 0) {
+		$(".stepAudio audio, .stepVideo video").each(function() {
+			this.pause();
+		});
+	}
+	
 	// remove section div if not required
 	if ($show != $stepHolder) {
 		$(".section").remove();
 	} else {
 		setUpSection(currentStepInfo.section, $stepHolder.children(".step"));
+		$(window).resize();
 	}
 	
 	setFooterPosition();
@@ -1346,6 +1526,17 @@ function addLineBreaks(text) {
 		
 		return newText;
 	}
+}
+
+function evalURL(url) {
+    if (url == null)
+        return null;
+    var trimmedURL = $.trim(url);
+    if (trimmedURL.indexOf("'") == 0 || trimmedURL.indexOf("+") >= 0) {
+        return eval(url)
+    } else {
+        return url;
+    }
 }
 
 $(document).ready(init);
