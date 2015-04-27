@@ -121,6 +121,12 @@
 				$("#transcriptHolder").remove();
 			}
 			
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$("#imgCaption").html(x_currentPageXML.getAttribute("caption"));
+			} else {
+				$("#imgCaption").remove();
+			}
+			
 			if (hidePanel == "true") {
 				$panel
 					.addClass("noBorder")
@@ -179,6 +185,9 @@
 			var $pageImg = $("#pageImg");
 			if ($("#transcriptHolder").length > 0) {
 				$("#transcript").width($pageImg.width());
+			}
+			if ($("#imgCaption").length > 0) {
+				$("#imgCaption").width($pageImg.width());
 			}
 			textGraphics.setUpMagnifier();
 			textGraphics.loadAudio();
@@ -255,6 +264,12 @@
 		margin-top:	10px;
 	}
 	
+	#imgCaption {
+		padding-top:	5px;
+		font-weight:	bold;
+		text-align:		right;
+	}
+	
 </style>
 
 <div id="pageContents">
@@ -263,6 +278,7 @@
 		<div class="panel inline">
 			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
+			<div id="imgCaption"></div>
 			<div id="transcriptHolder">
 				<div id="transcript"></div>
 				<button id="transcriptBtn"></button>
