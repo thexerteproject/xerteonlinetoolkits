@@ -300,6 +300,10 @@ function parseContent(pageIndex){
 				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 			}
 			
+			if (this.nodeName == 'pdf'){
+				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="400"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+			}
+			
 			if (this.nodeName == 'navigator'){
 			
 				if ($(this).attr('type') == 'Tabs'){
