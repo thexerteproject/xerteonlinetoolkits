@@ -42,9 +42,6 @@ define("INDEX_WORKSPACE_TITLE","My Projects");
 
 define("INDEX_CREATE","Create a new project");
 
-
-define("INDEX_TEMPLATES","Here are the templates currently available.");
-
 define("INDEX_SORT","Sort your files");
 
 define("INDEX_SORT_A","Alphabetical A-Z");
