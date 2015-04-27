@@ -174,10 +174,6 @@ Folder popup is the div that appears when creating a new folder
         <div class="ui-layout-north">
             <div class="content">
                 <div class="file_mgt_area_top">
-                    <p class="heading">
-                        <?PHP echo apply_filters('page_title', INDEX_WORKSPACE_TITLE); ?>
-                    </p>
-
                     <div class="file_mgt_area_buttons">
                         <div class="file_mgt_area_middle_button_left">
                             <button type="button" class="xerte_button" id="newfolder" onclick="javascript:make_new_folder()">
