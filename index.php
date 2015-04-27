@@ -148,9 +148,9 @@ Folder popup is the div that appears when creating a new folder
     <div class="content" id="mainHeader">
         <div class="topbar">
             <div
-                style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
             </div>
-            <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left"/>
+            <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
         </div>
         <div class="userbar">
             <div style="float:left;"><?php display_language_selectionform("general"); ?></div>
