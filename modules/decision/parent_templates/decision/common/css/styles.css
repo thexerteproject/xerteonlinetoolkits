@@ -67,6 +67,19 @@ p {
 	max-height:	250px;
 }
 
+.stepAudio {
+	clear:			both;
+	padding-top:	10px;
+	padding-bottom:	10px;
+}
+
+.stepVideo {
+	float:				right;
+	padding:			2px;
+	margin-left:		10px;
+	margin-bottom:		10px;
+}
+
 #submitBtn {
 	clear:	both;
 }
@@ -203,6 +216,14 @@ img.sectionIcon {
 	padding-top:	10px;
 }
 
+#stepHolder p:first-of-type {
+	margin-top:	0px;
+}
+
+#stepHolder p:last-of-type {
+	margin-bottom:	0px;
+}
+
 #stepHolder .radioAnswers {
 	clear:			left;
 	padding:		10px 0px 0px;
@@ -316,6 +337,23 @@ img.sectionIcon {
 #overviewHolder .stepImg {
 	max-width:	200px;
 	max-height:	200px;
+}
+
+#overviewHolder .stepAudio {
+	clear:			none;
+	float:			right;
+	padding:		2px;
+	margin-left:	10px;
+	margin-bottom:	10px;
+	width:			25px;
+}
+
+#overviewHolder .stepAudio .mejs-controls div {
+	display:	none;
+}
+
+#overviewHolder .stepAudio .mejs-controls .mejs-play, #overviewHolder .stepAudio .mejs-controls .mejs-pause {
+	display:	block;
 }
 
 

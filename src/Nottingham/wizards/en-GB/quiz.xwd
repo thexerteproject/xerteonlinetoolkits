@@ -44,6 +44,8 @@
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" />
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
 
+	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <video label="Video" type="media"  optional="true"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -75,7 +77,7 @@
 
   </question>
 
-  <option menuItem="Option">
+  <option menuItem="Option" icon="icBullet">
 
     <text label="Option" type="TextArea"  height="100"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>
