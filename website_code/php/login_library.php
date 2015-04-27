@@ -23,7 +23,6 @@
  *
  * @author Patrick Lockley code moved to this library & Simon Atack
  * @version 1.0
- * @copyright Copyright (c) 2008,2009,2012 University of Nottingham
  * @package
  */
 require_once(dirname(__FILE__) . "/language_library.php");

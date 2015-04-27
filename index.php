@@ -58,8 +58,6 @@ recycle_bin();
     <?php head_start(); ?>
     <!--
 
-    University of Nottingham Xerte Online Toolkits
-
     HTML to use to set up the template management page
 
     Version 1.0
