@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- FLASH PAPER================================ -->
-  <flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
+  <flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Flash Paper SWF File" type="media"/>

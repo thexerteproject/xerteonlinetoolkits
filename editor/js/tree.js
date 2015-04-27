@@ -34,24 +34,19 @@ var EDITOR = (function ($, parent) {
         do_buttons();
         build(xml);
 
-        jQuery(window).bind('beforeunload', function (e)
-        {
-            //save my data
-            savepreview();
-            try{
-                bunload();
-            }
-            catch(err)
-            {
-                // ignore
-            }
-
-            e.returnValue = language.Alert.exitwizard.prompt;
-            return language.Alert.exitwizard.prompt;
-            //return false;
-        });
+        window.onbeforeunload = unloadFunction;
     },
 
+    unloadFunction = function() {
+        //save my data
+        savepreviewasync(false);
+        bunload();
+
+        //e.returnValue = language.Alert.exitwizard.prompt;
+        //return language.Alert.exitwizard.prompt;
+        //return false;
+        return null;
+    }
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
@@ -251,7 +246,12 @@ var EDITOR = (function ($, parent) {
         });
     },
 
-    savepreview = function () {
+    savepreview = function()
+    {
+        savepreviewasync(true);
+    },
+
+    savepreviewasync = function (async) {
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -268,7 +268,9 @@ var EDITOR = (function ($, parent) {
                 //    alert(status + ': ' + error);
                 //},
                 dataType: "json",
-                type: "POST"
+                type: "POST",
+                cache:false,
+                async:async
             }
         ).done(function() {
                 $('#loader').hide();
@@ -627,6 +629,15 @@ var EDITOR = (function ($, parent) {
             attribute_name = node_options['normal'][i].name;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
 
+            // The language attribute deserves some special treatment
+            // If the attribute exists, but the value is an empty string, replace it withe the currently chosen language
+            if (attribute_name == 'language')
+            {
+                if (attribute_value.found && attribute_value.value=="")
+                {
+                    attribute_value.value = language.$code;
+                }
+            }
             if (attribute_value.found)
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);

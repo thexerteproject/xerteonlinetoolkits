@@ -85,6 +85,7 @@ recycle_bin();
     <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css" media="screen" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
     <?PHP
     echo "

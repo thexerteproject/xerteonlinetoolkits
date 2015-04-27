@@ -16,6 +16,8 @@
 
 	define("SHARING_CURRENT","This template is currently shared with : ");
 
+    define("SHARING_CREATOR", "Creator");
+
 	define("SHARING_EDITOR","Editor");
 
 	define("SHARING_READONLY","Read only");
