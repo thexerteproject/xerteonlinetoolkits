@@ -55,8 +55,6 @@ function mgt_page($xerte_toolkits_site, $extra)
 
             <!--
 
-            University of Nottingham Xerte Online Toolkits
-
             HTML to use to set up the login page
             The {{}} pairs are replaced in the page formatting functions in display library
 
@@ -190,8 +188,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 <!--
 
-                University of Nottingham Xerte Online Toolkits
-
                 HTML to use to set up the login page
                 The {{}} pairs are replaced in the page formatting functions in display library
 
@@ -225,10 +221,10 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 -->
                 <div class="topbar">
-                    <div style="width:50%; height:100%; float:right; position:relative; background-image:url(http://www.nottingham.ac.uk/toolkits/website_code/images/UofNLogo.jpg); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                    <div style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
                         <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo EXTEND_LOGOUT; ?></button></p>
                     </div>
-                    <img src="website_code/images/xerteLogo.jpg" style="margin-left:10px; float:left" />
+                    <img src="website_code/images/logo.png" style="margin-left:10px; float:left" />
                 </div>
 
                 <!--

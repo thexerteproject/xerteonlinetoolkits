@@ -27,7 +27,6 @@ require_once(dirname(__FILE__) . "/../dUnzip2.inc.php");
  *
  * @author Patrick Lockley, Tom Reijnders
  * @version 1.1
- * @copyright Copyright (c) 2008,2009,2011 University of Nottingham
  * @package
  */
 require_once(dirname(__FILE__) . '/util.php');

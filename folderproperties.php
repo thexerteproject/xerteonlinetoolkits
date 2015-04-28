@@ -30,8 +30,6 @@ _load_language_file("/folderproperties.inc");
 
 <!-- 
 
-University of Nottingham Xerte Online Toolkits
-
 Folder properties HTML page 
 Version 1.0
 
