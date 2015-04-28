@@ -115,15 +115,6 @@ if (!database_connect($xerte_toolkits_site)) {
 
 $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
-/**
- * Access the database to get the variables
- * @version 1.0
- * @author Patrick Lockley
- * @copyright 2008,2009 University of Nottingham
- */
-/**
- * Include any script that is used for configuration - for moodle this might be e.g. '/xampp/htdocs/moodle/config.php'.
- */
 if ($row['integration_config_path'] != "") {
     require_once($row['integration_config_path']);
 }

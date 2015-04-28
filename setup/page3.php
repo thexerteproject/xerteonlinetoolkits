@@ -45,11 +45,11 @@ echo "<p>The organisational logo is (The logo in the top right, as you can curre
 
 echo "<p>The Welcome message is (number 1 on the diagram)<textarea name=\"welcome_message\">Welcome to Xerte online toolkits</textarea></p>";
 
-echo "<p>The site text is (number 2 on the diagram)<textarea name=\"site_text\">Welcome to the toolkits front page, developed by the University of Nottingham</textarea></p>";
+echo "<p>The site text is (number 2 on the diagram)<textarea name=\"site_text\">Welcome to the toolkits front page, developed by the Apereo Foundation</textarea></p>";
 
 echo "<p>The news text is (number 5 on the diagram)<textarea name=\"news_text\"><p class=\"news_title\">Other resources</p><p class=\"news_story\"><a href=\"\">Site 1</a></p><p class=\"news_story\"><a href=\"\">Site 2</a></p><p class=\"news_story\"><a href=\"\">Site 3</a></p></textarea></p>";	
 
-echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright University of Nottingham 2008 - 2012</textarea></p>";	
+echo "<p>The copyright message (number 6 on the diagram) is <textarea name=\"copyright\">Copyright Apereo Foundation 2015</textarea></p>";	
 
 echo "<p>The demonstration page (linked to from number 7 on the diagram) URL is <textarea name=\"demonstration_page\">modules/xerte/training/toolkits.htm</textarea></p>";	
 

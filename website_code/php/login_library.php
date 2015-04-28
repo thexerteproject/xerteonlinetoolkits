@@ -23,7 +23,6 @@
  *
  * @author Patrick Lockley code moved to this library & Simon Atack
  * @version 1.0
- * @copyright Copyright (c) 2008,2009,2012 University of Nottingham
  * @package
  */
 require_once(dirname(__FILE__) . "/language_library.php");
@@ -136,12 +135,12 @@ END;
 END;
 
     echo '<div class="topbar">';
-    echo '<div style="width:50%; height:100%; float:right; position:relative; background-image:url(' . $xerte_toolkits_site->organisational_logo . '); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">';
+    echo '<div style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">';
     echo '     <p style="float:right; margin:0px; color:#a01a13;"><a href="javascript:logout()" style="color:#a01a13">';
   //     echo INDEX_LOG_OUT;
     echo '      </a></p>';
     echo '  </div>';
-    echo '  <img src="' . $xerte_toolkits_site->site_logo . '" style="margin-left:10px; float:left" />';
+    echo '  <img src="website_code/images/logo.png" style="margin-left:10px; float:left" />';
     echo '</div>';
   print <<<END
 
