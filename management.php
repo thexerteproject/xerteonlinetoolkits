@@ -68,8 +68,8 @@ function mgt_page($xerte_toolkits_site, $extra)
         <body>
 
             <div class="topbar">
-                <img src="<?PHP echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
-                <img src="<?PHP echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
+                <img src="website_code/images/logo.png" style="margin-left:10px; float:left" />
+                <img src="website_code/images/apereoLogo.png" style="margin-right:10px; float:right" />
             </div>
 
 						

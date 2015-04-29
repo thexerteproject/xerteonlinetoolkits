@@ -58,8 +58,6 @@ recycle_bin();
     <?php head_start(); ?>
     <!--
 
-    University of Nottingham Xerte Online Toolkits
-
     HTML to use to set up the template management page
 
     Version 1.0
@@ -85,6 +83,7 @@ recycle_bin();
     <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css" media="screen" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
     <?PHP
     echo "
@@ -147,9 +146,9 @@ Folder popup is the div that appears when creating a new folder
     <div class="content" id="mainHeader">
         <div class="topbar">
             <div
-                style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
             </div>
-            <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left"/>
+            <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
         </div>
         <div class="userbar">
             <div style="float:left;"><?php display_language_selectionform("general"); ?></div>
@@ -175,10 +174,6 @@ Folder popup is the div that appears when creating a new folder
         <div class="ui-layout-north">
             <div class="content">
                 <div class="file_mgt_area_top">
-                    <p class="heading">
-                        <?PHP echo apply_filters('page_title', INDEX_WORKSPACE_TITLE); ?>
-                    </p>
-
                     <div class="file_mgt_area_buttons">
                         <div class="file_mgt_area_middle_button_left">
                             <button type="button" class="xerte_button" id="newfolder" onclick="javascript:make_new_folder()">
@@ -248,8 +243,6 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="header">
         <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
-
-        <p class="general_t"><?PHP echo INDEX_TEMPLATES; ?></p>
     </div>
     <div class="content">
         <div class="new_template_area_middle">

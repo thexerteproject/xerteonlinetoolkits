@@ -22,7 +22,6 @@
 
 	function workspace_templates_menu(){
 	
-		echo "<p class=\"header\"><span>My projects</span></p>";	
 		echo "<div class=\"menu_holder\"><div class=\"menu_button\"><a href=\"javascript:workspace_templates_template()\">" . WORKSPACE_LIBRARY_MY . "</a></div>";
 		echo "<div class=\"menu_button\"><a href=\"javascript:shared_templates_template()\">" . WORKSPACE_LIBRARY_SHARED . "</a></div>";
 		echo "<div class=\"menu_button\"><a href=\"javascript:public_templates_template()\">" . WORKSPACE_LIBRARY_PUBLIC . "</a></div>";

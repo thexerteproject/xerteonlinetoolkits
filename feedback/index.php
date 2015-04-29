@@ -53,8 +53,8 @@ $edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" .
 <body>
 
     <div class="topbar">
-        <img src="<?php echo $edit_site_logo;?>" style="margin-left:10px; float:left" />
-        <img src="<?php echo $edit_organisational_logo;?>" style="margin-right:10px; float:right" />
+        <img src="website_code/images/logo.png" style="margin-left:10px; float:left" />
+        <img src="website_code/images/apereoLogo.png" style="margin-right:10px; float:right" />
     </div>
     <div class="mainbody"><?PHP
 	
