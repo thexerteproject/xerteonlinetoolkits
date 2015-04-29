@@ -116,7 +116,13 @@ optional: caption captionPosV captionPosH
 				} else {
 					// if the image is on top of the media the initial size might not be right - check and resize if it's not
 					if ($slide.closest(".mediaHolder").length != 0 && $slide.closest(".mediaHolder").width() != $slide.width()) {
-						eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+						if ($slide.closest(".audioImgHolder").find(".audioImg")[0].complete == false) {
+							$slide.closest(".audioImgHolder").find(".audioImg").load(function() {
+								eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+							});
+						} else {
+							eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+						}
 					}
 					$slide.show();
 				}

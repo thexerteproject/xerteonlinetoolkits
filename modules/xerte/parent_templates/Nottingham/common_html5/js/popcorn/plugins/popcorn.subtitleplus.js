@@ -35,7 +35,7 @@ optional: end
 	Popcorn.plugin("subtitleplus", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target, $txt;
+		var $target, $txt, position;
 		
 		return {
 			_setup: function(options) {
@@ -48,6 +48,12 @@ optional: end
 						$parent = $(this.media).parent();
 					} else {
 						$parent = $(this.media).closest(".mediaHolder").find(".audioImgHolder");
+					}
+					
+					if ($parent.hasClass("youTube")) {
+						position = "top";
+					} else {
+						position = options.position;
 					}
 					
 					// is this the subtitle holder? if so, just build holder div - no subtitle to add to it yet
@@ -79,7 +85,7 @@ optional: end
 				if ($txt != undefined) {
 					$target
 						.removeClass("bottom top")
-						.addClass(options.position);
+						.addClass(position);
 					
 					$txt.show();
 				}
