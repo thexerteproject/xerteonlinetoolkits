@@ -164,7 +164,7 @@
 						
 						if (opts.type == "video") {
 							mediaElement.addEventListener("loadedmetadata", function() {
-								if (templateLocation.indexOf("modules/decision") != -1) { // decision tree template
+								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
 								} else {
 									try {

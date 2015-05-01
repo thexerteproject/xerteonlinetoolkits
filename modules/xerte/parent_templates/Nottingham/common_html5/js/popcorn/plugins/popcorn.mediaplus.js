@@ -54,12 +54,11 @@ language: transcriptBtnTxt
 					}
 					
 					// load media and then sort & set up popcorn synch points
-					var parentPageType = eval(parent.x_currentPageXML.nodeName);
-					
-					parentPageType.loadMedia($target, mediaType, options);
+					var parentPageType = eval(parent.x_currentPageXML.nodeName),
+						popcornInstance = parentPageType.loadMedia($target, mediaType, options);
 					
 					if (options.childNodes != undefined) {
-						parentPageType.sortPopcorn(options.childNodes, options.target, true, "#" + options.target + " .popcornMedia " + mediaType);
+						parentPageType.sortPopcorn(options.childNodes, options.target, true, popcornInstance);
 					}
 					
 					if (options.line == "true") {
