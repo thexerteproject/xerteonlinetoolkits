@@ -557,6 +557,7 @@ function project_info($template_id){
 function media_quota_info($template_id)
 {
     global $xerte_toolkits_site;
+    $quota=0;
 
     if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
 
