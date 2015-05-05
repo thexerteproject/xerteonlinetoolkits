@@ -60,7 +60,19 @@ function iframe_check_upload(){
 
 			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
 
-			alert(PHP_ERROR + " - " + string);
+            $("#errorpopup").html(string);
+            $("errorpopup").dialog({
+                dialogClass: "no-close",
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                ]
+            });
+			//alert(PHP_ERROR + " - " + string);
 
 		}
 
@@ -86,11 +98,23 @@ function iframe_check(){
 
 			clearInterval(iframe_interval);
 
-			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+			string = window["upload_iframe"].document.body.innerHTML;
 
 			string = string.substr(0,string.length-4);
 
-			alert(string);
+            $("#errorpopup").html(string);
+            $("#errorpopup").dialog({
+                dialogClass: "no-close",
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                ]
+            });
+			//alert(string);
 			
 			if(typeof window_reference==="undefined"){
                 
@@ -109,9 +133,21 @@ function iframe_check(){
 
 			clearInterval(iframe_interval);
 
-			string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">")+1);
+			string = window["upload_iframe"].document.body.innerHTML;
 
-			alert(PHP_ERROR + " - " + string);
+            $("#errorpopup").html(string);
+            $("#errorpopup").dialog({
+                dialogClass: "no-close",
+                buttons: [
+                    {
+                        text: "OK",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                ]
+            });
+			//alert(PHP_ERROR + " - " + string);
 
 		}
 

@@ -32,5 +32,7 @@
 
     define("IMPORT_NOT_WRITABLE", "The folder needs to writable.");
 
+    define("IMPORT_FAILED", "Import failed with a generic error. Is the file too large?");
+
 
 ?>

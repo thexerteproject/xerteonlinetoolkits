@@ -75,6 +75,7 @@ $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'
 $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
+$offline_includes="";
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -158,7 +159,6 @@ if ($fullArchive) {
             export_folder_loop($xerte_toolkits_site->root_file_path . "offline/");
             copy_extra_files();
 
-            $offline_includes="";
              // Create offline language file and replacement text
             $language = $xml->getLanguage();
             create_offline_file("langxmlstr", $xerte_toolkits_site->root_file_path . "languages/engine_" . $language . ".xml", "offline/offline_engine_" . $language . ".js");
