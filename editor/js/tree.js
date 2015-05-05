@@ -468,8 +468,28 @@ var EDITOR = (function ($, parent) {
         return true; // Successful
     },
 
+    /** showNodeData has to be done in two steps:
+     * 1. First destroy all existing editor, to free up shared resources between the editors
+     * 2. Build the new data
+     *
+     * Step 1. needs to be doen cerfully when switching between pages, because if we destroy the
+     * editor too soon, the blur event doesn't fire!!!
+     *
+     * So, split the function in 2 parts
+     * 1. function with the original name, showNodeData that will call buildPage with a timeout
+     * 2. function buildPage that will destroy the editor, and when done, will build the new form (basically the functionallity of the old showNodeData
+     *
+     */
+
+    showNodeData = function(key) {
+        setTimeout(function()
+        {
+            buildPage(key)
+        }, 500);
+    }
+
     // Refresh the page when a new node is selected
-    showNodeData = function (key) {
+    buildPage = function (key) {
 
 
         // Cleanup all current CKEDITOR instances!

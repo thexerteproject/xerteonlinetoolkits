@@ -43,6 +43,12 @@ Version 1.0
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="editor/css/jquery-ui.css">
+<link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 
 <?php
 _include_javascript_file("website_code/scripts/template_management.js");
@@ -72,7 +78,8 @@ Hidden Iframe to allow for ajax file uploads
 -->
 
 <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
-
+<!--- error widget -->
+<div id="errorpopup" title="PHP_ERROR" styl="display:none"></div>
 
 <div class="properties_main">
             <div class="main_area">
