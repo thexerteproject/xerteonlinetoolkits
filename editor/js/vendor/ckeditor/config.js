@@ -25,7 +25,7 @@ CKEDITOR.editorConfig = function( config ) {
     ];
 
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image2,codemirror,oembed,xotmarkword,fontawesome';
+    config.extraPlugins = 'dialog,widget,extmathjax,image2,codemirror,oembed,xotlink,xotmarkword,fontawesome';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
