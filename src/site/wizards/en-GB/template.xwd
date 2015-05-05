@@ -111,7 +111,8 @@
 		<name type="TextInput" label="Pane Title"/>
 
 		<newNodes>
-
+			
+			<pdf><![CDATA[<pdf name="Name" url="Select File..."/>]]></pdf>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
