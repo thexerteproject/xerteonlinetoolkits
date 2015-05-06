@@ -166,12 +166,10 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
-	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
-    <link label="Specified URL" type="textInput"/>
-	  
+	
     <url label="Image" type="media" optional="true"/>
-    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100" optional="true"/>
+    <tip label="Image Tooltip" type="textInput" optional="true"/>
+    <synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100" optional="true"/>	
     <initObject label="Init Object" type="TextInput" optional="true"/>
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
 
@@ -227,10 +225,23 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+      <synchPoint><![CDATA[<synchPoint name="name" text="Content for the pane" align="Top" synch="0"/>]]></synchPoint>
     </newNodes>
 
-  </audioSlideshow><bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
+  </audioSlideshow><synchPoint menuItem="Synch Point" icon="icBullet" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+    <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
+	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+    <link label="Specified URL" type="textInput"/>
+	  
+    <url label="Image" type="media" optional="true"/>
+    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100"/>
+    
+
+  </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox" width="100"/>
@@ -723,7 +734,7 @@
 	<windowWidth label="Window Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
 
-  </embedDiv><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true">
+  </embedDiv><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Flash Paper SWF File" type="media"/>
@@ -996,10 +1007,19 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the list item"/>]]></nestedPage>
+      <listItem><![CDATA[<listItem name="name" text="Content for the list item"/>]]></listItem>
     </newNodes>
 
-  </list><map icon="icMap" menu="Misc" menuItem="Google Map" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map." thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
+  </list><listItem menuItem="Nested Page" icon="icBullet" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+    <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
+	  
+    <url label="Image" type="media" optional="true"/>
+    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+  </listItem><map icon="icMap" menu="Misc" menuItem="Google Map" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map." thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>
@@ -1267,6 +1287,7 @@
 		<page label="Go to Page ID" type="TextInput" optional="true"/>
 		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
+		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 		
 	</synchMCQOption><synchWebpage menuItem="Embed Web Page" icon="icPageWorld" remove="true">
 		
@@ -1542,7 +1563,7 @@
   </perspectives><movie menuItem="Video" icon="icPageWhiteFilm" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
-    <src label="Video File" type="media"/>
+    <src label="Video" type="media"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<img label="Image" type="media" optional="true"/>
     <tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -1550,7 +1571,7 @@
   </movie><sound menuItem="Sound" icon="icSound" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
-    <src label="Sound File" type="media"/>
+    <src label="Sound" type="media"/>
 	
     <img label="Image" type="media" optional="true"/>
     <tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -1998,7 +2019,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-    <url label="SWF File" type="media"/>
+    <url label="SWF" type="media"/>
     
     <tip label="Image Description" type="TextInput"/>
 
@@ -2016,7 +2037,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
-    <url label="Video File" type="media"/>
+    <url label="Video" type="media"/>
     <tip label="Video Description" type="TextInput"/>	
     <reset label="Reset on Completion" type="Checkbox" defaultValue="false"/>
 	
@@ -2028,7 +2049,7 @@
     <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="enter the end frame in seconds"/>
     <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" deprecated="Replaced by separate width and height options"/>
     <width label="Video Width" type="textInput" defaultValue="320" optional="true"/>
-    <height label="Video Heigth" type="textInput" defaultValue="240" optional="true"/>
+    <height label="Video Height" type="textInput" defaultValue="240" optional="true"/>
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	
     <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -2052,10 +2073,21 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></nestedPage>
+      <thumbnailImage><![CDATA[<thumbnailImage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></thumbnailImage>
     </newNodes>
 
-  </thumbnailViewer><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating an interactive timeline." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
+  </thumbnailViewer><thumbnailImage menuItem="Nested Page" icon="icBullet" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+
+	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+    <link label="Specified URL" type="textInput"/>
+	  
+    <url label="Image" type="media"/>
+    <tip label="Image Description" type="textInput" optional="true" defaltValue="Enter a Description for Accessibility"/>
+
+  </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating an interactive timeline." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -2106,7 +2138,7 @@
   </title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Page that plays an audio file with synchronized transcript" icon="icTranscript" thumb="thumbs/transcriptReader.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <sound label="SoundFile" type="Media"/>
+    <sound label="Sound" type="Media"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 	
@@ -2125,7 +2157,7 @@
   </transcriptReader><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <url label="Movie" type="Media"/>
+    <url label="Video" type="Media"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <pause label="Pause on Synchpoints" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
     <erase label="Erase" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
@@ -2140,10 +2172,22 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+      <videoSynchPoint><![CDATA[<videoSynchPoint name="name" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
     </newNodes>
 
-  </videoSynch><wiki menuItem="Wikipedia Article" menu="Misc" hint="Include Wikipedia articles in your presentation." thumb="thumbs/wiki.jpg" icon="icGreenFeed" remove="true" deprecated="This page is no longer supported">
+  </videoSynch><videoSynchPoint menuItem="Nested Page" icon="icBullet" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+    <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
+	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+    <link label="Specified URL" type="textInput"/>
+	  
+    <url label="Image" type="media" optional="true"/>
+    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100"/>
+    
+  </videoSynchPoint><wiki menuItem="Wikipedia Article" menu="Misc" hint="Include Wikipedia articles in your presentation." thumb="thumbs/wiki.jpg" icon="icGreenFeed" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>
