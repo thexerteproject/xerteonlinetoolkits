@@ -374,19 +374,6 @@ function file_need_save(){
                         function(){$(this).detach()}) ; 
                     }, 3000)
             });
-            /*var response = confirm(result[0]);
-
-            if(response){
-
-                var url="website_code/php/versioncontrol/update_file.php";
-
-                xmlHttp.open("post",url,true);
-                xmlHttp.onreadystatechange=file_version_sync;
-                xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xmlHttp.send('file_path=' + result[1] + "&template_id=" + result[2]);
-
-            }*/
-
     }
 
 }
