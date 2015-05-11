@@ -27,7 +27,7 @@
  
 	define("TEMPLATE_CLOSE_EMAIL_SIGNATURE"," the Xerte Online toolkits team");
 
-	define("TEMPLATE_CLOSE_QUESTION","Would you like to publish your changes?");
+	define("TEMPLATE_CLOSE_QUESTION","Don't forget to publish your changes when they're ready!");
 
 
 ?>

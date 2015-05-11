@@ -364,10 +364,17 @@ function file_need_save(){
     if (xmlHttp.readyState==4){ 
 	
         result = xmlHttp.responseText.split("~*~");
-
-        if(xmlHttp.responseText!=""){
-
-            var response = confirm(result[0]);
+        $("<div class='notification' style='position:absolute;display:none' id='publish_notification'>"+result[0]+"</div>")
+            .insertAfter("#publish")
+            .fadeIn(1000,function() { 
+                $("#publish").addClass("highlight") ; 
+                window.setTimeout(function() { 
+                    $("#publish").removeClass("highlight");
+                    $("#publish_notification").fadeOut(1000,
+                        function(){$(this).detach()}) ; 
+                    }, 3000)
+            });
+            /*var response = confirm(result[0]);
 
             if(response){
 
@@ -378,9 +385,7 @@ function file_need_save(){
                 xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xmlHttp.send('file_path=' + result[1] + "&template_id=" + result[2]);
 
-            }
-
-        }
+            }*/
 
     }
 
