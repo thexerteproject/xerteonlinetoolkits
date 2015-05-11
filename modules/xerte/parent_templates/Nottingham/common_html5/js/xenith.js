@@ -40,6 +40,11 @@ var x_languageData  = [],
 if (typeof modelfilestrs == 'undefined')
 {
     modelfilestrs = [];
+    xot_offline = false;
+}
+else
+{
+    xot_offline = true;
 }
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;

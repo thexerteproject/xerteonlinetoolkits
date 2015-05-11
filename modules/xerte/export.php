@@ -202,7 +202,6 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.mcq.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\">xot_offline=true</script>\n";
         }
         else {
             foreach ($models as $model) {
