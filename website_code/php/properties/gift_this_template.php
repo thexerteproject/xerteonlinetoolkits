@@ -178,7 +178,7 @@ if(is_numeric($_POST['tutorial_id'])){
         $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ? ";
         $params = array($user_id, 'recyclebin');
 
-        $row_folder = db_fetch_one($query_for_root_folder, $params);
+        $row_folder = db_query_one($query_for_root_folder, $params);
         
         $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
         $params = array($new_template_id, $user_id, "creator", $row_folder['folder_id'], '');
