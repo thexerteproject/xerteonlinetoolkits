@@ -364,10 +364,14 @@ function file_need_save(){
     if (xmlHttp.readyState==4){ 
 	
         result = xmlHttp.responseText.split("~*~");
+        // Create a notification box (hidden)
         $("<div class='notification' style='position:absolute;display:none' id='publish_notification'>"+result[0]+"</div>")
+            // Fade it in next to the button
             .insertAfter("#publish")
             .fadeIn(1000,function() { 
+                // When fade-in is complete, highlight the button
                 $("#publish").addClass("highlight") ; 
+                // Then wait for 3 seconds and fade out/remove the notification
                 window.setTimeout(function() { 
                     $("#publish").removeClass("highlight");
                     $("#publish_notification").fadeOut(1000,
