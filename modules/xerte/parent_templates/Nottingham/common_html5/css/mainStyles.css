@@ -25,6 +25,13 @@ body {
 	margin:			0px;
 }
 
+p {
+    padding: 4px;
+    margin: 0;
+}
+
+
+
 #x_mainHolder {
 	width:		800px;
 	height:		600px;
@@ -245,6 +252,38 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 img {
 	vertical-align:	bottom;
 }
+
+figure
+{
+    margin: 5px;
+}
+span.cke_image_nocaption[align="left"],
+span.cke_image_nocaption[style*="float: left"],
+span.cke_image_nocaption[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+
+img[align="left"],
+img[style*="float: left"],
+img[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+img[align="right"],
+img[style*="float: right"],
+img[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
+span.cke_image_nocaption[align="right"],
+span.cke_image_nocaption[style*="float: right"],
+span.cke_image_nocaption[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
 
 img.centre {
 	display:		block;

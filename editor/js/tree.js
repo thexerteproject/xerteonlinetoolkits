@@ -50,14 +50,21 @@ var EDITOR = (function ($, parent) {
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
-            $("#shadow").show();
-			$("#insert_menu")
-				.css({
-					"top":	$(".pane-west").position().top + $(".pane-west .content").position().top,
-					"left":	$("#insert_button").position().left
-					})
-				.show();
-
+                // TOR 20150514, weird!!
+                // Chrome has a strange problem with font-awesome icons on buttons
+                // When you click the icon, the event is fired, and the menu is shown, but right after the menu is shown
+                // somehow it's hidden again.
+                // If you click on the button, but next to the icon, everything works fine
+                // By delaying showing the menu, everything works fine.
+                setTimeout(function() {
+                    $("#shadow").show();
+                    $("#insert_menu")
+                        .css({
+                            "top":	$(".pane-west").position().top + $(".pane-west .content").position().top,
+                            "left":	$("#insert_button").position().left
+                            })
+                        .show();
+                }, 20);
         },
 
         delete_page = function() {
@@ -70,20 +77,19 @@ var EDITOR = (function ($, parent) {
 
         buttons = $('<div />').attr('id', 'top_buttons');
         $([
-            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'editor/img/insert.png', id:'insert_button', click:insert_page},
-            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'editor/img/copy.png', id:'copy_button', click:duplicate_page},
-            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'editor/img/delete.gif', id:'delete_button', click:delete_page}
+            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
         ])
         .each(function(index, value) {
-            var button = $('<button>')
-                .attr('id', value.id)
-                .attr('title', value.tooltip)
-				.attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
-                .addClass("xerte_button_dark")
-                .click(value.click)
-                .append($('<img>').attr('src', value.icon).height(14))
-                .append(value.name);
-            buttons.append(button);
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .click(value.click)
+                    .attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
+                    .addClass("xerte_button")
+                    .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                buttons.append(button);
         });
 		
         $('.ui-layout-west .header').append(buttons);
@@ -100,9 +106,9 @@ var EDITOR = (function ($, parent) {
         // Save buttons
         buttons = $('<div />').attr('id', 'save_buttons');
         $([
-            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'editor/img/play.png', id:'preview_button', click:preview},
+            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
             //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'editor/img/publish.png', id:'publish_button', click:publish}
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish}
         ])
         .each(function(index, value) {
             var button = $('<button>')
@@ -113,7 +119,7 @@ var EDITOR = (function ($, parent) {
                     $('#loader').show();
                     setTimeout(function(){ value.click(e); }, 250);
                 })
-                .append($('<img>').attr('src', value.icon).height(14))
+                .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14))
                 .append(value.name);
             buttons.append(button);
         });
@@ -472,7 +478,7 @@ var EDITOR = (function ($, parent) {
      * 1. First destroy all existing editor, to free up shared resources between the editors
      * 2. Build the new data
      *
-     * Step 1. needs to be doen cerfully when switching between pages, because if we destroy the
+     * Step 1. needs to be done carefully when switching between pages, because if we destroy the
      * editor too soon, the blur event doesn't fire!!!
      *
      * So, split the function in 2 parts
@@ -594,7 +600,7 @@ var EDITOR = (function ($, parent) {
         for (var i=0; i<node_options['optional'].length; i++)
         {
             attribute_name = node_options['optional'][i].name;
-            attribute_label = "  " + node_options['optional'][i].value.label;
+            attribute_label = node_options['optional'][i].value.label;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
 
             if (!node_options['optional'][i].value.deprecated) {
@@ -611,7 +617,7 @@ var EDITOR = (function ($, parent) {
                     function (event) {
                         parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
                     })
-                    .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                    .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14))
                     .append(attribute_label);
                 if (node_options['optional'][i].value.tooltip)
                 {
@@ -783,8 +789,9 @@ var EDITOR = (function ($, parent) {
                         .click({key: currkey, node: item, defaultnode: new_nodes_default[i]}, function(event){
                             addSubNode(event);
                         })
-                        .append($('<img>').attr('src', 'editor/img/insert.png').height(14))
-                        .append("  " + buttonlabel);
+                        //.append($('<img>').attr('src', 'editor/img/insert.png').height(14))
+                        .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass("fa-lg").addClass("xerte-icon").height(14))
+                        .append(buttonlabel);
 
 
                     if (wizard_data[item].menu_options.advanced === 'true')
@@ -1201,8 +1208,8 @@ var EDITOR = (function ($, parent) {
     do_bottom_buttons = function () {
         buttons = $('<div />').attr('id', 'bottom_buttons');
         $([
-        {name:'', tooltip: language.btnMoveUp.$tooltip, icon:'editor/img/up.png', id:'up_button', click:up_btn},
-        {name:'', tooltip: language.btnMoveDown.$tooltip, icon:'editor/img/down.png', id:'down_button', click:down_btn}
+            {name:'', tooltip: language.btnMoveUp.$tooltip, icon:'fa-chevron-up', id:'up_button', click:up_btn},
+            {name:'', tooltip: language.btnMoveDown.$tooltip, icon:'fa-chevron-down', id:'down_button', click:down_btn}
         ])
         .each(function(index, value) {
         var button = $('<button>')
@@ -1210,8 +1217,7 @@ var EDITOR = (function ($, parent) {
             .attr('title', value.tooltip)
             .click(value.click)
             .addClass("xerte_button")
-            .append($('<img>').attr('src', value.icon).height(14))
-            .append(value.name);
+            .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
         buttons.append(button);
         });
         $('.ui-layout-west .footer').append(buttons);

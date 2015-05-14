@@ -171,14 +171,15 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     <link rel="stylesheet" href="editor/css/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
-    <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
+    <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css" />
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
     <script src="website_code/scripts/template_management.js"></script>
     <!--[if lte IE 7]>

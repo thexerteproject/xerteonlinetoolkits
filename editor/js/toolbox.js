@@ -202,7 +202,7 @@ var EDITOR = (function ($, parent) {
             text : treeLabel,
             type : xmlData[0].nodeName
         }
-        console.log(this_json);
+        //console.log(this_json);
 
         // if we are at top level then make sure it's open and display node data
         if (parent_id == null) {
@@ -284,6 +284,20 @@ var EDITOR = (function ($, parent) {
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
+            //var flashonly = $('<span>')
+            //    .addClass("fa-stack")
+            //    .height("14px")
+            //    .append($('<i>')
+            //       .addClass('fa')
+            //        .addClass('fa-circle')
+            //        .addClass('fa-stack-2x'))
+            //    .append($('<i>')
+            //        .addClass('fa')
+            //        .addClass('fa-facebook')
+            //        .addClass('fa-stack-1x')
+            //        .addClass('fa-inverse')
+            //    );
+
             var tr = $('<tr>');
             if (options.deprecated) {
                 var td = $('<td>')
@@ -294,10 +308,7 @@ var EDITOR = (function ($, parent) {
                         .attr('title', options.deprecated)
                         .addClass("deprecated"));
                 if (options.optional == 'true') {
-                    var opt = $('<img>')
-                            .attr('id', 'optbtn_' + name)
-                            .attr('src', 'editor/img/optional.png')
-                            .addClass("optional");
+                    var opt = $('<i>').addClass('fa').addClass('fa-trash').addClass("xerte-icon").height(14);
                     td.append(opt);
                 }
                 if (options.flashonly)
@@ -314,9 +325,12 @@ var EDITOR = (function ($, parent) {
             else if (options.optional == 'true') {
                 var td = $('<td>')
                     .addClass("wizardoptional")
-                    .append($('<img>')
+                    .append($('<i>')
                         .attr('id', 'optbtn_' + name)
-                        .attr('src', 'editor/img/optional.png')
+                        .addClass('fa')
+                        .addClass('fa-trash')
+                        .addClass("xerte-icon")
+                        .height(14)
                         .addClass("optional"));
                 if (options.flashonly)
                 {
@@ -1112,6 +1126,7 @@ var EDITOR = (function ($, parent) {
                 datatype: 'local',
                 data: rows,
                 height: "100%",
+                width: "100%",
                 colNames: headers,
                 colModel: colModel,
                 rowNum: 10,
@@ -1505,6 +1520,66 @@ var EDITOR = (function ($, parent) {
             return pages;
         },
 
+    /**
+     * function to convert \n chracters to <BR>
+     * This is needed because Flash editor was a text editor, not an HTML editor
+     * This is replica of the function used in Xenith.js (ref. x_addLineBreaks).
+     */
+        addLineBreaks = function(text) {
+            if (text.indexOf("<") == 0)
+            {
+                // Seems to start with a tag
+                // probably with new editor, don't replace newlines!
+                return text;
+            }
+            if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
+                return text.replace(/(\n|\r|\r\n)/g, "<br />");
+
+            } else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+                var newText = text;
+                if (newText.indexOf("<math") != -1) { // math tag found
+                    var tempText = "",
+                        mathNum = 0;
+
+                    while (newText.indexOf("<math", mathNum) != -1) {
+                        var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
+                            tableNum = 0;
+                        while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+                            tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                            tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
+                            tableNum = text1.indexOf("</table>", tableNum) + 8;
+                        }
+                        tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+                        tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
+                        mathNum = newText.indexOf("</math>", mathNum) + 7;
+                    }
+
+                    var text2 = newText.substring(mathNum),
+                        tableNum = 0;
+                    while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+                        tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                        tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
+                        tableNum = text2.indexOf("</table>", tableNum) + 8;
+                    }
+                    tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+                    newText = tempText;
+
+                } else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
+                    var tempText = "",
+                        tableNum = 0;
+                    while (newText.indexOf("<table", tableNum) != -1) {
+                        tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+                        tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
+                        tableNum = newText.indexOf("</table>", tableNum) + 8;
+                    }
+                    tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+                    newText = tempText;
+                }
+
+                return newText;
+            }
+        },
+
         displayDataType = function (value, options, name, key) {
             var html;                   //console.log(options);
 
@@ -1561,6 +1636,12 @@ var EDITOR = (function ($, parent) {
                 case 'html':
                 case 'textarea':
                     var id = "textarea_" + form_id_offset;
+                    var textvalue = value;
+
+                    if (options.type.toLowerCase() == 'text' || options.type.toLowerCase() == 'textarea')
+                    {
+                        textvalue = addLineBreaks(value);
+                    }
                     form_id_offset++;
                     //html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
                     //if (options.height) html += "height:" + options.height + "px";
@@ -1576,9 +1657,10 @@ var EDITOR = (function ($, parent) {
                     //    textarea.attr('style', "height:" + options.height + "px");
                     //textarea.append(value);
 
-                    textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+
+                    var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
                     if (options.height) html += "height:" + options.height + "px";
-                    textarea += "\">" + value + "</textarea>";
+                    textarea += "\">" + textvalue + "</textarea>";
 
                     html = $('<div>')
                         .attr('style', 'width:100%')

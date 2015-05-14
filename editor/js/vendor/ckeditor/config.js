@@ -36,8 +36,14 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbarCanCollapse = true;
     config.allowedContent = true;
     config.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
-    config.contentsCss = ['editor/js/vendor/ckeditor/contents.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
+    //config.contentsCss = ['editor/js/vendor/ckeditor/contents.css',
+    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
+    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
+    //    'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
+    //    'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
+    //    'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css'
+
+    config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/themeStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css',
