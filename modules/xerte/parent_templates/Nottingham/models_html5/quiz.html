@@ -25,7 +25,9 @@
 			currentAnswers,
 			currentQ,
 			qNoTxt,
-			myProgress;
+			myProgress,
+            resultsShown,
+            checked;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -232,8 +234,106 @@
 						$thisOptionTxt.find("a.x_glossary").contents().unwrap();
 					}
 				});
-            XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+            XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
+            quiz.checked = false;
 		}
+
+        this.showFeedBackandTrackResults = function()
+        {
+            var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
+
+            var selected = $("#optionHolder input:checked"),
+                    optionFeedback = "",
+                    correct = true,
+                    l_options = [],
+                    l_answer = [],
+                    l_feedback = [];
+
+            var generalFeedback = "";
+
+            // get feedback for selected options and check if they are correct
+            for (var i=0; i<selected.length; i++) {
+                var optionIndex = $(selected[i]).index()/2,
+                        selectedOption = quiz.currentAnswers[optionIndex];
+
+                optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
+                if (correct != false && selectedOption.correct == "true") {
+                    correct = true;
+                } else {
+                    correct = false;
+                }
+                l_options.push(optionIndex+1+"");
+                l_answer.push(selectedOption.text);
+                l_feedback.push(selectedOption.feedback);
+            }
+            generalFeedback += optionFeedback;
+            var rightWrongTxt = "";
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                // if all selected are correct - check that none of the unselected options should have been
+                if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
+                    var notSelected = $("#optionHolder input:not(:checked)");
+                    for (var i=0; i<notSelected.length; i++) {
+                        var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
+                        if (notSelectedOption.correct == "true") {
+                            correct = false;
+                        }
+                    }
+                }
+                // add correct feedback depending on if question overall has been answered correctly or not
+                if (currentQuestion.getAttribute("type") == "Multiple Answer") {
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiRight") + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiWrong") + '</p>';
+                    }
+                } else {
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleRight") + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
+                    }
+                }
+                // Track answer
+                XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback);
+                quiz.myProgress.splice(quiz.currentQ, 1, correct);
+            }
+            generalFeedback += rightWrongTxt;
+            var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
+            if (XTGetMode() == "normal")
+            {
+                // Disable all options
+                var i=0;
+                for (i=0; i<quiz.currNrOptions; i++)
+                {
+                    $("#option"+i).attr("disabled", "disabled");
+                }
+            }
+            if (quiz.showfeedback)
+            {
+                $("#feedback").html(answerFeedback);
+
+                if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+                    $("#feedback").find("a.x_glossary").contents().unwrap();
+                }
+
+                $("#nextBtn").removeAttr("disabled");
+                $(this).attr("disabled", "disabled");
+                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+            }
+            else
+            {
+                // Continue to next question
+                quiz.currentQ++;
+                if (quiz.currentQ == quiz.questions.length) {
+                    // last question answered - show results
+                    quiz.showResults();
+                } else {
+                    quiz.loadQ();
+                }
+            }
+            // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+        }
 
         this.showResults = function() {
             // last question answered - show results
@@ -269,6 +369,16 @@
             XTSetPageScore(x_currentPage, scormScore);
         }
 
+        this.leavePage = function()
+        {
+            if (!this.checked) {
+                this.showFeedBackandTrackResults();
+            }
+            if (!this.resultsShown) {
+                this.showResults();
+            }
+        }
+
 		this.loadVideo = function() {
 			var $video = $("#pageVideo"),
 				videoDimensions = $video.data("dimensions"),
@@ -293,6 +403,7 @@
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
 
+            this.resultsShown = false;
 			if (panelWidth == "Full") {
 				$("#infoHolder .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
@@ -411,99 +522,8 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
-
-					var selected = $("#optionHolder input:checked"),
-						optionFeedback = "",
-						correct = true,
-						l_options = [],
-						l_answer = [],
-						l_feedback = [];
-
-                    var generalFeedback = "";
-
-                    // get feedback for selected options and check if they are correct
-					for (var i=0; i<selected.length; i++) {
-                        var optionIndex = $(selected[i]).index()/2,
-							selectedOption = quiz.currentAnswers[optionIndex];
-
-						optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
-						if (correct != false && selectedOption.correct == "true") {
-							correct = true;
-						} else {
-							correct = false;
-						}
-                        l_options.push(optionIndex+1+"");
-                        l_answer.push(selectedOption.text);
-                        l_feedback.push(selectedOption.feedback);
-					}
-                    generalFeedback += optionFeedback;
-					var rightWrongTxt = "";
-					if (x_currentPageXML.getAttribute("judge") != "false") {
-						// if all selected are correct - check that none of the unselected options should have been
-						if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
-							var notSelected = $("#optionHolder input:not(:checked)");
-							for (var i=0; i<notSelected.length; i++) {
-								var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
-								if (notSelectedOption.correct == "true") {
-									correct = false;
-								}
-							}
-						}
-						// add correct feedback depending on if question overall has been answered correctly or not
-						if (currentQuestion.getAttribute("type") == "Multiple Answer") {
-							if (correct == true) {
-								rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiRight") + '</p>';
-							} else {
-								rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiWrong") + '</p>';
-							}
-						} else {
-							if (correct == true) {
-								rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleRight") + '</p>';
-							} else {
-								rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
-							}
-						}
-                        // Track answer
-                        XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
-						quiz.myProgress.splice(quiz.currentQ, 1, correct);
-					}
-                    generalFeedback += rightWrongTxt;
-                    var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
-                    if (XTGetMode() == "normal")
-                    {
-                        // Disable all options
-                        var i=0;
-                        for (i=0; i<quiz.currNrOptions; i++)
-                        {
-                            $("#option"+i).attr("disabled", "disabled");
-                        }
-                    }
-                    if (quiz.showfeedback)
-                    {
-					    $("#feedback").html(answerFeedback);
-						
-						if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-							$("#feedback").find("a.x_glossary").contents().unwrap();
-						}
-
-					    $("#nextBtn").removeAttr("disabled");
-					    $(this).attr("disabled", "disabled");
-					    $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-                    }
-                    else
-                    {
-                        // Continue to next question
-                        quiz.currentQ++;
-                        if (quiz.currentQ == quiz.questions.length) {
-                            // last question answered - show results
-                            quiz.showResults();
-                        } else {
-                            quiz.loadQ();
-                        }
-                    }
-                    // Queue reparsing of MathJax - fails if no network connection
-                    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+					    quiz.showFeedBackandTrackResults();
+                        quiz.checked = true;
                     });
 
 			$("#nextBtn")
@@ -517,6 +537,7 @@
 					if (quiz.currentQ == quiz.questions.length) {
                         // last question answered - show results
                         quiz.showResults();
+                        quiz.resultsShown = true;
 					} else {
 						quiz.loadQ();
 					}

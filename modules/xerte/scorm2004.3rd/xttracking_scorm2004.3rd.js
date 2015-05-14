@@ -395,6 +395,36 @@ function ScormTrackingState()
 
                 switch (sit.ia_type)
                 {
+                    case 'match':
+                        // We have an options as an array of objects with source and target
+                        // and we have corresponding array of answers strings
+                        // Construct answers like a:Answerstring
+                        var scormAnswerArray = [];
+                        var i=0;
+                        for (i=0; i<learneroptions.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = learneroptions[i];
+                            scormAnswerArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
+                        }
+                        var scorm_lanswer = scormAnswerArray.join('[,]');
+
+                        // Do the same for the answer pattern
+                        var scormCorrectArray = [];
+                        var i=0;
+                        for (i=0; i<sit.correctoptions.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = sit.correctoptions[i];
+                            scormCorrectArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
+                        }
+                        var scorm_canswer = scormCorrectArray.join('[,]');
+                        res = setValue(interaction + 'type', 'matching');
+                        res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
+                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'learner_response', scorm_lanswer);
+                        res = setValue(interaction + 'result', result);
+                        break;
                     case 'multiplechoice':
                         var psit = this.findPage(sit.page_nr);
                         if (psit != null)
@@ -407,28 +437,26 @@ function ScormTrackingState()
                             var pweighting = 1.0;
                             var nrquestions = 1.0;
                         }
-                        // We have an options as numbers, separated by ';'
-                        // and we have corresponding answers strings separated by ';'
+                        // We have an options as an array of numbers
+                        // and we have corresponding array of answers strings
                         // Construct answers like a:Answerstring
-                        var loptionsArray = learneroptions.split(';');
                         var scormAnswerArray = [];
                         var i=0;
-                        for (i=0; i<loptionsArray.length; i++)
+                        for (i=0; i<learneroptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
-                            var entry = String.fromCharCode(parseInt(loptionsArray[i])+96);
+                            var entry = String.fromCharCode(parseInt(learneroptions[i])+96);
                             scormAnswerArray.push(entry);
                         }
                         var scorm_lanswer = scormAnswerArray.join('[,]');
 
                         // Do the same for the answer pattern
-                        var coptionsArray = sit.correctoptions.split(';');
                         var scormCorrectArray = [];
                         var i=0;
-                        for (i=0; i<coptionsArray.length; i++)
+                        for (i=0; i<sit.correctoptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
-                            var entry = String.fromCharCode(parseInt(coptionsArray[i])+96);
+                            var entry = String.fromCharCode(parseInt(sit.correctoptions[i])+96);
                             scormCorrectArray.push(entry);
                         }
                         var scorm_canswer = scormCorrectArray.join('[,]');
@@ -657,8 +685,6 @@ function ScormTrackingState()
             var end = new Date();
             var duration = end.getTime() - this.start.getTime();
             setValue('cmi.session_time', this.formatDuration(duration));
-            setValue('cmi.total_time', this.formatDuration(state.duration_previous_attempts + duration));
-
         }
         this.finished = true;
     }
