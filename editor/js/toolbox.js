@@ -23,6 +23,7 @@
 var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
+        scrollTop = 0,
         defaultToolBar = false,
         jqGridsLastSel = {},
         jqGridsColSel = {},
@@ -885,6 +886,22 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    hideInlineEditor = function()
+    {
+        var newScrollTop = $('#content').scrollTop();
+        var delta = newScrollTop - scrollTop;
+        scrollTop = newScrollTop;
+        for(var i=0; i<textinputs_options.length; i++)
+        {
+
+            var textinput = textinputs_options[i];
+            $('#' + textinput.id).blur();
+            if ($('#cke_' + textinput.id).is(':visible'))
+            {
+                $('#cke_' + textinput.id).hide();
+            }
+        }
+    },
 
     convertColorPickers = function ()
     {
@@ -2049,6 +2066,7 @@ var EDITOR = (function ($, parent) {
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
     my.getPageList = getPageList;
+    my.hideInlineEditor = hideInlineEditor;
 
     return parent;
 
