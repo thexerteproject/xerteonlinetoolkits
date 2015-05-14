@@ -71,7 +71,7 @@
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a Description for Accessibility" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" loadingTxt="Loading..." imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
-	  nextBtnTxt="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
+	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" tip="Enter a Description for Accessibility"
   	  nextTxt="Next"
@@ -102,7 +102,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="provide a prompt" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" feedbackBtnTip="Feedback" feedbackBtnWidth="80"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom" zoomBtnTip="Feedback" zoomBtnWidth="80"><hotspot name="zoom region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="New Window" text="Enter text for the page" url="Enter a URL to launch" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
 	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Back" nextBtnTip="Forward" videoTip="Video Clip" soundTip="Sound Clip"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter page title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
@@ -126,7 +126,7 @@
 	   score2WinMessage="Scenario over - you have a winning score 2" score2LoseMessage="Scenario over - score 2 is to low" score2WinEndID="" score2LoseEndID=""
 	   score3Use="1" score3Label="Label for Score 3" score3Min="0" score3Max="100" score3Start="0" score3ProgressBar="1" score3BarColour="0x6699CC" score3Win="max" score3Lose="min"
 	   score3WinMessage="Scenario over - you have a winning score 3" score3LoseMessage="Scenario over - score 3 is to low" score3WinEndID=""
-	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left" loadingPrompt="Loading table data..."><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Description for Accessibility" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" correctMessage="Correct answers are shown" submitBtnTxt="Submit" submitBtnTip="Submit" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Description for Accessibility" reset="true" transcriptTabTxt="Transcript" transcriptTabTip="Transcript" transcriptTabWidth="90">Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" checkBtnTip="Check Answers" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Movie" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" launchvideo="Launch Video">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"
+	   score3LoseEndID="" /><scenarioActions name="List of scenario actions" /><propList name="List of props in scenario" /></scenario>]]></scenario><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="Summarise the key points" nextstepsHeader="Next Steps" nextsteps="Suggest how the knowledge can be applied and any useful next steps"/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" tabWidth="100"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" tabWidth="100"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="Enter text for the page here" align="left" loadingPrompt="Loading table data..."><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="Select an Image" tip="Enter a Description for Accessibility" transcriptbuttonlabel="Transcript">Enter text for the page here</textGraphics>]]></textGraphics><textMatch><![CDATA[<textMatch name="Enter Title" text="Provide Instructions here" correctMessage="Correct answers are shown" submitBtnTxt="Submit" submitBtnTip="Submit" submitBtnWidth="80"/>]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="Select a Video" tip="Enter a Description for Accessibility" transcriptTabTxt="Transcript" >Enter text for the page here</textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="Enter text for the page" nextBtnTip="Next" priorBtnTip="Previous"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="Enter text for the page here" interactivity="Timeline" feedback="Enter feedback here" checkBtnTxt="Check Answers" checkBtnTip="Check Answers" checkBtnWidth="100"/>]]></timeline><title><![CDATA[<title name="Enter Page Title" size="30">Enter title here</title>]]></title><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="Select a Video" text="Enter text for the page here" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="Enter Page Text" launchvideo="Launch Video">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="Enter Page text" url="Enter Search Term" results="20"
 	  resultsTxt="Youtube results for term"/>]]></youtuberss></newNodes>
 
   </learningObject>
@@ -139,8 +139,8 @@
 
     <sound label="Sound" type="media" optional="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -151,27 +151,26 @@
     <text label="Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 	
   </accNav><nestedPage menuItem="Nested Page" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
     <url label="Image" type="media" optional="true"/>
-    <tip label="Image Tooltip" type="textInput" optional="true"/>
-    <synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100" optional="true"/>	
+    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <initObject label="Init Object" type="TextInput" optional="true"/>
-    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
+	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
 
   </nestedPage><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg">
 
@@ -183,8 +182,8 @@
     <shape label="Shape" type="ComboBox" options="None,Oval,Rectangle,Arrow" data="None,Oval,Rectangle,Arrow" defaultValue="None" width="120"/>
     <align label="Align" type="COmboBox" options="Left,Top" data="Left,Top" defaultValue="Left" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -214,28 +213,26 @@
   </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack" icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <sound label="SoundFile" type="Media"/>
+    <sound label="Sound" type="Media"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" data="Small,Medium,Large,Full" defaultValue="Small" type="ComboBox" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
     <newNodes>
-      <synchPoint><![CDATA[<synchPoint name="name" text="Content for the pane" align="Top" synch="0"/>]]></synchPoint>
+      <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="Content for the slide" align="Top" synch="0"/>]]></synchPoint>
     </newNodes>
 
-  </audioSlideshow><synchPoint menuItem="Synch Point" icon="icBullet" remove="true">
+  </audioSlideshow><synchPoint menuItem="Slide" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <name label="Slide Title" type="TextInput" wysiwyg="true"/>
+    <text label="Slide Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
-	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
-    <link label="Specified URL" type="textInput"/>
-	  
+	
     <url label="Image" type="media" optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100"/>
@@ -249,29 +246,29 @@
     <url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
-    <linktarget label="Link target e.g _blank" type="textInput" width="70" optional="true"/>
-    <link label="Link and icon" type="textInput" optional="true"/>
-	<linkIntro label="Link intro text" type="textInput" optional="true"/>	
+    <linktarget label="Link Target" type="textInput" width="70" defaultValue="e.g. _blank" optional="true"/>
+    <link label="Link URL" type="textInput" optional="true"/>
+	<linkIntro label="Link Description" type="textInput" optional="true"/>	
     <sound label="Sound" type="media" optional="true"/>
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>
     <addmargin label="Image Margin" type="Checkbox" defaultValue="false" optional="true"/>
-    <size label="Text Size" type="ComboBox" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>
+    <size label="Text Size" type="ComboBox" options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
     
   </bleedingImage><bullets menu="Text" menuItem="Bullets" hint="A page of animated bullet points." label="Page Text" type="text" height="310" icon="icBullets" thumb="thumbs/bullets.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <delaySecs label="Delay (secs)" type="NumericStepper" min="1" max="10" step="0.25" width="100" defaultValue="1"/>
-    <showBullets label="Add bullets to text" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
-    <showPanel label="Display white panel" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
+    <showBullets label="Add Bullets to Text" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
+    <showPanel label="Display Panel" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -282,14 +279,14 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
   </buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Poses a stimulating question to the learner, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
@@ -304,8 +301,8 @@
     <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -318,8 +315,8 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -365,8 +362,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Captivate SWF File" type="media"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -380,8 +377,8 @@
 	<buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true"/>		
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -409,8 +406,8 @@
     <chartType label="Chart Type" options="line,bar,stacked bar,pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
     <align label="Align Text" options="left,right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -427,15 +424,15 @@
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
     <header label="Header Text" type="TextArea" height="100" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
   </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions and associate a destination page with each region." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
@@ -548,11 +545,8 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 
- 	
-
-	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -583,11 +577,11 @@
 	<closeBtn label="Close Button" type="TextInput" wysiwyg="true" language="true"/>
 	<errorString label="Error Label" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+	<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
@@ -660,8 +654,8 @@
 	
 	<headerTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -678,8 +672,8 @@
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
     <answerDelimeter label="Answer delimeter" type="textInput" defaultValue="," optional="true"/>
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -707,8 +701,8 @@
     <showHighlight label="Show Regions" type="CheckBox" defaultValue="true"/>
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -724,8 +718,8 @@
     <src label="Embed Code or URL" type="script" height="300"/>
 
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -739,8 +733,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Flash Paper SWF File" type="media"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -757,8 +751,8 @@
 	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true"/>
     <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -774,8 +768,8 @@
 	
     <noise label="Distractors" type="TextArea" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -788,11 +782,11 @@
 	
 	<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
   </geocommons><hangman menu="Games" menuItem="Hangman" hint="A Hangman game. Create a list of words for the learner to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -800,12 +794,12 @@
     <words label="Words" type="script" height="100"/>
     
 	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true"/>		
-    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>		
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -825,11 +819,11 @@
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 	
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
@@ -842,8 +836,8 @@
     <url label="ISpring Movie" type="Media"/>
     <version label="Version" options="Free,Pro" type="ComboBox" data="Free,Pro" defaultValue="Free" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -852,9 +846,9 @@
   </iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allows a user to zoom in and out of a large image and select regions. Useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
+	<url label="Image" type="media"/>
 	<tip label="Image Description" type="TextInput"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
-    <url label="Image" type="media"/>
 	
     <moveTip label="Move Button Tip" type="textInput" divider="true" language="true"/>	
     <zoomInTip label="Zoom In Button Tip" type="textInput" language="true"/>
@@ -863,8 +857,8 @@
     <resetImageTip label="Reset Button Tip" type="textInput" language="true"/>
     <toggleScreenTip label="Toggle Button Tip" type="textInput" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -895,10 +889,11 @@
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>	
 	
 
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
@@ -931,8 +926,8 @@
 
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -947,8 +942,8 @@
     <colour type="ComboBox" options="Default,Element,Amino Acid,Chain,Secondary Structure" label="Initial Colour" defaultValue="Default" width="140"/>
       <controls label="Show Default Controls" type="CheckBox" defaultValue="true"/>
     
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -980,11 +975,11 @@
     <cols label="Number of Columns" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
     <height label="Link Height" options="Small,Medium,Large" type="ComboBox" data="55,80,105" defaultValue="80" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-   <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
       <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL"/>]]></link>
@@ -1000,8 +995,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1029,8 +1024,8 @@
     <tooltip label="Map Description" type="TextInput"/>
     <link label="Link to Map" type="checkbox" defaultValue="true"/>
     
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1043,14 +1038,13 @@
     <lng type="TextInput" label="Longitude"/>
     <zoom type="TextInput" label="Zoom"/>
 
-    
-    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
-    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
-    <narration type="media" label="Narration" optional="true"/>
-
-    <flickr type="TextInput" optional="true" label="Flickr Search"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
+
+    <flickr type="TextInput" optional="true" label="Flickr Search"/>
 	
     <newNodes>
       <overlay><![CDATA[<overlay name="Enter Name" url="entr a kml or geoRSS url"/>]]></overlay>
@@ -1079,8 +1073,8 @@
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
 	
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1108,9 +1102,9 @@
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
 		
-		<narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-		<playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-		<narration label="Narration" type="media" optional="true"/>
+		<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+		<playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+		<narration label="Narration" type="media" ptional="true"/>
 		<navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
 		<pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 		
@@ -1393,8 +1387,8 @@
     </newNodes>
 
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1432,8 +1426,8 @@
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true"/>
     <image label="Image" type="media" optional="true"/>	
     <tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1447,8 +1441,8 @@
 	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<copypasteinfo label="Copy and Paste Info" type="TextArea" height="50" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1466,8 +1460,8 @@
     <feedbackBtnTip label="Button Tip" type="textInput" language="true"/>	
     <feedbackBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true"/>	
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1484,11 +1478,11 @@
     <zoomSpeed label="Zoom Speed" type="NumericStepper" min="1" max="10" step="1" defaultValue="3"/>
 	
     <buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <zoomBtnTip label="Button Tip" type="textInput" language="true"/>	
-    <zoomBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true"/>		
+    <zoomBtnTip label="Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <zoomBtnWidth label="Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1503,8 +1497,8 @@
     <windowWidth label="Window Width" type="NumericStepper" min="100" max="980" step="10" defaultValue="550" width="100"/>
     <windowHeight label="Window Height" type="NumericStepper" min="100" max="720" step="10" defaultValue="400" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1523,8 +1517,8 @@
     <howtoHeader label="How To Header" type="TextInput" wysiwyg="true"/>
     <howto label="How To Use" type="TextArea" height="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1534,8 +1528,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1548,8 +1542,8 @@
     <videoTip label="Generic Video Tip" type="TextInput" wysiwyg="true" language="true"/>
     <soundTip label="Generic Sound Tip" type="TextInput" wysiwyg="true" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1614,11 +1608,11 @@
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <video label="Video" type="media" optional="true"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
@@ -1644,8 +1638,8 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Raptivity SWF File" type="media"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1657,8 +1651,8 @@
     <url label="Feed URL" type="textInput"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1840,17 +1834,17 @@
     <text label="Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
-    <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
+    <priorBtnTip label="Previous Button Tip" type="textInput" language="true"/>
     <slideCount label="Slide {i} of {n} slides" type="TextInput" wysiwyg="true" language="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
   </slideshow><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps" icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
@@ -1861,8 +1855,8 @@
     <nextstepsHeader label="Next Steps Header" type="TextInput" wysiwyg="true"/>
     <nextsteps label="Next Steps" type="TextArea" height="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1874,14 +1868,14 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="10" width="100" defaultValue="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top"/>]]></nestedPage>
+      <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
   </tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="The tabbed navigator + allows you to create a list of topic links.  Each topic displays a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
@@ -1890,6 +1884,8 @@
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100"/>
 
     <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true"/>
+	<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1922,8 +1918,8 @@
 
     <loadingPrompt label="Loading Message" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1939,7 +1935,7 @@
     <shade label="Shade Alternate Rows" type="Checkbox" defaultValue="true"/>
 
     <caption label="Footnote" type="TextInput" wysiwyg="true" optional="true"/>
-    <alt label="Alternative Text" type="TextInput" wysiwyg="true" optional="true"/>
+    <alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Table Contents for Accessibility" optional="true"/>
     <url label="CSV File" type="Media" optional="true"/>
 
   </tableData><text label="Page Text" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
@@ -1947,10 +1943,10 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <textWidth label="Text Width" options="Small,Medium,Large,Full" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
-    <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true"/>
+    <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
     
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1962,8 +1958,8 @@
     <align label="Alignment" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="100"/>
     <interactivity label="Interactivity" options="Off,On" type="ComboBox" data="off,on" defaultValue="off" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -1978,13 +1974,13 @@
 	
 	<transcriptbuttonlabel label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-	<caption label="Image Caption" type="textInput" defaultValue="Enter a Caption for the Image" optional="true"/>
+	<caption label="Image Caption" type="textInput" defaultValue="Enter a Caption for the Image" optional="true" wysiwyg="true"/>
     <transcript label="Transcript" type="textArea" height="100" optional="true"/>    
     <hidePanel label="Hide Panel" type="checkBox" defaultValue="false" optional="true"/>
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>
@@ -2000,8 +1996,8 @@
     <submitBtnTip label="Check Button Tip" type="textInput" language="true"/>	
     <submitBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="80" language="true"/>	
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2023,8 +2019,8 @@
     
     <tip label="Image Description" type="TextInput"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2039,21 +2035,19 @@
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
     <url label="Video" type="media"/>
     <tip label="Video Description" type="TextInput"/>	
-    <reset label="Reset on Completion" type="Checkbox" defaultValue="false"/>
+    <reset label="Reset on Completion" type="Checkbox" defaultValue="false" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 	
     <transcriptTabTxt label="Transcript Tab Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <transcriptTabTip label="Check Button Tip" type="textInput" language="true"/>	
-    <transcriptTabWidth label="Check Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true"/>		
+    <transcriptTabTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <transcriptTabWidth label="Check Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true" deprecated="Width is now set automatically"/>		
 
     <startFrame label="Start Time" type="textInput" defaultValue="0" optional="true" tooltip="Enter the start frame in seconds"/>
     <endFrame label="End Time" type="textInput" defaultValue="0" optional="true" tooltip="enter the end frame in seconds"/>
-    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" deprecated="Replaced by separate width and height options"/>
-    <width label="Video Width" type="textInput" defaultValue="320" optional="true"/>
-    <height label="Video Height" type="textInput" defaultValue="240" optional="true"/>
+    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
     <transcript label="Transcript" type="textArea" height="150" optional="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2066,8 +2060,8 @@
     <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2098,8 +2092,8 @@
     <checkBtnTip label="Check Button Tip" type="textInput" language="true"/>	
     <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2114,13 +2108,13 @@
     <name label="Target" type="TextInput" wysiwyg="true"/>
     <text label="Label" type="TextArea" height="100"/>
 
-  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title" label="Title Text" icon="icPageWhiteText" thumb="thumbs/title.jpg" type="text" height="22" remove="true">
+  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title" label="Title Text" icon="icPageWhiteText" thumb="thumbs/title.jpg" type="text" height="100" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/> 
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2133,7 +2127,7 @@
     <bgImageHConstrain label="Background Max Width" type="NumericStepper" min="10" max="800" step="10" defaultValue="800" optional="true"/>
     <titleVAlign label="Title Vertical Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
     <titleHAlign label="Title Horizontal Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
-    <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true"/>
+    <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
 
   </title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Page that plays an audio file with synchronized transcript" icon="icTranscript" thumb="thumbs/transcriptReader.jpg" remove="true">
 
@@ -2144,41 +2138,47 @@
 	
 	<timedText label="Timed Text File" type="Media" optional="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedPage><![CDATA[<nestedPage name="name" text="Content for the pane" align="Top" synch="0"/>]]></nestedPage>
+      <nestedSynch><![CDATA[<nestedSynch name="name" text="Content for the pane" synch="0"/>]]></nestedSynch>
     </newNodes>
 
-  </transcriptReader><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
+  </transcriptReader><nestedSynch menuItem="Nested Page" icon="icBullet" remove="true">
+
+    <name label="Page Title" type="TextInput"/>
+    <text label="Page Text" type="TextArea" height="250"/>
+    <synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" width="100"/>	
+
+  </nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="Video" type="Media"/>
     <text label="Page Text" type="TextArea" height="200"/>
-    <pause label="Pause on Synchpoints" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
-    <erase label="Erase" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
+    <pause label="Pause on Synch Points" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
+    <erase label="Erase on Synch Points" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
 	
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<timedText label="Timed Text File" type="Media" optional="true"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <videoSynchPoint><![CDATA[<videoSynchPoint name="name" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
+      <videoSynchPoint><![CDATA[<videoSynchPoint name="Enter Title Here" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
     </newNodes>
 
-  </videoSynch><videoSynchPoint menuItem="Nested Page" icon="icBullet" remove="true">
+  </videoSynch><videoSynchPoint menuItem="Synch Point" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250"/>
+    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
     <link label="Specified URL" type="textInput"/>
@@ -2194,8 +2194,8 @@
     <url label="Article URL" type="textInput"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
@@ -2208,9 +2208,9 @@
     <initObject type="TextInput" label="InitObject" optional="true"/>
 	<errorTxt label="Error Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
-    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
-    <narration type="media" label="Narration" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
@@ -2223,11 +2223,11 @@
 	<toggle type="Checkbox" label="Toggle full screen" optional="true"/>
     <videoSize type="TextInput" label="Video Size" optional="true"/>
 
-    <narrationNavigate type="CheckBox" label="Navigate on narration" optional="true"/>
-    <playNarration type="CheckBox" label="Auto-play narration" optional="true"/>
-    <narration type="media" label="Narration" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>	
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
     <launchvideo label="Launch Video link" type="textInput" divider="true" language="true"/> 
 
   </youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include Youtube videos in your piece. Enter a search term to display videos matching the term fom YouTube." icon="icYoutube">
@@ -2239,10 +2239,10 @@
 	
 	<resultsTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Enter a unique ID so that Connector Pages can find this page" type="TextInput" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
   </youtuberss></wizard>
