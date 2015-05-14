@@ -422,7 +422,7 @@ function edit_window_close(path){
 
         var url="website_code/php/versioncontrol/template_close.php";
 
-        xmlHttp.open("post",url,true);
+        xmlHttp.open("post",url,false);
         xmlHttp.onreadystatechange=file_need_save;
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send('file_path=' + path);
