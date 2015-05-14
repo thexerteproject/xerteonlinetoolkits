@@ -445,6 +445,10 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				
 			}
 			
+			if (this.nodeName == 'pdf'){
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="100%"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+			}
+			
 		});
 		
 		content.append(tab);

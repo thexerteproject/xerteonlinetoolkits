@@ -9,7 +9,7 @@
   <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" />
-	<pageID label="Page ID" type="TextInput" width="200"/>
+	<pageID label="Page ID" type="TextInput" defaultValue="Unique ID for this page" width="200"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all"/>
 
     <reportTitle label="Report Title" type="TextInput" divider="true" language="true"/>
@@ -27,8 +27,8 @@
     <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true"/>	
     <menuOverFillCol label="Fill Colour (over)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
     <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media"  optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Menu Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MenuConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>

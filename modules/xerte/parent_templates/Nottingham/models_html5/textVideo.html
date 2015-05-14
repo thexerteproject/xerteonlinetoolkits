@@ -56,19 +56,14 @@
 					.hide()
 					.html(x_addLineBreaks(transcriptTxt));
 				
-				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt"),
-					btnTip = x_currentPageXML.getAttribute("transcriptTabTip");
+				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt");
 				
 				if (btnLabel == undefined) {
 					btnLabel = "Transcript";
-					btnTip = "Transcript";
 				}
 				
 				$("#transcriptBtn")
-					.button({
-						label:			btnLabel,
-						description:	btnTip // transcriptTabWidth not used as width is done automatically
-					})
+					.button({ label: btnLabel })
 					.data({
 						"up"			:true,
 						"transcriptTag"	:$transcript

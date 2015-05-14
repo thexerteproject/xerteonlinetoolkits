@@ -773,15 +773,7 @@ var EDITOR = (function ($, parent) {
                 $('#'+options.id).ckeditor(function(){
                     // Editor is ready, attach onblur event
                     this.on('blur', function(){
-                        // This is the call back when editor looses focus
-                        //if (this.checkDirty())  Tom: CHECKDIRTY DOES NOT DO WHAT I EXPECTED!! It compares with the original value,
-                        //                             i.e., modify a field (add a 2) this istriggered
-                        //                                   remove the 2, this is NOT TRIGGERRED
-                        //                                   modify, add a 2, triggered
-                        //                                   change focus, come back in this filed, do NOT edit (just leave the 2, and change focus again: TRIGGERED
-                        //{
-                            inputChanged(options.id, options.key, options.name, this.getData(), this);
-                        //}
+                        inputChanged(options.id, options.key, options.name, this.getData(), this);
                     });
                 }, ckoptions);
             }
@@ -833,13 +825,9 @@ var EDITOR = (function ($, parent) {
                 $('#'+options.id).ckeditor(function(){
                     // Editor is ready, attach onblur event
                     this.on('blur', function(){
-                        // This is the call back when editor looses focus
-                        //if (this.checkDirty())  // Se other comment about checkDirty()
-                        //{
-                            var thisValue = this.getData();
-                            thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
-                            inputChanged(options.id, options.key, options.name, thisValue, this);
-                        //}
+                        var thisValue = this.getData();
+                        thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+                        inputChanged(options.id, options.key, options.name, thisValue, this);
                     });
                     var lastValue = "";
                     this.on('change', function(event) {
@@ -1465,541 +1453,588 @@ var EDITOR = (function ($, parent) {
         $('#' + 'form_'+ key).remove();
     },
 
-    displayDataType = function (value, options, name, key) {
-        var html;                   //console.log(options);
-
-        switch(options.type.toLowerCase())
+    /**
+     * getPagelist in an array. the array has contains arrays of length 2, the first element is the name (or label
+     * the second element is the value
+     *
+     * This is the format that ckEditor dialog expects for se;ect lists
+     * We use the same format in the displayDataType for the pagelist type.
+     */
+        getPageList = function()
         {
-            case 'checkbox':
-                var id = 'checkbox_' + form_id_offset;
-                form_id_offset++;
-                //html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="parent.toolbox.cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
-                html = $('<input>')
-                    .attr('id', id)
-                    .attr('type',  "checkbox")
-                    .prop('checked', value && value == 'true')
-                    .click({id:id, key:key, name:name}, function(event){
-                        cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-                    });
-                break;
-            case 'combobox':
-                var id = 'select_' + form_id_offset;
-                form_id_offset++;
-                var s_options = options.options.split(',');
-                var s_data = [];
-                if (options.data)
+            var tree = $.jstree.reference("#treeview");
+            var lo_node = tree.get_node("treeroot", false);
+            var pages=[];
+            $.each(lo_node.children, function(i, key){
+                var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+                var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
                 {
-                    s_data = options.data.split(',');
-                }
-                else
-                {
-                    s_data = s_options;
-                }
-                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                //for (var i=0; i<s_options.length; i++) {
-                //    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
-                //}
-                //html += '</select>';
-                html = $('<select>')
-                    .attr('id', id)
-                    .change({id:id, key:key, name:name}, function(event)
+                    var page = [];
+                    page.push(name.value);
+                    if (pageID.found)
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                    });
-                for (var i=0; i<s_options.length; i++) {
-                    var option = $('<option>')
-                        .attr('value', s_data[i]);
-                    if (s_data[i]==value)
-                        option.prop('selected', true);
-                    option.append(s_options[i]);
-                    html.append(option);
+                        page.push(pageID.value);
+                    }
+                    else
+                    {
+                        page.push(linkID.value);
+                    }
+                    pages.push(page);
                 }
 
-                break;
-            case 'text':
-            case 'script':
-            case 'html':
-            case 'textarea':
-                var id = "textarea_" + form_id_offset;
-                form_id_offset++;
-                //html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                //if (options.height) html += "height:" + options.height + "px";
-                //html += "\">" + value + "</textarea></div>";
+            });
+            return pages;
+        },
+
+        displayDataType = function (value, options, name, key) {
+            var html;                   //console.log(options);
+
+            switch(options.type.toLowerCase())
+            {
+                case 'checkbox':
+                    var id = 'checkbox_' + form_id_offset;
+                    form_id_offset++;
+                    //html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="parent.toolbox.cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
+                    html = $('<input>')
+                        .attr('id', id)
+                        .attr('type',  "checkbox")
+                        .prop('checked', value && value == 'true')
+                        .click({id:id, key:key, name:name}, function(event){
+                            cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
+                        });
+                    break;
+                case 'combobox':
+                    var id = 'select_' + form_id_offset;
+                    form_id_offset++;
+                    var s_options = options.options.split(',');
+                    var s_data = [];
+                    if (options.data)
+                    {
+                        s_data = options.data.split(',');
+                    }
+                    else
+                    {
+                        s_data = s_options;
+                    }
+                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    //for (var i=0; i<s_options.length; i++) {
+                    //    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
+                    //}
+                    //html += '</select>';
+                    html = $('<select>')
+                        .attr('id', id)
+                        .change({id:id, key:key, name:name}, function(event)
+                        {
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    for (var i=0; i<s_options.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', s_data[i]);
+                        if (s_data[i]==value)
+                            option.prop('selected', true);
+                        option.append(s_options[i]);
+                        html.append(option);
+                    }
+
+                    break;
+                case 'text':
+                case 'script':
+                case 'html':
+                case 'textarea':
+                    var id = "textarea_" + form_id_offset;
+                    form_id_offset++;
+                    //html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                    //if (options.height) html += "height:" + options.height + "px";
+                    //html += "\">" + value + "</textarea></div>";
 
 
-                //Something weird is going on here If I build the textarea using jquery, then the ckeditor doesn't work anymore
-                // So I use html to build the text area and append that to the div
-                //var textarea = $('<textarea>')
-                //    .attr('id', id)
-                //    .addClass("ckeditor");
-                //if (options.height)
-                //    textarea.attr('style', "height:" + options.height + "px");
-                //textarea.append(value);
+                    //Something weird is going on here If I build the textarea using jquery, then the ckeditor doesn't work anymore
+                    // So I use html to build the text area and append that to the div
+                    //var textarea = $('<textarea>')
+                    //    .attr('id', id)
+                    //    .addClass("ckeditor");
+                    //if (options.height)
+                    //    textarea.attr('style', "height:" + options.height + "px");
+                    //textarea.append(value);
 
-                textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                if (options.height) html += "height:" + options.height + "px";
-                textarea += "\">" + value + "</textarea>";
+                    textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                    if (options.height) html += "height:" + options.height + "px";
+                    textarea += "\">" + value + "</textarea>";
 
-                html = $('<div>')
-                    .attr('style', 'width:100%')
-                    .append(textarea);
-                textareas_options.push({id: id, key: key, name: name, options: options});
-                break;
-            case 'numericstepper':
-                var min = parseInt(options.min);
-                var max = parseInt(options.max);
-                var step = parseInt(options.step);
-                var intvalue = parseInt(value);
-                //console.log({min: min, max: max, step: step});
-                if (!Modernizr.inputtypes.number)
-                {
+                    html = $('<div>')
+                        .attr('style', 'width:100%')
+                        .append(textarea);
+                    textareas_options.push({id: id, key: key, name: name, options: options});
+                    break;
+                case 'numericstepper':
+                    var min = parseInt(options.min);
+                    var max = parseInt(options.max);
+                    var step = parseInt(options.step);
+                    var intvalue = parseInt(value);
+                    //console.log({min: min, max: max, step: step});
+                    if (!Modernizr.inputtypes.number)
+                    {
+                        var id = 'select_' + form_id_offset;
+                        form_id_offset++;
+                        //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                        //for (var i=min; i<=max; i += step) {
+                        //    html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
+                        //}
+                        //html += "</select>";
+                        html = $('<select>')
+                            .attr('id', id)
+                            .click({id:id, key:key, name:name}, function(event)
+                            {
+                                selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            });
+                        for (var i=min; i<max; i += step) {
+                            var option = $('<option>')
+                                .attr('value', i);
+                            if (intvalue==i)
+                                option.prop('selected', true);
+                            option.append(i);
+                            html.append(option);
+                        }
+
+                    }
+                    else
+                    {
+                        var id = 'numericstepper_' + form_id_offset;
+                        form_id_offset++;
+                        //html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                        html = $('<input>')
+                            .attr('id', id)
+                            .attr('type', 'number')
+                            .attr('min', min)
+                            .attr('max', max)
+                            .attr('step', step)
+                            .attr('value', value)
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                if (this.value <= max &&  this.value >= min) {
+                                    if (this.value == '') {
+                                        this.value = (min + max) / 2; // choose midpoint for NaN
+                                    }
+                                    inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                                }
+                                else { // set to max or min if out of range
+                                    this.value = Math.max(Math.min(this.value, max), min);
+                                }
+                            });
+                    }
+                    break;
+                case 'pagelist':
+                    // Implement differently then in the flash editor
+                    // Leave PageIDs untouched, and prefer to use the PageID over the linkID
                     var id = 'select_' + form_id_offset;
                     form_id_offset++;
                     //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    //for (var i=min; i<=max; i += step) {
-                    //    html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
-                    //}
-                    //html += "</select>";
                     html = $('<select>')
                         .attr('id', id)
                         .click({id:id, key:key, name:name}, function(event)
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
-                    for (var i=min; i<max; i += step) {
-                        var option = $('<option>')
-                            .attr('value', i);
-                        if (intvalue==i)
+                    // Add empty entry
+                    //html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
+                    var option = $('<option>')
+                        .attr('value', "");
+                    if (value=="")
+                        option.prop('selected', true);
+                    option.append("&nbsp;");
+                    html.append(option);
+                    var pages = getPageList();
+                    $.each(pages, function(page)
+                    {
+                        option = $('<option>')
+                            .attr('value', this[1]);
+                        if (value==this[1])
                             option.prop('selected', true);
-                        option.append(i);
+                        option.append(this[0]);
+                        html.append(option);
+                    });
+                    /*
+                     var tree = $.jstree.reference("#treeview");
+                     var lo_node = tree.get_node("treeroot", false);
+                     $.each(lo_node.children, function(i, key){
+                     var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                     var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+                     var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                     if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+                     {
+                     if (pageID.found)
+                     {
+                     //html += "<option value=\"" + pageID.value
+                     //    + (value ==  pageID.value || value == linkID.value ? "\" selected=\"selected\">" :  "\">")
+                     //    + name.value + "</option>";
+                     option = $('<option>')
+                     .attr('value', pageID.value);
+                     if (value==pageID.value || value==linkID.value)
+                     option.prop('selected', true);
+                     option.append(name.value);
+                     html.append(option);
+                     }
+                     else
+                     {
+                     //html += "<option value=\"" + linkID.value
+                     //    + (value == linkID.value ? "\" selected=\"selected\">" :  "\">")
+                     //   + name.value + "</option>";
+                     option = $('<option>')
+                     .attr('value', linkID.value);
+                     if (value==linkID.value)
+                     option.prop('selected', true);
+                     option.append(name.value);
+                     html.append(option);
+                     }
+                     }
+                     });
+                     */
+                    //html += "</select>";
+                    break;
+                case 'colourpicker':
+                    var colorvalue = value;
+                    var id = 'colorpicker_' + form_id_offset;
+                    form_id_offset++;
+                    if (colorvalue.indexOf("0x") == 0)
+                    {
+                        colorvalue = colorvalue.substr(2);
+                    }
+                    if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
+                    {
+
+                        //html = '<input id='+ id + ' type="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
+                        html = $('<input>')
+                            .attr('id', id)
+                            .attr('type', 'color')
+                            .attr('value', colorvalue)
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            });
+                    }
+                    else
+                    {
+                        //html = '<input id='+ id + ' class="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\',' + this +  ')">';
+                        html = $('<input>')
+                            .attr('id', id)
+                            .addClass('color')
+                            .attr('value', colorvalue)
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            });
+                        colorpickers.push({id: id, value: colorvalue, options: options});
+                    }
+                    break;
+                case 'languagelist':
+                    var id = 'select_' + form_id_offset;
+                    form_id_offset++;
+                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    //for (var i=0; i<installed_languages.length; i++) {
+                    //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                    //}
+                    //html += '</select>';
+                    html = $('<select>')
+                        .attr('id', id)
+                        .click({id:id, key:key, name:name}, function(event)
+                        {
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                        });
+                    for (var i=0; i<installed_languages.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', installed_languages[i].code);
+                        if (installed_languages[i].code==value)
+                            option.prop('selected', true);
+                        option.append(installed_languages[i].name);
                         html.append(option);
                     }
-
-                }
-                else
-                {
-                    var id = 'numericstepper_' + form_id_offset;
+                    break;
+                case 'themelist':
+                    var id = 'select_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    html = $('<input>')
+                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
+                    //for (var i=0; i<installed_languages.length; i++) {
+                    //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
+                    //}
+                    //html += '</select>';
+                    html = $('<select>')
                         .attr('id', id)
-                        .attr('type', 'number')
-                        .attr('min', min)
-                        .attr('max', max)
-                        .attr('step', step)
-                        .attr('value', value)
-                        .change({id:id, key:key, name:name}, function(event)
+                        .click({id:id, key:key, name:name}, function(event)
                         {
-                        	if (this.value <= max &&  this.value >= min) {
-                        		if (this.value == '') {
-                        			this.value = (min + max) / 2; // choose midpoint for NaN
-                        		}
-                            	inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            }
-                            else { // set to max or min if out of range
-                            	this.value = Math.max(Math.min(this.value, max), min);
-                            }
+                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
-                }
-                break;
-            case 'pagelist':
-                // Implement differently then in the flash editor
-                // Leave PageIDs untouched, and prefer to use the PageID over the linkID
-                var id = 'select_' + form_id_offset;
-                form_id_offset++;
-                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                html = $('<select>')
-                    .attr('id', id)
-                    .click({id:id, key:key, name:name}, function(event)
-                    {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                    });
-                // Add empty entry
-                //html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
-                var option = $('<option>')
-                    .attr('value', "");
-                if (value=="")
-                    option.prop('selected', true);
-                option.append("&nbsp;");
-                html.append(option);
-                var tree = $.jstree.reference("#treeview");
-                var lo_node = tree.get_node("treeroot", false);
-                $.each(lo_node.children, function(i, key){
-                    var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-                    var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-                    var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                    if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-                    {
-                        if (pageID.found)
-                        {
-                            //html += "<option value=\"" + pageID.value
-                            //    + (value ==  pageID.value || value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                            //    + name.value + "</option>";
-                            option = $('<option>')
-                                .attr('value', pageID.value);
-                            if (value==pageID.value || value==linkID.value)
-                                option.prop('selected', true);
-                            option.append(name.value);
-                            html.append(option);
-                        }
-                        else
-                        {
-                            //html += "<option value=\"" + linkID.value
-                            //    + (value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                            //   + name.value + "</option>";
-                            option = $('<option>')
-                                .attr('value', linkID.value);
-                            if (value==linkID.value)
-                                option.prop('selected', true);
-                            option.append(name.value);
-                            html.append(option);
-                        }
+                    for (var i=0; i<theme_list.length; i++) {
+                        var option = $('<option>')
+                            .attr('value', theme_list[i].name);
+                        if (theme_list[i].name==value)
+                            option.prop('selected', true);
+                        option.append(theme_list[i].display_name);
+                        html.append(option);
                     }
-                });
-                //html += "</select>";
-                break;
-            case 'colourpicker':
-                var colorvalue = value;
-                var id = 'colorpicker_' + form_id_offset;
-                form_id_offset++;
-                if (colorvalue.indexOf("0x") == 0)
-                {
-                    colorvalue = colorvalue.substr(2);
-                }
-                if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
-                {
+                    break;
+                case 'hotspot':
+                    var id = 'hotspot_' + form_id_offset;
+                    form_id_offset++;
 
-                    //html = '<input id='+ id + ' type="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
-                    html = $('<input>')
-                        .attr('id', id)
-                        .attr('type', 'color')
-                        .attr('value', colorvalue)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                }
-                else
-                {
-                    //html = '<input id='+ id + ' class="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\',' + this +  ')">';
-                    html = $('<input>')
-                        .attr('id', id)
-                        .addClass('color')
-                        .attr('value', colorvalue)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        });
-                    colorpickers.push({id: id, value: colorvalue, options: options});
-                }
-                break;
-            case 'languagelist':
-                var id = 'select_' + form_id_offset;
-                form_id_offset++;
-                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                //for (var i=0; i<installed_languages.length; i++) {
-                //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
-                //}
-                //html += '</select>';
-                html = $('<select>')
-                    .attr('id', id)
-                    .click({id:id, key:key, name:name}, function(event)
+                    // this is a special one. the attributes in the node are called x, y, w, h
+                    // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
+                    // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
+                    var hsattrs = lo_data[key].attributes;
+                    var hsparent = parent.tree.getParent(key);
+                    var hspattrs = lo_data[hsparent].attributes;
+                    var div = $('<div>')
+                        .attr('id', 'inner_' + id)
+                        .addClass('clickableHotspot')
+                    if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                    });
-                for (var i=0; i<installed_languages.length; i++) {
-                    var option = $('<option>')
-                        .attr('value', installed_languages[i].code);
-                    if (installed_languages[i].code==value)
-                        option.prop('selected', true);
-                    option.append(installed_languages[i].name);
-                    html.append(option);
-                }
-                break;
-            case 'themelist':
-                var id = 'select_' + form_id_offset;
-                form_id_offset++;
-                //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                //for (var i=0; i<installed_languages.length; i++) {
-                //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
-                //}
-                //html += '</select>';
-                html = $('<select>')
-                    .attr('id', id)
-                    .click({id:id, key:key, name:name}, function(event)
+                        // go one further up
+                        hsparent = parent.tree.getParent(hsparent);
+                        hspattrs = lo_data[hsparent].attributes;
+                    }
+                    var url = hspattrs.url;
+                    // Replace FileLocation + ' with full url
+                    url = makeAbsolute(url);
+                    // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
+                    if (url.substring(0,4) == "http")
                     {
-                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                    });
-                for (var i=0; i<theme_list.length; i++) {
-                    var option = $('<option>')
-                        .attr('value', theme_list[i].name);
-                    if (theme_list[i].name==value)
-                        option.prop('selected', true);
-                    option.append(theme_list[i].display_name);
-                    html.append(option);
-                }
-                break;
-            case 'hotspot':
-                var id = 'hotspot_' + form_id_offset;
-                form_id_offset++;
+                        div.append($('<img>')
+                                .attr('id', 'inner_img_' + id)
+                                .attr('src', url)
+                                .load(function(){
+                                    var orgwidth = this.naturalWidth;
+                                    var orgheight = this.naturalHeight;
+                                    var width = this.width;
+                                    var hsleft = parseInt(hsattrs.x),
+                                        hstop = parseInt(hsattrs.y),
+                                        hsbottom = orgheight - hstop - parseInt(hsattrs.h),
+                                        hsright = orgwidth - hsleft - parseInt(hsattrs.w);
+                                    var scale = width / orgwidth;
+                                    hsleft = Math.round(hsleft * scale);
+                                    hstop = Math.round(hstop * scale);
+                                    hsbottom = Math.round(hsbottom * scale);
+                                    hsright = Math.round(hsright * scale);
 
-                // this is a special one. the attributes in the node are called x, y, w, h
-                // Furthermore, the hotspot image, and the hotspot color are in the parent (or if the parent is a hotspotGroup, in the parents parent
-                // So, get the image, the highlight colour, and the coordinates here, and make a lightbox of a small image that is clickable
-                var hsattrs = lo_data[key].attributes;
-                var hsparent = parent.tree.getParent(key);
-                var hspattrs = lo_data[hsparent].attributes;
-                var div = $('<div>')
-                    .attr('id', 'inner_' + id)
-                    .addClass('clickableHotspot')
-                if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
-                {
-                    // go one further up
-                    hsparent = parent.tree.getParent(hsparent);
-                    hspattrs = lo_data[hsparent].attributes;
-                }
-                var url = hspattrs.url;
-                // Replace FileLocation + ' with full url
-                url = makeAbsolute(url);
-                // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
-                if (url.substring(0,4) == "http")
-                {
-                    div.append($('<img>')
-                        .attr('id', 'inner_img_' + id)
+                                    var cssobj = {
+                                        position:  "absolute",
+                                        left: hsleft + "px",
+                                        top:  hstop + "px",
+                                        right: hsright + "px",
+                                        bottom: hsbottom + "px",
+                                        background: "#ff0000",
+                                        opacity: "0.4"
+                                    };
+
+                                    var hsdiv = $('<div>')
+                                        .attr('id', 'inner_hs_' + id)
+                                        .css(cssobj);
+                                    div.append(hsdiv);
+
+                                })
+                        );
+                    }
+                    else
+                    {
+                        div = div.append("select image first");
+                    }
+
+                    // Ok, now create the content to be shown in the lightbox
+                    var editdiv = $('<div>')
+                        .attr('id', 'edit_' + id)
+                        .addClass('hotspotLightbox');
+                    var editimg = $('<img>')
+                        .attr('id', 'edit_img_' + id)
+                        .addClass('hotspotLightboxImg')
                         .attr('src', url)
-                        .load(function(){
+                        .load(function()
+                        {
                             var orgwidth = this.naturalWidth;
                             var orgheight = this.naturalHeight;
-                            var width = this.width;
-                            var hsleft = parseInt(hsattrs.x),
-                                hstop = parseInt(hsattrs.y),
-                                hsbottom = orgheight - hstop - parseInt(hsattrs.h),
-                                hsright = orgwidth - hsleft - parseInt(hsattrs.w);
-                            var scale = width / orgwidth;
-                            hsleft = Math.round(hsleft * scale);
-                            hstop = Math.round(hstop * scale);
-                            hsbottom = Math.round(hsbottom * scale);
-                            hsright = Math.round(hsright * scale);
+                            var hsx1 = parseInt(hsattrs.x),
+                                hsy1 = parseInt(hsattrs.y),
+                                hsx2 = hsx1 + parseInt(hsattrs.w),
+                                hsy2 = hsy1 + parseInt(hsattrs.h);
 
-                            var cssobj = {
-                                position:  "absolute",
-                                left: hsleft + "px",
-                                top:  hstop + "px",
-                                right: hsright + "px",
-                                bottom: hsbottom + "px",
-                                background: "#ff0000",
-                                opacity: "0.4"
-                                 };
+                            /*
+                             $('#edit_img_' + id).imgAreaSelect({
+                             x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
+                             handles: false,
+                             imgeWidth: orgwidth,
+                             imageHeight: orgheight,
+                             parent: '#edit_' + id,
+                             persistent: true,
+                             onSelectEnd: function (img, selection) {
+                             hotspotChanged(id, key, name, img, selection);
+                             }
+                             });
 
-                            var hsdiv = $('<div>')
-                                .attr('id', 'inner_hs_' + id)
-                                .css(cssobj);
-                            div.append(hsdiv);
+                             //$('#featherlight-content').unbind('click');
+                             */
 
-                        })
+
+                            $('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
+                            $('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
+                                var par = event.data;
+                                showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
+                            });
+
+                        });
+                    editdiv.append(editimg);
+
+                    editdiv.append($('<div>')
+                            .attr('id', id + '_edit_buttons')
+                            .append($('<input>')
+                                .attr('id', id + '_x')
+                                .attr('type', 'hidden')
+                        )
+                            .append($('<input>')
+                                .attr('id', id + '_y')
+                                .attr('type', 'hidden')
+                        )
+                            .append($('<input>')
+                                .attr('id', id + '_h')
+                                .attr('type', 'hidden')
+                        )
+                            .append($('<input>')
+                                .attr('id', id + '_w')
+                                .attr('type', 'hidden')
+                        )
+                            .append($('<input>')
+                                .attr('id', id + '_set')
+                                .attr('type', 'hidden')
+                                .attr('value', '0')
+                        )
+                            //.append(okbutton)
+                            //.append(cancelbutton)
+                            .append($('<button>')
+                                .attr('id', id + '_ok')
+                                .attr('name', 'ok')
+                                .attr('type', 'button')
+                                .addClass('editorbutton')
+                                .append(language.Alert.oklabel)
+                        )
+                            .append($('<button>')
+                                .attr('id', id + '_cancel')
+                                .attr('name', 'cancel')
+                                .attr('type', 'button')
+                                .addClass('editorbutton')
+                                .append(language.Alert.cancellabel)
+                        )
                     );
-                }
-                else
-                {
-                    div = div.append("select image first");
-                }
 
-                // Ok, now create the content to be shown in the lightbox
-                var editdiv = $('<div>')
-                    .attr('id', 'edit_' + id)
-                    .addClass('hotspotLightbox');
-                var editimg = $('<img>')
-                    .attr('id', 'edit_img_' + id)
-                    .addClass('hotspotLightboxImg')
-                    .attr('src', url)
-                    .load(function()
-                    {
-                        var orgwidth = this.naturalWidth;
-                        var orgheight = this.naturalHeight;
-                        var hsx1 = parseInt(hsattrs.x),
-                            hsy1 = parseInt(hsattrs.y),
-                            hsx2 = hsx1 + parseInt(hsattrs.w),
-                            hsy2 = hsy1 + parseInt(hsattrs.h);
-
-                        /*
-                        $('#edit_img_' + id).imgAreaSelect({
-                            x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
-                            handles: false,
-                            imgeWidth: orgwidth,
-                            imageHeight: orgheight,
-                            parent: '#edit_' + id,
-                            persistent: true,
-                            onSelectEnd: function (img, selection) {
-                                hotspotChanged(id, key, name, img, selection);
-                            }
-                        });
-
-                        //$('#featherlight-content').unbind('click');
-                        */
-
-
-                        $('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
-                        $('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
-                            var par = event.data;
-                            showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
-                        });
-
-                    });
-                editdiv.append(editimg);
-
-                editdiv.append($('<div>')
-                    .attr('id', id + '_edit_buttons')
-                    .append($('<input>')
-                        .attr('id', id + '_x')
-                        .attr('type', 'hidden')
-                    )
-                    .append($('<input>')
-                        .attr('id', id + '_y')
-                        .attr('type', 'hidden')
-                    )
-                    .append($('<input>')
-                        .attr('id', id + '_h')
-                        .attr('type', 'hidden')
-                    )
-                    .append($('<input>')
-                        .attr('id', id + '_w')
-                        .attr('type', 'hidden')
-                    )
-                    .append($('<input>')
-                        .attr('id', id + '_set')
-                        .attr('type', 'hidden')
-                        .attr('value', '0')
-                    )
-                    //.append(okbutton)
-                    //.append(cancelbutton)
-                    .append($('<button>')
-                        .attr('id', id + '_ok')
-                        .attr('name', 'ok')
-                        .attr('type', 'button')
-                        .addClass('editorbutton')
-                        .append(language.Alert.oklabel)
-                    )
-                    .append($('<button>')
-                        .attr('id', id + '_cancel')
-                        .attr('name', 'cancel')
-                        .attr('type', 'button')
-                        .addClass('editorbutton')
-                        .append(language.Alert.cancellabel)
-                    )
-                );
-
-                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
-                html = $('<div>')
-                    .attr('id', id)
-                    //.attr('href', '#')
-                    //.click({id:id, key:key, name:name}, function(event)
-                    //{
-                    //    hotspotEdit(event.data.id, event.data.key, event.data.name, this.value, this);
-                    //})
-                    .append(editdiv)
-                    .append($('<a>')
-                        .attr('id', 'link_' + id)
-                        .attr('href', '#')
-                        .attr('data-featherlight', '#edit_' + id)
-                        .attr('title', language.edit.$tooltip)
-                        .append(div))
-
-                break;
-            case 'media':
-                var id = 'media_' + form_id_offset;
-                form_id_offset++;
-                // a textinput with a browse buttons next to the type-in
-                var td1 = $('<td width="100%">')
-                    .append($('<input>')
-                        .attr('type', "text")
+                    //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                    html = $('<div>')
                         .attr('id', id)
-                        .addClass('media')
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        })
-                        .attr('value', value));
-                var td2 = $('<td>')
-                    .append($('<button>')
-                    .attr('id', 'browse_' + id)
-                    .attr('title', language.compMedia.$tooltip)
-                    .addClass("xerte_button")
-                    .click({id:id, key:key, name:name}, function(event)
-                    {
-                        browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
-                    })
-                    .append($('<img>').attr('src', 'editor/img/browse.png').height(14)));
-                html = $('<div>')
-                    .attr('id', 'container_' + id)
-                    .addClass('media_container');
-                html.append($('<table width="100%">')
+                        //.attr('href', '#')
+                        //.click({id:id, key:key, name:name}, function(event)
+                        //{
+                        //    hotspotEdit(event.data.id, event.data.key, event.data.name, this.value, this);
+                        //})
+                        .append(editdiv)
+                        .append($('<a>')
+                            .attr('id', 'link_' + id)
+                            .attr('href', '#')
+                            .attr('data-featherlight', '#edit_' + id)
+                            .attr('title', language.edit.$tooltip)
+                            .append(div))
+
+                    break;
+                case 'media':
+                    var id = 'media_' + form_id_offset;
+                    form_id_offset++;
+                    // a textinput with a browse buttons next to the type-in
+                    var td1 = $('<td width="100%">')
+                        .append($('<input>')
+                            .attr('type', "text")
+                            .attr('id', id)
+                            .addClass('media')
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            })
+                            .attr('value', value));
+                    var td2 = $('<td>')
+                        .append($('<button>')
+                            .attr('id', 'browse_' + id)
+                            .attr('title', language.compMedia.$tooltip)
+                            .addClass("xerte_button")
+                            .click({id:id, key:key, name:name}, function(event)
+                            {
+                                browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+                            })
+                            .append($('<img>').attr('src', 'editor/img/browse.png').height(14)));
+                    html = $('<div>')
+                        .attr('id', 'container_' + id)
+                        .addClass('media_container');
+                    html.append($('<table width="100%">')
                         .append($('<tr>')
                             .append(td1)
                             .append(td2)));
-                break;
-            case 'datagrid':
-                var id = 'grid_' + form_id_offset;
-                form_id_offset++;
-                html= $('<div>')
-                    .attr('id', id)
-                    .addClass('datagrid')
-                    .append($('<table>')
-                        .attr('id', id + '_jqgrid'))
-                    .append($('<div>')
-                        .attr('id', id + '_nav'))
-                    .append($('<div>')
-                        .attr('id', id + '_addcolumns')
-                        .addClass('jqgridAddColumnsContainer'));
+                    break;
+                case 'datagrid':
+                    var id = 'grid_' + form_id_offset;
+                    form_id_offset++;
+                    html= $('<div>')
+                        .attr('id', id)
+                        .addClass('datagrid')
+                        .append($('<table>')
+                            .attr('id', id + '_jqgrid'))
+                        .append($('<div>')
+                            .attr('id', id + '_nav'))
+                        .append($('<div>')
+                            .attr('id', id + '_addcolumns')
+                            .addClass('jqgridAddColumnsContainer'));
 
-                datagrids.push({id: id, key: key, name: name, options: options});
-                break;
-            case 'drawing': // Not implemented
-                var id = 'drawing_' + form_id_offset;
-                form_id_offset++;
-                //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
-                html = $('<button>')
-                    .attr('id', id)
-                    .attr('title', language.edit.$tooltip)
-                    .addClass("xerte_button")
-                    .click({id:id, key:key, name:name, value:value}, function(event)
+                    datagrids.push({id: id, key: key, name: name, options: options});
+                    break;
+                case 'drawing': // Not implemented
+                    var id = 'drawing_' + form_id_offset;
+                    form_id_offset++;
+                    //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
+                    html = $('<button>')
+                        .attr('id', id)
+                        .attr('title', language.edit.$tooltip)
+                        .addClass("xerte_button")
+                        .click({id:id, key:key, name:name, value:value}, function(event)
                         {
                             editDrawing(event.data.id, event.data.key, event.data.name, event.data.value);
                         }
                     )
-                    .append(language.edit.$label);
-                break;
-            case 'datefield': // Not used??
-            case 'webpage':  //Not used??
-            default:
+                        .append(language.edit.$label);
+                    break;
+                case 'datefield': // Not used??
+                case 'webpage':  //Not used??
+                default:
 
-                 //html = "<input type=\"text\" value=\"" + value + "\" />";
-                var id = 'textinput_' + form_id_offset;
-                form_id_offset++;
-                //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
-                if (options.wysiwyg && options.wysiwyg=="true")
-                {
-                    html = $('<div>')
-                        .attr('id', id)
-                        .addClass('inlinewysiwyg')
-                        .attr('contenteditable', 'true')
-                        .append($('<p>')
-                            .append(value));
-                    textinputs_options.push({id: id, key: key, name: name, options: options});
-                }
-                else {
-                    html = $('<input>')
-                        .attr('type', "text")
-                        .addClass('inputtext')
-                        .attr('id', id)
-                        .change({id:id, key:key, name:name}, function(event)
-                        {
-                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        })
-                        .attr('value', value);
-                }
-        }
-        return html;
-    };
+                    //html = "<input type=\"text\" value=\"" + value + "\" />";
+                    var id = 'textinput_' + form_id_offset;
+                    form_id_offset++;
+                    //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
+                    if (options.wysiwyg && options.wysiwyg=="true")
+                    {
+                        html = $('<div>')
+                            .attr('id', id)
+                            .addClass('inlinewysiwyg')
+                            .attr('contenteditable', 'true')
+                            .append($('<p>')
+                                .append(value));
+                        textinputs_options.push({id: id, key: key, name: name, options: options});
+                    }
+                    else {
+                        html = $('<input>')
+                            .attr('type', "text")
+                            .addClass('inputtext')
+                            .attr('id', id)
+                            .change({id:id, key:key, name:name}, function(event)
+                            {
+                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+                            })
+                            .attr('value', value);
+                    }
+            }
+            return html;
+        };
 
     // Add the functions that need to be public
     my.build_lo_data = build_lo_data;
@@ -2013,6 +2048,7 @@ var EDITOR = (function ($, parent) {
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
+    my.getPageList = getPageList;
 
     return parent;
 

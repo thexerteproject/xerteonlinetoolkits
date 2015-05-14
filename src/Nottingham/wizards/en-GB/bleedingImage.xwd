@@ -14,18 +14,18 @@
     <url label="Image" type="media" />
     <tip label="Image Description" type="TextInput" />
 
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false"  optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false"  optional="true"/>
-    <narration label="Narration" type="media"  optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
-    <linktarget label="Link target e.g _blank" type="textInput" width="70"  optional="true" />
-    <link label="Link and icon" type="textInput"  optional="true"/>
-	<linkIntro label="Link intro text" type="textInput"  optional="true"/>	
+    <linktarget label="Link Target" type="textInput" width="70" defaultValue="e.g. _blank" optional="true" />
+    <link label="Link URL" type="textInput"  optional="true"/>
+	<linkIntro label="Link Description" type="textInput"  optional="true"/>	
     <sound label="Sound" type="media" optional="true"/>
     <magnifier label="Magnifier"  type="checkBox" defaultValue="false" optional="true"/>
     <addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>
-    <size label="Text Size" type="ComboBox"  options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true"/>
+    <size label="Text Size" type="ComboBox"  options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
     
   </bleedingImage>
   

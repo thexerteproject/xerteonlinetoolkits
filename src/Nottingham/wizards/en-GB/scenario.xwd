@@ -21,7 +21,7 @@
   <!-- SCENARIO PAGE============================== -->
   <scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is no longer supported">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
-	<pageID label="Unique Page ID" type="TextInput" width="200"/>	
+	<pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" />
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" />
@@ -53,8 +53,8 @@
     <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" />
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media"  optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
 	<newNodes>
