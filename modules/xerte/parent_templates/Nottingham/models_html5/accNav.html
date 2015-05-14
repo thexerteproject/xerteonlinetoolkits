@@ -188,10 +188,8 @@
 		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
 		this.scaleImages = function() {
 			var $pageContents = $("#pageContents");
-			console.log("**");
 			// is there an image on current panel?  Has it already been scaled to fit this?
 			if ($("#infoHolder .paneImg img:visible").length > 0 && $pageContents.data("count") != $("#infoHolder .paneImg img:visible").data("count")) {
-				console.log("&&&");
 				var $img = $("#infoHolder .paneImg img:visible"),
 					$infoHolder = $("#infoHolder"),
 					firstScale = false;
