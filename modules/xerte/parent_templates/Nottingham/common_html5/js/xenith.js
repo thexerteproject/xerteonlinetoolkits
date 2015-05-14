@@ -903,7 +903,27 @@ function x_changePage(x_gotoPage) {
     var prevPage = x_currentPage;
 
     // End page tracking of x_currentPage
-    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage) {
+    if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
+    {
+        var pageObj;
+
+        if (x_pageInfo[x_currentPage].type == "text") {
+            pageObj = simpleText;
+        } else {
+            pageObj = eval(x_pageInfo[x_currentPage].type);
+        }
+        if (typeof pageObj.leavePage === 'function')
+        {
+            pageObj.leavePage();
+        }
+        // calls function in any customHTML that's been loaded into page
+        if ($(".customHTMLHolder").length > 0)
+        {
+            if (typeof customHTML.leavePage() === 'function')
+            {
+                customHTML.leavePage();
+            }
+        }
         XTExitPage(x_currentPage, x_currentPageXML.getAttribute("name"));
     }
     x_currentPage = x_gotoPage;

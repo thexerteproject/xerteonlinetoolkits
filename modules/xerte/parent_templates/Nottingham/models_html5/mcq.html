@@ -21,6 +21,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
+        var checked;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
             this.startQ();
@@ -37,12 +38,13 @@
 			}
 		}
 
-        this.startQ = function(optionElements) {
+        this.startQ = function() {
             var correctOptions = [],
                correctAnswer = [],
                correctFeedback = [],
                correctOption = false; // is there a correct answer for the question?
 
+            this.checked = false;
             // Track the quiz page
             this.weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
@@ -50,15 +52,119 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-            for (var i = 0; i < optionElements.length; i++) {
-                if (optionElements[i].correct == 'true') {
+            for (var i = 0; i < this.optionElements.length; i++) {
+                if (this.optionElements[i].correct == 'true') {
                     correctOptions.push((i+1)+"");
-                    correctAnswer.push(optionElements[i].text);
-                    correctFeedback.push(optionElements[i].feedback);
+                    correctAnswer.push(this.optionElements[i].text);
+                    correctFeedback.push(this.optionElements[i].feedback);
                     mcq.correctOption = true;
                 }
             }
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions.join(';'), correctAnswer.join(';'), correctFeedback.join(';'));
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
+        }
+
+        this.leavePage = function()
+        {
+            if (!this.checked) {
+                this.showFeedBackandTrackScore();
+            }
+        }
+
+        this.showFeedBackandTrackScore = function()
+        {
+            var answerFeedback = "",
+                    correct = true,
+                    l_options = [],
+                    l_answer = [],
+                    l_feedback = [],
+                    selected = $("#optionHolder input"),
+                    generalFeedback = "";
+
+            if (x_currentPageXML.getAttribute("feedback") != undefined) {
+                generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+            }
+
+            for (var i=0; i<selected.length; i++) {
+                var optionIndex = $(selected[i]).parent().index(),
+                        selectedOption = this.optionElements[optionIndex];
+
+                correct = correct && (	(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
+                (selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
+                if ($(selected[i]).is(':checked')) {
+                    answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
+
+                    l_options.push(optionIndex+1+"");
+                    l_answer.push(selectedOption.text);
+                    l_feedback.push(selectedOption.feedback);
+                }
+            }
+            generalFeedback += answerFeedback;
+
+            var singleRight = x_currentPageXML.getAttribute("singleRight");
+            if (singleRight == undefined) {
+                singleRight = "Your answer is correct";
+            }
+            var singleWrong = x_currentPageXML.getAttribute("singleWrong");
+            if (singleWrong == undefined) {
+                singleWrong = "Your answer is incorrect";
+            }
+            var multiRight = x_currentPageXML.getAttribute("multiRight");
+            if (multiRight == undefined) {
+                multiRight = "You have selected all the correct answers";
+            }
+            var multiWrong = x_currentPageXML.getAttribute("multiWrong");
+            if (multiWrong == undefined) {
+                multiWrong = "You have not selected the correct combination of answers";
+            }
+
+            var rightWrongTxt = "";
+            // add correct feedback depending on if question overall has been answered correctly or not
+            if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+                if (mcq.correctOption == true) { // there is a correct answer for question
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + multiRight + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
+                    }
+                }
+            } else {
+                if (mcq.correctOption == true) { // there is a correct answer for question
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + singleRight + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
+                    }
+                }
+            }
+            generalFeedback += rightWrongTxt;
+            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+            if (feedbackLabel == undefined) {
+                feedbackLabel = "Feedback";
+            }
+            $("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
+
+            if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+                $("#feedback").find("a.x_glossary").contents().unwrap();
+            }
+
+            $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+
+            // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+            XTExitInteraction(x_currentPage, 0, correct, l_options, l_answer, l_feedback);
+            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
+            if (XTGetMode() == "normal")
+            {
+                // Disable all options
+                var i=0;
+                for (i=0; i<mcq.currNrOptions; i++)
+                {
+                    $("#option"+i).attr("disabled", "disabled");
+                }
+            }
+            // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
         }
 
 		this.init = function() {
@@ -122,9 +228,9 @@
 				//$optionTxt = $optionHolder.find(".optionTxt"),
 
 			// Store the answers in a temporary array
-			var optionElements = [];
+			var elements = [];
             $(x_currentPageXML).children().each(function(i) {
-            	optionElements.push(
+            	elements.push(
             		{
             			text:		this.getAttribute("text"),
             			correct:	this.getAttribute("correct"),
@@ -132,19 +238,20 @@
             		}
             	);
             });
+            this.optionElements = elements;
             
             // Randomise the answers, if required
             if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
-            	for (var tmp, j, k, i = optionElements.length; i--;) {
-            		j = Math.floor(Math.random() * optionElements.length);
-            		k = Math.floor(Math.random() * optionElements.length);
-            		tmp = optionElements[j];
-        			optionElements[j] = optionElements[k];
-        			optionElements[k] = tmp;
+            	for (var tmp, j, k, i = this.optionElements.length; i--;) {
+            		j = Math.floor(Math.random() * this.optionElements.length);
+            		k = Math.floor(Math.random() * this.optionElements.length);
+            		tmp = this.optionElements[j];
+        			this.optionElements[j] = this.optionElements[k];
+                    this.optionElements[k] = tmp;
             	}
             }
             
-			$.each(optionElements, function(i, thisOption) {
+			$.each(this.optionElements, function(i, thisOption) {
 					var $thisOptionGroup, $thisOption, $thisOptionTxt;
 					if (i != 0) {
 						$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
@@ -207,104 +314,11 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var answerFeedback = "",
-						correct = true,
-						l_options = [],
-						l_answer = [],
-						l_feedback = [],
-						selected = $("#optionHolder input"),
-						generalFeedback = "";
-
-                    if (x_currentPageXML.getAttribute("feedback") != undefined) {
-                        generalFeedback = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
-                    }
-
-                    for (var i=0; i<selected.length; i++) {
-                        var optionIndex = $(selected[i]).parent().index(),
-							selectedOption = optionElements[optionIndex];
-
-						correct = correct && (	(selectedOption.correct == "true" && $(selected[i]).is(':checked')) ||
-												(selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
-                        if ($(selected[i]).is(':checked')) {
-                        	answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
-
-							l_options.push(optionIndex+1+"");
-							l_answer.push(selectedOption.text);
-							l_feedback.push(selectedOption.feedback);
-						}
-                    }
-                    generalFeedback += answerFeedback;
-
-                    var singleRight = x_currentPageXML.getAttribute("singleRight");
-                    if (singleRight == undefined) {
-                        singleRight = "Your answer is correct";
-                    }
-                    var singleWrong = x_currentPageXML.getAttribute("singleWrong");
-                    if (singleWrong == undefined) {
-                        singleWrong = "Your answer is incorrect";
-                    }
-                    var multiRight = x_currentPageXML.getAttribute("multiRight");
-                    if (multiRight == undefined) {
-                        multiRight = "You have selected all the correct answers";
-                    }
-                    var multiWrong = x_currentPageXML.getAttribute("multiWrong");
-                    if (multiWrong == undefined) {
-                        multiWrong = "You have not selected the correct combination of answers";
-                    }
-
-                    var rightWrongTxt = "";
-                    // add correct feedback depending on if question overall has been answered correctly or not
-                    if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-						if (mcq.correctOption == true) { // there is a correct answer for question
-							if (correct == true) {
-								rightWrongTxt = '<p><br/>' + multiRight + '</p>';
-							} else {
-								rightWrongTxt = '<p><br/>' + multiWrong + '</p>';
-							}
-						}
-                    } else {
-						if (mcq.correctOption == true) { // there is a correct answer for question
-							if (correct == true) {
-								rightWrongTxt = '<p><br/>' + singleRight + '</p>';
-							} else {
-								rightWrongTxt = '<p><br/>' + singleWrong + '</p>';
-							}
-						}
-                    }
-                    generalFeedback += rightWrongTxt;
-					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-					if (feedbackLabel == undefined) {
-						feedbackLabel = "Feedback";
-					}
-					$("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
-					
-					if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-						$("#feedback").find("a.x_glossary").contents().unwrap();
-					}
-					
-                    $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-
-                    // Queue reparsing of MathJax - fails if no network connection
-                    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-                    XTExitInteraction(x_currentPage, 0, correct, l_options.join(";"), l_answer.join(';'), l_feedback.join(';'));
-                    XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
-                    if (XTGetMode() == "normal")
-                    {
-                        // Disable all options
-                        var i=0;
-                        for (i=0; i<mcq.currNrOptions; i++)
-                        {
-                            $("#option"+i).attr("disabled", "disabled");
-                        }
-                    }
-					
-					// Queue reparsing of MathJax - fails if no network connection
-					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
+                    mcq.showFeedBackandTrackScore();
+                    mcq.checked = true;
 				});
 
-            this.startQ(optionElements);
+            this.startQ();
 			this.sizeChanged();
 			x_pageLoaded();
 		}

@@ -34,7 +34,13 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
-		
+
+        this.leavePage = function()
+        {
+            console.log("Leave page");
+
+        }
+
 		this.init = function() {
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");

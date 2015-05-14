@@ -422,6 +422,36 @@ function ScormTrackingState()
 
                 switch (sit.ia_type)
                 {
+                    case 'match':
+                        // We have an options as an array of objects with source and target
+                        // and we have corresponding array of answers strings
+                        // Construct answers like a:Answerstring
+                        var scormAnswerArray = [];
+                        var i=0;
+                        for (i=0; i<learneroptions.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = learneroptions[i];
+                            scormAnswerArray.push(entry.source.replace(/ /g, "_") + "." + entry.target.replace(/ /g, "_"));
+                        }
+                        var scorm_lanswer = scormAnswerArray.join(',');
+
+                        // Do the same for the answer pattern
+                        var scormCorrectArray = [];
+                        var i=0;
+                        for (i=0; i<sit.correctoptions.length; i++)
+                        {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = sit.correctoptions[i];
+                            scormCorrectArray.push(entry.source.replace(/ /g, "_") + "." + entry.target.replace(/ /g, "_"));
+                        }
+                        var scorm_canswer = scormCorrectArray.join(',');
+                        res = setValue(interaction + 'type', 'matching');
+                        res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
+                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'student_response', scorm_lanswer);
+                        res = setValue(interaction + 'result', result);
+                        break;
                     case 'multiplechoice':
                         var psit = this.findPage(sit.page_nr);
                         if (psit != null)
@@ -438,23 +468,21 @@ function ScormTrackingState()
                         // and we have corresponding answers strings separated by ';'
                         // Construct answers like a  (ignore answers, because we can't do anything with them in Scorm 1.2)
 
-                        var loptionsArray = learneroptions.split(';');
                         var scormAnswerArray = [];
                         var i=0;
-                        for (i=0; i<loptionsArray.length; i++)
+                        for (i=0; i<learneroptions.length; i++)
                         {
                             // Create ascii characters from option number and add answer string
-                            scormAnswerArray.push(String.fromCharCode(parseInt(loptionsArray[i])+96));
+                            scormAnswerArray.push(String.fromCharCode(parseInt(learneroptions[i])+96));
                         }
                         var scorm_lanswer = scormAnswerArray.join(',');
 
                         // Do the same for the answer pattern
-                        var coptionsArray = sit.correctoptions.split(';');
                         var scormCorrectArray = [];
-                        for (i=0; i<coptionsArray.length; i++)
+                        for (i=0; i<sit.correctoptions.length; i++)
                         {
                             // Create ascii characters from option number and add answer string
-                            scormCorrectArray.push(String.fromCharCode(parseInt(coptionsArray[i])+96));
+                            scormCorrectArray.push(String.fromCharCode(parseInt(sit.correctoptions[i])+96));
                         }
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'choice');
@@ -516,6 +544,8 @@ function ScormTrackingState()
                 }
             }
         }
+        this.finishTracking(state.currentpageid, true);
+        doLMSCommit();
 
     }
 
@@ -567,7 +597,7 @@ function ScormTrackingState()
     {
         if (this.lo_type == "pages only")
         {
-            if (getSuccessStatus() == 'incomplete')
+            if (this.getSuccessStatus() == 'incomplete')
                 return 0;
             else
                 return 100;
@@ -633,7 +663,7 @@ function ScormTrackingState()
         return this.getdMaxScore() + "";
     }
 
-    function finishTracking(currentid)
+    function finishTracking(currentid, intermediate)
     {
         if (this.trackingmode != 'none')
         {
@@ -665,10 +695,12 @@ function ScormTrackingState()
             var end = new Date();
             var duration = end.getTime() - this.start.getTime();
             setValue('cmi.core.session_time', this.formatDuration(duration));
-            setValue('cmi.core.total_time', this.formatDuration(this.duration_previous_attempts + duration));
+
 
         }
-        this.finished = true;
+        if (!intermediate) {
+            this.finished = true;
+        }
     }
 
     function initTracking()
@@ -959,7 +991,7 @@ function XTTerminate()
                 }
 
             }
-            state.finishTracking(currentpageid);
+            state.finishTracking(currentpageid, false);
         }
     }
     doLMSFinish();
