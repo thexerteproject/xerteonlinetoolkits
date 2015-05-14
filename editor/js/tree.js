@@ -875,7 +875,7 @@ var EDITOR = (function ($, parent) {
         setTimeout(function(){
             $('#content').animate({scrollTop: 0});
         }, 50);
-        //setTimeout($('#mainPanel').animate({scrollTop: 0}, 500));
+        toolbox.scrollTop = 0;
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)

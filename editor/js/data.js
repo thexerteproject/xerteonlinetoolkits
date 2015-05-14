@@ -101,6 +101,10 @@ var EDITOR = (function ($, parent) {
     my.wait = wait;
 
     $(document).ready(function () {
+        $('#content').bind('scroll', function()
+        {
+            parent.toolbox.hideInlineEditor();
+        });
         init(previewxmlurl);
     });
 
