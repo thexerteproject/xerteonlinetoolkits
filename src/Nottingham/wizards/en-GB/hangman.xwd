@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
-	  nextBtnTxt="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
+	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman>
     </newNodes>
@@ -15,13 +15,13 @@
     <words label="Words" type="script" height="100"/>
     
 	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" />		
-    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically" />
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true" />
 	
-    <narrationNavigate label="Navigate on narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media"  optional="true"/>
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
