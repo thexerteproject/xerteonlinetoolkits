@@ -356,6 +356,22 @@ function folder_loop($path){
 
 }
 
+/* Check on POST and FILES */
+
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']=="POST")
+{
+    if (!isset($_FILES['filenameuploaded']['name']))
+    {
+        if (isset($php_errormsg))
+        {
+            die("Error: " . $php_errormsg . ".<br/>" . IMPORT_FAILED . "<br/>(upload_max_filesize=" . ini_get("upload_max_filesize") . ", post_max_size=" . ini_get("post_max_size") . ")****");
+        }
+        else
+        {
+            die(IMPORT_FAILED . "<br/>(upload_max_filesize=" . ini_get("upload_max_filesize") . ", post_max_size=" . ini_get("post_max_size") . ")****");
+        }
+    }
+}
 /*
  * Check who made the template
  */

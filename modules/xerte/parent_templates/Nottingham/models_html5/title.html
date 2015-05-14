@@ -88,53 +88,55 @@
 						"filter"		:"alpha(opacity=" + alpha + ")",
 						"visibility"	:"hidden"
 					})
-					.hide()
 					.one("load", function() {
 						var $this = $(this);
-						if (vConstrain != undefined || hConstrain != undefined) {
-							var imgMaxW = 800,
-								imgMaxH = 500;
-							
-							if (hConstrain != undefined) {
-								imgMaxW = hConstrain;
-							}
-							if (vConstrain != undefined) {
-								imgMaxH = vConstrain;
-							}
-							x_scaleImg(this, imgMaxW, imgMaxH, true, false, true);
-							
-							var vAlign = x_currentPageXML.getAttribute("bgImageVAlign"),
-								hAlign = x_currentPageXML.getAttribute("bgImageHAlign");
-							
-							if (vAlign == "middle" || vAlign == "bottom") {
-								var topValue = "50%",
-									topMargin = 0 - Math.round($this.height() / 2);
+						setTimeout(function(){
+							if (vConstrain != undefined || hConstrain != undefined) {
+								var imgMaxW = 800,
+									imgMaxH = 500;
 								
-								if (vAlign == "bottom") {
-									topValue = "100%"
-									topMargin = 0 - $this.height();
+								if (hConstrain != undefined) {
+									imgMaxW = Number(hConstrain);
 								}
-								$this.css({
-									"top"			:topValue,
-									"margin-top"	:topMargin
-								})
-							}
-							if (hAlign == "centre" || hAlign == "right") {
-								var leftValue = "50%",
-									leftMargin = 0 - Math.round($this.width() / 2);
+								if (vConstrain != undefined) {
+									imgMaxH = Number(vConstrain);
+								}
 								
-								if (hAlign == "right") {
-									leftValue = "100%"
-									leftMargin = 0 - $this.width();
+								x_scaleImg($this[0], imgMaxW, imgMaxH, true, false, true);
+								
+								var vAlign = x_currentPageXML.getAttribute("bgImageVAlign") != undefined ? x_currentPageXML.getAttribute("bgImageVAlign") : "middle",
+									hAlign = x_currentPageXML.getAttribute("bgImageHAlign") != undefined ? x_currentPageXML.getAttribute("bgImageHAlign") : "centre";
+								
+								if (vAlign == "middle" || vAlign == "bottom") {
+									var topValue = "50%",
+										topMargin = 0 - Math.round($this.height() / 2);
+									
+									if (vAlign == "bottom") {
+										topValue = "100%"
+										topMargin = 0 - $this.height();
+									}
+									$this.css({
+										"top"			:topValue,
+										"margin-top"	:topMargin
+									})
 								}
-								$this.css({
-									"left"			:leftValue,
-									"margin-left"	:leftMargin
-								})
+								if (hAlign == "centre" || hAlign == "right") {
+									var leftValue = "50%",
+										leftMargin = 0 - Math.round($this.width() / 2);
+									
+									if (hAlign == "right") {
+										leftValue = "100%"
+										leftMargin = 0 - $this.width();
+									}
+									$this.css({
+										"left"			:leftValue,
+										"margin-left"	:leftMargin
+									})
+								}
+							} else {
+								$this.css("visibility", "visible");
 							}
-						} else {
-							$this.css("visibility", "visible");
-						}
+						}, 0);
 					})
 					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 						if (this.complete) {

@@ -200,6 +200,10 @@
 			if (!!document.createElement("canvas").getContext) {
 				// load popcorn library and plugins 
 				var loadFiles = true;
+                if(xot_offline) {
+                    /* files are already loaded statically */
+                    loadFiles = false;
+                }
 				for (var i=0; i<x_pageInfo.length; i++) {
 					if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
 						// a page of this type has already been loaded - don't reload popcorn files
@@ -208,7 +212,7 @@
 					}
 				}
 				
-				if (loadFiles == true) {
+				if (loadFiles == true ) {
 					this.loadJS();
 				} else {
 					this.setUp();
@@ -609,7 +613,6 @@
 		// function sorts synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
 		// can be called for mainMedia & additional media from mediaPlus plugin
 		this.sortPopcorn = function(synchData, targetRef, isMedia, popcornInstance) {
-			// ** check this is ok in all browsers / devices (particularly iOS)
 			// wait until metadata has loaded before continuing
 			if (popcornInstance.duration()) {
 				mediaLesson.sortPopcornNow(synchData, targetRef, isMedia, popcornInstance);

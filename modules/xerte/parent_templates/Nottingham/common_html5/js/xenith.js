@@ -40,6 +40,11 @@ var x_languageData  = [],
 if (typeof modelfilestrs == 'undefined')
 {
     modelfilestrs = [];
+    xot_offline = false;
+}
+else
+{
+    xot_offline = true;
 }
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
@@ -1524,8 +1529,9 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-    if (text.indexOf("<p>") == 0)
+    if (text.indexOf("<") == 0)
     {
+        // Seems to start with a tag
         // probably with new editor, don't replace newlines!
         return text;
     }

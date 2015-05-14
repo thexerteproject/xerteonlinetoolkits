@@ -89,15 +89,8 @@
 			if (buttonLabel == undefined) {
 				buttonLabel = "Zoom"
 			}
-			var zoomBtnTip = x_currentPageXML.getAttribute("zoomBtnTip");
-			if (zoomBtnTip == undefined) {
-				zoomBtnTip = "Zoom"
-			}
 			$("#zoomBtn") // doesn't use zoomBtnWidth attribute as it will size automatically
-				.button({
-					label:			buttonLabel,
-					description:	zoomBtnTip
-					})
+				.button({ label: buttonLabel })
 				.on("click", function() {
 					morphImages.zoom();
 					});

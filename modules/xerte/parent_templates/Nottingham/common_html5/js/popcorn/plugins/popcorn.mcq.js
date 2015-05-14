@@ -27,7 +27,7 @@ language: feedbackLabel singleRight singleWrong multiRight multiWrong checkBtnTx
 
 childNodes (synchMCQOption):
 required: text correct
-optional: feedback page synch play
+optional: feedback page synch play enable
 
 *dealt with in mediaLesson.html
 
@@ -42,7 +42,8 @@ optional: feedback page synch play
 		var answerSelected = function() {
 			// put together feedback string
 			var feedbackTxt = "",
-				action = -1;
+				action = -1,
+				enable = false;
 			
 			// general feedback
 			if (options.feedback != undefined && options.feedback != "") {
@@ -79,6 +80,9 @@ optional: feedback page synch play
 							}
 						}
 					}
+					if (fb == "multiRight") {
+						enable = true;
+					}
 					
 				} else {
 					fb = "singleRight";
@@ -88,9 +92,17 @@ optional: feedback page synch play
 							break;
 						}
 					}
+					if (fb == "singleRight") {
+						enable = true;
+					}
 				}
 				
 				feedbackTxt += options[fb] != "" ? '<div class="feedback">' + options[fb] + '</div>' : "";
+			}
+			
+			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
+				// controls will be enabled if correct answer selected unless there is a 'go to page' or 'go to synch point' action associated with it
+				mediaLesson.enableControls(media.media, true);
 			}
 			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
