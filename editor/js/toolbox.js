@@ -186,7 +186,8 @@ var EDITOR = (function ($, parent) {
         var treeLabel = xmlData[0].nodeName;
         if (xmlData[0].attributes['name'])
         {
-            treeLabel = xmlData[0].attributes['name'].value;
+            // Create valid HTML to be able to use jQuery to strip HTML out of it again....
+            treeLabel = $('<div>' + xmlData[0].attributes['name'].value + '<div>').text();
         }
         else
         {
@@ -370,7 +371,9 @@ var EDITOR = (function ($, parent) {
             tr.append(tdlabel)
                 .append($('<td>')
                     .addClass("wizardvalue")
-                    .append(displayDataType(value, options, name, key)));
+                    .append($('<div>')
+                        .addClass("wizardvalue_inner")
+                        .append(displayDataType(value, options, name, key))));
             //output_string += '<td class="wizardlabel">' + label + ' : </td>';
             //output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
             //output_string += '</tr>';
@@ -801,6 +804,11 @@ var EDITOR = (function ($, parent) {
                 codemirror.on("blur", function(){
                     inputChanged(options.id, options.key, options.name, codemirror.getValue(), codemirror);
                 });
+                if (options.options.height)
+                {
+                    var height = parseInt(options.options.height) + 20;
+                    codemirror.setSize(null,height);
+                }
                 $('.CodeMirror').resizable({
                     resize: function() {
                         codemirror.setSize($(this).width(), $(this).height());
@@ -848,17 +856,18 @@ var EDITOR = (function ($, parent) {
                     this.on('change', function(event) {
                         if (options.name == 'name') {
                             var thisValue = this.getData();
+                            var thisText = $(thisValue).text();
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
 
                                 // Rename the node
                                 var tree = $.jstree.reference("#treeview");
-                                tree.rename_node(tree.get_node(options.key, false), thisValue);
+                                tree.rename_node(tree.get_node(options.key, false), thisText);
 
                                 if ($('#mainleveltitle'))
                                 {
-                                    $('#mainleveltitle').html(thisValue);
+                                    $('#mainleveltitle').html(thisText);
                                 }
                             }
                         }
@@ -2058,11 +2067,12 @@ var EDITOR = (function ($, parent) {
                             .attr('id', 'browse_' + id)
                             .attr('title', language.compMedia.$tooltip)
                             .addClass("xerte_button")
+                            .addClass("media_browse")
                             .click({id:id, key:key, name:name}, function(event)
                             {
                                 browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
-                            .append($('<img>').attr('src', 'editor/img/browse.png').height(14)));
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-download').addClass('xerte-icon')));
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
