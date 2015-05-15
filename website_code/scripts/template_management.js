@@ -364,24 +364,20 @@ function file_need_save(){
     if (xmlHttp.readyState==4){ 
 	
         result = xmlHttp.responseText.split("~*~");
-
-        if(xmlHttp.responseText!=""){
-
-            var response = confirm(result[0]);
-
-            if(response){
-
-                var url="website_code/php/versioncontrol/update_file.php";
-
-                xmlHttp.open("post",url,true);
-                xmlHttp.onreadystatechange=file_version_sync;
-                xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xmlHttp.send('file_path=' + result[1] + "&template_id=" + result[2]);
-
-            }
-
-        }
-
+        // Create a notification box (hidden)
+        $("<div class='notification' style='position:absolute;display:none' id='publish_notification'>"+result[0]+"</div>")
+            // Fade it in next to the button
+            .insertAfter("#publish")
+            .fadeIn(1000,function() { 
+                // When fade-in is complete, highlight the button
+                $("#publish").addClass("highlight") ; 
+                // Then wait for 3 seconds and fade out/remove the notification
+                window.setTimeout(function() { 
+                    $("#publish").removeClass("highlight");
+                    $("#publish_notification").fadeOut(1000,
+                        function(){$(this).detach()}) ; 
+                    }, 3000)
+            });
     }
 
 }
