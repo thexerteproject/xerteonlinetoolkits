@@ -253,10 +253,7 @@ img {
 	vertical-align:	bottom;
 }
 
-figure
-{
-    margin: 5px;
-}
+
 span.cke_image_nocaption[align="left"],
 span.cke_image_nocaption[style*="float: left"],
 span.cke_image_nocaption[style*="float:left"]
@@ -264,6 +261,12 @@ span.cke_image_nocaption[style*="float:left"]
     margin: 5px 15px 0px 0px;
 }
 
+div[align="left"] figure,
+div[style*="float: left"] figure,
+div[style*="float:left"] figure
+{
+    margin: 5px 15px 0px 0px;
+}
 
 img[align="left"],
 img[style*="float: left"],
@@ -272,10 +275,11 @@ img[style*="float:left"]
     margin: 5px 15px 0px 0px;
 }
 
-img[align="right"],
-img[style*="float: right"],
-img[style*="float:right"]{
-    margin: 5px 0px 0px 15px;
+figure[align="left"],
+figure[style*="float: left"],
+figure[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
 }
 
 span.cke_image_nocaption[align="right"],
@@ -284,6 +288,23 @@ span.cke_image_nocaption[style*="float:right"]{
     margin: 5px 0px 0px 15px;
 }
 
+div[align="right"] figure,
+div[style*="float: right"] figure,
+div[style*="float:right"] figure{
+    margin: 5px 0px 0px 15px;
+}
+
+img[align="right"],
+img[style*="float: right"],
+img[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
+figure[align="right"],
+figure[style*="float: right"],
+figure[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
 
 img.centre {
 	display:		block;
