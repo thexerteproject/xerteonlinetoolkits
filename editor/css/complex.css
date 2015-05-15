@@ -25,6 +25,10 @@ body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open S
 
 #insert_subnodes hr {display: none;}
 
+#languagePanel {  border-top: 1px solid #ccc!important;}
+
+#languagePanel hr { display: none;}
+
 div.ui-layout-north div.content {background-image: none; background-color: #4D585D;}
 
 #checkbox_outer .disabled
@@ -606,16 +610,16 @@ select, input, textarea
     background: #fff;
     border-radius: 4px;
     border: 1px solid #cdcdcd;
-    width: 95%;
+    width: 100%;
     box-sizing: border-box;
 }
 
 #mainPanel input
 {
-     background: #fff;
+    background: #fff;
     border-radius: 4px;
     border: 1px solid #cdcdcd;
-    width: 98%;
+    /* width: 100%; */
     box-sizing: border-box;
 }
 .datagrid
@@ -819,7 +823,11 @@ div#bottom_buttons .xerte-icon {cursor: pointer;}
 
 #bottom_buttons i {color: white;}
 
-.wizardvalue div:first-child {width: 95%!important}
+div.wizardvalue_inner {width: 95%}
+
+.media_browse {
+    cursor: pointer;
+}
 
 .ui-jqgrid td
 {
