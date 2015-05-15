@@ -38,7 +38,6 @@
     font-size:12px;
     padding:3px 6px;
     text-decoration:none;
-    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
 }
 
 .xerte_button_dark {
@@ -53,7 +52,6 @@
 		font-size:12px;
 		padding:3px 6px;
 		text-decoration:none;
-    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
 }
 
 
@@ -83,7 +81,6 @@
     font-size:12px;
 		padding:3px 6px;
     text-decoration:none;
-    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
 }
 
 .xerte_button_dark.disabled {
@@ -98,7 +95,6 @@
     font-size:12px;
     padding:3px 6px;
     text-decoration:none;
-    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
 }
 
 .xerte_button img, .xerte_button_disabled img, .xerte_button_dark img {
