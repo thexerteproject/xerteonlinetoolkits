@@ -32,7 +32,10 @@
 		}
 		
 		this.init = function() {
-			$("#textHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</p><p><a class="newWindowLink" href="#">' + x_currentPageXML.getAttribute("tip") + '</a></p>');
+			// descrip is a new field so old projects might not have it
+			var linkTxt = x_currentPageXML.getAttribute("descrip") != undefined ? x_currentPageXML.getAttribute("descrip") : x_currentPageXML.getAttribute("tip");
+			
+			$("#textHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</p><p><a class="newWindowLink" href="#">' + linkTxt + '</a></p>');
 			
 			$("#pageImg")
 				.one("load", function() {

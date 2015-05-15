@@ -1,7 +1,7 @@
 <wizard menus="Navigators">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <embedDiv><![CDATA[<embedDiv name="Embed Content" src="Enter HTML or a URL"/>]]></embedDiv>
+      <embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv>
     </newNodes>
   </pageWizard>
 

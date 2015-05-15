@@ -11,14 +11,14 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Text" type="TextArea" height="100"/>
-    <attempts label="Attempts before hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
+    <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
     <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
-    <answerDelimeter label="Answer delimeter" type="textInput" defaultValue="," optional="true"/>
+    <answerDelimeter label="Answer Delimeter" type="textInput" defaultValue="," optional="true"/>
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
@@ -27,7 +27,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
-      <dialogStep><![CDATA[<dialogStep name="question" question="Write your question here." answer="Enter Answer" hint="Enter a hint"/>]]></dialogStep>
+      <dialogStep><![CDATA[<dialogStep name="Question" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
     </newNodes>
 
   </dialog>
