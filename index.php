@@ -145,17 +145,41 @@ Folder popup is the div that appears when creating a new folder
 <div class="ui-layout-north">
     <div class="content" id="mainHeader">
         <div class="topbar">
-            <div
-                style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-            </div>
-            <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+            <?php
+            if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+            {
+            ?>
+                <div
+                    style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                </div>
+            <?php
+            }
+            else {
+            ?>
+                <div
+                    style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                </div>
+            <?php
+            }
+            if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+            {
+            ?>
+                <img src="<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+            <?php
+            }
+            else {
+            ?>
+                <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+            <?php
+            }
+            ?>
         </div>
         <div class="userbar">
-            <div style="float:left;"><?php display_language_selectionform("general"); ?></div>
-            <div style="float:right; margin:0; margin-right:10px;color:#a01a13;">
+           <div style="float:right; margin:0; margin-right:10px;color:#a01a13;">
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
                 echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
-                <button type="button" class="xerte_button_c"
+               <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
+               <button type="button" class="xerte_button_c"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
                     <?PHP echo INDEX_BUTTON_LOGOUT; ?>
                 </button>
