@@ -312,48 +312,25 @@ function delete_loop($path){
  */
 
 function folder_loop($path){
-
     global $likelihood_array;
 
     $d = opendir($path);
-
-    while($f = readdir($d)){
-
-        if(is_dir($path . $f)){
-
-            if(($f!=".")&&($f!="..")){
-
+    while($f = readdir($d)) {
+        if (is_dir($path . $f)) {
+            if (($f != ".") && ($f != "..")) {
                 folder_loop($path . $f . "/");
-
-            }			
-
-        }else{
-
-            if(strpos($f,".rlt")!=0){
-
-                $template_check = file_get_contents($path . $f);
-
-                $folder = explode('"',substr($template_check,strpos($template_check,"targetFolder"),strpos($template_check,"version")-strpos($template_check,"targetFolder")));
-
-                $start_point = strpos($template_check,"version");
-
-                $version = explode('"',substr($template_check,$start_point,strpos($template_check," ",$start_point)-$start_point));
-
-                $temp_array = array($folder[1],$version[1]);
-
-                array_push($likelihood_array,$temp_array);
-
-            }else{
-
-
             }
-
+        } else {
+            if ($f === "data.xml") {
+                $template_check = simplexml_load_file($path . $f);
+                if ($template_check->getName() == "learningObject") {
+                    $folder = (string)$template_check['targetFolder'];
+                    array_push($likelihood_array, $folder);
+                }
+            }
         }
-
     }
-
     closedir($d);
-
 }
 
 /* Check on POST and FILES */
@@ -415,7 +392,16 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         $res = $zip->getList();
         if($res===false){
-            echo IMPORT_ZIP_FAIL . ".****";
+            delete_loop($xerte_toolkits_site->import_path . $this_dir);
+            while($delete_file = array_pop($delete_file_array)){
+                unlink($delete_file);
+            }
+
+            while($delete_folder = array_pop($delete_folder_array)){
+                rmdir($delete_folder);
+            }
+            rmdir($xerte_toolkits_site->import_path . $this_dir);
+            die(IMPORT_ZIP_FAIL . ".****");
         }
 
         $file_data = array();
@@ -429,86 +415,55 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
         foreach($zip->compressedList as $x){
 
             foreach($x as $y){
-                    /*
-				if(count(explode("/",$y))==8){
-				
-					die(IMPORT_ZIP_FOLDER_LEVEL . "****");
-				
-				}
-                    */
                 if(!(strpos($y,"media/")===false)){
-
                     $string = $zip->unzip($y, false, 0777);
-
                     $temp_array = array($y,$string,"media");
-
                     array_push($file_data,$temp_array);
-
                 }
 
                 if((strpos($y,".rlt")!==false)){
-
                     $string = $zip->unzip($y, false, 0777);
-
                     $rlt_name = $y;
-
                     $temp_array = array($y,$string,"rlt");
-
-                    array_push($file_data,$temp_array);		
-
+                    array_push($file_data,$temp_array);
                     if(!(strpos($string,"templateData=")===false)){
-
                         $temp = substr($string,strpos($string,"templateData=\"FileLocation + '")+strlen("templateData=\"FileLocation + '"));
-
                         $temp = substr($temp,0,strpos($temp,"'"));
-
                         $template_data_equivalent = $temp;
-
                     }
-
                 }
-
             }
-
         }
 
         /*
          * Look for an xml file linked to the RLO
          */
 
-		echo $template_data_equivalent . "<br />"; 
-
-        if($template_data_equivalent!=null){
-
-            foreach($zip->compressedList as $x){
-
-                foreach($x as $y){
-
-                    if($y===$template_data_equivalent){
-
-                        $data_xml = $zip->unzip($y, false, 0777);
-
-                        $temp_array = array("data.xml",$data_xml,null);
-
-                        array_push($file_data,$temp_array);
-
-                    }else if($y==="preview.xml"){
-					
-						$preview_xml = $zip->unzip($y, false, 0777);
-
-                        $temp_array = array("preview.xml",$preview_xml,null);
-
-                        array_push($file_data,$temp_array);	
-					
-					}
-
+        foreach($zip->compressedList as $x){
+            foreach($x as $y){
+                if($y===$template_data_equivalent || $y==="template.xml"){
+                    $data_xml = $zip->unzip($y, false, 0777);
+                    $temp_array = array("data.xml",$data_xml,null);
+                    array_push($file_data,$temp_array);
+                }else if($y==="preview.xml"){
+                    $preview_xml = $zip->unzip($y, false, 0777);
+                    $temp_array = array("preview.xml",$preview_xml,null);
+                    array_push($file_data,$temp_array);
                 }
+            }
+        }
 
+        if (!$data_xml || count($file_data) == 0) {
+            delete_loop($xerte_toolkits_site->import_path . $this_dir);
+            while($delete_file = array_pop($delete_file_array)){
+                unlink($delete_file);
             }
 
-        }else{
-
-            echo IMPORT_FTP_FAIL . ".****";
+            while($delete_folder = array_pop($delete_folder_array)){
+                rmdir($delete_folder);
+            }
+            rmdir($xerte_toolkits_site->import_path . $this_dir);
+            die(IMPORT_FTP_FAIL . ".****");
 
         }
 
@@ -544,7 +499,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
                 fclose($fp);
 
-                $template_check = $file_to_create[1];
+                $template_check_rlt = $file_to_create[1];
 
                 chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],0777);
 
@@ -568,13 +523,44 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
         /*
          * use the template attributes to make the folders required and name them accordingly
+         *
+         * For now, ignore version
+         *
+         * 1. Then in template.xml (which is called data.xml at this point in time)
+         * 2. First look in $template_data_equivalent
+         * 3. Then in $template_check_rlt
+         * 4. Then make it Nottingham iff template.xml contains an LO
+         *
          */
 
-        $folder = explode('"',substr($template_check,strpos($template_check,"targetFolder"),strpos($template_check,"version")-strpos($template_check,"targetFolder")));
-
-        $start_point = strpos($template_check,"version");
-
-        $version = explode('"',substr($template_check,$start_point,strpos($template_check," ",$start_point)-$start_point));
+        $folder = "";
+        $data_xml_is_a_LO = false;
+        // 1. Look in template.xml (here it is stored for the current objects
+        if (file_exists($xerte_toolkits_site->import_path . $this_dir . "data.xml")) {
+            $check = simplexml_load_file($xerte_toolkits_site->import_path . $this_dir . "data.xml");
+            if ($check->getName() === "learningObject") {
+                $folder = (string)$check['targetFolder'];
+                $data_xml_is_a_LO = true;
+            }
+        }
+        // 2. First look in $template_data_equivalent
+        if ($folder=="" && $template_data_equivalent && file_exists($xerte_toolkits_site->import_path . $this_dir . $template_data_equivalent)) {
+            $check = simplexml_load_file($xerte_toolkits_site->import_path . $this_dir . $template_data_equivalent);
+            if ($check && $check->getName() === "learningObject") {
+                $folder = (string)$check['targetFolder'];
+                $version = (string)$check['version'];
+            }
+        }
+        if ($folder=="" && $template_check_rlt && file_exists($xerte_toolkits_site->import_path . $this_dir . $template_check_rlt)) {
+            $check = simplexml_load_file($xerte_toolkits_site->import_path . $this_dir . $template_check_rlt);
+            if ($check && $check->getName() === "learningObject") {
+                $folder = (string)$check['targetFolder'];
+                $version = (string)$check['version'];
+            }
+        }
+        if ($folder=="" && $data_xml_is_a_LO) {
+            $folder = "Nottingham";
+        }
 
         if(!empty($_POST['replace'])){
 
@@ -590,154 +576,115 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
                 receive_message($_SESSION['toolkits_logon_username'], "USER", "CRITICAL", "Failed to get template type", "Failed to get template type");
 
                 echo IMPORT_TYPE_FAIL . ".****";
-
-            }else{
-
-
-                if($row['template_framework']=="xerte"){
-
-                    folder_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/");
-
-                    $template_found = false;
-
-                    while($list_of_rlts = array_pop($likelihood_array)){
-
-                        if(($folder[1]!="")&&($version[1]!="")&&($folder[1]==$list_of_rlts[0])&&($version[1]==$list_of_rlts[1])){
-
-                            $template_found=true;
-                            break;
-
-                        }				
-
-                    }	
-
-                    if($template_found){
-
-                        unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
-
-                        $preview_xml = file_get_contents($xerte_toolkits_site->import_path . $this_dir . "data.xml");
-
-                        $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
-
-                        fwrite($fh, $preview_xml);
-
-                        fclose($fh);
-
-                        /*
-                         * Copy over the top
-                         */
-
-                        replace_existing_template($xerte_toolkits_site->import_path . $this_dir, $_POST['replace']);
-
-
-                    }else{
-                        echo IMPORT_NO_EQUIVALENT_FAIL . ".****";
-                        delete_loop($xerte_toolkits_site->import_path . $this_dir);
-                        while($delete_file = array_pop($delete_file_array)){
-                            unlink($delete_file);
-                        }
-
-                        while($delete_folder = array_pop($delete_folder_array)){
-                            rmdir($delete_folder);
-                        }
-                        rmdir($xerte_toolkits_site->import_path . $this_dir);
-
-                    }
-
+                delete_loop($xerte_toolkits_site->import_path . $this_dir);
+                while($delete_file = array_pop($delete_file_array)){
+                    unlink($delete_file);
                 }
 
-            }
+                while($delete_folder = array_pop($delete_folder_array)){
+                    rmdir($delete_folder);
+                }
+                rmdir($xerte_toolkits_site->import_path . $this_dir);
+            }else{
 
-        }else{
-
-            if($_POST['folder']!=""){
-
-                $folder_id = $_POST['folder'];	
-
-            }
-
-            if($template_check!=null){
-
-                folder_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/parent_templates/");
+                folder_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row['template_framework'] . "/templates/");
 
                 $template_found = false;
 
-                while($list_of_rlts = array_pop($likelihood_array)){
-
-                    if(($folder[1]!="")&&($version[1]!="")&&($folder[1]==$list_of_rlts[0])&&($version[1]==$list_of_rlts[1])){
+                while($template = array_pop($likelihood_array)){
+                    if($folder==$template){
 
                         $template_found=true;
                         break;
-
-                    }				
-
-                }	
+                    }
+                }
 
                 if($template_found){
+                    if (file_exists($xerte_toolkits_site->import_path . $this_dir . $rlt_name)) {
+                        unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
+                    }
+                    $preview_xml = file_get_contents($xerte_toolkits_site->import_path . $this_dir . "data.xml");
+                    $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
+                    fwrite($fh, $preview_xml);
+                    fclose($fh);
 
                     /*
-                     * Make a new template
+                     * Copy over the top
                      */
 
-                    unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
-
-                    $preview_xml = file_get_contents(str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml");
-
-                    if ($preview_xml !== false)
-                    {
-                        $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
-
-                        fwrite($fh, $preview_xml);
-
-                        fclose($fh);
-                    }
-
-                    make_new_template($folder[1], $xerte_toolkits_site->import_path . $this_dir);
+                    replace_existing_template($xerte_toolkits_site->import_path . $this_dir, $_POST['replace']);
 
                 }else{
-
-                    echo IMPORT_ZIP_FAIL . ".****";
+                    echo IMPORT_NO_EQUIVALENT_FAIL . ".****";
                     delete_loop($xerte_toolkits_site->import_path . $this_dir);
-
                     while($delete_file = array_pop($delete_file_array)){
-
                         unlink($delete_file);
-
                     }
 
                     while($delete_folder = array_pop($delete_folder_array)){
-
                         rmdir($delete_folder);
-
-                    }	
-
+                    }
                     rmdir($xerte_toolkits_site->import_path . $this_dir);
+                }
+            }
+        }else{
+
+            if($_POST['folder']!=""){
+                $folder_id = $_POST['folder'];
+            }
+
+            folder_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path);
+
+            $template_found = false;
+
+            while($template = array_pop($likelihood_array)){
+
+                if($folder==$template){
+
+                    $template_found=true;
+                    break;
 
                 }
+
+            }
+
+            if($template_found){
+
+                /*
+                 * Make a new template
+                 */
+
+                if ($rlt_name!=""  && file_exists($xerte_toolkits_site->import_path . $this_dir . $rlt_name)) {
+                    unlink($xerte_toolkits_site->import_path . $this_dir . $rlt_name);
+                }
+
+                $preview_xml = file_get_contents(str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "preview.xml");
+
+                if ($preview_xml !== false)
+                {
+                    $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
+
+                    fwrite($fh, $preview_xml);
+
+                    fclose($fh);
+                }
+
+                make_new_template($folder, $xerte_toolkits_site->import_path . $this_dir);
 
             }else{
 
                 echo IMPORT_XERTE_ONLY . ".****";
-
                 delete_loop($xerte_toolkits_site->import_path . $this_dir);
 
                 while($delete_file = array_pop($delete_file_array)){
-
                     unlink($delete_file);
-
                 }
 
                 while($delete_folder = array_pop($delete_folder_array)){
-
                     rmdir($delete_folder);
-
                 }
-
                 rmdir($xerte_toolkits_site->import_path . $this_dir);
-
-
             }
-
         }
 
     }else{
