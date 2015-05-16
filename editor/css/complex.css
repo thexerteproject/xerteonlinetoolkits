@@ -25,6 +25,10 @@ body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open S
 
 #insert_subnodes hr {display: none;}
 
+#languagePanel {  border-top: 1px solid #ccc!important;}
+
+#languagePanel hr { display: none;}
+
 div.ui-layout-north div.content {background-image: none; background-color: #4D585D;}
 
 #checkbox_outer .disabled
@@ -292,11 +296,12 @@ input.media
 	border-top: 1px solid #777;
 	border-bottom: 1px solid #777;
 }
-.resizer-west-closed:hover ,
+
+/*.resizer-west-closed:hover ,
 .resizer-east-closed:hover {
 	background: #4d585e;
 }
-
+*/
 /*
 *	NORTH PANE TOOLBAR & BUTTONS
 */
@@ -376,22 +381,22 @@ span.button-pin-west	{ right: 8px; }
 span.button-pin-east	{ left:	 8px; }
 
 /* CUSTOM pin-buttons */
-span.button-pin-up 		  		{ background: url(../img/pin-up-off.gif) no-repeat center; margin-top:8px;}
-span.button-pin-up:hover   		{ background: url(../img/pin-up-on.gif)  no-repeat center; }
-span.button-pin-down 	  		{ background: url(../img/pin-dn-off.gif) no-repeat center; margin-top:8px;}
-span.button-pin-down:hover 		{ background: url(../img/pin-dn-on.gif)  no-repeat center; }
+span.button-pin-up 		  		{ background: url(../img/thumb-tack-90_444444_15.png) no-repeat center; margin-top:10px;}
+/* span.button-pin-up:hover   		{ background: url(../img/pin-up-on.gif)  no-repeat center; } */
+span.button-pin-down 	  		{ background: url(../img/thumb-tack_444444_15.png) no-repeat center; margin-top:10px;}
+/* span.button-pin-down:hover 		{ background: url(../img/pin-dn-on.gif)  no-repeat center; } */
 
 /* CUSTOM close-buttons */
-span.button-close-west			{ background: url(../img/go-lt-off.gif) no-repeat center; margin-left:8px; margin-top:8px;}
-span.button-close-west:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; }
-span.button-close-east			{ background: url(../img/go-rt-off.gif) no-repeat center; margin-right:8px; margin-top:8px;}
-span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; }
+span.button-close-west			{ background: url(../img/chevron-left_444444_15.png) no-repeat center; margin-left:10px; margin-top:10px;}
+/* span.button-close-west:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; } */
+span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) no-repeat center; margin-right:10px; margin-top:10px;}
+/* span.button-close-east:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; } */
 
 /* STANDARD toggler-buttons - when the east/west panes are 'closed' */
-.toggler-west-closed		{ background: url(../img/go-rt-off.gif) no-repeat center; margin-top:8px!important;}
-.toggler-west-closed:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; }
-.toggler-east-closed		{ background: url(../img/go-lt-off.gif) no-repeat center; margin-top:8px!important;}
-.toggler-east-closed:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; }
+.toggler-west-closed		{ background: url(../img/chevron-right_444444_15.png) no-repeat center; margin-top:10px!important;}
+/* .toggler-west-closed:hover	{ background: url(../img/go-rt-on.gif)  no-repeat center; } */
+.toggler-east-closed		{ background: url(../img/chevron-left_444444_15.png) no-repeat center; margin-top:10px!important;}
+/* .toggler-east-closed:hover	{ background: url(../img/go-lt-on.gif)  no-repeat center; } */
 
 
 /*
@@ -606,16 +611,16 @@ select, input, textarea
     background: #fff;
     border-radius: 4px;
     border: 1px solid #cdcdcd;
-    width: 95%;
+    width: 100%;
     box-sizing: border-box;
 }
 
 #mainPanel input
 {
-     background: #fff;
+    background: #fff;
     border-radius: 4px;
     border: 1px solid #cdcdcd;
-    width: 98%;
+    /* width: 100%; */
     box-sizing: border-box;
 }
 .datagrid
@@ -637,6 +642,9 @@ td.wizardlabel {
 td.wizardvalue {
 }
 
+#parameter_checkboxes span {
+    margin-right: 15px;
+}
 img.optional {
 	cursor: pointer;
 }
@@ -819,7 +827,11 @@ div#bottom_buttons .xerte-icon {cursor: pointer;}
 
 #bottom_buttons i {color: white;}
 
-.wizardvalue div:first-child {width: 95%!important}
+div.wizardvalue_inner {width: 95%}
+
+.media_browse {
+    cursor: pointer;
+}
 
 .ui-jqgrid td
 {

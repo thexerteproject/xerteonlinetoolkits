@@ -79,7 +79,7 @@ var EDITOR = (function ($, parent) {
                     initClosed:             true
                 },
                 west: {
-                    size:                   250,
+                    size:                   300,
                     minSize:                250,
                     maxSize:                450,
                     spacing_open:           4,
@@ -90,7 +90,7 @@ var EDITOR = (function ($, parent) {
                     togglerTip_open:        closetooltip,
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
-                    slideTrigger_open:      "mouseover",
+                    slideTrigger_open:      "click",
                     initClosed:             false
                     /*
                     fxName:                 "drop",
@@ -99,7 +99,7 @@ var EDITOR = (function ($, parent) {
                     */
                 },
                 east: {
-                    size:                   200,
+                    size:                   250,
                     minSize:                200,
                     maxSize:                350,
                     spacing_open:           4,
@@ -110,7 +110,7 @@ var EDITOR = (function ($, parent) {
                     togglerTip_open:        closetooltip,
                     togglerTip_closed:      opentooltip,
                     resizerTip_open:        resizetooltip,
-                    slideTrigger_open:      "mouseover",
+                    slideTrigger_open:      "click",
                     initClosed:             true
                     /*
                     fxName:                 "drop",

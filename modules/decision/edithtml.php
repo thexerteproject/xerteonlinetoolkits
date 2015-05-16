@@ -1,17 +1,17 @@
 <?php
 /**
- * Licensed to The Apereo Foundation under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
+* Licensed to The Apereo Foundation under one or more contributor license
+* agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
 
  * The Apereo Foundation licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at:
+* compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+* distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
  * See the License for the specific language governing permissions and
@@ -174,8 +174,22 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <div class="hide ui-layout-north">
     <div class="content" id="#header_images">
-        <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="float:left" />
-        <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="float:right" />
+        <?php
+        if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+        {
+            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_left.png\" style=\"float:left\" />";
+        }
+        else {
+            echo "<img src=\"website_code/images/logo.png\" style=\"float:left\" />";
+        }
+        if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+        {
+            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_right.png\" style=\"float:right\" />";
+        }
+        else {
+            echo "<img src=\"website_code/images/apereoLogo.png\" style=\"float:right\" />";
+        }
+        ?>
     </div>
 </div>
 

@@ -174,8 +174,22 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <div class="hide ui-layout-north">
     <div class="content" id="#header_images">
-        <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="float:left" />
-        <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="float:right" />
+        <?php
+        if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+        {
+            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_left.png\" style=\"float:left\" />";
+        }
+        else {
+            echo "<img src=\"website_code/images/logo.png\" style=\"float:left\" />";
+        }
+        if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+        {
+            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_right.png\" style=\"float:right\" />";
+        }
+        else {
+            echo "<img src=\"website_code/images/apereoLogo.png\" style=\"float:right\" />";
+        }
+        ?>
     </div>
 </div>
 
@@ -215,7 +229,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
-<!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
