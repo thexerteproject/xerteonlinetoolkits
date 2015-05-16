@@ -16,7 +16,7 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-    <noise label="Distractors" type="TextArea" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>
+    <noise label="Distractors" type="script" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>

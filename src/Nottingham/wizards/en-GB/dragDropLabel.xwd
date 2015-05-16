@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" align="Left" highlightColour="0xFFFF00" showHighlight="true" tip="Enter a Description for Accessibility" tryAgainTxt="Try again"/>]]></dragDropLabel>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel>
     </newNodes>
   </pageWizard>
 
@@ -11,10 +11,10 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
+	<tip label="Image Description" type="TextInput"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-    <tip label="Image Description" type="TextInput"/>
+	<showHighlight label="Highlight Hotspots" type="CheckBox" defaultValue="true"/>
     <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
-    <showHighlight label="Show Regions" type="CheckBox" defaultValue="true"/>
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -25,18 +25,17 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
-      <hotspot><![CDATA[<hotspot name="name" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
   </dragDropLabel>
 
   <!-- HOTSPOT============================== -->
-  <hotspot menuItem="HotSpot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
+  <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
 
-    <name label="Hotspot Title" type="TextInput" wysiwyg="true"/>
+    <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
-  </hotspot>  
-
+  </hotspot> 
 
 </wizard>

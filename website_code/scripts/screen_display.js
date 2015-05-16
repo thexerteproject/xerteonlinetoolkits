@@ -320,71 +320,71 @@ function button_check(){
 
 
     editbtn.disabled="disabled";
-    editbtn.className = "xerte_button_disabled";
+    editbtn.className = "xerte_button_c_no_width disabled";
     editbtn.onclick="";
 
     previewbtn.disabled="disabled";
-    previewbtn.className = "xerte_button_disabled";
+    previewbtn.className = "xerte_button_c_no_width disabled";
     previewbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className="xerte_button_disabled";
+    deletebtn.className="xerte_button_c_no_width disabled";
     deletebtn.onclick="";
 
     duplicatebtn.disabled="disabled";
-    duplicatebtn.className = "xerte_button_disabled";
+    duplicatebtn.className = "xerte_button_c_no_width disabled";
     duplicatebtn.onclick="";
 
     publishbtn.disabled="disabled";
-    publishbtn.className = "xerte_button_disabled";
+    publishbtn.className = "xerte_button_c_no_width disabled";
     publishbtn.onclick="";
 
     propertiesbtn.disabled="disabled";
-    propertiesbtn.className = "xerte_button_disabled";
+    propertiesbtn.className = "xerte_button_c_no_width disabled";
     propertiesbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className = "xerte_button_disabled";
+    deletebtn.className = "xerte_button_c_no_width disabled";
     deletebtn.onclick="";
 
     if(ids.length==1) {
         switch (workspace.nodes[ids[0]].type) {
             case "workspace":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button";
+                propertiesbtn.className = "xerte_button_c_no_width";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
                 break;
             case "recyclebin":
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button";
+                deletebtn.className = "xerte_button_c_no_width";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             case "folder":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button";
+                propertiesbtn.className = "xerte_button_c_no_width";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button";
+                deletebtn.className = "xerte_button_c_no_width";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             default:
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button";
+                propertiesbtn.className = "xerte_button_c_no_width";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 editbtn.removeAttribute("disabled");
-                editbtn.className = "xerte_button";
+                editbtn.className = "xerte_button_c_no_width";
                 editbtn.onclick = function (e) {
                     if (e.shiftKey) {
                         edit_window(false, "edit");
@@ -395,25 +395,25 @@ function button_check(){
                 };
 
                 previewbtn.removeAttribute("disabled");
-                previewbtn.className = "xerte_button";
+                previewbtn.className = "xerte_button_c_no_width";
                 previewbtn.onclick = function () {
                     preview_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button";
+                deletebtn.className = "xerte_button_c_no_width";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
 
                 duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_button";
+                duplicatebtn.className = "xerte_button_c_no_width";
                 duplicatebtn.onclick = function () {
                     duplicate_template()
                 };
 
                 publishbtn.removeAttribute("disabled");
-                publishbtn.className = "xerte_button";
+                publishbtn.className = "xerte_button_c_no_width";
                 publishbtn.onclick = function () {
                     publish_this()
                 };
@@ -453,19 +453,24 @@ function setupMainLayout()
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip:             resizetooltip,
-                fxName:                 "slide",
+                fxName:                 "none",
+                /*
+                fxName:                 "none",
                 fxSpeed_open:           750,
                 fxSpeed_close:          1500,
                 fxSettings_open:        { easing: "easeInQuint" },
                 fxSettings_close:       { easing: "easeOutQuint" }
+                */
             },
             north: {
+                size:                   117,
                 minSize:                65,
                 spacing_open:           1,
                 togglerLength_open:     0,
                 togglerLength_closed:   -1,
                 resizable:              false,
                 slidable:               false,
+                closable:               false,
                 fxName:                 "none"
             },
             south: {
@@ -473,55 +478,25 @@ function setupMainLayout()
                 minSize:                40,
                 maxSize:                250,
                 spacing_closed:         21,
-                spacing_open:           2,
+                spacing_open:           6,
                 togglerLength_closed:   21,
                 togglerLength_open:     0,
+                togglerAlign_closed:    "right",
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip_open:        resizetooltip,
                 slideTrigger_open:      "mouseover",
-                slidable:               false,
+                slidable:               true,
                 initClosed:             false,
-                fxName:                 "drop",
-                fxSpeed:                "normal",
                 slidable:               false,
+                closable:               true
+                /*
+                 fxName:                 "drop",
+                 fxSpeed:                "normal",
                 fxSettings:             { easing: "" } // remove default
-            },
-            west: {
-                size:                   250,
-                minSize:                250,
-                maxSize:                450,
-                spacing_open:           4,
-                spacing_closed:         21,
-                togglerLength_closed:   21,
-                togglerAlign_closed:    "top",
-                togglerLength_open:     0,
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip_open:        resizetooltip,
-                slideTrigger_open:      "click",
-                initClosed:             false,
-                fxSettings_open:        { easing: "easeOutBounce" }
+                */
             },
 
-            east: {
-                size:                   250,
-                minSize:                150,
-                maxSize:                250,
-                spacing_open:           2,
-                spacing_closed:         21,
-                togglerLength_closed:   21,
-                togglerAlign_closed:    "top",
-                togglerLength_open:     0,
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip_open:        resizetooltip,
-                slideTrigger_open:      "mouseover",
-                initClosed:             false,
-                fxName:                 "drop",
-                fxSpeed:                "normal",
-                fxSettings:             { easing: "" } // remove default
-            },
             center: {
                 //paneSelector:           "#mainContent",
                 minWidth:               200,
@@ -546,25 +521,21 @@ function setupMainLayout()
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip:             resizetooltip,
+                fxName:                 "none",
+                /*
                 fxName:                 "slide",
                 fxSpeed_open:           750,
                 fxSpeed_close:          1500,
                 fxSettings_open:        { easing: "easeInQuint" },
-                fxSettings_close:       { easing: "easeOutQuint" }
+                fxSettings_close:       { easing: "easeOutQuint" },
+                */
+                closable:               false
             },
-            north: {
-                minSize:                65,
-                spacing_open:           1,
-                togglerLength_open:     0,
-                togglerLength_closed:   -1,
-                resizable:              false,
-                slidable:               false,
-                fxName:                 "none"
-            },
-            east: {
+
+            west: {
                 size:                   "60%",
-                minSize:                150,
-                spacing_open:           2,
+                minSize:                200,
+                spacing_open:           6,
                 spacing_closed:         21,
                 togglerLength_closed:   21,
                 togglerAlign_closed:    "top",
@@ -572,15 +543,44 @@ function setupMainLayout()
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip_open:        resizetooltip,
-                slideTrigger_open:      "mouseover",
-                initClosed:             false,
+                slideTrigger_open:      "click",
+                initClosed:             false
+                /*
                 fxName:                 "drop",
                 fxSpeed:                "normal",
                 fxSettings:             { easing: "" } // remove default
+                */
             },
+            east: {
+                size:                   250,
+                minSize:                350,
+                maxSize:                450,
+                spacing_open:           6,
+                spacing_closed:         21,
+                togglerLength_closed:   21,
+                togglerAlign_closed:    "top",
+                togglerLength_open:     0,
+                togglerTip_open:        closetooltip,
+                togglerTip_closed:      opentooltip,
+                resizerTip_open:        resizetooltip,
+                slideTrigger_open:      "click",
+                initClosed:             false,
+                closable:               true,
+                resizable:              true
+                /*
+                onclose: function()
+                {
+                    $('div.toggler-east-closed').addClass("fa").addClass("fa-chevron-right").addClass("xerte-icon").append("test");
+                }
+                */
+                /*
+                fxSettings_open:        { easing: "easeOutBounce" }
+                */
+            },
+
             center: {
                 //paneSelector:           "#mainContent",
-                minWidth:               200,
+                minWidth:               100,
                 minHeight:              200/*,
                  contentSelector:        ".ui-layout-content"*/
             }
@@ -592,23 +592,20 @@ function setupMainLayout()
     xertemain_layout = $("body").layout( xertemain_layout_settings );
     xerteinner_layout = $("#pagecontainer").layout( xerteinner_layout_settings);
 
-    var right_column = "body > .ui-layout-east";
-    var inner_right_column = "#pagecontainer > .ui-layout-east"
+    var right_column = "#pagecontainer > .ui-layout-east";
     var south_pane = "body > .ui-layout-south";
 
     // ** Add pin buttons and wire them up **
     $("<span></span>").addClass("pin-button").prependTo( right_column );
-    xertemain_layout.addPinBtn( right_column +" .pin-button", "east" );
-    //$("<span></span>").addClass("pin-button").prependTo( inner_right_column );
-    //xerteinner_layout.addPinBtn( inner_right_column +" .pin-button", "east" );
+    xerteinner_layout.addPinBtn( right_column +" .pin-button", "east" );
+
     $("<span></span>").addClass("pin-button").prependTo( south_pane );
     xertemain_layout.addPinBtn( south_pane +" .pin-button", "south" );
 
     // ** Add close buttons and wire them up **
     $("<span></span>").attr("id", "east-closer").prependTo( right_column );
-    xertemain_layout.addCloseBtn("#east-closer", "east");
-    //$("<span></span>").attr("id", "east-closer").prependTo( inner_right_column );
-    //xerteinner_layout.addCloseBtn("#east-closer", "east");
+    xerteinner_layout.addCloseBtn("#east-closer", "east");
+
     $("<span></span>").attr("id", "south-closer").prependTo( south_pane );
     xertemain_layout.addCloseBtn("#south-closer", "south");
 

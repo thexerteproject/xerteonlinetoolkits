@@ -198,6 +198,7 @@ function login_form($messages, $xerte_toolkits_site)
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
 
+    <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
     <!--
@@ -210,14 +211,44 @@ function login_form($messages, $xerte_toolkits_site)
     Version 1.0
 
     -->
-
+    <style>
+        body {
+            background:white;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="topbar">
-    <img src="<?php echo $xerte_toolkits_site->site_logo; ?>" style="margin-left:10px; float:left" />
-    <img src="<?php echo $xerte_toolkits_site->organisational_logo; ?>" style="margin-right:10px; float:right" />
+    <?php
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+    {
+        ?>
+        <div
+            style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+        </div>
+    <?php
+    }
+    else {
+        ?>
+        <div
+            style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+        </div>
+    <?php
+    }
+    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+    {
+        ?>
+        <img src="<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+    <?php
+    }
+    else {
+        ?>
+        <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+    <?php
+    }
+    ?>
 </div>
 
 <div class="mainbody">
