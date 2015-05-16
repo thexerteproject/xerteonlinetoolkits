@@ -453,11 +453,14 @@ function setupMainLayout()
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip:             resizetooltip,
-                fxName:                 "slide",
+                fxName:                 "none",
+                /*
+                fxName:                 "none",
                 fxSpeed_open:           750,
                 fxSpeed_close:          1500,
                 fxSettings_open:        { easing: "easeInQuint" },
                 fxSettings_close:       { easing: "easeOutQuint" }
+                */
             },
             north: {
                 size:                   117,
@@ -518,6 +521,7 @@ function setupMainLayout()
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip:             resizetooltip,
+                fxName:                 "none",
                 /*
                 fxName:                 "slide",
                 fxSpeed_open:           750,
