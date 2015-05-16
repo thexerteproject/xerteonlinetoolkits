@@ -193,7 +193,7 @@ div.ui-layout-east div.header
 .resizer-north-dragging ,
 .resizer-north:hover		{ background: url(../img/resizable-n.gif) repeat-x center; }*/
 .resizer-south-dragging ,
-.resizer-south:hover		{ background: url(../images/resizable-s.gif) repeat-x center; }
+.resizer-south-open:hover		{ background: url(../images/resizable-s.gif) repeat-x center; }
 	
 .resizer-west-dragging ,
 .resizer-west-open:hover	{ background: url(../images/resizable-w.gif) repeat-y center; }
@@ -221,11 +221,11 @@ div.ui-layout-east div.header
 
 /* IE6 * HACK - always show resizer graphics because IE6 cannot understand elem:hover */
 /** html .resizer-north		{ background: url(../img/resizable-n.gif) repeat-x center !important; } */
-* html .resizer-south		{ background: url(../images/resizable-s.gif) repeat-x center !important; }
+* html .resizer-south-open		{ background: url(../images/resizable-s.gif) repeat-x center !important; }
 * html .resizer-west-open	{ background: url(../images/resizable-w.gif) repeat-y center !important; }
 * html .resizer-east-open	{ background: url(../images/resizable-e.gif) repeat-y center !important; }
 /** html .resizer-north , */
-* html .resizer-south ,
+* html .resizer-south-open ,
 * html .resizer-west-open ,
 * html .resizer-east-open {
 	opacity: 0.1 !important;
@@ -250,16 +250,13 @@ div.ui-layout-east div.header
 /*
 *	extJS-STYLE RESIZER/SLIDER-BAR (CLOSED)
 */
-.resizer-west-closed ,
+.resizer-west-closed,
+.resizer-soth-closed,
 .resizer-east-closed {
 	/*background: #D1E6FC url(../img/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat; */
-    background: #4d585e url(../images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
-	border-top: 1px solid #777;
-	border-bottom: 1px solid #777;
-}
-.resizer-west-closed:hover ,
-.resizer-east-closed:hover {
-	background: #4d585e;
+    /* background: #4d585e url(../images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x; */
+    background: #b3b3b5;;
+
 }
 
 /*
@@ -360,26 +357,24 @@ span.button-pin-south	{
 }
 
 /* CUSTOM pin-buttons */
-span.button-pin-up 		  		{ background: url(../images/pin-up-off.gif) no-repeat center; margin-top:3px;}
-span.button-pin-up:hover   		{ background: url(../images/pin-up-on.gif)  no-repeat center; margin-top:3px;}
-span.button-pin-down 	  		{ background: url(../images/pin-dn-off.gif) no-repeat center; margin-top:3px;}
-span.button-pin-down:hover 		{ background: url(../images/pin-dn-on.gif)  no-repeat center; margin-top:3px;}
+span.button-pin-up 		  		{ cursor: pointer; background: url(../images/thumb-tack-90_444444_15.png) no-repeat center; margin-top:10px; margin-left: 6px;}
+/*span.button-pin-up:hover   		{ cursor: pointer; background: url(../images/thumb-tack-90_cccccc_15.png) no-repeat center; margin-top:10px;margin-left: 6px;} */
+span.button-pin-down 	  		{ cursor: pointer; background: url(../images/thumb-tack_444444_15.png) no-repeat center; margin-top:10px; margin-left: 6px;}
+/* span.button-pin-down:hover 		{ cursor: pointer; background: url(../images/thumb-tack_cccccc_15.png) no-repeat center; margin-top:10px;margin-left: 6px;} */
 
 /* CUSTOM close-buttons */
-span.button-close-west			{ background: url(../images/go-lt-off.gif) no-repeat center; margin-top:3px;}
-span.button-close-west:hover	{ background: url(../images/go-lt-on.gif)  no-repeat center; margin-top:3px;}
-span.button-close-east			{ background: url(../images/go-rt-off.gif) no-repeat center; margin-top:3px;}
-span.button-close-east:hover	{ background: url(../images/go-rt-on.gif)  no-repeat center; margin-top:3px;}
-span.button-close-south			{ background: url(../images/go-dn-off.gif) no-repeat center; margin-top:3px;}
-span.button-close-south:hover	{ background: url(../images/go-dn-on.gif)  no-repeat center; margin-top:3px;}
+span.button-close-west			{ cursor: pointer; background: url(../images/chevron-left_444444_15.png) no-repeat center; margin-top:10px; margin-left: 6px;}
+/* span.button-close-west:hover	{ cursor: pointer; background: url(../images/chevron-left_dddddd_15.png) no-repeat center; margin-top:10px; margin-left: 6px;} */
+span.button-close-east			{ cursor: pointer; background: url(../images/chevron-right_444444_15.png) no-repeat center; margin-top:10px; margin-right: 6px;}
+/* span.button-close-east:hover	{ cursor: pointer; background: url(../images/chevron-right_dddddd_15.png) no-repeat center; margin-top:10px; margin-right: 6px;} */
+span.button-close-south			{ cursor: pointer; background: url(../images/chevron-down_444444_15.png) no-repeat center; margin-top:10px;}
+/* span.button-close-south:hover	{ cursor: pointer; background: url(../images/chevron-down_dddddd_15.png) no-repeat center; margin-top:10px;} */
 
 /* STANDARD toggler-buttons - when the east/west panes are 'closed' */
-.toggler-west-closed		{ background: url(../images/go-rt-off.gif) no-repeat center; margin-top:3px !important;}
-.toggler-west-closed:hover	{ background: url(../images/go-rt-on.gif)  no-repeat center; margin-top:3px !important;}
-.toggler-east-closed		{ background: url(../images/go-lt-off.gif) no-repeat center; margin-top:3px !important;}
-.toggler-east-closed:hover	{ background: url(../images/go-lt-on.gif)  no-repeat center; margin-top:3px !important;}
-.toggler-south-closed		{ background: url(../images/go-up-off.gif) no-repeat center; margin-top:3px !important;}
-.toggler-south-closed:hover	{ background: url(../images/go-up-on.gif)  no-repeat center; margin-top:3px !important;}
+.toggler-east-closed { cursor: pointer; background: url(../images/chevron-left_444444_15.png)  no-repeat center; margin-top:3px !important;}
+/* .toggler-east-closed:hover	{ background: url(../images/go-lt-on.gif)  no-repeat center; margin-top:3px !important;} */
+.toggler-south-closed		{ cursor: pointer; background: url(../images/chevron-up_444444_15.png)  no-repeat center;}
+/* .toggler-south-closed:hover	{ background: url(../images/go-up-on.gif)  no-repeat center; margin-top:3px !important;} */
 
 /*
 *	INNER LAYOUT RESIZERS & TOGGLERS

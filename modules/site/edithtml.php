@@ -229,7 +229,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
-<!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>

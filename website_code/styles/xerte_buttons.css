@@ -18,12 +18,30 @@
  */
 
 .xerte_button_c {
-		background-color:#f86718;	
-		color:#fff;
-		border-radius:4px;
-		padding:2px;
-		width:70px;
-    font-family:Cabin,'Cabin',Open Sans,'Open Sans',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
+    background-color:#f86718;
+    color:#fff;
+    border-radius:4px;
+    border:#fff 1px solid;
+    padding:2px;
+    width:70px;
+    cursor: pointer;
+}
+
+.xerte_button_c_no_width {
+    background-color:#f86718;
+    color:#fff;
+    border-radius:4px;
+    border:#fff 1px solid;
+    padding:2px;
+    cursor: pointer;
+}
+
+.xerte_button_c.disabled {
+    background-color: rgba(248, 103, 24, 0.25);
+}
+
+.xerte_button_c_no_width.disabled {
+    background-color: rgba(248, 103, 24, 0.25);
 }
 
 .xerte_button {
@@ -82,6 +100,8 @@
 		padding:3px 6px;
     text-decoration:none;
 }
+
+
 
 .xerte_button_dark.disabled {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8c8c8c), color-stop(1, #404040) );
