@@ -78,12 +78,13 @@ recycle_bin();
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
-    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/jquery-ui-layout.css" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
     <?PHP
     echo "
@@ -174,8 +175,36 @@ Folder popup is the div that appears when creating a new folder
             }
             ?>
         </div>
-        <div class="userbar">
-           <div style="float:right; margin:0; margin-right:10px;color:#a01a13;">
+
+        <div class="buttonbar">
+            <div class="file_mgt_area_top">
+                <div class="file_mgt_area_buttons">
+                    <div class="file_mgt_area_middle_button_left">
+                        <button type="button" class="xerte_button_c_no_width" id="newfolder" onclick="javascript:make_new_folder()">
+                            <i class="fa fa-lg fa-folder xerte-icon"></i><?php echo INDEX_BUTTON_NEWFOLDER; ?>
+                        </button>
+                    </div>
+                    <div class="file_mgt_area_middle_button_left">
+                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+                                id="properties"><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
+                        <button type="button" class="xerte_button_c_nowidth_disabled" disabled="disabled"
+                                id="edit"><?php echo INDEX_BUTTON_EDIT; ?></button>
+                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+                                id="preview"><?php echo INDEX_BUTTON_PREVIEW; ?></button>
+                    </div>
+                    <div class="file_mgt_area_middle_button_right">
+                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+                                id="delete"><?php echo INDEX_BUTTON_DELETE; ?></button>
+                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+                                id="duplicate"><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
+                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+                                id="publish"><?php echo INDEX_BUTTON_PUBLISH; ?></button>
+                    </div>
+                </div>
+
+            </div>
+
+           <div class="userbar">
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
                 echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
                <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
@@ -185,7 +214,9 @@ Folder popup is the div that appears when creating a new folder
                 </button>
             </div>
             <div style="clear:both;"></div>
+            <div class="separator"></div>
         </div>
+
     </div>
 </div>
 <!--
@@ -195,115 +226,63 @@ Folder popup is the div that appears when creating a new folder
 -->
 <div class="ui-layout-center" id="pagecontainer">
 
-        <div class="ui-layout-north">
-            <div class="content">
-                <div class="file_mgt_area_top">
-                    <div class="file_mgt_area_buttons">
-                        <div class="file_mgt_area_middle_button_left">
-                            <button type="button" class="xerte_button" id="newfolder" onclick="javascript:make_new_folder()">
-                                <img align="texttop"
-                                     src="website_code/images/Icon_Folder_15x12.gif"/> <?php echo INDEX_BUTTON_NEWFOLDER; ?>
-                            </button>
-                        </div>
-                        <div class="file_mgt_area_middle_button_left">
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="properties"><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="edit"><?php echo INDEX_BUTTON_EDIT; ?></button>
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="preview"><?php echo INDEX_BUTTON_PREVIEW; ?></button>
-                        </div>
-                        <div class="file_mgt_area_middle_button_right">
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="delete"><?php echo INDEX_BUTTON_DELETE; ?></button>
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="duplicate"><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
-                            <button type="button" class="xerte_button_disabled" disabled="disabled"
-                                    id="publish"><?php echo INDEX_BUTTON_PUBLISH; ?></button>
-                        </div>
-                    </div>
-                </div>
+    <div class="ui-layout-west" id="workspace_layout">
+        <div class="header" id="inner_left_header">
+            <div class="workspace_search_outer">
+            <div class="workspace_search">
+                <input type="text" id="workspace_search">
+            </div>
             </div>
         </div>
-        <div class="ui-layout-center" id="workspace_layout">
-            <!--
-
-                    File area menu
-
-            -->
-
-            <div class="header" id="inner_left_header">
-                <div class="workspace_search">
-                    <input type="text" id="workspace_search">
-                </div>
-            </div>
-            <div class="content">
-                <div id="workspace"></div>
-            </div>
+        <div class="content">
+            <div id="workspace"></div>
         </div>
-        <div class="ui-layout-east">
-            <div class="header" id="inner_right_header">
-
-            </div>
-            <div class="content">
-                <div class="projectInformationContainer" id="project_information">
-
-                </div>
-            </div>
-        </div>
-</div>
-
-
-            <!--
-
-                    Everything from the end of the file system to the top of the blank templates area
-
-            -->
-
-
-
-
-<div class="ui-layout-east">
-
-    <div class="header">
-        <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
-    </div>
-    <div class="content">
-        <div class="new_template_area_middle">
-
-            <!--
-
-                            Top of the blank templates section
-
-            -->
-
-
-            <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP
-                list_blank_templates();
-                ?><!--
-
-                                        End of the blank templates section, through to end of page
-
-                                -->
+        <div class="footer" id="sortContainer">
+            <div class="file_mgt_area_bottom">
+                <form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
+                    <?PHP echo INDEX_SORT; ?>
+                    <select id="sort-selector" name="type" onchange="refresh_workspace()">>
+                        <option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
+                        <option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
+                        <option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
+                        <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
+                    </select>
+                </form>
             </div>
         </div>
     </div>
+
+    <div class="ui-layout-center">
+        <div class="header" id="inner_center_header">
+
+        </div>
+        <div class="content">
+            <div class="projectInformationContainer" id="project_information">
+
+            </div>
+        </div>
+        <div class="footer" id="inner_center_footer"></div>
+    </div>
+
+    <div class="ui-layout-east">
+
+        <div class="header" id="inner_right_header">
+            <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
+        </div>
+        <div class="content">
+            <div class="new_template_area_middle">
+                <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP
+                    list_blank_templates();
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="footer" id="inner_right_footer"></div>
+    </div>
 </div>
+
+
 <div  class="ui-layout-south">
-    <div class="header" id="sortContainer" >
-        <div class="file_mgt_area_bottom">
-            <form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
-                <?PHP echo INDEX_SORT; ?>
-                <select id="sort-selector" name="type" onchange="refresh_workspace()">>
-                    <option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
-                    <option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
-                    <option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
-                    <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
-                </select>
-                <!--<button type="button" class="xerte_button" onclick="javascript:selection_changed()"><?php echo INDEX_BUTTON_SORT; ?></button>-->
-            </form>
-        </div>
-    </div>
     <div class="content">
         <!-- <div class="border" style="margin:10px"></div>  -->
 
