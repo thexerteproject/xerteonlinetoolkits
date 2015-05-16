@@ -2120,7 +2120,7 @@ var EDITOR = (function ($, parent) {
                     var id = 'textinput_' + form_id_offset;
                     form_id_offset++;
                     //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
-                    if (options.wysiwyg && options.wysiwyg=="true")
+                    if (options.wysiwyg && options.wysiwyg!="false")
                     {
                         html = $('<div>')
                             .attr('id', id)
