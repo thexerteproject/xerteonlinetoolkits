@@ -169,14 +169,14 @@
         this.processShapeData = function() {
         	if ($(x_currentPageXML).text().length > 1) {
 				var xml;
-				if (jQuery.browser.msie) { // Had to add this in to get IE to parse <shapes> correctly
+				/*if (jQuery.browser.msie) { // Had to add this in to get IE to parse <shapes> correctly
 					var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
 					xmlDoc.loadXML($(x_currentPageXML).text());
 					xml = xmlDoc;
 				}
-				else {
+				else {*/
 					xml = $($(x_currentPageXML).text());
-				}
+				//}
 				
 				var that = this;
 				$(xml)
@@ -808,45 +808,62 @@
 			// --- MCQ ---
 			} else {
 				var	phrases = {}, // object will contain all quiz phrases from xml...
+					txt;
+				
+				// quesCount replaces the 3 separate properties used in older projects
+				if (x_currentPageXML.getAttribute("quesCount") != undefined) {
+					phrases.quesCount = x_currentPageXML.getAttribute("quesCount");
+				} else {
 					txt = x_currentPageXML.getAttribute("beforeQuesCount");
-				if (txt == undefined) { txt = "Question"; };
-				phrases.beforeQuesCount = txt;
-				
-				txt = x_currentPageXML.getAttribute("betweenQuesCount");
-				if (txt == undefined) { txt = "of"; };
-				phrases.betweenQuesCount = txt;
-				
-				txt = x_currentPageXML.getAttribute("afterQuesCount");
-				if (txt == undefined) { txt = ""; };
-				phrases.afterQuesCount = txt;
+					if (txt == undefined) { txt = "Question"; };
+					phrases.beforeQuesCount = txt;
+					
+					txt = x_currentPageXML.getAttribute("betweenQuesCount");
+					if (txt == undefined) { txt = "of"; };
+					phrases.betweenQuesCount = txt;
+					
+					txt = x_currentPageXML.getAttribute("afterQuesCount");
+					if (txt == undefined) { txt = ""; };
+					phrases.afterQuesCount = txt;
+				}
 				
 				txt = x_currentPageXML.getAttribute("correctTxt");
 				if (txt == undefined) { txt = "That's right."; };
 				phrases.correctTxt = txt;
 				
-				txt = x_currentPageXML.getAttribute("wrong1stTxt");
-				if (txt == undefined) { txt = "No. The"; };
-				phrases.wrong1stTxt = txt;
-				
-				txt = x_currentPageXML.getAttribute("wrong2ndTxt");
-				if (txt == undefined) { txt = "is highlighted in green. The correct answer is the"; };
-				phrases.wrong2ndTxt = txt;
+				// wrongFeedback replaces the 2 separate properties used in older projects
+				if (x_currentPageXML.getAttribute("wrongFeedback") != undefined) {
+					phrases.wrongFeedback = x_currentPageXML.getAttribute("wrongFeedback");
+				} else {
+					txt = x_currentPageXML.getAttribute("wrong1stTxt");
+					if (txt == undefined) { txt = "No. The"; };
+					phrases.wrong1stTxt = txt;
+					
+					txt = x_currentPageXML.getAttribute("wrong2ndTxt");
+					if (txt == undefined) { txt = "is highlighted in green. The correct answer is the"; };
+					phrases.wrong2ndTxt = txt;
+				}
 				
 				txt = x_currentPageXML.getAttribute("continueTxt");
 				if (txt == undefined) { txt = "Move on to the next question."; };
 				phrases.continueTxt = txt;
 				
-				txt = x_currentPageXML.getAttribute("beforeScore");
-				if (txt == undefined) { txt = "You scored"; };
-				phrases.beforeScore = txt;
-				
-				txt = x_currentPageXML.getAttribute("betweenScore");
-				if (txt == undefined) { txt = "out of"; };
-				phrases.betweenScore = txt;
-				
-				txt = x_currentPageXML.getAttribute("afterScore");
-				if (txt == undefined) { txt = "in the quiz"; };
-				phrases.afterScore = txt;
+				// score replaces the 3 separate properties used in older projects
+				if (x_currentPageXML.getAttribute("score") != undefined) {
+					phrases.score = x_currentPageXML.getAttribute("score");
+				} else {
+					txt = x_currentPageXML.getAttribute("beforeScore");
+					if (txt == undefined) { txt = "You scored"; };
+					phrases.beforeScore = txt;
+					
+					txt = x_currentPageXML.getAttribute("betweenScore");
+					if (txt == undefined) { txt = "out of"; };
+					phrases.betweenScore = txt;
+					
+					txt = x_currentPageXML.getAttribute("afterScore");
+					if (txt == undefined) { txt = "in the quiz"; };
+					phrases.afterScore = txt;
+				}
 				
 				$pageContents.data("phrases", phrases);
 				
@@ -894,7 +911,12 @@
 							$pageContents.data("mcqData").score++;
 							
 						} else { // incorrect
-							$("#feedback").html($pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+							if ($pageContents.data("phrases").wrongFeedback != undefined) {
+								$("#feedback").html($pageContents.data("phrases").wrongFeedback.replace("{a}", myAnswer).replace("{b}", $currentShape.data("label")) + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+							} else {
+								// for backward compatibility
+								$("#feedback").html($pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+							}
 							
 							// tint wrong answer canvas/div green
 							var	$myAnswerCanvas = $("#hsHolder canvas, #hsHolder div").filter(function() { return $(this).data("label") && $(this).data("label") == myAnswer; });
@@ -934,7 +956,13 @@
 							$("#hsHolder canvas, #hsHolder div").removeClass("visible");
 							$("#qHolder").hide();
 							$("#scoreHolder").show();
-							$("#scoreTxt").html($pageContents.data("phrases").beforeScore + " " + $pageContents.data("mcqData").score + " " + $pageContents.data("phrases").betweenScore + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterScore + ".");
+							
+							if ($pageContents.data("phrases").score != undefined) {
+								$("#scoreTxt").html($pageContents.data("phrases").score.replace("{i}", $pageContents.data("mcqData").score).replace("{n}", $pageContents.data("mcqData").questions.length));
+							} else {
+								// for backward compatibility
+								$("#scoreTxt").html($pageContents.data("phrases").beforeScore + " " + $pageContents.data("mcqData").score + " " + $pageContents.data("phrases").betweenScore + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterScore + ".");
+							}
 							
 						} else {
 							customHotspots.createQ();
@@ -1079,7 +1107,12 @@
 		
 		// only used in mcq interaction - creates new question
 		this.createQ = function() {
-			$("#qCount").html($pageContents.data("phrases").beforeQuesCount + " " + ($pageContents.data("mcqData").currentQ + 1) + " " + $pageContents.data("phrases").betweenQuesCount + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterQuesCount);
+			if ($pageContents.data("phrases").quesCount != undefined) {
+				$("#qCount").html($pageContents.data("phrases").quesCount.replace("{i}", ($pageContents.data("mcqData").currentQ + 1)).replace("{n}", $pageContents.data("mcqData").questions.length));
+			} else {
+				// for backward compatibility
+				$("#qCount").html($pageContents.data("phrases").beforeQuesCount + " " + ($pageContents.data("mcqData").currentQ + 1) + " " + $pageContents.data("phrases").betweenQuesCount + " " + $pageContents.data("mcqData").questions.length + " " + $pageContents.data("phrases").afterQuesCount);
+			}
 			$("#feedback").html("");
 			
 			var correctShape = $pageContents.data("mcqData").questions[$pageContents.data("mcqData").currentQ];

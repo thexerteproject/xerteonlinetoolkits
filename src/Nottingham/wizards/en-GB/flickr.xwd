@@ -1,12 +1,12 @@
 <wizard menus="Misc">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keyword to search here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" loadingTxt="Loading..." imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr>  
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr>  
     </newNodes>
   </pageWizard>
 
   <!-- FLICKR SLIDESHOW=============================== -->
-  <flickr menu="Misc" menuItem="Flickr Slideshow" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service." label="PageText" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+  <flickr menu="Misc" menuItem="Flickr Slideshow" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
@@ -15,7 +15,7 @@
 
 	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	
-	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true"/>
+	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
     <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true" />
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>

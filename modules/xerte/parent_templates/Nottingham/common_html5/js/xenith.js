@@ -263,7 +263,7 @@ function x_getLangData(lang) {
         x_setUp();
     }
     else {
-        if (lang == undefined || lang == "undefined") {
+        if (lang == undefined || lang == "undefined" || lang == "") {
             lang = "en-GB";
         }
         $.ajax({
