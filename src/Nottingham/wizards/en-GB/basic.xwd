@@ -5,7 +5,7 @@
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
-    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
+    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true" />
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false" />
@@ -13,14 +13,14 @@
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" />
 
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
-    <displayMode type="ComboBox" options="default,full screen,fill window" data="default,full screen,fill window" label="Display Mode" width="100"/>
+    <displayMode type="ComboBox" options="Default,Full Screen,Fill Window" data="default,full screen,fill window" label="Display Mode" width="100"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page title size"  defaultValue="24"/>
 	
 	<media optional="true" type="media" label="Media File" defaultValue="Select an Audio or Video File"/>
 	<mediaImage optional="true" type="media" label="Media Image (Audio only)" defaultValue="Select an Image"/>
 	<mediaImageTip optional="true" label="Media Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
     <mediaTranscript optional="true" type="media" label="Media Transcript" defaultValue="Select a Timed Text Transcript File"/>
-	<mediaTiming optional="true" type="ComboBox" options="Current caption only,Keep previous captions,Show all captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
+	<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
 	<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Media Caption Position" defaultValue="below" width="175"/>
 	<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Media Caption Align" defaultValue="left" width="100"/>
 	<mediaColour optional="true" type="ColourPicker" label="Media Caption Colour" defaultValue="0x000000"/>
@@ -37,8 +37,8 @@
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <trackingMode optional="true" label="SCORM tracking mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
-    <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
+    <trackingMode optional="true" label="SCORM Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 
     <newNodes>
     </newNodes>
