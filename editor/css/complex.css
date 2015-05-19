@@ -715,6 +715,7 @@ td.flashonly, td.deprecated{
 .nodeInfo {
     margin-left:34px;
     margin-top: 10px;
+	margin-bottom: 20px;
     color: #718ab6;
 
 }
