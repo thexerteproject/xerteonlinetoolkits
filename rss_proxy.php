@@ -31,14 +31,14 @@ $snoopy = new Snoopy;
 
 $url = $_GET['rss'];
 
-$snoopy->proxy_host1=$xerte_toolkits_site->proxy1;				
-$snoopy->proxy_host2=$xerte_toolkits_site->proxy2;				
-$snoopy->proxy_host3=$xerte_toolkits_site->proxy3;				
-$snoopy->proxy_host4=$xerte_toolkits_site->proxy4;				
-$snoopy->proxy_port1=$xerte_toolkits_site->port1;
-$snoopy->proxy_port2=$xerte_toolkits_site->port2;
-$snoopy->proxy_port3=$xerte_toolkits_site->port3;
-$snoopy->proxy_port4=$xerte_toolkits_site->port4;
+if (isset($xerte_toolkits_site->proxy1)) $snoopy->proxy_host1=$xerte_toolkits_site->proxy1;				
+if (isset($xerte_toolkits_site->proxy2)) $snoopy->proxy_host2=$xerte_toolkits_site->proxy2;				
+if (isset($xerte_toolkits_site->proxy3)) $snoopy->proxy_host3=$xerte_toolkits_site->proxy3;				
+if (isset($xerte_toolkits_site->proxy4)) $snoopy->proxy_host4=$xerte_toolkits_site->proxy4;		
+if (isset($xerte_toolkits_site->port1)) $snoopy->proxy_port1=$xerte_toolkits_site->port1;
+if (isset($xerte_toolkits_site->port2)) $snoopy->proxy_port2=$xerte_toolkits_site->port2;
+if (isset($xerte_toolkits_site->port3)) $snoopy->proxy_port3=$xerte_toolkits_site->port3;
+if (isset($xerte_toolkits_site->port4)) $snoopy->proxy_port4=$xerte_toolkits_site->port4;
 
 /** XXX TODO SECURITY ? Someone can fetch any arbitrary remote URL using this script. Should re require users are logged in or something ? */
 $content = $snoopy->fetch($url);

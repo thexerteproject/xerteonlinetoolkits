@@ -5,21 +5,18 @@
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
 	  showMeTxt="Use the arrows to learn more."
-	  regionsTxt="Show Regions"
 	  nextTxt="Next"
 	  priorTxt="Previous"
-	  nextBtnTxt="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
-	  checkBtnTxt="Check" checkBtnTip="Check your answer" checkBtnWidth="100"
-	  beforeQuesCount="Question" nQValue="n" betweenQuesCount="of" afterQuesCount=""
+	  nextBtnTxt="Next" 
+	  checkBtnTxt="Check" 
+	  quesCount="Question {i} of {n}" 
 	  questionTxt="Which item is highlighted in the diagram? Choose from the following options"
-	  wrong1stTxt="No. The"
-	  wrong2ndTxt="is highlighted in green. The correct answer is the"
+	  wrongFeedback="No. The {a} is highlighted in green. The correct answer is the {b}" 
 	  noOptionTxt="You haven't selected an option."
 	  correctTxt="That's right."
 	  continueTxt="Move on to the next question"
 	  scoreLabel="Score" 
-	  beforeScore="You scored" nSValue="s"
-	  betweenScore="out of" afterScore="in the quiz" 
+	  score="You scored {i} / {n}" 
 	  onCompletion="You can retake the quiz at any time"   
 	  restart="Restart"  
 	  >CDATA</customHotspots>]]></customHotspots>
@@ -35,33 +32,37 @@
     <interactivity label="Interactivity" options="Hotspots,Labels,Show Me,MCQ" type="ComboBox" data="Hotspots,Labels,Show Me,MCQ" defaultValue="Hotspots" width="100"/>
     <showShapes label="Show Shapes" type="CheckBox" defaultValue="true"/>
 
-    <hotspotsTxt label="Hotspots text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <labelsTxt label="Labels text" type="TextInput" wysiwyg="true" language="true"/>
-    <showMeTxt label="Show Me text" type="TextInput" wysiwyg="true" language="true"/>
-    <regionsTxt label="Show Regions text" type="TextInput" wysiwyg="true" language="true"/>
+    <hotspotsTxt label="Hotspots Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <labelsTxt label="Labels Text" type="TextInput" wysiwyg="true" language="true"/>
+    <showMeTxt label="Show Me Text" type="TextInput" wysiwyg="true" language="true"/>
+    <regionsTxt label="Show Regions Text" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
     <nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="TextInput" language="true"/>
-    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
+    <nextBtnTip label="Next Button Tip" type="TextInput" language="true" deprecated="This property is no longer required"/>
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <checkBtnTip label="Check Button Tip" type="textInput" language="true"/>		
-    <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true"/>
-    <beforeQuesCount label="QUESTION n of m questions" type="TextInput" wysiwyg="true" language="true"/>
-    <nQValue label="Number precedes Count" options="Yes,No" type="ComboBox"  defaultValue = "n" data="n,c" width="200" language="true"/>	
-    <betweenQuesCount label="question n OF m questions" type="TextInput" wysiwyg="true" language="true"/>
-    <afterQuesCount label="question n of m QUESTIONS" type="TextInput" wysiwyg="true" language="true"/>
+    <checkBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>		
+    <checkBtnWidth label="Check Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+    <beforeQuesCount label="QUESTION n of m questions" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
+    <nQValue label="Number Precedes Count" options="Yes,No" type="ComboBox"  defaultValue = "n" data="n,c" width="200" language="true" deprecated="This property is used for backward compatibility"/>	
+    <betweenQuesCount label="question n OF m questions" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
+    <afterQuesCount label="question n of m QUESTIONS" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
+	
+	<quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
+	<score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true" />
+	<wrongFeedback label="Incorrect Feedback" type="TextInput" wysiwyg="true" language="true" />
 
     <questionTxt label="Question Text" type="TextInput" wysiwyg="true" language="true"/>
-	<wrong1stTxt label="Wrong feedback intro" type="TextInput" wysiwyg="true" language="true"/>
-	<wrong2ndTxt label="Wrong feedback main" type="TextInput" wysiwyg="true" language="true"/>
+	<wrong1stTxt label="Wrong Feedback Intro" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
+	<wrong2ndTxt label="Wrong Feedback Main" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
     <noOptionTxt label="No Option Text" type="TextInput" wysiwyg="true" language="true"/>
     <correctTxt label="Question Text" type="TextInput" wysiwyg="true" language="true"/>
-    <continueTxt label="Continue instructions" type="TextInput" wysiwyg="true" language="true"/>
+    <continueTxt label="Continue Instructions" type="TextInput" wysiwyg="true" language="true"/>
     <scoreLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true"/>
-    <beforeScore label="YOU SCORED n out of m marks" type="TextInput" wysiwyg="true" language="true"/>
-    <nSValue label="Score before Maximum" options="Yes,No" type="ComboBox" defaultValue = "s" data="s,m" width="200" language="true"/>	
-    <betweenScore label="you scored n OUT OF m marks" type="TextInput" wysiwyg="true" language="true"/>
+    <beforeScore label="YOU SCORED n out of m marks" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
+    <nSValue label="Score Before Maximum" options="Yes,No" type="ComboBox" defaultValue = "s" data="s,m" width="200" language="true" deprecated="This property is used for backward compatibility"/>	
+    <betweenScore label="you scored n OUT OF m marks" type="TextInput" wysiwyg="true" language="true" deprecated="This property is used for backward compatibility"/>
     <afterScore label="you scored n out of m MARKS" type="TextInput" wysiwyg="true" language="true"/>
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
