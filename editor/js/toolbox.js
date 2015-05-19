@@ -310,7 +310,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("deprecated"));
                 if (options.optional == 'true') {
                     var opt = $('<i>').addClass('fa').addClass('fa-trash').addClass("xerte-icon").height(14);
-                    td.append(opt);
+                    td.prepend(opt);
                 }
                 if (options.flashonly)
                 {
