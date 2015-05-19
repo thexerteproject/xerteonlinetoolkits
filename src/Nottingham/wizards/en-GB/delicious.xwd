@@ -1,7 +1,7 @@
 <wizard menus="Misc">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter Page text" search="recent" term="Enter Tags" results="20"
+      <delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious>
     </newNodes>
   </pageWizard>

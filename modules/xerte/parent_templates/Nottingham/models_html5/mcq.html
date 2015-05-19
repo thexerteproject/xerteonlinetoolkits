@@ -308,10 +308,7 @@
 				checkBtnTip = "Check Answer";
 			}
 			$("#checkBtn")
-				.button({
-					label:			checkBtnTxt,
-					description:	checkBtnTip
-					})
+				.button({ label: checkBtnTxt })
 				.attr("disabled", "disabled")
 				.click(function() {
                     mcq.showFeedBackandTrackScore();

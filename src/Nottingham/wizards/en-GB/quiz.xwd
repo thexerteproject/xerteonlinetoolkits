@@ -1,14 +1,14 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <quiz><![CDATA[<quiz name="Enter page title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+      <quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
-	  submitBtnText="Submit" submitBtnTip="Submit Answer" submitBtnWidth="100" 
-	  nextBtnText="Next" nextBtnTip="Next Question" nextBtnWidth="100" 
-	  restartBtnText="Restart" restartBtnTip="Restart Quiz" restartBtnWidth="100"
+	  submitBtnText="Submit" 
+	  nextBtnText="Next" 
+	  restartBtnText="Restart" 
 	  />]]></quiz>      
     </newNodes>
   </pageWizard>
@@ -18,7 +18,7 @@
     <name label="Quiz Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
-    <align label="Alignment" options="left,right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
+    <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
     <instructions label="Instructions" type="textArea"  height="120"/>
     <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
@@ -35,14 +35,14 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" />	
-    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" />	
-    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <restartBtnTip label="Restart Button Tip" type="textInput" language="true" />
-    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
+    <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
+    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -72,7 +72,7 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="here is an option" feedback="feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question>

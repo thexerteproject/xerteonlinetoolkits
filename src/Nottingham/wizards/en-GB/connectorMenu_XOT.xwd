@@ -10,30 +10,30 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
 
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
-	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true"/>
-	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" />
+	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
+	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
 	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true"/>	
-	<startPageID label="First Entry Page Title" type="pageList" defaultValue="" optional="true"/>
-	<endPageID label="Last Entry Page Title" type="pageList" defaultValue="" optional="true"/>
-    <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true"/>
-    <menuFillCol label="Fill Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
-    <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true"/>	
-    <menuOverFillCol label="Fill Colour (over)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>	
-    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true"/>
+	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true"/>
+    <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true" deprecated="This property is deprecated"/>
+    <menuFillCol label="Fill Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true" deprecated="This property is deprecated"/>	
+    <menuOverLineCol label="Line Colour (over)" type="ColourPicker" defaultValue="0x456287" optional="true" deprecated="This property is deprecated"/>	
+    <menuOverFillCol label="Fill Colour (over)" type="ColourPicker" defaultValue="0xFFFFFF" optional="true" deprecated="This property is deprecated"/>	
+    <listToClip label="Output Check List" options="Don't send Page Title and IDs data to clipboard,Send Text Title and IDs List to Clipboard (Developer mode only),Send HTML Title and IDs Table to Clipboard (Developer mode only)" type="ComboBox" data="no,text,html" defaultValue="html" width="380" optional="true" deprecated="This property is deprecated"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media"  optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Menu Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MenuConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cMenuListedPage><![CDATA[<cMenuListedPage name="page" pageID=""/>]]></cMenuListedPage>
+      <cMenuListedPage><![CDATA[<cMenuListedPage name="Enter Item Title Here" pageID=""/>]]></cMenuListedPage>
     </newNodes>	
 	
   </connectorMenu>
 
-  <cMenuListedPage menuItem="Menu Page Entry" remove="true" >
-    <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <pageID label="Select Page From List" type="pageList" defaultValue=""/>	
+  <cMenuListedPage menuItem="Item" remove="true" icon="icBullet" >
+    <name label="Title" type="TextInput" wysiwyg="true" />
+    <pageID label="Destination Page" type="pageList" defaultValue=""/>	
   </cMenuListedPage>
 
 </wizard>  

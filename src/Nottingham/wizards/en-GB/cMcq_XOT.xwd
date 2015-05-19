@@ -3,9 +3,9 @@
     <newNodes>  
       <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
 	  navSetting="none"
-	  confirmBtnTxt="Confirm" confirmBtnTip="Confirm Selection" confirmBtnWidth="100" reportTitle="List of page titles and matching pageIDs" 
-	  pageLabel="Page No" titleLabel="Title:" idLabel="pageID:" notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this Connection" />]]></cMcq>
+	  confirmBtnTxt="Confirm" 
+	  notFoundMessage="could not be found in this project." 
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq>
 	</newNodes>
   </pageWizard>
 
@@ -20,24 +20,23 @@
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
 
     <confirmBtnTxt label="Confirm Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" />	
-    <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" />	
+    <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" deprecated="This property is no longer required" />	
+    <confirmBtnWidth label="Confirm Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
     <notFoundMessage label="Not Found Message" type="TextInput" wysiwyg="true" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" wysiwyg="true" language="true"/>
 
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" />
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media"  optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cOption><![CDATA[<cOption name="name" text="here is an option" destination="" />]]></cOption>
+      <cOption><![CDATA[<cOption text="Here is an option" destination="" />]]></cOption>
     </newNodes>
 	
   </cMcq>
 
   <cOption menuItem="Option" icon="icBullet" remove="true">
-    <name label="Option Title" type="TextInput" wysiwyg="true"/>
     <text label="Option" type="TextArea" height="100"/>
 	<destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption>
