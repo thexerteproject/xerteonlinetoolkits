@@ -1170,14 +1170,22 @@ var EDITOR = (function ($, parent) {
                     }
                 },
                 onCellSelect: function(iRow, iCol, content, event) {
-                    console.log("Select cell: " + iRow + ", " + iCol);
-                    jqGridsColSel[key] = iCol;
+                    console.log("Select cell: " + iRow + ", " + iCol); // iRow is strangely always the data in cell 1??
                     var delbutton = $('#' + id + '_delcol');
                     delbutton.html("");
-                    delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
-                        .append(language.btnDelColumn.$label + ' ' + iCol);
-                    delbutton.switchClass('disabled', 'enabled');
-                    delbutton.prop('disabled', false);
+                    if (iCol > 0) {
+            			jqGridsColSel[key] = iCol;
+                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                        	.append(language.btnDelColumn.$label + ' ' + iCol);
+                    	delbutton.switchClass('disabled', 'enabled');
+                    	delbutton.prop('disabled', false);
+                    }
+                    else {
+                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                        	.append(language.btnDelColumn.$label);
+                    	delbutton.switchClass('enabled', 'disabled');
+                    	delbutton.prop('disabled', true);
+                    }
                 }
 
             });
