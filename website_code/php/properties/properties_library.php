@@ -316,6 +316,7 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 
     }
     $extra = array();
+    $passwd = "";
     if(!empty($row)) { 
         $extra = explode("," , $row['extra'],2);
         $passwd = $extra[0];
