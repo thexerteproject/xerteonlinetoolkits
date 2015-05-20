@@ -152,7 +152,7 @@ input.media
 .pane-center {margin-left: 25px; background: #fff}
 .pane-east {margin-right: 15px}
 
-.pane-west .content #treeview {margin-top: 10px;}
+.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px;}
 
 /* inner divs inside Outer East/West panes */
 .header {
