@@ -413,7 +413,13 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         id = ids[0];
+        var nodeName = lo_data[id].attributes.nodeName;
 
+        if (wizard_data[nodeName].menu_options.duplicate == "false") {  // Can't duplicate the node
+            alert(language.Alert.duplicateitem.prompt);
+            return false;
+        }
+        
         if (id == "treeroot") { return false; } // Can't copy the root node
 
         // Determine pos
