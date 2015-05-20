@@ -2080,7 +2080,7 @@ var EDITOR = (function ($, parent) {
                             {
                                 browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-download').addClass('xerte-icon')));
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
