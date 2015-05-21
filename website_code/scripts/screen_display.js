@@ -673,6 +673,11 @@ function init_workspace()
         node_types[this] = create_node_type(this, [""]);
     });
 
+	// Remove _ from project names
+	$.each(workspace.items, function () {
+        this.text = this.text.replace('_', ' ');
+    });
+
     console.log(node_types);
     console.log(workspace.items);
 
