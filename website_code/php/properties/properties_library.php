@@ -479,7 +479,7 @@ function project_info($template_id){
 
     $row_template_name = db_query_one($query_for_template_name, $params);
 
-    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . ": " . $row_template_name['template_name'] . "</p>";
+    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "</p>";
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_CREATE . " " . $row['date_created'] . "<br>";
 
