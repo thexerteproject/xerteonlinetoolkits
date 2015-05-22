@@ -501,8 +501,12 @@ var EDITOR = (function ($, parent) {
 
         // clone postdata
         var data = $.extend({}, postdata);
+        data['col_0'] = data[idname];
         delete data[idname];
         var colnr = parseInt(postdata[idname]) - 1;
+        for (var field in data){
+            data[field] = stripP(data[field]);
+        };
         jqGrGridData[key][colnr] = data;
         var xerte = convertjqGridData(jqGrGridData[key]);
         setAttributeValue(key, [name], [xerte]);
@@ -534,15 +538,15 @@ var EDITOR = (function ($, parent) {
         // save the data in the grid
         if (grid_p.treeGrid === true) {
             if (addMode) {
-                grid.jqGrid("addChildNode",postdata['col_0'],grid_p.selrow,postdata);
+                grid.jqGrid("addChildNode",data['col_0'],grid_p.selrow,data);
             } else {
-                grid.jqGrid("setTreeRow",postdata['col_0'],postdata);
+                grid.jqGrid("setTreeRow",data['col_0'],data);
             }
         } else {
             if (addMode) {
-                grid.jqGrid("addRowData",postdata['col_0'],postdata, options.addedrow);
+                grid.jqGrid("addRowData",data['col_0'],data, options.addedrow);
             } else {
-                grid.jqGrid("setRowData",postdata['col_0'],postdata);
+                grid.jqGrid("setRowData",data['col_0'],data);
             }
         }
 
@@ -614,9 +618,12 @@ var EDITOR = (function ($, parent) {
                 xerte += '||';
             }
             $.each(row, function(j, field){
-                if (j !== 'col_0')
-                    xerte += '|';
-                xerte += field;
+                if (j != 'col_0') {
+
+                    if (j !== 'col_1')
+                        xerte += '|';
+                    xerte += field;
+                }
             });
         })
         return xerte;
@@ -624,15 +631,15 @@ var EDITOR = (function ($, parent) {
 
     jqGridAfterShowForm = function(id, ids)
     {
-        //the field name that needs to be edited with CKEditor is 'col_1'
-        if( CKEDITOR.instances.col_1 )
+        //the field name that needs to be edited with CKEditor is 'col_2'
+        if( CKEDITOR.instances.col_2 )
         {
             try {
-                CKEDITOR.instances.col_1.destroy();
+                CKEDITOR.instances.col_2.destroy();
             } catch(e) {
-                CKEDITOR.remove( 'col_1' );
+                CKEDITOR.remove( 'col_2' );
             }
-            //CKEDITOR.instances.col_1 = null;
+            //CKEDITOR.instances.col_2 = null;
         }
         var ckoptions = {
             toolbarGroups : [
@@ -652,11 +659,11 @@ var EDITOR = (function ($, parent) {
             mathJaxClass :  'mathjax',
             mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
-            height : 200,
+            height : 150,
             resize_enabled: false
         };
 
-        $('#col_1').ckeditor(function(){
+        $('#col_2').ckeditor(function(){
             // JQGrid
             // we need to get selected row in case currently we are in Edit Mode
             var grid = $('#' + id + '_jqgrid');
@@ -667,7 +674,7 @@ var EDITOR = (function ($, parent) {
             if( !($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID==null))
             { // then it must be edit?
                 var va = grid.getRowData(selID);
-                CKEDITOR.instances.col_1.setData( va['col_1'] );
+                CKEDITOR.instances.col_2.setData( va['col_2'] );
             }
         }, ckoptions);
 
@@ -675,7 +682,7 @@ var EDITOR = (function ($, parent) {
 
     jqGridBeforeSubmit = function(data)
     {
-        data['col_1'] = CKEDITOR.instances.col_1.getData();
+        data['col_2'] = CKEDITOR.instances.col_2.getData();
         return [true, ""];
     },
 
@@ -683,7 +690,7 @@ var EDITOR = (function ($, parent) {
     {
         var grid = $('#' + id + '_jqgrid');
         var va = grid.getRowData(rowid);
-        CKEDITOR.instances.col_1.setData( va['col_1'] );
+        CKEDITOR.instances.col_1.setData( va['col_2'] );
     },
 
     convertTextAreas = function ()
@@ -938,7 +945,7 @@ var EDITOR = (function ($, parent) {
     {
         // Set up a jqGrid for local editing. This is not that trivial, because jqGrid is all setup to
         // send the data back to the server automatically.
-        // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excelent example
+        // cf. the source of http://www.ok-soft-gmbh.com/jqGrid/LocalFormEditing.htm as an excellent example
         jqGridsLastSel = {};
         jqGridsColSel = {};
         $.each(datagrids, function(i, options){
@@ -947,12 +954,14 @@ var EDITOR = (function ($, parent) {
             var data = lo_data[options.key].attributes[options.name];
             var rows = [];
 
-            $.each(data.split('||'), function(i, row){
+            $.each(data.split('||'), function(j, row){
                 var records = row.split('|');
                 var record = {};
-                $.each(records, function(i, field)
+                record['col_0'] = j+1;
+                $.each(records, function(k, field)
                 {
-                    record['col_' + i] = field;
+                    var colnr = k+1;
+                    record['col_' + colnr] = field;
                 });
                 rows.push(record);
             });
@@ -979,14 +988,18 @@ var EDITOR = (function ($, parent) {
             {
                 showHeaders = (gridoptions.showHeaderRow !== undefined ? gridoptions.showHeaderRow : true);
                 headers = gridoptions.headers.split(',');
+                headers.unshift('#');
             }
             if (!showHeaders)
             {
+                headers.push('#');
                 for(var i=0; i<nrCols; i++)
                 {
                     headers.push((i+1) + '');
                 }
             }
+            nrCols++;
+
             var editable;
             if (gridoptions.editable)
             {
@@ -999,14 +1012,28 @@ var EDITOR = (function ($, parent) {
             }
 
             // set up the jqGrid column model
+            // Add unique hidden column as key for records
             var colModel  = [];
-            for (var i=0; i<nrCols; i++)
+            var col = {};
+            col['name'] = 'col_0'
+            col['key'] = true;
+            col['editable'] = false;
+            col['sortable'] = false;
+            col['hidden'] = true;
+            col['editrules'] = {
+                required:true,
+                edithidden:true
+            };
+            col['editoptions'] = {
+                dataInit: function(element){
+                    $(element).attr("readonly", "readonly");
+                }
+            };
+            colModel.push(col);
+
+            for (var i=1; i<nrCols; i++)
             {
                 var col = {};
-                if (i==0)
-                {
-                    col['key'] = true;
-                }
                 col['name'] = 'col_' + i;
                 if (addCols)
                 {
@@ -1019,10 +1046,10 @@ var EDITOR = (function ($, parent) {
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
                 col['sortable'] = false;
                 // Do something special for second column of glossary
-                if (options.name == 'glossary' && i == 1)
+                if (options.name == 'glossary' && i == 2)
                 {
                     col['edittype'] = 'textarea';
-                    col['editoptions'] = {rows:"5",cols:"40"};
+                    col['editoptions'] = {rows:"12",cols:"40"};
                     col['editrules'] = {edithidden:true};
                 }
                 colModel.push(col);
@@ -1174,14 +1201,14 @@ var EDITOR = (function ($, parent) {
                     var delbutton = $('#' + id + '_delcol');
                     delbutton.html("");
                     if (iCol > 0) {
-            			jqGridsColSel[key] = iCol;
-                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
-                        	.append(language.btnDelColumn.$label + ' ' + iCol);
+                        jqGridsColSel[key] = iCol - 1;
+                    	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
+                        	.append(language.btnDelColumn.$label + ' ' + jqGridsColSel[key]);
                     	delbutton.switchClass('disabled', 'enabled');
                     	delbutton.prop('disabled', false);
                     }
                     else {
-                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                    	delbutton.append($('<i>').addClass('fa').addClass('fa-trash').addClass('xerte-icon').height(14))
                         	.append(language.btnDelColumn.$label);
                     	delbutton.switchClass('enabled', 'disabled');
                     	delbutton.prop('disabled', true);
@@ -1194,8 +1221,8 @@ var EDITOR = (function ($, parent) {
             {
                 buttons = $('#' + id + '_addcolumns');
                 $([
-                    {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'editor/img/insert.png', disabled: false, id: id + '_addcol', click:addColumn},
-                    {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'editor/img/delete.gif', disabled: true, id: id + '_delcol', click:delColumn}
+                    {name: language.btnAddColumn.$label, tooltip: language.btnAddColumn.$tooltip, icon:'fa-plus-circle', disabled: false, id: id + '_addcol', click:addColumn},
+                    {name: language.btnDelColumn.$label, tooltip: language.btnDelColumn.$tooltip, icon:'fa-trash', disabled: true, id: id + '_delcol', click:delColumn}
                 ])
                 .each(function(index, value) {
                     var button = $('<button>')
@@ -1208,7 +1235,7 @@ var EDITOR = (function ($, parent) {
                             var par = evt.data;
                             value.click(par.id, par.key, par.name, jqGridsColSel[key]);
                         })
-                        .append($('<img>').attr('src', value.icon).height(14))
+                        .append($('<i>').addClass('fa').addClass(value.icon).addClass('xerte-icon').height(14))
                         .append(value.name);
                     buttons.append(button);
                 });
