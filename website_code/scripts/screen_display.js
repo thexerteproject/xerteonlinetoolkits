@@ -675,7 +675,7 @@ function init_workspace()
 
 	// Remove _ from project names
 	$.each(workspace.items, function () {
-        this.text = this.text.replace('_', ' ');
+        this.text = this.text.replace(/_/g, ' ');
     });
 
     console.log(node_types);
