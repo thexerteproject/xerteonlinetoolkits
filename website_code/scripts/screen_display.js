@@ -434,8 +434,6 @@ function setupMainLayout()
     var opentooltip = "Open this pane",
         closetooltip = "Close this pane",
         resizetooltip = "Resize this pane",
-        xertemain_layout,
-        xerteinner_layout,
         xertemain_layout_settings = {
             name: "xertemain_layout",
             defaults: {
@@ -533,7 +531,7 @@ function setupMainLayout()
             },
 
             west: {
-                size:                   "60%",
+                size:                   400,
                 minSize:                200,
                 spacing_open:           6,
                 spacing_closed:         21,
@@ -552,8 +550,8 @@ function setupMainLayout()
                 */
             },
             east: {
-                size:                   250,
-                minSize:                350,
+                size:                   300,
+                minSize:                150,
                 maxSize:                450,
                 spacing_open:           6,
                 spacing_closed:         21,
@@ -580,12 +578,11 @@ function setupMainLayout()
 
             center: {
                 //paneSelector:           "#mainContent",
-                minWidth:               100,
+                minWidth:               200,
                 minHeight:              200/*,
                  contentSelector:        ".ui-layout-content"*/
             }
         };
-    ;
 
     console.log("Setting up MainLayout...");
 
@@ -609,9 +606,36 @@ function setupMainLayout()
     $("<span></span>").attr("id", "south-closer").prependTo( south_pane );
     xertemain_layout.addCloseBtn("#south-closer", "south");
 
+    dynamicResize();
 
+    $(window).resize(function ()
+    {
+        dynamicResize();
+    });
 }
 
+
+function dynamicResize()
+{
+    // Set sizes, get the windows size
+    var windowWidth = parseInt($(window).width());
+    var windowHeight = parseInt($(window).height());
+
+    // If Window is narrow, close east panel, and make center panel narrow
+    if (windowWidth < 650)
+    {
+        // Close east panel
+        xerteinner_layout.close('east');
+    }
+    // Make west panel 60% of windowWidth
+    xerteinner_layout.sizePane('west', windowWidth * 0.6);
+
+    // If window is low, close south panel
+    if (windowHeight < 400)
+    {
+        xertemain_layout.close('south');
+    }
+}
 
 function getIcon(nodetype)
 {
