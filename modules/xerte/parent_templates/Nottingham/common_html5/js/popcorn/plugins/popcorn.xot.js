@@ -137,7 +137,7 @@ optional: pauseMedia*
 					$iframe
 						.addClass("fullH")
 						.data("exclude", $target.find("h4"));
-					eval(parent.x_currentPageXML.nodeName).resizeContent($iframe);
+					eval(x_currentPageXML.nodeName).resizeContent($iframe);
 					
 				// if it's a child then at synch points the url stays the same but the project page can change
 				} else if (options.child) {
