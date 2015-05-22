@@ -59,7 +59,7 @@ required: target start name
 						$target.children(".fullH").data("exclude", $target.find("h4"));
 						
 						// call function to make content fill available space
-						eval(parent.x_currentPageXML.nodeName).resizeContent($target.children(".fullH"));
+						eval(x_currentPageXML.nodeName).resizeContent($target.children(".fullH"));
 					}
 				}
 				
