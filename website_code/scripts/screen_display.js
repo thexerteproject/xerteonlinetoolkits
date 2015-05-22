@@ -731,8 +731,8 @@ function init_workspace()
             }
         })
             .bind('select_node.jstree', function (event, data) {
-                showInformation(data.node);
                 button_check();
+                showInformationAndSetStatus(data.node);
             })
             .bind('move_node.jstree',function(event,data)
             {
@@ -776,7 +776,7 @@ function init_workspace()
     }
 }
 
-function showInformation(node)
+function showInformationAndSetStatus(node)
 {
     var type = node.type;
     var id = node.id;
@@ -793,6 +793,5 @@ function showInformation(node)
             break;
         default:
             getProjectInformation(workspace.user, xot_id);
-
     }
 }

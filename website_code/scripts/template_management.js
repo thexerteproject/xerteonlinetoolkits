@@ -669,25 +669,38 @@ function getProjectInformation(user_id, template_id){
     }
 }
 
-/**
- *
- * Function selection changed state changed
- * This function redisplays the file area after sorting
- * @version 1.0
- * @author Patrick Lockley
- */
-
-
 function getProjectInformation_stateChanged(){
 
     if (xmlHttp.readyState==4){
+        var response=xmlHttp.responseText;
+        var info = JSON.parse(response);
+        document.getElementById('project_information').innerHTML = info.properties;
+        if (info.role == 'read-only')
+        {
+            // disable edit button.
+            var editbtn = document.getElementById("edit");
+            var propertiesbtn = document.getElementById("properties");
+            var deletebtn = document.getElementById("delete");
+            var publishbtn = document.getElementById("publish");
 
-        document.getElementById('project_information').innerHTML = xmlHttp.responseText;
+            editbtn.disabled="disabled";
+            editbtn.className = "xerte_button_c_no_width disabled";
+            editbtn.onclick="";
 
+            publishbtn.disabled="disabled";
+            publishbtn.className = "xerte_button_c_no_width disabled";
+            publishbtn.onclick="";
+
+            propertiesbtn.disabled="disabled";
+            propertiesbtn.className = "xerte_button_c_no_width disabled";
+            propertiesbtn.onclick="";
+
+            deletebtn.disabled="disabled";
+            deletebtn.className = "xerte_button_c_no_width disabled";
+            deletebtn.onclick="";
+        }
     }
-
 }
-
 
 /**
  * 
