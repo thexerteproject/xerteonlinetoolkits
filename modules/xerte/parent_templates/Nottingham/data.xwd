@@ -6,7 +6,7 @@
     <name type="TextInput" wysiwyg="true" label="Learning Object Title"/>
     <navigation type="ComboBox" options="Linear,Historic,Menu,Menu with Page Controls" data="Linear,Historic,Menu,Menu with Page Controls" label="Navigation" width="170"/>
     <textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100"/>
-    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals without titles, Clean Visuals with titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true"/>
+    <visuals optional="true" type="ComboBox" options="No Visuals,Default Visuals,Clean Visuals Without Titles, Clean Visuals With Titles" data="0,1,2,3" label="Flash Engine Visuals" defaultValue="1" width="250" flashonly="true"/>
     <language type="LanguageList" label="Language" width="170"/>
     <theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 	<hideHeader optional="true" type="CheckBox" label="Hide Header" defaultValue="false"/>
@@ -14,14 +14,14 @@
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600"/>
 
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
-    <displayMode type="ComboBox" options="default,full screen,fill window" data="default,full screen,fill window" label="Display Mode" width="100"/>
-    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page title size" defaultValue="24"/>
+    <displayMode type="ComboBox" options="Default,Full Screen,Fill Window" data="default,full screen,fill window" label="Display Mode" width="100"/>
+    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24"/>
 	
-	<media optional="true" type="media" label="Media File" defaultValue="Select an Audio or Video File"/>
+	<media optional="true" type="media" label="Media File" defaultValue="Select an Audio or Video File" deprecated="tt"/>
 	<mediaImage optional="true" type="media" label="Media Image (Audio only)" defaultValue="Select an Image"/>
 	<mediaImageTip optional="true" label="Media Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
     <mediaTranscript optional="true" type="media" label="Media Transcript" defaultValue="Select a Timed Text Transcript File"/>
-	<mediaTiming optional="true" type="ComboBox" options="Current caption only,Keep previous captions,Show all captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
+	<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
 	<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Media Caption Position" defaultValue="below" width="175"/>
 	<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Media Caption Align" defaultValue="left" width="100"/>
 	<mediaColour optional="true" type="ColourPicker" label="Media Caption Colour" defaultValue="0x000000"/>
@@ -38,8 +38,8 @@
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-    <trackingMode optional="true" label="SCORM tracking mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first"/>
-    <resume label="Enable resuming" type="CheckBox" defaultValue="false" optional="true"/>
+    <trackingMode optional="true" label="SCORM Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first"/>
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 
     <newNodes>
     <QRcode><![CDATA[<QRcode name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility">Enter text for the page here</QRcode>]]></QRcode><accNav><![CDATA[<accNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" colour="0xFFFF00" shape="None" align="Left"/>]]></annotatedDiagram><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="Select a Sound File" text="Enter text for the page here" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left"  url="Select an Image" tip="Enter a Description for Accessibility" imagesize="auto">Enter text for the page here</bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showBullets="1" showPanel="1" panelWidth="Medium">Enter text for the page here</bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="Enter Instructions" prompt="Enter a prompt" feedback="Enter the Feedback" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" align="Left" panelWidth="Medium"
@@ -85,7 +85,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" height="80"/>]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
+	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="Enter Page Text" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="Enter text for the page here"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="Enter Instruction" prompt="Enter a Prompt" type="Single Answer" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" introTitle="Introduction" introClose="close"><mediaPanel name="Enter Panel Title" media="Select Media" tip="Enter a Description for Accessibility" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="Enter text for the page here" prompt="Enter prompt here" feedback="Enter feedback here" panelWidth="Medium" align="left"
@@ -412,7 +412,7 @@
       <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>
     </newNodes>	
 	
-  </chart><series remove="true">
+  </chart><series menuItem="Series" remove="true" icon="icBullet">
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
@@ -985,7 +985,7 @@
       <link><![CDATA[<link name="Link title" text="Link Description" url="Link URL"/>]]></link>
     </newNodes>
 
-  </links><link icon="icTagGreen">
+  </links><link menuItem="Link" icon="icTagGreen" remove="true">
     <name label="Link Title" type="TextInput" wysiwyg="true"/>
     <text label="Link Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput"/>
@@ -1925,7 +1925,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </table><tableData menuItem="Table Data" duplicate="false" remove="false">
+  </table><tableData menuItem="Table Data" duplicate="false" remove="false" icon="icBullet">
 
     <name label="Table Name" type="TextInput" wysiwyg="true"/>
     <data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" addCols="true" showHeaderRow="false"/>

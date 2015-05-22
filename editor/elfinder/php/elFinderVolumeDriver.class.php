@@ -220,7 +220,13 @@ abstract class elFinderVolumeDriver {
 			'write'  => true
 		),
 		// files attributes
-		'attributes'   => array(),
+		'attributes'   => array(        array(
+            'pattern' => '/readme.txt/',
+            'read'    => false,
+            'write'   => false,
+            'locked'  => true,
+            'hidden' => true
+        )),
 		// Allowed archive's mimetypes to create. Leave empty for all available types.
 		'archiveMimes' => array(),
 		// Manual config for archivers. See example below. Leave empty for auto detect

@@ -310,7 +310,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("deprecated"));
                 if (options.optional == 'true') {
                     var opt = $('<i>').addClass('fa').addClass('fa-trash').addClass("xerte-icon").height(14);
-                    td.append(opt);
+                    td.prepend(opt);
                 }
                 if (options.flashonly)
                 {
@@ -640,9 +640,9 @@ var EDITOR = (function ($, parent) {
                 { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
                 { name: 'colors' },
                 { name: 'insert' }],
-            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
-            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
-            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
             //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
             //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
             //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
@@ -756,9 +756,9 @@ var EDITOR = (function ($, parent) {
 
             };
             var ckoptions = {
-                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
-                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
-                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                 // filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
                 // filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
                 // filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
@@ -888,9 +888,9 @@ var EDITOR = (function ($, parent) {
                     { name: 'basicstyles', groups: [ 'basicstyles' ] },
                     { name: 'colors' }],
                     */
-                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media',
-                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image',
-                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash',
+                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                     //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
                     //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
                     //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
@@ -1170,14 +1170,22 @@ var EDITOR = (function ($, parent) {
                     }
                 },
                 onCellSelect: function(iRow, iCol, content, event) {
-                    console.log("Select cell: " + iRow + ", " + iCol);
-                    jqGridsColSel[key] = iCol;
+                    console.log("Select cell: " + iRow + ", " + iCol); // iRow is strangely always the data in cell 1??
                     var delbutton = $('#' + id + '_delcol');
                     delbutton.html("");
-                    delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
-                        .append(language.btnDelColumn.$label + ' ' + iCol);
-                    delbutton.switchClass('disabled', 'enabled');
-                    delbutton.prop('disabled', false);
+                    if (iCol > 0) {
+            			jqGridsColSel[key] = iCol;
+                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                        	.append(language.btnDelColumn.$label + ' ' + iCol);
+                    	delbutton.switchClass('disabled', 'enabled');
+                    	delbutton.prop('disabled', false);
+                    }
+                    else {
+                    	delbutton.append($('<img>').attr('src', 'editor/img/delete.gif').height(14))
+                        	.append(language.btnDelColumn.$label);
+                    	delbutton.switchClass('enabled', 'disabled');
+                    	delbutton.prop('disabled', true);
+                    }
                 }
 
             });
@@ -1392,7 +1400,7 @@ var EDITOR = (function ($, parent) {
             setAttributeValue(key, [name], [url]);
             window.elFinder = null;
         };
-        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2), 'Browse file', "height=600, width=800");
+        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
 
         /*
         window.KCFinder = {};
@@ -2072,7 +2080,7 @@ var EDITOR = (function ($, parent) {
                             {
                                 browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-download').addClass('xerte-icon')));
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
