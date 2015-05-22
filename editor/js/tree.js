@@ -596,6 +596,31 @@ var EDITOR = (function ($, parent) {
         {
             toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
         }
+
+        // The rest of the normal params
+        for (var i=0; i<node_options['normal'].length; i++)
+        {
+            attribute_name = node_options['normal'][i].name;
+            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
+
+            // The language attribute deserves some special treatment
+            // If the attribute exists, but the value is an empty string, replace it withe the currently chosen language
+            if (attribute_name == 'language')
+            {
+                if (attribute_value.found && attribute_value.value=="")
+                {
+                    attribute_value.value = language.$code;
+                }
+            }
+            if (attribute_value.found)
+            {
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
+            }
+            else if (node_options['normal'][i].value.mandatory)
+            {
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
+            }
+        }
         // Optional parameters
         // 1. Empty right panel
         $('#optionalParams').html("");
@@ -653,31 +678,6 @@ var EDITOR = (function ($, parent) {
         if (node_options['optional'].length > 0)
         {
             $('#optionalParams').append(html);
-        }
-
-        // The rest of the normal params
-        for (var i=0; i<node_options['normal'].length; i++)
-        {
-            attribute_name = node_options['normal'][i].name;
-            attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-
-            // The language attribute deserves some special treatment
-            // If the attribute exists, but the value is an empty string, replace it withe the currently chosen language
-            if (attribute_name == 'language')
-            {
-                if (attribute_value.found && attribute_value.value=="")
-                {
-                    attribute_value.value = language.$code;
-                }
-            }
-            if (attribute_value.found)
-            {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, attribute_value.value, key);
-            }
-            else if (node_options['normal'][i].value.mandatory)
-            {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], attribute_name, node_options['normal'][i].value.defaultValue, key);
-            }
         }
 
         $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
