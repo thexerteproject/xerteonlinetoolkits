@@ -112,7 +112,7 @@
 				
 				// image on slide visible at beginning needs to be scaled when loaded
 				if (i == 0 && this.getAttribute("synch") == "0") {
-					$slide.find("img")
+					$slide.find(".pageImg img")
 						.css({ // stops flicker on 1st load of image
 							"opacity"	:0,
 							"filter"	:'alpha(opacity=0)'
@@ -127,7 +127,7 @@
 							}
 						});
 				} else {
-					$slide.find("img")
+					$slide.find(".pageImg img")
 						.css({ // stops flicker on 1st load of image
 							"opacity"	:0,
 							"filter"	:'alpha(opacity=0)'
