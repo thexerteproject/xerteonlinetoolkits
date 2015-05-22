@@ -1158,6 +1158,7 @@ var EDITOR = (function ($, parent) {
 
             // Setup the grid
             var grid = $('#' + id + '_jqgrid');
+
             grid.jqGrid({
                 datatype: 'local',
                 data: rows,
@@ -1241,6 +1242,12 @@ var EDITOR = (function ($, parent) {
                 });
                 buttons.append($('<br>'));
             }
+            // Set Width
+            setTimeout(function() {
+                var gridWidth = $('#' + id).width();
+                $('#' + id + '_jqgrid').jqGrid('setGridWidth', gridWidth);
+            }, 100);
+
         });
     },
 
