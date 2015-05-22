@@ -22,7 +22,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	var mediaLesson = new function() {
 		var	$panelHolder,
-			plugins = [/*"textplus", "subtitleplus", "xot", "mediaplus", */"mcq", "slides", /*"sortholder"*/], // list of popcorn plugins to load
+			plugins = ["textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
+			css = ["subtitleplus", "mcq", "slides"], // list of popcorn plugin css to load
 			numLoaded = 0;
 		
 		// function called every time the page is viewed after it has initially loaded
@@ -235,7 +236,9 @@
 					fileToLoad = "popcorn-complete.min";
 				} else {
 					fileToLoad = "plugins/popcorn." + plugins[numLoaded - 1];
-					x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
+					if (jQuery.inArray(plugins[numLoaded - 1], css) != -1) {
+						x_insertCSS(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".css");
+					}
 				}
 				
 				$.getScript(x_templateLocation + "common_html5/js/popcorn/" + fileToLoad + ".js")

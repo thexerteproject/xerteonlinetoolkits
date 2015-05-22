@@ -249,12 +249,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <script>
     <?php
-    $_SESSION['elFinder']= array(
-        'disabled' => false,
-        'uploadURL' => $rlo_url,
-        'uploadDir' => $rlo_path
-    );
-
     echo "previewxmlurl=\"" . $preview_url . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";

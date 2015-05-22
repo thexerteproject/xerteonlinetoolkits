@@ -76,7 +76,7 @@ _load_language_file("/properties.inc");
     -->
 
     <body onload="javascript:tab_highlight('1');
-        properties_template()">
+        properties_template()" onunload="javascript:window.opener.refresh_workspace()">
 
         <!--
         

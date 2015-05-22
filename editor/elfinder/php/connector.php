@@ -36,8 +36,8 @@ if (!isset($_SESSION['toolkits_logon_id'])){
     header("location: ../../../index.php");
 }
 // Get session data to set paths
-$rootpath = $_SESSION['elFinder']['uploadDir'];
-$rooturl = $_SESSION['elFinder']['uploadURL'];
+$rootpath = $_REQUEST['uploadDir'];
+$rooturl = $_REQUEST['uploadURL'];
 
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';

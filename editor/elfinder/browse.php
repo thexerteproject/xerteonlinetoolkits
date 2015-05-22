@@ -82,7 +82,7 @@ if (isset($_REQUEST['langCode']))
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php',       // connector URL (REQUIRED)
+                url : 'php/connector.php?uploadDir=<?php echo $_REQUEST['uploadDir'];?>&uploadURL=<?php echo $_REQUEST['uploadURL'];?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration
