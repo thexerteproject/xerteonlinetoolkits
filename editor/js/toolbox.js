@@ -309,7 +309,13 @@ var EDITOR = (function ($, parent) {
                         .attr('title', options.deprecated)
                         .addClass("deprecated"));
                 if (options.optional == 'true') {
-                    var opt = $('<i>').addClass('fa').addClass('fa-trash').addClass("xerte-icon").height(14);
+                    var opt = $('<i>').attr('id', 'optbtn_' + name)
+                        .addClass('fa')
+                        .addClass('fa-trash')
+                        .addClass("xerte-icon")
+                        .height(14)
+                        .addClass("optional");
+                    td.addClass("wizardoptional");
                     td.prepend(opt);
                 }
                 if (options.flashonly)
