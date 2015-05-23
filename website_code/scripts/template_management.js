@@ -560,14 +560,18 @@ function example_stateChanged(){
  * @author Patrick Lockley
  */
 
-function publishproperties_window(admin){
+function publishproperties_window(admin) {
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
+    if (ids.length == 1) {
+        var node = workspace.nodes[ids[0]];
 
-    var NewWindow = window.open(site_url + url_return("publishproperties", (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length))), (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length)), "height=600, width=635" );
-
-    NewWindow.window_reference = self;
-
-    NewWindow.focus();
-
+        if (node.xot_type == "file") {
+            var NewWindow = window.open(site_url + url_return("publishproperties", node.xot_id), node.xot_id, "height=600, width=635");
+            NewWindow.window_reference = self;
+            NewWindow.focus();
+        }
+    }
 }
 
 /**
@@ -939,16 +943,14 @@ function publish_project(template_id){
  * @author Patrick Lockley
  */
 
-function publish_this(){ 
+function publish_this(){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
 
-    if(drag_manager.selected_items.length==1){
-
+    if(ids.length==1){
         publishproperties_window();
-
     }else{
-
         alert(PUBLISH_LIMIT);
-
     }
 
 } 
