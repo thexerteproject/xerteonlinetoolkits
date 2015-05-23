@@ -151,7 +151,7 @@ Folder popup is the div that appears when creating a new folder
             {
             ?>
                 <div
-                    style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                    style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
                 </div>
             <?php
             }
@@ -165,7 +165,7 @@ Folder popup is the div that appears when creating a new folder
             if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
             {
             ?>
-                <img src="<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+                <img src="<?php echo "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
             <?php
             }
             else {
