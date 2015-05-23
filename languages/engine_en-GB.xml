@@ -1,5 +1,7 @@
 <language name="English">
 
+  <noPages label="This project does not contain any pages."/>
+
   <nextButton label="Next" description="Next Page Button"/>
   
   <backButton label="Back" description="Previous Page Button"/>

@@ -303,522 +303,527 @@ function x_evalURL(url)
 
 // function sets up interface buttons and events
 function x_setUp() {
-	$x_head			= $("head");
-	$x_body			= $("body");
-	$x_window		= $(window);
-	$x_mobileScroll	= $("#x_mobileScroll");
-	$x_headerBlock	= $("#x_headerBlock");
-	$x_pageHolder	= $("#x_pageHolder");
-	$x_pageDiv		= $("#x_pageDiv");
-	$x_footerBlock	= $("#x_footerBlock");
-	$x_footerL		= $("#x_footerBlock .x_floatLeft");
-	$x_menuBtn		= $("#x_menuBtn");
-	$x_colourChangerBtn	= $("#x_colourChangerBtn");
-	$x_prevBtn		= $("#x_prevBtn");
-	$x_pageNo		= $("#x_pageNo");
-	$x_nextBtn		= $("#x_nextBtn");
-	$x_background	= $("#x_background");
-	
-	$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
-	
-	
-	// hides header/footer if set in url
-	if (x_params.hideHeader == "true") {
-		$x_headerBlock.hide().height(0);
-	}
-	if (x_params.hideFooter == "true") {
-		$x_footerBlock.hide().height(0);
-	}
-	if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
-		$x_mainHolder.css("border", "none");
-	}
-	
-	// sets initial size if set in url e.g. display=500,500
-	if ($.isArray(x_params.displayMode)) {
-		$x_mainHolder.css({
-			"width"		:x_params.displayMode[0],
-			"height"	:x_params.displayMode[1]
-		});
-	}
-	
-	
-	if (screen.width <= 550) {
-		x_browserInfo.mobile = true;
-		x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css");
+	if (x_pages.length == 0) {
+		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
 	} else {
-		x_insertCSS(x_templateLocation + "common_html5/css/desktopStyles.css");
 		
-		if (x_browserInfo.touchScreen == false) {
-			$x_footerL.prepend('<button id="x_cssBtn"></button>');
-			$("#x_cssBtn")
+		$x_head			= $("head");
+		$x_body			= $("body");
+		$x_window		= $(window);
+		$x_mobileScroll	= $("#x_mobileScroll");
+		$x_headerBlock	= $("#x_headerBlock");
+		$x_pageHolder	= $("#x_pageHolder");
+		$x_pageDiv		= $("#x_pageDiv");
+		$x_footerBlock	= $("#x_footerBlock");
+		$x_footerL		= $("#x_footerBlock .x_floatLeft");
+		$x_menuBtn		= $("#x_menuBtn");
+		$x_colourChangerBtn	= $("#x_colourChangerBtn");
+		$x_prevBtn		= $("#x_prevBtn");
+		$x_pageNo		= $("#x_pageNo");
+		$x_nextBtn		= $("#x_nextBtn");
+		$x_background	= $("#x_background");
+		
+		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
+		
+		
+		// hides header/footer if set in url
+		if (x_params.hideHeader == "true") {
+			$x_headerBlock.hide().height(0);
+		}
+		if (x_params.hideFooter == "true") {
+			$x_footerBlock.hide().height(0);
+		}
+		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
+			$x_mainHolder.css("border", "none");
+		}
+		
+		// sets initial size if set in url e.g. display=500,500
+		if ($.isArray(x_params.displayMode)) {
+			$x_mainHolder.css({
+				"width"		:x_params.displayMode[0],
+				"height"	:x_params.displayMode[1]
+			});
+		}
+		
+		
+		if (screen.width <= 550) {
+			x_browserInfo.mobile = true;
+			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css");
+		} else {
+			x_insertCSS(x_templateLocation + "common_html5/css/desktopStyles.css");
+			
+			if (x_browserInfo.touchScreen == false) {
+				$x_footerL.prepend('<button id="x_cssBtn"></button>');
+				$("#x_cssBtn")
+					.button({
+						icons:	{primary: "x_maximise"},
+						label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+						text:	false
+					})
+					.click(function() {
+
+						// Post flag to containing page for iframe resizing
+						if (window && window.parent && window.parent.postMessage) {
+							window.parent.postMessage((String)(!x_fillWindow), "*");
+						}
+
+						if (x_fillWindow == false) {
+							x_setFillWindow();
+						} else {
+							// minimised size to come from display size specified in xml or url param
+							if ($.isArray(x_params.displayMode)) {
+								$x_mainHolder.css({
+									"width"		:x_params.displayMode[0],
+									"height"	:x_params.displayMode[1]
+								});
+							// minimised size to come from css (800,600)
+							} else {
+								$x_mainHolder.css({
+									"width"		:"",
+									"height"	:""
+									});
+							}
+							$x_body.css("overflow", "auto");
+							$(this).button({
+								icons:	{primary: "x_maximise"},
+								label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+							});
+							x_fillWindow = false;
+							x_updateCss();
+						}
+						$(this)
+							.blur()
+							.removeClass("ui-state-focus")
+							.removeClass("ui-state-hover");
+					});
+				
+				if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
+					x_fillWindow = true;
+				}
+			}
+			
+			if (x_fillWindow == true) {
+				x_setFillWindow(false);
+			}
+		}
+		
+		
+		if (x_params.stylesheet != undefined) {
+			x_insertCSS(x_evalURL(x_params.stylesheet));
+		}
+		if (x_params.theme != undefined && x_params.theme != "default") {
+			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
+		}
+		
+		
+		if (x_pageInfo[0].type == "menu") {
+			$x_pageNo.hide();
+			if (x_params.navigation == "Menu") {
+				$x_prevBtn.hide();
+				$x_nextBtn.hide();
+				$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+			}
+		} else if (x_params.navigation == "Historic") {
+			$x_pageNo.hide();
+		} else {
+			x_dialogInfo.push({type:'menu', built:false});
+		}
+		
+		
+		if (x_params.nfo != undefined) {
+			$x_footerL.prepend('<button id="x_helpBtn"></button>');
+			$("#x_helpBtn")
 				.button({
-					icons:	{primary: "x_maximise"},
-					label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+					icons: {
+						primary: "x_help"
+					},
+					label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 					text:	false
 				})
 				.click(function() {
-
-					// Post flag to containing page for iframe resizing
-					if (window && window.parent && window.parent.postMessage) {
-						window.parent.postMessage((String)(!x_fillWindow), "*");
-					}
-
-					if (x_fillWindow == false) {
-						x_setFillWindow();
-					} else {
-						// minimised size to come from display size specified in xml or url param
-						if ($.isArray(x_params.displayMode)) {
-							$x_mainHolder.css({
-								"width"		:x_params.displayMode[0],
-								"height"	:x_params.displayMode[1]
-							});
-						// minimised size to come from css (800,600)
-						} else {
-							$x_mainHolder.css({
-								"width"		:"",
-								"height"	:""
-								});
-						}
-						$x_body.css("overflow", "auto");
-						$(this).button({
-							icons:	{primary: "x_maximise"},
-							label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
-						});
-						x_fillWindow = false;
-						x_updateCss();
-					}
+					window.open(x_evalURL(x_params.nfo), "_blank");
 					$(this)
 						.blur()
 						.removeClass("ui-state-focus")
 						.removeClass("ui-state-hover");
 				});
+		}
+		
+		
+		if (x_params.glossary != undefined) {
+			x_dialogInfo.push({type:'glossary', built:false});
 			
-			if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
-				x_fillWindow = true;
+			var i, len, item, word,
+				items = x_params.glossary.split("||");
+
+			for (i=0, len=items.length; i<len; i++) {
+				item = items[i].split("|"),
+				word = {word:item[0], definition:item[1]};
+
+				if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+					x_glossary.push(word);
+				}
+			}
+			if (x_glossary.length > 0) {
+				x_glossary.sort(function(a, b){ // sort alphabetically
+					return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+				});
+				
+				$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
+				$("#x_glossaryBtn")
+					.button({
+						icons: {
+							primary: "x_glossary"
+						},
+						label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
+						text:	false
+					})
+					.click(function() {
+						x_openDialog("glossary", x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"), x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"));
+						$(this)
+							.blur()
+							.removeClass("ui-state-focus")
+							.removeClass("ui-state-hover");
+					});
+				
+				$x_pageDiv
+					.on("mouseenter", ".x_glossary", function(e) {
+						$(this).trigger("mouseleave");
+						
+						var $this = $(this),
+							myText = $this.text(),
+							myDefinition, i, len;
+							
+						// Rip out the title attribute
+						$this.data('title', $this.attr('title'));
+						$this.attr('title', '');
+						
+						for (i=0, len=x_glossary.length; i<len; i++) {
+							if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
+								myDefinition = "<b>" + myText + ":</b><br/>"
+								if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
+									myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
+								} else {
+									myDefinition += x_glossary[i].definition;
+								}
+							}
+						}
+						$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
+						$x_glossaryHover = $("#x_glossaryHover");
+						$x_glossaryHover.css({
+							"left"	:$(this).offset().left + 20,
+							"top"	:$(this).offset().top + 20
+						});
+						$x_glossaryHover.fadeIn("slow");
+						if (x_browserInfo.touchScreen == true) {
+							$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
+						}
+					})
+					.on("mouseleave", ".x_glossary", function(e) {
+						$x_mainHolder.off("click.glossary");
+						
+						if ($x_glossaryHover != undefined) {
+							$x_glossaryHover.remove();
+						}
+						
+						// Put back the title attribute
+						$this = $(this);
+						$this.attr('title', $this.data('title'));
+					})
+					.on("mousemove", ".x_glossary", function(e) {
+						var leftPos,
+							topPos = e.pageY + 20;
+						
+						if (x_browserInfo.mobile == false) {
+							leftPos = e.pageX + 20;
+							if (e.pageX + 250 > $x_mainHolder.width()) {
+								leftPos = e.pageX - 220;
+							}
+							if (topPos > $x_pageHolder.height()) {
+								topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+							}
+						} else {
+							leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
+							if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
+								topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
+							}
+						}
+						$x_glossaryHover.css({
+							"left"	:leftPos,
+							"top"	:topPos
+						});
+					})
+					.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
+						$(this).trigger("mouseenter");
+					})
+					.on("focusout", ".x_glossary", function(e) {
+						$(this).trigger("mouseleave");
+					});
 			}
 		}
 		
-		if (x_fillWindow == true) {
-			x_setFillWindow(false);
+		
+		if (x_params.media != undefined) {
+			$x_footerL.prepend('<button id="x_mediaBtn"></button>');
+			$("#x_mediaBtn")
+				.button({
+					icons: {
+						primary: "x_media"
+					},
+					label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+					text:	false
+				})
+				.click(function() {
+					$(this)
+						.blur()
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+					
+					x_openMediaWindow();
+				});
 		}
-	}
-	
-	
-	if (x_params.stylesheet != undefined) {
-		x_insertCSS(x_evalURL(x_params.stylesheet));
-	}
-    if (x_params.theme != undefined && x_params.theme != "default") {
-        x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
-    }
-	
-	
-	if (x_pageInfo[0].type == "menu") {
-		$x_pageNo.hide();
-		if (x_params.navigation == "Menu") {
-			$x_prevBtn.hide();
-			$x_nextBtn.hide();
-			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
+		
+		
+		if (x_params.ic != undefined && x_params.ic != "") {
+			$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" />');
 		}
-	} else if (x_params.navigation == "Historic") {
-		$x_pageNo.hide();
-	} else {
-		x_dialogInfo.push({type:'menu', built:false});
-	}
-	
-	
-	if (x_params.nfo != undefined) {
-		$x_footerL.prepend('<button id="x_helpBtn"></button>');
-		$("#x_helpBtn")
+		
+		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
+		$("#x_headerBlock h1").html(x_params.name);
+		
+		
+		var prevIcon = "x_prev";
+		if (x_params.navigation == "Historic") {
+			prevIcon = "x_prev_hist";
+		}
+		
+		$x_prevBtn
 			.button({
 				icons: {
-					primary: "x_help"
+					primary: prevIcon
 				},
-				label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
+				label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
 				text:	false
 			})
 			.click(function() {
-				window.open(x_evalURL(x_params.nfo), "_blank");
+				if (x_params.navigation != "Historic") {
+					x_changePage(x_currentPage -1);
+				} else {
+					var prevPage = x_pageHistory[x_pageHistory.length-2];
+					x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					x_changePage(prevPage);
+				}
+				$(this)
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+		
+		$x_nextBtn
+			.button({
+				icons: {
+					primary: "x_next"
+				},
+				label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
+				text:	false
+			})
+			.click(function() {
+				x_changePage(x_currentPage+1);
+				$(this)
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+		
+		
+		var	menuIcon = "x_info",
+			menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
+		
+		if (x_params.navigation == "Historic") {
+			menuIcon = "x_home";
+			menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
+		}
+		
+		$x_menuBtn
+			.button({
+				icons: {
+					primary: menuIcon
+				},
+				label:	menuLabel,
+				text:	false
+			})
+			.click(function() {
+				if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
+					x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
+				} else {
+					x_changePage(0);
+				}
 				$(this)
 					.blur()
 					.removeClass("ui-state-focus")
 					.removeClass("ui-state-hover");
 			});
-	}
-	
-	
-	if (x_params.glossary != undefined) {
-		x_dialogInfo.push({type:'glossary', built:false});
+
+		x_dialogInfo.push({type:'colourChanger', built:false});
+		$x_colourChangerBtn
+			.button({
+				icons: {
+					primary: "x_colourChanger"
+				},
+				label:	"Change Colours",
+				text:	false
+			})
+			.click(function() {
+					x_openDialog("colourChanger", x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"), x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"));
+				$(this)
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
 		
-		var i, len, item, word,
-		    items = x_params.glossary.split("||");
+		if (x_params.kblanguage != undefined) {
+			if (typeof charpadstr != 'undefined')
+			{
+				var xml = $($.parseXML(charpadstr));
+				x_charmapLoaded(xml);
+			}
+			else {
+				$.ajax({
+					type: "GET",
+					url: x_templateLocation + "common_html5/charPad.xml",
+					dataType: "xml",
+					success: function (xml) {
+						x_charmapLoaded(xml);
+						/*
+						 x_dialogInfo.push({type:'language', built:false});
 
-		for (i=0, len=items.length; i<len; i++) {
-			item = items[i].split("|"),
-			word = {word:item[0], definition:item[1]};
+						 var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
+						 specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
+						 specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
 
-			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
-				x_glossary.push(word);
+						 for (var i=0, len=specCharsLower.length; i<len; i++) {
+						 x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
+						 }
+
+						 $x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
+						 var $this = $(this);
+						 if ($this.attr("readonly") == undefined) { // focus is on editable text field
+						 x_inputFocus = this;
+						 if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
+						 x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
+						 }
+						 }
+						 });
+						 */
+					},
+					error: function () {
+						delete x_params["kblanguage"];
+					}
+				});
 			}
 		}
-		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort alphabetically
-				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+		
+		
+		$x_window.resize(function() {
+			if (x_fillWindow == true) {
+				if (this.resizeTo) {
+					clearTimeout(this.resizeTo);
+				}
+				this.resizeTo = setTimeout(function() {
+					$(this).trigger("resizeEnd");
+				}, 200);
+			}
+		});
+		
+		$x_window.on("resizeEnd", function() {
+			x_updateCss();
+		});
+		
+		
+		// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
+		if (x_browserInfo.touchScreen == true) {
+			/*
+			var numTouches = 0;
+			var mouseDown = [0, 0]; // [x, y]
+			var mouseUp = [0, 0];
+			*/
+			
+			$x_pageHolder.bind("touchstart", function(e) {
+				/*
+				var touch = e.originalEvent.touches[0];
+				numTouches = e.originalEvent.touches.length;
+				mouseDown = [touch.pageX, touch.pageY];
+				*/
+				$x_mainHolder.off("click.glossary");
+				if ($x_glossaryHover != undefined) {
+					$x_glossaryHover.remove();
+				}
 			});
 			
-			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
-			$("#x_glossaryBtn")
-				.button({
-					icons: {
-						primary: "x_glossary"
-					},
-					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
-					text:	false
-				})
-				.click(function() {
-					x_openDialog("glossary", x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"), x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"));
-					$(this)
-						.blur()
-						.removeClass("ui-state-focus")
-						.removeClass("ui-state-hover");
-				});
-			
-			$x_pageDiv
-				.on("mouseenter", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-					
-					var $this = $(this),
-						myText = $this.text(),
-						myDefinition, i, len;
-						
-					// Rip out the title attribute
-					$this.data('title', $this.attr('title'));
-					$this.attr('title', '');
-					
-					for (i=0, len=x_glossary.length; i<len; i++) {
-						if (myText.toLowerCase() == x_glossary[i].word.toLowerCase()) {
-							myDefinition = "<b>" + myText + ":</b><br/>"
-                            if (x_glossary[i].definition.indexOf("FileLocation + '") != -1) {
-								myDefinition += "<img src=\"" + x_evalURL(x_glossary[i].definition) +"\">";
-							} else {
-								myDefinition += x_glossary[i].definition;
+			$x_pageHolder.bind("touchend", function(e) {
+				/*
+				if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
+					var touch = e.originalEvent.changedTouches[0];
+					mouseUp = [touch.pageX, touch.pageY];
+					var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
+					// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
+					if (Math.abs(dif[0]) > Math.abs(dif[1])) {	
+						if (dif[0] >= 75) {
+							if (x_pageInfo.length > x_currentPage + 1) {
+								x_changePage(x_currentPage+1);
+							}
+						} else if (dif[0] <= -75) {
+							if (x_currentPage != 0) {
+								x_changePage(x_currentPage-1);
 							}
 						}
 					}
-					$x_mainHolder.append('<div id="x_glossaryHover" class="x_tooltip">' + myDefinition + '</div>');
-					$x_glossaryHover = $("#x_glossaryHover");
-					$x_glossaryHover.css({
-						"left"	:$(this).offset().left + 20,
-						"top"	:$(this).offset().top + 20
-					});
-					$x_glossaryHover.fadeIn("slow");
-					if (x_browserInfo.touchScreen == true) {
-						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
-					}
-				})
-				.on("mouseleave", ".x_glossary", function(e) {
-					$x_mainHolder.off("click.glossary");
-					
-					if ($x_glossaryHover != undefined) {
-						$x_glossaryHover.remove();
-					}
-					
-					// Put back the title attribute
-					$this = $(this);
-					$this.attr('title', $this.data('title'));
-				})
-				.on("mousemove", ".x_glossary", function(e) {
-					var leftPos,
-						topPos = e.pageY + 20;
-					
-					if (x_browserInfo.mobile == false) {
-						leftPos = e.pageX + 20;
-						if (e.pageX + 250 > $x_mainHolder.width()) {
-							leftPos = e.pageX - 220;
-						}
-						if (topPos > $x_pageHolder.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
-						}
-					} else {
-						leftPos = ($x_mobileScroll.width() - $x_glossaryHover.width()) / 2;
-						if (topPos + $x_glossaryHover.height() > $x_mobileScroll.height()) {
-							topPos = $(this).offset().top - $x_glossaryHover.height() - 10;
-						}
-					}
-					$x_glossaryHover.css({
-						"left"	:leftPos,
-						"top"	:topPos
-					});
-				})
-				.on("focus", ".x_glossary", function(e) { // called when link is tabbed to
-					$(this).trigger("mouseenter");
-				})
-				.on("focusout", ".x_glossary", function(e) {
-					$(this).trigger("mouseleave");
-				});
-		}
-	}
-	
-	
-	if (x_params.media != undefined) {
-		$x_footerL.prepend('<button id="x_mediaBtn"></button>');
-		$("#x_mediaBtn")
-			.button({
-				icons: {
-					primary: "x_media"
-				},
-				label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-				text:	false
-			})
-			.click(function() {
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-				
-				x_openMediaWindow();
+				}
+				*/
 			});
-	}
-	
-	
-	if (x_params.ic != undefined && x_params.ic != "") {
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" />');
-	}
-	
-	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
-	$("#x_headerBlock h1").html(x_params.name);
-	
-	
-	var prevIcon = "x_prev";
-	if (x_params.navigation == "Historic") {
-		prevIcon = "x_prev_hist";
-	}
-	
-	$x_prevBtn
-		.button({
-			icons: {
-				primary: prevIcon
-			},
-			label:	x_getLangInfo(x_languageData.find("backButton")[0], "label", "Back"),
-			text:	false
-		})
-		.click(function() {
-			if (x_params.navigation != "Historic") {
-				x_changePage(x_currentPage -1);
-			} else {
-				var prevPage = x_pageHistory[x_pageHistory.length-2];
-				x_pageHistory.splice(x_pageHistory.length - 2, 2);
-				x_changePage(prevPage);
-			}
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-	
-	$x_nextBtn
-		.button({
-			icons: {
-				primary: "x_next"
-			},
-			label:	x_getLangInfo(x_languageData.find("nextButton")[0], "label", "Next"),
-			text:	false
-		})
-		.click(function() {
-			x_changePage(x_currentPage+1);
-			$(this)
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-	
-	
-	var	menuIcon = "x_info",
-		menuLabel = x_getLangInfo(x_languageData.find("tocButton")[0], "label", "Table of Contents");
-	
-	if (x_params.navigation == "Historic") {
-		menuIcon = "x_home";
-		menuLabel = x_getLangInfo(x_languageData.find("homeButton")[0], "label", "Home");
-	}
-	
-	$x_menuBtn
-		.button({
-			icons: {
-				primary: menuIcon
-			},
-			label:	menuLabel,
-			text:	false
-		})
-		.click(function() {
-			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
-				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
-			} else {
-				x_changePage(0);
-			}
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-
-	x_dialogInfo.push({type:'colourChanger', built:false});
-	$x_colourChangerBtn
-		.button({
-			icons: {
-				primary: "x_colourChanger"
-			},
-			label:	"Change Colours",
-			text:	false
-		})
-		.click(function() {
-				x_openDialog("colourChanger", x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"), x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"));
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
-	
-	if (x_params.kblanguage != undefined) {
-        if (typeof charpadstr != 'undefined')
-        {
-            var xml = $($.parseXML(charpadstr));
-            x_charmapLoaded(xml);
-        }
-        else {
-            $.ajax({
-                type: "GET",
-                url: x_templateLocation + "common_html5/charPad.xml",
-                dataType: "xml",
-                success: function (xml) {
-                    x_charmapLoaded(xml);
-                    /*
-                     x_dialogInfo.push({type:'language', built:false});
-
-                     var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
-                     specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
-                     specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
-
-                     for (var i=0, len=specCharsLower.length; i<len; i++) {
-                     x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
-                     }
-
-                     $x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
-                     var $this = $(this);
-                     if ($this.attr("readonly") == undefined) { // focus is on editable text field
-                     x_inputFocus = this;
-                     if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
-                     x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
-                     }
-                     }
-                     });
-                     */
-                },
-                error: function () {
-                    delete x_params["kblanguage"];
-                }
-            });
-        }
-	}
-	
-	
-	$x_window.resize(function() {
-		if (x_fillWindow == true) {
-			if (this.resizeTo) {
-				clearTimeout(this.resizeTo);
-			}
-			this.resizeTo = setTimeout(function() {
-				$(this).trigger("resizeEnd");
-			}, 200);
-		}
-	});
-	
-	$x_window.on("resizeEnd", function() {
-		x_updateCss();
-	});
-	
-	
-	// ** swipe to change page on touch screen devices - taken out as caused problems with drag and drop activities - need to be able to disable it for these activities
-	if (x_browserInfo.touchScreen == true) {
-		/*
-		var numTouches = 0;
-		var mouseDown = [0, 0]; // [x, y]
-		var mouseUp = [0, 0];
-		*/
-		
-		$x_pageHolder.bind("touchstart", function(e) {
-			/*
-			var touch = e.originalEvent.touches[0];
-			numTouches = e.originalEvent.touches.length;
-			mouseDown = [touch.pageX, touch.pageY];
-			*/
-			$x_mainHolder.off("click.glossary");
-			if ($x_glossaryHover != undefined) {
-				$x_glossaryHover.remove();
-			}
-		});
-		
-		$x_pageHolder.bind("touchend", function(e) {
-			/*
-			if (numTouches == 1) { // if >1 then don't use to change page (user may be zooming)
-				var touch = e.originalEvent.changedTouches[0];
-				mouseUp = [touch.pageX, touch.pageY];
-				var dif = [mouseDown[0] - mouseUp[0], mouseDown[1] - mouseUp[1]];
-				// only swipes of min 75px & swipes where xDif > yDif will change page to avoid scrolling up and down triggering page change
-				if (Math.abs(dif[0]) > Math.abs(dif[1])) {	
-					if (dif[0] >= 75) {
-						if (x_pageInfo.length > x_currentPage + 1) {
-							x_changePage(x_currentPage+1);
-						}
-					} else if (dif[0] <= -75) {
-						if (x_currentPage != 0) {
-							x_changePage(x_currentPage-1);
-						}
+			
+			// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
+			$x_window.on("orientationchange", function() {
+				if (x_fillWindow == true) {
+					var newOrientation;
+					if (window.orientation == 0 || window.orientation == 180) {
+						newOrientation = "portrait";
+					} else {
+						newOrientation = "landscape";
+					}
+					if (newOrientation != x_browserInfo.orientation) {
+						x_browserInfo.orientation = newOrientation;
+						x_updateCss();
 					}
 				}
-			}
-			*/
-		});
-		
-		// call x_updateCss function on orientation change (resize event should trigger this but it's inconsistent)
-		$x_window.on("orientationchange", function() {
-			if (x_fillWindow == true) {
-				var newOrientation;
-				if (window.orientation == 0 || window.orientation == 180) {
-					newOrientation = "portrait";
-				} else {
-					newOrientation = "landscape";
-				}
-				if (newOrientation != x_browserInfo.orientation) {
-					x_browserInfo.orientation = newOrientation;
-					x_updateCss();
-				}
-			}
-		});
-	}
-	
-	
-	if (x_params.background != undefined && x_params.background != "") {
-		var alpha = 30;
-		if (x_params.backgroundopacity != undefined) {
-			alpha = x_params.backgroundopacity;
+			});
 		}
-		$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-		$("#x_mainBg").css({
-			"opacity"	:Number(alpha/100),
-			"filter"	:"alpha(opacity=" + alpha + ")"
-		});
-	}
-	
-	
-	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
-	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
-	
-	for (var i=0, len=mediaElementText.length; i<len; i++) {
-		x_mediaText.push({
-			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
-			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
-		});
-	}
+		
+		
+		if (x_params.background != undefined && x_params.background != "") {
+			var alpha = 30;
+			if (x_params.backgroundopacity != undefined) {
+				alpha = x_params.backgroundopacity;
+			}
+			$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
+			$("#x_mainBg").css({
+				"opacity"	:Number(alpha/100),
+				"filter"	:"alpha(opacity=" + alpha + ")"
+			});
+		}
+		
+		
+		// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
+		var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
+		
+		for (var i=0, len=mediaElementText.length; i<len; i++) {
+			x_mediaText.push({
+				label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
+				description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
+			});
+		}
 
-    XTInitialise(); // initialise here, because of XTStartPage in next function
-    x_navigateToPage(true, x_startPage);
+		XTInitialise(); // initialise here, because of XTStartPage in next function
+		x_navigateToPage(true, x_startPage);
+	}
 }
 
 function x_charmapLoaded(xml)

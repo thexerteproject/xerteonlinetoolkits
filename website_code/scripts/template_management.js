@@ -560,14 +560,18 @@ function example_stateChanged(){
  * @author Patrick Lockley
  */
 
-function publishproperties_window(admin){
+function publishproperties_window(admin) {
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
+    if (ids.length == 1) {
+        var node = workspace.nodes[ids[0]];
 
-    var NewWindow = window.open(site_url + url_return("publishproperties", (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length))), (drag_manager.selected_items[0].id.substr(drag_manager.selected_items[0].id.indexOf("_")+1,drag_manager.selected_items[0].id.length)), "height=600, width=635" );
-
-    NewWindow.window_reference = self;
-
-    NewWindow.focus();
-
+        if (node.xot_type == "file") {
+            var NewWindow = window.open(site_url + url_return("publishproperties", node.xot_id), node.xot_id, "height=600, width=635");
+            NewWindow.window_reference = self;
+            NewWindow.focus();
+        }
+    }
 }
 
 /**
@@ -669,25 +673,38 @@ function getProjectInformation(user_id, template_id){
     }
 }
 
-/**
- *
- * Function selection changed state changed
- * This function redisplays the file area after sorting
- * @version 1.0
- * @author Patrick Lockley
- */
-
-
 function getProjectInformation_stateChanged(){
 
     if (xmlHttp.readyState==4){
+        var response=xmlHttp.responseText;
+        var info = JSON.parse(response);
+        document.getElementById('project_information').innerHTML = info.properties;
+        if (info.role == 'read-only')
+        {
+            // disable edit button.
+            var editbtn = document.getElementById("edit");
+            var propertiesbtn = document.getElementById("properties");
+            var deletebtn = document.getElementById("delete");
+            var publishbtn = document.getElementById("publish");
 
-        document.getElementById('project_information').innerHTML = xmlHttp.responseText;
+            editbtn.disabled="disabled";
+            editbtn.className = "xerte_button_c_no_width disabled";
+            editbtn.onclick="";
 
+            publishbtn.disabled="disabled";
+            publishbtn.className = "xerte_button_c_no_width disabled";
+            publishbtn.onclick="";
+
+            propertiesbtn.disabled="disabled";
+            propertiesbtn.className = "xerte_button_c_no_width disabled";
+            propertiesbtn.onclick="";
+
+            deletebtn.disabled="disabled";
+            deletebtn.className = "xerte_button_c_no_width disabled";
+            deletebtn.onclick="";
+        }
     }
-
 }
-
 
 /**
  * 
@@ -926,16 +943,14 @@ function publish_project(template_id){
  * @author Patrick Lockley
  */
 
-function publish_this(){ 
+function publish_this(){
+    var tree = $.jstree.reference("#workspace"),
+        ids = tree.get_selected();
 
-    if(drag_manager.selected_items.length==1){
-
+    if(ids.length==1){
         publishproperties_window();
-
     }else{
-
         alert(PUBLISH_LIMIT);
-
     }
 
 } 

@@ -38,8 +38,8 @@ Version 1.0
 
 -->
 
-<link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/ajax_management.js"></script>
 

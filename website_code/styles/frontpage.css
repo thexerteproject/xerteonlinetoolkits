@@ -21,7 +21,7 @@
 html{
 	margin:0px;
 	padding:0px;
-	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-family:"Open Sans", sans-serif;;
 
 }
 
@@ -60,9 +60,9 @@ body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open S
 	position:relative; 
 	font-size:260%;
 	color:white;
-	width:200px;
+	width:400px;
 	margin:10px 0 0 0;
-  font-family:Open Sans,'Open Sans',Cabin,'Cabin',MyriadPro-Regular,'Myriad Pro Regular',MyriadPro,'Myriad Pro',Helvetica,Arial, sans-serif;
+  font-family:"Open Sans", sans-serif;;
 	line-height:90%
 }
 .title{
