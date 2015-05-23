@@ -42,10 +42,6 @@ var EDITOR = (function ($, parent) {
         savepreviewasync(false);
         bunload();
 
-        //e.returnValue = language.Alert.exitwizard.prompt;
-        //return language.Alert.exitwizard.prompt;
-        //return false;
-        return null;
     }
     // Add the buttons
     do_buttons = function () {
