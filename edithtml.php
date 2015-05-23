@@ -187,16 +187,8 @@ if(isset($_SESSION['toolkits_logon_id'])){
 			}
 		}
 		else {
-			// One editor (and no sharing) for this prohect, so continue without creating a lock file
-			if(update_access_time($row_edit)){
-				_debug("editphp - no sharing etc");
-				require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
-				output_editor_code($row_edit, $xerte_toolkits_site, "false", false);
-			}
-			else {
-				error_show_template();
-				exit(0);
-			}
+			// Read-only access!
+            die("Access denied, you have no editing rights to this object.");
 		}
 	}
 	else if(is_user_admin()) {
@@ -210,7 +202,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 		$string_for_flash_xml = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_edit['username'] . "-" . $row_edit['template_name'] . "/data.xml";
 		$buffer = file_get_contents($string_for_flash_xml);
 		if(strpos($buffer,"editable=true")==false){
-			// so the user sees a blank page?
+			die("Permission denied");
 		}else{
 			// Wiki mode set
 			require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
