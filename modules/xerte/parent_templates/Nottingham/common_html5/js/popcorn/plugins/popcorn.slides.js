@@ -102,7 +102,7 @@ optional: caption captionPosV captionPosH
 							"max":true
 						});
 					
-					eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+					eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
 					
 					$slide.hide();
 				}
@@ -118,10 +118,10 @@ optional: caption captionPosV captionPosH
 					if ($slide.closest(".mediaHolder").length != 0 && $slide.closest(".mediaHolder").width() != $slide.width()) {
 						if ($slide.closest(".audioImgHolder").find(".audioImg")[0].complete == false) {
 							$slide.closest(".audioImgHolder").find(".audioImg").load(function() {
-								eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+								eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
 							});
 						} else {
-							eval(parent.x_currentPageXML.nodeName).resizeContent($slide.find("img"));
+							eval(x_currentPageXML.nodeName).resizeContent($slide.find("img"));
 						}
 					}
 					$slide.show();

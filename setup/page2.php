@@ -68,10 +68,10 @@ if (!isset($_POST['database_created']))
             $statement = $connection->query($query);
         }
         catch(PDOException $e) {
-            _debug("Failed to connect to db: {$e->getMessage()}");
+            //_debug("Failed to connect to db: {$e->getMessage()}");
             ?>
                 <p>Sorry, the attempt to create the database to the database has failed. MySQL reports the following error -</p>
-                <p class="error"><?php echo  $connection->errorInfo();?>
+                <p class="error"><?php echo  $e->getMessage();?>
                 </p>
                 <br/>
             <?php
@@ -100,7 +100,7 @@ if (!isset($_POST['database_created']))
                 $ok = $statement->execute();
 
                 if ($ok === false) {
-                    _debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
+                    //_debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
 
 
                 ?>

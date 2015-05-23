@@ -54,7 +54,7 @@ language: transcriptBtnTxt
 					}
 					
 					// load media and then sort & set up popcorn synch points
-					var parentPageType = eval(parent.x_currentPageXML.nodeName),
+					var parentPageType = eval(x_currentPageXML.nodeName),
 						popcornInstance = parentPageType.loadMedia($target, mediaType, options);
 					
 					if (options.childNodes != undefined) {
