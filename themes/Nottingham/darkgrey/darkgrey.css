@@ -113,3 +113,31 @@ color: #ffffff;
 font-weight: bold;
 background-image: none;
 }
+
+.panel {
+	padding:			10px;
+	background-color:	#1c1c1c;
+	border:				1px solid #cfcfcf;
+	-moz-box-shadow:    2px 2px 5px #888888;
+	-webkit-box-shadow: 2px 2px 5px #888888;
+	box-shadow:         2px 2px 5px #888888;
+	/*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')";  for IE 8 
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888');  for IE 5.5-7 */
+}
+
+.panel.inline {
+	display:	inline-block;
+	margin:		0 20px 20px;
+	background-color:	#1c1c1c;
+}
+
+/*.ui-widget-content {
+  border: 1px solid #aaaaaa;
+  background: #1c1c1c; url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x; 
+  color: yellow !important;
+}*/
+
+/*change font color for cards*/
+#pageContents .card {
+  color: #000000;
+}
