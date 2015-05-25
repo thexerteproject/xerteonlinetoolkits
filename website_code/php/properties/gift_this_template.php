@@ -178,7 +178,7 @@ if(is_numeric($_POST['tutorial_id'])){
         $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ? ";
         $params = array($user_id, 'recyclebin');
 
-        $row_folder = db_fetch_one($query_for_root_folder, $params);
+        $row_folder = db_query_one($query_for_root_folder, $params);
         
         $create_rights_query = "INSERT INTO {$prefix}templaterights (template_id, user_id, role,folder,notes) VALUES (?,?,?,?,?)";
         $params = array($new_template_id, $user_id, "creator", $row_folder['folder_id'], '');
@@ -207,7 +207,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         copy_loop($current_directory, $new_directory);
 
-        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . "</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";	
+        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
 
     }
 

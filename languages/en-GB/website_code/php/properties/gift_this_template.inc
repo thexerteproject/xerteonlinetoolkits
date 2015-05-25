@@ -14,7 +14,7 @@
 
 	define("GIFT_RESPONSE_FAIL", "Sorry you no longer have rights to this template");
 	
-	define("GIFT_RESPONSE_SUCCESS", "Project successfully gifted");
+	define("GIFT_RESPONSE_SUCCESS", "Project successfully gifted to");
 			
 	define("GIFT_RESPONSE_INSTRUCTIONS","To give this project to someone, please type their name here");
 			
