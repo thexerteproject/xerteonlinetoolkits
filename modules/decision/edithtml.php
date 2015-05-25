@@ -177,14 +177,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <?php
         if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
         {
-            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_left.png\" style=\"float:left\" />";
+            echo "<img src=\"branding/logo_left.png\" style=\"float:left\" />";
         }
         else {
             echo "<img src=\"website_code/images/logo.png\" style=\"float:left\" />";
         }
         if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
         {
-            echo "<img src=\"" . $xerte_toolkits_site->root_file_path . "branding/logo_right.png\" style=\"float:right\" />";
+            echo "<img src=\"branding/logo_right.png\" style=\"float:right\" />";
         }
         else {
             echo "<img src=\"website_code/images/apereoLogo.png\" style=\"float:right\" />";
