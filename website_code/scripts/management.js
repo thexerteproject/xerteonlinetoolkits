@@ -233,6 +233,14 @@ function user_templates_list(){
 	}
 }
 
+function register()
+{
+    // Open link to community website
+    // The way this is implemented, is to open register.php
+    // register.php will verify if a unique id for this installation already exists,
+    // If not, it will generate is, and then open the registration form on the community website
+    window.open("website_code/php/register.php");
+}
 
 // Function users list
 //

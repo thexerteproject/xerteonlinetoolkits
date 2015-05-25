@@ -186,8 +186,12 @@ if($success_string!=""){
 </strong>
 </p>
 
+<h2>Register!</h2>
+<p>Please register your site to receive valuable notifications regarding Xerte Online Toolkits. You can find the registration button in the management page:
+    <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php"; ?></a></p>
+
 <h2>Need more help?</h2>
-<p>Please see the Xerte site at <a href="http://www.nottingham.ac.uk/xerte" target="new">http://www.nottingham.ac.uk/xerte</a> and please consider joining the mailing list.</p>
+<p>Please see the Xerte Community site at <a href="http://www.xerte.org.uk" target="new">http://www.xerte.org.uk</a> and please consider joining the forum.</p>
 
 </body>
 </html>

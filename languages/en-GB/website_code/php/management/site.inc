@@ -16,7 +16,11 @@
 
 	define("MANAGEMENT_SITE_TITLE", "Site settings (HTML / Images)");
 
-	define("MANAGEMENT_SITE_URL", "The site url is (This is the URL of the site - changing this will not change the URL)");
+    define("MANAGEMENT_SITE_REGISTER_TEXT", "<p><h2>Register</h2></p><p>Please take the time to register this installation of Xerte Online Toolkits.</p><p>The register button below will take you to the Xerte Community Web Site to the Registration form. It will let you register this installation to the community.</p><p>You can choose to receive notifications about upcoming updates, and/or critical bug fixes.</p>");
+
+    define("MANAGEMENT_SITE_REGISTER", "Register");
+
+    define("MANAGEMENT_SITE_URL", "The site url is (This is the URL of the site - changing this will not change the URL)");
 
 	define("MANAGEMENT_SITE_TITLE_HTML", "The site title is (This is the HTML title tag content) ");
 
