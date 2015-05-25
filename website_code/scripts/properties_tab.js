@@ -166,8 +166,12 @@ function delete_share_stateChanged(){
 		sharing_status_template();
 
 		if(after_sharing_deleted){
-
-			window_reference.screen_refresh();
+            if(typeof window_reference==="undefined"){
+                window.opener.refres_workspace();
+            }
+            else {
+                window_reference.refresh_workspace();
+            }
 
 		}
 
@@ -1093,7 +1097,12 @@ function gift_stateChanged(){
 
 		document.getElementById('dynamic_area').innerHTML = xmlHttp.responseText;
 
-		window_reference.screen_refresh();
+        if(typeof window_reference==="undefined"){
+            window.opener.refresh_workspace();
+        }
+        else {
+            window_reference.refresh_workspace();
+        }
 		
 	}	
 
