@@ -626,7 +626,7 @@ function sharing_info($template_id)
 
     if(sizeof($query_sharing_rows)==1){
         $info .= "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
-        exit(0);
+        return $info;
     }
 
     $info .=  "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p><ul>";
