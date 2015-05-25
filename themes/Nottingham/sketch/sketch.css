@@ -1,0 +1,158 @@
+/* change this file to rebrand your version of Xerte Online Toolkits */
+@import url('http://fonts.googleapis.com/css?family=Permanent+Marker|Schoolbell');
+
+body {
+	/*font-family:	Arial, sans-serif;*/
+	font-family: 'Schoolbell', cursive;
+	/*background-color: #ececec;*/
+}
+
+#x_mainHolder {
+	border-top:		1px solid #000000;
+	border-left:		1px solid #000000;
+	border-right:		1px solid #000000;
+	border-bottom:		1px solid #000000;
+	/*border-bottom-style: groove;
+	border-right-style: groove;*/
+	margin: 2px;
+	background-color: none;
+	border-radius:14px;
+	-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     -ms-box-sizing: border-box;
+     box-sizing: border-box;
+}
+
+#x_headerBlock {
+	color:			#000000;
+	background-color:		#ffffff;
+	background-repeat:no-repeat;
+	background-position:right; 
+	background-image:	none; 
+	border-top-left-radius:14px;
+ border-top-right-radius:14px;
+ font-family: 'Permanent Marker', cursive;
+ font-weight:lighter;
+}
+x_headerBlock.x_floatLeft{
+	float: right;
+}
+
+.ui-accordion .ui-accordion-header a {
+  font-family: 'Permanent Marker', cursive;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  background: none;
+}
+
+.ui-widget {
+  font-family: 'Schoolbell', cursive;
+  /*font-size: 1.1em;*/
+}
+
+.ui-button-text-only .ui-button-text {
+  font-family: 'Schoolbell', cursive;
+}
+
+#x_footerBlock {
+	font-size:		1em;
+	color:			#000000;
+	background-color:		#ffffff;
+	background-image:	none;
+	border-bottom-left-radius:14px;
+ border-bottom-right-radius:14px;
+}
+#x_pageDiv{
+	font-size: 16px;
+}
+
+
+#x_footerBg {
+	background-image:none;
+	/*background-repeat:	repeat-x;*/
+}
+
+#x_pageNo {
+	background:	none;
+}
+
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0px 0px;
+}
+
+h3 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+/* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
+/* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
+
+.ui-button .ui-icon.x_help {					background-image: url("help.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_help {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_info {					background-image: url("info.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_home {					background-image: url("home.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_home {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_glossary {				background-image: url("glossary.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_glossary {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_maximise {				background-image: url("maximise.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_maximise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_minimise {				background-image: url("minimise.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_minimise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_media {					background-image: url("media.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_media {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_next {					background-image: url("next.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_next {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_next {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_next {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev {					background-image: url("previous.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev_hist {					background-image: url("previous_hist.svg"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_colourChanger { background-image: url("colour_changer.svg");background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_colourChanger {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
+
+.ui-dialog .ui-widget-header {
+border: 1px solid #164883;
+background: #ffffff;
+color: #000000;
+font-weight: bold;
+}
