@@ -1,34 +1,80 @@
 /* change this file to rebrand your version of Xerte Online Toolkits */
+@import url('http://fonts.googleapis.com/css?family=Permanent+Marker|Schoolbell');
 
 body {
-	font-family:	Arial, sans-serif;
-	color: #cfcfcf;
+	/*font-family:	Arial, sans-serif;*/
+	font-family: 'Schoolbell', cursive;
+	/*background-color: #ececec;*/
 }
 
 #x_mainHolder {
-	border:		1px solid #1c1c1c;
-	background-color: #1c1c1c;
+	border-top:		1px solid #000000;
+	border-left:		1px solid #000000;
+	border-right:		1px solid #000000;
+	border-bottom:		1px solid #000000;
+	/*border-bottom-style: groove;
+	border-right-style: groove;*/
+	margin: 2px;
+	background-color: none;
+	border-radius:14px;
+	-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     -ms-box-sizing: border-box;
+     box-sizing: border-box;
 }
 
 #x_headerBlock {
-	color: #cfcfcf;
-		background-image: none;
-	background-color: #1c1c1c;
+	color:			#000000;
+	background-color:		#ffffff;
+	background-repeat:no-repeat;
+	background-position:right; 
+	background-image:	none; 
+	border-top-left-radius:14px;
+ border-top-right-radius:14px;
+ font-family: 'Permanent Marker', cursive;
+ font-weight:lighter;
+}
+x_headerBlock.x_floatLeft{
+	float: right;
+}
+
+.ui-accordion .ui-accordion-header a {
+  font-family: 'Permanent Marker', cursive;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  background: none;
+}
+
+.ui-widget {
+  font-family: 'Schoolbell', cursive;
+  /*font-size: 1.1em;*/
+}
+
+.ui-button-text-only .ui-button-text {
+  font-family: 'Schoolbell', cursive;
 }
 
 #x_footerBlock {
 	font-size:		1em;
-	color:			#FFFFFF;
-		background-image: none;
-	background-color: #1c1c1c;
+	color:			#000000;
+	background-color:		#ffffff;
+	background-image:	none;
+	border-bottom-left-radius:14px;
+ border-bottom-right-radius:14px;
+}
+#x_pageDiv{
+	font-size: 16px;
 }
 
+
 #x_footerBg {
-	background-image: none;
+	background-image:none;
+	/*background-repeat:	repeat-x;*/
 }
 
 #x_pageNo {
-	background:	#1c1c1c;
+	background:	none;
 }
 
 h1 {
@@ -99,45 +145,14 @@ h3 {
 .ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -84px 0px; }
 
-.ui-button .ui-icon.x_colourChanger { background-image: url("colour_changer.svg"); background-position: 0px 0px;}
+.ui-button .ui-icon.x_colourChanger { background-image: url("colour_changer.svg");background-position: 0px 0px;}
 .ui-button.ui-state-hover .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
 
-
 .ui-dialog .ui-widget-header {
-border: 1px solid #010101;
-/*background: #010101 url(ui-bg_highlight-soft_75_2d2a2a_1x100.svg) 50% 50% repeat-x;*/
-background-color: #1c1c1c;
-color: #ffffff;
+border: 1px solid #164883;
+background: #ffffff;
+color: #000000;
 font-weight: bold;
-background-image: none;
-}
-
-.panel {
-	padding:			10px;
-	background-color:	#1c1c1c;
-	border:				1px solid #cfcfcf;
-	-moz-box-shadow:    2px 2px 5px #888888;
-	-webkit-box-shadow: 2px 2px 5px #888888;
-	box-shadow:         2px 2px 5px #888888;
-	/*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')";  for IE 8 
-	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888');  for IE 5.5-7 */
-}
-
-.panel.inline {
-	display:	inline-block;
-	margin:		0 20px 20px;
-	background-color:	#1c1c1c;
-}
-
-/*.ui-widget-content {
-  border: 1px solid #aaaaaa;
-  background: #1c1c1c; url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x; 
-  color: yellow !important;
-}*/
-
-/*change font color for cards*/
-#pageContents .card {
-  color: #000000;
 }
