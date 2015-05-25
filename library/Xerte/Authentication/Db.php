@@ -65,8 +65,8 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         global $xerte_toolkits_site;
         _debug("Calling check");
         // check for existence of the 'user' db table?
-        $x = db_query("SHOW CREATE TABLE {$xerte_toolkits_site->database_table_prefix}user");
-        if (empty($x)) {
+        $x = db_query("select 1 from {$xerte_toolkits_site->database_table_prefix}user");
+        if ($x === false) {
             // Create the user table
             $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))

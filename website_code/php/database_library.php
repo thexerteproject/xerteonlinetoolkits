@@ -78,7 +78,7 @@ function database_connect()
         _debug("Failed to connect to db: {$e->getMessage()}");
         return false;
     }
-//    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
     return $db_connection;
 }
