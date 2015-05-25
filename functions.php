@@ -245,3 +245,11 @@ function _is_writable($path) {
 function __is_writable($path) {
     _is_writable($path);
 }
+
+function uid()
+{
+    mt_srand(crc32(microtime()));
+    $prefix = sprintf("%05d", mt_rand(5,99999));
+
+    return uniqid($prefix);
+}
