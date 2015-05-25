@@ -625,8 +625,8 @@ function sharing_info($template_id)
     $info =  "<p class=\"info_header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
 
     if(sizeof($query_sharing_rows)==1){
-        echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
-        exit(0);
+        $info .= "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
+        return $info;
     }
 
     $info .=  "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p><ul>";
