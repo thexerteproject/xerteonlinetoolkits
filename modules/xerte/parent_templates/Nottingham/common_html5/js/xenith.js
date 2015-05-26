@@ -430,7 +430,7 @@ function x_setUp() {
 		}
 		
 		
-		if (x_params.nfo != undefined) {
+		if (x_params.nfo != undefined && x_params.nfo.trim() != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
 			$("#x_helpBtn")
 				.button({
