@@ -99,10 +99,16 @@
 			$pageContents.find("#headerHolder").html("<h3>" + headerTxt + " " + deliciousSearch + " '" + deliciousTerm + "'</h3>");
 			if (data.length == 0) {
 				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-			} else {
-				$.each(data, function (index, value) {
-					resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
-				});
+			}
+			else {
+				if (data[0] && data[0].result && data[0].result.code && data[0].result.code == 1000) {
+					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
+				}
+				else {
+					$.each(data, function (index, value) {
+						resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
+					});
+				}
 			}
 			$resultsHolder
 				.html(resultsString)
