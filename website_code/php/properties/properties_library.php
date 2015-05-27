@@ -592,19 +592,25 @@ function media_quota_info($template_id)
 
         }
 
-        $d = opendir($dir_path);
+        if (file_exists($dir_path))
+        {
+            $d = opendir($dir_path);
 
-        while ($f = readdir($d)) {
-            $full = $dir_path . "/" . $f;
-            if (!is_dir($full)) {
-                $quota += filesize($full);
+            while ($f = readdir($d)) {
+                $full = $dir_path . "/" . $f;
+                if (!is_dir($full)) {
+                    $quota += filesize($full);
+                }
             }
+            $info =  "<p class=\"info_header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
+            $info .=  "<div style=\"clear:both;\"></div>";
+            $info .=  "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+            return $info;
         }
-        $info =  "<p class=\"info_header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
-        $info .=  "<div style=\"clear:both;\"></div>";
-        $info .=  "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
-
-        return $info;
+        else
+        {
+            return "";
+        }
     }
 }
 
