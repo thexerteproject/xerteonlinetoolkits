@@ -31,8 +31,6 @@ _load_language_file("/publishproperties.inc");
 
 <!-- 
 
-University of Nottingham Xerte Online Toolkits
-
 Properties HTML page 
 Version 1.0
 

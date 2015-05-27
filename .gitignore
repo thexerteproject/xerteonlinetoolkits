@@ -9,3 +9,6 @@ USER-FILES/
 
 # Ignore PhPEditor 
 .idea/
+
+# Ignore error-log/ folder changes 
+/error_logs/

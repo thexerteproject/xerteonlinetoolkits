@@ -22,7 +22,6 @@
 //
 // For the RSS reader page for the xerte template
 //
-// Version 1.0 University of Nottingham
 
 include 'Snoopy.class.php';
 require_once(dirname(__FILE__) . "/config.php");

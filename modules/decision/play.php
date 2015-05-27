@@ -19,11 +19,8 @@
  */
 require(dirname(__FILE__) . "/module_functions.php");
 
-//Function show_template
-//
-// Version 1.0 University of Nottingham
-// (pl)
 // Set up the preview window for a xerte piece
+
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 function show_template($row_play)
 {

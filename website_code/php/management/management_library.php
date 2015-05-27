@@ -58,30 +58,35 @@
                 
 		$query_response = db_query($query, $params);
 
-                foreach($query_response as $row) {
+		if (count($query_response) > 0) {
 
-			echo "<p>" . $row['template_name'];
+			foreach($query_response as $row) {
 
-			if($row['rss']=="true"){
+				echo "<p>" . $row['template_name'];
 
-				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','RSS')\">" . MANAGEMENT_LIBRARY_REMOVE_RSS . "</button> ";
+				if($row['rss'] == "true") {
+
+					echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','RSS')\">" . MANAGEMENT_LIBRARY_REMOVE_RSS . "</button> ";
+
+				}
+
+				if($row['export'] == "true") {
+
+					echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "', 'EXPORT')\">" . MANAGEMENT_LIBRARY_REMOVE_EXPORT . "</button> ";
+
+				}
+
+				if($row['syndication'] == "true"){
+
+					echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','SYND')\">" . MANAGEMENT_LIBRARY_REMOVE_SYNDICATION . "</button> ";
+
+				}
 
 			}
-
-			if($row['export']=="true"){
-
-				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "', 'EXPORT')\">" . MANAGEMENT_LIBRARY_REMOVE_EXPORT . "</button> ";
-
-			}
-
-			if($row['syndication']=="true"){
-
-				echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:remove_feed('" . $row['template_id'] .  "','SYND')\">" . MANAGEMENT_LIBRARY_REMOVE_SYNDICATION . "</button> ";
-
-			}
-
 		}
-	
+		else {
+			echo "<p>" . MANAGEMENT_LIBRARY_FEEDS_NO_FEEDS . "</p>";
+		}
 	}
 	
 	function security_list(){
