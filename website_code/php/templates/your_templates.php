@@ -19,9 +19,6 @@
  * limitations under the License.
  */
  
-//
-// Version 1.0 University of Nottingham
-// 
 // Calls the function from the display library
 
 require_once("../../../config.php");

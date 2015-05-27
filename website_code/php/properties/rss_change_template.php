@@ -56,7 +56,7 @@ if(is_numeric($_POST['template_id'])){
             $status = db_query($query_to_change_rss_status, array($_POST['rss'], $_POST['export'], $_POST['desc'], $_POST['template_id']));
         }
 
-        if(!$status) {
+        if($status === false) {
             echo "<p class='error'>Error saving change to template.</p>"; 
         }
 

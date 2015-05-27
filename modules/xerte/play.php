@@ -21,8 +21,6 @@ require("module_functions.php");
 require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 //Function show_template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // Set up the preview window for a xerte piece
 
 function show_template_page($row, $datafile="")

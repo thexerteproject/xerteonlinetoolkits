@@ -31,7 +31,6 @@ if(typeof(String.prototype.trim) === "undefined")
 
 // Function properties ajax send prepare
 //
-// Version 1.0 University of Nottingham
 // (pl)
 // Generic ajax sender for this script
 
