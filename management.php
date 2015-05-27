@@ -295,27 +295,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
         mgt_page($xerte_toolkits_site, MANAGEMENT_LOGON_FAIL . " " . MANAGEMENT_NOT_ADMIN_USERNAME);
 
-        /*
-         * Check the user is set as an admin in the usertype record in the logindetails table, and display the page
-         */
-
-        echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_headers");
-
-        echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
-
-        echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
-
-        echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
-
-        echo "var properties_ajax_php_path = \"website_code/php/properties/\";";
-
-        echo "var management_ajax_php_path = \"website_code/php/management/\";";
-
-        echo "var ajax_php_path = \"website_code/php/\";</script>";
-
-        echo admin_page_format_top(file_get_contents($xerte_toolkits_site->website_code_path . "admin_top"));
-
-        echo file_get_contents($xerte_toolkits_site->website_code_path . "admin_middle");
     }
 }
 ?>	
