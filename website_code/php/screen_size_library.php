@@ -39,7 +39,7 @@ function get_template_screen_size($filename, $type){
         $data = file_get_contents($filename);
         $place = strpos($data, 'stageSize="')+11;
 
-        if($place!=11){
+        if($place==11){
 
             return "805~635";
 
@@ -49,7 +49,7 @@ function get_template_screen_size($filename, $type){
 
             $temp = substr($data, $place, ($secondplace-$place));
 
-            $temp = split(",",$temp);
+            $temp = explode(",",$temp);
 
             return $temp[0] . "~" . $temp[1];
         }
