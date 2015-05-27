@@ -171,8 +171,6 @@ function template_toggle(tag){
 
 // Function toggle (obsolete) ********** CHECK ***************
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // open and close template areas when creating a new one
 
 
