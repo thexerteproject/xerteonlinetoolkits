@@ -11,4 +11,4 @@ USER-FILES/
 .idea/
 
 # Ignore error-log/ folder changes 
-/error-logs/
+/error_logs/
