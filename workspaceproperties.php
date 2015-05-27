@@ -31,8 +31,6 @@ _load_language_file("/workspaceproperties.inc");
 
 <!--
 
-University of Nottingham Xerte Online Toolkits
-
 Workspace properties HTML page
 Version 1.0
 

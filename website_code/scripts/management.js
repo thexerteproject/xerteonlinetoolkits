@@ -31,8 +31,6 @@ if(typeof(String.prototype.trim) === "undefined")
 
 // Function properties ajax send prepare
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // Generic ajax sender for this script
 
 function management_ajax_send_prepare(url){
@@ -45,8 +43,6 @@ function management_ajax_send_prepare(url){
 
 // Function management state changed update screen
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // Generic ajax handler for this script
 
 function management_stateChanged(){ 
@@ -63,8 +59,6 @@ function management_stateChanged(){
 
 // Function management state changed alert
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // Generic ajax handler for this script
 
 function management_alert_stateChanged(){ 
@@ -82,8 +76,6 @@ function management_alert_stateChanged(){
 
 // Function feeds list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function feeds_list(){
@@ -101,8 +93,6 @@ function feeds_list(){
 
 // Function remove licenses
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function remove_feed(id,type){
@@ -136,8 +126,6 @@ function remove_feed(id,type){
 
 // Function licenses list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function licenses_list(){
@@ -155,8 +143,6 @@ function licenses_list(){
 
 // Function remove licenses
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function remove_licenses(id){
@@ -174,8 +160,6 @@ function remove_licenses(id){
 
 // Function categories list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function categories_list(){
@@ -195,8 +179,6 @@ function categories_list(){
 
 // Function remove category
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function remove_category(id){
@@ -214,8 +196,6 @@ function remove_category(id){
 
 // Function user templates list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function user_templates_list(){
@@ -244,8 +224,6 @@ function register()
 
 // Function users list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function users_list(){
@@ -265,8 +243,6 @@ function users_list(){
 
 // Function template_sync
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function template_sync(){
@@ -284,8 +260,6 @@ function template_sync(){
 
 // Function site list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function site_list(){
@@ -305,8 +279,6 @@ function site_list(){
 
 // Function delete sharing template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function templates_list(){
@@ -326,8 +298,6 @@ function templates_list(){
 
 // Function delete sharing template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function update_template(){
@@ -354,8 +324,6 @@ function update_template(){
 
 // Function update play security
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function update_play_security(){
@@ -379,8 +347,6 @@ function update_play_security(){
 
 // Function remove security
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function remove_security(){
@@ -406,8 +372,6 @@ function remove_security(){
 
 // Function delete sharing template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function update_site(){
@@ -483,8 +447,6 @@ function update_site(){
 
 // Function delete sharing template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function user_template(){
@@ -508,8 +470,6 @@ function user_template(){
 
 // Function play security list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function play_security_list(template){
@@ -530,8 +490,6 @@ function play_security_list(template){
 
 // Function new LTI Key
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // add a new LTI Key
 
 function new_LTI_key(){
@@ -556,8 +514,6 @@ function new_LTI_key(){
 
 // Function edit LTI Key
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // edit an LTI Key
 
 function edit_LTI_key(editltikey){
@@ -583,8 +539,6 @@ function edit_LTI_key(editltikey){
 
 // Function delete LTI Key
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // delete an LTI Key
 
 function delete_LTI_key(ltikey){
@@ -614,8 +568,6 @@ function delete_LTI_key(ltikey){
 
 // Function new security
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function new_security(){
@@ -638,8 +590,6 @@ function new_security(){
 
 // Function new category
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function new_category(){
@@ -660,8 +610,6 @@ function new_category(){
 
 // Function new category
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function new_license(){
@@ -682,8 +630,6 @@ function new_license(){
 
 // Function error list
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function errors_list(template){
@@ -702,8 +648,6 @@ function errors_list(template){
 
 // Function delete error logs
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // deletes all error logs
 
 function delete_error_logs(){
@@ -722,8 +666,6 @@ function delete_error_logs(){
 
 // Function delete sharing template
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function delete_template(template){
@@ -896,8 +838,6 @@ function refresh_languages()
 }
 // Function give a project 
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function change_owner(template_id){
@@ -920,8 +860,6 @@ function change_owner(template_id){
 
 // Function give a project 
 //
-// Version 1.0 University of Nottingham
-// (pl)
 // remove a share, and check who did it
 
 function change_owner_stateChanged(){

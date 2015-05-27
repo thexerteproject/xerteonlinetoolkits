@@ -37,8 +37,6 @@ function html_headers() {
 
         <!--
 
-    University of Nottingham Xerte Online Toolkits
-
         HTML to use to set up the template management page
 
         Version 1.0
@@ -202,8 +200,6 @@ function login_form($messages, $xerte_toolkits_site)
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
 
     <!--
-
-    University of Nottingham Xerte Online Toolkits
 
     HTML to use to set up the login page
     The {{}} pairs are replaced in the page formatting functions in display library

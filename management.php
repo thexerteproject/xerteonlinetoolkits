@@ -54,8 +54,6 @@ function mgt_page($xerte_toolkits_site, $extra)
 
             <!-- 
 
-            University of Nottingham Xerte Online Toolkits
-
             HTML to use to set up the login page
             The {{}} pairs are replaced in the page formatting functions in display library
 
@@ -194,8 +192,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
         ?></script>
 
                 <!-- 
-
-                University of Nottingham Xerte Online Toolkits
 
                 HTML to use to set up the login page
                 The {{}} pairs are replaced in the page formatting functions in display library
