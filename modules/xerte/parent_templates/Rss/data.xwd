@@ -1,4 +1,4 @@
-<wizard>
+<wizard menus="">
 
   <rss duplicate="false" icon="icRSS"/>
 

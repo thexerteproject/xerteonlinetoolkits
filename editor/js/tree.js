@@ -1013,14 +1013,14 @@ var EDITOR = (function ($, parent) {
         var key = parent.tree.generate_lo_key();
         var extranodes = false;
 
-        for (i=0; i<wizard_data['learningObject'].new_nodes.length; i++)
+        for (i=0; i<wizard_data[topLevelObject].new_nodes.length; i++)
         {
-            if (selectedItem == wizard_data['learningObject'].new_nodes[i])
+            if (selectedItem == wizard_data[topLevelObject].new_nodes[i])
                 break;
         }
-        if (i >= wizard_data['learningObject'].new_nodes.length)
+        if (i >= wizard_data[topLevelObject].new_nodes.length)
             return; // not found!!
-        var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
+        var xmlData = $.parseXML(wizard_data[topLevelObject].new_nodes_defaults[i]).firstChild;
 
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
@@ -1064,7 +1064,9 @@ var EDITOR = (function ($, parent) {
     },
     // Build the tree once the data has loaded
     build = function (xml) {
-        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find("learningObject"), null),
+        var xmlData = $.parseXML(xml);
+        topLevelObject = xmlData.children[0].nodeName;
+        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children
@@ -1072,14 +1074,14 @@ var EDITOR = (function ($, parent) {
 
             // Check defaults, and see whther there are children, that are NOT new_nodes
             // As an example see tableData within table
-            for (var i=0; i<wizard_data['learningObject'].new_nodes.length; i++)
+            for (var i=0; i<wizard_data[topLevelObject].new_nodes.length; i++)
             {
-                if (page_name == wizard_data['learningObject'].new_nodes[i])
+                if (page_name == wizard_data[topLevelObject].new_nodes[i])
                     break;
             }
-            if (i < wizard_data['learningObject'].new_nodes.length)
+            if (i < wizard_data[topLevelObject].new_nodes.length)
             {
-                var xmlData = $.parseXML(wizard_data['learningObject'].new_nodes_defaults[i]).firstChild;
+                var xmlData = $.parseXML(wizard_data[topLevelObject].new_nodes_defaults[i]).firstChild;
                 $.each(xmlData.childNodes, function(j, child)       // Was children
                 {
                     if (child.nodeType == 1)
