@@ -26,17 +26,17 @@ if(is_user_admin()){
 
     $query = false;
 
-    if($_POST['rss']!=""){
+    if(isset($_POST['rss'])){
        $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set rss='false' where template_id=?";
        $params = array($_POST['template_id']);
     }
 
-    if($_POST['export']!=""){
+    if(isset($_POST['export'])){
         $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set export='false' where template_id =?";
         $params = array($_POST['template_id']);
     }
 
-    if($_POST['synd']!=""){
+    if(isset($_POST['synd'])){
         $query="update {$xerte_toolkits_site->database_table_prefix}templatesyndication set syndication='false' where template_id =?";
         $params = array($_POST['template_id']);
     }
