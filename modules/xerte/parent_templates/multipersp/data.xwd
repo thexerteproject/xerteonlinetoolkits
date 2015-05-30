@@ -22,7 +22,7 @@ Alternatively, students can work collaboratively to produce a piece of work base
   </learningObject>
 
 
-  <!--TITLE PAGE------------------------------------------------------->
+  <!--TITLE PAGE -->
   <title type="text" height="22" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying a title">
 
     <name type="TextInput" label="Page Title"/>
@@ -31,7 +31,7 @@ Alternatively, students can work collaboratively to produce a piece of work base
   </title>
 
 
-  <!--TEXT PAGE------------------------------------------------------->
+  <!--TEXT PAGE -->
   <text type="text" label="Page Text" height="380" menu="Text" menuItem="Plain Text" icon="icPageWhiteText" remove="true" thumb="thumbs/plaintext.jpg" hint="A plain and simple text page.">
 
     <name type="TextInput" label="Page Title"/>
@@ -41,7 +41,7 @@ Alternatively, students can work collaboratively to produce a piece of work base
   </text>
 
 
-  <!--MULTIPLE PERSPECTIVES PAGE------------------------------------------------------->
+  <!--MULTIPLE PERSPECTIVES PAGE -->
   <perspectives menu="Media" menuItem="Multiple Perspectives" icon="icComments" remove="true" thumb="thumbs/multi.jpg" hint="A page for multiple video and sound clips to be viewed and compared.">
 
     <name type="Textinput" label="Page Title"/>

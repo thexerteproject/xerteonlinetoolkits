@@ -66,7 +66,15 @@ $row_template_type = db_query_one("select template_type_id, template_name, templ
 $extraflags = "";
 if ($row_template_type['template_framework'] == 'xerte')
 {
-    $extraflags = "engine=javascript";
+    if ($row_template_type['template_name'] == 'Nottingham')
+    {
+        $extraflags = "engine=javascript";
+    }
+    else
+    {
+        $extraflags = "engine=flash";
+    }
+
 }
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (template_id, creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

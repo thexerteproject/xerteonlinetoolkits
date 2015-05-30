@@ -1,0 +1,7 @@
+display name: Media Interactions
+description: A template for presenting a piece of media and creating a series of interactions
+editor size: 1280, 768
+preview size: 800,665
+preview filename: preview.xml
+public filename: data.xml
+supports: give,peer,xml
