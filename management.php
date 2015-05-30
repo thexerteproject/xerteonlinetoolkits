@@ -39,9 +39,8 @@ function mgt_page($xerte_toolkits_site, $extra)
             <title><?PHP echo $xerte_toolkits_site->site_title; ?></title>
             <link rel="icon" href="favicon.ico" type="image/x-icon" />
             <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+            <script type="text/javascript">
     <?PHP
-    echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
-
     echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
 
     echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
@@ -181,9 +180,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+                <script type="text/javascript">
         <?PHP
-        echo "<script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS\n";
-
         echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
 
         echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
@@ -213,7 +211,11 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                     _include_javascript_file($jsscript);
                 }
                 ?>
-
+                <style>
+                body {
+                    background:white;
+                }
+                </style>
             </head>
 
             <body onload="javascript:site_list()">
