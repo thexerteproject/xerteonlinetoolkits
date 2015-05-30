@@ -45,14 +45,14 @@
   </learningObject>
 
 
-  <!--HANGMAN------------------------------------------------------------>
-  <hangman menu="Games" menuITem="Hangman" icon="icPageWhite" remove="true" thumb="thumbs/hangman.jpg" hint="A Hangman game. Create a list of words for the learner to work out.">
+  <!-- HANGMAN =========================================-->
+  <hangman menu="Games" menuItem="Hangman" icon="icPageWhite" remove="true" thumb="thumbs/hangman.jpg" hint="A Hangman game. Create a list of words for the learner to work out.">
     <name type="TextInput" label="Page Title"/>
     <text type="TextArea" label="Instructions" height="100"/>
     <words type="TextArea" label="Words" height="100"/>
   </hangman>
 
-  <!--TRANSLATOR------------------------------------------------------------>
+  <!--TRANSLATOR ======================================-->
   <translation menu="Interactivity" menuItem="Translation" icon="icComment" remove="true" thumb="thumbs/translation.jpg" hint="A tool allowing users to translate text from language to another using machine translation.">
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
@@ -63,7 +63,7 @@
   </translation>
 
 
-  <!--BUTTON QUESTION PAGE------------------------------------------------------------>
+  <!--BUTTON QUESTION PAGE ===========================-->
   <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" icon="icComment" remove="true" thumb="thumbs/stimulus.jpg" hint="Poses a stimulating question to the learner, with feedback available through a button.">
     <name type="TextInput" label="Page Title"/>
     <prompt type="TextArea" height="150" label="Question"/>
@@ -77,7 +77,7 @@
    </buttonQuestion>
 
 
-  <!--MODIFY INTERACTION--------------------------------------------------------------->
+  <!--MODIFY INTERACTION  ===============================-->
   <modify menu="Interactivity" menuItem="Modify Exercise" icon="icModify" remove="true" thumb="thumbs/modify.jpg" hint="Presents a piece of text that the user must modify in some way, for example, by changing the tense.">
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
@@ -90,7 +90,7 @@
   </modify>
   
 
-  <!--MCQ PAGE-------------------------------------------------------------------------->
+  <!--MCQ PAGE  =========================================-->
   <mcq menu="Interactivity" menuItem="Multiple Choice Question" icon="icComments" remove="true" thumb="thumbs/mcq.jpg" hint="Poses an multiple answer question with multiple options. Create simple true - false questions, or more complex questions with multiple correct answers.">
     <name type="TextInput" label="Page Title"/>
     <instruction type="TextArea" label="Instruction" height="100"/>
@@ -105,7 +105,7 @@
     </newNodes>
   </mcq>
 
-  <!--CATEGORIES INTERACTION-------------------------------------------------------->
+  <!--CATEGORIES INTERACTION  ================================-->
   <categories menu="Interactivity" menuItem="Categories" icon="icLayers" remove="true" thumb="thumbs/categories.jpg" hint="An interaction allowing the user to sort items into a number of categories.">
 
     <name type="TextInput" label="Page Title"/>    
@@ -138,7 +138,7 @@
     <name type="TextInput" label="Item text"/> 
   </item>
   
-  <!--DIALOG INTERACTION------------------------------------------------------------------->
+  <!--DIALOG INTERACTION  ===============================================-->
   <dialog menu="Interactivity" menuItem="Text Entry Exercises" icon="icScript" remove="true" thumb="thumbs/dialog.jpg" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog.">
     <name type="TextInput" label="Page Title"/>    
     <text type="TextArea" height="100" label="Text"/>
@@ -166,7 +166,7 @@
   </dialogStep>
 
 
-  <!--MATCHING TEXTS------------------------------------------------------------>
+  <!--MATCHING TEXTS  ===================================================-->
   <textMatch menu="Interactivity" menuItem="Matching Texts" icon="icConnect" remove="true" thumb="thumbs/textMatch.jpg" hint="An interaction for the user to match chunks of text">
 
     <name type="TextInput" label="Page Title"/>    
@@ -189,7 +189,7 @@
   </sentence>
 
 
-  <!--GAP FILL INTERACTION-------------------------------------------------------->
+  <!--GAP FILL INTERACTION  =================================================-->
   <gapFill menu="Interactivity" menuItem="Gap Fill Exercise" icon="icTextEntry" remove="true" thumb="thumbs/gapFill.jpg" hint="An interaction for creating a drag-and-drop or fill-in-the-blank gap-fill exercise.">
 
     <name type="TextInput" label="Page Title"/>    
@@ -205,7 +205,7 @@
   </gapFill>
 
 
-  <!--RECONSTRUCTION INTERACTION-------------------------------------------------------->
+  <!--RECONSTRUCTION INTERACTION  ============================================-->
   <reconstruct menu="Interactivity" menuItem="Reconstruction Exercise" icon="icBrick" remove="true" thumb="thumbs/reconstruct.jpg" hint="An interaction for recreating a passage of text by guessing at words it might contain.">
 
     <name type="TextInput" label="Page Title"/>    
@@ -219,8 +219,8 @@
   </reconstruct>
 
 
-  <!--TITLE PAGE------------------------------------------------------->
-  <title type="text" height="22" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying the lesson title">
+  <!--TITLE PAGE  ==========================================================-->
+  <title type="text" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying the lesson title">
     <name type="TextInput" label="Page Title"/>
     <size type="ComboBox" label="Text Size" options="20,24,30,36,40,48,70" width="100"/> 
     <showMedia type="CheckBox" label="Show Media"/>
@@ -230,7 +230,7 @@
   </title>
 
 
-  <!--BULLETS PAGE------------------------------------------------------->
+  <!--BULLETS PAGE  ======================================================-->
   <bullets type="text" label="Page Text" height="380" menu="Text" menuItem="Bullets" icon="icBullets" remove="true" thumb="thumbs/bullets.jpg" hint="A page of animated bullet points.">
     <name type="TextInput" label="Page Title"/>
     <showMedia type="CheckBox" label="Show Media"/>
@@ -240,7 +240,7 @@
   </bullets>
 
 
-  <!--TEXT PAGE------------------------------------------------------->
+  <!--TEXT PAGE -->
   <text type="text" label="Page Text" height="380" menu="Text" menuItem="Plain Text" icon="icPageWhiteText" remove="true" thumb="thumbs/plaintext.jpg" hint="A plain and simple text page.">
     <name type="TextInput" label="Page Title"/>
     <showMedia type="CheckBox" label="Show Media"/>
@@ -248,7 +248,7 @@
     <help optional="true" label="Help" type="textArea" height="100"/>
   </text>
 
-  <!--YOUTUBE VIDEO--------------------------------------------------------------->
+  <!--YOUTUBE VIDEO -->
   <youtube type="text" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
 
     <name type="TextInput" label="Page Title"/>
@@ -260,7 +260,7 @@
   </youtube>
 
 
-  <!--TEXT VIDEO------------------------------------------------------------------------>
+  <!--TEXT VIDEO -->
   <textVideo menu="Media" type="text" label="Page Text" height="180" menuItem="Video" icon="icPageWhiteFilm" remove="true" thumb="thumbs/video.jpg" hint="A page for integrating FLV video files.">
 
     <name type="TextInput" label="Page Title"/>
@@ -272,7 +272,7 @@
   </textVideo>
 
 
-  <!--TEXT SOUND PAGE------------------------------------------------------->
+  <!--TEXT SOUND PAGE -->
   <textSound type="text" label="Page Text" height="300" menu="Media" menuItem="Sound" icon="icPageWhitePicture" remove="true" thumb="thumbs/sound.jpg" hint="A page for presenting text and sound.">
 
     <name type="TextInput" label="Page Title"/>
@@ -284,7 +284,7 @@
   </textSound>
 
 
-  <!--XERTE CONTENT------------------------------------------------------------------------>
+  <!--XERTE CONTENT -->
   <xerteModel menu="Media" menuItem="Xerte Content" icon="icTag" remove="true" thumb="thumbs/xerte.jpg" hint="Add custom Xerte content to the piece. Custom Xerte content allows you to add functionality not otherwise available in the templated pages and create bespoke interactivity.">
 
     <name type="TextInput" label="Page Title"/>
@@ -298,7 +298,7 @@
   </xerteModel>
 
 
-  <!--QUIZ------------------------------------------------------------------------------->
+  <!--QUIZ -->
   <quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a series of single answer or multiple answer multiple choice questions.">
     <name type="textInput" label="Quiz Title"/>
     <order type="comboBox" options="sequence,random" label="Question Order" width="120"/>
@@ -336,7 +336,7 @@
   </option>
 
 
-  <!--CHUNK DICTATION--------------------------------------------------------------------------->
+  <!--CHUNK DICTATION -->
   <dictation menu="Interactivity" menuItem="Dictation Exercises" icon="icTranscript" remove="true" thumb="thumbs/dictation.jpg" hint="Creates a dictation exercise for each chunk of text in your transcript.">
     <name type="textInput" label="Exercise Title"/>
     <instructions type="textArea" label="Instructions" height="120"/>
@@ -348,7 +348,7 @@
   </dictation>
 
 
-  <!--CHUNK WORD ORDER------------------------------------------------------------------------->
+  <!--CHUNK WORD ORDER -->
   <order menu="Interactivity" menuItem="Drag and Drop Words" icon="icCursor" remove="true" thumb="thumbs/dragWords.jpg" hint="This creates a drg and drop exercise for each chunk of text in your transcript. The user must places the words in the correct order.">
     <name type="textInput" label="Exercise Title"/>
     <instructions type="textArea" label="Instructions" height="120"/>
@@ -360,7 +360,7 @@
   </order>
 
 
-  <!--FLASH CARDS-------------------------------------------------------------------------------->
+  <!--FLASH CARDS -->
   <flashCards menu="Interactivity" menuItem="Flash Cards" icon="icArrowRefresh" remove="true" thumb="thumbs/flashcards.jpg" hint="Creates a simple flash cards exercise.">
     
     <name type="textInput" label="Exercise Title"/>
@@ -382,7 +382,7 @@
   </card>
 
 
-  <!--READING EXERCISES-------------------------------------------------------------------------->
+  <!--READING EXERCISES -->
   <reading menu="Interactivity" menuItem="Reading Exercises" icon="icApplicationTileVertical" remove="true" thumb="thumbs/reading.jpg" hint="Creates a reading exercise with text in two languages to read and compare.">
     
     <name type="textInput" label="Exercise Title"/>
@@ -404,7 +404,7 @@
   </exercise>
 
 
-  <!--RSS----------------------------------------------------------------------------------->
+  <!--RSS -->
   
   <rss menuItem="RSS Feed" menu="Misc" remove="true" thumb="thumbs/rss.jpg" hint="Include RSS feeds in your presentation. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS">
 

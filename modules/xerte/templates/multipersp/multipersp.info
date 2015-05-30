@@ -1,0 +1,7 @@
+display name: Multiple Perspectives
+description: A template for creating learning objects to present multiple perspectives on a topic.
+editor size: 1280, 768
+preview size: 800,665
+preview filename: preview.xml
+public filename: data.xml
+supports: give,peer,xml
