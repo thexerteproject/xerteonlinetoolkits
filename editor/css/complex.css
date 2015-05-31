@@ -541,6 +541,7 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 #insert_menu .insert_buttons button {
 	margin: 5px;
+    cursor: pointer;
 }
 
 .preview_thumb {
