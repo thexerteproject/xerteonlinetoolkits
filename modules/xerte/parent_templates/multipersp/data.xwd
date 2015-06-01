@@ -23,7 +23,7 @@ Alternatively, students can work collaboratively to produce a piece of work base
 
 
   <!--TITLE PAGE -->
-  <title type="text" height="22" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying a title">
+  <title type="text" label="Title Text" height="40" menu="Text" menuItem="Title Page" remove="true" icon="icPageWhiteText" thumb="thumbs/title.jpg" hint="A simple page for displaying a title">
 
     <name type="TextInput" label="Page Title"/>
     <size type="ComboBox" label="Text Size" options="20,24,30,36,40,48,70" width="100"/> 
