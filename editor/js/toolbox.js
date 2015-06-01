@@ -203,12 +203,10 @@ var EDITOR = (function ($, parent) {
             text : treeLabel,
             type : xmlData[0].nodeName
         }
-        //console.log(this_json);
 
         // if we are at top level then make sure it's open and display node data
         if (parent_id == null) {
             this_json.state = { opened : true };
-            //showNodeData(key);
         }
 
         if (xmlData.children()[0]) {
@@ -285,19 +283,6 @@ var EDITOR = (function ($, parent) {
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
-            //var flashonly = $('<span>')
-            //    .addClass("fa-stack")
-            //    .height("14px")
-            //    .append($('<i>')
-            //       .addClass('fa')
-            //        .addClass('fa-circle')
-            //        .addClass('fa-stack-2x'))
-            //    .append($('<i>')
-            //        .addClass('fa')
-            //        .addClass('fa-facebook')
-            //        .addClass('fa-stack-1x')
-            //        .addClass('fa-inverse')
-            //    );
 
             var tr = $('<tr>');
             if (options.deprecated) {
@@ -347,8 +332,6 @@ var EDITOR = (function ($, parent) {
                 tr.attr('id', 'opt_' + name)
                     .addClass("wizardattribute")
                     .append(td);
-                //output_string += '<tr id="opt_'+ name +'" class="wizardattribute">';
-                //output_string += '<td class="wizardoptional"><img id="optbtn_'+ name +'" src="editor/img/optional.gif" class="optional" />&nbsp;</td>';
             }
 
             else
@@ -363,8 +346,6 @@ var EDITOR = (function ($, parent) {
                 tr.attr('id', 'param_'+ name)
                     .addClass("wizardattribute")
                     .append(td);
-                //output_string += '<tr class="wizardattribute">';
-                //output_string += '<td class="wizardparameter"></td>';
             }
             var tdlabel = $('<td>')
                 .addClass("wizardlabel");
@@ -380,9 +361,6 @@ var EDITOR = (function ($, parent) {
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
-            //output_string += '<td class="wizardlabel">' + label + ' : </td>';
-            //output_string += '<td class="wizardvalue">' + displayDataType(value, options, name, key) + '</td>';
-            //output_string += '</tr>';
             $(id).append(tr);
             if (options.optional == 'true') {
                 $("#optbtn_"+ name).on("click", function () {
@@ -656,12 +634,6 @@ var EDITOR = (function ($, parent) {
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
             filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-            //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-            //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-            //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-            //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
             mathJaxClass :  'mathjax',
             mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
@@ -772,20 +744,11 @@ var EDITOR = (function ($, parent) {
                 filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                 filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                 filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                // filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                // filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                // filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                // filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                // filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                // filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
-                //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
-                //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
-                //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
                 language : language.$code.substr(0,2)
             };
 
@@ -895,26 +858,11 @@ var EDITOR = (function ($, parent) {
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
                         [ 'Sourcedialog' ]
                     ],
-                    /*
-                    toolbarGroups : [
-                    { name: 'document' },
-                    { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                    { name: 'colors' }],
-                    */
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
                     filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                    //filebrowserBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                    //filebrowserImageBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                    //filebrowserFlashBrowseUrl : 'editor/kcfinder/browse.php?opener=ckeditor&type=media',
-                    //filebrowserUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                    //filebrowserImageUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
-                    //filebrowserFlashUploadUrl : 'editor/kcfinder/upload.php?opener=ckeditor&type=media',
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    //filebrowserBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&uploadpath='+mediavariable,
-                    //filebrowserImageBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=image&uploadpath='+mediavariable,
-                    //filebrowserFlashBrowseUrl : 'editor/pdw_browser/index.php?editor=ckeditor&filter=flash&uploadpath='+mediavariable
                     extraPlugins : 'sourcedialog',
                     language : language.$code.substr(0,2)
                 });
@@ -1257,13 +1205,6 @@ var EDITOR = (function ($, parent) {
         });
     },
 
-    //convertLightboxes = function ()
-    //{
-    //    $.each(lightboxes, function(i, options){
-    //       $('#link_' + options.id).colorbox({inline:true, href:'#edit_' + options.id});
-    //    });
-    //},
-
     setAttributeValue = function (key, names, values)
     {
         console.log([key, names, values]);
@@ -1307,8 +1248,6 @@ var EDITOR = (function ($, parent) {
 
     selectChanged = function (id, key, name, value, obj)
     {
-        //console.log(id + ': ' + key + ', ' +  name);
-
         setAttributeValue(key, [name], [value]);
     },
 
@@ -1425,14 +1364,13 @@ var EDITOR = (function ($, parent) {
 
     browseFile = function (id, key, name, value, obj)
     {
-        console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-
+        //console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
 
         window.elFinder = {};
         window.elFinder.callBack = function(file) {
             // Actions with url parameter here
             var url = decodeURIComponent(file.url);
-            console.log('Browse file: url=' + url);
+            //console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
             if (pos >=0)
                 url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
@@ -1441,31 +1379,10 @@ var EDITOR = (function ($, parent) {
             window.elFinder = null;
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
-
-        /*
-        window.KCFinder = {};
-        window.KCFinder.callBack = function(url) {
-            // Actions with url parameter here
-            console.log('Browse file: url=' + url);
-            // Check thumbs first!
-            var pos = url.indexOf(rlourlvariable + ".thumbs/");
-            if (pos >=0)
-                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
-            pos = url.indexOf(rlourlvariable);
-            if (pos >=0)
-                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
-            var newvalue = '<p>' + url + '</p>';
-            $('#' + id).html(newvalue);
-            setAttributeValue(key, [name], [url]);
-            window.KCFinder = null;
-        };
-        window.open('editor/kcfinder/browse.php?type=media', 'Browse file', "height=600, width=800");
-        */
     },
 
     makeAbsolute = function(html){
         var temp = html;
-        //var temp = temp.replace(/FileLocation \+ \'([^\']*)\'/g, rlourlvariable + '$1');
         var pos = temp.indexOf('FileLocation + \'');
         while (pos >= 0)
         {
@@ -1645,7 +1562,6 @@ var EDITOR = (function ($, parent) {
                 case 'checkbox':
                     var id = 'checkbox_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<input id="' + id + '" type="checkbox" ' + (value=='true'? 'checked' : '') + ' onchange="parent.toolbox.cbChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" />';
                     html = $('<input>')
                         .attr('id', id)
                         .attr('type',  "checkbox")
@@ -1667,11 +1583,6 @@ var EDITOR = (function ($, parent) {
                     {
                         s_data = s_options;
                     }
-                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    //for (var i=0; i<s_options.length; i++) {
-                    //    html += "<option value=\"" + s_data[i] + (s_data[i]==value ? "\" selected=\"selected\">" : "\">") + s_options[i] + "</option>";
-                    //}
-                    //html += '</select>';
                     html = $('<select>')
                         .attr('id', id)
                         .change({id:id, key:key, name:name}, function(event)
@@ -1700,20 +1611,6 @@ var EDITOR = (function ($, parent) {
                         textvalue = addLineBreaks(value);
                     }
                     form_id_offset++;
-                    //html = "<div style=\"width:100%\"><textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
-                    //if (options.height) html += "height:" + options.height + "px";
-                    //html += "\">" + value + "</textarea></div>";
-
-
-                    //Something weird is going on here If I build the textarea using jquery, then the ckeditor doesn't work anymore
-                    // So I use html to build the text area and append that to the div
-                    //var textarea = $('<textarea>')
-                    //    .attr('id', id)
-                    //    .addClass("ckeditor");
-                    //if (options.height)
-                    //    textarea.attr('style', "height:" + options.height + "px");
-                    //textarea.append(value);
-
 
                     var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
                     if (options.height) html += "height:" + options.height + "px";
@@ -1729,16 +1626,10 @@ var EDITOR = (function ($, parent) {
                     var max = parseInt(options.max);
                     var step = parseInt(options.step);
                     var intvalue = parseInt(value);
-                    //console.log({min: min, max: max, step: step});
                     if (!Modernizr.inputtypes.number)
                     {
                         var id = 'select_' + form_id_offset;
                         form_id_offset++;
-                        //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                        //for (var i=min; i<=max; i += step) {
-                        //    html += "<option value=\"" + i + (intvalue==i ? "\" selected=\"selected\">" :  "\">") + i + "</option>";
-                        //}
-                        //html += "</select>";
                         html = $('<select>')
                             .attr('id', id)
                             .click({id:id, key:key, name:name}, function(event)
@@ -1759,7 +1650,6 @@ var EDITOR = (function ($, parent) {
                     {
                         var id = 'numericstepper_' + form_id_offset;
                         form_id_offset++;
-                        //html = '<input id="' + id + '" type="number" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" onchange="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
                         html = $('<input>')
                             .attr('id', id)
                             .attr('type', 'number')
@@ -1786,7 +1676,6 @@ var EDITOR = (function ($, parent) {
                     // Leave PageIDs untouched, and prefer to use the PageID over the linkID
                     var id = 'select_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
                     html = $('<select>')
                         .attr('id', id)
                         .click({id:id, key:key, name:name}, function(event)
@@ -1794,7 +1683,6 @@ var EDITOR = (function ($, parent) {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     // Add empty entry
-                    //html += "<option value=\"\"" + (value == "" ? " selected=\"selected\">" :  ">") + "&nbsp;</option>";
                     var option = $('<option>')
                         .attr('value', "");
                     if (value=="")
@@ -1811,43 +1699,6 @@ var EDITOR = (function ($, parent) {
                         option.append(this[0]);
                         html.append(option);
                     });
-                    /*
-                     var tree = $.jstree.reference("#treeview");
-                     var lo_node = tree.get_node("treeroot", false);
-                     $.each(lo_node.children, function(i, key){
-                     var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-                     var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-                     var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                     if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-                     {
-                     if (pageID.found)
-                     {
-                     //html += "<option value=\"" + pageID.value
-                     //    + (value ==  pageID.value || value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                     //    + name.value + "</option>";
-                     option = $('<option>')
-                     .attr('value', pageID.value);
-                     if (value==pageID.value || value==linkID.value)
-                     option.prop('selected', true);
-                     option.append(name.value);
-                     html.append(option);
-                     }
-                     else
-                     {
-                     //html += "<option value=\"" + linkID.value
-                     //    + (value == linkID.value ? "\" selected=\"selected\">" :  "\">")
-                     //   + name.value + "</option>";
-                     option = $('<option>')
-                     .attr('value', linkID.value);
-                     if (value==linkID.value)
-                     option.prop('selected', true);
-                     option.append(name.value);
-                     html.append(option);
-                     }
-                     }
-                     });
-                     */
-                    //html += "</select>";
                     break;
                 case 'colourpicker':
                     var colorvalue = value;
@@ -1859,8 +1710,6 @@ var EDITOR = (function ($, parent) {
                     }
                     if (Modernizr.inputtypes.color && false) // TODO: I can't get this to work! The widget doesn't show the correct colour, turned off for now
                     {
-
-                        //html = '<input id='+ id + ' type="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')">';
                         html = $('<input>')
                             .attr('id', id)
                             .attr('type', 'color')
@@ -1872,7 +1721,6 @@ var EDITOR = (function ($, parent) {
                     }
                     else
                     {
-                        //html = '<input id='+ id + ' class="color" value="' + colorvalue + '" onblur="parent.toolbox.inputChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\',' + this +  ')">';
                         html = $('<input>')
                             .attr('id', id)
                             .addClass('color')
@@ -1887,11 +1735,6 @@ var EDITOR = (function ($, parent) {
                 case 'languagelist':
                     var id = 'select_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    //for (var i=0; i<installed_languages.length; i++) {
-                    //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
-                    //}
-                    //html += '</select>';
                     html = $('<select>')
                         .attr('id', id)
                         .click({id:id, key:key, name:name}, function(event)
@@ -1910,11 +1753,6 @@ var EDITOR = (function ($, parent) {
                 case 'themelist':
                     var id = 'select_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<select id="' + id + '" onchange="parent.toolbox.selectChanged(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >';
-                    //for (var i=0; i<installed_languages.length; i++) {
-                    //    html += "<option value=\"" + installed_languages[i].code + (installed_languages[i].code==value ? "\" selected=\"selected\">" : "\">") + installed_languages[i].name + "</option>";
-                    //}
-                    //html += '</select>';
                     html = $('<select>')
                         .attr('id', id)
                         .click({id:id, key:key, name:name}, function(event)
@@ -2061,8 +1899,6 @@ var EDITOR = (function ($, parent) {
                                 .attr('type', 'hidden')
                                 .attr('value', '0')
                         )
-                            //.append(okbutton)
-                            //.append(cancelbutton)
                             .append($('<button>')
                                 .attr('id', id + '_ok')
                                 .attr('name', 'ok')
@@ -2079,14 +1915,8 @@ var EDITOR = (function ($, parent) {
                         )
                     );
 
-                    //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
                     html = $('<div>')
                         .attr('id', id)
-                        //.attr('href', '#')
-                        //.click({id:id, key:key, name:name}, function(event)
-                        //{
-                        //    hotspotEdit(event.data.id, event.data.key, event.data.name, this.value, this);
-                        //})
                         .append(editdiv)
                         .append($('<a>')
                             .attr('id', 'link_' + id)
@@ -2148,7 +1978,6 @@ var EDITOR = (function ($, parent) {
                 case 'drawing': // Not implemented
                     var id = 'drawing_' + form_id_offset;
                     form_id_offset++;
-                    //html = '<button id="' + id + '" onclick="hotspotEdit(\'' + id + '\', \'' + key + '\', \'' + name + '\')" >Edit ...</button>';
                     html = $('<button>')
                         .attr('id', id)
                         .attr('title', language.edit.$tooltip)
@@ -2163,11 +1992,8 @@ var EDITOR = (function ($, parent) {
                 case 'datefield': // Not used??
                 case 'webpage':  //Not used??
                 default:
-
-                    //html = "<input type=\"text\" value=\"" + value + "\" />";
                     var id = 'textinput_' + form_id_offset;
                     form_id_offset++;
-                    //html = "<div id=\"" + id + "\" class=\"inputtext\" contenteditable=\"true\" ><p>" + value + "</p></div>";
                     if (options.wysiwyg && options.wysiwyg!="false")
                     {
                         html = $('<div>')
