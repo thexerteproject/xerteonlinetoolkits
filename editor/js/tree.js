@@ -119,7 +119,7 @@ var EDITOR = (function ($, parent) {
                 .append(value.name);
             buttons.append(button);
         });
-        $('.ui-layout-center .header').append(buttons);
+        $('.ui-layout-center .header').prepend(buttons);
 
         // Advanced and language checkboxes
         var checkboxes = $('<div />').attr('id', 'parameter_checkboxes');
