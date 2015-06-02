@@ -1849,23 +1849,6 @@ var EDITOR = (function ($, parent) {
 									hsx2 = hsx1 + parseInt(hsattrs.w),
 									hsy2 = hsy1 + parseInt(hsattrs.h);
 
-								/*
-								 $('#edit_img_' + id).imgAreaSelect({
-								 x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
-								 handles: false,
-								 imgeWidth: orgwidth,
-								 imageHeight: orgheight,
-								 parent: '#edit_' + id,
-								 persistent: true,
-								 onSelectEnd: function (img, selection) {
-								 hotspotChanged(id, key, name, img, selection);
-								 }
-								 });
-
-								 //$('#featherlight-content').unbind('click');
-								 */
-
-
 								$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
 								$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
 									var par = event.data;
