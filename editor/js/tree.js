@@ -154,9 +154,8 @@ var EDITOR = (function ($, parent) {
         $.each(lo_data[node_id], function(key , value){
             obj[key] = value;
         });
-        //obj.attributes = lo_data[node_id]['attributes'];
 
-        console.log(node_id + ": " + node.children.length + " children");
+        //console.log(node_id + ": " + node.children.length + " children");
         if (node.children.length > 0) {
             obj.children = {};
             for (var i=0; i<node.children.length; i++) {
@@ -850,32 +849,8 @@ var EDITOR = (function ($, parent) {
         {
             $('#info').html("");
         }
-        /*
-        if (nodeInfo.info != undefined){
 
-
-            var comp = addComponent(TextArea,  {_x:250, _y:ctrlY + 20, html:true, wordWrap:true, hScrollPolicy:'off'});
-            comp.setSize(540, 576 - ctrlY + 20 - 50); //to the bottom of the form
-            comp.setStyle('color', 0x0066CC);
-            comp.setStyle('backgroundColor', 0xE0E0E0);
-            comp.setStyle('borderStyle', 'none');
-
-            var helpStr = '<font color="#0066CC">' + nodeInfo.info + '</font>';
-
-            //append the image src...
-            if (wizard.nfoObject.wizard[obj.target.selectedNode.nodeName].info.image != undefined){
-                helpStr += '<img src= "' + nodeInfo.info.image + '"/>'
-            }
-            comp.text = helpStr;
-        }
-        */
-        //$('textarea.ckeditor').ckeditor(function(){}, { customConfig: 'config.js' });
-        //$('textarea.ckeditor').ckeditor();
         toolbox.convertTextAreas();
-        //$('div.inputtext').ckeditor(function(){}, { toolbarGroups : [
-        //    { name: 'basicstyles', groups: [ 'basicstyles' ] },
-        //    { name: 'colors' }]
-        //});
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
         toolbox.convertDataGrids();
@@ -1109,11 +1084,6 @@ var EDITOR = (function ($, parent) {
         var node_types = {};
         node_types["#"] = create_node_type(null, ["treeroot"]); // Make sure that only the LO can be at root level
         $.each(wizard_data, function (key, value) {
-            /*
-            if (key == "learningObject")
-                node_types['treeroot'] = create_node_type(key, value.new_nodes);
-            else
-            */
                 node_types[key] = create_node_type(key, value.new_nodes);
         });
 
@@ -1227,11 +1197,6 @@ var EDITOR = (function ($, parent) {
         $('.ui-layout-west .footer').append(buttons);
     };
 
-    // Create the layout once the document has finished loading
-    //$(document).ready(setup);
-
-    // my.build = build;
-    // my.do_buttons = do_buttons;
     my.setup = setup;
     my.generate_lo_key = generate_lo_key;
     my.getSelectedNodeKeys = getSelectedNodeKeys;
