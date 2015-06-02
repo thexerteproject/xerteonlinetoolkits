@@ -1779,21 +1779,25 @@ var EDITOR = (function ($, parent) {
                     var hsparent = parent.tree.getParent(key);
                     var hspattrs = lo_data[hsparent].attributes;
                     var div = $('<div>')
-                        .attr('id', 'inner_' + id)
-                        .addClass('clickableHotspot')
+                        .attr('id', 'inner_' + id);
                     if (hspattrs.nodeName.toLowerCase() == "hotspotgroup")
                     {
                         // go one further up
                         hsparent = parent.tree.getParent(hsparent);
                         hspattrs = lo_data[hsparent].attributes;
                     }
+                    
+                    // Create the container
+                    html = $('<div>').attr('id', id);
+                    
                     var url = hspattrs.url;
                     // Replace FileLocation + ' with full url
                     url = makeAbsolute(url);
                     // Create a div with the image in there (if there is an image) and overlayed on the image is the hotspot box
                     if (url.substring(0,4) == "http")
                     {
-                        div.append($('<img>')
+                        div.addClass('clickableHotspot')
+                        		.append($('<img>')
                                 .attr('id', 'inner_img_' + id)
                                 .attr('src', url)
                                 .load(function(){
@@ -1827,103 +1831,103 @@ var EDITOR = (function ($, parent) {
 
                                 })
                         );
+
+						// Ok, now create the content to be shown in the lightbox
+						var editdiv = $('<div>')
+							.attr('id', 'edit_' + id)
+							.addClass('hotspotLightbox');
+						var editimg = $('<img>')
+							.attr('id', 'edit_img_' + id)
+							.addClass('hotspotLightboxImg')
+							.attr('src', url)
+							.load(function()
+							{
+								var orgwidth = this.naturalWidth;
+								var orgheight = this.naturalHeight;
+								var hsx1 = parseInt(hsattrs.x),
+									hsy1 = parseInt(hsattrs.y),
+									hsx2 = hsx1 + parseInt(hsattrs.w),
+									hsy2 = hsy1 + parseInt(hsattrs.h);
+
+								/*
+								 $('#edit_img_' + id).imgAreaSelect({
+								 x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
+								 handles: false,
+								 imgeWidth: orgwidth,
+								 imageHeight: orgheight,
+								 parent: '#edit_' + id,
+								 persistent: true,
+								 onSelectEnd: function (img, selection) {
+								 hotspotChanged(id, key, name, img, selection);
+								 }
+								 });
+
+								 //$('#featherlight-content').unbind('click');
+								 */
+
+
+								$('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
+								$('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
+									var par = event.data;
+									showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
+								});
+
+							});
+						editdiv.append(editimg);
+
+						editdiv.append($('<div>')
+								.attr('id', id + '_edit_buttons')
+								.append($('<input>')
+									.attr('id', id + '_x')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_y')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_h')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_w')
+									.attr('type', 'hidden')
+							)
+								.append($('<input>')
+									.attr('id', id + '_set')
+									.attr('type', 'hidden')
+									.attr('value', '0')
+							)
+								.append($('<button>')
+									.attr('id', id + '_ok')
+									.attr('name', 'ok')
+									.attr('type', 'button')
+									.addClass('editorbutton')
+									.append(language.Alert.oklabel)
+							)
+								.append($('<button>')
+									.attr('id', id + '_cancel')
+									.attr('name', 'cancel')
+									.attr('type', 'button')
+									.addClass('editorbutton')
+									.append(language.Alert.cancellabel)
+							)
+						);
+						
+
+						html.append(editdiv)
+							.append($('<a>')
+								.attr('id', 'link_' + id)
+								.attr('href', '#')
+								.attr('data-featherlight', '#edit_' + id)
+								.attr('title', language.edit.$tooltip)
+								.append(div));
+                    
                     }
                     else
                     {
-                        div = div.append("select image first");
+                        html.append("select image first");
                     }
-
-                    // Ok, now create the content to be shown in the lightbox
-                    var editdiv = $('<div>')
-                        .attr('id', 'edit_' + id)
-                        .addClass('hotspotLightbox');
-                    var editimg = $('<img>')
-                        .attr('id', 'edit_img_' + id)
-                        .addClass('hotspotLightboxImg')
-                        .attr('src', url)
-                        .load(function()
-                        {
-                            var orgwidth = this.naturalWidth;
-                            var orgheight = this.naturalHeight;
-                            var hsx1 = parseInt(hsattrs.x),
-                                hsy1 = parseInt(hsattrs.y),
-                                hsx2 = hsx1 + parseInt(hsattrs.w),
-                                hsy2 = hsy1 + parseInt(hsattrs.h);
-
-                            /*
-                             $('#edit_img_' + id).imgAreaSelect({
-                             x1: hsx1, y1: hsy1, x2: hsx2, y2: hsy2,
-                             handles: false,
-                             imgeWidth: orgwidth,
-                             imageHeight: orgheight,
-                             parent: '#edit_' + id,
-                             persistent: true,
-                             onSelectEnd: function (img, selection) {
-                             hotspotChanged(id, key, name, img, selection);
-                             }
-                             });
-
-                             //$('#featherlight-content').unbind('click');
-                             */
-
-
-                            $('#link_' + id).featherlight({afterClose: function(evt){closeHotSpotSelection(evt, key);}});
-                            $('#link_' + id).click({id:id, key:key, name:name, orgwidth:orgwidth, orgheight:orgheight, hsx1:hsx1, hsy1:hsy1, hsx2:hsx2, hsy2:hsy2}, function(event){
-                                var par = event.data;
-                                showHotSpotSelection(false, par.id, par.key, par.name, par.orgwidth, par.orgheight, par.hsx1, par.hsy1, par.hsx2, par.hsy2);
-                            });
-
-                        });
-                    editdiv.append(editimg);
-
-                    editdiv.append($('<div>')
-                            .attr('id', id + '_edit_buttons')
-                            .append($('<input>')
-                                .attr('id', id + '_x')
-                                .attr('type', 'hidden')
-                        )
-                            .append($('<input>')
-                                .attr('id', id + '_y')
-                                .attr('type', 'hidden')
-                        )
-                            .append($('<input>')
-                                .attr('id', id + '_h')
-                                .attr('type', 'hidden')
-                        )
-                            .append($('<input>')
-                                .attr('id', id + '_w')
-                                .attr('type', 'hidden')
-                        )
-                            .append($('<input>')
-                                .attr('id', id + '_set')
-                                .attr('type', 'hidden')
-                                .attr('value', '0')
-                        )
-                            .append($('<button>')
-                                .attr('id', id + '_ok')
-                                .attr('name', 'ok')
-                                .attr('type', 'button')
-                                .addClass('editorbutton')
-                                .append(language.Alert.oklabel)
-                        )
-                            .append($('<button>')
-                                .attr('id', id + '_cancel')
-                                .attr('name', 'cancel')
-                                .attr('type', 'button')
-                                .addClass('editorbutton')
-                                .append(language.Alert.cancellabel)
-                        )
-                    );
-
-                    html = $('<div>')
-                        .attr('id', id)
-                        .append(editdiv)
-                        .append($('<a>')
-                            .attr('id', 'link_' + id)
-                            .attr('href', '#')
-                            .attr('data-featherlight', '#edit_' + id)
-                            .attr('title', language.edit.$tooltip)
-                            .append(div))
 
                     break;
                 case 'media':
