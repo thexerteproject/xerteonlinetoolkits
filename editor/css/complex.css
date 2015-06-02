@@ -460,7 +460,7 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 {
     margin-left:10px;
     margin-top: 4px;
-    float: left;
+    text-align: left;
 }
 
 
@@ -812,7 +812,7 @@ button:hover {background: #f86718; color: #000000;}
 
 div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 40px!important;}
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}
-div#save_buttons button:last-child {margin-left: 20px!important;}
+div#save_buttons button:last-child {margin-left: 10px!important;}
 
 div#top_buttons button {font-size: 1.3em; height: 35px;}
 div#top_buttons button img {height: 20px!important;}
