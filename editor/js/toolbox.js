@@ -2013,6 +2013,14 @@ var EDITOR = (function ($, parent) {
                             .attr('type', "text")
                             .addClass('inputtext')
                             .attr('id', id)
+                            .keyup({key: key, options: options}, function()
+                            {
+                            	if ((typeof options.name == 'undefined') && (options.label)) {
+									// Rename the node
+                                	var tree = $.jstree.reference("#treeview");
+                                	tree.rename_node(tree.get_node(key, false), $(this).val());
+                            	}
+                            })
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
