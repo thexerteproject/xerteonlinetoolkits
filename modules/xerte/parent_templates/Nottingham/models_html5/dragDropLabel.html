@@ -48,8 +48,6 @@
 					prevW = $image.width();
 				x_scaleImg($image, $panel.width(), $panel.height() - $("#labelHolder").height());
 
-				this.createLabels();
-
 				// adjust target sizes and positions
 				var scale = $image.width() / prevW;
 				$("#targetHolder .target").each(function() {
