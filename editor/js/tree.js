@@ -1040,7 +1040,7 @@ var EDITOR = (function ($, parent) {
     // Build the tree once the data has loaded
     build = function (xml) {
         var xmlData = $.parseXML(xml);
-        topLevelObject = xmlData.children[0].nodeName;
+        topLevelObject = xmlData.childNodes[0].nodeName;
         var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
