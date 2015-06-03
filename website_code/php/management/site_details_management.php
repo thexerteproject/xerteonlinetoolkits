@@ -52,7 +52,7 @@ if(is_user_admin()){
 
     $res2 = db_query($query, array($_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_dn'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['LDAP_filter'], $_POST['LDAP_preference']));
 
-    if($res && $res2){
+    if(($res !== false) && ($res2 !== false)){
 
         echo MANAGEMENT_SITE_CHANGES_SUCCESS;
 
