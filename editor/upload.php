@@ -49,7 +49,7 @@ $relreffedjson = json_decode($relreffedjsonstr);
 
 $data = process($relreffedjson);
 
-// save round-robin queue of 5 xml's
+// save round-robin queue of 10 xml's
 for ($i=10; $i>1; $i--)
 {
     $j = $i-1;
@@ -58,6 +58,17 @@ for ($i=10; $i>1; $i--)
     }
 }
 rename($filename, $filename . ".1");
+
+// save round-robin queue of 10 json's
+for ($i=10; $i>1; $i--)
+{
+    $j = $i-1;
+    if (file_exists($filenamejson . "." . $j)) {
+        rename($filenamejson . "." . $j, $filenamejson . "." . $i);
+    }
+}
+rename($filenamejson, $filenamejson . ".1");
+
 file_put_contents($filename, $data->asXML());
 if ($mode == "publish")
 {
