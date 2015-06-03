@@ -32,7 +32,7 @@
     <ic optional="true" type="media" label="Icon"/>
     <nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
-    <controller optional="true" label="Custom Interface" type="media"/>
+    <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
