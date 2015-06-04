@@ -89,6 +89,8 @@ function write_message($user_name, $type, $level, $subject,$content){
      * Get the log file contents (a series of HTML paragraphs separated by *)
      */
 
+	$error_string = '';
+
     if(file_exists($xerte_toolkits_site->error_log_path . $user_name . ".log")){
 
         $error_string = file_get_contents($xerte_toolkits_site->error_log_path . $user_name . ".log");
@@ -137,6 +139,8 @@ function write_message($user_name, $type, $level, $subject,$content){
     /*
      * Make an error log file per level as well
      */
+
+	$error_string = '';
 
     if(file_exists($xerte_toolkits_site->error_log_path . $level . ".log")){
 
