@@ -1285,6 +1285,10 @@ function x_openDialog(type, title, close, position, load) {
                     x_dialogInfo[i].built.show(); // don't reset size / position for language dialogs
                     language.turnOnKeyEvents();
                 }
+				
+				if (type == "menu") {
+					menu.showCurrent();
+				}
 
             } else {
                 $x_body.append('<div id="x_' + type + '" class="x_popupDialog"></div>');
