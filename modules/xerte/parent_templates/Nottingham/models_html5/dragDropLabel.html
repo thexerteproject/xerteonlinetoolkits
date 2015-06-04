@@ -59,6 +59,16 @@
 						"height"	:$this.height() * scale
 					});
 				});
+				
+				// also adjust labels
+				$("#labelHolder .ui-draggable-disabled").each(function() {
+					var $this = $(this);
+					$this.css({
+						"left"		:$this.position().left * scale,
+						"top"		:$this.position().top * scale,
+					});
+				});
+				
 			}
 		}
 
