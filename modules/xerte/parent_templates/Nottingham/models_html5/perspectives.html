@@ -214,7 +214,20 @@
 								"display"		:"inherit"
 							});
 							
-							$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><p>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</p>');
+							var pageLink = "";
+							if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
+								var pageNum = x_lookupPage("linkID", thisData.getAttribute("pageLink"));
+								if (pageNum != null) {
+									var linkTxt;
+									if (thisData.getAttribute("pageLinkTxt") != undefined && thisData.getAttribute("pageLinkTxt") != "") {
+										linkTxt = thisData.getAttribute("pageLinkTxt");
+									} else { // use page's name as link text if none set in xml
+										linkTxt = x_pages[pageNum].getAttribute("name");
+									}
+									pageLink = '<p><a href="#" onclick="x_navigateToPage(false, {type:\'linkID\', ID:\'' + thisData.getAttribute("pageLink") + '\'})">' + linkTxt + '</a></p>';
+								}
+							}
+							$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><p>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</p>' + pageLink);
 							
 							if (thisData.nodeName == "image") {
 								$mediaPanel.html('<img alt="' + $this.find("img").attr("alt") + '" class="centre" />');
