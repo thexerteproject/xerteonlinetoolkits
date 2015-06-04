@@ -32,7 +32,7 @@ body{
     font-size:1em;
 }
 
-body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open Sans", sans-serif;}
+/*body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open Sans", sans-serif;}*/
 
 .topbar,.edit_topbar{
 	height:80px;
