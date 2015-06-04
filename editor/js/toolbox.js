@@ -1341,8 +1341,8 @@ var EDITOR = (function ($, parent) {
         {
             var x = $('#' + id + '_x').val(),
                 y = $('#' + id + '_y').val(),
-                w = $('#' + id + '_w').val(),
-                h = $('#' + id + '_h').val();
+                w = $('#' + id + '_w').val() - 1,
+                h = $('#' + id + '_h').val() - 1;
 
             setAttributeValue(key, ["x", "y", "w", "h"], [x, y, w, h]);
         }
