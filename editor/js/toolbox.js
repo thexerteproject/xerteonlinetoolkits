@@ -1819,7 +1819,7 @@ var EDITOR = (function ($, parent) {
                                         left: hsleft + "px",
                                         top:  hstop + "px",
                                         right: hsright + "px",
-                                        bottom: hsbottom + "px",
+                                        bottom: (hsbottom + 4) + "px",
                                         background: "#ff0000",
                                         opacity: "0.4"
                                     };
