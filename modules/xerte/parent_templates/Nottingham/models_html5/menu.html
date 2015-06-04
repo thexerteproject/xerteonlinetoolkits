@@ -55,11 +55,6 @@
 				$thisItem.html((i+1) + ") " + x_pages[i+numOffset].getAttribute("name"));
 			}
 			
-			// First attempt at setting current page...
-			// problem is that this needs to change each time page is changed so needs to go there...
-			//$menuItems = $("#menuItems")[x_currentPage].addClass("current");
-
-			
 			$("#menuItems .menuItem")
 				.button()
 				.click(function() {
@@ -115,7 +110,15 @@
 				
 			} else { // menu is in dialog
 				$("#menuHolder").removeClass("splitScreen");
+				this.showCurrent();
 			}
+		}
+		
+		// function called from xenith every time menu in popup appears - highlights current page in list
+		this.showCurrent = function() {
+			$("#menuItems").find(".current").removeClass("current");
+			var $thisItem = $("#menuItems .menuItem:eq(" + x_currentPage + ")").addClass("current");
+			$thisItem[0].scrollIntoView();
 		}
 		
 		// function sets up full screen bg image
@@ -158,7 +161,8 @@
 	}
 	
 	#menuItems .menuItem.current {
-		color:	white;
+		border: 2px solid #FF9900;
+		font-weight: bold;
 	}
 	
 </style>
