@@ -37,7 +37,7 @@ optional: feedback page synch play enable
 	Popcorn.plugin("mcq", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable;
 		
 		var answerSelected = function() {
 			// put together feedback string
@@ -105,6 +105,11 @@ optional: feedback page synch play enable
 				mediaLesson.enableControls(media.media, true);
 			}
 			
+			// automatically enable if the question has been set up so there's no answer that will enable them
+			if (autoEnable == true) {
+				mediaLesson.enableControls(media.media, true);
+			}
+			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
 			if (feedbackTxt != "") {
 				var feedbackLabel = options.feedbackLabel != "" ? '<h5>' + options.feedbackLabel + '</h5>' : "";
@@ -151,6 +156,8 @@ optional: feedback page synch play enable
 				
 				media = this;
 				judge = false;
+				autoEnable = true;
+				var tempEnable = false;
 				
 				// is it to appear over media?
 				if (options.overlay == "true" && (this.video != undefined || $(this.audio).closest(".mediaHolder").find(".audioImg").length > 0)) {
@@ -182,6 +189,11 @@ optional: feedback page synch play enable
 				$(options.childNodes).each(function(i) {
 					if (judge == false && this.getAttribute("correct") == "true") {
 						judge = true;
+						autoEnable = false;
+					}
+					
+					if (tempEnable == false && ((this.getAttribute("page") != undefined && this.getAttribute("page") != "") || (this.getAttribute("synch") == undefined && this.getAttribute("synch") == "") || this.getAttribute("play") == "true" || this.getAttribute("enable") == "true")) {
+						tempEnable = true;
 					}
 					
 					if (options.type == "button") {
@@ -276,6 +288,10 @@ optional: feedback page synch play enable
 						}
 					}
 				});
+				
+				if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
+					autoEnable = false;
+				}
 				
 				// unless it's a button question there needs to be a submit answer button
 				if (options.type != "button") {
