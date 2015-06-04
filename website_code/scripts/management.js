@@ -97,30 +97,34 @@ function feeds_list(){
 
 function remove_feed(id,type){
 
-	if(setup_ajax()!=false){
+	if (confirm(REMOVE_PROMPT)) {
 
-		var url="syndication_remove.php";
+		if(setup_ajax()!=false){
 
-		management_ajax_send_prepare(url)
+			var url="syndication_remove.php";
 
-		if(type=="RSS"){
+			management_ajax_send_prepare(url)
 
-			xmlHttp.send('template_id=' + id + '&rss=setfalse'); 
+			if(type=="RSS"){
+
+				xmlHttp.send('template_id=' + id + '&rss=setfalse'); 
+
+			}
+
+			if(type=="EXPORT"){
+
+				xmlHttp.send('template_id=' + id + '&export=setfalse'); 
+
+			}
+
+			if(type=="SYND"){
+
+				xmlHttp.send('template_id=' + id + '&synd=setfalse'); 
+
+			}
 
 		}
-
-		if(type=="EXPORT"){
-
-			xmlHttp.send('template_id=' + id + '&export=setfalse'); 
-
-		}
-
-		if(type=="SYND"){
-
-			xmlHttp.send('template_id=' + id + '&synd=setfalse'); 
-
-		}
-
+		
 	}
 }
 
@@ -147,14 +151,18 @@ function licenses_list(){
 
 function remove_licenses(id){
 
-	if(setup_ajax()!=false){
+	if (confirm(REMOVE_PROMPT)) {
 
-		var url="remove_license.php";
+		if(setup_ajax()!=false){
 
-		management_ajax_send_prepare(url)
+			var url="remove_license.php";
 
-		xmlHttp.send('remove=' + id); 
+			management_ajax_send_prepare(url)
 
+			xmlHttp.send('remove=' + id); 
+
+		}
+	
 	}
 }
 
@@ -183,14 +191,18 @@ function categories_list(){
 
 function remove_category(id){
 
-	if(setup_ajax()!=false){
+	if (confirm(REMOVE_PROMPT)) {
 
-		var url="remove_category.php";
+		if(setup_ajax()!=false){
 
-		management_ajax_send_prepare(url)
+			var url="remove_category.php";
 
-		xmlHttp.send('remove=' + id); 
+			management_ajax_send_prepare(url)
 
+			xmlHttp.send('remove=' + id); 
+
+		}
+	
 	}
 }
 
@@ -652,14 +664,18 @@ function errors_list(template){
 
 function delete_error_logs(){
 
-	if(setup_ajax()!=false){
+	if (confirm(DELETE_PROMPT)) {
+	
+		if(setup_ajax()!=false){
 
-		var url="delete_error_list.php";
+			var url="delete_error_list.php";
 
-		management_ajax_send_prepare(url);
+			management_ajax_send_prepare(url);
 
-		xmlHttp.send('logon_id=1'); 
+			xmlHttp.send('logon_id=1'); 
 
+		}
+	
 	}
 
 }
