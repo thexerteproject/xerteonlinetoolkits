@@ -223,6 +223,7 @@
 					.each(function() {
 						var $this = $(this);
 						$this.droppable({
+							tolerance: "pointer",
 							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == $this.index();})
 						});
 					})
@@ -275,6 +276,7 @@
 							"height"	:xywh[3]
 						})
 						.droppable({
+							tolerance: "pointer",
 							// only correct label can be dropped on target
 							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
 						});
@@ -295,6 +297,7 @@
 
 			$targets
 				.droppable({
+					tolerance: "pointer",
 					drop:	function(event, ui) {
 						dragDropLabel.dropLabel($(this), ui.draggable); // target, label
 						ui.draggable.data("success", true);
