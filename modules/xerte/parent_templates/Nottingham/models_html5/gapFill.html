@@ -44,11 +44,11 @@
 		this.sizeChanged = function() {
 			var $panel = $("#mainPanel");
 			if (x_browserInfo.mobile == false) {
-        $panel.height(Math.max(
+				$panel.height(Math.max(
 					$("#targetHolder").height() + $("#labelHolder").height(),
 					$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5
 				));
-      }
+			}
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -75,36 +75,44 @@
 				}
 			}
 			
-			
+			// ** to fix - new editor's p tags mean that unnecessary line breaks are added before the first gap in a sentence
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage")),
 				passageArray = origPassage.split("|"),
-				newPassage = "",
 				markedWord = false,
 				i;
 			
-			answerData = []; // contains correct text for blanks
+			answerData = []; // contains array of possible correct texts for blanks
 			
 			// add passage with spaces for marked works
 			for (i=0; i<passageArray.length; i++) {
 				tabIndex++;
 				if (markedWord == false) {
-					newPassage += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
+					$('<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>').appendTo($targetHolder);
 					markedWord = true;
 				} else {
+					var answers = passageArray[i].split("/"),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
-						newPassage += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
-						answerData.push(passageArray[i]);
+						$('<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + longest + '</span>')
+							.appendTo($targetHolder)
+							.data("answer", passageArray[i]);
+						answerData.push(passageArray[i].split("/"));
 						
 					} else { // fill in the blank
-						newPassage += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" />';
-						answerData.push(passageArray[i]);
+						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" />')
+							.appendTo($targetHolder)
+							.data("answer", passageArray[i]);
+						
+						var tempArray = [],
+							splitString = passageArray[i].split("/");
+						for (var j=0; j<splitString.length; j++) {
+							tempArray.push(splitString[j].toLowerCase());
+						}
+						answerData.push(tempArray);
 					}
-					
 					markedWord = false;
 				}
 			}
-			$targetHolder.html(newPassage);
-			
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 				this.setUpDragDrop();
@@ -139,7 +147,7 @@
 				.on("keypress", function() {
 					var $this = $(this);
 					setTimeout(function() {
-						if ($this.val().toLowerCase() == answerData[$targetHolder.find("input").index($this)].toLowerCase()) { // correct
+						if (answerData[$targetHolder.find("input").index($this)].indexOf($this.val().toLowerCase()) != -1) { // correct
 							$this.attr("readonly", "readonly");
 							$pageContents.find("#hint").remove();
 							
@@ -151,7 +159,7 @@
 							if (x_currentPageXML.getAttribute("showHint") != "false") {
 								var wrong = 0;
 								for (i=0; i<$this.val().length; i++) {
-									if (i+1 > answerData[$targetHolder.find("input").index($this)].length || $this.val()[i].toLowerCase() != answerData[$targetHolder.find("input").index($this)][i].toLowerCase()) {
+									if (answerData[$targetHolder.find("input").index($this)].length == 1 && (i+1 > answerData[$targetHolder.find("input").index($this)][0].length || $this.val()[i].toLowerCase() != answerData[$targetHolder.find("input").index($this)][0][i].toLowerCase())) {
 										wrong++;
 									}
 								}
@@ -164,7 +172,7 @@
 										$this.data("attempt", $this.data("attempt")+1);
 										if ($this.data("attempt") % 2 != 0) { // odd num
 											var currentHint = $this.data("hint"),
-												correctAnswer = answerData[$targetHolder.find("input").index($this)];
+												correctAnswer = answerData[$targetHolder.find("input").index($this)][0];
 											
 											if (currentHint == undefined) { // show 1st letter
 												currentHint = "";
@@ -274,7 +282,7 @@
 						var $selectedLabel = $pageContents.data("selectedLabel");
 						if ($selectedLabel != undefined && $selectedLabel != "") {
 							// only accept drops for correct answers
-							if ($selectedLabel.html() == answerData[$(this).data("index")]) {
+							if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1) {
 								gapFill.dropLabel($(this), $selectedLabel); // target, label
 							} else {
 								$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
@@ -292,20 +300,43 @@
 			if (x_currentPageXML.getAttribute("noise") != undefined && x_currentPageXML.getAttribute("noise") != "") { // save distractor data
 				var distractors = x_currentPageXML.getAttribute("noise").split(" ");
 				for (i=0; i<distractors.length; i++) { // add distractors
-					answerData.push(distractors[i]);
+					answerData.push([distractors[i]]);
 				}
 			}
 			
-			var	tempData = answerData.slice();
-			// randomise order and create labels
+			// create labels and then randomise them
+			var	tempMultiAnswers = [];
+			
 			for (i=0; i<answerData.length; i++) {
-				tabIndex++;
-				var labelNum = Math.floor(Math.random() * tempData.length);
+				var arrayString = "";
+				for (var j=0; j<answerData[i].length; j++) {
+					if (j != 0) {
+						arrayString += "/";
+					}
+					arrayString += answerData[i][j];
+				}
 				
-				$('<div class="label panel" id="label' + i + '" tabindex="' + tabIndex + '" title="' + labelTxt1 + '">' + tempData[labelNum] + '</div>')
-					.appendTo($("#labelHolder"));
-					
-				tempData.splice(labelNum, 1);
+				// where there are multiple gaps where the answers can be placed in any order, only create the labels for these once
+				if (tempMultiAnswers.indexOf(arrayString) == -1) {
+					for (var j=0; j<answerData[i].length; j++) {
+						$('<div class="label panel" title="' + labelTxt1 + '">' + answerData[i][j] + '</div>')
+							.appendTo($("#labelHolder"))
+							.data("answer", arrayString);
+					}
+					if (answerData[i].length > 1) {
+						tempMultiAnswers.push(arrayString);
+					}
+				}
+			}
+			var labels = $("#labelHolder .label").sort(function() { return (Math.round(Math.random())-0.5); });
+			for (var i=0; i<labels.length; i++) {
+				tabIndex++;
+				$(labels[i])
+					.appendTo($("#labelHolder"))
+					.attr({
+						"id":		"index" + i,
+						"tabindex":	tabIndex
+					});
 			}
 			
 			// set up drag events (mouse and keyboard controlled)
@@ -370,11 +401,13 @@
 			for (i=0; i<$("#targetHolder .target").length; i++) {
 				$("#targetHolder .target:eq(" + i + ")").droppable({
 					// only label with correct text can be dropped on target
-					accept:	$("#labelHolder .label").filter(function() { return $(this).html() == $('<textarea>').html(answerData[i]).text(); })
+					accept:	$("#labelHolder .label").filter(function() {
+						return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
+					})
 				});
 			}
 			
-			$("#feedbackTxt").attr("tabindex", tabIndex);
+			$("#feedbackTxt").attr("tabindex", tabIndex+1);
 		}
 		
 		// function called when label dropped on target - by mouse or keyboard
