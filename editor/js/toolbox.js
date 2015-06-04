@@ -1809,6 +1809,9 @@ var EDITOR = (function ($, parent) {
                                         hsbottom = orgheight - hstop - parseInt(hsattrs.h),
                                         hsright = orgwidth - hsleft - parseInt(hsattrs.w);
                                     var scale = width / orgwidth;
+                                    
+                                    $(this).css({width: parseInt(scale * orgwidth) + 'px', height: parseInt(scale * orgheight) + 'px'});
+
                                     hsleft = Math.round(hsleft * scale);
                                     hstop = Math.round(hstop * scale);
                                     hsbottom = Math.round(hsbottom * scale);
