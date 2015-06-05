@@ -58,6 +58,8 @@
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			
+			$pageContents.data("score", 0);
+			
 			// set panel appearance
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
@@ -75,7 +77,6 @@
 				}
 			}
 			
-			// ** to fix - new editor's p tags mean that unnecessary line breaks are added before the first gap in a sentence
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage")),
 				passageArray = origPassage.split("|"),
 				markedWord = false,
@@ -262,39 +263,9 @@
 					drop:	function(event, ui) {
 						gapFill.dropLabel($(this), ui.draggable); // target, label
 					}
-					})
-				.focusin(function(e) {
-					var $this = $(this);
-					$this.addClass("highlightDark");
-					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-						$this.attr("title", targetTxt1 + " " + ($this.data("index") + 1) + " - " + targetTxt2);
-					}
-					})
-				.focusout(function() {
-					var $this = $(this);
-					$this
-						.removeClass("highlightDark")
-						.attr("title", targetTxt1 + " " + ($this.data("index") + 1));
-					})
-				.keypress(function(e) {
-					var charCode = e.charCode || e.keyCode;
-					if (charCode == 32) {
-						var $selectedLabel = $pageContents.data("selectedLabel");
-						if ($selectedLabel != undefined && $selectedLabel != "") {
-							// only accept drops for correct answers
-							if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1) {
-								gapFill.dropLabel($(this), $selectedLabel); // target, label
-							} else {
-								$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
-								$selectedLabel
-									.removeClass("selected")
-									.attr("title", labelTxt1);
-								$pageContents.data("selectedLabel", "");
-							}
-						}
-					}
-				});
+					});
 			
+			this.setUpTargetListeners($targetHolder.find(".target"));
 			
 			// set up labels
 			if (x_currentPageXML.getAttribute("noise") != undefined && x_currentPageXML.getAttribute("noise") != "") { // save distractor data
@@ -363,8 +334,129 @@
 						$("#dragDropHolder .highlightDark").removeClass("highlightDark");
 					}
 					})
-				// set up events used when keyboard rather than mouse is used
-				// these highlight selected labels / targets and set the title attr which the screen readers will use
+				.disableSelection();
+			
+			this.setUpLabelListeners($("#dragDropHolder .label"));
+			
+			for (i=0; i<$("#targetHolder .target").length; i++) {
+				$("#targetHolder .target:eq(" + i + ")").droppable({
+					accept:	x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false" ?
+						$("#labelHolder .label").filter(function() {
+							return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
+						}) : $("#labelHolder .label")
+				});
+			}
+			
+			$("#feedbackTxt").attr("tabindex", tabIndex+1);
+		}
+		
+		// function called when label dropped on target - by mouse or keyboard
+		this.dropLabel = function($thisTarget, $thisLabel) {
+			$thisLabel
+				.removeAttr("title")
+				.removeClass("selected")
+				.draggable("disable")
+				.off("keypress focusin focusout")
+				.css("opacity", 0);
+			
+			if (x_currentPageXML.getAttribute("markEnd") == "true") {
+				if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
+					$pageContents.data("score", $pageContents.data("score") + 1);
+					$thisLabel.add($thisTarget).data("correct", true);
+				}
+			} else {
+				$thisTarget.addClass("correct");
+			}
+			
+			var score = $pageContents.data("score");
+			
+			$thisTarget
+				.removeAttr("title")
+				.html($thisLabel.html())
+				.off("keypress focusin focusout")
+				.droppable("option", "disabled", true)
+				.removeClass("highlight highlightDark ui-state-disabled");
+			
+			$pageContents.data("selectedLabel", "");
+			
+			if ($targetHolder.find(".target.highlight").length == 0) {
+				if (x_currentPageXML.getAttribute("markEnd") == "true") {
+					$("#targetHolder .target").filter(function() { return $(this).data("correct") == true; })
+						.addClass("correct");
+					
+					if (score == $("#targetHolder .target").length) {
+						$("#labelHolder").hide();
+						$("#feedbackTxt").fadeIn();
+					} else {
+						var $targets = $("#targetHolder .target").filter(function() { return $(this).data("correct") != true; });
+						$targets.each(function() {
+							var $this = $(this);
+							$this
+								.attr("title", targetTxt1 + " " + ($this.data("index") + 1))
+								.html("")
+								.droppable("option", "disabled", false)
+								.addClass("highlight");
+							
+							gapFill.setUpTargetListeners($targets);
+						});
+						
+						var $labels = $("#labelHolder .label").filter(function() { return $(this).data("correct") != true; })
+							.attr("title", labelTxt1)
+							.draggable("enable")
+							.css({
+								"opacity":	1,
+								"left":		"auto",
+								"top":		"auto"
+							});
+						
+						this.setUpLabelListeners($labels);
+					}
+				} else {
+					$("#labelHolder").hide();
+					$("#feedbackTxt").fadeIn();
+				}
+			}
+		}
+		
+		// set up events used when keyboard rather than mouse is used
+		this.setUpTargetListeners = function($targets) {
+			$targets
+				.focusin(function(e) {
+					var $this = $(this);
+					$this.addClass("highlightDark");
+					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+						$this.attr("title", targetTxt1 + " " + ($this.data("index") + 1) + " - " + targetTxt2);
+					}
+					})
+				.focusout(function() {
+					var $this = $(this);
+					$this
+						.removeClass("highlightDark")
+						.attr("title", targetTxt1 + " " + ($this.data("index") + 1));
+					})
+				.keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						var $selectedLabel = $pageContents.data("selectedLabel");
+						if ($selectedLabel != undefined && $selectedLabel != "") {
+							if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false")) {
+								gapFill.dropLabel($(this), $selectedLabel); // target, label
+							} else {
+								$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
+								$selectedLabel
+									.removeClass("selected")
+									.attr("title", labelTxt1);
+								$pageContents.data("selectedLabel", "");
+							}
+						}
+					}
+				});
+		}
+		
+		// set up events used when keyboard rather than mouse is used
+		this.setUpLabelListeners = function($labels) {
+			// highlight selected labels / targets and set the title attr which the screen readers will use
+			$labels
 				.focusin(function() {
 					var $this = $(this);
 					if ($this.is($pageContents.data("selectedLabel")) == false) {
@@ -395,44 +487,7 @@
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
 						$pageContents.data("selectedLabel", $this);
 					}
-					})
-				.disableSelection();
-
-			for (i=0; i<$("#targetHolder .target").length; i++) {
-				$("#targetHolder .target:eq(" + i + ")").droppable({
-					// only label with correct text can be dropped on target
-					accept:	$("#labelHolder .label").filter(function() {
-						return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
-					})
-				});
-			}
-			
-			$("#feedbackTxt").attr("tabindex", tabIndex+1);
-		}
-		
-		// function called when label dropped on target - by mouse or keyboard
-		this.dropLabel = function($thisTarget, $thisLabel) {
-			$thisLabel
-				.removeAttr("title")
-				.removeClass("selected")
-				.draggable("disable")
-				.off("keypress focusin focusout")
-				.css("opacity", 0);
-			
-			$thisTarget
-				.removeAttr("title")
-				.addClass("correct")
-				.html($thisLabel.html())
-				.off("keypress focusin focusout")
-				.droppable("option", "disabled", true)
-				.removeClass("highlight highlightDark ui-state-disabled");
-			
-			$pageContents.data("selectedLabel", "");
-			
-			if ($targetHolder.find(".target.highlight").length == 0) {
-				$("#labelHolder").hide();
-				$("#feedbackTxt").fadeIn();
-			}
+					});
 		}
 	}
 	
