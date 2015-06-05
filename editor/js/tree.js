@@ -622,6 +622,13 @@ var EDITOR = (function ($, parent) {
         var html = $('<div>')
             .addClass("optButtonContainer");
         var table = $('<table>');
+        
+		// Sort into alphabetical order
+		node_options['optional'].sort(function(a,b) {
+			var aN = a.value.label.toLowerCase();
+			var bN = b.value.label.toLowerCase(); 
+			return (aN < bN) ? -1 : ((aN > bN) ? 1 : 0);
+		});
 
         for (var i=0; i<node_options['optional'].length; i++)
         {
