@@ -185,6 +185,7 @@ input.media
     border-top: 1px solid #777;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    z-index: 100;
 }
 .subhead { border-bottom: 1px solid #777; }
 
