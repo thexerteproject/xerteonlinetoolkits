@@ -25,12 +25,13 @@
 			labelTxt2,
 			labelTxt3,
 			targetTxt1,
-			targetTxt2;
+			targetTxt2,
+			$feedback;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#labelHolder .label").remove();
-			$("#feedback").hide();
+			$feedback = $("#feedback").hide();
 			$("#targetHolder .target")
 				.data("currentLabel", "")
 				.css("height", "auto");
@@ -93,9 +94,7 @@
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
 			
-			var $feedback = $("#feedback")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-				.hide();
+			$feedback = $("#feedback").hide();
 			
 			// checkBtnWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("checkBtnTxt");
@@ -109,13 +108,26 @@
 				})
 				.click(function() { // mark labels and show feedback
 					$("#dragDropHolder .tick").remove();
-					$("#feedback").show();
+					var correct = 0;
 					$("#labelHolder .label").each(function() {
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
+							correct++;
 							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 						}
 					});
+					
+					if (correct == $("#labelHolder .label").length) {
+						$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					} else {
+						if (correct == 0) {
+							$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						} else {
+							$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						}
+					}
+					
+					$("#feedback").show();
 				});
 			
 			// create targets
@@ -264,7 +276,7 @@
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
 						
-						$("#feedback").hide();
+						$feedback.hide();
 						$("#dragDropHolder .tick").remove();
 					}
 					})
@@ -301,7 +313,7 @@
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
 						$pageContents.data("selectedLabel", $this);
 						
-						$("#feedback").hide();
+						$feedback.hide();
 						$("#dragDropHolder .tick").remove();
 					}
 					})
