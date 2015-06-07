@@ -130,7 +130,7 @@ abstract class Xerte_Authentication_Abstract
         echo "";
     }
 
-    public function addUser($username, $passwd, $firstname, $lastname)
+    public function addUser($username, $firstname, $surname, $passwd, $email)
     {
         $this->getUserList(true, "");
     }
