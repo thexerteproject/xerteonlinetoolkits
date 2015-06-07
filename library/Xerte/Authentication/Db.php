@@ -132,28 +132,35 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         //_include_javascript_file("library/Xerte/Authentication/Db.js");
 
         echo "<div style=\"margin-left:20px\" >";
-        echo "<form name=\"user_authDb_list\" margin-left=\"20px\"><select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
+        echo "<form name=\"user_authDb_list\" margin-left=\"20px\">";
 
-        $first = true;
-        foreach($result as $row_users){
-            if ($first)
-            {
-                echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
-                $username = $row_users['username'];
-                $firstname = $row_users['firstname'];
-                $surname = $row_users['surname'];
-                $email = $row_users['email'];
-                $first = false;
+	$username = '';
+	$firstname = '';
+	$surname = '';
+	$email = '';
+
+	if ($result) {
+            echo "<select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
+
+            $first = true;
+            foreach($result as $row_users){
+                if ($first) {
+                    echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                    $username = $row_users['username'];
+                    $firstname = $row_users['firstname'];
+                    $surname = $row_users['surname'];
+                    $email = $row_users['email'];
+                    $first = false;
+            	}
+                else {
+                    echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
+                }
             }
-            else
-            {
-                echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
-            }
 
-        }
+            echo "</select>";
+            echo "<button type=\"button\" class=\"xerte_button\" onclick=\"delete_authDb_user()\">" . AUTH_DB_DELETEUSER . "</button>";
+	}
 
-        echo "</select>";
-        echo "<button type=\"button\" class=\"xerte_button\" onclick=\"delete_authDb_user()\">" . AUTH_DB_DELETEUSER . "</button>";
         echo "<br /><table>";
         echo "<tr><td><label for=\"authDb_username\">"  . AUTH_DB_USERNAME . "</label></td><td><input type=\"text\" id=\"authDb_username\" value=\"" . $username . "\" /></tr>";
         echo "<tr><td><label for=\"authDb_firstname\">" . AUTH_DB_FIRSTNAME . "</label></td><td><input type=\"text\" id=\"authDb_firstname\" value=\"" . $firstname . "\" /></tr>";
