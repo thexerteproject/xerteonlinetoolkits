@@ -1566,7 +1566,7 @@ var EDITOR = (function ($, parent) {
                         .attr('id', id)
                         .attr('type',  "checkbox")
                         .prop('checked', value && value == 'true')
-                        .click({id:id, key:key, name:name}, function(event){
+                        .change({id:id, key:key, name:name}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                         });
                     break;
@@ -1632,7 +1632,7 @@ var EDITOR = (function ($, parent) {
                         form_id_offset++;
                         html = $('<select>')
                             .attr('id', id)
-                            .click({id:id, key:key, name:name}, function(event)
+                            .change({id:id, key:key, name:name}, function(event)
                             {
                                 selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             });
@@ -1737,7 +1737,7 @@ var EDITOR = (function ($, parent) {
                     form_id_offset++;
                     html = $('<select>')
                         .attr('id', id)
-                        .click({id:id, key:key, name:name}, function(event)
+                        .change({id:id, key:key, name:name}, function(event)
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
