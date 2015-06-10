@@ -622,7 +622,10 @@ var EDITOR = (function ($, parent) {
         var html = $('<div>')
             .addClass("optButtonContainer");
         var table = $('<table>');
-        
+        var flashonly = $('<img>')
+            .attr('src', 'editor/img/flashonly.png')
+            .attr('title', 'Flash only attribute');
+
 		// Sort into alphabetical order
 		node_options['optional'].sort(function(a,b) {
 			var aN = a.value.label.toLowerCase();
@@ -650,8 +653,11 @@ var EDITOR = (function ($, parent) {
                     function (event) {
                         parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
                     })
-                    .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14))
-                    .append(attribute_label);
+                    .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
+                if (node_options['optional'][i].value.flashonly) {
+                    button.append(flashonly);
+                }
+                button.append(attribute_label);
                 if (node_options['optional'][i].value.tooltip)
                 {
                     button.attr('title', node_options['optional'][i].value.tooltip);
