@@ -98,9 +98,11 @@
 				});
 				
 			} else {
+				var synchPoint = 0;
 				$(x_currentPageXML).children().each(function() {
 					var	$this = $(this);
-					captionInfo.push({text:$this.attr("text"), synch:$this.attr("synch")});
+					synchPoint = $this.attr("synch")[0] == "+" ? ($.isNumeric($this.attr("synch").slice(1)) ? Number($this.attr("synch").slice(1)) + synchPoint : 0) : Number($this.attr("synch")),
+					captionInfo.push({text:$this.attr("text"), synch:synchPoint});
 				});
 				
 				transcriptReader.createCaptions(captionInfo);

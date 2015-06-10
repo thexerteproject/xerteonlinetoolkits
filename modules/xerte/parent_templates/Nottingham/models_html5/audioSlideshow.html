@@ -86,10 +86,14 @@
 		}
 		
 		this.createSlides = function() {
-			var $infoHolder = $("#infoHolder");
+			var $infoHolder = $("#infoHolder"),
+				synchPoint = 0;
+			
 			$(x_currentPageXML).children().each(function(i){
-				var infoString = x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>');
-				var url = this.getAttribute("url");
+				var infoString = x_addLineBreaks('<p class="slideTxt">' + this.getAttribute("text") + '</p>'),
+					synch = this.getAttribute("synch")[0] == "+" ? ($.isNumeric(this.getAttribute("synch").slice(1)) ? Number(this.getAttribute("synch").slice(1)) + synchPoint : 0) : Number(this.getAttribute("synch")),
+					url = this.getAttribute("url");
+				
 				if (url != undefined && url != "") {
 					var newString = '<div class="pageImg"><img ';
 					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
@@ -108,10 +112,12 @@
 				var $slide = $('<div class="slide"></div>')
 					.html(infoString)
 					.appendTo($infoHolder)
-					.data("synch", this.getAttribute("synch"));
+					.data("synch", synch);
+				
+				synchPoint = synch;
 				
 				// image on slide visible at beginning needs to be scaled when loaded
-				if (i == 0 && this.getAttribute("synch") == "0") {
+				if (i == 0 && synch == "0") {
 					$slide.find(".pageImg img")
 						.css({ // stops flicker on 1st load of image
 							"opacity"	:0,
@@ -135,7 +141,7 @@
 						.attr("src", x_evalURL(url));
 				}
 				
-				if (this.getAttribute("synch") != "0") {
+				if (synch != "0") {
 					$slide.hide();
 				}
 			});
