@@ -761,7 +761,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
-    <passage label="Gap Fill Text" type="script" height="150"/>
+    <passage label="Gap Fill Text" type="TextArea" height="150"/>
     <interactivity label="Interactivity" options="Drag Drop,Fill in Blank" type="ComboBox" data="Drag Drop,Fill in Blank" defaultValue="Drag Drop" width="100"/>
     <feedback label="Feedback" type="TextArea" height="50"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
