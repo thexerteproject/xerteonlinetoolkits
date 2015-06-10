@@ -100,7 +100,7 @@
 						answerData.push(passageArray[i].split("/"));
 						
 					} else { // fill in the blank
-						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" />')
+						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>')
 							.appendTo($targetHolder)
 							.data("answer", passageArray[i]);
 						
@@ -548,7 +548,7 @@
 
 <div id="pageContents">
 	
-	<div class="splitScreen medium">
+	<div class="splitScreen">
 		
 		<div id="textHolder" class="left">
 			<div id="mainText" tabindex="1"></div>
