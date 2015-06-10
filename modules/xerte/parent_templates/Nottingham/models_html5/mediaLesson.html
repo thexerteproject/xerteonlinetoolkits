@@ -613,8 +613,9 @@
 		}
 		
 		
-		// function sorts synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
-		// can be called for mainMedia & additional media from mediaPlus plugin
+		// the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
+		
+		// function can be called for mainMedia & additional media from mediaPlus plugin
 		this.sortPopcorn = function(synchData, targetRef, isMedia, popcornInstance) {
 			// wait until metadata has loaded before continuing
 			if (popcornInstance.duration()) {
@@ -625,17 +626,52 @@
 				});
 			}
 		}
+		
+		// function gets correct synch point - either from absolute value or by converting relative synch points (relative are in format "+5")
+		this.sortRelativeSynchPoints = function(type, thisSynch, relativeTo, defaultEnd) {
+			var synch;
+			if (type == "start") {
+				if (thisSynch[0] == "+") {
+					// relative start synch is to previous sibling on panel
+					synch = $.isNumeric(thisSynch.slice(1)) ? Number(thisSynch.slice(1)) : 0;
+					synch += relativeTo;
+				} else {
+					synch = $.isNumeric(thisSynch) ? Number(thisSynch) : 0;
+				}
+			} else {
+				if (thisSynch != undefined && thisSynch[0] == "+") {
+					// relative end synch is to its own start point
+					synch = $.isNumeric(thisSynch.slice(1)) ? Number(thisSynch.slice(1)) : defaultEnd;
+					synch += relativeTo;
+				} else {
+					synch = $.isNumeric(thisSynch) ? Number(thisSynch) : defaultEnd;
+				}
+			}
+			return synch;
+		}
+		
 		this.sortPopcornNow = function(synchData, targetRef, isMedia, popcornInstance) {
-			
-			var data = new Array(); // array of objects containing details of a synch point event
+			var data = new Array(), // array of objects containing details of a synch point event
+				prevStart = 0,
+				start, end;
 			
 			$(synchData).each(function(j) {
 				// ignore the media synchCues as they will be set up separately
 				if (isMedia == false || this.nodeName != "synchCue") {
+					if (this.nodeName != "synchSubtitlePlus") {
+						start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
+						end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
+						prevStart = start;
+					} else {
+						// there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
+						start = prevStart;
+						end = 0;
+					}
+					
 					data.push({
 						type:		this.nodeName,
-						start:		$.isNumeric(this.getAttribute("synchStart")) ? Number(this.getAttribute("synchStart")) : 0,
-						end:		$.isNumeric(this.getAttribute("synchEnd")) ? Number(this.getAttribute("synchEnd")) : undefined,
+						start:		start,
+						end:		end,
 						target:		targetRef + "_" + j,
 						allInfo:	this
 					});
@@ -647,7 +683,8 @@
 							
 						} else {
 							var $parent = $(this),
-								syncChildren = true;
+								syncChildren = true,
+								prevStartII = start;
 							
 							$parent.children().each(function(k) {
 								// if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
@@ -657,13 +694,18 @@
 									
 								} else {
 									// if no end point is set force it to be at the start of the next child - otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
-									var end = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? Number($parent[0].getAttribute("synchEnd")) : undefined;
+									// this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
+									var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
 									this.setAttribute("child", true);
+									
+									var start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
+										end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
+									prevStartII = start;
 									
 									data.push({
 										type:		$(this).parent()[0].nodeName,
-										start:		$.isNumeric(this.getAttribute("synchStart")) ? Number(this.getAttribute("synchStart")) : 0,
-										end:		$.isNumeric(this.getAttribute("synchEnd")) ? Number(this.getAttribute("synchEnd")) : end,
+										start:		start,
+										end:		end,
 										target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
 										allInfo:	this
 									});
@@ -676,8 +718,22 @@
 							}
 						}
 					}
+				} else {
+					start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synch"), prevStart);
+					prevStart = start;
+					this.setAttribute("synch", start);
+					if (this.getAttribute("destination") != undefined && this.getAttribute("destination")[0] == "+") {
+						this.setAttribute("destination", Number(this.getAttribute("destination").slice(1)) + start);
+					}
 				}
 			});
+			
+			// fixes any end points that weren't calculated right because of relative synching
+			for (var j=0; j<data.length; j++) {
+				if (data[j].end != undefined && data[j].end[0] == "+") {
+					data[j].end = data[j+1].start;
+				}
+			}
 			
 			// sort panel synch events into order (of start synch point)
 			data.sort(function (a, b) {

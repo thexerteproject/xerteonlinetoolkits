@@ -140,7 +140,11 @@ optional: feedback page synch play enable
 			} else {
 				if (options.childNodes[index].getAttribute("synch") != undefined && options.childNodes[index].getAttribute("synch") != "") {
 					// jump media position
-					media.currentTime(options.childNodes[index].getAttribute("synch"));
+					if (options.childNodes[index].getAttribute("synch")[0] == "+") { // relative to current position
+						media.currentTime(media.currentTime() + Number(options.childNodes[index].getAttribute("synch").slice(1)));
+					} else {
+						media.currentTime(options.childNodes[index].getAttribute("synch"));
+					}
 				}
 				if (options.childNodes[index].getAttribute("play") == "true") {
 					// play media
