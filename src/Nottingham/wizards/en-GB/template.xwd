@@ -231,7 +231,7 @@
 	
     <url label="Image" type="media" optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100"/>
+	<synch label="Synch Point" type="TextInput"/>
     
 
   </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
@@ -2157,14 +2157,13 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedSynch><![CDATA[<nestedSynch name="name" text="Content for the pane" synch="0"/>]]></nestedSynch>
+      <nestedSynch><![CDATA[<nestedSynch text="Content for the pane" synch="0"/>]]></nestedSynch>
     </newNodes>
 
   </transcriptReader><nestedSynch menuItem="Nested Page" icon="icBullet" remove="true">
 
-    <name label="Page Title" type="TextInput"/>
     <text label="Page Text" type="TextArea" height="250"/>
-    <synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" width="100"/>	
+    <synch label="Synch Point" type="TextInput"/>	
 
   </nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
 
@@ -2197,7 +2196,7 @@
 	  
     <url label="Image" type="media" optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<synch label="Synch Point" type="NumericStepper" min="0" max="9999" step="1" defaultValue="9999" width="100"/>
+	<synch label="Synch Point" type="TextInput"/>
     
   </videoSynchPoint><wiki menuItem="Wikipedia Article" menu="Misc" hint="Include Wikipedia articles in your presentation." thumb="thumbs/wiki.jpg" icon="icGreenFeed" remove="true" deprecated="This page is no longer supported">
 
