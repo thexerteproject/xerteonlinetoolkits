@@ -53,7 +53,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         }else{
 
-            $query_to_change_syndication_status = "UPDATE {prefix}templatesyndication SET "
+            $query_to_change_syndication_status = "UPDATE {$prefix}templatesyndication SET "
                     . "syndication = ?, keywords = ?, description = ?, category = ?, license = ? WHERE template_id=?";
             $params = array($_POST['synd'], $_POST['keywords'], $_POST['description'], $_POST['category_value'], $_POST['license_value'], $_POST['tutorial_id']);
         }
