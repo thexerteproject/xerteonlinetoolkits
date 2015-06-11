@@ -769,6 +769,7 @@
 						// apart from vimeo it works better if end is set to after the end of media
 						data[j].end = popcornInstance.duration() + 10;
 					}
+					data[j].autoEnd = true;
 				}
 			}
 			
@@ -824,6 +825,13 @@
 						$holder
 							.addClass("contentBlock " + pluginName + "Holder")
 							.attr("id", pluginAttributes.target);
+					}
+					
+					if (x_params.authorSupport == "true") {
+						var startTxt = x_currentPageXML.getAttribute("supportStart") != undefined ? x_currentPageXML.getAttribute("supportStart") : "start",
+							endTxt = x_currentPageXML.getAttribute("supportEnd") != undefined ? x_currentPageXML.getAttribute("supportEnd") : "end",
+							authorSupportTxt = thisContent.autoEnd != true ? startTxt + ":" + thisContent.start + " " + endTxt + ":" + thisContent.end : startTxt + ":" + thisContent.start;
+						pluginAttributes.name = pluginAttributes.name + ' <span class="alert">[' + authorSupportTxt + ']</span>';
 					}
 					
 					popcornInstance[pluginName](pluginAttributes);
@@ -919,7 +927,7 @@
 <style type="text/css">
 	
 	.popcornMedia {
-		/*position:		absolute;*/
+		position:		relative;
 		overflow:		hidden;
 		margin-left:	auto;
 		margin-right:	auto;

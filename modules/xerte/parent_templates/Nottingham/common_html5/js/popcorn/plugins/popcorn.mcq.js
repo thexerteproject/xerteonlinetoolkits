@@ -136,7 +136,12 @@ optional: feedback page synch play enable
 		var doAction = function(index) {
 			if (options.childNodes[index].getAttribute("page") != undefined && options.childNodes[index].getAttribute("page") != "") {
 				// change LO page
-				x_changePage(options.childNodes[index].getAttribute("page") - 1)
+				var pageNum = x_lookupPage("linkID", options.childNodes[index].getAttribute("page"));
+				if (pageNum != null) {
+					x_navigateToPage(false, {type:"linkID", ID:options.childNodes[index].getAttribute("page")});
+				} else if ($.isNumeric(options.childNodes[index].getAttribute("page"))) { // for backwards compatibility - page used to be number but now it uses pageList in editor
+					x_changePage(options.childNodes[index].getAttribute("page") - 1)
+				}
 			} else {
 				if (options.childNodes[index].getAttribute("synch") != undefined && options.childNodes[index].getAttribute("synch") != "") {
 					// jump media position
@@ -200,10 +205,27 @@ optional: feedback page synch play enable
 						tempEnable = true;
 					}
 					
+					var authorSupport = "";
+					if (x_params.authorSupport == "true") {
+						if (this.getAttribute("synch") != undefined && this.getAttribute("synch") != "") {
+							var skipTxt = x_currentPageXML.getAttribute("supportSkip") != undefined ? x_currentPageXML.getAttribute("supportSkip") : "skip";
+							authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("synch") + ']</span>';
+						}
+						if (this.getAttribute("page") != undefined && this.getAttribute("page") != "") {
+							var pageNum = x_lookupPage("linkID", this.getAttribute("page")),
+								skipTxt = x_currentPageXML.getAttribute("supportPage") != undefined ? x_currentPageXML.getAttribute("supportPage") : "page";
+							if (pageNum != null) {
+								authorSupport += ' <span class="alert">[' + skipTxt + ":" + x_pages[pageNum].getAttribute("name") + ']</span>';
+							} else if ($.isNumeric(this.getAttribute("page"))) {
+								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("page") + ']</span>';
+							}
+						}
+					}
+					
 					if (options.type == "button") {
 						$('<button/>')
 							.appendTo($optHolder)
-							.button({"label": this.getAttribute("text")})
+							.button({"label": this.getAttribute("text") + authorSupport})
 							.click(function() {
 								$feedbackDiv.html("");
 								selected = [i];
@@ -254,7 +276,7 @@ optional: feedback page synch play enable
 								});
 							
 							$optionTxt
-								.html(x_addLineBreaks(this.getAttribute("text")))
+								.html(x_addLineBreaks(this.getAttribute("text")) + authorSupport)
 								.attr("for", options.target + "_option" + i)
 								.data("option", $option);
 							
@@ -288,7 +310,7 @@ optional: feedback page synch play enable
 							
 							$option
 								.attr("value", this.getAttribute("text"))
-								.html(this.getAttribute("text"));
+								.html(this.getAttribute("text") + authorSupport);
 						}
 					}
 				});
