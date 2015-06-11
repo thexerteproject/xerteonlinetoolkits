@@ -24,6 +24,11 @@
 	top:		0px;
 	left:		0px;
 	width:		100%;
+	pointer-events: none;
+}
+
+.mcqHolder.overlay button, .mcqHolder.overlay input, .mcqHolder.overlay select {
+	pointer-events: all;
 }
 
 .mcqHolder.overlay .holder {
@@ -45,6 +50,7 @@
 .mcqHolder .optionGroup {
 	padding-top:	5px;
 	padding-bottom:	5px;
+	pointer-events: all;
 }
 
 .mcqHolder .optionTxt {
