@@ -84,8 +84,8 @@ optional: end
 				
 				if ($txt != undefined) {
 					$target
-						.removeClass("bottom top")
-						.addClass(position);
+						.removeClass("bottomSub topSub")
+						.addClass(position + "Sub");
 					
 					$txt.show();
 				}
@@ -95,7 +95,7 @@ optional: end
 				// fire on options.end
 				
 				if ($txt != undefined) {
-					$target.removeClass("bottom top");
+					$target.removeClass("bottomSub topSub");
 					$txt.hide();
 				}
 			}
