@@ -165,7 +165,7 @@
 	
     <url label="Image" type="media" optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <initObject label="Init Object" type="TextInput" optional="true"/>
+    <initObject label="Init Object" type="TextInput" optional="true" flashonly="true"/>
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
 
   </nestedPage><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg">
@@ -1105,7 +1105,7 @@
 		
 		<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
 		<playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-		<narration label="Narration" type="media" ptional="true"/>
+		<narration label="Narration" type="media" optional="true"/>
 		<navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
 		<pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 		
@@ -1171,7 +1171,7 @@
 		
 	</synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
 		
-		<name label="Subtitle Text" type="TextInput" wysiwyg="true"/>
+		<name label="Subtitle Text" type="TextArea" height="100"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
 		
 		<synchStart label="Synch Point" type="TextInput"/>
@@ -1693,8 +1693,8 @@
     <url label="FLV, SWF or Image File" type="media" optional="true"/>
     <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
     <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
-    <initObject label="Init Object" type="TextArea" height="60" optional="true"/>
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
+    <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
     <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
@@ -2036,8 +2036,8 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <movieSize label="Movie Size" type="textInput" optional="true"/>
-    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true"/>
-    <initObject label="Init Object" type="TextArea" height="60" optional="true"/>
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
+    <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
 
   </textSWF><textVideo menu="Media" menuItem="Video" hint="A page for integrating FLV video files with your presentation" label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
 
@@ -2216,7 +2216,7 @@
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <modelFile type="media" label="Xerte Model"/>
 
-    <initObject type="TextInput" label="InitObject" optional="true"/>
+    <initObject type="TextInput" label="InitObject" optional="true" flashonly="true"/>
 	<errorTxt label="Error Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>

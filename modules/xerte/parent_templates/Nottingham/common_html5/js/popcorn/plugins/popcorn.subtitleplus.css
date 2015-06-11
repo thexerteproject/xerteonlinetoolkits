@@ -23,13 +23,14 @@
 	position:	absolute;
 	left:		0px;
 	width:		100%;
+	pointer-events: none;
 }
 
-.subtitleHolder.top {
+.subtitleHolder.topSub {
 	top:	0px;
 }
 
-.subtitleHolder.bottom {
+.subtitleHolder.bottomSub {
 	bottom:	0px;
 }
 
