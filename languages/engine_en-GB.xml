@@ -144,6 +144,11 @@
 
   <colourChanger label="Colour Changer" description="Change the colours.">
 	  <closeButton label="" description="Close Colour Changer"/>
+	  <selectTxt label="Please select from the options below"/>
+	  <adviceTxt label="Need more advice? Visit the Jisc TechDis &lt;a target=&apos;_blank&apos; href=&apos;http://vle.jisctechdis.ac.uk/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+	  <off label="Off"/>
+	  <invert label="Invert"/>
+	  <blackYellow label="Black on Yellow"/>
   </colourChanger>
 
 </language>
