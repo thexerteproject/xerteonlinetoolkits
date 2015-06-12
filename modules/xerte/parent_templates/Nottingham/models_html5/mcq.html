@@ -24,10 +24,12 @@
         var checked;
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-            this.startQ();
-			$("#feedback").html("");
-			$("#optionHolder input:checked").prop("checked", false);
-			$("#checkBtn").attr("disabled", "disabled");
+			if ($(x_currentPageXML).children().length > 0) {
+				this.startQ();
+				$("#feedback").html("");
+				$("#optionHolder input:checked").prop("checked", false);
+				$("#checkBtn").attr("disabled", "disabled");
+			}
 		}
 
 		// function called every time the size of the LO is changed
@@ -63,11 +65,12 @@
             XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
         }
 
-        this.leavePage = function()
-        {
-            if (!this.checked) {
-                this.showFeedBackandTrackScore();
-            }
+        this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0) {
+				if (!this.checked) {
+					this.showFeedBackandTrackScore();
+				}
+			}
         }
 
         this.showFeedBackandTrackScore = function()
@@ -215,107 +218,112 @@
 			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 				$("#question").find("a.x_glossary").contents().unwrap();
 			}
-
+			
 			var $optionHolder = $("#optionHolder");
-			if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-				$optionHolder.find("input[type='radio']").remove();
+			
+			if ($(x_currentPageXML).children().length == 0) {
+				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+				$("#checkBtn").remove();
 			} else {
-				$optionHolder.find("input[type='checkbox']").remove();
-			}
+				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+					$optionHolder.find("input[type='radio']").remove();
+				} else {
+					$optionHolder.find("input[type='checkbox']").remove();
+				}
 
-			var $optionGroup = $optionHolder.find(".optionGroup");
-				//$option = $optionHolder.find("input"),
-				//$optionTxt = $optionHolder.find(".optionTxt"),
+				var $optionGroup = $optionHolder.find(".optionGroup");
 
-			// Store the answers in a temporary array
-			var elements = [];
-            $(x_currentPageXML).children().each(function(i) {
-            	elements.push(
-            		{
-            			text:		this.getAttribute("text"),
-            			correct:	this.getAttribute("correct"),
-            			feedback:	this.getAttribute("feedback")
-            		}
-            	);
-            });
-            this.optionElements = elements;
-            
-            // Randomise the answers, if required
-            if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
-            	for (var tmp, j, k, i = this.optionElements.length; i--;) {
-            		j = Math.floor(Math.random() * this.optionElements.length);
-            		k = Math.floor(Math.random() * this.optionElements.length);
-            		tmp = this.optionElements[j];
-        			this.optionElements[j] = this.optionElements[k];
-                    this.optionElements[k] = tmp;
-            	}
-            }
-            
-			$.each(this.optionElements, function(i, thisOption) {
-					var $thisOptionGroup, $thisOption, $thisOptionTxt;
-					if (i != 0) {
-						$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
-					} else {
-						$thisOptionGroup = $optionGroup;
+				// Store the answers in a temporary array
+				var elements = [];
+				$(x_currentPageXML).children().each(function(i) {
+					elements.push(
+						{
+							text:		this.getAttribute("text"),
+							correct:	this.getAttribute("correct"),
+							feedback:	this.getAttribute("feedback")
+						}
+					);
+				});
+				this.optionElements = elements;
+				
+				// Randomise the answers, if required
+				if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
+					for (var tmp, j, k, i = this.optionElements.length; i--;) {
+						j = Math.floor(Math.random() * this.optionElements.length);
+						k = Math.floor(Math.random() * this.optionElements.length);
+						tmp = this.optionElements[j];
+						this.optionElements[j] = this.optionElements[k];
+						this.optionElements[k] = tmp;
 					}
-					$thisOption = $thisOptionGroup.find("input");
-					$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
+				}
+				
+				$.each(this.optionElements, function(i, thisOption) {
+						var $thisOptionGroup, $thisOption, $thisOptionTxt;
+						if (i != 0) {
+							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
+						} else {
+							$thisOptionGroup = $optionGroup;
+						}
+						$thisOption = $thisOptionGroup.find("input");
+						$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 
-                    mcq.currNrOptions = i+1;
+						mcq.currNrOptions = i+1;
 
-					$thisOption
-						.attr({
-							"value"		:thisOption.text,
-							"id"		:"option" + i
+						$thisOption
+							.attr({
+								"value"		:thisOption.text,
+								"id"		:"option" + i
+								})
+							.change(function() {
+								$("#feedback").html("");
+								var $checkBtn = $("#checkBtn"),
+									$selected = $("#optionHolder input:checked");
+
+								if ($checkBtn.attr("disabled") != "disabled" && $selected.length == 0) {
+									$checkBtn.attr("disabled", "disabled");
+								} else if ($checkBtn.attr("disabled") == "disabled" && $selected.length > 0) {
+									$checkBtn.removeAttr("disabled");
+								}
 							})
-						.change(function() {
-							$("#feedback").html("");
-							var $checkBtn = $("#checkBtn"),
-								$selected = $("#optionHolder input:checked");
+							.focusin(function() {
+								$thisOptionGroup.addClass("highlight");
+							})
+							.focusout(function() {
+								$thisOptionGroup.removeClass("highlight");
+							});
 
-							if ($checkBtn.attr("disabled") != "disabled" && $selected.length == 0) {
-								$checkBtn.attr("disabled", "disabled");
-							} else if ($checkBtn.attr("disabled") == "disabled" && $selected.length > 0) {
-								$checkBtn.removeAttr("disabled");
-							}
-						})
-						.focusin(function() {
-							$thisOptionGroup.addClass("highlight");
-						})
-						.focusout(function() {
-							$thisOptionGroup.removeClass("highlight");
-						});
-
-					$thisOptionTxt
-						.attr("for", "option" + i)
-						.data("option", $thisOption)
-						.html(thisOption.text);
-					
-					if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-						$thisOptionTxt.find("a.x_glossary").contents().unwrap();
-					}
-				});
+						$thisOptionTxt
+							.attr("for", "option" + i)
+							.data("option", $thisOption)
+							.html(thisOption.text);
+						
+						if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+							$thisOptionTxt.find("a.x_glossary").contents().unwrap();
+						}
+					});
 
 
-			// checkBtnWidth attribute not used as button will be sized automatically
-			// if language attributes aren't in xml will have to use english fall back
-			var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
-			if (checkBtnTxt == undefined) {
-				checkBtnTxt = "Check";
+				// checkBtnWidth attribute not used as button will be sized automatically
+				// if language attributes aren't in xml will have to use english fall back
+				var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
+				if (checkBtnTxt == undefined) {
+					checkBtnTxt = "Check";
+				}
+				var checkBtnTip = x_currentPageXML.getAttribute("checkBtnTip");
+				if (checkBtnTip == undefined) {
+					checkBtnTip = "Check Answer";
+				}
+				$("#checkBtn")
+					.button({ label: checkBtnTxt })
+					.attr("disabled", "disabled")
+					.click(function() {
+						mcq.showFeedBackandTrackScore();
+						mcq.checked = true;
+					});
+
+				this.startQ();
 			}
-			var checkBtnTip = x_currentPageXML.getAttribute("checkBtnTip");
-			if (checkBtnTip == undefined) {
-				checkBtnTip = "Check Answer";
-			}
-			$("#checkBtn")
-				.button({ label: checkBtnTxt })
-				.attr("disabled", "disabled")
-				.click(function() {
-                    mcq.showFeedBackandTrackScore();
-                    mcq.checked = true;
-				});
-
-            this.startQ();
+			
 			this.sizeChanged();
 			x_pageLoaded();
 		}

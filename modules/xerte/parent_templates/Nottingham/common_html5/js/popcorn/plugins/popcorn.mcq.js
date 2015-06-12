@@ -194,150 +194,154 @@ optional: feedback page synch play enable
 				
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
 				
-				// create answer options (could be buttons, radio list or drop down menu)
-				$(options.childNodes).each(function(i) {
-					if (judge == false && this.getAttribute("correct") == "true") {
-						judge = true;
-						autoEnable = false;
-					}
-					
-					if (tempEnable == false && ((this.getAttribute("page") != undefined && this.getAttribute("page") != "") || (this.getAttribute("synch") == undefined && this.getAttribute("synch") == "") || this.getAttribute("play") == "true" || this.getAttribute("enable") == "true")) {
-						tempEnable = true;
-					}
-					
-					var authorSupport = "";
-					if (x_params.authorSupport == "true") {
-						if (this.getAttribute("synch") != undefined && this.getAttribute("synch") != "") {
-							var skipTxt = x_currentPageXML.getAttribute("supportSkip") != undefined ? x_currentPageXML.getAttribute("supportSkip") : "skip";
-							authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("synch") + ']</span>';
+				if ($(options.childNodes).length == 0) {
+					$optHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+				} else {
+					// create answer options (could be buttons, radio list or drop down menu)
+					$(options.childNodes).each(function(i) {
+						if (judge == false && this.getAttribute("correct") == "true") {
+							judge = true;
+							autoEnable = false;
 						}
-						if (this.getAttribute("page") != undefined && this.getAttribute("page") != "") {
-							var pageNum = x_lookupPage("linkID", this.getAttribute("page")),
-								skipTxt = x_currentPageXML.getAttribute("supportPage") != undefined ? x_currentPageXML.getAttribute("supportPage") : "page";
-							if (pageNum != null) {
-								authorSupport += ' <span class="alert">[' + skipTxt + ":" + x_pages[pageNum].getAttribute("name") + ']</span>';
-							} else if ($.isNumeric(this.getAttribute("page"))) {
-								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("page") + ']</span>';
+						
+						if (tempEnable == false && ((this.getAttribute("page") != undefined && this.getAttribute("page") != "") || (this.getAttribute("synch") == undefined && this.getAttribute("synch") == "") || this.getAttribute("play") == "true" || this.getAttribute("enable") == "true")) {
+							tempEnable = true;
+						}
+						
+						var authorSupport = "";
+						if (x_params.authorSupport == "true") {
+							if (this.getAttribute("synch") != undefined && this.getAttribute("synch") != "") {
+								var skipTxt = x_currentPageXML.getAttribute("supportSkip") != undefined ? x_currentPageXML.getAttribute("supportSkip") : "skip";
+								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("synch") + ']</span>';
+							}
+							if (this.getAttribute("page") != undefined && this.getAttribute("page") != "") {
+								var pageNum = x_lookupPage("linkID", this.getAttribute("page")),
+									skipTxt = x_currentPageXML.getAttribute("supportPage") != undefined ? x_currentPageXML.getAttribute("supportPage") : "page";
+								if (pageNum != null) {
+									authorSupport += ' <span class="alert">[' + skipTxt + ":" + x_pages[pageNum].getAttribute("name") + ']</span>';
+								} else if ($.isNumeric(this.getAttribute("page"))) {
+									authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("page") + ']</span>';
+								}
 							}
 						}
-					}
-					
-					if (options.type == "button") {
-						$('<button/>')
-							.appendTo($optHolder)
-							.button({"label": this.getAttribute("text") + authorSupport})
-							.click(function() {
-								$feedbackDiv.html("");
-								selected = [i];
-								
-								answerSelected();
-							});
 						
-						$optHolder.addClass("centre");
-						
-					} else {
-						if (options.type == "radio") {
-							var type = "radio";
-							if (options.answerType == "multiple") {
-								type = "checkbox";
-							}
-							
-							var $optGroup = $('<div class="optionGroup"></div>').appendTo($optHolder),
-								$option = $('<input type="' + type + '" name="option" />').appendTo($optGroup),
-								$optionTxt = $('<label class="optionTxt"/>').appendTo($optGroup);
-							
-							$option
-								.attr({
-									"id": options.target + "_option" + i,
-									"value": this.getAttribute("text")
-								})
-								.data("index", i)
-								.change(function() {
+						if (options.type == "button") {
+							$('<button/>')
+								.appendTo($optHolder)
+								.button({"label": this.getAttribute("text") + authorSupport})
+								.click(function() {
 									$feedbackDiv.html("");
-									var $selected = $optHolder.find("input:checked");
+									selected = [i];
 									
-									if ($checkBtn.is(":enabled") && $selected.length == 0) {
-										$checkBtn.button("disable");
-									} else if ($checkBtn.is(":disabled") && $selected.length > 0) {
-										$checkBtn.button("enable");
-									}
-									$checkBtn.show();
-									
-									selected = [];
-									$selected.each(function() {
-										selected.push($(this).data("index"));
-									});
-								})
-								.focusin(function() {
-									$optGroup.addClass("highlight");
-								})
-								.focusout(function() {
-									$optGroup.removeClass("highlight");
+									answerSelected();
 								});
 							
-							$optionTxt
-								.html(x_addLineBreaks(this.getAttribute("text")) + authorSupport)
-								.attr("for", options.target + "_option" + i)
-								.data("option", $option);
+							$optHolder.addClass("centre");
 							
-						} else if (options.type == "list") {
-							var $optGroup;
-							
-							if ($optHolder.find("select").length == 0) {
-								$optGroup = $('<select></select>').appendTo($optHolder);
+						} else {
+							if (options.type == "radio") {
+								var type = "radio";
+								if (options.answerType == "multiple") {
+									type = "checkbox";
+								}
 								
-								$optGroup
-									.append('<option>')
+								var $optGroup = $('<div class="optionGroup"></div>').appendTo($optHolder),
+									$option = $('<input type="' + type + '" name="option" />').appendTo($optGroup),
+									$optionTxt = $('<label class="optionTxt"/>').appendTo($optGroup);
+								
+								$option
+									.attr({
+										"id": options.target + "_option" + i,
+										"value": this.getAttribute("text")
+									})
+									.data("index", i)
 									.change(function() {
 										$feedbackDiv.html("");
+										var $selected = $optHolder.find("input:checked");
 										
-										if ($checkBtn.is(":enabled") && this.selectedIndex == 0) {
+										if ($checkBtn.is(":enabled") && $selected.length == 0) {
 											$checkBtn.button("disable");
-										} else if ($checkBtn.is(":disabled") && this.selectedIndex > 0) {
+										} else if ($checkBtn.is(":disabled") && $selected.length > 0) {
 											$checkBtn.button("enable");
 										}
 										$checkBtn.show();
 										
-										selected = [this.selectedIndex-1];
+										selected = [];
+										$selected.each(function() {
+											selected.push($(this).data("index"));
+										});
 									})
-									.find("option").html(options.topOption);
+									.focusin(function() {
+										$optGroup.addClass("highlight");
+									})
+									.focusout(function() {
+										$optGroup.removeClass("highlight");
+									});
 								
-							} else {
-								$optGroup = $optHolder.find("select");
+								$optionTxt
+									.html(x_addLineBreaks(this.getAttribute("text")) + authorSupport)
+									.attr("for", options.target + "_option" + i)
+									.data("option", $option);
+								
+							} else if (options.type == "list") {
+								var $optGroup;
+								
+								if ($optHolder.find("select").length == 0) {
+									$optGroup = $('<select></select>').appendTo($optHolder);
+									
+									$optGroup
+										.append('<option>')
+										.change(function() {
+											$feedbackDiv.html("");
+											
+											if ($checkBtn.is(":enabled") && this.selectedIndex == 0) {
+												$checkBtn.button("disable");
+											} else if ($checkBtn.is(":disabled") && this.selectedIndex > 0) {
+												$checkBtn.button("enable");
+											}
+											$checkBtn.show();
+											
+											selected = [this.selectedIndex-1];
+										})
+										.find("option").html(options.topOption);
+									
+								} else {
+									$optGroup = $optHolder.find("select");
+								}
+								
+								var $option = $('<option/>').appendTo($optGroup);
+								
+								$option
+									.attr("value", this.getAttribute("text"))
+									.html(this.getAttribute("text") + authorSupport);
 							}
-							
-							var $option = $('<option/>').appendTo($optGroup);
-							
-							$option
-								.attr("value", this.getAttribute("text"))
-								.html(this.getAttribute("text") + authorSupport);
 						}
+					});
+					
+					if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
+						autoEnable = false;
 					}
-				});
-				
-				if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
-					autoEnable = false;
+					
+					// unless it's a button question there needs to be a submit answer button
+					if (options.type != "button") {
+						$checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
+						$checkBtn
+							.button({
+								"label":	options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
+								"disabled":	true
+							})
+							.click(function() {
+								answerSelected();
+								$checkBtn.hide();
+							});
+					}
+					
+					$feedbackDiv = $('<div class="mcqFeedback"></div>')
+						.appendTo($target)
+						.hide();
+					
+					$target.append('<div class="bottom"/>');
 				}
-				
-				// unless it's a button question there needs to be a submit answer button
-				if (options.type != "button") {
-					$checkBtn = $('<button class="mcqCheckBtn"></button>').appendTo($target);
-					$checkBtn
-						.button({
-							"label":	options.checkBtnTxt != "" ? options.checkBtnTxt : "Check",
-							"disabled":	true
-						})
-						.click(function() {
-							answerSelected();
-							$checkBtn.hide();
-						});
-				}
-				
-				$feedbackDiv = $('<div class="mcqFeedback"></div>')
-					.appendTo($target)
-					.hide();
-				
-				$target.append('<div class="bottom"/>');
 				
 				if (options.line == "true") {
 					if (options.position == "top") {
@@ -351,31 +355,33 @@ optional: feedback page synch play enable
 			start: function(event, options) {
 				// fire on options.start
 				
-				// reset any previous answers given
-				if (options.type == "radio") {
-					$optHolder.find("input:checked").each(function() {
-						this.checked = false;
-					});
-				} else if (options.type == "list") {
-					$optHolder.find("select")[0].selectedIndex = 0;
-				}
-				selected = [];
-				
-				$feedbackDiv
-					.html("")
-					.hide()
-					.find("button").remove();
-				
-				if ($checkBtn) {
-					$checkBtn
-						.show()
-						.button("disable");
-				}
-				
-				if (options.disable == "true") {
-					mediaLesson.enableControls(this.media, false);
-				} else {
-					mediaLesson.enableControls(this.media, true);
+				if ($(options.childNodes).length > 0) {
+					// reset any previous answers given
+					if (options.type == "radio") {
+						$optHolder.find("input:checked").each(function() {
+							this.checked = false;
+						});
+					} else if (options.type == "list") {
+						$optHolder.find("select")[0].selectedIndex = 0;
+					}
+					selected = [];
+					
+					$feedbackDiv
+						.html("")
+						.hide()
+						.find("button").remove();
+					
+					if ($checkBtn) {
+						$checkBtn
+							.show()
+							.button("disable");
+					}
+					
+					if (options.disable == "true") {
+						mediaLesson.enableControls(this.media, false);
+					} else {
+						mediaLesson.enableControls(this.media, true);
+					}
 				}
 				
 				$target.show();

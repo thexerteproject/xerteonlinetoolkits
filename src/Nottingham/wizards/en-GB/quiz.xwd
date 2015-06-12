@@ -9,8 +9,6 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  noAnswers="No answer options have been added to this question" 
-	  noQuestions="No questions have been added to this quiz"
 	  />]]></quiz>      
     </newNodes>
   </pageWizard>
