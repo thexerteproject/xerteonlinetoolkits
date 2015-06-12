@@ -26,15 +26,14 @@
 		<resultEndString label="Final Instruction" type="TextInput" language="true"/>
 		<overviewString label="Overview Label" type="TextInput" language="true"/>
 		<viewAllString label="Overview All Label" type="TextInput" language="true"/>
-		<errorString label="Error Label" type="TextInput" language="true"/>
 		<moreInfoString label="More Information" type="TextInput" language="true"/>
 		<lessInfoString label="Less Information" type="TextInput" language="true"/>
 		<helpString label="Question Help Label" type="TextInput" language="true"/>
 		
-		<warningTitle label="Warning Title" type="TextInput" language="true"/>
-		<warningString label="Warning Information" type="TextInput" language="true"/>
-		<okBtn label="OK Button" type="TextInput" language="true"/>
-		<cancelBtn label="Cancel Button" type="TextInput" language="true"/>
+		<warningTitle label="Warning Title" type="TextInput" language="true" deprecated="This property is no longer required"/>
+		<warningString label="Warning Information" type="TextInput" language="true" deprecated="This property is no longer required"/>
+		<okBtn label="OK Button" type="TextInput" language="true" deprecated="This property is no longer required"/>
+		<cancelBtn label="Cancel Button" type="TextInput" language="true" deprecated="This property is no longer required"/>
 		
 	</learningObject>
 	
