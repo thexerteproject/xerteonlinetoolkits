@@ -1,7 +1,7 @@
 <wizard menus="Navigators">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" buttonWidth="100"/>]]></buttonNav>
+      <buttonNav><![CDATA[<buttonNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav>
     </newNodes>
   </pageWizard>
 
@@ -10,7 +10,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-    <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100"  width="100"/>
+    <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100"  width="100" deprecated="Width is now set automatically"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>

@@ -31,7 +31,9 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			this.startQs();
+			if ($(x_currentPageXML).children().length > 0) {
+				this.startQs();
+			}
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
@@ -126,8 +128,8 @@
 
 		this.loadQ = function() {
 			if ($(x_currentPageXML).children().length == 0) {
-				var noQuestions = x_currentPageXML.getAttribute("noQuestions") != undefined ? x_currentPageXML.getAttribute("noQuestions") : "No questions have been added to this quiz";
-				$("#optionHolder").html('<span class="alert">' + noQuestions + '</span>');
+				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
+				
 			} else {
 				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 
@@ -160,8 +162,7 @@
 				$("#feedback").html("");
 				
 				if ($($thisQ).children().length == 0) {
-					var noAnswers = x_currentPageXML.getAttribute("noAnswers") != undefined ? x_currentPageXML.getAttribute("noAnswers") : "No answer options have been added to this question";
-					$("#optionHolder").html('<span class="alert">' + noAnswers + '</span>');
+					$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
 					var $optionHolder = $("#optionHolder");
 					if ($thisQ.getAttribute("type") == "Multiple Answer") {
@@ -379,14 +380,15 @@
             XTSetPageScore(x_currentPage, scormScore);
         }
 
-        this.leavePage = function()
-        {
-            if (!this.checked) {
-                this.showFeedBackandTrackResults();
-            }
-            if (!this.resultsShown) {
-                this.showResults();
-            }
+        this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0) {
+				if (!this.checked) {
+					this.showFeedBackandTrackResults();
+				}
+				if (!this.resultsShown) {
+					this.showResults();
+				}
+			}
         }
 
 		this.loadVideo = function() {

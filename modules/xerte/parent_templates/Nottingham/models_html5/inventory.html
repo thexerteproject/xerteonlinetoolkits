@@ -142,28 +142,31 @@
 					inventory.startQs();
 				});
 			
-			
-			// store data needed later - class info and string to base qNoTxt on
-			var	classes = x_currentPageXML.getAttribute("classes").split(",");
-			if (classes[classes.length - 1] == "") {
-				classes.splice(-1, 1);
+			if ($(x_currentPageXML).children().length == 0) {
+				$("#infoHolder .panel").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
+			} else {
+				// store data needed later - class info and string to base qNoTxt on
+				var	classes = x_currentPageXML.getAttribute("classes").split(",");
+				if (classes[classes.length - 1] == "") {
+					classes.splice(-1, 1);
+				}
+				if (classes.length > 10) {
+					classes.splice(10);
+				}
+				
+				var qNoTxt = x_currentPageXML.getAttribute("quesCount");
+				if (qNoTxt == undefined) {
+					qNoTxt = "Question {i} of {n}";
+				}
+				
+				$pageContents.data({
+					"classes"	:classes,
+					"qNoTxt"	:qNoTxt
+				});
+				
+				
+				this.startQs();
 			}
-			if (classes.length > 10) {
-				classes.splice(10);
-			}
-			
-			var qNoTxt = x_currentPageXML.getAttribute("quesCount");
-			if (qNoTxt == undefined) {
-				qNoTxt = "Question {i} of {n}";
-			}
-			
-			$pageContents.data({
-				"classes"	:classes,
-				"qNoTxt"	:qNoTxt
-			});
-			
-			
-			this.startQs();
 			
 			this.sizeChanged();
 			x_pageLoaded();
@@ -239,61 +242,64 @@
 				.hide()
 				.find("#qFeedbackTxt").html("");
 			
-			
-			// set up radio buttons or check boxes
-			var $optionHolder = $("#optionHolder");
-			if (thisQ.getAttribute("type") == "Multiple Answer") {
-				$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+			if ($(thisQ).children().length == 0) {
+				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 			} else {
-				$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+				// set up radio buttons or check boxes
+				var $optionHolder = $("#optionHolder");
+				if (thisQ.getAttribute("type") == "Multiple Answer") {
+					$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+				} else {
+					$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+				}
+				var	$option = $optionHolder.find("input"),
+					$optionTxt = $optionHolder.find(".optionTxt"),
+					$checkBtn = $("#checkBtn"),
+					$qFeedback = $("#qFeedback");
+				
+				$(thisQ).children()
+					.each(function(i) {
+						var $thisOption, $thisOptionTxt;
+						if (i != 0) {
+							$thisOption = $option.clone().appendTo($optionHolder);
+							$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+						} else {
+							$thisOption = $option;
+							$thisOptionTxt = $optionTxt;
+						}
+						
+						$thisOption
+							.attr({
+								"value"	:this.getAttribute("text"),
+								"id"	:"option" + i
+								})
+							.change(function() {
+								$qFeedback.hide();
+								var $selected = $("#optionHolder input:checked");
+								if ($selected.length > 0) {
+									$checkBtn.removeAttr("disabled");
+								} else {
+									$checkBtn.attr("disabled", "disabled");
+								}
+							});
+						
+						var optTxt = x_addLineBreaks(this.getAttribute("text"));
+						if (x_params.authorSupport == "true") {
+							optTxt += ' <span class="alert">[' + $pageContents.data("classes")[this.getAttribute("class")] + " : " + this.getAttribute("weight") + ']</span>';
+						}
+						
+						$thisOptionTxt
+							.attr("for", "option" + i)
+							.data("option", $thisOption)
+							.html(optTxt);
+						
+						
+						if (x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+							// need to keep track of max score possible for each class
+							$pageContents.data("totals").splice(this.getAttribute("class"), 1, $pageContents.data("totals")[this.getAttribute("class")] + Number(this.getAttribute("weight")));
+						}
+					});
 			}
-			var	$option = $optionHolder.find("input"),
-				$optionTxt = $optionHolder.find(".optionTxt"),
-				$checkBtn = $("#checkBtn"),
-				$qFeedback = $("#qFeedback");
-			
-			$(thisQ).children()
-				.each(function(i) {
-					var $thisOption, $thisOptionTxt;
-					if (i != 0) {
-						$thisOption = $option.clone().appendTo($optionHolder);
-						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
-					} else {
-						$thisOption = $option;
-						$thisOptionTxt = $optionTxt;
-					}
-					
-					$thisOption
-						.attr({
-							"value"	:this.getAttribute("text"),
-							"id"	:"option" + i
-							})
-						.change(function() {
-							$qFeedback.hide();
-							var $selected = $("#optionHolder input:checked");
-							if ($selected.length > 0) {
-								$checkBtn.removeAttr("disabled");
-							} else {
-								$checkBtn.attr("disabled", "disabled");
-							}
-						});
-					
-					var optTxt = x_addLineBreaks(this.getAttribute("text"));
-					if (x_params.authorSupport == "true") {
-						optTxt += ' <span class="alert">[' + $pageContents.data("classes")[this.getAttribute("class")] + " : " + this.getAttribute("weight") + ']</span>';
-					}
-					
-					$thisOptionTxt
-						.attr("for", "option" + i)
-						.data("option", $thisOption)
-						.html(optTxt);
-					
-					
-					if (x_currentPageXML.getAttribute("scoreType") == "individual percent") {
-						// need to keep track of max score possible for each class
-						$pageContents.data("totals").splice(this.getAttribute("class"), 1, $pageContents.data("totals")[this.getAttribute("class")] + Number(this.getAttribute("weight")));
-					}
-				});
 		}
 		
 		

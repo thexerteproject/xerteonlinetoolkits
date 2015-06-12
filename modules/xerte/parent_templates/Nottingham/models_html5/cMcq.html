@@ -83,77 +83,82 @@
 				$option = $optionHolder.find("input"),
 				$optionTxt = $optionHolder.find(".optionTxt");
 			
-			$(x_currentPageXML).children().each(function(i) {
-				var $thisOption, $thisOptionTxt;
-				if (i != 0) {
-					$thisOption = $option.clone().appendTo($optionHolder);
-					$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
-				} else {
-					$thisOption = $option;
-					$thisOptionTxt = $optionTxt;
-				}
-				
-				var optTxt = this.getAttribute("text");
-				if (x_params.authorSupport == "true") {
-					optTxt += ' <span class="alert">[' + this.getAttribute("destination") + ']</span>';
-				}
-				
-				$thisOption
-					.data("id", this.getAttribute("destination"))
-					.attr({
-						"value"	:optTxt,
-						"id"	:"option" + i
-						})
-					.change(function() {
-						$("#confirmBtn").removeAttr("disabled", "disabled");
-						$("#feedback").html("");
-					});
-				
-				$thisOptionTxt
-					.attr("for", "option" + i)
-					.html(x_addLineBreaks(optTxt));
-			});
-			
-			
-			// text to display in developer mode if destination page not found / set
-			var devTxt = [];
-			if (x_params.authorSupport == "true") {
-				devTxt.notFound = x_currentPageXML.getAttribute("notFoundMessage");
-				if (devTxt.notFound == undefined) {
-					devTxt.notFound = "could not be found in this project.";
-				}
-				devTxt.notSet = x_currentPageXML.getAttribute("notSetMessage");
-				if (devTxt.notSet == undefined) {
-					devTxt.notSet = "A destination page has not been set for this connection";
-				}
-			}
-			
-			var confirmBtnTxt = x_currentPageXML.getAttribute("confirmBtnTxt");
-			if (confirmBtnTxt == undefined) {
-				confirmBtnTxt = "Check";
-			}
-			
-			$("#confirmBtn")
-				.button({ label: confirmBtnTxt })
-				.attr("disabled", "disabled")
-				.click(function() {
-					var destinationID = $("#optionHolder input:checked").data("id");
-					if (destinationID == "") { // destination not set
-						if (x_params.authorSupport == "true") {
-							$("#feedback").html(devTxt.notSet);
-						}
-						
-					} else if (x_lookupPage("linkID", destinationID) == null) { // destination not found
-						if (x_params.authorSupport == "true") {
-							$("#feedback").html(destinationID + " " + devTxt.notFound);
-						}
-						
-					} else { // go to destination page
-						x_navigateToPage(false, {type:"linkID", ID:destinationID});
+			if ($(x_currentPageXML).children().length == 0) {
+				$optionHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+				$("#confirmBtn").hide();
+			} else {
+				$(x_currentPageXML).children().each(function(i) {
+					var $thisOption, $thisOptionTxt;
+					if (i != 0) {
+						$thisOption = $option.clone().appendTo($optionHolder);
+						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+					} else {
+						$thisOption = $option;
+						$thisOptionTxt = $optionTxt;
 					}
 					
-					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+					var optTxt = this.getAttribute("text");
+					if (x_params.authorSupport == "true") {
+						optTxt += ' <span class="alert">[' + this.getAttribute("destination") + ']</span>';
+					}
+					
+					$thisOption
+						.data("id", this.getAttribute("destination"))
+						.attr({
+							"value"	:optTxt,
+							"id"	:"option" + i
+							})
+						.change(function() {
+							$("#confirmBtn").removeAttr("disabled", "disabled");
+							$("#feedback").html("");
+						});
+					
+					$thisOptionTxt
+						.attr("for", "option" + i)
+						.html(x_addLineBreaks(optTxt));
 				});
+				
+				
+				// text to display in developer mode if destination page not found / set
+				var devTxt = [];
+				if (x_params.authorSupport == "true") {
+					devTxt.notFound = x_currentPageXML.getAttribute("notFoundMessage");
+					if (devTxt.notFound == undefined) {
+						devTxt.notFound = "could not be found in this project.";
+					}
+					devTxt.notSet = x_currentPageXML.getAttribute("notSetMessage");
+					if (devTxt.notSet == undefined) {
+						devTxt.notSet = "A destination page has not been set for this connection";
+					}
+				}
+				
+				var confirmBtnTxt = x_currentPageXML.getAttribute("confirmBtnTxt");
+				if (confirmBtnTxt == undefined) {
+					confirmBtnTxt = "Check";
+				}
+				
+				$("#confirmBtn")
+					.button({ label: confirmBtnTxt })
+					.attr("disabled", "disabled")
+					.click(function() {
+						var destinationID = $("#optionHolder input:checked").data("id");
+						if (destinationID == "") { // destination not set
+							if (x_params.authorSupport == "true") {
+								$("#feedback").html(devTxt.notSet);
+							}
+							
+						} else if (x_lookupPage("linkID", destinationID) == null) { // destination not found
+							if (x_params.authorSupport == "true") {
+								$("#feedback").html(destinationID + " " + devTxt.notFound);
+							}
+							
+						} else { // go to destination page
+							x_navigateToPage(false, {type:"linkID", ID:destinationID});
+						}
+						
+						$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+					});
+			}
 			
 			this.sizeChanged();
 			

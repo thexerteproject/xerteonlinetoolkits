@@ -8,32 +8,32 @@
   
   <tocButton label="Contents" description="Table of Contents Button"/>
   
-  <helpButton label="Help" description="Help Button. "/>
+  <helpButton label="Help" description="Help Button"/>
 
-  <mediaButton label="Media" description="Media Button. "/>
+  <mediaButton label="Media" description="Media Button"/>
   
-  <homeButton label="Home" description="Home Button. "/>
+  <homeButton label="Home" description="Home Button"/>
   
   <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help"/>
   
-  <glossaryButton label="Glossary" description="Glossary Button. "/>
+  <glossaryButton label="Glossary" description="Glossary Button"/>
   
   <continueButton label="Continue" description="Continue Button"/>
   
-  <toc label="Table of Contents" description="table of contents. Use the arrow keys to select a page. Press space to go to that page.">
+  <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page.">
 	  <contentsList label="" description=""/>
-	  <closeButton label="" description="close table of contents button"/>
+	  <closeButton label="" description="Close Table of Contents"/>
 	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
   </toc>
   
   <mediaWindow label="Media Viewer"/>
   
   <glossary label="Glossary" description="A list of words and their definitions.">
-	  <closeButton label="" description="Close glossary list button"/>
+	  <closeButton label="" description="Close Glossary"/>
   </glossary>
   
   <kbLanguage label="Special Characters" description="A list of buttons which add special characters to text areas">
-	  <closeButton label="" description="Close special character list button"/>
+	  <closeButton label="" description="Close Special Characters"/>
 	  <dialog instruction="Use CAPS and SHIFT" on="ON" off="OFF" caps="Caps"/>
   </kbLanguage>
   
@@ -44,6 +44,8 @@
   <errorPage label="No template is currently available for this page type."/>
   
   <errorBrowser label="Your browser does not fully support this page type."/>
+  
+  <errorQuestions noQ="No questions have been added" noA="No answer options have been added" />
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
   
@@ -64,10 +66,10 @@
   </themes>
  
   <sizes label="--Screen Size--" description="Screen Size Options">
-	<item>default</item>
+	<item>Default</item>
 	<item>large</item>
 	<item>larger</item>
-	<item>full screen</item>
+	<item>Full Screen</item>
 	<item>fill window</item>
   </sizes>
   
@@ -120,7 +122,7 @@
   <interactions>
 	  <button name="Button"/>
 	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
-	  <checkBox selected="selected" deselected="dee selected"/>
+	  <checkBox selected="selected" deselected="deselected"/>
 	  <comboBox name="ComboBox" options="Options." selected="selected." selectedOptions="selected. Use the arrow keys to select" />
 	  <hotSpot name="HotSpot" toSelect="Hot Spot. Press Space to select." selected="Hot Spot Selected"/>
 	  <hotObject name="HotObject" toSelect="Press Space to select." selected="Hot Object Selected"/>
@@ -140,7 +142,7 @@
 	  <seconds name="seconds"/>
   </timer>
 
-  <colourChanger label="Colour Changer" description="Changer the colours.">
+  <colourChanger label="Colour Changer" description="Change the colours.">
 	  <closeButton label="" description="Close Colour Changer"/>
   </colourChanger>
 
