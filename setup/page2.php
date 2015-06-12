@@ -21,6 +21,10 @@ session_start();
 
 $success = true;
 
+function _debug($string) {
+    // pass, for now.
+}
+
 echo file_get_contents("page_top");
 if (!isset($_POST['database_created']))
 {
@@ -47,6 +51,7 @@ if (!isset($_POST['database_created']))
     // $xerte_toolkits_site->database_name should NOT be set
     // We need to contect the server first and create it if needed
     $connection = database_connect();
+
     $_POST['account'] = $_POST['username'];
     $_POST['accountpw'] = $_POST['password'];
 
@@ -63,6 +68,7 @@ if (!isset($_POST['database_created']))
     }
     if ($success)
     {
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $query = "create database if not exists " . $_POST['database_name'];
         try{
             $statement = $connection->query($query);
@@ -79,10 +85,22 @@ if (!isset($_POST['database_created']))
         }
     }
 
-    if ($success)
-    {
+    if ($success) {
         $xerte_toolkits_site->database_name = $_POST['database_name'];
         $connection = database_connect();
+        if (!$connection) {
+            ?>
+            <p>Sorry, the attempt to connect to the host has failed. MySQL reports the following error -</p>
+            <p class="error">
+                <?php echo $connection->errorInfo(); ?>
+            </p>
+            <br/>
+            <?php
+            $success = false;
+        }
+    }
+    if ($success)
+    {
         $sql = file_get_contents("basic.sql");
         if($_POST['database_prefix']!=""){
             $sql = str_replace("$",$_POST['database_prefix'],$sql);
@@ -96,8 +114,7 @@ if (!isset($_POST['database_created']))
             $query = $temp[$x++];
             if($query!=""){
 
-                $statement = $connection->prepare($query);
-                $ok = $statement->execute();
+                $ok = db_query($query);
 
                 if ($ok === false) {
                     //_debug("Failed to execute query : $query : " . print_r($connection->errorInfo(), true));
