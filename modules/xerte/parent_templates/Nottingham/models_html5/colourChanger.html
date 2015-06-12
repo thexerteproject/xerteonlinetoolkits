@@ -25,9 +25,9 @@
 		this.selectedIndex = 0;
 
 		this.filterMap = [
-			  {class:'filter_off', name:'Off'},
-			  {class:'filter_inv', name:'Invert'},
-			  {class:'filter_boy', name:'Black on Yellow'}
+			  {class:'filter_off', name:'off', default:'Off'},
+			  {class:'filter_inv', name:'invert', default:'Invert'},
+			  {class:'filter_boy', name:'blackYellow', default:'Black on Yellow'}
 		];
 
 		// function called every time the page is viewed after it has initially loaded
@@ -41,6 +41,9 @@
 		}
 
 		this.init = function() {
+			// get language strings
+			$("#p1").html(x_getLangInfo(x_languageData.find("colourChanger").find("selectTxt")[0], "label", "Please select from the options below") + ":");
+			$("#p2").html(x_getLangInfo(x_languageData.find("colourChanger").find("adviceTxt")[0], "label", "Need more advice? Visit the Jisc TechDis <a target='_blank' href='http://vle.jisctechdis.ac.uk/xerte/play_427'>Xerte Toolkits accessibility guide</a>."));
 
 			var styles = [];
 
@@ -159,7 +162,7 @@
 			for (var i=0; i<this.filterMap.length; i++) {
 				select.push('<label><input type="radio" name="colourChangerRadios" value="' + i + '"');
 				if (i == this.selectedIndex) select.push(' checked="checked"');
-				select.push('>' + this.filterMap[i].name + '</label><br>');
+				select.push('>' + x_getLangInfo(x_languageData.find("colourChanger").find(this.filterMap[i].name)[0], "label", this.filterMap[i].default) + '</label><br>');
 			}
 			$colourChangerOptions.append(select.join(''));
 
@@ -286,7 +289,7 @@
 </style>
 
 <div id="colourChangerHolder">
-	<p id="p1">Please select from the options below:</p>
+	<p id="p1"></p>
 	<div id="colourChangerOptions"></div>
-	<p id="p2">Need more advice? Visit the Jisc TechDis <a target="_blank" href="http://vle.jisctechdis.ac.uk/xerte/play_427">Xerte Toolkits accessibility guide</a>.</p>
+	<p id="p2"></p>
 </div>
