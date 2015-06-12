@@ -376,10 +376,6 @@ img.sectionIcon {
 	background-color:	white;
 }
 
-.error {
-	color:	red;
-}
-
 .hint {
 	color:			red;
 	font-weight:	bold;
@@ -391,4 +387,9 @@ img.sectionIcon {
 
 .floatL {
 	float:	left;
+}
+
+.alert {
+	font-weight:	bold;
+	color:			red;
 }

@@ -363,6 +363,7 @@ function setUpInterface() {
 				// save value, work out which option it falls in to (between min & max values) and load the new step associated with it
 				decisionHistory[currentDecision][decisionHistory[currentDecision].length-1].option = $stepHolder.find("#amount").val();
 				
+				var exists = false;
 				currentStepInfo.options.each(function(i) {
 					var $this = $(this),
 						$slider = $stepHolder.find("#slider");
@@ -372,10 +373,13 @@ function setUpInterface() {
 						storedResultTxt[currentDecision].push($this.attr("resultTxt"));
 						
 						setUpStep($this.attr("target"), true);
-						
+						exists = true;
 						return false;
 					}
-				})
+				});
+				if (exists == false) {
+					alert(allParams.sliderError ? allParams.sliderError : "There is no next step for this value!");
+				}
 				
 			} else if (currentStepInfo.type == "info") {
 				
@@ -441,43 +445,48 @@ function setUpInterface() {
 
 // _____ START NEW DECISION FROM 1st STEP _____
 function startNewDecision(urlStep) {
-	$submitBtn.show();
-	$("#btnHolder #group1 button").attr("disabled","disabled");
-	
-	// is it the 1st decision?
-	if (currentDecision == undefined) {
-		currentDecision = 0;
+	if (allSteps.length == 0) {
+		$("#contentHolder").html('<span class="alert">' + (allParams.noQ ? allParams.noQ : "No questions have been added") + '</span>');
+		$("#btnHolder span").hide();
 	} else {
-		currentDecision++;
-	}
-	
-	currentStep = 0;
-	decisionHistory.push([]); // new array to hold history of steps for this decision
-	storedResultTxt.push([]); // new array to hold any strings to be used in collated results
-	
-	// set up 1st step - could be from URL parameter, set in xml, or 1st in array
-	var firstStep = allSteps[0].name;
-	if (findStep(urlStep) != undefined) {
-		firstStep = urlStep;
-	} else if (findStep(allQParams.firstStep) != null) {
-		firstStep = allQParams.firstStep;
-	}
-	
-	setUpStep(firstStep, true);
-	
-	if ($mainHolder.find($introHolder).length > 0) {
-		$infoBtn.removeAttr("disabled");
+		$submitBtn.show();
+		$("#btnHolder #group1 button").attr("disabled","disabled");
 		
-		if (urlStep == undefined) {
-			showHideHolders($introHolder);
-			$fwdBtn.removeAttr("disabled");
+		// is it the 1st decision?
+		if (currentDecision == undefined) {
+			currentDecision = 0;
 		} else {
-			showHideHolders($stepHolder);
-			$fwdBtn.attr("disabled", "disabled");
+			currentDecision++;
 		}
-	} else {
-		// there's no intro text - go straight to 1st step
-		showHideHolders($stepHolder);
+		
+		currentStep = 0;
+		decisionHistory.push([]); // new array to hold history of steps for this decision
+		storedResultTxt.push([]); // new array to hold any strings to be used in collated results
+		
+		// set up 1st step - could be from URL parameter, set in xml, or 1st in array
+		var firstStep = allSteps[0].name;
+		if (findStep(urlStep) != undefined) {
+			firstStep = urlStep;
+		} else if (findStep(allQParams.firstStep) != null) {
+			firstStep = allQParams.firstStep;
+		}
+		
+		setUpStep(firstStep, true);
+		
+		if ($mainHolder.find($introHolder).length > 0) {
+			$infoBtn.removeAttr("disabled");
+			
+			if (urlStep == undefined) {
+				showHideHolders($introHolder);
+				$fwdBtn.removeAttr("disabled");
+			} else {
+				showHideHolders($stepHolder);
+				$fwdBtn.attr("disabled", "disabled");
+			}
+		} else {
+			// there's no intro text - go straight to 1st step
+			showHideHolders($stepHolder);
+		}
 	}
 }
 
@@ -527,7 +536,7 @@ function setUpStep(stepID, isNew) {
 		
 	} else {
 		// step matching ID not found
-		$stepHolder.prepend('<div class="step error" >' + allParams.errorString + ' "' + stepID + '"</div>');
+		$stepHolder.prepend('<div class="step alert" >' + allParams.errorString + ' "' + stepID + '"</div>');
 		
 		if (decisionHistory[currentDecision].length > 0) {
 			currentStep++;
@@ -647,180 +656,185 @@ function setUpQ(isNew) {
 		
 		var $thisStep = $stepHolder.children(".step");
 		
-		if (mediaInfo[1] != undefined) {
-			var $stepMedia = $(".stepAudio, .stepVideo");
-			if ($stepMedia.hasClass("stepAudio")) {
-				$stepMedia.appendTo($stepMedia.parent());
-			}
-			window[mediaInfo[1]]($stepMedia, currentStepInfo.img);
-		}
-		
-		setUpSection(currentStepInfo.section, $thisStep);
-		
-		if (currentStepInfo.type == "mcq") {
-			
-			// _____ MCQ _____
-			var select = -1;
+		if (currentStepInfo.options.length == 0) {
+			$thisStep.append('<span class="alert">' + (allParams.noA ? allParams.noA : "No answer options have been added") + '</span>');
 			$submitBtn.button("disable");
-			
-			// set up answer options
-			currentStepInfo.options.each(function(i) {
-				var	$this = $(this);
-				
-				var authorSupport = "";
-				if (allParams.authorSupport == "true") {
-					var	bracket1 = currentStepInfo.format == "menu" ? "(" : "" ,
-						bracket2 = currentStepInfo.format == "menu" ? ")" : "" ;
-					authorSupport =  '<span class="hint"> ' + bracket1 + $this.attr("target") + bracket2 + '</hint>';
+		} else {
+			if (mediaInfo[1] != undefined) {
+				var $stepMedia = $(".stepAudio, .stepVideo");
+				if ($stepMedia.hasClass("stepAudio")) {
+					$stepMedia.appendTo($stepMedia.parent());
 				}
+				window[mediaInfo[1]]($stepMedia, currentStepInfo.img);
+			}
+			
+			setUpSection(currentStepInfo.section, $thisStep);
+			
+			if (currentStepInfo.type == "mcq") {
 				
-				// is answer given via drop down menu or radio buttons
+				// _____ MCQ _____
+				var select = -1;
+				$submitBtn.button("disable");
+				
+				// set up answer options
+				currentStepInfo.options.each(function(i) {
+					var	$this = $(this);
+					
+					var authorSupport = "";
+					if (allParams.authorSupport == "true") {
+						var	bracket1 = currentStepInfo.format == "menu" ? "(" : "" ,
+							bracket2 = currentStepInfo.format == "menu" ? ")" : "" ;
+						authorSupport =  '<span class="hint"> ' + bracket1 + $this.attr("target") + bracket2 + '</hint>';
+					}
+					
+					// is answer given via drop down menu or radio buttons
+					if (currentStepInfo.format == "menu") {
+						if (i == 0) {
+							$thisStep.append('<div class="dropDownAnswer"><select></select></div>');
+						}
+						
+						$thisStep.find("select").append('<option id="opt' + i + '">' + $this.attr("name") + authorSupport + '</option>');
+						
+						if ($this.attr("selected") == "true") {
+							select = i;
+							$thisStep.find("select").prop("selectedIndex", select);
+							$submitBtn.button("enable");
+						}
+						
+					} else {
+						var $parent = $thisStep;
+						if (i == 0) {
+							$parent = $('<div class="radioAnswers"/>').appendTo($thisStep);
+						} else {
+							$parent = $thisStep.find(".radioAnswers");
+						}
+						
+						$parent.append('<div><input type="radio" name="option" id="opt' + i + '" value="' + $this.attr("name") + '"/><label class="optionTxt" for="opt' + i + '">' + addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
+						
+						if ($this.attr("selected") == "true") {
+							$thisStep.find("#opt" + i).prop("checked", true);
+							$submitBtn.button("enable");
+						}
+					}
+					
+					// store destination in option data
+					$thisStep.find("#opt" + i).data({
+						"target":		$this.attr("target"),
+						"resultTxt":	$this.attr("resultTxt")
+					});
+				});
+				
+				// disable $submitBtn when no answer is selected
 				if (currentStepInfo.format == "menu") {
-					if (i == 0) {
-						$thisStep.append('<div class="dropDownAnswer"><select></select></div>');
-					}
-					
-					$thisStep.find("select").append('<option id="opt' + i + '">' + $this.attr("name") + authorSupport + '</option>');
-					
-					if ($this.attr("selected") == "true") {
-						select = i;
-						$thisStep.find("select").prop("selectedIndex", select);
-						$submitBtn.button("enable");
-					}
-					
-				} else {
-					var $parent = $thisStep;
-					if (i == 0) {
-						$parent = $('<div class="radioAnswers"/>').appendTo($thisStep);
-					} else {
-						$parent = $thisStep.find(".radioAnswers");
-					}
-					
-					$parent.append('<div><input type="radio" name="option" id="opt' + i + '" value="' + $this.attr("name") + '"/><label class="optionTxt" for="opt' + i + '">' + addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
-					
-					if ($this.attr("selected") == "true") {
-						$thisStep.find("#opt" + i).prop("checked", true);
-						$submitBtn.button("enable");
-					}
-				}
-				
-				// store destination in option data
-				$thisStep.find("#opt" + i).data({
-					"target":		$this.attr("target"),
-					"resultTxt":	$this.attr("resultTxt")
-				});
-			});
-			
-			// disable $submitBtn when no answer is selected
-			if (currentStepInfo.format == "menu") {
-				$thisStep.find("select").change(function() {
-					if ($thisStep.find("select").prop("selectedIndex") != -1) {
-						$submitBtn.button("enable");
-					} else {
-						$submitBtn.button("disable");
-					}
-				});
-				
-				if (select == -1) {
-					$thisStep.find("select").prop("selectedIndex", -1);
-				}
-				
-			} else {
-				$thisStep.find("input")
-					.change(function() {
-						if ($thisStep.find("input:checked").length > 0) {
+					$thisStep.find("select").change(function() {
+						if ($thisStep.find("select").prop("selectedIndex") != -1) {
 							$submitBtn.button("enable");
 						} else {
 							$submitBtn.button("disable");
 						}
-						$dialog.dialog("close");
-					})
-					.focusin(function() {
-						$(this).parent().addClass("highlight");
-					})
-					.focusout(function() {
-						$(this).parent().removeClass("highlight");
 					});
-			}
-			
-		} else if (currentStepInfo.type == "slider") {
-			
-			// _____ SLIDER _____
-			var answerBox = '<input type="text" id="amount"/><label for="amount">' + currentStepInfo.unit + '</label>';
-			if (currentStepInfo.unitPos == "start") {
-				answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
-			}
-			
-			// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
-			var inputW;
-			if (currentStepInfo.step.split('.').length > 1) {
-				if (currentStepInfo.max.split('.').length > 1) {
-					if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
-						inputW = currentStepInfo.max.length;
+					
+					if (select == -1) {
+						$thisStep.find("select").prop("selectedIndex", -1);
+					}
+					
+				} else {
+					$thisStep.find("input")
+						.change(function() {
+							if ($thisStep.find("input:checked").length > 0) {
+								$submitBtn.button("enable");
+							} else {
+								$submitBtn.button("disable");
+							}
+							$dialog.dialog("close");
+						})
+						.focusin(function() {
+							$(this).parent().addClass("highlight");
+						})
+						.focusout(function() {
+							$(this).parent().removeClass("highlight");
+						});
+				}
+				
+			} else if (currentStepInfo.type == "slider") {
+				
+				// _____ SLIDER _____
+				var answerBox = '<input type="text" id="amount"/><label for="amount">' + currentStepInfo.unit + '</label>';
+				if (currentStepInfo.unitPos == "start") {
+					answerBox = '<label for="amount">' + currentStepInfo.unit + '</label><input type="text" id="amount"/>';
+				}
+				
+				// work out max length of answer string - depends on max value & increment & takes decimals into account if needed
+				var inputW;
+				if (currentStepInfo.step.split('.').length > 1) {
+					if (currentStepInfo.max.split('.').length > 1) {
+						if (currentStepInfo.max.split('.')[1].length > currentStepInfo.step.split('.')[1].length) {
+							inputW = currentStepInfo.max.length;
+						} else {
+							inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
+						}
 					} else {
-						inputW = currentStepInfo.max.split('.')[0].length + 1 + currentStepInfo.step.split('.')[1].length;
+						inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
 					}
 				} else {
-					inputW = currentStepInfo.max.length + 1 + currentStepInfo.step.split('.')[1].length;
+					inputW = currentStepInfo.max.length;
 				}
-			} else {
-				inputW = currentStepInfo.max.length;
-			}
-			
-			var authorSupport = "";
-			if (allParams.authorSupport == "true") {
-				authorSupport += '<span class="hint">';
-				currentStepInfo.options.each(function(i) {
-					var $this = $(this);
-					authorSupport += "<p>" + $this.attr("min") + " - " + $this.attr("max") + " : " + $this.attr("target") + "</p>";
-				});
-				authorSupport += '</span>';
-			}
-			
-			$thisStep
-				.append('<div id="labelHolder">' + authorSupport + answerBox + '</div><div id="slider"></div>')
-				.find("#amount").css("width", inputW + "em");
-			
-			var $slider = $thisStep.find("#slider"),
-				$amount = $thisStep.find("#labelHolder #amount");
-			
-			$slider.slider({
-				value:	Number(currentStepInfo.value),
-				min:	Number(currentStepInfo.min),
-				max:	Number(currentStepInfo.max),
-				step:	Number(currentStepInfo.step),
-				slide:	function(event, ui) {
-					$amount.val(ui.value);
-					
-					$dialog.dialog("close");
+				
+				var authorSupport = "";
+				if (allParams.authorSupport == "true") {
+					authorSupport += '<span class="hint">';
+					currentStepInfo.options.each(function(i) {
+						var $this = $(this);
+						authorSupport += "<p>" + $this.attr("min") + " - " + $this.attr("max") + " : " + $this.attr("target") + "</p>";
+					});
+					authorSupport += '</span>';
 				}
-			})
-			
-			$amount
-				.val($slider.slider("value"))
-				.change(function() {
-					var value = $(this).val();
-					if (value > currentStepInfo.max) {
-						value = currentStepInfo.max;
-						$amount.val(value);
-					} else if (value < currentStepInfo.min) {
-						value = currentStepInfo.min;
-						$amount.val(value);
+				
+				$thisStep
+					.append('<div id="labelHolder">' + authorSupport + answerBox + '</div><div id="slider"></div>')
+					.find("#amount").css("width", inputW + "em");
+				
+				var $slider = $thisStep.find("#slider"),
+					$amount = $thisStep.find("#labelHolder #amount");
+				
+				$slider.slider({
+					value:	Number(currentStepInfo.value),
+					min:	Number(currentStepInfo.min),
+					max:	Number(currentStepInfo.max),
+					step:	Number(currentStepInfo.step),
+					slide:	function(event, ui) {
+						$amount.val(ui.value);
+						
+						$dialog.dialog("close");
 					}
-					$slider.slider({value: value});
-					
-					$dialog.dialog("close");
-				});
+				})
+				
+				$amount
+					.val($slider.slider("value"))
+					.change(function() {
+						var value = $(this).val();
+						if (value > currentStepInfo.max) {
+							value = currentStepInfo.max;
+							$amount.val(value);
+						} else if (value < currentStepInfo.min) {
+							value = currentStepInfo.min;
+							$amount.val(value);
+						}
+						$slider.slider({value: value});
+						
+						$dialog.dialog("close");
+					});
+				
+				$submitBtn.button("enable");
+			}
 			
-			$submitBtn.button("enable");
+			if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
+				setUpHelp($thisStep);
+			}
+			
+			// save reference to this step so it can be reloaded later if needed
+			allSteps[currentStepInfo.index].built = $thisStep;
 		}
-		
-		if (currentStepInfo.helpTxt != undefined && currentStepInfo.helpTxt != "") {
-			setUpHelp($thisStep);
-		}
-		
-		// save reference to this step so it can be reloaded later if needed
-		allSteps[currentStepInfo.index].built = $thisStep;
 	}
 }
 
@@ -1167,8 +1181,6 @@ function createDecStr(dec, type) {
 					alt = alt != "" ? ' title="' + alt + '"' : "";
 					media = '<div class="stepVideo" ' + alt + ' data-src="' + thisStep.img + '"></div>';
 				}
-			} else {
-				mediaInfo.push("");
 			}
 		}
 		
