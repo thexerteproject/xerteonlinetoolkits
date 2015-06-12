@@ -125,117 +125,127 @@
 		}
 
 		this.loadQ = function() {
-			var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
-
-			$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
-
-			var infoString = $thisQ.getAttribute("prompt");
-			
-			if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-				quiz.loadAudio($thisQ.getAttribute("sound"));
+			if ($(x_currentPageXML).children().length == 0) {
+				var noQuestions = x_currentPageXML.getAttribute("noQuestions") != undefined ? x_currentPageXML.getAttribute("noQuestions") : "No questions have been added to this quiz";
+				$("#optionHolder").html('<span class="alert">' + noQuestions + '</span>');
 			} else {
-				$("#questionAudio").empty();
-			}
-			
-			var url = $thisQ.getAttribute("image");
-			if (url != undefined && url != "") {
-				var newString = "";
-				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
-				if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
-					newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+
+				$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
+
+				var infoString = $thisQ.getAttribute("prompt");
+				
+				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
+					quiz.loadAudio($thisQ.getAttribute("sound"));
+				} else {
+					$("#questionAudio").empty();
 				}
-				newString += ' />';
-				infoString = newString + infoString;
-			}
-			$("#qTxt").html(x_addLineBreaks(infoString));
-			
-			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				$("#qTxt").find("a.x_glossary").contents().unwrap();
-			}
+				
+				var url = $thisQ.getAttribute("image");
+				if (url != undefined && url != "") {
+					var newString = "";
+					newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
+					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
+						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+					}
+					newString += ' />';
+					infoString = newString + infoString;
+				}
+				$("#qTxt").html(x_addLineBreaks(infoString));
+				
+				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+					$("#qTxt").find("a.x_glossary").contents().unwrap();
+				}
 
-			$("#feedback").html("");
-
-			var $optionHolder = $("#optionHolder");
-			if ($thisQ.getAttribute("type") == "Multiple Answer") {
-				$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
-			} else {
-				$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
-			}
-			var $option = $optionHolder.find("input"),
-				$optionTxt = $optionHolder.find(".optionTxt"),
-				$checkBtn = $("#checkBtn"),
-				$feedback = $("#feedback"),
-				correctOptions = [],
-				correctAnswer = [],
-				correctFeedback = [];
-            
-            // Store the answers in a temporary array
-			this.currentAnswers = [];
-            $($thisQ).children().each(function(i) {
-            	quiz.currentAnswers.push(
-            		{
-            			text:		this.getAttribute("text"),
-            			correct:	this.getAttribute("correct"),
-            			feedback:	this.getAttribute("feedback")
-            		}
-            	);
-            });
-
-            // Randomise the answers, if required
-            if ($thisQ.getAttribute("answerOrder") == 'random') {
-            	for (var tmp, j, k, l = this.currentAnswers.length, i = l; i--;) {
-            		j = Math.floor(Math.random() * l);
-            		k = Math.floor(Math.random() * l);
-            		tmp = this.currentAnswers[j];
-        			this.currentAnswers[j] = this.currentAnswers[k];
-        			this.currentAnswers[k] = tmp;
-            	}
-            }
-
-			$.each(this.currentAnswers, function(i, thisOption) {
-					var $thisOption, $thisOptionTxt;
-					if (i != 0) {
-						$thisOption = $option.clone().appendTo($optionHolder);
-						$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+				$("#feedback").html("");
+				
+				if ($($thisQ).children().length == 0) {
+					var noAnswers = x_currentPageXML.getAttribute("noAnswers") != undefined ? x_currentPageXML.getAttribute("noAnswers") : "No answer options have been added to this question";
+					$("#optionHolder").html('<span class="alert">' + noAnswers + '</span>');
+				} else {
+					var $optionHolder = $("#optionHolder");
+					if ($thisQ.getAttribute("type") == "Multiple Answer") {
+						$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
 					} else {
-						$thisOption = $option;
-						$thisOptionTxt = $optionTxt;
+						$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
 					}
-                    quiz.currNrOptions = i+1;
-					if (thisOption.correct == 'true')
-                    {
-                        correctOptions.push((i+1)+"");
-                        correctAnswer.push(thisOption.text);
-                        correctFeedback.push(thisOption.feedback);
-                    }
-					$thisOption
-						.attr({
-							"value"	:thisOption.text,
-							"id"	:"option" + i
-							})
-						.data("correct", thisOption.correct)
-						.change(function() {
-							$feedback.html("");
-							var $selected = $("#optionHolder input:checked");
-							if ($selected.length > 0) {
-								$checkBtn.removeAttr("disabled");
-							} else {
-								$checkBtn.attr("disabled", "disabled");
-							}
-							$("#nextBtn").attr("disabled", "disabled");
-						});
-
-					$thisOptionTxt
-						.attr("for", "option" + i)
-						.data("option", $thisOption)
-						.html(x_addLineBreaks(thisOption.text));
+					var $option = $optionHolder.find("input"),
+						$optionTxt = $optionHolder.find(".optionTxt"),
+						$checkBtn = $("#checkBtn"),
+						$feedback = $("#feedback"),
+						correctOptions = [],
+						correctAnswer = [],
+						correctFeedback = [];
 					
-					if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-						$thisOptionTxt.find("a.x_glossary").contents().unwrap();
+					// Store the answers in a temporary array
+					this.currentAnswers = [];
+					$($thisQ).children().each(function(i) {
+						quiz.currentAnswers.push(
+							{
+								text:		this.getAttribute("text"),
+								correct:	this.getAttribute("correct"),
+								feedback:	this.getAttribute("feedback")
+							}
+						);
+					});
+
+					// Randomise the answers, if required
+					if ($thisQ.getAttribute("answerOrder") == 'random') {
+						for (var tmp, j, k, l = this.currentAnswers.length, i = l; i--;) {
+							j = Math.floor(Math.random() * l);
+							k = Math.floor(Math.random() * l);
+							tmp = this.currentAnswers[j];
+							this.currentAnswers[j] = this.currentAnswers[k];
+							this.currentAnswers[k] = tmp;
+						}
 					}
-				});
-            XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
-            quiz.checked = false;
+
+					$.each(this.currentAnswers, function(i, thisOption) {
+							var $thisOption, $thisOptionTxt;
+							if (i != 0) {
+								$thisOption = $option.clone().appendTo($optionHolder);
+								$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+							} else {
+								$thisOption = $option;
+								$thisOptionTxt = $optionTxt;
+							}
+							quiz.currNrOptions = i+1;
+							if (thisOption.correct == 'true')
+							{
+								correctOptions.push((i+1)+"");
+								correctAnswer.push(thisOption.text);
+								correctFeedback.push(thisOption.feedback);
+							}
+							$thisOption
+								.attr({
+									"value"	:thisOption.text,
+									"id"	:"option" + i
+									})
+								.data("correct", thisOption.correct)
+								.change(function() {
+									$feedback.html("");
+									var $selected = $("#optionHolder input:checked");
+									if ($selected.length > 0) {
+										$checkBtn.removeAttr("disabled");
+									} else {
+										$checkBtn.attr("disabled", "disabled");
+									}
+									$("#nextBtn").attr("disabled", "disabled");
+								});
+
+							$thisOptionTxt
+								.attr("for", "option" + i)
+								.data("option", $thisOption)
+								.html(x_addLineBreaks(thisOption.text));
+							
+							if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+								$thisOptionTxt.find("a.x_glossary").contents().unwrap();
+							}
+						});
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
+					quiz.checked = false;
+				}
+			}
 		}
 
         this.showFeedBackandTrackResults = function()
