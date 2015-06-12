@@ -18,11 +18,12 @@
  * limitations under the License.
  */
 session_start();
-
+global $dberr;
 $success = true;
 
 function _debug($string) {
-    // pass, for now.
+    global $dberr;
+    $dberr = $string;
 }
 
 echo file_get_contents("page_top");
@@ -60,7 +61,7 @@ if (!isset($_POST['database_created']))
     ?>
         <p >Sorry, the attempt to connect to the host has failed. MySQL reports the following error -</p>
         <p class="error">
-            <?php echo $connection->errorInfo(); ?>
+            <?php echo $dberr; ?>
         </p>
         <br />
     <?php

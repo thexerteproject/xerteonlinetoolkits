@@ -31,11 +31,18 @@ echo file_get_contents("page_top");
 
 global $xerte_toolkits_site;
 global $development;
+global $dberr;
 $xerte_toolkits_site = new stdClass();
 $xerte_toolkits_site->database_type = "mysql";
 $xerte_toolkits_site->database_host = "localhost";
 $xerte_toolkits_site->database_username = "root";
 $xerte_toolkits_site->database_password = "";
+
+function _debug($string) {
+    global $dberr;
+    $dberr = $string;
+}
+
 require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
 // $xerte_toolkits_site->database_name should NOT be set
@@ -54,7 +61,10 @@ if(!$connection){
 
 ?>
 
-        <p>Sorry, the attempt to connect to the host has failed. MySQL reports the following error - <?PHP echo mysql_errno($mysql_connect_id) . " - " . mysql_error($mysql_connect_id); ?></p>
+        <p>Sorry, the attempt to connect to the host has failed. MySQL reports the following error - </p>
+        <p class="error">
+            <?php echo $dberr; ?>
+        </p>
 
 <?PHP }
 
@@ -139,7 +149,7 @@ $file_handle = fopen("../database.php",'w');
 fwrite($file_handle,$buffer,strlen($buffer));
 fclose($file_handle);
 
-if(!_is_writable('../index.php')) {
+if(!is_writable('../index.php')) {
     echo "Check your file permissions, index.php file is not writeable by the web server; you will want to replace index.php with demo.txt";
 }
 /*if(is_file('../index.php') && _is_writable('../index.php')) {
