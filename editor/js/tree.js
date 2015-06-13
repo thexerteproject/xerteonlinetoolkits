@@ -625,7 +625,7 @@ var EDITOR = (function ($, parent) {
         var flashonly = $('<img>')
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
-        var flashonlytxt = '<img src="editor/img/flashonly.png" alt="Flash only attribute">';
+        var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
 
 		// Sort into alphabetical order
 		node_options['optional'].sort(function(a,b) {
