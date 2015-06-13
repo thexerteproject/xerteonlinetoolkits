@@ -799,6 +799,8 @@ button.editorbutton:hover {
 
 .xerte-icon.optional { cursor: pointer; }
 
+button .flash-icon {padding-left: 4px;}
+
 button:hover {background: #f86718; color: #000000;}
 
 .xerte_button {background: transparent; border: 0; }
