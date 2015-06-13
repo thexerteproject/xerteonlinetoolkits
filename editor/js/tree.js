@@ -624,7 +624,8 @@ var EDITOR = (function ($, parent) {
         var table = $('<table>');
         var flashonly = $('<img>')
             .attr('src', 'editor/img/flashonly.png')
-            .attr('title', 'Flash only attribute');
+            .attr('alt', 'Flash only attribute');
+        var flashonlytxt = '<img src="editor/img/flashonly.png" alt="Flash only attribute">';
 
 		// Sort into alphabetical order
 		node_options['optional'].sort(function(a,b) {
@@ -641,6 +642,7 @@ var EDITOR = (function ($, parent) {
 
             if (!node_options['optional'][i].value.deprecated) {
                 // Create button for right panel
+                var label = attribute_label;
                 var button = $('<button>')
                     .attr('id', 'insert_opt_' + attribute_name)
                     .addClass('btnInsertOptParam')
@@ -655,9 +657,9 @@ var EDITOR = (function ($, parent) {
                     })
                     .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
                 if (node_options['optional'][i].value.flashonly) {
-                    button.append(flashonly);
+                    label += flashonlytxt;
                 }
-                button.append(attribute_label);
+                button.append(label);
                 if (node_options['optional'][i].value.tooltip)
                 {
                     button.attr('title', node_options['optional'][i].value.tooltip);
