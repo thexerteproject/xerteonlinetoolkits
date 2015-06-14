@@ -397,9 +397,6 @@ var EDITOR = (function ($, parent) {
             return;
         }
 
-        // Need to remove row from the screen
-        var $row = $("#opt_" + name).remove();
-
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
 
@@ -410,10 +407,25 @@ var EDITOR = (function ($, parent) {
 
         console.log(lo_data[key]["attributes"]);
 
-        // Enable the optional parameter button
-        $('#insert_opt_' + name)
-            .switchClass('disabled', 'enabled')
-            .prop('disabled', false);
+        /**
+         * TOR 20150614
+         *
+         *  Previously the row in the table was deleted
+         *  You cannot do that, because when the optional parameter contains a
+         *  Wysiwyg editor, when you add another optional parameter or move to
+         *  another page, the ckeditor instance is being destroyed without the
+         *  textarea, and this causes the editor to hang!
+         *
+         *   // Need to remove row from the screen
+         *   var $row = $("#opt_" + name).remove();
+         *
+         *   // Enable the optional parameter button
+         *   $('#insert_opt_' + name)
+         *       .switchClass('disabled', 'enabled')
+         *       .prop('disabled', false);
+         */
+
+        parent.tree.showNodeData(key);
     },
 
     insertOptionalProperty = function (key, name, defaultvalue)
