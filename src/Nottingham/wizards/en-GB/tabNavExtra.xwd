@@ -52,8 +52,8 @@
 	
     <url label="Image" type="media"  optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true"/>
-	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
+    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
+	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 
   </nestedPage>  
   
