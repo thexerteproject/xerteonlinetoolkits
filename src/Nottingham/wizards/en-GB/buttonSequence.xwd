@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- BUTTON SEQUENCE PAGE============================ -->
-  <buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Presents a sequence of button interactions with text" icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
+  <buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="200" />
     <intro label="Introduction" type="TextArea" height="100" />

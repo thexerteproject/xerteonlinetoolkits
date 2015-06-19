@@ -142,7 +142,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
     <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
     
-  </QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="The accordion navigator allows you to create a group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true">
+  </QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
@@ -206,7 +206,7 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
-  </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack" icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
+  </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media"/>
@@ -234,7 +234,7 @@
 	<synch label="Synch Point" type="TextInput"/>
     
 
-  </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
+  </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox" width="100"/>
@@ -269,7 +269,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
     
-  </bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="Presents a series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
+  </bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -285,7 +285,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  </buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Poses a stimulating question to the learner, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
+  </buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="50"/>
@@ -304,7 +304,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	
-  </buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Presents a sequence of button interactions with text" icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
+  </buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="200"/>
     <intro label="Introduction" type="TextArea" height="100"/>
@@ -326,7 +326,7 @@
     <name label="Button Label" type="TextInput" wysiwyg="true"/>
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
     <text label="Feedback" type="TextArea" height="250"/>
-  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it" thumb="thumbs/connectorMCQ.jpg" remove="true">
+  </button><cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>	
@@ -392,7 +392,7 @@
 
   </category><item menuItem="Item" icon="icBullet">
     <name label="Item Text" type="TextInput" wysiwyg="true"/>
-  </item><chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. You may choose from line, bar, stacked bar or pie charts, and add several series of data to the chart" icon="icChart" thumb="thumbs/charts.jpg" remove="true">
+  </item><chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="300"/>
@@ -414,7 +414,7 @@
     <name label="Series Name" type="TextInput" wysiwyg="true"/>
     <data label="Chart Data" headers="X,Y" newRow="label,data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" colWidths="195,195" controls="1" rendererOptions="none,none"/>
     <colour label="Colour" type="colourPicker" defaultValue="0xFF0000"/>
-  </series><columnPage menu="Navigators" menuItem="Column Page" hint="Presents a page with a series of columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  </series><columnPage menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 
@@ -429,7 +429,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions and associate a destination page with each region." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
+  </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="200"/>
     <textWidth label="Min Text Width" options="No Text,Small,Medium,Max Available" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
@@ -472,7 +472,7 @@
     <htm label="New Window HTML" type="textArea" height="150" optional="true" tooltip="Display the given HTML in a new window"/>
     <relNav label="Relative Destination Page" options="First Page,Previous Page,Next Page,Last Page" type="ComboBox" data="first,prev,next,last" defaultValue="next" width="200" optional="true" tooltip="Go to a relative page (i.e. next)"/>
     <hotspotPopUp label="Pop-Up HTML" type="TextArea" height="200" optional="true" tooltip="Display the given HTML in a popup window"/>
-  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
+  </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
@@ -498,7 +498,7 @@
   </connectorMenu><cMenuListedPage menuItem="Item" remove="true" icon="icBullet">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <pageID label="Destination Page" type="pageList" defaultValue=""/>	
-  </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="A more complex hotspot based-diagram" icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
+  </cMenuListedPage><customHotspots menu="Interactivity" menuItem="Interactive Diagram" hint="Create a hotspot based diagram where regions can be explored using a variety of interactivities." icon="icCustomHotspot" thumb="thumbs/interactiveDiagram.jpg" type="drawing" label="Edit Diagram" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
     <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
@@ -547,7 +547,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions" icon="icDecision">
+  </customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
@@ -639,7 +639,7 @@
 	<destination label="Go to Page ID" type="TextInput" optional="true"/>
 	
 	<destinationBtn label="Go Button Label" type="TextInput" language="true"/>
-  </resultStep><delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your presentation." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
+  </resultStep><delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>
@@ -707,7 +707,7 @@
 	  <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
-  </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="Allows you to include any web page, or to add any embed code to your project" icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
+  </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
     
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
@@ -734,7 +734,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Use the Flickr slideshow to incorporate freely available graphical content from the flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
+  </flashPaper><flickr menu="Misc" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
@@ -752,7 +752,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating a drag and drop gap-fill exercise." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+  </flickr><gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by either drag and drop labels or editable text boxes." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
@@ -785,7 +785,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </geocommons><hangman menu="Games" menuItem="Hangman" hint="A Hangman game. Create a list of words for the learner to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
+  </geocommons><hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icPageWhite" thumb="thumbs/hangman.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
@@ -840,7 +840,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
 
-  </iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allows a user to zoom in and out of a large image and select regions. Useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
+  </iSpring><imageViewer menu="Media" menuItem="Image Viewer" hint="Allow users to zoom in and out of a large image and select regions. A useful way of presenting large images in a small screen space." icon="icImage" thumb="thumbs/imageViewer.jpg" label="Page Text" type="text" height="250" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<url label="Image" type="media"/>
@@ -860,7 +860,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </imageViewer><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Use the inventory to present a survey where answers map to different classes, single or multiple answer multiple choice questions." thumb="thumbs/inventory.jpg" remove="true">
+  </imageViewer><inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instructions label="Instructions" type="textArea" height="100"/>
     <feedback label="Inventory Feedback" type="textArea" height="100"/>
@@ -964,7 +964,7 @@
 	<name label="Label" type="TextInput" wysiwyg="true"/>
 	<script label="Jmol Script" type="TextArea" height="100"/>
   
-  </jmolOption><links menu="Navigators" menuItem="Hyperlinks" hint="The links page allows you to easily assemble a page of keyboard accessible links" icon="icWorld" remove="true" thumb="thumbs/links.jpg">
+  </jmolOption><links menu="Navigators" menuItem="Hyperlinks" hint="A list of keyboard accessible links." icon="icWorld" remove="true" thumb="thumbs/links.jpg">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Title" type="TextArea" height="100"/>
@@ -986,7 +986,7 @@
     <text label="Link Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput"/>
 
-  </link><list menu="Interactivity" menuItem="Interactive List" hint="Presents an interactive list." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true">
+  </link><list menu="Interactivity" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -1049,7 +1049,7 @@
   </mapstraction><overlay duplicate="true" menuItem="Overlay" remove="true" icon="icPageWhite">
     <name type="TextInput" wysiwyg="true" label="Title"/>
     <url type="TextInput" label="Overlay"/>
-  </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Poses an multiple answer question with multiple options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" remove="true">
+  </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
@@ -1088,7 +1088,7 @@
     <feedback label="Feedback" type="TextArea" height="100"/>
     <correct label="Correct" options="true,false" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 
-  </option><mediaLesson menu="Media" menuItem="Media Lesson" hint="A page for synching a variety of types of content to a piece of media" icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
+  </option><mediaLesson menu="Media" menuItem="Media Lesson" hint="Synchronise a variety of types of content to a piece of media." icon="icApplicationTile" thumb="thumbs/mediaLesson.jpg" remove="true">
 		
 		<name label="Page Title" type="TextInput" wysiwyg="true"/>
 		<layout label="Panel Layout" type="ComboBox" options="Grid,Tile Horizontally,Tile Vertically,Full Top - Tile Bottom,Tile Top - Full Bottom,Full Left - Tile Right,Tile Left - Full Right" data="grid,tileH,tileV,top,bottom,left,right" defaultValue="grid" width="200"/>
@@ -1373,7 +1373,7 @@
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		
-	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="An interaction for the user to match chunks of text" icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
+	</synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icConnect" thumb="thumbs/memoryGame.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -1395,7 +1395,7 @@
     <url label="Image" type="Media"/>
 	<url2 label="Label Image" type="Media" optional="true"/>
 
-  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interation, with feedback and option to paste response to clipboard" icon="icComment" thumb="thumbs/modelAnswer.jpg" remove="true">
+  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icComment" thumb="thumbs/modelAnswer.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
@@ -1429,7 +1429,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
-  </modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Add this page to display collated results from all the preceeding model answer pages which can then be copied to clipboard or just reviewed." icon="icPageWhiteText" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Text" height="280" remove="true">
+  </modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icPageWhiteText" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Text" height="280" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
     <copyBtnTip label="Copy Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
@@ -1443,7 +1443,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Presents a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
+  </modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
@@ -1463,7 +1463,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
-  </modify><morphImages menu="Media" menuItem="Morph Images" hint="Allows one image to morph into another" icon="icZoomIn" thumb="thumbs/morphImages.png" remove="true">
+  </modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -1483,7 +1483,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </morphImages><newWindow menu="Navigators" menuItem="New Window" hint="Allows the user to launch a new window to a url" icon="icApplication" thumb="thumbs/newWin.png" remove="true">
+  </morphImages><newWindow menu="Navigators" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="150"/>
@@ -1502,7 +1502,7 @@
 
     <htm label="HTML" type="textArea" height="150" optional="true"/>
 
-  </newWindow><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content" icon="icPageWhiteInfo" remove="true" thumb="thumbs/orient.jpg">
+  </newWindow><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteInfo" remove="true" thumb="thumbs/orient.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <goalsHeader label="Goals Header" type="TextInput" wysiwyg="true"/>
@@ -1520,7 +1520,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </orient><pdf menu="Media" menuItem="PDF File" hint="A page for incorporating PDF files." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
+  </orient><pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
@@ -1531,7 +1531,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="A page for multiple video and sound clips to be viewed and compared." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true">
+  </pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <backBtnTip label="Back Button Tip" type="TextInput" wysiwyg="true" language="true"/>
@@ -1579,7 +1579,7 @@
 	
 	<pageLink label="Page Link" type="pageList" defaultValue="" optional="true"/>	
 	<pageLinkTxt label="Page Link Text" type="textInput" wysiwyg="true" optional="true"/>
-  </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Use the quiz to present a formative assessment comprising a series of single answer or multiple answer multiple choice questions.">
+  </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Present a formative assessment comprising a series of questions with multiple answer options. Each question can have one or more correct answers.">
     <name label="Quiz Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -1649,7 +1649,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </raptivity><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your presentation. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
+  </raptivity><rss menuItem="RSS Feed" menu="Misc" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="textArea" height="300"/>
@@ -1834,7 +1834,7 @@
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
 	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
 
-	</outcomeCondition><slideshow menu="Navigators" menuItem="Slideshow" hint="Presents a sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true">
+	</outcomeCondition><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -1852,7 +1852,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  </slideshow><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps" icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
+  </slideshow><summary menu="Text" menuItem="Summary" hint="A page for summarising key points and suggesting next steps." icon="icPageWhiteInfo" remove="true" thumb="thumbs/summary.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <summaryHeader label="Summary Header" type="TextInput" wysiwyg="true"/>
@@ -1866,7 +1866,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="The tabbed navigator allows you to create a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true">
+  </summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -1883,7 +1883,7 @@
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
     </newNodes>
 
-  </tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="The tabbed navigator + allows you to create a list of topic links.  Each topic displays a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
+  </tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -1991,7 +1991,7 @@
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>
     <sound label="Sound" type="media" optional="true"/>
 
-  </textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text" icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
+  </textGraphics><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
@@ -2035,7 +2035,7 @@
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
 
-  </textSWF><textVideo menu="Media" menuItem="Video" hint="A page for integrating FLV video files with your presentation" label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
+  </textSWF><textVideo menu="Media" menuItem="Video" hint="Embed MP4 video files in your project." label="Page Text" icon="icPageWhiteFilm" thumb="thumbs/textVideo.jpg" type="text" height="180" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Left" width="100"/>
@@ -2058,7 +2058,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
-  </textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="Presents a series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true">
+  </textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -2087,7 +2087,7 @@
     <url label="Image" type="media"/>
     <tip label="Image Description" type="textInput" optional="true" defaltValue="Enter a Description for Accessibility"/>
 
-  </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating an interactive timeline." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
+  </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
@@ -2116,7 +2116,7 @@
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Description" type="TextArea" height="100"/>
 
-  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title" label="Title Text" icon="icPageWhiteText" thumb="thumbs/title.jpg" type="text" height="100" remove="true">
+  </timelinedate><title menu="Text" menuItem="Title Page" hint="A simple page for displaying a title." label="Title Text" icon="icPageWhiteText" thumb="thumbs/title.jpg" type="text" height="100" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/> 
@@ -2137,7 +2137,7 @@
     <titleHAlign label="Title Horizontal Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
     <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
 
-  </title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Page that plays an audio file with synchronized transcript" icon="icTranscript" thumb="thumbs/transcriptReader.jpg" remove="true">
+  </title><transcriptReader menu="Media" menuItem="Transcript Reader" hint="Synchronise a transcript to an audio file." icon="icTranscript" thumb="thumbs/transcriptReader.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <sound label="Sound" type="Media"/>
@@ -2221,7 +2221,7 @@
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
-  </xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">&gt;
+  </xerteModel><youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">&gt;
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>
@@ -2237,7 +2237,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
     <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/> 
 
-  </youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your piece. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
+  </youtube><youtuberss menuItem="YouTube Feed" menu="Misc" remove="true" thumb="thumbs/youtubefeed.jpg" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="200"/>

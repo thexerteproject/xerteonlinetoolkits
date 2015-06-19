@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- BUTTON NAVIGATOR============================= -->
-  <buttonNav menu="Navigators" menuItem="Button Navigator" hint="Presents a series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
+  <buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>

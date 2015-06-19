@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- BUTTON QUESTION PAGE========================= -->
-  <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Poses a stimulating question to the learner, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
+  <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <instruction label="Instruction" type="TextArea" height="50" />

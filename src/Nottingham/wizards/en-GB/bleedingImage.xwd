@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- Bleeding Image Page=========================================================== -->
-  <bleedingImage menu="Media" menuItem="Advanced Image" hint="Text and graphics page with flexible layout including bleeding the image at one edge of the stage or adding a margin. Other optional properties include text size, narration with autoplay/autonavigate and optional sound and optional link with icon." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
+  <bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text"  height="200"  icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <align label="Align Text" options="Left,Right,Top,Bottom" data="Left,Right,Top,Bottom" defaultValue="Left" type="ComboBox"  width="100"/>

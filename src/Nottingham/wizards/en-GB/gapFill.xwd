@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- GAP FILL INTERACTION=============================== -->
-  <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating a drag and drop gap-fill exercise." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
+  <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by either drag and drop labels or editable text boxes." icon="icTextEntry" thumb="thumbs/gapFill.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Introductory Text" type="TextArea" height="100"/>
