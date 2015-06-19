@@ -491,7 +491,7 @@ function preview_window(admin){
 					if(size.length!=1){
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=1" );
+						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", scrollbars=yes,resizable=1" );
 						
 					}else{
 					
