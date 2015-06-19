@@ -25,10 +25,12 @@
 			labelTxt2,
 			labelTxt3,
 			targetTxt1,
-			targetTxt2;
+			targetTxt2,
+			numAttempts;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			numAttempts = 0;
 			$("#labelHolder .label, #targetHolder .hint").remove();
 			$("#feedback").hide();
 			$("#targetHolder .target")
@@ -89,6 +91,8 @@
 		}
 		
 		this.init = function() {
+			numAttempts = 0;
+			
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
 			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
 			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
@@ -119,8 +123,11 @@
 					label:	buttonLabel
 				})
 				.click(function() { // mark labels and show feedback
+					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
+						allCorrect = true;
+					numAttempts++;
+					
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
-					$("#feedback").show();
 					
 					// are any labels not on a target?
 					var labelOffTarget = false;
@@ -157,12 +164,18 @@
 								
 								$prevTarget.data("currentLabel", "");
 								
-								if ($prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
+								if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
 									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
+								} else {
+									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
 								}
 							}
+							allCorrect = false;
 						}
 					});
+					if (allCorrect == false && numAttempts >= maxAttempts) {
+						$("#feedback").show();
+					}
 				});
 			
 			// create targets
@@ -180,10 +193,11 @@
 					}
 					
 					$thisTarget
-						.attr("title", targetTxt1 + " '" + this.getAttribute("name") + "'")
+						.attr("title", targetTxt1 + " '" + this.getAttribute("name") + " " + (i + 1) + "'")
 						.data({
 							"hint"	:this.getAttribute("hint"),
-							"name"	:this.getAttribute("name")
+							"name"	:this.getAttribute("name"),
+							"correct":this.getAttribute("p2")
 							})
 						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
 						
@@ -208,7 +222,7 @@
 						$(this).addClass("highlightDark");
 						var $pageContents = $("#pageContents");
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$(this).attr("title", targetTxt1 + " '" + $(this).data("name") + "' - " + targetTxt2);
+							$(this).attr("title", targetTxt1 + " '" + $(this).data("name") + " " + ($(this).index() + 1) + "' - " + targetTxt2);
 						}
 					}
 					})
@@ -216,7 +230,7 @@
 					var $pageContents = $("#pageContents");
 					$(this)
 						.removeClass("highlightDark")
-						.attr("title", targetTxt1 + " '" + $(this).data("name") + "'");
+						.attr("title", targetTxt1 + " '" + $(this).data("name") + " " + ($(this).index() + 1) + "'");
 					})
 				.keypress(function(e) {
 					if ($(e.target).hasClass("target")) {
@@ -234,12 +248,12 @@
 			// set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 1;
 			tabIndex += $pageContents.data("labels").length;
-			$targetHolder.find(".target").each(function() {
+			$targetHolder.find(".target").each(function(i) {
 				tabIndex++;
 				var $this = $(this);
 				$this.attr({
 					"tabindex"	:tabIndex,
-					"title"		:targetTxt1 + " '" + $this.data("name") + "'"
+					"title"		:targetTxt1 + " '" + $this.data("name") + " " + ($this.index() + 1) + "'"
 				});
 				tabIndex++;
 			});
@@ -289,7 +303,7 @@
 						}
 						var targetInFocus = $("#targetHolder .target.highlightDark");
 						if (targetInFocus.length > 0) {
-							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + "'");
+							targetInFocus.attr("title", targetTxt1 + " '" + targetInFocus.data("name") + " " + (targetInFocus.index() + 1) + "'");
 						}
 						$("#dragDropHolder .selected").removeClass("selected");
 						$("#dragDropHolder .focus").removeClass("focus");
@@ -385,7 +399,7 @@
 				$("#pageContents").data("selectedLabel", "");
 			}
 			
-			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + "'");
+			$thisTarget.attr("title", targetTxt1 + " '" + $thisTarget.data("name") + " " + ($thisTarget.index() + 1) + "'");
 			
 			$thisLabel
 				.attr("title", labelTxt1)
@@ -426,7 +440,9 @@
 	}
 	
 	#dragDropHolder .tick {
-		float:		right;
+		position:	absolute;
+		top:		0.5em;
+		right:		0.5em;
 	}
 	
 	#labelHolder {
