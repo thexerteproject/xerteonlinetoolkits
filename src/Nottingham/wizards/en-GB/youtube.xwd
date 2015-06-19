@@ -5,7 +5,7 @@
     </newNodes>
   </pageWizard>
 
-  <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Easily include video content from YouTube." icon="icYoutube">>
+  <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Misc" remove="true" thumb="thumbs/youtube.jpg" hint="Include video content from YouTube in your project." icon="icYoutube">>
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <text type="textArea" label="Instructions" height="300"/>

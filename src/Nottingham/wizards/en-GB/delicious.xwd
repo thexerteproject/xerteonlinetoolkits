@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DELICIOUS============================ -->
-  <delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your presentation." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
+  <delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>

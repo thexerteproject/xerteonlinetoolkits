@@ -6,7 +6,7 @@
   </pageWizard>
   
   <!-- MENU CONNECTOR PAGE ============================================= -->
-  <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="A page that generates a menu of all or a selected range of the pages in a project" icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
+  <connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu"  thumb="thumbs/connectorMenu.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
 

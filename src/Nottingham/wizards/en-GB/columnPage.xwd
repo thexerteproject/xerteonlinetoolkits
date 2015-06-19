@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- COLUMN PAGE============================== -->
-  <columnPage menu="Navigators" menuItem="Column Page" hint="Presents a page with a series of columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  <columnPage menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 
