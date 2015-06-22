@@ -1522,7 +1522,7 @@ function x_insertCSS(href) {
 // ___ FUNCTIONS CALLED FROM PAGE MODELS ___
 
 // function called from model pages to scale images - scale, firstScale & setH are optional
-function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
+function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
     var $img = $(img);
     if (scale != false) {
         var imgW = $img.width(),
@@ -1535,19 +1535,20 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH) {
             imgH = $img.data("origSize")[1];
         }
 
-        if (imgW > maxW || imgH > maxH || firstScale != true) {
-            if (imgW > maxW) {
-                var scale = maxW / imgW;
-                imgW = imgW * scale;
-                imgH = imgH * scale;
+        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
+            var scaleW = maxW / imgW;
+            var scaleH = maxH / imgH;
+            var scaleFactor;
+            if (enlarge == true && scaleW > 1 && scaleH > 1)
+            {
+                scaleFactor = Math.min(scaleW, scaleH);
             }
-            if (imgH > maxH) {
-                var scale = maxH / imgH;
-                imgH = imgH * scale;
-                imgW = imgW * scale;
+            else
+            {
+                scaleFactor = Math.min(scaleW, scaleH);
             }
-            imgW = Math.round(imgW);
-            imgH = Math.round(imgH);
+            imgW = Math.round(imgW * scaleFactor);
+            imgH = Math.round(imgH * scaleFactor);
             $img.css("width", imgW + "px"); // set width only to constrain proportions
 
             if (setH == true) {
