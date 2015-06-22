@@ -35,15 +35,24 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			var html = '<img id="image" />';
+            html += '<div id="hsHolder"></div>';
+            html += '<div id="btns">';
+            html += '    <button id="prevHS"></button>';
+            html += '    <button id="nextHS"></button>';
+            html += '</div>';
+            $("#imageHolder").html(html);
+            hotspotImage.init();
 		}
 		
 		this.init = function() {
 			$imageHolder = $("#imageHolder");
 			$img = $("#image");
 			padding = parseInt($imageHolder.css("padding-left"));
-			
-			if (x_currentPageXML.getAttribute("align") == "Left") {
+
+            debugger;
+
+            if (x_currentPageXML.getAttribute("align") == "Left") {
 				$("#pageContents").prepend($("#textContents"));
 				$imageHolder.css("right", "10px");
 			}
@@ -55,13 +64,17 @@
 						"filter"	:'alpha(opacity=0)'
 				})
 				.one("load", function() {
-					var imgMaxW = 400,	imgMaxH = 450;
+                    var holderWidth = $x_mainHolder.width(),
+                        holderHeight = $x_mainHolder.height();
+                    //var imgMaxW = 400,	imgMaxH = 450;
+                    var imgMaxW = Math.round(holderWidth * (400.0/800.0)),
+                        imgMaxH = Math.round(holderHeight * (550.0/600.0) - 100);
 					if (x_browserInfo.mobile == true) {
 						imgMaxW = 250; // mobile
 						imgMaxH = 250;
 					}
 					
-					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
+					x_scaleImg(this, imgMaxW, imgMaxH, true, true, false, true);
 					
 					$(this).css({ // stops flicker on 1st load of image
 						"opacity"	:1,
