@@ -655,7 +655,6 @@
 				start, end;
 			
 			$(synchData).each(function(j) {
-				console.log(this);
 				// ignore the media synchCues as they will be set up separately
 				if (this.nodeName != "synchCue") {
 					if (this.nodeName != "synchSubtitlePlus") {
@@ -744,8 +743,6 @@
 				return 0;
 			});
 			
-			console.log(data);
-			
 			// add end points for content already on panel if they are to be removed with "Empty Panel" or because new content clears panel
 			for (var j=0; j<data.length; j++) {
 				// is content to be cleared?
@@ -832,9 +829,6 @@
 						pluginAttributes.name = pluginAttributes.name + ' <span class="alert">[' + authorSupportTxt + ']</span>';
 					}
 					
-					console.log("^^");
-					console.log(pluginName);
-					console.log(pluginAttributes);
 					popcornInstance[pluginName](pluginAttributes);
 					// ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
 					// ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
