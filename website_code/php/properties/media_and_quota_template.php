@@ -52,7 +52,7 @@ $quota=0;
 function in_use($file_name){
 
     global $xmlpath, $previewpath;
-
+	$file_name = str_replace("&", "&amp;", $file_name);
     if(!strpos(file_get_contents($xmlpath),$file_name)&&!strpos(file_get_contents($previewpath),$file_name)){
         return false;
     }else{
