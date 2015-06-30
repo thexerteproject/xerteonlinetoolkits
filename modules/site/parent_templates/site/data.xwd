@@ -37,6 +37,7 @@
 			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
+			<pdf><![CDATA[<pdf name="Name" url="Select File..."/>]]></pdf>
 			<navigator><![CDATA[<navigator name="Name" type="Tabs"/>]]></navigator>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
@@ -136,7 +137,8 @@
 		<name type="TextInput" label="Pane Title"/>
 		
 		<newNodes>
-		
+			
+			<pdf><![CDATA[<pdf name="Name" url="Select File..."/>]]></pdf>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
