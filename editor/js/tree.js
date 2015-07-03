@@ -208,7 +208,7 @@ var EDITOR = (function ($, parent) {
             //alert( "success" );
             // We would also launch the preview window from here
             $('#loader').hide();
-            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes" );
+            window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1" );
         })
         .fail(function() {
             $('#loader').hide();

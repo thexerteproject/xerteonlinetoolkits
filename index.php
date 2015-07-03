@@ -145,6 +145,7 @@ Folder popup is the div that appears when creating a new folder
 
 <div class="ui-layout-north">
     <div class="content" id="mainHeader">
+
         <div class="topbar">
             <?php
             if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
@@ -322,5 +323,9 @@ Folder popup is the div that appears when creating a new folder
 </script>
 <?php body_end(); ?></body>
 </html>
+<<<<<<< HEAD
 
 <?php shutdown(); ?>
+=======
+<?php shutdown();?>
+>>>>>>> origin/master

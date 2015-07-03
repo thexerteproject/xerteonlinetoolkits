@@ -1119,6 +1119,7 @@
 		<audioImageTip label="Image Description (Audio only)" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+		<audioPosition label="Media Position (Audio only)" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
@@ -1133,7 +1134,7 @@
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
 		
-	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="4">
+	</mediaPanel><panel menuItem="Panel" icon="icApplication" remove="true" max="3">
 		
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
 		
@@ -1333,7 +1334,7 @@
 	</synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true">
 		
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
+		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
 		<zoom label="Zoom" type="TextInput"/>
 		<lat label="Latitude" type="TextInput"/>
 		<lng label="Longitude" type="TextInput"/>
