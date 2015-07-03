@@ -61,12 +61,12 @@
 			
 			$("#pageContents .newWindowLink").on("click", function() {
 				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
-					var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+					var popupWindow = window.open("", "", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
 					popupWindow.document.write(x_currentPageXML.getAttribute("htm"));
 					popupWindow.focus();
 				} else {
 					var src = x_currentPageXML.getAttribute("url");
-					window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight"));
+					window.open(src, "_blank", "width=" + x_currentPageXML.getAttribute("windowWidth") + ", height=" + x_currentPageXML.getAttribute("windowHeight") + ",scrollbars=1");
 				}
 			});
 		}

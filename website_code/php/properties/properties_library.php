@@ -622,7 +622,7 @@ function sharing_info($template_id)
         return;
     }
 
-    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
+    $sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
         " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
         " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ?";
 
@@ -637,7 +637,7 @@ function sharing_info($template_id)
 
     $info .=  "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p><ul>";
     foreach($query_sharing_rows as $row) {
-        $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] . " (";
+        $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
         switch($row['role'])
         {
             case "creator":

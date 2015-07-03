@@ -47,7 +47,7 @@
 
         var fileInfo = evalURL(opts.source);
         fileInfo = fileInfo.split(".");
-        mimeType = opts.type + "/" + fileInfo[1];
+        mimeType = opts.type + "/" + fileInfo[fileInfo.length - 1];
 
 		// audio
 		if (opts.type == "audio") {

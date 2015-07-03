@@ -280,13 +280,12 @@
 			if (mediaFile.indexOf(".mp3") != -1) {
 				mediaType = "audio";
 				
-				// if audio, will it appear in its own panel? (only if there's no additional content or transcript to show with it)
-				if ($(panelData[mediaPanelIndex]).children().length - $(panelData[mediaPanelIndex]).children("synchCue").length == 0 && (panelData[mediaPanelIndex].getAttribute("transcript") == "" || panelData[mediaPanelIndex].getAttribute("transcript") == undefined) && (panelData[mediaPanelIndex].getAttribute("audioImage") == "" || panelData[mediaPanelIndex].getAttribute("audioImage") == undefined)) {
-					// audio not in panel - set it up along the bottom (full width) - as if it were narration for the page
+				// will audio appear in its own panel or across the bottom like narration?
+				var audioPosition = panelData[mediaPanelIndex].getAttribute("audioPosition") == "bottom" && (panelData[mediaPanelIndex].getAttribute("audioImage") == "" || panelData[mediaPanelIndex].getAttribute("audioImage") == undefined) ? "bottom" : "panel";
+				
+				if (audioPosition == "bottom") {
 					$("#pageContents").data("audioBar",true);
 					popcornInstance = this.loadAudioInFooter();
-					
-					panelData.splice(mediaPanelIndex, 1);
 					mediaPanelIndex = -1;
 				}
 				
@@ -468,7 +467,7 @@
 			
 			if (popcornInstance != undefined) {
 				panelData.each(function(i) {
-					mediaLesson.sortPopcorn($(this).children(), "panel" + i, mediaPanelIndex == i ? true : false, popcornInstance);
+					mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance);
 				});
 			}
 			
@@ -616,13 +615,13 @@
 		// the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
 		
 		// function can be called for mainMedia & additional media from mediaPlus plugin
-		this.sortPopcorn = function(synchData, targetRef, isMedia, popcornInstance) {
+		this.sortPopcorn = function(synchData, targetRef, popcornInstance) {
 			// wait until metadata has loaded before continuing
 			if (popcornInstance.duration()) {
-				mediaLesson.sortPopcornNow(synchData, targetRef, isMedia, popcornInstance);
+				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance);
 			} else {
 				popcornInstance.on("loadedmetadata", function() {
-					mediaLesson.sortPopcornNow(synchData, targetRef, isMedia, popcornInstance);
+					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance);
 				});
 			}
 		}
@@ -650,22 +649,21 @@
 			return synch;
 		}
 		
-		this.sortPopcornNow = function(synchData, targetRef, isMedia, popcornInstance) {
+		this.sortPopcornNow = function(synchData, targetRef, popcornInstance) {
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
 			
 			$(synchData).each(function(j) {
 				// ignore the media synchCues as they will be set up separately
-				if (isMedia == false || this.nodeName != "synchCue") {
+				if (this.nodeName != "synchCue") {
 					if (this.nodeName != "synchSubtitlePlus") {
 						start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
 						end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
 						prevStart = start;
 					} else {
 						// there's no start or end synch on subtitle holder - store previous sibling's start for relative synching to be done against
-						start = prevStart;
-						end = 0;
+						start = 0;
 					}
 					
 					data.push({
@@ -684,7 +682,7 @@
 						} else {
 							var $parent = $(this),
 								syncChildren = true,
-								prevStartII = start;
+								prevStartII = prevStart;
 							
 							$parent.children().each(function(k) {
 								// if child nodes have a synch point then include their details too - with ref. to the parent as this will create the holder for the child
@@ -701,7 +699,6 @@
 									var start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
 										end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
 									prevStartII = start;
-									
 									data.push({
 										type:		$(this).parent()[0].nodeName,
 										start:		start,
@@ -777,11 +774,9 @@
 			// _____ ADD EVENTS FOR EACH SYNCH POINT _____
 			
 			// add pause points for mainMedia/mediaPlus
-			if (isMedia == true) {
-				for (var j=0; j<synchData.length; j++) {
-					if (synchData[j].nodeName == "synchCue") {
-						mediaLesson.setUpPopcornCue(popcornInstance, synchData[j]);
-					}
+			for (var j=0; j<synchData.length; j++) {
+				if (synchData[j].nodeName == "synchCue") {
+					mediaLesson.setUpPopcornCue(popcornInstance, synchData[j]);
 				}
 			}
 			

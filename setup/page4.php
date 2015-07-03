@@ -141,7 +141,7 @@ if($query_response === false){
 if($_POST['apache']=="true"){
     $replace = substr($_SERVER['PHP_SELF'],0,strpos($_SERVER['PHP_SELF'],"/",1));
     $buffer = file_get_contents("htaccess.conf");
-    $buffer = str_replace("*",$replace,$buffer);
+    $buffer = str_replace("*/",$replace . "/",$buffer);
     $file_handle = fopen(".htaccess",'w');
     fwrite($file_handle,$buffer,strlen($buffer));
     fclose($file_handle);
