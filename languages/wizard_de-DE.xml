@@ -1,0 +1,141 @@
+<language name="Deutsch" code="de-DE">
+	<btnSaveXerte label="Speichern" tooltip="Projekt speichern" description="Speicher Button"/>
+	<btnPublishXot label="Veröffentlichen" tooltip="Projekt veröffentlichen" description="Veröffentlichen Button"/>
+	<popupFileUpload title="Datei hochladen" cancelLabel="Verwerfen"/>
+	<browseImportFile title="Datei zum Importieren auswählen...">
+		<dialogFilter>Alle Dateien|*.*|JPG|*.jpg|PNG|*.png|SWF Dateien|*.swf|Audio Dateien|*.mp3|Video Dateien|*.flv</dialogFilter>
+		<buttontext>Importieren</buttontext>
+	</browseImportFile>
+	<kblanguage title="Tastatur" tooltip="Tastatur" description="Tastatur Layout">
+		<item>Französisch</item>
+		<item>Deutsch</item>
+		<item>Italienisch</item>
+		<item>Polnisch</item>
+		<item>Portugiesisch</item>
+		<item>Spanisch</item>
+	</kblanguage>
+	<newLink label="{i} Hinzufügen" />
+	<helpLink tooltip="Für Hilfe hier klicken."/>
+	<btnInsert label="Einfügen" tooltip="Einfügen"/>
+	<btnAddChild tooltip="Kinder hinzufügen"/>
+	<btnDuplicate label="Kopieren" tooltip="Klonen"/>
+	<btnDelete label="Löschen" tooltip="Löschen"/>
+	<btnMoveUp tooltip="Nach oben"/>
+	<btnMoveDown tooltip="Nach unten"/>
+	<btnNext tooltip="Nächstes Element"/>
+	<btnPreview label="Abspielen" tooltip="Vorschau"/>
+	<btnPrev tooltip="Voheriges Element"/>
+	<icDelete tooltip="Löschen" prompt="Element löschen?"/>
+	<addProp label="Hinzufügen" tooltip="Hinzufügen" />
+	<optionalProp label="Optionale Eigenschaften:"/>
+	<chkShowLanguage label="Sprachoptionen anzeigen" />
+	<chkShowAdvanced label="Erweiterte Einstellungen anzeigen" />
+	<compMedia tooltip="Medien importieren"/>
+	<compPreview tooltip="Vorschau"/>
+	<filemenu title="Datei">
+		<menuNew>Neues projekt...</menuNew>
+		<menuOpen>Öffne...</menuOpen>
+		<menuSave>Speichern</menuSave>
+		<menuExit>Beenden</menuExit>
+	</filemenu>
+	<menuOpen title="Projekt auswählen">
+		<dialogText>Datei auswählen</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Lernvorlagen|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Ansehen">
+		<menuPreview>Vorschau</menuPreview>
+	</viewmenu>
+	<publishmenu title="Veröffentlichen">
+		<menuPublish>Veröffentlichen</menuPublish>
+		<menuPackage>Verpacken</menuPackage>
+	</publishmenu>
+	<menuPackage title="Speichere SCORM 1.2 Paket">
+		<dialogText>Datei auswählen</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip Dateien|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Hilfe">
+		<menuHelp>Hilfe</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Hilfe-Datei kommt.</prompt>
+	</menuHelp>
+		<importMedia>
+		<filters>
+			<allfiles>Alle Dateien (*.*)</allfiles>
+			<images>Bilder (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash Dateien (*.swf)</flash>
+			<sound>Audio Dateien (*.mp3)</sound>
+			<video>Video Dateien (*.flv)</video>
+		</filters>
+		<title>Datei zum Importieren auswählen...</title>
+		<filter>Alle Dateien|*.*|JPG|*.jpg|PNG|*.png|SWF Dateien|*.swf|Audio Dateien|*.mp3|Video Dateien|*.flv</filter>
+		<btnimport>Importieren</btnimport>
+		<btncancel>Löschen</btncancel>
+		<fileexists>
+			<prompt>Die Datei {f} existiert bereits.\r\rDatei überschreiben?</prompt>
+			<title>Bestätigen</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Löschen</cancellabel>
+		<nolabel>Nein</nolabel>
+		<yeslabel>Ja</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>URL für den Link eingeben</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Sie können nur {m} {i} hinzufügen</prompt>
+				<title>Fehler</title>
+			</max>
+			<mixedcontent>
+				<prompt>An dieser Stelle können Sie keine Inhalte mischen.</prompt>
+				<title>Fehler</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Der Ordner ist nicht leer. Sind Sie sicher, dass Sie ihn für ein neues Projekt verwenden möchten?</prompt>
+			<title>Bestätigen</title>
+		</newproject>
+		<openproject>
+			<prompt>Möchten Sie das neue Projekt öffnen?</prompt>
+			<title>Bestätigung</title>
+		</openproject>
+		<initpreview>
+			<prompt>Sie müssen ein Medium auswählen, damit eine Vorschau angezeigt werden kann.</prompt>
+			<title>Information</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Sie können dieses Element nicht verdoppeln.</prompt>
+			<title>Fehler</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Möchten Sie dieses Element wirklich löschen?</prompt>
+				<title>Bestätigen</title>
+			</confirm>
+			<error>
+				<prompt>Sie können dieses Element nicht löschen.</prompt>
+				<title>Fehler</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>Die XML konte nicht formatiert werden und Änderungen nicht gespeichert werden. Bitte überprüfen Sie Ihre letzten Änderungen.</prompt>
+		</savefile>
+        <upload>
+            <successful>Upload erfolgreich</successful>
+            <failed>
+                <permissions>Upload fehlgeschlagen: Rechte überprüfen</permissions>
+                <HTTPError>Upload fehlgeschlagen: HTTP Fehler</HTTPError>
+                <IOError>Upload fehlgeschlagen: Input/Ouput Fehler</IOError>
+                <security>Upload fehlgeschlagen: Sicherheitsfehler</security>
+            </failed>
+        </upload>
+	</Alert>
+
+</language>
+
