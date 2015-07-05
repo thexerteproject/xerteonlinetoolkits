@@ -1,107 +1,154 @@
-﻿<language name="Espanol">
-  <nextButton label="Next" description="Next Page Button">
-  </nextButton>
-  <backButton label="Back" description="Previous Page Button">
-  </backButton>
-  <tocButton label="Contents" description="Table of Contents Button">
-  </tocButton>
-  <helpButton label="Help" description="Help Button. ">
-  </helpButton>
-  <mediaButton label="Media" description="Show Media Button. "/>
-  <pageHelp name="Page Help" description="Page Help" toClose="Press Space to close help">
-  </pageHelp>
-  <continueButton label="Continue" description="Continue Button">
-  </continueButton>
-  <toc label="Tabla de contenidos" description="tabla de contenidos. Utilice las teclas de flecha para seleccionar una página. Espacio de prensa para ir a esa página.">
-    <contentsList label="" description="">
-    </contentsList>
-    <closeButton label="" description="mesa cerca del botón de contenido">
-    </closeButton>
-    <gotoPageButton label="Ir a la página" description="Ir al botón de página">
-    </gotoPageButton>
+<language name="Spanish">
+
+  <noPages label="Este proyecto no contiene ninguna p&aacute;gina."/>
+
+  <nextButton label="Siguiente" description="Bot&oacute;n P&aacute;gina Siguiente"/>
+  
+  <backButton label="Anterior" description="Bot&oacute;n P&aacute;gina Anterior"/>
+  
+  <tocButton label="Contenidos" description="Bot&oacute;n Tabla de Contenidos"/>
+  
+  <helpButton label="Ayuda" description="Bot&oacute;n Ayuda"/>
+
+  <mediaButton label="Multimedia" description="Bot&oacute;n Multimedia"/>
+  
+  <homeButton label="Inicio" description="Bot&oacute;n Inicio"/>
+  
+  <pageHelp name="Ayuda de la P&aacute;gina" description="Ayuda de la P&aacute;gina" toClose="Presione la tecla Espacio para cerrar la ayuda"/>
+  
+  <glossaryButton label="Glosario" description="Bot&oacute;n Glosario"/>
+  
+  <continueButton label="Continuar" description="Bot&oacute;n Continuar"/>
+  
+  <toc label="Tabla de Contenidos" description="Tabla de contenidos. Use las teclas de flecha para seleccionar una p&aacute;gina. Presione la tecla espacio para ir a esa p&aacute;gina.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="Cerrar Tabla de Contenidos"/>
+	  <gotoPageButton label="Ir a la P&aacute;gina" description="Bot&oacute;n Ir a la P&aacute;gina"/>
   </toc>
-  <textToSpeech label="null" description="Text to Speech">
-  </textToSpeech>
-  <themes label="- Esquemas de color -" description="Opciones de esquema de color">
-    <item>defecto</item>
+  
+  <mediaWindow label="Visor Multimedia"/>
+  
+  <glossary label="Glosario" description="Una lista de palabras y sus definiciones.">
+	  <closeButton label="" description="Cerrar Glosario"/>
+  </glossary>
+  
+  <kbLanguage label="Caracteres Especiales" description="Una lista de botones que agregan caracteres especiales a &aacute;reas de texto">
+	  <closeButton label="" description="Cerrar Caracteres Especiales"/>
+	  <dialog instruction="Use MAYUS y SHIFT" on="ACTIVADO" off="DESACTIVADO" caps="May&uacute;s"/>
+  </kbLanguage>
+  
+  <textToSpeech label="nulo" description="Texta a Voz"/>
+  
+  <errorProject label="Los datos del proyecto no han sido cargados."/>
+  
+  <errorPage label="No hay ninguna plantilla actualmente habilitada para este tipo de p&aacute;gina."/>
+  
+  <errorBrowser label="Su navegador no soporte completamente este tipo de p&aacute;gina."/>
+  
+  <errorQuestions noQ="No se han agregado preguntas" noA="No se han agregado opciones de respuestas" />
+  
+  <errorFlash label="Necesita instalar el Reproductor de Flash para ver este contenido." description="Descarguar el Reproductor de Flash"/>
+  
+  <tick label="Visto"/>
+  
+  <cross label="Tachar"/>
+
+  <themes label="--Paleta de Colores--" description="Opciones de Paleta de Colores">
+    <item>por defecto</item>
     <item>azul</item>
     <item>verde</item>
     <item>rojo</item>
     <item>naranja</item>
-    <item>púrpura</item>
+    <item>p&uacute;rpura</item>
     <item>gris</item>
-    <item>un alto contraste</item>
-    <item>de alto contraste 2</item>
+    <item>alto contraste 1</item>
+    <item>alto contraste 2</item>
   </themes>
-  <sizes label="- Tamaño de la pantalla -" description="Opciones Tamaño de la pantalla">
-    <item>defecto</item>
-    <item>grande</item>
-    <item>más grande</item>
-    <item>pantalla completa</item>
-    <item>llenar la ventana</item>
+ 
+  <sizes label="--Tama&ntilde;o de la Pantalla--" description="Opciones del Tama&ntilde;o de la Pantalla">
+	<item>Por defecto</item>
+	<item>grande</item>
+	<item>enorme</item>
+	<item>Pantalla Completa</item>
+	<item>completar ventana</item>
   </sizes>
-  <fonts label="- Fuente de texto -" description="Opciones de tipo de letra">
-    <item>defecto</item>
+  
+  <fonts label="--Fuentes de Texto--" description="Opciones de Tipo de Letra">
+	  <item>por defecto</item>
   </fonts>
-  <textSizes label="- Tamaño del texto -" description="Opciones de tamaño del texto">
-    <item>defecto</item>
-    <item>pequeño</item>
-    <item>medio</item>
-    <item>grande</item>
-    <item>más grande</item>
+  
+  <textSizes label="--Tama&ntilde;o de Texto--" description="Opciones del Tama&ntilde;o de Texto">
+	  <item>por defecto</item>
+	  <item>peque&ntilde;o</item>
+	  <item>mediano</item>
+	  <item>grande</item>
+	  <item>enorme</item>
   </textSizes>
-  <volumeControl label="Vol:" description="Volume Control">
-  </volumeControl>
+  
+  <volumeControl label="Vol:" description="Control de Volumen"/>
+  <volumeControlSlider label="" description="Barra de Control de Volumen"/>
+  
   <vocab>
-    <page>Página</page>
-    <of>de</of>
+	  <page>P&aacute;gina</page>
+	  <of>de</of>
   </vocab>
+  
   <soundController>
-    <stopButton label="Detener el audio" description="Botón de Paro de audio">
-    </stopButton>
-    <playButton label="Reproducción de audio" description="Botón de reproducción de audio">
-    </playButton>
-    <pauseButton label="Pausa de audio" description="Botón de Pausa Audio">
-    </pauseButton>
-    <rwndButton label="Rebobinado de audio" description="Botón de rebobinado de audio">
-    </rwndButton>
-    <ffwdButton label="Adelante Audio" description="Botón de Avance de audio">
-    </ffwdButton>
-    <loader label="De carga:">
-    </loader>
+	<stopButton label="Detener Audio" description="Bot&oacute;n Detener Audio"/>
+	<playButton label="Reproducir Audio" description="Bot&oacute;n Reproducir Audio"/>
+	<pauseButton label="Pausar Audio" description="Bot&oacute;n Pausar Audio"/>
+	<rwndButton label="Rebobinar Audio" description="Bot&oacute;n Rebobinar Audio"/>
+	<ffwdButton label="Avanzar Audio" description="Bot&oacute;n Avanzar Audio"/>
+	<loader label="Cargando: "/>
   </soundController>
+  
   <movieController>
-    <stopButton label="Restablecer la película" description="Botón de parada de la película">
-    </stopButton>
-    <playButton label="Play Movie" description="Botón de reproducción de película">
-    </playButton>
-    <pauseButton label="Pausa Peliculas" description="Pausa Botón de Video">
-    </pauseButton>
-    <rwndButton label="Rebobinar la película" description="Rebobinar Botón de Video">
-    </rwndButton>
-    <ffwdButton label="Película adelante" description="Botón de Video adelante">
-    </ffwdButton>
-    <loader label="De carga:">
-    </loader>
+	<stopButton label="Reiniciar Pel&iacute;cula" description="Bot&oacute;n Detener Pel&iacute;cula"/>
+	<playButton label="Reproducir Pel&iacute;cula" description="Bot&oacute;n Reproducir Pel&iacute;cula"/>
+	<pauseButton label="Pausar Pel&iacute;cula" description="Bot&oacute;n Pausar Pel&iacute;cula"/>
+	<rwndButton label="Rebobinar Pel&iacute;cula" description="Bot&oacute;n Rebobinar Pel&iacute;cula"/>
+	<ffwdButton label="Avanzar Pel&iacute;cula" description="Bot&oacute;n Avanzar Pel&iacute;cula"/>
+	<loader label="Cargando: "/>
   </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Detener" description="Bot&oacute;n Detener Multimedia"/>
+	<playPauseButton label="Reproducir/Pausar" description="Bot&oacute;n Reproducir/Pausar Multimedia"/>
+	<muteButton label="Silenciar" description="Bot&oacute;n Silenciar"/>
+	<fullscreenButton label="Pantalla Completa" description="Bot&oacute;n Pel&iacute;cula Pantalla Completa"/>
+	<captionsButton label="Subt&iacute;tulos" description="Bot&oacute;n Mostrar/Ocultar Subt&iacute;tulos"/>
+  </mediaElementControls>
+  
   <interactions>
-    <button name="Botón">
-    </button>
-    <radioButton selected="seleccionado. Utilice las teclas de flecha para elegir entre las opciones">
-    </radioButton>
-    <checkBox selected="seleccionado" deselected="dee seleccionados">
-    </checkBox>
-    <comboBox name="ComboBox" options="Opciones." selected="seleccionado." selectedOptions="seleccionado. Utilice las teclas de flecha para seleccionar">
-    </comboBox>
-    <hotSpot name="HotSpot" toSelect="Hot Spot. Espacio de prensa para seleccionar." selected="Hot Spot seleccionado">
-    </hotSpot>
-    <hotObject name="HotObject" toSelect="Espacio de prensa para seleccionar." selected="Objeto caliente seleccionada">
-    </hotObject>
-    <textEntry name="Cuadro de texto de entrada" selected="Caja de texto seleccionado">
-    </textEntry>
-    <targetArea name="Zona objetivo" description="Zona de arrastre de" toSelect="Pulsa espacio para colocar el elemento seleccionado.">
-    </targetArea>
-    <draggableItem name="Arrastrable artículo" selected="El elemento seleccionado" toSelect="El espacio de prensa para seleccionar" deSelected="No hay ningún elemento seleccionado.">
-    </draggableItem>
+	  <button name="Bot&oacute;n"/>
+	  <radioButton selected="seleccionado. Utilice las teclas de flecha para elegir de las opciones"/>
+	  <checkBox selected="seleccionado" deselected="deseleccionado"/>
+	  <comboBox name="Lista Desplegable" options="Opciones." selected="seleccionado." selectedOptions="seleccionado. Utilice las teclas de flecha para seleccionar" />
+	  <hotSpot name="Punto de Acceso" toSelect="Punto de Acceso. Presione la tecla Espacio para seleccionar." selected="Punto de Acceso Seleccionado"/>
+	  <hotObject name="Objeto" toSelect="Presione la tecla Espacio para seleccionar." selected="Objeto Seleccionado"/>
+	  <textEntry name="Cuadro de Texto" selected="Cuadro de Texto seleccionado"/>
+	  <targetArea name="&aacute;rea de Destino" description="Zona para soltarlo" toSelect="Presione la tecla espacio para soltar el art&iacute;culo seleccionado."/>
+	  <draggableItem name="Art&iacute;culo Arrastrable" selected="Art&iacute;culo Seleccionado" toSelect="Presione espacio para seleccionar" deSelected="No se seleccionaron art&iacute;culos." />
   </interactions>
+  
+  <fetchResults label="Buscando resultados..."/>
+  <errorResults label="Hubo un error al cargar los resultados"/>
+  <loadError label="Error al cargar"/>
+  <noResults label="No fueron encontrados resultados"/>
+  
+  <timer>
+	  <remaining name="Tiempo restante"/>
+	  <timeUp name="Tiempo terminado"/>
+	  <seconds name="segundos"/>
+  </timer>
+
+  <colourChanger label="Cambiador de Colores" description="Cambiador los colores.">
+	  <closeButton label="" description="Cerrar Cambiaor de Colores"/>
+	  <selectTxt label="Por favor seleccione alguna de las opciones debajo"/>
+	  <adviceTxt label="¿Necesita m&aacute;s ayuda? Visite la &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Gu&iacute;a de Accesibilidad de Herramientas de Xerte de Jisc TechDis&lt;/a&gt;."/>
+	  <off label="Desactivado"/>
+	  <invert label="Invertir"/>
+	  <blackYellow label="Negro en Amarillo"/>
+  </colourChanger>
+
 </language>
