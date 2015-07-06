@@ -1,0 +1,138 @@
+<language name="Deutsch">
+
+  <nextButton label="Vor" description="Nächste Seite Button"/>
+  
+  <backButton label="Zurück" description="Voherige Seite Button"/>
+  
+  <tocButton label="Inhalt" description="Inhaltsverzeichnis Button"/>
+  
+  <helpButton label="Hilfe" description="Hilfe Button. "/>
+
+  <mediaButton label="Medien" description="Medien Button. "/>
+  
+  <homeButton label="Home" description="Home Button. "/>
+  
+  <pageHelp name="Seiten Hilfe" description="Seiten Hilfe" toClose="Zum Schließen der Hilfe Leertaste drücken"/>
+  
+  <glossaryButton label="Glossar" description="Glossar Button. "/>
+  
+  <continueButton label="Weiter" description="Weiter Button"/>
+  
+  <toc label="Inhaltsverzeichnis" description="Inhaltsverzeichnis. Zur Auswahl der Seite Pfeiltasten benutzen. Leertaste drücken, um zur Seite zu gelangen.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="Inhaltsverzeichnis schließen Button"/>
+	  <gotoPageButton label="Zur Seite" description="Zur Seite Button"/>
+  </toc>
+  
+  <glossary label="Glossar" description="Eine Liste von Wörtern und ihren Definitionen.">
+	  <closeButton label="" description="Glossar schließen Button"/>
+  </glossary>
+  
+  <kbLanguage label="Spezielle Symbole" description="Eine Liste von Buttons die spezielle  Symbole hinzufügen">
+	  <closeButton label="" description="Spezielle Symbole Liste schließen Button"/>
+  </kbLanguage>
+  
+  <textToSpeech label="Null" description="Text zu Sprache"/>
+  
+  <errorProject label="Die Projektdaten sind nicht geladen."/>
+  
+  <errorPage label="Für diesen Seitentyp steht zur Zeit kein Template zur Verfügung."/>
+  
+  <errorBrowser label="Ihr Browser unterstützt diesen Seitentyp nicht."/>
+  
+  <errorFlash label="Installieren Sie den Flash Player, um diese Inhalte anzusehen." description="Holen Sie sich den Flash Player"/>
+  
+  <tick label="Tick"/>
+  
+  <cross label="Kreuz"/>
+
+  <themes label="--Farbschema--" description="Farbschema Optionen">
+    <item>default</item>
+    <item>Blau</item>
+    <item>Grün</item>
+    <item>Rot</item>
+    <item>Orange</item>
+    <item>Violett</item>
+    <item>Grau</item>
+    <item>Hoher Kontrast 1</item>
+    <item>Hoher Kontrast 2</item>
+  </themes>
+ 
+  <sizes label="--Bildschirmgröße--" description="Bildschirmgröße Optionen">
+	<item>default</item>
+	<item>Groß</item>
+	<item>Größer</item>
+	<item>Vollbild</item>
+	<item>Fenster füllen</item>
+  </sizes>
+  
+  <fonts label="--Text Schriftart--" description="Schriftart Optionen">
+	  <item>default</item>
+  </fonts>
+  
+  <textSizes label="--Text Größe--" description="Text Größe Optionen">
+	  <item>default</item>
+	  <item>Klein</item>
+	  <item>Medium</item>
+	  <item>Groß</item>
+	  <item>Größer</item>
+  </textSizes>
+  
+  <volumeControl label="Vol:" description="Lautstärke Regelung"/>
+  <volumeControlSlider label="" description="Lautstärke Regler"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>of</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Audio stoppen" description="Audio stoppen Button"/>
+	<playButton label="Audio abspielen" description="Audio abspielen Button"/>
+	<pauseButton label="Audio pausieren" description="Audio pausieren Button"/>
+	<rwndButton label="Audio zurückspulen" description="Audio zurückspulen Button"/>
+	<ffwdButton label="Audio vorspulen" description="Audio vorspulen Button"/>
+	<loader label="Lade: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Film zurücksetzen" description="Film anhalten Button"/>
+	<playButton label="Film abspielen" description="Film abspielen Button"/>
+	<pauseButton label="Film pausieren" description="Film pausieren Button"/>
+	<rwndButton label="Film zurückspulen" description="Film zurückspulen Button"/>
+	<ffwdButton label="Film vorspulen" description="Film vorspulen Button"/>
+	<loader label="Lade: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Anhalten" description="Medien anhalten Button"/>
+	<playPauseButton label="Abspielen/Pause" description="Abspielen/Pause Medien Button"/>
+	<muteButton label="Stummschaltetaste" description="Stummschalt-Button"/>
+	<fullscreenButton label="Vollbild" description="Vollbild Film Button"/>
+	<captionsButton label="Untertitel" description="Zeige/Verstecke Untertitel Button"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Button"/>
+	  <radioButton selected="Ausgewählt. Pfeiltasten benutzen,  um Optionen auszuwählen."/>
+	  <checkBox selected="Ausgewählt" deselected="nicht ausgewählt"/>
+	  <comboBox name="ComboBox" options="Optionen." selected="Ausgewählt." selectedOptions="Ausgewählt. Zum Auswählen Pfeiltasten benutzen." />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Zum Auswählen Leertaste drücken." selected="Hot Spot ausgewählt"/>
+	  <hotObject name="HotObject" toSelect="Zum Auswählen Leertaste drücken." selected="Hot Object ausgewählt"/>
+	  <textEntry name="Text Eingabe Feld" selected="Text Eingabe Feld ausgewählt"/>
+	  <targetArea name="Zielfläche" description="Ablagefläche für" toSelect="Zum Ablegen des gewählten Objekts Leertaste drücken. Press space to drop the selected item."/>
+	  <draggableItem name="Verschiebbares Objekt" selected="Objekt ausgewählt" toSelect="Zum Auswählen Leertaste drücken" deSelected="Kein Objekt ausgewählt." />
+  </interactions>
+  
+  <fetchResults label="Ergebnisse werden abgerufen..."/>
+  <errorResults label="Beim Abrufen der Ergebnisse ist ein Fehler aufgetreten"/>
+  <loadError label="Fehler beim Laden"/>
+  <noResults label="Keine Ergenisse"/>
+  
+  <timer>
+	  <remaining name="Verbleibende Zeit"/>
+	  <timeUp name="Zeit abgelaufen"/>
+	  <seconds name="Sekunden"/>
+  </timer>
+
+</language>
