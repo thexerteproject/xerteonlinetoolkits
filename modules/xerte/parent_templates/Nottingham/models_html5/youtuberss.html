@@ -1,3 +1,4 @@
+<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
 <script type="text/javascript">
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
@@ -17,6 +18,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+
+ 	function googleApiClientReady(){
+	
+		gapi.client.setApiKey('--YOUTUBE API KEY GOES HERE--');
+
+		gapi.client.load('youtube', 'v3', function() {
+		
+			youtuberss.init();
+			
+		});		
+	}
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -41,6 +54,7 @@
 		};
 		
 		this.init = function() {
+		
 			$pageContents = $("#pageContents");
 			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
@@ -48,72 +62,66 @@
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			searchTerm = x_currentPageXML.getAttribute("url");
-			var searchCount = x_currentPageXML.getAttribute("results"),
-				youtubeURL = "http://gdata.youtube.com/feeds/api/videos";
+			var searchCount = x_currentPageXML.getAttribute("results");
 
-			$.ajax({
-				beforeSend: function() {
-					$('#loadingSpinner').show();
-					x_timer = setTimeout(function() {
-						$("#loadingSpinner").hide();
-						$resultsHolder
-							.html('<div><p>' + x_getLangInfo(x_languageData.find("errorResults")[0], "label", "There was an error loading the results") + '</p></div>')
-							.find("div:even").addClass("shadedDiv");
-					}, 5000);
-				},
-				url: youtubeURL,
-				data: {
-						"vq" : searchTerm,
-						"max-results" : searchCount,
-						"v" : 2,
-						"alt" : "jsonc"
-					},
-				dataType: 'jsonp',
-				jsonpCallback: "youtuberss.listVideos",
-				cache:false,
-				timeout: 5000
+			var request = gapi.client.youtube.search.list({
+				q: searchTerm,
+				part: 'snippet',
+				maxResults: searchCount,
+				type: 'video'
 			});
+				
+			request.execute(function(response) {
+			
+				// if language attributes aren't in xml will have to use english fall back
+				var resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
+				if (resultsTxt == undefined) {
+					resultsTxt = "Youtube results for term";
+				}
+				
+				clearTimeout(x_timer);
+				$("#loadingSpinner").hide();
+				
+				
+				var resultsHolder = "";
+				
+				$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
 
+				if (response.pageInfo.totalResults == 0) {
+				
+					resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
+					
+				} 
+				else //we have results
+				{
+					
+					$.each(response.items, function (index, item) {
+
+						if (x_browserInfo.iOS == true || x_browserInfo.touchScreen || x_browserInfo.mobile) {
+							hyperlink = '<a href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
+						} else {
+							hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' +  item.id.videoId + '">' + item.snippet.title + '</a>';
+						}
+						
+						resultsHolder += '<div><img src="' + item.snippet.thumbnails.default.url + '" />';
+						resultsHolder += '<p>' + hyperlink + '</p></div>';
+
+					});
+					
+					$resultsHolder
+						.html(resultsHolder)
+						.find("div:even").addClass("shadedDiv");
+					
+				}
+			});
+			
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			this.sizeChanged();
 			x_pageLoaded();
 		}
 
-		this.listVideos = function(data) {
-			clearTimeout(x_timer);
-			$("#loadingSpinner").hide();
-			var resultsHolder = "";
-			
-			// if language attributes aren't in xml will have to use english fall back
-			var resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
-			if (resultsTxt == undefined) {
-				resultsTxt = "Youtube results for term";
-			}
-			$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
-			if (data.data.totalItems == 0) {
-				resultsHolder = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-			} else {
-				var safePlayer, hyperlink;
-				$.each(data.data.items, function (index, item) {
-					// item.player.default breaks IE so this is a workaround
-					safePlayer = JSON.parse(JSON.stringify(item.player).replace('"default"', '"standard"'));
-					if (x_browserInfo.iOS == true || x_browserInfo.touchScreen || x_browserInfo.mobile) {
-						hyperlink = '<a href="' + safePlayer.standard + '">' + item.title + '</a>';
-					} else {
-						hyperlink = '<a target="_blank" href="' + safePlayer.standard + '">' + item.title + '</a>';
-					}
-					resultsHolder += '<div><img src="' + item.thumbnail.sqDefault + '" />';
-					resultsHolder += '<p>' + hyperlink + '</p></div>';
-				});
-			}
-			$resultsHolder
-				.html(resultsHolder)
-				.find("div:even").addClass("shadedDiv");
-		};
 	};
-
-	youtuberss.init();
 
 </script>
 
