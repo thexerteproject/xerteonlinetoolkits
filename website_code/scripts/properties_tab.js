@@ -167,7 +167,7 @@ function delete_share_stateChanged(){
 
 		if(after_sharing_deleted){
             if(typeof window_reference==="undefined"){
-                window.opener.refres_workspace();
+                window.opener.refresh_workspace();
             }
             else {
                 window_reference.refresh_workspace();

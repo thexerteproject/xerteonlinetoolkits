@@ -207,7 +207,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         copy_loop($current_directory, $new_directory);
 
-        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
+        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
 
     }
 
