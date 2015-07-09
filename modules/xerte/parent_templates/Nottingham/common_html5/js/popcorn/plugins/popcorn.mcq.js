@@ -303,6 +303,7 @@ optional: feedback page synch play enable
 											
 											selected = [this.selectedIndex-1];
 										})
+										.css("font-size", $x_body.css("font-size"))
 										.find("option").html(options.topOption);
 									
 								} else {
