@@ -1,4 +1,4 @@
-<script src="https://apis.google.com/js/client.js?onload=googleApiClientReady"></script>
+
 <script type="text/javascript">
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
@@ -18,22 +18,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-
- 	function googleApiClientReady(){
-	
-		gapi.client.setApiKey('--YOUTUBE API KEY GOES HERE--');
-
-		gapi.client.load('youtube', 'v3', function() {
-		
-			youtuberss.init();
-			
-		});		
-	}
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtuberss = new function() {
+	
 		var $pageContents,
 			$textHolder,
 			$panel,
@@ -44,6 +33,7 @@
 		this.pageChanged = function() {
 
 		};
+
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -60,15 +50,43 @@
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
+		
+			$.ajax({
+				async:false,
+				type:'GET',
+				url:"https://apis.google.com/js/client.js",
+				data:null,
+				dataType:'script'
+				
+			}).success( function(){
+			
+				window.setTimeout(youtuberss.loadAPI, 500);
+				
+			});
+		}
 
+		this.loadAPI = function(){
+		
+			gapi.client.setApiKey('ENTER_YOUR_API_KEY_HERE');
+			
+			gapi.client.load('youtube', 'v3', function() {
+				
+				youtuberss.fetchResults();
+			
+			});
+		};	
+
+		this.fetchResults = function(){
+		
 			searchTerm = x_currentPageXML.getAttribute("url");
 			var searchCount = x_currentPageXML.getAttribute("results");
-
+		
 			var request = gapi.client.youtube.search.list({
 				q: searchTerm,
 				part: 'snippet',
 				maxResults: searchCount,
-				type: 'video'
+				type: 'video',
+				safeSearch: 'strict'
 			});
 				
 			request.execute(function(response) {
@@ -81,8 +99,7 @@
 				
 				clearTimeout(x_timer);
 				$("#loadingSpinner").hide();
-				
-				
+								
 				var resultsHolder = "";
 				
 				$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
@@ -104,7 +121,8 @@
 						}
 						
 						resultsHolder += '<div><img src="' + item.snippet.thumbnails.default.url + '" />';
-						resultsHolder += '<p>' + hyperlink + '</p></div>';
+						resultsHolder += '<p>' + hyperlink + '</br>';
+						resultsHolder += item.snippet.description + '</p></div>';
 
 					});
 					
@@ -118,8 +136,12 @@
 			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			this.sizeChanged();
+			
 			x_pageLoaded();
+			
 		}
+		
+		this.init();
 
 	};
 
@@ -148,7 +170,7 @@
 	}
 
 	.shadedDiv {
-		background-color: #E3FFD6;
+		background-color: #EFEFEF;
 	}
 
 	#loadingSpinner {
