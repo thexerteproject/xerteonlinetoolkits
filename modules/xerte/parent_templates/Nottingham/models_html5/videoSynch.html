@@ -134,9 +134,8 @@
 			
 			this.loadVideo();
 			
-			$pageContents.css("padding-left", $pageVideo.data("dimensions")[0] + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
+			$pageContents.css("padding-left", Number($pageVideo.data("dimensions")[0]) + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
 			$("#videoHolder").width($pageContents.css("padding-left"));
-			
 			
 			x_pageLoaded();
 		}
