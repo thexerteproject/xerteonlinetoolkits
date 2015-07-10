@@ -55,4 +55,6 @@
 	
 	var RECYCLE_EMPTY = "Are you sure you want to empty the recycle bin?";
 
+    var POPUP_BLOCKER_ACTIVATED = "Popup Blocker is enabled! Please add this site to your exception list.";
+
 

@@ -77,7 +77,7 @@ Hidden Iframe to allow for ajax file uploads
 
 <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
 <!--- error widget -->
-<div id="errorpopup" title="PHP_ERROR" styl="display:none"></div>
+<div id="errorpopup" title="PHP_ERROR" style="display:none"></div>
 
 <div class="properties_main">
             <div class="main_area">
