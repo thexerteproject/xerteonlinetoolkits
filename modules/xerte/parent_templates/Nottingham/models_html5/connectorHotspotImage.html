@@ -23,45 +23,45 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var connectorHotspotImage = new function() {
-		var	$imageHolder,
-			$img,
-			$mainText;
-
+		var	$img,
+			$pageContents;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$img = $("#image");
+			$pageContents = $("#pageContents");
+			
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlighted").removeClass("highlighted");
 			$("#feedback").html("");
 			$(".x_popupDialog").parent().detach(); // remove any open dialogs
 		}
 		
-		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-            var html = '<img id="image" />';
-                html += '<div id="feedback" class="alert" />';
-            $("#imageHolder").html(html);
-            connectorHotspotImage.init();
+            $img.css({
+				"opacity"	:0,
+				"filter"	:'alpha(opacity=0)'
+			});
+			this.resizeImg(false);
 		}
 		
-		
 		this.init = function() {
-			$imageHolder = $("#imageHolder");
 			$img = $("#image");
-			$mainText = $("#mainText");
+			$pageContents = $("#pageContents");
 
-			// ignores most of the textWidth attributes (narrow/wide/max) - except "none"
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				$mainText.remove();
-				
+				$("#mainText").remove();
+				$("#pageContents").css("text-align", "center");
 			} else {
-				if (x_currentPageXML.getAttribute("align") == "Left") {
-					$("#pageContents").prepend($mainText);
-					$imageHolder.css("right", "10px");
+				$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				
+				if (x_currentPageXML.getAttribute("align") == "Right") {
+					$("#panel").addClass("left");
+				} else {
+					$("#panel").addClass("right");
 				}
-				$mainText.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			}
-			
 			
 			// set up dialog object for later if it hasn't already been set up on another page of this type
 			// xenith.js contains the function used for creating/attaching dialogs - x_openDialog()
@@ -78,18 +78,21 @@
 				x_dialogInfo.push(dialog);
 			}
 			
-			
-			if (x_currentPageXML.getAttribute("hidePanel") == "true") {
-				$imageHolder.removeClass("panel");
-			}
+			// deprecated
+			/*if (x_currentPageXML.getAttribute("hidePanel") == "true") {
+				$("#panel").removeClass("panel");
+			}*/
 			
 			$img
-				.css({ // stops flicker on 1st load of image
+				.css({
 						"opacity"	:0,
 						"filter"	:'alpha(opacity=0)'
 				})
 				.one("load", function() {
-					connectorHotspotImage.imgLoaded();
+					connectorHotspotImage.resizeImg(true);
+					
+					// call this function in every model once everything's loaded
+					x_pageLoaded();
 				})
 				.attr({
 					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
@@ -100,61 +103,12 @@
 						$(this).trigger("load");
 					}
 				});
-		}
-		
-		
-		this.imgLoaded = function() {
-            var holderWidth = $x_mainHolder.width(),
-                holderHeight = $x_mainHolder.height();
-			//var imgMaxW = 500,	imgMaxH = 476;
-            var imgMaxW = Math.round(holderWidth * (500.0/800.0)),
-                imgMaxH = Math.round(holderHeight * (576.0/600.0) - 100);
-			if (x_browserInfo.mobile == true) {
-				imgMaxW = 250; // mobile
-				imgMaxH = 250;
-			} else {
-				if (x_currentPageXML.getAttribute("textWidth") == "none") {
-					imgMaxW = Math.round(holderWidth * (780.0/800.0));
-					imgMaxH = Math.round(holderHeight * (576.0/600.0) - 100);
-				} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
-					imgMaxW = Math.round(holderWidth * (600.0/800.0));
-					imgMaxH = Math.round(holderHeight * (550.0/600.0) - 100);
-				} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
-					imgMaxW = Math.round(holderWidth * (400.0/800.0));
-					imgMaxH = Math.round(holderHeight * (550.0/600.0) - 100);
-				}
-			}
-			
-			x_scaleImg($img, imgMaxW, imgMaxH, true, true, false, true);
-
-			$img.css({
-				"opacity"	:1,
-				"filter"	:'alpha(opacity=100)'
-			});
-			
-			
-			// position text
-			var padding = parseInt($imageHolder.css("padding-left"));
-			if (x_currentPageXML.getAttribute("textWidth") != "none") {
-				var marginW = $img.width() + (padding * 4);
-				if (x_currentPageXML.getAttribute("align") == "Left") {
-					$mainText.css("margin-right", marginW + "px");
-				} else {
-					$mainText.css("margin-left", marginW + "px");
-				}
-			}
-			
 			
 			// get feedback text if authorSupport is on
-			var $feedback = $("#feedback"),
-				notFoundTxt;
 			if (x_params.authorSupport == "true") {
-				notFoundTxt = x_currentPageXML.getAttribute("notFoundMessage");
-				if (notFoundTxt == undefined) {
-					notFoundTxt = "could not be found in this project.";
-				}
+				$pageContents.data("authorSupport", x_currentPageXML.getAttribute("notFoundMessage") != undefined ? x_currentPageXML.getAttribute("notFoundMessage") : "could not be found in this project.");
 			} else {
-				$feedback.remove();
+				$("#feedback").remove();
 			}
 			
 			// get info about dialog popups ready
@@ -165,15 +119,43 @@
 			if (x_currentPageXML.getAttribute("popUpVAlign") != undefined && x_currentPageXML.getAttribute("popUpVAlign") != "") {
 				dialogPos.top = x_currentPageXML.getAttribute("popUpVAlign");
 			}
-			
-			var continueBtnTxt = x_currentPageXML.getAttribute("continueBtnTxt");
-			if (continueBtnTxt == undefined) {
-				continueBtnTxt = "Close";
+			$pageContents.data({
+				"dialogPos":dialogPos,
+				"continueBtnTxt":x_currentPageXML.getAttribute("continueBtnTxt") != undefined ? x_currentPageXML.getAttribute("continueBtnTxt") : "Close"
+			});
+		}
+		
+		this.resizeImg = function(firstLoad) {
+			var imgMaxW, imgMaxH;
+			if (x_currentPageXML.getAttribute("textWidth") == "none") {
+				imgMaxW = Math.round($x_pageHolder.width() - 50);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.3 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
+			} else {
+				imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+				imgMaxH = Math.round($x_pageHolder.height() - 50);
 			}
 			
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false, true);
 			
+			$img.css({
+				"opacity"	:1,
+				"filter"	:'alpha(opacity=100)'
+			});
+			
+			this.createHS();
+		}
+		
+		this.createHS = function() {
 			// create hotspots - taking scale of image into account
-			var scale = $img.width() / $img.data("origSize")[0];
+			var scale = $img.width() / $img.data("origSize")[0],
+				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			$("#hsHolder").html("");
 			
 			$(x_currentPageXML).children()
 				.each(function(i){
@@ -219,161 +201,157 @@
 							hsInfo = $(x_pageInfo)[x_currentPage + 1].linkID;
 						}
 					}
+				
+					var _this = this,
+						$hotspot = $('<a class="hotspot transparent" href="#" tabindex="' + (i+1) + '" />');
 					
-					if (hsType != undefined) {
-						var _this = this,
-							$hotspot = $('<a class="hotspot transparent" href="#" />');
-						
-						$hotspot
-							.attr({
-								"title"		:this.getAttribute("name"),
-								"tabindex"	:i + 1
+					$hotspot
+						.attr("title", this.getAttribute("name"))
+						.css({
+							width	:Math.round(this.getAttribute("w") * scale) + "px",
+							height	:Math.round(this.getAttribute("h") * scale) + "px",
+							left	:Math.round(this.getAttribute("x") * scale) + "px",
+							top		:Math.round(this.getAttribute("y") * scale) + "px"
 							})
-							.css({
-								width	:Math.round(this.getAttribute("w") * scale) + "px",
-								height	:Math.round(this.getAttribute("h") * scale) + "px",
-								left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
-								top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
-							})
-							.click(function() {
-								// when audio dialogs are closed because another dialog has been opened - stop flash audio playing first
-								if ($("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id") != undefined) {
-									var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
-									$("body div#me_flash_" + audioRefNum + "_container").remove();
-								}
-								
-								$(".x_popupDialog").parent().detach(); // remove any open dialogs
-								$("#pageContents .selected").removeClass("selected");
-								$("#pageContents .highlighted").removeClass("highlighted");
-								
-								$(this).addClass("selected");
-								$feedback.html("");
-								
-								// go to page in LO
-								if (hsType == "pageLink") {
-									if (x_lookupPage("linkID", hsInfo) == null) { // destination not found
-										if (x_params.authorSupport == "true") {
-											$feedback.html(hsInfo + " " + notFoundTxt);
-										}
-										
-									} else { // go to destination page
-										x_navigateToPage(false, {type:"linkID", ID:hsInfo});
+						.click(function() {
+							// when audio dialogs are closed because another dialog has been opened - stop flash audio playing first
+							if ($("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id") != undefined) {
+								var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
+								$("body div#me_flash_" + audioRefNum + "_container").remove();
+							}
+							
+							$(".x_popupDialog").parent().detach(); // remove any open dialogs
+							$("#pageContents .selected").removeClass("selected");
+							$("#pageContents .highlighted").removeClass("highlighted");
+							
+							$(this).addClass("selected");
+							$("#feedback").html("");
+							
+							// go to page in LO
+							if (hsType == "pageLink") {
+								if (x_lookupPage("linkID", hsInfo) == null) { // destination not found
+									if (x_params.authorSupport == "true") {
+										$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
 									}
-								
-								// open dialog popup
-								} else if (hsType == "dialog") {
-									var dialogHtml;
-									if (hsInfo == "video") {
-										var videoDimensions = [320,240];
-										if (_this.getAttribute("movieSize") != "" && _this.getAttribute("movieSize") != undefined) {
-											var dimensions = _this.getAttribute("movieSize").split(",");
-											if (dimensions[0] != 0 && dimensions[1] != 0) {
-												videoDimensions = dimensions;
-											}
+								} else { // go to destination page
+									x_navigateToPage(false, {type:"linkID", ID:hsInfo});
+								}
+							
+							// open dialog popup
+							} else if (hsType == "dialog") {
+								var dialogHtml;
+								if (hsInfo == "video") {
+									var videoDimensions = [320,240];
+									if (_this.getAttribute("movieSize") != "" && _this.getAttribute("movieSize") != undefined) {
+										var dimensions = _this.getAttribute("movieSize").split(",");
+										if (dimensions[0] != 0 && dimensions[1] != 0) {
+											videoDimensions = dimensions;
 										}
-										var videoTip = "";
-										if (_this.getAttribute("tip") != "" &&  _this.getAttribute("tip") != undefined) {
-											videoTip = _this.getAttribute("tip");
-										}
-										
-										dialogHtml = '<div id="pageVideo"></div>' +
-											'<script type="text/javascript">' +
-												'$("#pageVideo")' +
-													'.attr("title", "' + videoTip + '")' +
-													'.mediaPlayer({' +
-														'type			:"video",' +
-														'source			:"' + _this.getAttribute("hotspotMovie") + '",' +
-														'width			:' + videoDimensions[0] + ',' +
-														'height			:' + videoDimensions[1] + ',' +
-														'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
-													'});' +
-											'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
-										
-										dialogPos.width = videoDimensions[0];
-										dialogPos.height = Number(videoDimensions[1]) + 3;
-										
-									} else if (hsInfo == "sound") {
-										dialogHtml = '<div id="pageAudio"></div>' +
-											'<script type="text/javascript">' +
-												'$("#pageAudio").mediaPlayer({' +
-													'type : "audio",' +
-													'source : "' + _this.getAttribute("hotspotSound") + '",' +
-													'width : "100%"' +
+									}
+									var videoTip = "";
+									if (_this.getAttribute("tip") != "" &&  _this.getAttribute("tip") != undefined) {
+										videoTip = _this.getAttribute("tip");
+									}
+									
+									dialogHtml = '<div id="pageVideo"></div>' +
+										'<script type="text/javascript">' +
+											'$("#pageVideo")' +
+												'.attr("title", "' + videoTip + '")' +
+												'.mediaPlayer({' +
+													'type			:"video",' +
+													'source			:"' + _this.getAttribute("hotspotMovie") + '",' +
+													'width			:' + videoDimensions[0] + ',' +
+													'height			:' + videoDimensions[1] + ',' +
+													'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
 												'});' +
-											'</' + 'script>';
-										
-										dialogPos.width = undefined;
-										dialogPos.height = x_audioBarH;
-										
-									} else { // text
-										dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
-										dialogPos.width = undefined;
-										dialogPos.height = undefined;
-									}
+										'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
 									
-									x_openDialog("connectorHotspotImage", "", continueBtnTxt, dialogPos, dialogHtml);
+									$pageContents.data("dialogPos").width = videoDimensions[0];
+									$pageContents.data("dialogPos").height = Number(videoDimensions[1]) + 3;
 									
-									// when audio dialogs are closed with dialog x button - stop flash audio playing first
-									if (hsInfo == "sound") {
-										var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
-										$("#x_connectorHotspotImage").parent().on("dialogclose", function() {
-											$("body div#me_flash_" + audioRefNum + "_container").remove();
-										});
-									}
+								} else if (hsInfo == "sound") {
+									dialogHtml = '<div id="pageAudio"></div>' +
+										'<script type="text/javascript">' +
+											'$("#pageAudio").mediaPlayer({' +
+												'type : "audio",' +
+												'source : "' + _this.getAttribute("hotspotSound") + '",' +
+												'width : "100%"' +
+											'});' +
+										'</' + 'script>';
+									
+									$pageContents.data("dialogPos").width = undefined;
+									$pageContents.data("dialogPos").height = x_audioBarH;
+									
+								} else { // text
+									dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
+									$pageContents.data("dialogPos").width = undefined;
+									$pageContents.data("dialogPos").height = undefined;
+								}
 								
-								// open new window
-								} else if (hsType == "newWindow") {
-									var wh = [550,400];
-									if (_this.getAttribute("windowWidth") != undefined && _this.getAttribute("windowWidth") != "") {
-										wh.splice(0, 1, _this.getAttribute("windowWidth"));
-									}
-									if (_this.getAttribute("windowHeight") != undefined && _this.getAttribute("windowHeight") != "") {
-										wh.splice(1, 1, _this.getAttribute("windowHeight"));
-									}
-									
-									if (hsInfo == "url") {
-										var src = _this.getAttribute("windowURL");
-										window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
-									} else {
-										var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
-										popupWindow.document.write(_this.getAttribute("htm"));
-										popupWindow.focus();
-									}
+								x_openDialog("connectorHotspotImage", "", $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
+								
+								// when audio dialogs are closed with dialog x button - stop flash audio playing first
+								if (hsInfo == "sound") {
+									var audioRefNum = $("#x_connectorHotspotImage #pageAudio .mejs-audio").attr("id").substring(4);
+									$("#x_connectorHotspotImage").parent().on("dialogclose", function() {
+										$("body div#me_flash_" + audioRefNum + "_container").remove();
+									});
 								}
-							})
-							.focusin(function() {
-								$("#pageContents .highlighted").removeClass("highlighted");
-								$(this).addClass("highlighted");
-							})
-							.focusout(function() {
-								$(this).removeClass("highlighted");
-							})
-							.keypress(function(e) {
-								var charCode = e.charCode || e.keyCode;
-								if (charCode == 32) {
-									$(this).trigger("click");
+							
+							// open new window
+							} else if (hsType == "newWindow") {
+								var wh = [550,400];
+								if (_this.getAttribute("windowWidth") != undefined && _this.getAttribute("windowWidth") != "") {
+									wh.splice(0, 1, _this.getAttribute("windowWidth"));
 								}
-							});
-						
-						$imageHolder.append($hotspot);
-					}
+								if (_this.getAttribute("windowHeight") != undefined && _this.getAttribute("windowHeight") != "") {
+									wh.splice(1, 1, _this.getAttribute("windowHeight"));
+								}
+								
+								if (hsInfo == "url") {
+									var src = _this.getAttribute("windowURL");
+									window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
+								} else {
+									var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
+									popupWindow.document.write(_this.getAttribute("htm"));
+									popupWindow.focus();
+								}
+							}
+							})
+						.focusin(function() {
+							$(this)
+								.removeClass("transparent")
+								.addClass("highlight");
+							})
+						.focusout(function() {
+							$(this)
+								.removeClass("highlight")
+								.addClass("transparent");
+							})
+						.keypress(function(e) {
+							var charCode = e.charCode || e.keyCode;
+							if (charCode == 32) {
+								$(this).trigger("click");
+							}
+						});
+				
+					$("#hsHolder").append($hotspot);
 				});
 			
-			
-			var borderColour = "yellow";
+			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-				borderColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
 			}
-			$("#imageHolder .hotspot").css("border-color", borderColour);
+			$("#pageContents .hotspot").css("border-color", highlightColour);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
-				$("#imageHolder .hotspot").addClass("border");
+				$("#pageContents .hotspot").addClass("highlightBorder");
 			}
 			
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
+			if (selected != undefined) {
+				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
+			}
 		}
 	}
-	
 	
 	connectorHotspotImage.init();
 	
@@ -381,46 +359,51 @@
 
 <style>
 	
-	#imageHolder {
-		position: absolute;
-		margin:	0;
+	#panel.right {
+		float:	right;
+		margin:	0 0 20px 20px;
 	}
 	
-	#imageHolder .hotspot {
+	#panel.left {
+		float:	left;
+		margin:	0 20px 20px 0;
+	}
+	
+	#imageHolder {
+		position:	relative;
+	}
+	
+	#pageContents .hotspot {
 		position:	absolute;
 		cursor:		pointer;
 	}
 	
-	#imageHolder .border {
+	#pageContents .highlightBorder {
 		border:		1px solid;
+		margin-top: -1px;
+		margin-left: -1px;
 	}
 	
-	#imageHolder .selected {
+	#pageContents .selected {
 		border:		2px solid;
-	}
-	
-	#imageHolder .highlighted {
-		border:		2px solid yellow;
+		margin-top: -2px;
+		margin-left: -2px;
 	}
 	
 	#feedback {
-		text-align:		center;
-	}
-	
-	#mainText {
-		position: 	absolute;
-		top:		0;
-		left:		0;
-		padding:	10px;
+		text-align:	center;
 	}
 	
 </style>
 
 <div id="pageContents">
 	
-	<div id="imageHolder" class="panel inline">
-		<img id="image" />
-		<div id="feedback" class="alert" />
+	<div id="panel" class="panel inline">
+		<div id="imageHolder">
+			<img id="image" />
+			<div id="hsHolder"></div>
+			<div id="feedback" class="alert" />
+		</div>
 	</div>
 	
 	<div id="mainText" tabindex="1"></div>
