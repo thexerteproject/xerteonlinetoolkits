@@ -566,6 +566,12 @@ var EDITOR = (function ($, parent) {
 
     },
 
+    delRow = function(id,key,name, rowid){
+        jqGrGridData[key].splice(rowid-1, 1);
+        var xerte = convertjqGridData(jqGrGridData[key]);
+        setAttributeValue(key, [name], [xerte]);
+    },
+
     addColumn = function(id, key, name, colnr)
     {
         console.log('Add column');
@@ -1117,6 +1123,7 @@ var EDITOR = (function ($, parent) {
                         grid.trigger("reloadGrid", [{page:newPage}]);
                     }
 
+                    delRow(id, key, name, rowid);
                     return true;
                 },
                 processing:true
