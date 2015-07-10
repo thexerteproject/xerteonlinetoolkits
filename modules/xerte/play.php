@@ -17,15 +17,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 require("module_functions.php");
+include_once(dirname(__FILE__) . "/../../api_keys.php");
+
 require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 //Function show_template
 //
+// Version 1.0 University of Nottingham
+// (pl)
 // Set up the preview window for a xerte piece
 
 function show_template_page($row, $datafile="")
 {
     global $xerte_toolkits_site;
+	global $youtube_api_key;
 
     _load_language_file("/modules/xerte/preview.inc");
 
@@ -140,7 +146,10 @@ function show_template_page($row, $datafile="")
 
         $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js\"></script>";
 
-        $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+		
+		$page_content .= '<script>x_youtube_api_key = "' . $youtube_api_key . '";</script>';
+		
     }
     return $page_content;
 }
