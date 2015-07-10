@@ -629,7 +629,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
             }
         }else{
 
-            if($_POST['folder']!=""){
+            if(isset($_POST['folder'])){
                 $folder_id = $_POST['folder'];
             }
 
