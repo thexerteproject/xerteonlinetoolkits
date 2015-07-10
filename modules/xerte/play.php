@@ -19,7 +19,10 @@
  */
 
 require("module_functions.php");
-include_once(dirname(__FILE__) . "/../../api_keys.php");
+if (file_exists(dirname(__FILE__) . "/../../api_keys.php"){
+	include_once(dirname(__FILE__) . "/../../api_keys.php");
+}
+
 
 require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 //Function show_template
