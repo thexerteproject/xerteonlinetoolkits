@@ -48,10 +48,10 @@ function create_folder_loop($dir_path,$new_path){
         $full = $dir_path . $f;
         if(is_dir($full)){
             if(($f!=".")&&($f!="..")){
-                $temp_new_path = $new_path . "/" . $f;
+                $temp_new_path = $new_path . $f . "/";
                 if(@mkdir($temp_new_path)){
                     if(@chmod($temp_new_path, 0777)){
-                        create_folder_loop($full, $temp_new_path);
+                        create_folder_loop($full . "/", $temp_new_path);
                     }else{
                         receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set permissions on folder", "Failed to set correct rights on " . $temp_new_path);
                         return false;
@@ -62,7 +62,7 @@ function create_folder_loop($dir_path,$new_path){
                 }
             }
         }else{
-            $file_dest_path = $new_path . "/" . $f;
+            $file_dest_path = $new_path . $f;
             if(@copy($full, $file_dest_path)){
                 if(!@chmod($file_dest_path, 0777)){
                     receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to copy file", "Failed to set rights on file " . $full . " " . $file_dest_path);
