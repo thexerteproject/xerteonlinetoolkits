@@ -773,6 +773,33 @@ function init_workspace()
                 $('#workspace').jstree(true).search(v);
             }, 250);
         });
+
+        // Double click handling
+        $('#workspace a').bind('dblclick',function (e) {
+            var tree = $.jstree.reference("#workspace");
+            var linode = $(e.target).closest("li");
+            var node_id = linode[0].id;
+            var node = tree.get_node(node_id, false);
+            var type = node.type;
+            var id = node.id;
+            var xot_id = node.original.xot_id;
+
+            switch(type)
+            {
+                case "folder":
+                case "workspace":
+                case "recyclebin":
+                    break;
+                default:
+
+
+                    tree.deselect_all();
+                    tree.select_node(id);
+
+                    edit_window(false, "edithtml");
+
+            }
+        });
     }
 }
 

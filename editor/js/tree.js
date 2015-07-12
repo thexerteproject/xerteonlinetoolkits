@@ -492,8 +492,8 @@ var EDITOR = (function ($, parent) {
         setTimeout(function()
         {
             buildPage(key)
-        }, 500);
-    }
+        }, 350);
+    },
 
     // Refresh the page when a new node is selected
     buildPage = function (key) {
@@ -1118,6 +1118,7 @@ var EDITOR = (function ($, parent) {
             console.log("move node");
         });
     },
+
 
     // Up button handler
     up_btn = function() {
