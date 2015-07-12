@@ -323,9 +323,4 @@ Folder popup is the div that appears when creating a new folder
 </script>
 <?php body_end(); ?></body>
 </html>
-<<<<<<< HEAD
-
 <?php shutdown(); ?>
-=======
-<?php shutdown();?>
->>>>>>> origin/master
