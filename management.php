@@ -228,10 +228,36 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 
                 -->
                 <div class="topbar">
-                    <div style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                        <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
-                    </div>
-                    <img src="<?php echo $xerte_toolkits_site->site_logo;?>" style="margin-left:10px; float:left" />
+                    <?php
+                    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+                    {
+                        ?>
+                        <div
+                            style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
+                        </div>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <div
+                            style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
+                        </div>
+                        <?php
+                    }
+                    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+                    {
+                        ?>
+                        <img src="<?php echo "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+                        <?php
+                    }
+                    ?>
                 </div>
 
                 <!-- 
