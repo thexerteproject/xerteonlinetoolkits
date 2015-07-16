@@ -1563,7 +1563,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-    if (text.indexOf("<") == 0 && text.lastIndexOf(">") == text.length-1)
+    if (text.trim().indexOf("<") == 0 && text.trim().lastIndexOf(">") == text.trim().length-1)
     {
         // Seems to start with a tag
         // probably with new editor, don't replace newlines!
