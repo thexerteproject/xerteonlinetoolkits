@@ -65,7 +65,9 @@
 		}
 
 		this.loadAPI = function(){
-		
+
+			//gapi.client.setApiKey('ENTER YOUR KEY HERE');
+			
 			gapi.client.setApiKey(x_youtube_api_key);
 			
 			gapi.client.load('youtube', 'v3', function() {
