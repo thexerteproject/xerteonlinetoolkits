@@ -1534,19 +1534,22 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgW = $img.data("origSize")[0];
             imgH = $img.data("origSize")[1];
         }
+		
+		if (enlarge != true) {
+			if (maxW > imgW) {
+				maxW = imgW;
+			}
+			if (maxH > imgH) {
+				maxH = imgH;
+			}
+		}
 
         if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
             var scaleW = maxW / imgW;
             var scaleH = maxH / imgH;
             var scaleFactor;
-            if (enlarge == true && scaleW > 1 && scaleH > 1)
-            {
-                scaleFactor = Math.min(scaleW, scaleH);
-            }
-            else
-            {
-                scaleFactor = Math.min(scaleW, scaleH);
-            }
+			scaleFactor = Math.min(scaleW, scaleH);
+			
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
             $img.css("width", imgW + "px"); // set width only to constrain proportions
