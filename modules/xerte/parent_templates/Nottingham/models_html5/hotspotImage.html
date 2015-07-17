@@ -188,7 +188,7 @@
 			
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
 			}
 			$("#pageContents .hotspot").css("border-color", highlightColour);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {

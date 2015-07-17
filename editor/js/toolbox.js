@@ -909,7 +909,7 @@ var EDITOR = (function ($, parent) {
     {
         $.each(colorpickers, function (i, options){
             var myPicker = new jscolor.color(document.getElementById(options.id), {})
-            myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
+            myPicker.fromString(Array(7-options.value.length).join('0') + options.value)  // now you can access API via 'myPicker' variable
         });
     },
 

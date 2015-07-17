@@ -1682,3 +1682,9 @@ function x_selectText(element) {
         selection.addRange(range);
     }
 }
+
+
+// function deals with hex values that might be abbreviated ones from the flash editor
+function x_getColour(colour) {
+	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
+}
