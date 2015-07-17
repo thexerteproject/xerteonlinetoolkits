@@ -1,7 +1,7 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File"/>]]></pdf>
+      <pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf>
     </newNodes>
   </pageWizard>
 
@@ -10,6 +10,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
+	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
