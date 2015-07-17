@@ -46,6 +46,8 @@ define("INDEX_DETAILS","Project Details");
 
 define("INDEX_SORT","Sort Projects");
 
+define("INDEX_SEARCH","Search");
+
 define("INDEX_SORT_A","Alphabetical A-Z");
 
 define("INDEX_SORT_Z","Alphabetical Z-A");
