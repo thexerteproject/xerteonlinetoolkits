@@ -531,7 +531,7 @@ function setupMainLayout()
             },
 
             west: {
-                size:                   400,
+                size:                   200,
                 minSize:                200,
                 spacing_open:           6,
                 spacing_closed:         21,
@@ -617,10 +617,11 @@ function setupMainLayout()
 
 function dynamicResize()
 {
+	
     // Set sizes, get the windows size
     var windowWidth = parseInt($(window).width());
     var windowHeight = parseInt($(window).height());
-
+	
     // If Window is narrow, close east panel, and make center panel narrow
     if (windowWidth < 650)
     {

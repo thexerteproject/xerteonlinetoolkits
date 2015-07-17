@@ -325,10 +325,9 @@ body{
 
 .userbar {
     float:right;
+	padding-right:10px;
     margin:0;
-    margin-right:10px;
     color:#a01a13;
-    width: 450px;
 }
 
 .file_mgt_area{
@@ -653,9 +652,9 @@ div#folder_workspace, div#recyclebin{
 
 .workspace_search input{
     padding: 2px;
-   //background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
-   //background-position: right;
-    width: 100%;
+    //background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
+    //background-position: right;
+    width: 150px;
 }
 
 div#workspace{
