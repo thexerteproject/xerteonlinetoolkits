@@ -293,7 +293,7 @@
 			if (x_currentPageXML.getAttribute("showHighlight") != "false") {
 				var highlightColour = "yellow";
 				if (x_currentPageXML.getAttribute("highlightColour") != undefined && x_currentPageXML.getAttribute("highlightColour") != "") {
-					highlightColour = "#" + x_currentPageXML.getAttribute("highlightColour").substr(2, 6);
+					highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightColour"));
 				}
 				$targets
 					.addClass("border")
