@@ -44,7 +44,7 @@ define("INDEX_CREATE","Project Templates");
 
 define("INDEX_DETAILS","Project Details");
 
-define("INDEX_SORT","Sort your files");
+define("INDEX_SORT","Sort Projects");
 
 define("INDEX_SORT_A","Alphabetical A-Z");
 
