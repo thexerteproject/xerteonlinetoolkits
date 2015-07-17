@@ -187,9 +187,9 @@ Folder popup is the div that appears when creating a new folder
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
                 echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
                <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
-               <button type="button" class="xerte_button_c"
+               <button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
-                    <?PHP echo INDEX_BUTTON_LOGOUT; ?>
+                    <i class="fa icon-off xerte-icon"></i>
                 </button>
             </div>
             <div style="clear:both;"></div>
@@ -208,26 +208,50 @@ Folder popup is the div that appears when creating a new folder
     <div class="ui-layout-west" id="workspace_layout">
         <div class="header" id="inner_left_header">
 			<div class="file_mgt_area_buttons">
+
+				<!--
 				<div class="file_mgt_area_middle_button_left">
 					<button type="button" class="xerte_button_c_no_width" id="newfolder" onclick="javascript:make_new_folder()">
-						<i class="fa fa-lg fa-folder xerte-icon"></i><?php echo INDEX_BUTTON_NEWFOLDER; ?>
+						<i class="fa fa-folder xerte-icon"></i><?php echo INDEX_BUTTON_NEWFOLDER; ?>
 					</button>
 				</div>
 				<div class="file_mgt_area_middle_button_left">
 					<button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="properties"><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
+							id="properties"><i class="fa icon-list xerte-icon"></i><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
 					<button type="button" class="xerte_button_c_nowidth_disabled" disabled="disabled"
-							id="edit"><?php echo INDEX_BUTTON_EDIT; ?></button>
+							id="edit"><i class="fa icon-edit xerte-icon"></i><?php echo INDEX_BUTTON_EDIT; ?></button>
 					<button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="preview"><?php echo INDEX_BUTTON_PREVIEW; ?></button>
+							id="preview"><i class="fa icon-play xerte-icon"></i><?php echo INDEX_BUTTON_PREVIEW; ?></button>
 				</div>
 				<div class="file_mgt_area_middle_button_right">
 					<button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="delete"><?php echo INDEX_BUTTON_DELETE; ?></button>
+							id="delete"><i class="fa icon-play xerte-icon"></i><?php echo INDEX_BUTTON_DELETE; ?></button>
 					<button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="duplicate"><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
+							id="duplicate"><i class="fa icon-copy xerte-icon"></i><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
 					<button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="publish"><?php echo INDEX_BUTTON_PUBLISH; ?></button>
+							id="publish"><i class="fa icon-play xerte-icon"></i><?php echo INDEX_BUTTON_PUBLISH; ?></button>
+				</div>
+				-->
+				<div class="file_mgt_area_middle_button_left">
+					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_button_c_no_width" id="newfolder" onclick="javascript:make_new_folder()">
+						<i class="fa fa-folder xerte-icon"></i>
+					</button>
+				</div>
+				<div class="file_mgt_area_middle_button_left">
+					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>"type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+							id="properties"><i class="fa icon-info-sign xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_button_c_nowidth_disabled" disabled="disabled"
+							id="edit"><i class="fa icon-edit xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+							id="preview"><i class="fa icon-play xerte-icon"></i></button>
+				</div>
+				<div class="file_mgt_area_middle_button_right">
+					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+							id="delete"><i class="fa  icon-trash xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+							id="duplicate"><i class="fa icon-copy xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
+							id="publish"><i class="fa  icon-external-link xerte-icon"></i></button>
 				</div>
 			</div>
         </div>
