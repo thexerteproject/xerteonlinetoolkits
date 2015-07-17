@@ -251,7 +251,7 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
 							id="duplicate"><i class="fa icon-copy xerte-icon"></i></button>
 					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-							id="publish"><i class="fa  icon-external-link xerte-icon"></i></button>
+							id="publish"><i class="fa  icon-share xerte-icon"></i></button>
 				</div>
 			</div>
         </div>
