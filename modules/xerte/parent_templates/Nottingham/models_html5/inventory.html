@@ -381,7 +381,7 @@
 					chartHolderContext.translate(30, 0); // space on left for y axis text
 				}
 				
-				var	colour = x_currentPageXML.getAttribute("chartColour"),
+				var	colour = x_getColour(x_currentPageXML.getAttribute("chartColour")),
 					txtColour = $("#mainTxt").css("color");
 				
 				if (colour.substring(0, 2) == "0x") { // hex value
