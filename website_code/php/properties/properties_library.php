@@ -464,9 +464,8 @@ function syndication_display_fail(){
 function project_info($template_id){
 
     global $xerte_toolkits_site;
-
-    $info = "<p class=\"info_header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
-    $prefix = $xerte_toolkits_site->database_table_prefix;
+	
+	$prefix = $xerte_toolkits_site->database_table_prefix;
 
     $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
         . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
@@ -478,33 +477,35 @@ function project_info($template_id){
     $params = array($template_id);
 
     $row_template_name = db_query_one($query_for_template_name, $params);
+	
+    $info = PROJECT_INFO_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
 
-    $info .= "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "</p>";
+    $info .= PROJECT_INFO_CREATED . ": " . $row['date_created'] . "<br/>";
 
-    $info .= "<p>" . PROPERTIES_LIBRARY_PROJECT_CREATE . " " . $row['date_created'] . "<br>";
-
-    $info .=  PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
+    $info .=  PROJECT_INFO_MODIFIED . ": " . $row['date_modified'] . "<br/>";
+	
+	
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    $info .=  "<p>" . PROPERTIES_LIBRARY_PUBLISH_ENGINE  . ": ";
+    $info .=  PROJECT_INFO_RUNTIME  . ": ";
 
     if (get_default_engine($template_id) == 'flash')
     {
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "<br/";
     }
     else
     {
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
+        $info .=  PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br/>";
     }
 
     if(template_access_settings($template_id)!='Private'){
 
-        $info .=  "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . " ";
+        $info .= '<br/>' . PROJECT_INFO_URL . ": ";
 
         $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
             url_return("play", $_POST['template_id']) . "'>" .
-            $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
+            $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a><br/>";
 
         $template = explode("_", get_template_type($_POST['template_id']));
 
@@ -549,7 +550,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  "<p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
+        $info .=  '<br/>' . PROJECT_INFO_EMBEDCODE . "<br/><form><textarea rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"float:left; position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
 
     }
     return $info;
@@ -602,9 +603,8 @@ function media_quota_info($template_id)
                     $quota += filesize($full);
                 }
             }
-            $info =  "<p class=\"info_header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
-            $info .=  "<div style=\"clear:both;\"></div>";
-            $info .=  "<p>" . MEDIA_AND_QUOTA_USAGE . " " . substr(($quota/1000000),0,4) . " MB</p>";
+            $info =  PROJECT_INFO_MEDIA . ": ";
+            $info .=  substr(($quota/1000000),0,4) . " MB<br/>";
             return $info;
         }
         else
@@ -628,14 +628,14 @@ function sharing_info($template_id)
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $info =  "<p class=\"info_header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
+    $info =  PROJECT_INFO_SHARED . ": ";
 
     if(sizeof($query_sharing_rows)==1){
-        $info .= "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
+        $info .= PROJECT_INFO_NOTSHARED . "<br/>";
         return $info;
     }
 
-    $info .=  "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p><ul>";
+    $info .=  SHARING_CURRENT . "<br>";
     foreach($query_sharing_rows as $row) {
         $info .=  "<li><span>" . $row['firstname'] . " " . $row['surname'] ." (" .$row['username'] . ")  -  (";
         switch($row['role'])
@@ -668,32 +668,32 @@ function access_info($template_id){
 
     $row_access = db_query_one($query_for_template_access, $params);
 
-    $info = "<p class=\"info_header\"><span>" . PROPERTIES_TAB_ACCESS . "</span></p>";
+    $info = PROJECT_INFO_ACCESS . ": ";
 
     $accessStr = template_access_settings($_POST['template_id']);
     switch ($accessStr)
     {
         case "Public":
-            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PUBLIC;
+            $accessTranslation = PROJECT_INFO_PUBLIC;
             break;
         case "Private":
-            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PRIVATE;
+            $accessTranslation = PROJECT_INFO_PRIVATE;
             break;
         case "Password":
-            $accessTranslation = PROPERTIES_LIBRARY_ACCESS_PASSWORD;
+            $accessTranslation = PROJECT_INFO_PASSWORD;
             break;
         default:
             if (substr(template_access_settings($template_id),0,5) == "Other")
             {
                 $accessStr = "Other";
-                $accessTranslation = PROPERTIES_LIBRARY_ACCESS_OTHER;
+                $accessTranslation = PROJECT_INFO_OTHER;
             }
             else
             {
                 return;
             }
     }
-    $info .=  "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . $accessTranslation . "</span></p>";
+    $info .=  PROPERTIES_LIBRARY_ACCESS . " " . $accessTranslation . "<br/>";
     return $info;
 }
 
