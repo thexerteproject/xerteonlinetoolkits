@@ -233,7 +233,7 @@ Folder popup is the div that appears when creating a new folder
 				</div>
 				-->
 				<div class="file_mgt_area_middle_button_left">
-					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_button_c_no_width" id="newfolder" onclick="javascript:make_new_folder()">
+					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_button_c_no_width" id="newfolder" onClick="javascript:make_new_folder()">
 						<i class="fa fa-folder xerte-icon"></i>
 					</button>
 				</div>
@@ -263,7 +263,7 @@ Folder popup is the div that appears when creating a new folder
 				<div class="sorter">
 					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
 						<?PHP echo INDEX_SORT; ?>
-						<select id="sort-selector" name="type" onchange="refresh_workspace()">>
+						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
 							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
 							<option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
@@ -338,7 +338,7 @@ Folder popup is the div that appears when creating a new folder
             <!--<img src="website_code/images/lt_logo.gif" /><br/>-->
             <?PHP
             echo $xerte_toolkits_site->copyright;
-            ?></p>
+            ?></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 
         <div style="clear:both;"></div>
     </div>
