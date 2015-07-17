@@ -374,7 +374,8 @@ body{
 
 .file_mgt_area_buttons{
 	height:25px;
-    margin-left: 20px;
+    margin-left: 12px;
+	margin-top:6px;
 }
 
 .file_mgt_area_middle_button_left{
@@ -638,21 +639,22 @@ div#folder_workspace, div#recyclebin{
 
 .workspace_search_outer
 {
-    margin:3px 10px 3px 10px;
-    width:92%;
+	float:left;
+	margin:5px 5px 5px 40px;
+	padding-right:10px;
+
 }
 
 .workspace_search
 {
     margin:3px 10px 3px 10px;
-    background-color: #fff;
     width:100%;
 }
 
 .workspace_search input{
-    padding: 3px;
-    background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
-    background-position: right;
+    padding: 2px;
+   //background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
+   //background-position: right;
     width: 100%;
 }
 
