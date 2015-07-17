@@ -531,7 +531,7 @@ function setupMainLayout()
             },
 
             west: {
-                size:                   200,
+                size:                   400,
                 minSize:                200,
                 spacing_open:           6,
                 spacing_closed:         21,
@@ -621,7 +621,7 @@ function dynamicResize()
     // Set sizes, get the windows size
     var windowWidth = parseInt($(window).width());
     var windowHeight = parseInt($(window).height());
-	
+
     // If Window is narrow, close east panel, and make center panel narrow
     if (windowWidth < 650)
     {
@@ -629,7 +629,7 @@ function dynamicResize()
         xerteinner_layout.close('east');
     }
     // Make west panel 60% of windowWidth
-    xerteinner_layout.sizePane('west', windowWidth * 0.6);
+    xerteinner_layout.sizePane('west', windowWidth * 0.45);
 
     // If window is low, close south panel
     if (windowHeight < 400)

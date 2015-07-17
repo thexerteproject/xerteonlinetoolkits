@@ -32,6 +32,34 @@
 	
 	define("PROPERTIES_LIBRARY_XML_ERROR", "Sorry, only creators of templates can set up XML sharing");
 	
+	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
+	define ("PROJECT_INFO_NAME", "Name");
+	
+	define ("PROJECT_INFO_CREATED", "Created");
+	
+	define ("PROJECT_INFO_MODIFIED", "Modified");
+	
+	define ("PROJECT_INFO_RUNTIME", "Runtime");
+	
+	define ("PROJECT_INFO_URL", "URL");
+	
+	define ("PROJECT_INFO_EMBEDCODE", "Embed Code");
+	
+	define ("PROJECT_INFO_MEDIA", "Media");
+	
+	define ("PROJECT_INFO_ACCESS", "Access");
+	
+	define ("PROJECT_INFO_SHARED", "Shared");
+	
+	define ("PROJECT_INFO_NOTSHARED", "Not Shared");
+	
+	define ("PROJECT_INFO_PRIVATE", "Private");
+	
+	define ("PROJECT_INFO_PUBLIC", "Public");
+	
+	define ("PROJECT_INFO_PASSWORD", "Password");
+	
+	define ("PROJECT_INFO_OTHER", "Other");
 	
 	// PROJECT TAB
 	
@@ -49,7 +77,7 @@
 
     define("PROPERTIES_LIBRARY_PUBLISH_ENGINE", "Default engine");
 
-    define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "Javascript (a.k.a. HTML5)");
+    define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "HTML5");
 
     define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
 

@@ -601,10 +601,13 @@ div#file_area{
     font-weight: bold;
     padding:4px;
 }
-
+.projectInformationContainer {
+	font-size: 0.9em;
+}
 .projectInformationContainer p{
     padding: 4px;
 }
+
 .folder{
 	float:left;
 	position:relative;
