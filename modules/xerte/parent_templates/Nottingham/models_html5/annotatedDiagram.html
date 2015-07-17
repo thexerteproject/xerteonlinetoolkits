@@ -169,7 +169,7 @@
 			
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("colour") != undefined && x_currentPageXML.getAttribute("colour") != "") {
-				highlightColour = "#" + x_currentPageXML.getAttribute("colour").substr(2, 6);
+				highlightColour = x_getColour(x_currentPageXML.getAttribute("colour"));
 			}
 			
 			var shape = x_currentPageXML.getAttribute("shape");
