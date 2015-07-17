@@ -40,7 +40,9 @@ define("INDEX_FOLDER_PROMPT","What would you like to call your folder?");
 
 define("INDEX_WORKSPACE_TITLE","My Projects");
 
-define("INDEX_CREATE","Create a new project");
+define("INDEX_CREATE","Project Templates");
+
+define("INDEX_DETAILS","Project Details");
 
 define("INDEX_SORT","Sort your files");
 

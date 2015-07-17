@@ -255,7 +255,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-
+			<p class="heading"><?PHP echo INDEX_DETAILS; ?></p>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
@@ -266,10 +266,11 @@ Folder popup is the div that appears when creating a new folder
     </div>
 
     <div class="ui-layout-east">
-
+	
         <div class="header" id="inner_right_header">
             <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
         </div>
+		
         <div class="content">
             <div class="new_template_area_middle">
                 <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP
