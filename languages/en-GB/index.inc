@@ -62,7 +62,7 @@ define("INDEX_LOGGED_IN_AS","Logged in as");
 
 define("INDEX_BUTTON_LOGIN","Sign In");
 
-define("INDEX_BUTTON_LOGOUT","Log out");
+define("INDEX_BUTTON_LOGOUT","Logout");
 
 define("INDEX_BUTTON_PROPERTIES","Properties");
 
