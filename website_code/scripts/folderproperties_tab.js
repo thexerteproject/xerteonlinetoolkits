@@ -91,18 +91,14 @@ function folder_rename_stateChanged(){
 			document.getElementById('dynamic_area').innerHTML = array_response[0];
 
 			/*
-			* prepare and change the folder name in the main window
-			*/
-
-			id = "folder_" + window.name.substr(0,window.name.indexOf("_"));
-
-			current_innerHTML = window_reference.document.getElementById(id).childNodes[0].innerHTML;
-
-			future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
-
-			window_reference.document.getElementById(id).childNodes[0].innerHTML = future_innerHTML;
-
-	
+			 * set the file name in the file_area
+			 */
+			if(typeof window_reference==="undefined"){
+				window.opener.refresh_workspace();
+			}
+			else {
+				window_reference.refresh_workspace();
+			}
 		}
 	}		
 
