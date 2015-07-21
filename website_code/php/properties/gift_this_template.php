@@ -166,7 +166,7 @@ if(is_numeric($_POST['tutorial_id'])){
         $creation_query = "INSERT INTO {$prefix}templatedetails "
         . "(template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
         . " VALUES (?,?,?,?,?,?,?,?,?,?)";
-        $params = array($new_template_id, $user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"private",$row_currentdetails['extra_flags']);
+        $params = array($new_template_id, $user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"Private",$row_currentdetails['extra_flags']);
 
         $ok = db_query($creation_query, $params);
         
