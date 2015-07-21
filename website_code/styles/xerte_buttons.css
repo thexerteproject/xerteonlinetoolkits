@@ -16,6 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ /*Change size of just fa-icons in workspace*/
+ .xerte_button_c_no_width i{
+	 font-size: 1.6em;
+	 vertical-align: middle;
+ }
 
 .xerte_button_c {
     background-color:#f86718;
@@ -53,7 +59,7 @@
     border:1px solid #bababa;
     display:inline-block;
     color:#000000;
-    font-size:1em;
+    font-size:1.4em;
     padding:3px 6px;
     text-decoration:none;
 }
