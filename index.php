@@ -262,7 +262,7 @@ Folder popup is the div that appears when creating a new folder
             <div class="file_mgt_area_bottom">
 				<div class="sorter">
 					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
-						<?PHP echo INDEX_SORT; ?>
+						<i class="fa  icon-sort xerte-icon"></i>&nbsp;<?PHP echo INDEX_SORT; ?>
 						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
 							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
@@ -273,7 +273,7 @@ Folder popup is the div that appears when creating a new folder
 				</div>
 				<div class="workspace_search_outer">
 					<div class="workspace_search">
-						<?PHP echo INDEX_SEARCH; ?>
+						<i class="fa  icon-search"></i>&nbsp;<?PHP echo INDEX_SEARCH; ?>
 						<input type="text" id="workspace_search" label="Search">
 					</div>
 				</div>
@@ -283,7 +283,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-			<p class="heading"><?PHP echo INDEX_DETAILS; ?></p>
+			<p class="heading"><i class="fa  icon-tag xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
@@ -296,7 +296,7 @@ Folder popup is the div that appears when creating a new folder
     <div class="ui-layout-east">
 	
         <div class="header" id="inner_right_header">
-            <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
+            <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
         </div>
 		
         <div class="content">

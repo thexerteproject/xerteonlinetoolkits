@@ -666,9 +666,9 @@ function list_blank_templates() {
 
     }
 
-    echo "<button id=\"" . $row['template_name'] .  "_button\" type=\"button\" class=\"xerte_button_c\" onclick=\"javascript:template_toggle('" . $row['template_name'] . "')\">" . DISPLAY_CREATE . "</button></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
+    echo "<button id=\"" . $row['template_name'] .  "_button\" type=\"button\" class=\"xerte_button_c_no_width\" onclick=\"javascript:template_toggle('" . $row['template_name'] . "')\"><i class=\"fa  icon-wrench xerte-icon\"></i> " . DISPLAY_CREATE . "</button></div><div id=\"" . $row['template_name'] . "\" class=\"rename\">";
 
-    echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /> <button type=\"submit\" class=\"xerte_button_c\" >" . DISPLAY_CREATE . "</button></form></div></div>";
+    echo "<span>" . DISPLAY_NAME . "</span><form action=\"javascript:create_tutorial('" . $row['template_name'] . "')\" method=\"post\" enctype=\"text/plain\"><input type=\"text\" width=\"200\" id=\"filename\" name=\"filename\" /> <button type=\"submit\" class=\"xerte_button_c\" ><i class=\"fa  icon-wrench xerte-icon\"></i>" . DISPLAY_CREATE . "</button></form></div></div>";
   }
 
   /*
