@@ -11,6 +11,6 @@
 	 */
 	 
 
-	define("PUBLISH_FAIL", "Sorry you are not an editor of this template and so cannot publish it");
+	define("PUBLISH_FAIL", "Sorry you are not an editor of this project and so cannot publish it");
 
 ?>

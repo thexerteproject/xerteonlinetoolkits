@@ -11,7 +11,7 @@
 	 */
 	 
 
-	define("REMOVE_TEMPLATE_NOT_CREATOR", "Sorry you aren't the creator of this file and as such cannot delete it");
+	define("REMOVE_TEMPLATE_NOT_CREATOR", "Sorry you aren't the creator of this project and as such cannot delete it");
 	
 	define("REMOVE_TEMPLATE_SYNDICATED", "Sorry you cannot delete a syndicated project. To delete this project, first turn off syndication in the project's properties.");
 	

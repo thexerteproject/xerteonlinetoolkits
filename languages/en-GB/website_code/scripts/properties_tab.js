@@ -9,7 +9,7 @@
 
 	var EMBED_CODE = "This code will allow you to embed your project into a web page";
 	
-	var SHARING_CONFIRM = "Are you sure you wish to stop sharing this template?";
+	var SHARING_CONFIRM = "Are you sure you wish to stop sharing this project?";
 	
 	var PASSWORD_REMINDER = "You must set a password";
 	

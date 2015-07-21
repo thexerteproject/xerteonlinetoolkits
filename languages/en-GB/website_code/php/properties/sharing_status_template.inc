@@ -10,11 +10,11 @@
 	 * @package
 	 */
 
-	define("SHARING_INSTRUCTION","To share this template with some one, please type their name here. The user must have an account on the site to appear in this search.");
+	define("SHARING_INSTRUCTION","To share this project with some one, please type their name here. The user must have an account on the site to appear in this search.");
 	
 	define("SHARING_NAMES","Names will appear here");
 
-	define("SHARING_CURRENT","This template is currently shared with : ");
+	define("SHARING_CURRENT","This project is currently shared with : ");
 
     define("SHARING_CREATOR", "Creator");
 
@@ -26,10 +26,10 @@
 
     define("SHARING_REMOVE", "Remove");
 
-	define("SHARING_STOP","Click to stop sharing this file");
+	define("SHARING_STOP","Click to stop sharing this project");
 
-	define("SHARING_NOT_SHARED","This template is not shared");
+	define("SHARING_NOT_SHARED","This project is not shared");
 
-	define("SHARING_FAIL","You have no rights to this template");
+	define("SHARING_FAIL","You have no rights to this project");
 
 ?>
