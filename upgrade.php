@@ -304,7 +304,7 @@ function upgrade_4()
     $error1 =  _db_add_field('templatedetails', 'extra_flags', 'varchar(45)', '','access_to_whom');
 
     $table = table_by_key('templatedetails');
-    $error2 = _upgrade_db_query("UPDATE `$table`  set `extra_flags`='engine=flash'");
+    $error2 = _upgrade_db_query("UPDATE `$table`  set `extra_flags`='engine=javascript' where `extra_flags`=''");
 
     $table = table_by_key('originaltemplatesdetails');
     $error3 = _upgrade_db_query("UPDATE `$table`  set `template_framework`='site' where `template_name`='site'");
