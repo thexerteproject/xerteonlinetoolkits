@@ -35,6 +35,11 @@
         var FileLocation = "%XMLPATH%";
         var templateLocation = "%TEMPLATEPATH%";
         var projectXML = "%XMLFILE%"; //this is the file to read, not the xml
+		
+		//for exported files, FileLocation will not be set...
+		if (FileLocation == ""){
+			FileLocation = String(window.location).substr(0, String(window.location).lastIndexOf('/') + 1);
+		}
 
     </script>
 
