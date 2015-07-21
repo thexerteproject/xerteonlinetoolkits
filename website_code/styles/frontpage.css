@@ -535,6 +535,7 @@ div.separator {
 	margin:0px;
 	font-weight:bold;
 	/* width:200px; */
+	font-size: 1.1em;
 }
 
 .template_desc_p{
@@ -609,7 +610,8 @@ div#file_area{
     padding:4px;
 }
 .projectInformationContainer {
-	font-size: 0.9em;
+	font-size: 1.0em;
+	margin-left: 10px;
 }
 .projectInformationContainer p{
     padding: 4px;
