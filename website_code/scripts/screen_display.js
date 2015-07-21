@@ -592,10 +592,10 @@ function setupMainLayout()
     var right_column = "#pagecontainer > .ui-layout-east";
     var south_pane = "body > .ui-layout-south";
 
-    // ** Add pin buttons and wire them up **
+    /* ** Add pin buttons and wire them up **
     $("<span></span>").addClass("pin-button").prependTo( right_column );
     xerteinner_layout.addPinBtn( right_column +" .pin-button", "east" );
-
+	*/
     $("<span></span>").addClass("pin-button").prependTo( south_pane );
     xertemain_layout.addPinBtn( south_pane +" .pin-button", "south" );
 
