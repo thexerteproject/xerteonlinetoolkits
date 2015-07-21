@@ -283,7 +283,7 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-			<p class="heading"><i class="fa  icon-tag xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
+			<p class="heading"><i class="fa  icon-pencil xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
