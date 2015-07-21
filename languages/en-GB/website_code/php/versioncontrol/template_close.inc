@@ -15,11 +15,11 @@
 
 	define("TEMPLATE_CLOSE_EMAIL_GREETINGS","Hello,"); 
 
-	define("TEMPLATE_CLOSE_EMAIL_INTRODUCTION","You've requested to be informed when the file");
+	define("TEMPLATE_CLOSE_EMAIL_INTRODUCTION","You've requested to be informed when the project");
 
-	define("TEMPLATE_CLOSE_EMAIL_MESSAGE"," becomes available for editing. The file was made available at");
+	define("TEMPLATE_CLOSE_EMAIL_MESSAGE"," becomes available for editing. The project was made available at");
  
-	define("TEMPLATE_CLOSE_EMAIL_MESSAGE_MORE"," Please note that multiple requests may have been made, and as such you may not be the only person to have receive one of these notifications. As such the file may well be locked by somebody else.");
+	define("TEMPLATE_CLOSE_EMAIL_MESSAGE_MORE"," Please note that multiple requests may have been made, and as such you may not be the only person to have receive one of these notifications. As such the project may well be locked by somebody else.");
 
 	define("TEMPLATE_CLOSE_EMAIL_LOG_IN"," Please log into the site at");
  

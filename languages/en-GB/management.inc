@@ -34,7 +34,7 @@
 	
 	define("MANAGEMENT_MENUBAR_USERS","Users");
 	
-	define("MANAGEMENT_MENUBAR_TEMPLATES","Users templates");
+	define("MANAGEMENT_MENUBAR_TEMPLATES","Users projects");
 	
 	define("MANAGEMENT_MENUBAR_ERRORS","Errors");
 	
