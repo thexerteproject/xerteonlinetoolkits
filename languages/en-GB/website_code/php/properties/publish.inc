@@ -43,6 +43,6 @@
 
     define("PUBLISH_WEB_ADDRESS","The web address for this resource is");
 	
-	define("PUBLISH_FAIL","Sorry you do not have rights to this template");
+	define("PUBLISH_FAIL","Sorry you do not have rights to this project");
 	
 ?>
