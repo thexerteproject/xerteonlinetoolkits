@@ -320,71 +320,71 @@ function button_check(){
 
 
     editbtn.disabled="disabled";
-    editbtn.className = "xerte_button_c_no_width disabled";
+    editbtn.className = "xerte_workspace_button disabled";
     editbtn.onclick="";
 
     previewbtn.disabled="disabled";
-    previewbtn.className = "xerte_button_c_no_width disabled";
+    previewbtn.className = "xerte_workspace_button disabled";
     previewbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className="xerte_button_c_no_width disabled";
+    deletebtn.className="xerte_workspace_button disabled";
     deletebtn.onclick="";
 
     duplicatebtn.disabled="disabled";
-    duplicatebtn.className = "xerte_button_c_no_width disabled";
+    duplicatebtn.className = "xerte_workspace_button disabled";
     duplicatebtn.onclick="";
 
     publishbtn.disabled="disabled";
-    publishbtn.className = "xerte_button_c_no_width disabled";
+    publishbtn.className = "xerte_workspace_button disabled";
     publishbtn.onclick="";
 
     propertiesbtn.disabled="disabled";
-    propertiesbtn.className = "xerte_button_c_no_width disabled";
+    propertiesbtn.className = "xerte_workspace_button disabled";
     propertiesbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className = "xerte_button_c_no_width disabled";
+    deletebtn.className = "xerte_workspace_button disabled";
     deletebtn.onclick="";
 
     if(ids.length==1) {
         switch (workspace.nodes[ids[0]].type) {
             case "workspace":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
                 break;
             case "recyclebin":
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             case "folder":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             default:
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 editbtn.removeAttribute("disabled");
-                editbtn.className = "xerte_button_c_no_width";
+                editbtn.className = "xerte_workspace_button";
                 editbtn.onclick = function (e) {
                     if (e.shiftKey) {
                         edit_window(false, "edit");
@@ -395,25 +395,25 @@ function button_check(){
                 };
 
                 previewbtn.removeAttribute("disabled");
-                previewbtn.className = "xerte_button_c_no_width";
+                previewbtn.className = "xerte_workspace_button";
                 previewbtn.onclick = function () {
                     preview_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
 
                 duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_button_c_no_width";
+                duplicatebtn.className = "xerte_workspace_button";
                 duplicatebtn.onclick = function () {
                     duplicate_template()
                 };
 
                 publishbtn.removeAttribute("disabled");
-                publishbtn.className = "xerte_button_c_no_width";
+                publishbtn.className = "xerte_workspace_button";
                 publishbtn.onclick = function () {
                     publish_this()
                 };
