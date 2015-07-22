@@ -90,16 +90,16 @@ var EDITOR = (function ($, parent) {
 		
 		// create insert buttons above the page hints / thumbs
 		$([
-            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before"},
-            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after"},
-            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end"}
+            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "Before"},
+            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "After"},
+            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "At end"}
         ]).each(function(index, value) {
 			var button = $('<button>')
 				.attr('id', value.id)
 				.attr('title', value.tooltip)
 				.attr('value', value.btnvalue)
 				.attr('tabindex', index + 3)
-				.addClass("xerte_button")
+				.addClass("insert_button")
 				.click(add_page)
 				.append($('<img>').attr('src', value.icon).height(14))
 				.append(value.name);
