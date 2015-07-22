@@ -5,10 +5,12 @@ The guidelines are not restrictive. The brand is really the 'X' icon, and we'd e
 
 THe typeface for the 'erte' lettering is Eras Demi ITC.
 
-The typeface for the 'an apereo community project' lettering is Myriad Pro Light Italic. We do not display an apereo logo.
+The typeface for the 'an apereo community project' lettering is Myriad Pro Light Italic. 
 
 At smaller sizes it is acceptable to leave out the 'an apereo community project' text, as it will be illegible.
 
 At smaller text sizes, the 'X' icon loses definition: substitute it for a standard 'X' in the Eras Demi font.
 
 Both texts can be in any colour to suit both light and dark backgrounds.
+
+If you modify login.jpg, which displays on the login page, we'd appreciate it if you leave the Xerte, Apereo and OSI project logos in place, but by all means switch out the background to something that suits your organisation.
