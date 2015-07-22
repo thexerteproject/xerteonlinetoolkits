@@ -153,7 +153,7 @@ if(is_numeric($_POST['template_id'])) {
 
         echo "<p class=\"header\"><span>" . PROPERTIES_TAB_MEDIA . "</span></p>";
 
-        echo "<p>" . MEDIA_AND_QUOTA_IMPORT_MEDIA . "</p><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "/\" /><br><br><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\">" . MEDIA_AND_QUOTA_BUTTON_IMPORT . "</button></form><p>" . MEDIA_AND_QUOTA_CLICK_FILENAME . "<br><textarea id=\"linktext\" style=\"width:90%;\" rows=\"3\"></textarea></p>";
+        echo "<p>" . MEDIA_AND_QUOTA_IMPORT_MEDIA . "</p><form method=\"post\" enctype=\"multipart/form-data\" id=\"importpopup\" name=\"importform\" target=\"upload_iframe\" action=\"website_code/php/import/fileupload.php\" onsubmit=\"javascript:iframe_upload_check_initialise();\"><input name=\"filenameuploaded\" type=\"file\" /><input type=\"hidden\" name=\"mediapath\" value=\"" . $dir_path . "/\" /><br><br><button type=\"submit\" class=\"xerte_button\" name=\"submitBtn\" onsubmit=\"javascript:iframe_check_initialise()\"><i class=\"fa fa-upload\"></i> " . MEDIA_AND_QUOTA_BUTTON_IMPORT . "</button></form><p>" . MEDIA_AND_QUOTA_CLICK_FILENAME . "<br><textarea id=\"linktext\" style=\"width:90%;\" rows=\"3\"></textarea></p>";
         echo "<p style=\"margin:0px; padding:0px; margin-left:10px;\" id=\"download_link\"></p>";
 
         echo "<div class=\"template_file_area\"><p>" . MEDIA_AND_QUOTA_PUBLISH . "</p>";

@@ -55,7 +55,7 @@ function xml_template_display($xerte_toolkits_site,$change){
 
     }
 
-    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" >" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
+    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . $row['extra'] . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
     if($change){
 
@@ -93,7 +93,7 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
         echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . "</p>";
 
-        echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $_POST['template_id'] ."', 'rename_form')\"><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" >" . PROPERTIES_LIBRARY_RENAME . "</button></form>";
+        echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $_POST['template_id'] ."', 'rename_form')\"><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_RENAME . "</button></form>";
 
         if($change && $msgtype=="name"){
 
@@ -272,7 +272,7 @@ function notes_display($notes, $change, $template_id){
     $notes = htmlentities($notes, ENT_QUOTES, 'UTF-8', false);
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
+    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
 
     if($change){
 
@@ -340,7 +340,7 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
     echo "<form action=\"javascript:peer_change_template()\" name=\"peer\" >";
     echo PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . " <input type=\"text\" size=\"15\" name=\"password\" style=\"margin:0px; padding:0px\" value=\"" . $passwd . "\" /><br /><br />";
     echo PROPERTIES_LIBRARY_PEER_RETOUREMAIL_PROMPT . "<br /> <input type=\"text\" size=\"50\" name=\"retouremail\" style=\"margin:0px; padding:0px\" value=\"" . $retouremail . "\" />";
-    echo "<br><br><button type=\"submit\" class=\"xerte_button\">" . PROPERTIES_LIBRARY_SAVE . "</button>";
+    echo "<br><br><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
     echo "</p>";
     echo "</form>";
 
@@ -437,7 +437,7 @@ function syndication_display($xerte_toolkits_site, $change){
     echo "</select></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_DESCRIPTION . "<form action=\"javascript:syndication_change_template()\" name=\"syndshare\" ><textarea id=\"description\" style=\"width:95%; height:100px\">" . $row_syndication['description'] . "</textarea>";
-    echo PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . "<textarea id=\"keywords\" style=\"width:95%; height:40px\">" . $row_syndication['keywords'] . "</textarea><button type=\"submit\" class=\"xerte_button\" style=\"padding-top:5px\" >" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
+    echo PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . "<textarea id=\"keywords\" style=\"width:95%; height:40px\">" . $row_syndication['keywords'] . "</textarea><button type=\"submit\" class=\"xerte_button\" style=\"padding-top:5px\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
 
     if($change){
 
@@ -798,7 +798,7 @@ function access_display($xerte_toolkits_site, $change){
 
     echo "</div>";
 
-    echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\">" . PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE . "</button> </p>";
+    echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\"><i class=\"fa fa-floppy-o\"></i>&nbsp;&nbsp;" . PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE . "</button> </p>";
 
     if($change){
 
@@ -846,7 +846,7 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 
     }
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" ><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . $row_rss['description'] . "</textarea><br><br><button type=\"submit\" class=\"xerte_button\" >" . PROPERTIES_LIBRARY_SAVE . "</button></form></p>";
+    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" ><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . $row_rss['description'] . "</textarea><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></form></p>";
 
     echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_SITE . "</p>";
 

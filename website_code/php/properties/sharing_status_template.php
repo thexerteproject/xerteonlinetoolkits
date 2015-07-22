@@ -71,7 +71,7 @@ if(is_user_creator((int) $_POST['template_id'])){
  */
 
 if(sizeof($query_sharing_rows)==0){
-    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
+    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
     exit(0);
 }
 
@@ -111,7 +111,7 @@ foreach($query_sharing_rows as $row) {
 
             echo "<p>" . SHARING_REMOVE_DESCRIPTION . "</p>";
 
-            echo "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" >" . SHARING_REMOVE . "</button>";
+            echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" ><i class=\"fa fa-minus-circle\"></i>&nbsp;" . SHARING_REMOVE . "</button>";
 
             echo "<p class=\"share_border\"></p>";
 
