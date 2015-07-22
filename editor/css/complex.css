@@ -803,7 +803,10 @@ button .flash-icon {padding-left: 4px;}
 
 button:hover {background: #f86718; color: #000000;}
 
-.xerte_button {background: transparent; border: 0; }
+.insert_button {background: transparent; border: 0; font-size:0.8em; }
+.insert_button:hover {background: transparent; border: 0; color: #0099a0;}
+
+.xerte_button {background: transparent; border: 0;}
 .xerte_button:hover {background: transparent; border: 0; color: #0030a0;}
 
 .xerte_button.disabled { background: transparent; border: 0; }
