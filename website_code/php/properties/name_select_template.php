@@ -57,7 +57,7 @@ if(is_numeric($_POST['template_id'])){
 
             foreach($query_names_response as $row){
 
-                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">" . NAME_SELECT_CLICK . "</button></p>";
+                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_CLICK . "</button></p>";
 
             }
 
