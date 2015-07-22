@@ -184,7 +184,7 @@ if (in_array("media", $template_supports)) {
                         <div id="tab7" class="tab" style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('7');
                                                                                                         syndication_template()">
-<i class="fa icon-share xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_OPEN; ?>
+<i class="fa fa-cc xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_OPEN; ?>
                             </p>									
                         </div>							
                         <div class="tab_spacer">							
@@ -241,7 +241,7 @@ if (in_array("give", $template_supports)) {
                             <div id="tab11" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('11');
                                                                                                             xml_template()">
-                                    <i class="icon-file xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_XML; ?>
+                                    <i class="fa fa-code xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_XML; ?>
                                 </p>									
                             </div>						
                             <!-- 
