@@ -124,7 +124,7 @@ _load_language_file("/properties.inc");
                         <div id="tab1" class="tab" style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('1');
                                                                                                         properties_template()">
-                                 <i class="fa icon-file-text xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_PROJECT; ?>
+                                 <i class="fa fa-file-text xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_PROJECT; ?>
                             </p>									
                         </div>
                         <div class="tab_spacer">							
@@ -133,7 +133,7 @@ _load_language_file("/properties.inc");
                         <div id="tab2" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('2');
                                                                                                         notes_template()">
-                                <i class="fa icon-edit xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_NOTES; ?>
+                                <i class="fa fa-edit xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_NOTES; ?>
                             </p>									
                         </div>
                         <div class="tab_spacer">							
@@ -145,7 +145,7 @@ if (in_array("media", $template_supports)) {
                             <div id="tab3" class="tab"  style="width:146px;  height:38px;">
                                 <p onclick="javascript:tab_highlight('3');
                                                                                                             media_and_quota_template()">
-    <i class="fa icon-film xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_MEDIA; ?>
+    <i class="fa fa-film xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_MEDIA; ?>
                                 </p>									
                             </div>
                             <div class="tab_spacer">							
@@ -157,7 +157,7 @@ if (in_array("media", $template_supports)) {
                         <div id="tab4" class="tab"  style="width:146px;  height:38px;">
                             <p onclick="javascript:tab_highlight('4');
                                                                                                         access_template()">
-                        <i class="fa icon-unlock xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_ACCESS; ?>
+                        <i class="fa fa-unlock xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_ACCESS; ?>
                             </p>									
                         </div>
                         <div class="tab_spacer">							
@@ -166,7 +166,7 @@ if (in_array("media", $template_supports)) {
                         <div id="tab5" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('5');
                                                                                                         sharing_status_template()">
-<i class="fa icon-share xerte-icon"></i><?PHP echo PROPERTIES_TAB_SHARED; ?>
+<i class="fa fa-share xerte-icon"></i><?PHP echo PROPERTIES_TAB_SHARED; ?>
                             </p>									
                         </div>
                         <div class="tab_spacer">							
@@ -175,7 +175,7 @@ if (in_array("media", $template_supports)) {
                         <div id="tab6" class="tab"  style="width:146px; height:38px;">
                             <p onclick="javascript:tab_highlight('6');
                                                                                                         rss_template()">
-<i class="fa icon-rss xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_RSS; ?>
+<i class="fa fa-rss xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_RSS; ?>
                             </p>									
                         </div>
                         <div class="tab_spacer">							
@@ -196,7 +196,7 @@ if (in_array("media", $template_supports)) {
                             <div id="tab8" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('8');
                                                                                                             export_template()">
-                            <i class="fa icon-save xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_EXPORT; ?>
+                            <i class="fa fa-save xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_EXPORT; ?>
                                 </p>									
                             </div>
                             <div class="tab_spacer">							
@@ -211,7 +211,7 @@ if (in_array("media", $template_supports)) {
                             <div id="tab9" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('9');
                                                                                                             peer_template()">
-                            <i class="fa icon-comment xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_PEER; ?>
+                            <i class="fa fa-comments xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_PEER; ?>
                                 </p>									
                             </div>	
                             <div class="tab_spacer">							
@@ -226,7 +226,7 @@ if (in_array("give", $template_supports)) {
                             <div id="tab10" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('10');
                                                                                                             gift_template()">
-    <i class="fa icon-gift xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_GIVE; ?>
+    <i class="fa fa-gift xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_GIVE; ?>
                                 </p>									
                             </div>
                             <div class="tab_spacer">							
