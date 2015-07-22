@@ -215,19 +215,19 @@ Folder popup is the div that appears when creating a new folder
 					</button>
 				</div>
 				<div class="file_mgt_area_middle_button_left">
-					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="edit"><i class="fa fa-pencil-square-o xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>"type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="properties"><i class="fa fa-info-circle xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
 				<div class="file_mgt_area_middle_button_right">
-					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="duplicate"><i class="fa fa-copy xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_workspace_button_disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="publish"><i class="fa  fa-share xerte-icon"></i></button>
 				</div>
 			</div>
