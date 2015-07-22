@@ -52,7 +52,9 @@ body{
 
 .title_holder{
 	background-color:rgba(77,88,94,0.8);
-	height:100px;
+	min-height: 100px;
+  max-height:150px;
+  overflow:hidden;
 	padding:15px;
 }
 .title_welcome{
@@ -60,10 +62,10 @@ body{
 	position:relative; 
 	font-size:260%;
 	color:white;
-	width:400px;
+	width:450px;
 	margin:10px 0 0 0;
   font-family:"Open Sans", sans-serif;;
-	line-height:90%
+	line-height:98%
 }
 .title{
 	border-bottom:#f3eee2 1px dotted;
