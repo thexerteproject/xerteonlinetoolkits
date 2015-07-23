@@ -43,7 +43,7 @@ echo "<p>The site logo is (The logo in the top left, as you can currently see - 
 
 echo "<p>The organisational logo is (The logo in the top right, as you can currently see - number 4 on the diagram)<textarea name=\"organisational_logo\">website_code/images/UofNLogo.jpg</textarea></p>";
 
-echo "<p>The Welcome message is (number 1 on the diagram)<textarea name=\"welcome_message\">Welcome to Xerte online toolkits</textarea></p>";
+echo "<p>The Welcome message is (number 1 on the diagram)<textarea name=\"welcome_message\">Welcome to Xerte Online Toolkits</textarea></p>";
 
 echo "<p>The site text is (number 2 on the diagram)<textarea name=\"site_text\">Welcome to the toolkits front page, developed by the Apereo Foundation</textarea></p>";
 
