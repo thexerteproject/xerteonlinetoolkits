@@ -209,11 +209,7 @@ Folder popup is the div that appears when creating a new folder
         <div class="header" id="inner_left_header">
 			<div class="file_mgt_area_buttons">
 				<!--Workspace buttons-->
-				<div class="file_mgt_area_middle_button_left">
-					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
-						<i class="fa fa-folder xerte-icon"></i>
-					</button>
-				</div>
+
 				<div class="file_mgt_area_middle_button_left">
 					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="edit"><i class="fa fa-pencil-square-o xerte-icon"></i></button>
@@ -222,6 +218,13 @@ Folder popup is the div that appears when creating a new folder
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
 				</div>
+				
+				<div class="file_mgt_area_middle_button_left">
+					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
+						<i class="fa fa-folder xerte-icon"></i>
+					</button>
+				</div>
+				
 				<div class="file_mgt_area_middle_button_right">
 					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
