@@ -13,4 +13,3 @@ At smaller text sizes, the 'X' icon loses definition: substitute it for a standa
 
 Both texts can be in any colour to suit both light and dark backgrounds.
 
-If you modify login.jpg, which displays on the login page, we'd appreciate it if you leave the Xerte, Apereo and OSI project logos in place, but by all means switch out the background to something that suits your organisation.
