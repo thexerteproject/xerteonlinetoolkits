@@ -96,9 +96,9 @@ if(is_user_admin()){
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_PLAYS . "</td><td>" . $row_templates['number_of_uses']  . "</td></tr>";
             echo "<tr><td>" . USERS_MANAGEMENT_TEMPLATE_ACCESS . "</td><td>" . $row_templates['access_to_whom']  . "</td></tr>";
             echo "</table>";
-            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:edit_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_EDIT . "</button>";
-            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:preview_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PREVIEW . "</button>";
-            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:properties_window('" . $row_templates['template_id'] . "')\">" . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</button></p>";
+            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:edit_window('" . $row_templates['template_id'] . "')\"><i class=\"fa fa-pencil-square-o\"></i> " . USERS_MANAGEMENT_TEMPLATE_EDIT . "</button>";
+            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:preview_window('" . $row_templates['template_id'] . "')\"><i class=\"fa fa-play\"></i> " . USERS_MANAGEMENT_TEMPLATE_PREVIEW . "</button>";
+            echo " - <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:properties_window('" . $row_templates['template_id'] . "')\"><i class=\"fa fa-info-circle\"></i> " . USERS_MANAGEMENT_TEMPLATE_PROPERTIES . "</button></p>";
 
             echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
@@ -117,7 +117,7 @@ if(is_user_admin()){
 
             //}
 
-            echo "<input type=\"hidden\" value=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><button type=\"submit\" class=\"xerte_button\">" . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "</button></form></div>";
+            echo "<input type=\"hidden\" value=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" name=\"template_id\" /><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-share\"></i> " . USERS_MANAGEMENT_TEMPLATE_GIVE_BUTTON . "</button></form></div>";
             // Next record
 
         }
