@@ -48,7 +48,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_REGISTER_TEXT . "</p>";
 
-    echo "<p><button type=\"button\" onclick=\"javascript:register();\">" .  MANAGEMENT_SITE_REGISTER . "</button>";
+    echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:register();\"><i class=\"fa fa-globe\"></i> " .  MANAGEMENT_SITE_REGISTER . "</button>";
 
     echo "<div class=\"template\" id=\"sitedetails\"><p>" . MANAGEMENT_SITE_TITLE . " <button type=\"button\" class=\"xerte_button\" id=\"sitedetails_btn\" onclick=\"javascript:templates_display('sitedetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"sitedetails_child\">";
 
