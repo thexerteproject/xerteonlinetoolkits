@@ -38,6 +38,7 @@ Version 1.0
 <link href="website_code/styles/properties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/folderproperties_tab.css" media="screen" type="text/css" rel="stylesheet" />
 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
 <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
 <?php
@@ -93,7 +94,7 @@ Start the page and once loaded set the default option
 										</div>
 										<div id="tab1" class="tab" style="width:146px; height:38px;">
 												<p onclick="javascript:tab_highlight('1');folderproperties_template()">
-														<?PHP echo FOLDERPROPERTIES_TAB_FOLDER; ?>
+														<?PHP echo "<i class=\"fa fa-folder\"></i>&nbsp;".FOLDERPROPERTIES_TAB_FOLDER; ?>
 												</p>									
 										</div>
 										<div class="tab_spacer">							
@@ -102,7 +103,7 @@ Start the page and once loaded set the default option
 										</div>
 										<div id="tab2" class="tab" style="width:146px; height:38px;">
 												<p onclick="javascript:tab_highlight('2'); folder_content_template()">
-														<?PHP echo FOLDERPROPERTIES_TAB_CONTENT; ?>
+														<?PHP echo "<i class=\"fa fa-folder-open\"></i>&nbsp;".FOLDERPROPERTIES_TAB_CONTENT; ?>
 												</p>									
 										</div>
 										<div class="tab_spacer">							
@@ -111,7 +112,7 @@ Start the page and once loaded set the default option
 										</div>
 										<div id="tab3" class="tab" style="width:146px; height:38px;">
 												<p onclick="javascript:tab_highlight('3'); folder_rss_template()">
-														<?PHP echo FOLDERPROPERTIES_TAB_RSS; ?>
+														<?PHP echo "<i class=\"fa fa-rss\"></i>&nbsp;".FOLDERPROPERTIES_TAB_RSS; ?>
 												</p>									
 										</div>
 										<div class="tab_spacer">							

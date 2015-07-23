@@ -23,8 +23,8 @@
 	echo "<p>" . XERTE_EXPORT_DESCRIPTION . "</p>";
 
     echo "<ol type='1'>";
-    echo "<li>" . XERTE_EXPORT_ZIP . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', '', '', '" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "')\">" . XERTE_EXPORT_ZIP_LINK . "</button></li></ul></li><br />";
-    echo "<li>" . XERTE_EXPORT_ZIP_ARCHIVE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', '', '', '" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "')\">" . XERTE_EXPORT_ZIP_ARCHIVE_LINK . "</button></li></ul><br /></li>";
+    echo "<li>" . XERTE_EXPORT_ZIP . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', '', '', '" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_LINK . "</button></li></ul></li><br />";
+    echo "<li>" . XERTE_EXPORT_ZIP_ARCHIVE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', '', '', '" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_ARCHIVE_LINK . "</button></li></ul><br /></li>";
     echo "</ol>";
 
 ?>
