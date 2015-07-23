@@ -237,7 +237,7 @@ function login_form($messages, $xerte_toolkits_site)
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
     {
         ?>
-        <img src="<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+        <img src="branding/logo_left.png" style="margin-left:10px; float:left"/>
     <?php
     }
     else {
