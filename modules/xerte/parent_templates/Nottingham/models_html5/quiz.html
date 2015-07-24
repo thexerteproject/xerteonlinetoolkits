@@ -328,8 +328,9 @@
                 }
 
                 $("#nextBtn").removeAttr("disabled");
-                $(this).attr("disabled", "disabled");
-                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+				$("#checkBtn")
+						.attr("disabled", "disabled")
+						.hide().show();  // hack to take care of IEs inconsistent handling of clicks
             }
             else
             {
