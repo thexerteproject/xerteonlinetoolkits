@@ -27,6 +27,12 @@
 	 * @version 1.0
 	 * @author Patrick Lockley
 	 */
+global $youtube_api_key;
+$youtube_api_key = "";
+if (file_exists(dirname(__FILE__) . "/../../../api_keys.php")){
+	include_once(dirname(__FILE__) . "/../../../api_keys.php");
+}
+
 
 function lmsmanifest_2004_create($name, $flash, $lo_name){
 
@@ -176,7 +182,7 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 
 function scorm2004_html5_page_create($type, $template_name, $lo_name, $language){
 
-    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
+    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
@@ -197,6 +203,7 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language)
         $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scorm2004RLO.htm", 'w');
 

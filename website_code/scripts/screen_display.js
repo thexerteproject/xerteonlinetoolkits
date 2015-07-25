@@ -320,71 +320,71 @@ function button_check(){
 
 
     editbtn.disabled="disabled";
-    editbtn.className = "xerte_button_c_no_width disabled";
+    editbtn.className = "xerte_workspace_button disabled";
     editbtn.onclick="";
 
     previewbtn.disabled="disabled";
-    previewbtn.className = "xerte_button_c_no_width disabled";
+    previewbtn.className = "xerte_workspace_button disabled";
     previewbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className="xerte_button_c_no_width disabled";
+    deletebtn.className="xerte_workspace_button disabled";
     deletebtn.onclick="";
 
     duplicatebtn.disabled="disabled";
-    duplicatebtn.className = "xerte_button_c_no_width disabled";
+    duplicatebtn.className = "xerte_workspace_button disabled";
     duplicatebtn.onclick="";
 
     publishbtn.disabled="disabled";
-    publishbtn.className = "xerte_button_c_no_width disabled";
+    publishbtn.className = "xerte_workspace_button disabled";
     publishbtn.onclick="";
 
     propertiesbtn.disabled="disabled";
-    propertiesbtn.className = "xerte_button_c_no_width disabled";
+    propertiesbtn.className = "xerte_workspace_button disabled";
     propertiesbtn.onclick="";
 
     deletebtn.disabled="disabled";
-    deletebtn.className = "xerte_button_c_no_width disabled";
+    deletebtn.className = "xerte_workspace_button disabled";
     deletebtn.onclick="";
 
     if(ids.length==1) {
         switch (workspace.nodes[ids[0]].type) {
             case "workspace":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
                 break;
             case "recyclebin":
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             case "folder":
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
                 break;
             default:
                 propertiesbtn.removeAttribute("disabled");
-                propertiesbtn.className = "xerte_button_c_no_width";
+                propertiesbtn.className = "xerte_workspace_button";
                 propertiesbtn.onclick = function () {
                     properties_window()
                 };
 
                 editbtn.removeAttribute("disabled");
-                editbtn.className = "xerte_button_c_no_width";
+                editbtn.className = "xerte_workspace_button";
                 editbtn.onclick = function (e) {
                     if (e.shiftKey) {
                         edit_window(false, "edit");
@@ -395,25 +395,25 @@ function button_check(){
                 };
 
                 previewbtn.removeAttribute("disabled");
-                previewbtn.className = "xerte_button_c_no_width";
+                previewbtn.className = "xerte_workspace_button";
                 previewbtn.onclick = function () {
                     preview_window()
                 };
 
                 deletebtn.removeAttribute("disabled");
-                deletebtn.className = "xerte_button_c_no_width";
+                deletebtn.className = "xerte_workspace_button";
                 deletebtn.onclick = function () {
                     remove_this()
                 };
 
                 duplicatebtn.removeAttribute("disabled");
-                duplicatebtn.className = "xerte_button_c_no_width";
+                duplicatebtn.className = "xerte_workspace_button";
                 duplicatebtn.onclick = function () {
                     duplicate_template()
                 };
 
                 publishbtn.removeAttribute("disabled");
-                publishbtn.className = "xerte_button_c_no_width";
+                publishbtn.className = "xerte_workspace_button";
                 publishbtn.onclick = function () {
                     publish_this()
                 };
@@ -592,10 +592,10 @@ function setupMainLayout()
     var right_column = "#pagecontainer > .ui-layout-east";
     var south_pane = "body > .ui-layout-south";
 
-    // ** Add pin buttons and wire them up **
+    /* ** Add pin buttons and wire them up **
     $("<span></span>").addClass("pin-button").prependTo( right_column );
     xerteinner_layout.addPinBtn( right_column +" .pin-button", "east" );
-
+	*/
     $("<span></span>").addClass("pin-button").prependTo( south_pane );
     xertemain_layout.addPinBtn( south_pane +" .pin-button", "south" );
 
@@ -617,6 +617,7 @@ function setupMainLayout()
 
 function dynamicResize()
 {
+	
     // Set sizes, get the windows size
     var windowWidth = parseInt($(window).width());
     var windowHeight = parseInt($(window).height());
@@ -628,7 +629,7 @@ function dynamicResize()
         xerteinner_layout.close('east');
     }
     // Make west panel 60% of windowWidth
-    xerteinner_layout.sizePane('west', windowWidth * 0.6);
+    xerteinner_layout.sizePane('west', windowWidth * 0.45);
 
     // If window is low, close south panel
     if (windowHeight < 400)
@@ -772,6 +773,33 @@ function init_workspace()
                 var v = $('#workspace_search').val();
                 $('#workspace').jstree(true).search(v);
             }, 250);
+        });
+
+        // Double click handling
+        $('#workspace a').bind('dblclick',function (e) {
+            var tree = $.jstree.reference("#workspace");
+            var linode = $(e.target).closest("li");
+            var node_id = linode[0].id;
+            var node = tree.get_node(node_id, false);
+            var type = node.type;
+            var id = node.id;
+            var xot_id = node.original.xot_id;
+
+            switch(type)
+            {
+                case "folder":
+                case "workspace":
+                case "recyclebin":
+                    break;
+                default:
+
+
+                    tree.deselect_all();
+                    tree.select_node(id);
+
+                    edit_window(false, "edithtml");
+
+            }
         });
     }
 }

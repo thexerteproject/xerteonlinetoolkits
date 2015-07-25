@@ -46,7 +46,7 @@
 	  navSetting="none"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" hidePanel="false" highlight="false" hicol="0xFFFF00" align="Left" navSetting="none"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" buttonLabel="Check Answers"/>]]></categories><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="Enter Page Text" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="Enter text for the page here" textWidth="narrow" url="Select an Image" tip="Enter a Description for Accessibility" highlight="false" hicol="0xFFFF00" align="Left" navSetting="none"
 	  notFoundMessage="could not be found in this project." continueBtnTxt="Close" />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" navSetting="none" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><customHotspots><![CDATA[<customHotspots name="Enter Page Title" text="Enter text for the page here" highlightColour="0xFFFF00" lineWidth="1" interactivity="Hotspots" showShapes="true"
 	  hotspotsTxt="Explore the diagram. Click on the various parts to learn more."
 	  labelsTxt="Drag the pins for each label to the correct position in the diagram. You can re-position the labels if required." 
@@ -67,7 +67,7 @@
 	  restart="Restart"  
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" 
@@ -101,7 +101,7 @@
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
-	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Back" nextBtnTip="Forward" videoTip="Video Clip" soundTip="Sound Clip"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Back" nextBtnTip="Forward" videoTip="Video Clip" soundTip="Sound Clip"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
@@ -432,10 +432,10 @@
   </columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="200"/>
-    <textWidth label="Min Text Width" options="No Text,Small,Medium,Max Available" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
+    <textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
     <url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput"/>
-    <hidePanel label="Hide Panel" type="CheckBox" defaultValue="false"/>	
+    <hidePanel label="Hide Panel" type="CheckBox" defaultValue="false" deprecated="This property is deprecated"/>	
     <highlight label="Highlight Hotspots" type="CheckBox" defaultValue="false"/>
     <hicol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/> 
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
@@ -691,10 +691,13 @@
     <text label="Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
 	<tip label="Image Description" type="TextInput"/>
+	<imgWidth label="Image Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" optional="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	<showHighlight label="Highlight Hotspots" type="CheckBox" defaultValue="true"/>
     <highlightColour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+	
+	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
 	
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -1525,6 +1528,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
+	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>

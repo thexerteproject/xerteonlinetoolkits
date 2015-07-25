@@ -301,26 +301,26 @@ $error_returned=true;
 
 function upgrade_4()
 {
-    $error1 =  _db_add_field('templatedetails', 'extra_flags', 'varchar(45)', '','access_to_whom');
+    if (! _db_field_exists('templatedetails', 'extra_flags')) {
+        $error1 = _db_add_field('templatedetails', 'extra_flags', 'varchar(45)', '', 'access_to_whom');
 
-    $table = table_by_key('templatedetails');
-    $error2 = _upgrade_db_query("UPDATE `$table`  set `extra_flags`='engine=flash'");
+        $table = table_by_key('templatedetails');
+        $error2 = _upgrade_db_query("UPDATE `$table`  set `extra_flags`='engine=flash'");
 
-    $table = table_by_key('originaltemplatesdetails');
-    $error3 = _upgrade_db_query("UPDATE `$table`  set `template_framework`='site' where `template_name`='site'");
+        $table = table_by_key('originaltemplatesdetails');
+        $error3 = _upgrade_db_query("UPDATE `$table`  set `template_framework`='site' where `template_name`='site'");
 
-    $table = table_by_key('sitedetails');
-    $error4 = _upgrade_db_query("ALTER TABLE `$table` CHANGE COLUMN `site_text` `site_text` TEXT NULL DEFAULT NULL");
+        $table = table_by_key('sitedetails');
+        $error4 = _upgrade_db_query("ALTER TABLE `$table` CHANGE COLUMN `site_text` `site_text` TEXT NULL DEFAULT NULL");
 
-    $error_returned=true;
-    if (($error1 === false) || ($error2 === false) || ($error3 === false) || ($error4 === false))
-    {
-        $error_returned=false;
-        // echo "creating lti tables FAILED";
+        $error_returned = true;
+        if (($error1 === false) || ($error2 === false) || ($error3 === false) || ($error4 === false)) {
+            $error_returned = false;
+            // echo "creating lti tables FAILED";
+        }
+
+        return "Creating default engine flag - ok ? " . ($error_returned ? 'true' : 'false');
     }
-
-    return "Creating default engine flag - ok ? " . ( $error_returned ? 'true' : 'false' );
-
 }
 
 function upgrade_5_step1()

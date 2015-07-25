@@ -52,7 +52,9 @@ body{
 
 .title_holder{
 	background-color:rgba(77,88,94,0.8);
-	height:100px;
+	min-height: 100px;
+  max-height:150px;
+  overflow:hidden;
 	padding:15px;
 }
 .title_welcome{
@@ -60,10 +62,10 @@ body{
 	position:relative; 
 	font-size:260%;
 	color:white;
-	width:400px;
+	width:450px;
 	margin:10px 0 0 0;
   font-family:"Open Sans", sans-serif;;
-	line-height:90%
+	line-height:98%
 }
 .title{
 	border-bottom:#f3eee2 1px dotted;
@@ -204,10 +206,17 @@ body{
 	text-align:left;
 	color:#645f4f;
 	margin:10px;
-	width:100%;
+	width:50%;
 	float:left;
 	position:relative;
 	font-size:85%;
+}
+.footerlogos{
+	float:right;
+	height: 50%;
+	position:relative;
+	margin-top:-10px;
+	margin-right:12px;
 }
 
 .news{
@@ -235,7 +244,6 @@ body{
 	font-weight:normal;
 	color:#000;
 }
-
 
 .highlightbox .news_title{
 	padding:10px 0 10px 10px;
@@ -325,10 +333,9 @@ body{
 
 .userbar {
     float:right;
+	padding-right:10px;
     margin:0;
-    margin-right:10px;
     color:#a01a13;
-    width: 450px;
 }
 
 .file_mgt_area{
@@ -374,7 +381,8 @@ body{
 
 .file_mgt_area_buttons{
 	height:25px;
-    margin-left: 20px;
+    margin-left: 12px;
+	margin-top:6px;
 }
 
 .file_mgt_area_middle_button_left{
@@ -432,18 +440,19 @@ div.separator {
 	float:left; 
 	width:100%;  
 	margin-left:10px;
-	height:150px;
-	min-height:150px;
-	overflow:visible;
+	height:130px;
+	min-height:130px;
+	overflow:auto;
     text-align: left;
 }
 
 .highlightbox {
 	background:#4d585e;
 	margin-right:20px;
-	height:150px;
+	height:130px;
 	border-radius:3px;
     text-align: left;
+    overflow: auto;
 }
 
 .new_template_area{
@@ -528,6 +537,7 @@ div.separator {
 	margin:0px;
 	font-weight:bold;
 	/* width:200px; */
+	font-size: 1.1em;
 }
 
 .template_desc_p{
@@ -601,10 +611,15 @@ div#file_area{
     font-weight: bold;
     padding:4px;
 }
-
+.projectInformationContainer {
+	font-size: 1.0em;
+	margin-left: 10px;
+	margin-top: 10px;
+}
 .projectInformationContainer p{
     padding: 4px;
 }
+
 .folder{
 	float:left;
 	position:relative;
@@ -638,22 +653,21 @@ div#folder_workspace, div#recyclebin{
 
 .workspace_search_outer
 {
-    margin:3px 10px 3px 10px;
-    width:92%;
+	float:left;
+	margin:5px 5px 5px 5px;
+	padding-right:10px;
+
 }
 
 .workspace_search
 {
-    margin:3px 10px 3px 10px;
-    background-color: #fff;
+    margin:3px 10px 3px 3px;
     width:100%;
 }
 
 .workspace_search input{
-    padding: 3px;
-    background: url(../images/Search_Icon_Light_Grey_16.png) no-repeat;
-    background-position: right;
-    width: 100%;
+    padding: 2px;
+    width: 110px;
 }
 
 div#workspace{

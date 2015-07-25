@@ -41,7 +41,7 @@ Xerte Online Toolkits is a suite of web based tools designed and developed by a 
 	<form action="xampp.php"><button type="submit">Press here for XAMPP People</button></form>
 </p>
 <p>
-	<form action="config_setup.php"><button type="submit">Press here or a full install</button></form>
+	<form action="config_setup.php"><button type="submit">Press here for a full install</button></form>
 </p>
 <p><b>Please note:</b> If you install locally and use XAMPP it may not run if you are using Skype. Please disable Skype if you intend to use XAMPP locally.</p>
 </body>

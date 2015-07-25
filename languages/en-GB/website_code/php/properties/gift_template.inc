@@ -16,6 +16,6 @@
 
 	define("GIFT_NAMES", "Names will appear here");
 		
-	define("GIFT_FAIL", "You have no rights to this template");
+	define("GIFT_FAIL", "You have no rights to this project");
 
 ?>

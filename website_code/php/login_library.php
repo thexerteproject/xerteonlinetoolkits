@@ -165,7 +165,7 @@ function login_prompt($messages, $extra_path = '') {
                             </p>
                             <div>
 
-                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button"  style="float:right"><?php echo INDEX_BUTTON_LOGIN; ?></button></p></form>
+                                <form method="post" enctype="application/x-www-form-urlencoded" ><p><?php echo INDEX_USERNAME; ?> <input type="text" size="20" maxlength="100" name="login" id="login_box"/></p><p><?PHP echo INDEX_PASSWORD; ?><input type="password" size="20" maxlength="100" name="password" /></p><p style="clear:left; width:95%; padding-bottom:15px;"><button type="submit" class="xerte_button"  style="float:right"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button></p></form>
                                 <script>   document.getElementById("login_box").focus();      </script>
                               <?php
                               if (!empty($messages)) {
@@ -198,6 +198,7 @@ function login_form($messages, $xerte_toolkits_site)
 
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 
     <!--
 
@@ -222,7 +223,7 @@ function login_form($messages, $xerte_toolkits_site)
     {
         ?>
         <div
-            style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+            style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
         </div>
     <?php
     }
@@ -236,7 +237,7 @@ function login_form($messages, $xerte_toolkits_site)
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
     {
         ?>
-        <img src="<?php echo $xerte_toolkits_site->root_file_path . "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+        <img src="branding/logo_left.png" style="margin-left:10px; float:left"/>
     <?php
     }
     else {
@@ -259,7 +260,7 @@ function login_form($messages, $xerte_toolkits_site)
                 <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
                 <p style="margin:4px"><?PHP echo INDEX_PASSWORD; ?>:
                 <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-                <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo INDEX_BUTTON_LOGIN; ?></button>
+                <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button>
             </form>
             <script>document.getElementById("login_box").focus();      </script>
         </div>
@@ -284,7 +285,7 @@ function login_form($messages, $xerte_toolkits_site)
 	</div>
 	<p class="copyright">
 		<?php echo $xerte_toolkits_site->copyright; ?>
-	</p>
+	</p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 </div>
 </body>
 </html>

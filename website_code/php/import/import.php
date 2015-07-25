@@ -36,8 +36,6 @@ include "../template_library.php";
 include "../file_library.php";
 include "../template_status.php";
 
-ini_set('memory_limit','64M');
-
 $likelihood_array = array();
 $delete_folder_array = array();
 $delete_file_array = array();
@@ -325,7 +323,9 @@ function folder_loop($path){
                 $template_check = simplexml_load_file($path . $f);
                 if ($template_check->getName() == "learningObject") {
                     $folder = (string)$template_check['targetFolder'];
-                    array_push($likelihood_array, $folder);
+                    if ($folder != "") {
+                        array_push($likelihood_array, $folder);
+                    }
                 }
             }
         }
@@ -483,13 +483,15 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
             if($file_to_create[2]=="media"){
 
-                $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],"w");
+                if ($file_to_create[0] != "") {
+                    $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
 
-                fwrite($fp,$file_to_create[1]);
+                    fwrite($fp, $file_to_create[1]);
 
-                fclose($fp);
+                    fclose($fp);
 
-                chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0],0777);
+                    chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                }
 
             }else if($file_to_create[2]=="rlt"){
 
@@ -561,6 +563,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
         if ($folder=="" && $data_xml_is_a_LO) {
             $folder = "Nottingham";
         }
+        _debug("Import: folder found is " . $folder);
 
         if(!empty($_POST['replace'])){
 
@@ -591,7 +594,8 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
                 $template_found = false;
 
-                while($template = array_pop($likelihood_array)){
+                foreach($likelihood_array as $template){
+                    _debug("Import: checking template (" . $template . ")");
                     if($folder==$template){
 
                         $template_found=true;
@@ -629,7 +633,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
             }
         }else{
 
-            if($_POST['folder']!=""){
+            if(isset($_POST['folder'])){
                 $folder_id = $_POST['folder'];
             }
 
@@ -637,8 +641,8 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
 
             $template_found = false;
 
-            while($template = array_pop($likelihood_array)){
-
+            foreach($likelihood_array as $template) {
+                _debug("Import: checking template (" . $template . ")");
                 if($folder==$template){
 
                     $template_found=true;
@@ -647,7 +651,7 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
                 }
 
             }
-
+            _debug("Import: template_found=" . $template_found);
             if($template_found){
 
                 /*

@@ -16,7 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
+ /*Change size of just fa-icons in workspace*/
+ 
+ .xerte_workspace_button.disabled {
+     background-color: rgba(248, 103, 24, 0.25);
+ }
+ 
+ .xerte_workspace_button {
+     background-color:#f86718;
+    color:#fff;
+    border-radius:4px;
+    border:#fff 1px solid;
+    padding:2px;
+    cursor: pointer;
+	width:35px
+ }
+ .xerte_workspace_button i {
+ 	 font-size: 1.4em;
+	 vertical-align: middle; 
+ }
+ 
 .xerte_button_c {
     background-color:#f86718;
     color:#fff;
@@ -45,17 +65,18 @@
 }
 
 .xerte_button {
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #dbdbdb) );
-    background:-moz-linear-gradient( center top, #f9f9f9 5%, #dbdbdb 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#feffff', endColorstr='#ebebeb');
-    background-color:#dbdbdb;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f86718), color-stop(1, #f86718) );
+    background:-moz-linear-gradient( center top, #f86718 100%, #f86718 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f86718', endColorstr='#f86718');
+    background-color:#f86718;
     border-radius:3px;
     border:1px solid #bababa;
     display:inline-block;
-    color:#000000;
+    color:#fff;
     font-size:1em;
     padding:3px 6px;
     text-decoration:none;
+    cursor: pointer;
 }
 
 .xerte_button_dark {
@@ -74,11 +95,11 @@
 
 
 .xerte_button:hover {
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #c2c2c2) );
-    background:-moz-linear-gradient( center top, #ffffff 5%, #c2c2c2 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#c2c2c2');
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f86718), color-stop(1, #f86718) );
+    background:-moz-linear-gradient( center top, #f86718 100%, #f86718 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f86718', endColorstr='#f86718');
     border:1px solid #858585;
-    color:#000000;
+    color:#fff;
 }
 
 .xerte_button:active {

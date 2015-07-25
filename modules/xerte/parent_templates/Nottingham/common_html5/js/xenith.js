@@ -1534,19 +1534,22 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgW = $img.data("origSize")[0];
             imgH = $img.data("origSize")[1];
         }
+		
+		if (enlarge != true) {
+			if (maxW > imgW) {
+				maxW = imgW;
+			}
+			if (maxH > imgH) {
+				maxH = imgH;
+			}
+		}
 
         if (imgW > maxW || imgH > maxH || firstScale != true || enlarge == true) {
             var scaleW = maxW / imgW;
             var scaleH = maxH / imgH;
             var scaleFactor;
-            if (enlarge == true && scaleW > 1 && scaleH > 1)
-            {
-                scaleFactor = Math.min(scaleW, scaleH);
-            }
-            else
-            {
-                scaleFactor = Math.min(scaleW, scaleH);
-            }
+			scaleFactor = Math.min(scaleW, scaleH);
+			
             imgW = Math.round(imgW * scaleFactor);
             imgH = Math.round(imgH * scaleFactor);
             $img.css("width", imgW + "px"); // set width only to constrain proportions
@@ -1563,7 +1566,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-    if (text.indexOf("<") == 0)
+    if (text.trim().indexOf("<") == 0 && text.trim().lastIndexOf(">") == text.trim().length-1)
     {
         // Seems to start with a tag
         // probably with new editor, don't replace newlines!
@@ -1678,4 +1681,10 @@ function x_selectText(element) {
         selection.removeAllRanges();
         selection.addRange(range);
     }
+}
+
+
+// function deals with hex values that might be abbreviated ones from the flash editor
+function x_getColour(colour) {
+	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
 }

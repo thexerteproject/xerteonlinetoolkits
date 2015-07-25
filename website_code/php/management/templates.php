@@ -30,7 +30,7 @@ if(is_user_admin()){
 
 
 
-    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'>" . TEMPLATE_UPDATE . "</button></p>";
+    echo "<p style=\"margin:20px 0 0 5px;\">" . TEMPLATE_UPDATE_EXPLANATION . "<br /><br /><button type=\"button\" class=\"xerte_button\" onclick='javascript:template_sync()'><i class=\"fa fa-refresh\"></i> " . TEMPLATE_UPDATE . "</button></p>";
 
     echo "<p style=\"margin:20px 0 0 5px\">" . TEMPLATE_MANAGE . "</p>";
 	
