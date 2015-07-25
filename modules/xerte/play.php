@@ -19,10 +19,11 @@
  */
 
 require("module_functions.php");
+global $youtube_api_key;
+$youtube_api_key = "";
 if (file_exists(dirname(__FILE__) . "/../../api_keys.php")){
-	include_once(dirname(__FILE__) . "/../../api_keys.php");
+    include_once(dirname(__FILE__) . "/../../api_keys.php");
 }
-
 
 require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 //Function show_template
@@ -151,7 +152,7 @@ function show_template_page($row, $datafile="")
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 		
-		$page_content .= '<script>x_youtube_api_key = "' . $youtube_api_key . '";</script>';
+		$page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $page_content);
 		
     }
     return $page_content;
