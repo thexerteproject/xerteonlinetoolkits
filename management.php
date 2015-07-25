@@ -112,7 +112,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 										<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
 										<p style="margin:4px">Password:
 										<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo MANAGEMENT_BUTTON_LOGIN; ?></button>
+										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo "<i class=\"fa fa-sign-in\"></i> ".MANAGEMENT_BUTTON_LOGIN; ?></button>
 										</form>
 										<script>document.getElementById("login_box").focus();</script>
 										<!--<p><?PHP echo $extra; ?></p>-->
@@ -125,7 +125,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 							<div class="border"></div>
 							<p class="copyright">
 								<?php echo $xerte_toolkits_site->copyright; ?>
-							</p>
+							</p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 						</div>
         </body>
     </html>
@@ -180,6 +180,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
                 <link href="website_code/styles/management.css" media="screen" type="text/css" rel="stylesheet" />
+                <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
                 <script type="text/javascript">
         <?PHP
         echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
@@ -228,10 +229,36 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 
                 -->
                 <div class="topbar">
-                    <div style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo $xerte_toolkits_site->site_url . $xerte_toolkits_site->organisational_logo ?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                        <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
-                    </div>
-                    <img src="<?php echo $xerte_toolkits_site->site_logo;?>" style="margin-left:10px; float:left" />
+                    <?php
+                    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+                    {
+                        ?>
+                        <div
+                            style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
+                        </div>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <div
+                            style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
+                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
+                        </div>
+                        <?php
+                    }
+                    if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+                    {
+                        ?>
+                        <img src="<?php echo "branding/logo_left.png";?>" style="margin-left:10px; float:left"/>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <img src="website_code/images/logo.png" style="margin-left:10px; float:left"/>
+                        <?php
+                    }
+                    ?>
                 </div>
 
                 <!-- 
@@ -263,18 +290,19 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:templates_list();"><?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:users_list();"><?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:errors_list();"><?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:categories_list();"><?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
-                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
+                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="fa fa-file-text-o"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle
+"></i> <?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
+                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
-                                    <button type="button" class="xerte_button" onclick="javascript:save_changes()"><?PHP echo MANAGEMENT_MENUBAR_SAVE; ?>	</button>
+                                    <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
                                 </div>					
                                 <div id="admin_area">
                                 </div>

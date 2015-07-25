@@ -54,7 +54,7 @@ $params = array("$search%", "$search%", "$search%", $tutorial_id);
         if(sizeof($rows) > 0){			
 
             foreach($rows as $row) { 
-                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['username'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
+                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['username'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
 
             }
 

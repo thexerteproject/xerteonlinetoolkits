@@ -34,6 +34,6 @@
 	
 	define("MEDIA_AND_QUOTA_PUBLISH", "In use / Not in use refer to whether the file is used in the published version, not the working version");
 	
-	define("MEDIA_AND_QUOTA_FAIL", "Sorry you do not have rights to this template");
+	define("MEDIA_AND_QUOTA_FAIL", "Sorry you do not have rights to this project");
 
 ?>

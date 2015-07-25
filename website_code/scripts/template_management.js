@@ -1148,9 +1148,35 @@ function tutorials_stateChanged(){
 
     }
 
-} 
+}
 
-
+/**
+ * Test if the new window is blocked!
+ */
+var popupBlockerChecker = {
+    check: function(popup_window){
+        var _scope = this;
+        if (popup_window) {
+            if(/chrome/.test(navigator.userAgent.toLowerCase())){
+                setTimeout(function () {
+                    _scope._is_popup_blocked(_scope, popup_window);
+                },200);
+            }else{
+                popup_window.onload = function () {
+                    _scope._is_popup_blocked(_scope, popup_window);
+                };
+            }
+        }else{
+            _scope._displayError();
+        }
+    },
+    _is_popup_blocked: function(scope, popup_window){
+        if ((popup_window.innerHeight > 0)==false){ scope._displayError(); }
+    },
+    _displayError: function(){
+        alert(POPUP_BLOCKER_ACTIVATED);
+    }
+};
 /**
  * 
  * Function tutorial created
@@ -1167,7 +1193,10 @@ function tutorial_created(){
             response = response.trim();
             if(response!=""){
 				data = xmlHttp.responseText.split(",");
-				
+
+                open_created_node(data[0], new_template_folder);
+                update_your_projects();
+
 				if(data[1]=="*"){
 				
 					var neweditorwindow = window.open(site_url + url_return("edithtml" , data[0]), "editwindow" + data[0], "height=" + screen.height + ", width=" + screen.width);
@@ -1179,12 +1208,12 @@ function tutorial_created(){
 					var neweditorwindow = window.open(url, title, options);
 						
 				}
+                popupBlockerChecker.check(neweditorwindow);
                 new_file = xmlHttp.responseText;
                 neweditorwindow.window_reference = self;
 				
                 neweditorwindow.focus();
-                open_created_node(data[0], new_template_folder);
-                update_your_projects();
+
             }
         }
     }

@@ -30,8 +30,36 @@
 	
 	define("PROPERTIES_LIBRARY_XML_SAVE", "Your changes have been saved");
 	
-	define("PROPERTIES_LIBRARY_XML_ERROR", "Sorry, only creators of templates can set up XML sharing");
+	define("PROPERTIES_LIBRARY_XML_ERROR", "Sorry, only creators of projectss can set up XML sharing");
 	
+	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
+	define ("PROJECT_INFO_NAME", "Name");
+	
+	define ("PROJECT_INFO_CREATED", "Created on");
+	
+	define ("PROJECT_INFO_MODIFIED", "Last modified on");
+	
+	define ("PROJECT_INFO_RUNTIME", "Player");
+	
+	define ("PROJECT_INFO_URL", "URL");
+	
+	define ("PROJECT_INFO_EMBEDCODE", "Embed Code");
+	
+	define ("PROJECT_INFO_MEDIA", "Project size");
+	
+	define ("PROJECT_INFO_ACCESS", "Access");
+	
+	define ("PROJECT_INFO_SHARED", "Shared");
+	
+	define ("PROJECT_INFO_NOTSHARED", "Not Shared");
+	
+	define ("PROJECT_INFO_PRIVATE", "Private");
+	
+	define ("PROJECT_INFO_PUBLIC", "Public");
+	
+	define ("PROJECT_INFO_PASSWORD", "Password");
+	
+	define ("PROJECT_INFO_OTHER", "Other");
 	
 	// PROJECT TAB
 	
@@ -41,27 +69,27 @@
 	
 	define("PROPERTIES_LIBRARY_PROJECT_CHANGED", "Name changed");
 	
-	define("PROPERTIES_LIBRARY_PROJECT_CREATE", "This file was created on");
+	define("PROPERTIES_LIBRARY_PROJECT_CREATE", "This project was created on");
 	
-	define("PROPERTIES_LIBRARY_PROJECT_MODIFY", "This file was last modified on");
+	define("PROPERTIES_LIBRARY_PROJECT_MODIFY", "This project was last modified on");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE", "What is the default engine to use for this project?");
 
     define("PROPERTIES_LIBRARY_PUBLISH_ENGINE", "Default engine");
 
-    define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "Javascript (a.k.a. HTML5)");
+    define("PROPERTIES_LIBRARY_DEFAULT_HTML5", "HTML5");
 
     define("PROPERTIES_LIBRARY_DEFAULT_FLASH", "Flash");
 
     define("PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED", "Default engine has been changed.");
 
-	define("PROPERTIES_LIBRARY_PROJECT_LINK", "To allow other people to access this file, the link is");
+	define("PROPERTIES_LIBRARY_PROJECT_LINK", "To allow other people to access this project, the link is");
 	
 	define("PROPERTIES_LIBRARY_PROJECT_HTML5_LINK", "To allow other people to access the HTML 5 version, the link is");
 	
 	define("PROPERTIES_LIBRARY_PROJECT_IFRAME", "This code will allow you to embed your project into a web page");
 			
-	define("PROPERTIES_LIBRARY_PROJECT_FAIL", "Sorry you do not have rights to this template");
+	define("PROPERTIES_LIBRARY_PROJECT_FAIL", "Sorry you do not have rights to this project");
 	
 	
 	// NOTES TAB
@@ -72,7 +100,7 @@
 	
 	define("PROPERTIES_LIBRARY_NOTES_SAVED", "Notes saved");
 	
-	define("PROPERTIES_LIBRARY_NOTES_FAIL", "Sorry only the creator of the file can set notes for the project");
+	define("PROPERTIES_LIBRARY_NOTES_FAIL", "Sorry only the creator of the project can set notes for the project");
 	
 	
 	// PEER TAB
@@ -91,7 +119,7 @@
 
 	define("PROPERTIES_LIBRARY_PEER_SAVED", "Peer review settings changed");
 			
-	define("PROPERTIES_LIBRARY_PEER_FAIL", "Sorry, only creators of templates can set up peer review");
+	define("PROPERTIES_LIBRARY_PEER_FAIL", "Sorry, only creators of projects can set up peer review");
 	
 	
 	// SYNDICATION TAB
@@ -120,22 +148,22 @@
 	
 	define("PROPERTIES_LIBRARY_SYNDICATION_URL", "The address for this site's syndicated content is");
 
-	define("PROPERTIES_LIBRARY_SYNDICATION_FAIL", "Sorry only the creator of the file can set syndication for the project");
+	define("PROPERTIES_LIBRARY_SYNDICATION_FAIL", "Sorry only the creator of the project can set syndication for the project");
 	
 	
 	
 	
 	// ACCESS TAB
 	
-	define("PROPERTIES_LIBRARY_ACCESS", "This file is currently set as"); 
+	define("PROPERTIES_LIBRARY_ACCESS", "This project is currently set as"); 
 
 	define("PROPERTIES_LIBRARY_ACCESS_PUBLIC", "Public");
 
-	define("PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED", "The template will be visible to anyone on the internet");
+	define("PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED", "The project will be visible to anyone on the internet");
 		
 	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD", "Password protected");
 		
-	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED", "The template will be visible to people with an account on this system");
+	define("PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED", "The project will be visible to people with an account on this system");
 		
 	define("PROPERTIES_LIBRARY_ACCESS_OTHER", "Other");
 		
@@ -143,7 +171,7 @@
 		
 	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE", "Private");
 		
-	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED", "This makes your template visible to editors only.");
+	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED", "This makes your project visible to editors only.");
 		
 	define("PROPERTIES_LIBRARY_ACCESS_FAIL", "Sorry only the creator can set the access settings");
 	
@@ -175,7 +203,7 @@
 	
 	define("PROPERTIES_LIBRARY_RSS_PUBLIC", "Please set this project to the 'Public' on the access tab before using the RSS Feed features");
 	
-	define("PROPERTIES_LIBRARY_RSS_FAIL", "Sorry only the creator of the file can set notes for the project");
+	define("PROPERTIES_LIBRARY_RSS_FAIL", "Sorry only the creator of the project can set notes for the project");
 
 	
 ?>

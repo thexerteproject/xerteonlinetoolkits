@@ -10,7 +10,8 @@
 	 * @package
 	 */
 	 
-	define("WORKSPACE_PROPERTIES_TITLE","User workspace properties");
+    define("PHP_ERROR","Status messages");
+    define("WORKSPACE_PROPERTIES_TITLE","User workspace properties");
 	define("WORKSPACE_PROPERTIES_DISPLAY_TITLE","Workspace Properties");
 	define("WORKSPACE_PROPERTIES_TAB_DETAILS","My Details");
 	define("WORKSPACE_PROPERTIES_TAB_PROJECTS","My Projects");

@@ -185,7 +185,7 @@
 										$paneList.addClass("delete");
 									}
 									
-									var	infoString = x_addLineBreaks('<p>' + this.getAttribute("text") + '</p>'),
+									var	infoString = '<p>' + x_addLineBreaks(this.getAttribute("text"))+ '</p>',
 										url = this.getAttribute("url");
 									
 									if (url != undefined && url != "") {

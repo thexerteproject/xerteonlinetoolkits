@@ -492,12 +492,11 @@ var EDITOR = (function ($, parent) {
         setTimeout(function()
         {
             buildPage(key)
-        }, 500);
-    }
+        }, 350);
+    },
 
     // Refresh the page when a new node is selected
     buildPage = function (key) {
-
 
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
@@ -720,20 +719,6 @@ var EDITOR = (function ($, parent) {
             $('#language_cb').removeAttr("disabled");
             $('#language_cb').prop('checked', defaultLanguage);
         }
-        else
-        {
-            // Hide the advanced panel and disable check box
-            if (defaultAdvanced)
-            {
-                $('#languagePanel').show();
-            }
-            else {
-                $('#languagePanel').hide();
-            }
-            $('#language_cb_span').switchClass("enabled", "disabled");
-            $('#language_cb').attr("disabled", "disabled");
-            $('#language_cb').prop('checked', defaultLanguage);
-        }
 
         // Extra insert buttons
         // Start with the current level, and work your way up to rootlevel
@@ -840,7 +825,13 @@ var EDITOR = (function ($, parent) {
             if (advsubnodes_present)
             {
                 // Enable Advanced settings
-                $('.advNewNodesLevel').hide();
+                if (defaultAdvanced) {
+                    $('.advNewNodesLevel').show();
+                }
+                else
+                {
+                    $('.advNewNodesLevel').hide();
+                }
                 $('#advanced_cb_span').switchClass("disabled", "enabled");
                 $('#advanced_cb').removeAttr("disabled");
                 $('#advanced_cb').prop('checked', defaultAdvanced);
@@ -1127,6 +1118,7 @@ var EDITOR = (function ($, parent) {
             console.log("move node");
         });
     },
+
 
     // Up button handler
     up_btn = function() {
