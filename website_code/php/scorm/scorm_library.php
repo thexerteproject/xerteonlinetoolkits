@@ -27,6 +27,12 @@
  * @author Patrick Lockley
  */
 
+global $youtube_api_key;
+$youtube_api_key = "";
+if (file_exists(dirname(__FILE__) . "/../../../api_keys.php")){
+    include_once(dirname(__FILE__) . "/../../../api_keys.php");
+}
+
 function lmsmanifest_create($name, $flash, $lo_name) {
 
     global $dir_path, $delete_file_array, $zipfile;
@@ -260,7 +266,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
  */
 function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
 
-    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
+    global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
@@ -279,6 +285,7 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
         $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 

@@ -118,7 +118,6 @@
             }
             return vars;
         }
-
         var FileLocation = "%XMLPATH%";
         var x_templateLocation = "%TEMPLATEPATH%";
         var x_projectXML = "%XMLFILE%";
@@ -140,12 +139,7 @@
         {
             x_startPage = {type : "page", ID : getUrlVars()['page']};
         }
-		
-		//for exported files, FileLocation will not be set...
-		if (FileLocation == "" || FileLocation == undefined){
-			FileLocation = String(window.location).substr(0, String(window.location).lastIndexOf('/') + 1);
-		}
-
+        var x_youtube_api_key = "%YOUTUBEAPIKEY%";
     </script>
 </body>
 </html>

@@ -1392,7 +1392,7 @@ var EDITOR = (function ($, parent) {
             //console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
             if (pos >=0)
-                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
+                url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
             $('#' + id).attr("value", url);
             setAttributeValue(key, [name], [url]);
             window.elFinder = null;

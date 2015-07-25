@@ -71,7 +71,7 @@ function show_preview_code($row)
 
 function show_preview_code2($row, $row_username){
 
-	global $xerte_toolkits_site;
+	global $xerte_toolkits_site, $youtube_api_key;
 
     _load_language_file("/modules/xerte/preview.inc");
 
@@ -178,6 +178,7 @@ function show_preview_code2($row, $row_username){
         $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js\"></script>";
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
+        $page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $page_content);
     }
     echo $page_content;
 }
