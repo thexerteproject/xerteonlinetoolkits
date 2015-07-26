@@ -33,7 +33,7 @@
 				})
 				.show();
 
-			$("#pageContents img").addClass("hidden");
+			$("#pageContents .result").addClass("hidden");
 			$("#pageContents input")
 				.prop("readonly", false)
 				.val("");
@@ -90,7 +90,7 @@
 			});
 
 			var $question = $("#pageContents .question:first");
-			$question.find("img")
+			$question.find(".result")
 				.attr({
 					"src": x_templateLocation + "common_html5/tick.png",
 					"alt":	x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick")
@@ -152,7 +152,7 @@
 									.val($.trim($thisInput.val().toLowerCase()))
 									.prop("readonly", true);
 								
-								$thisInput.parent().find("img").removeClass("hidden");
+								$thisInput.parent().find(".result").removeClass("hidden");
 								$feedback.html("");
 								$this.focus();
 								if (qNo + 1 != $(x_currentPageXML).children().length) {
@@ -180,7 +180,7 @@
 									var correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer");
 									if (correctAnswer.indexOf(answerDelimeter) != -1) {
 										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
-									}
+									}console.log(correctAnswer);
 									$thisInput
 										.val(correctAnswer)
 										.prop("readonly", true);
@@ -208,7 +208,7 @@
 								.button({label:	$("#pageContents").data("submitTxt")});
 							
 							var qNo = $pageContents.data("currentQ");
-							$("#pageContents .question:eq(" + qNo + ") img").removeClass("hidden");
+							$("#pageContents .question:eq(" + qNo + ") .result").removeClass("hidden");
 							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
 							$pageContents.data("currentQ", qNo + 1);
 						}
@@ -290,7 +290,7 @@
 				<div id="questionGroup">
 					<div class="question">
 						<div></div>
-						<img></img>
+						<img class="result"></img>
 						<input/>
 					</div>
 
