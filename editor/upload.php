@@ -141,7 +141,7 @@ function make_refs_local($json, $media)
     while ($pos !== false)
     {
         $pos2 = strpos($temp, '\"', $pos+1);
-        $temp = substr($temp, 0, $pos) . '\"FileLocation + \'' . substr($temp, $pos + strlen($media) + 3, $pos2 - $pos - strlen($media)-3) . '\'\"' . substr($temp, $pos2+2);
+        $temp = substr($temp, 0, $pos) . '\"FileLocation + \'' . substr($temp, $pos + strlen($media) + 2, $pos2 - $pos - strlen($media)-2) . '\'\"' . substr($temp, $pos2+2);
         $pos = strpos($temp, '\"' . $media);
     }
     //file_put_contents("step3a_$mode.txt", print_r($temp, true));
@@ -150,7 +150,7 @@ function make_refs_local($json, $media)
     while ($pos !== false)
     {
         $pos2 = strpos($temp, '"', $pos+1);
-        $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($media) + 2, $pos2 - $pos - strlen($media) -2) . '\'"' . substr($temp, $pos2+1);
+        $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($media) + 1, $pos2 - $pos - strlen($media) -1) . '\'"' . substr($temp, $pos2+1);
         $pos = strpos($temp, '"' . $media);
     }
 
