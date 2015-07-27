@@ -60,7 +60,7 @@ function init() {
 		url: projectXML,
 		dataType: "text",
 		success: function(text) {
-			var	newString = fixLineBreaks(text),
+			var	newString = fixLineBreaks(makeURLsAbsolute(text)),
 				xmlData = $($.parseXML(newString)).find("learningObject"),
 				quizXML,
 				i, len;
@@ -1550,5 +1550,11 @@ function evalURL(url) {
         return url;
     }
 }
+
+// Make absolute urls from urls with FileLocation + ' in their strings
+function makeURLsAbsolute(html){
+    return html.replace(/FileLocation \+ \'([^\']*)\'/g, FileLocation + '$1');
+}
+
 
 $(document).ready(init);
