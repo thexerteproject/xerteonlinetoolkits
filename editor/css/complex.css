@@ -678,6 +678,7 @@ td.flashonly, td.deprecated{
 
 .optButtonContainer {
     overflow: auto;
+    margin-bottom: 20px;
 }
 
 .optButtonContainer  table {
