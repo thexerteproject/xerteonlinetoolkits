@@ -34,7 +34,7 @@ Welcome to the Xerte Online Toolkits Installer
 ?>
 <p>
 Xerte Online Toolkits is a suite of web based tools designed and developed by a wonderful community of <a href="http://www.xerte.org.uk" target="_blank">open source developers.</a></p>
-<p>Xerte Online Toolkits is a powerful suite of browser-based tools that allow anyone with a web browser to log on and create interactive learning materials simply and effectively, and to collaborate with other users in developing content. Xerte Online Toolkits provides a number of project templates for creating online presentations and interactive content. Content is assembled using an intuitive interface, and multiple users can collaborate on shared projects. Xerte Toolkits is free software, released under the GNU Public License apart from three files:
+<p>Xerte Online Toolkits is a powerful suite of browser-based tools that allow anyone with a web browser to log on and create interactive learning materials simply and effectively, and to collaborate with other users in developing content. Xerte Online Toolkits provides a number of project templates for creating online presentations and interactive content. Content is assembled using an intuitive interface, and multiple users can collaborate on shared projects. Xerte Toolkits is free software, released under the Apache License v2.0:
 </p>
 <p>
 <p>

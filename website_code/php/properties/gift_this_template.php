@@ -42,6 +42,10 @@ function copy_loop($start_path, $final_path){
 
     global $xerte_toolkits_site;
 
+    if (!file_exists($final_path)) {
+        mkdir($final_path, 0777, true);
+    }
+
     $d = opendir($start_path);
 
     while($f = readdir($d)){
@@ -55,7 +59,8 @@ function copy_loop($start_path, $final_path){
             }			
 
         }else{
-
+            $ok = copy($start_path . $f, $final_path . $f);
+            /*
             $data = file_get_contents($start_path . $f);
 
             $fh = fopen($final_path . $f, "w");
@@ -63,7 +68,7 @@ function copy_loop($start_path, $final_path){
             fwrite($fh,$data);
 
             fclose($fh);
-
+            */
         }
 
     }	
@@ -175,7 +180,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         $row_currentrights = db_query_one($query_for_currentdetails, $params);
 
-        $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ? ";
+        $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ?  AND folder_parent=0";
         $params = array($user_id, 'recyclebin');
 
         $row_folder = db_query_one($query_for_root_folder, $params);

@@ -155,11 +155,12 @@ function make_new_template($type,$zip_path){
 
             delete_loop($zip_path);
 
-            while($delete_folder = array_pop($delete_folder_array)){
+            foreach($delete_folder_array as $delete_folder){
 
                 rmdir($delete_folder);
 
             }
+            $delete_folder_array = null;
 
             rmdir($zip_path);
 
@@ -484,6 +485,15 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
             if($file_to_create[2]=="media"){
 
                 if ($file_to_create[0] != "") {
+                    $pos = strrpos($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], '/');
+                    if ($pos > 0 ) {
+                        $dir = substr($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0, $pos);
+
+                        if (!file_exists($dir)) {
+                            mkdir($dir, 0777, true);
+                        }
+                    }
+
                     $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
 
                     fwrite($fp, $file_to_create[1]);
