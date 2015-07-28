@@ -86,6 +86,12 @@ else
 }
 
 
+/*
+ * Language support
+ */
+export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
+copy_extra_files();
+
 
 
 export_folder_loop($dir_path);

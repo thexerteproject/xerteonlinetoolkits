@@ -545,6 +545,11 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
     cursor: pointer;
 }
 
+#insert_menu .insert_buttons button img {  
+border-style: none;
+margin-right: 3px;
+}
+
 .preview_thumb {
     width: 250px;
 }
@@ -673,6 +678,7 @@ td.flashonly, td.deprecated{
 
 .optButtonContainer {
     overflow: auto;
+    margin-bottom: 20px;
 }
 
 .optButtonContainer  table {
