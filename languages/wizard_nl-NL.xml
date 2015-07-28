@@ -34,6 +34,7 @@
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
+	<optionalProphtml label="Extra eigenschappen"/>
 	<chkShowLanguage label="Toon Taal Opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon Geavanceerde Opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
     <chkShowToolbar label="Toon Knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
