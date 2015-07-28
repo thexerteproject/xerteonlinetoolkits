@@ -116,7 +116,7 @@ body_scroll handles the calculation of the documents actual height in IE.
 
 -->
 
-<body >
+<body onselectstart="return false;">
 <?php body_start(); ?>
 <!--
 
