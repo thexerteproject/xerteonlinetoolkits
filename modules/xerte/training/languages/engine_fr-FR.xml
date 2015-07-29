@@ -1,0 +1,132 @@
+<language name="Francais" code="fr-fr">
+
+  <nextButton label="Suivante" description="Bouton page suivante"/>
+  
+  <backButton label="Précédente" description="bouton page précédente"/>
+  
+  <tocButton label="Contenu" description="Tableau de bouton de contenu"/>
+  
+  <helpButton label="Aide" description="bouton d'aide"/>
+
+  <mediaButton label="Média" description="Media Button. "/>
+  
+  <homeButton label="Home" description="Home Button. "/>
+  
+  <pageHelp name="Page d'aide" description="la page d'aide" toClose="Appuyez sur la touche espace pour fermer l’aide"/>
+
+  <glossaryButton label="Glossaire" description="Bouton qui accède au glossaire »/>
+  
+  <continueButton label="Continuer" description="le bouton Continuer"/>
+  
+  <toc label="Table des matières" description="Table des matières. utilisez les touches fléchées pour sélectionner une page. Appuyer sur espace pour aller à cette page.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="bouton pour fermer la table de contenu"/>
+	  <gotoPageButton label="Aller à la page" description="aller au bouton de la page"/>
+  </toc> 
+
+  <glossary label="Glossaire" description="Une liste de mots et leur définition">
+	  <closeButton label="" description="Close glossary list button"/>
+  </glossary>
+  
+  <kbLanguage label="Caractères spéciaux" description="Une liste de bouton qui ajoute des caractères spéciaux dans une zone de texte">
+	  <closeButton label="" description="bouton pour fermer la liste des caractères spéciaux"/>
+  </kbLanguage>
+  
+  <textToSpeech label="Conversion" description="Conversion du texte en parole"/>
+  
+  <errorProject label="Les données du projet n'ont pas été chargées."/>
+  
+  <errorPage label="Aucun modèle n'est disponible pour ce type de page."/>
+  
+  <errorBrowser label="Votre navigateur ne supporte pas ce type de page."/>
+  
+  <errorFlash label="Vous avez besoin d'installer Flash Player pour voir ce contenu." description="Get the Flash Player"/>
+  
+  <tick label="Tick"/>
+  
+  <cross label="Cross"/>
+
+
+  <themes label="—-Couleurs--" description="options de couleurs">
+    <item>défaut</item>
+    <item>bleu</item>
+    <item>vert</item>
+    <item>rouge</item>
+    <item>orange</item>
+    <item>violet</item>
+    <item>gris</item>
+    <item>contraste élevé 1</item>
+    <item>contraste élevé 2</item>
+  </themes>
+ 
+  <sizes label="—-Taille de l'écran—-" description="Screen Size Options">
+	<item>défaut</item>
+	<item>moyenne</item>
+	<item>grande</item>
+	<item>plein écran</item>
+	<item>remplir la fenêtre</item>
+  </sizes>
+  
+  <fonts label="—Fonte du texte—-" description="Options de caractères">
+	  <item>défaut</item>
+  </fonts>
+  
+  <textSizes label="--Taille du texte--" description="Options taille du texte">
+	  <item>défaut</item>
+	  <item>petite</item>
+	  <item>moyenne</item>
+	  <item>grande</item>
+	  <item>plus grande</item>
+  </textSizes>
+  
+  <volumeControl label="Vol:" description="Contrôle du volume"/>
+  <volumeControlSlider label="" description="Curseur du contrôle du volume"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>sur</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Désactiver le son" description="bouton qui stop le son"/>
+	<playButton label="Activer le son" description="Play Audio Button"/>
+	<pauseButton label="Pause du son" description="Pause Audio Button"/>
+	<rwndButton label="Rembobiner le son" description="Rewind Audio Button"/>
+	<ffwdButton label="Avancer le son" description="Forward Audio Button"/>
+	<loader label="Chargement: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Stopper la vidéo" description="Stop Movie Button"/>
+	<playButton label="Démarrer la vidéo" description="Play Movie Button"/>
+	<pauseButton label="Pause" description="Pause Movie Button"/>
+	<rwndButton label="Rembobiner" description="Rewind Movie Button"/>
+	<ffwdButton label="Avancer" description="Forward Movie Button"/>
+	<loader label="Chargement: "/>
+  </movieController>
+  
+  <interactions>
+	  <button name="Bouton"/>
+	  <radioButton selected="sélectionné. Utilisez les touches fléchées pour choisir parmi les options."/>
+	  <checkBox selected="sélectionnée" deselected="dee selected"/>
+	  <comboBox name="ComboBox" options="Options." selected="sélectionné." selectedOptions="sélectionné. Utilisez les touches fléchées pour sélectionner." />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Appuyez sur espace pour sélectionner." selected="Hot Spot sélectionné"/>
+	  <hotObject name="HotObject" toSelect="Appuyez sur espace pour sélectionner." selected="Hot Object sélectionné"/>
+	  <textEntry name="Boite de saisi de texte" selected="Boite de saisi de texte sélectionnée."/>
+	  <targetArea name="Cibler des zones" description="Zone de dépôt pour " toSelect="Appuyer sur espace pour déposer l'élément sélectionné."/>
+	  <draggableItem name="Faire glisser l'article" selected="Article sélectionné" toSelect="Appuyer sur espace pour sélectionner" deSelected="aucun article sélectionné" />
+	  
+  </interactions>
+
+  <fetchResults label="Récupération des résultats.."/>
+  <errorResults label="Erreur lors du chargement des résultats"/>
+  <loadError label="Erreur lors du chargement/>
+  <noResults label="Aucun résultat n'a été retourné"/>
+  
+  <timer>
+	  <remaining name="Temps restant"/>
+	  <timeUp name="temps jusqu'à"/>
+	  <seconds name="secondes"/>
+  </timer>
+
+</language>

@@ -1,0 +1,53 @@
+<data>
+	
+	<language name="French">
+		<char case="lower">àâäçèéêëîïôœùûüÿ</char>
+		<char case="upper">ÀÁÄÇÈÉÊËÎÏÔŒÙÛÜŸ</char>
+	</language>
+	
+	<language name="German">
+		<char case="lower">äöüß</char>
+		<char case="upper">ÄÖÜß</char>
+	</language>
+	
+	<language name="Italian">
+		<char case="lower">àèéìòóù</char>
+		<char case="upper">ÀÈÉÌÒÓÙ</char>
+	</language>
+	
+	<language name="Portuguese">
+		<char case="lower">àáâãçéêíóôõúü</char>
+		<char case="upper">ÀÁÂÃÇÉÊÍÓÔÕÚÜ</char>
+	</language>
+	
+	<language name="Spanish">
+		<char case="lower">áéíñóúü¿¡</char>
+		<char case="upper">ÁÉÍÑÓÚÜ¿¡</char>
+	</language>
+	
+	<language name="Polish">
+		<char case="lower">ąćęłńóśźż</char>
+		<char case="upper">ĄĆĘŁŃÓŚŹŻ</char>
+	</language>
+	
+	<language name="Russian">
+		<char case="lower">абвгдеёжзийклмнопрстуфхцчшщъыьэюя</char>
+		<char case="upper">АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ</char>
+	</language>
+	
+	<language name="Slovene">
+		<char case="lower">čšž</char>
+		<char case="upper">ČŠŽ</char>
+	</language>
+	
+	<language name="Croatian">
+		<char case="lower">čćđšž</char>
+		<char case="upper">ČĆĐŠŽ</char>
+	</language>
+	
+	<language name="Serbian">
+		<char case="lower">čćđšž</char>
+		<char case="upper">ČĆĐŠŽ</char>
+	</language>
+	
+</data>

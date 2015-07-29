@@ -1,0 +1,140 @@
+<language name="Portugues" code="pt-BR">
+	<btnSaveXerte label="Salvar" tooltip="Savar Projeto" description="Botão Salvar"/>
+	<btnPublishXot label="Publicar" tooltip="Publicar Projeto" description="Botão Publicar"/>
+	<popupFileUpload title="upload de arquivo" cancelLabel="Cancelar"/>
+	<browseImportFile title="Selecione o arquivo para importar...">
+		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importar</buttontext>
+	</browseImportFile>
+	<kblanguage title="Character Pad" tooltip="Character Pad" description="Layout do Idioma do teclado">
+		<item>Francês</item>
+		<item>Alemão</item>
+		<item>Italiano</item>
+		<item>Polonês</item>
+		<item>Portugues</item>
+		<item>Espanhol</item>
+	</kblanguage>
+	<newLink label="Novo {i}" />
+	<helpLink tooltip="Clique para Ajuda"/>
+	<btnInsert label="Inserir" tooltip="Inserr"/>
+	<btnAddChild tooltip="adicionar algumas crianças"/>
+	<btnDuplicate label="Copiar" tooltip="Clonar"/>
+	<btnDelete label="Excluir" tooltip="Excluir"/>
+	<btnMoveUp tooltip="Mover para cima"/>
+	<btnMoveDown tooltip="Mover para baixo"/>
+	<btnNext tooltip="Próximo Ítem"/>
+	<btnPreview label="Visualizar" tooltip="Visualizar"/>
+	<btnPrev tooltip="Ítem Anterior"/>
+	<icDelete tooltip="Excluir" prompt="Excluir o ítem?"/>
+	<addProp label="Adicionar" tooltip="adicionar" />
+	<optionalProp label="Propriedades Opcionais:"/>
+	<chkShowLanguage label="Mostrar Opções de Idioma" />
+	<chkShowAdvanced label="Mostrar Opções Avançadas" />
+	<compMedia tooltip="Importar Mídia"/>
+	<compPreview tooltip="Visualizar"/>
+	<filemenu title="Arquivo">
+		<menuNew>Novo Projeto...</menuNew>
+		<menuOpen>Abrir...</menuOpen>
+		<menuSave>Salvar</menuSave>
+		<menuExit>Sair</menuExit>
+	</filemenu>
+	<menuOpen title="Selecionar um Projeto">
+		<dialogText>Selecione um arquivo</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Modelos de Aprendizagem|*.rlt|MXML arquivos|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Exibir">
+		<menuPreview>Visualizar</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publicar">
+		<menuPublish>Publicar</menuPublish>
+		<menuPackage>Pacote</menuPackage>
+	</publishmenu>
+	<menuPackage title="Salvar Pacote SCORM 1.2">
+		<dialogText>Selecione um arquivo</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Arquivos Zip|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Ajuda">
+		<menuHelp>Ajuda</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Arquivo de Ajuda em breve.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Todos os Arquivos (*.*)</allfiles>
+			<images>Imagens (*.jpg, *.jpeg, *.png)</images>
+			<flash>Arquivos Flash (*.swf)</flash>
+			<sound>Arquivo de Som (*.mp3)</sound>
+			<video>Arquivo de Vídeo (*.flv)</video>
+		</filters>
+		<title>Selecione o arquivo para importar...</title>
+		<filter>Todos os Arquivos|*.*|JPG|*.jpg|PNG|*.png|Arquivos SWF|*.swf|Sons|*.mp3|Vídeo|*.flv</filter>
+		<btnimport>Importar</btnimport>
+		<btncancel>Cancelar</btncancel>
+		<fileexists>
+			<prompt>O arquivo {f} já existe.\r\rSubstituir este arquivo?</prompt>
+			<title>Confirmar</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Cancelar</cancellabel>
+		<nolabel>Não</nolabel>
+		<yeslabel>Sim</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Digite a URL para o link</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Você só pode adicionar {m} {i}s</prompt>
+				<title>IncorretoErro</title>
+			</max>
+			<mixedcontent>
+				<prompt>Não é possível combinar o conteúdo aqui.</prompt>
+				<title>Incorreto</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Essa pasta não está vazia. Tem certeza que você quer usá-la para o novo projeto?</prompt>
+			<title>Confirmar</title>
+		</newproject>
+		<openproject>
+			<prompt>Você quer abrir o novo projeto?</prompt>
+			<title>Confirmar</title>
+		</openproject>
+		<initpreview>
+			<prompt>Você deve selecionar a mídia para visualizá-la.</prompt>
+			<title>Informação</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Você não pode duplicar esse item.</prompt>
+			<title>Incorreto</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Você quer excluir o item?</prompt>
+				<title>Confirmação</title>
+			</confirm>
+			<error>
+				<prompt>Você não pode excluir este item</prompt>
+				<title>Incorreto</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>O XML não pode ser formatado, e as alterações não foram salvas. Verifique as alterações recentes.</prompt>
+		</savefile>
+        <upload>
+            <successful>Upload com sucesso</successful>
+            <failed>
+                <permissions>Falha no upload: Verifique as permissões</permissions>
+                <HTTPError>Falha no upload: HTTPError</HTTPError>
+                <IOError>Falha no upload: IOError</IOError>
+                <security>Falha no upload: Erro de segurança</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>
