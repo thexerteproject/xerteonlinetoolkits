@@ -1,0 +1,154 @@
+<language name="English" code="en-GB">
+    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
+    <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
+    <insertDialog label="Insert New {i}" preview="Preview">
+        <insertBefore label="Before" tooltip="Insert before selected page"/>
+        <insertAfter label="After" tooltip="Insert after selected page"/>
+        <insertAtEnd label="At end" tooltip="Insert as last page"/>
+    </insertDialog>
+    <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
+	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
+	<popupFileUpload title="File Upload" cancelLabel="Cancel"/>
+	<browseImportFile title="Select file to import...">
+		<dialogFilter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Import</buttontext>
+	</browseImportFile>
+	<kblanguage title="Character Pad" tooltip="Character Pad" description="Keyboard Layout Languages">
+		<item>French</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="New {i}" />
+	<helpLink tooltip="Click for Help"/>
+    <btnAddColumn label="Add Column" tooltip="Add a column to the right of the grid"/>
+    <btnDelColumn label="Del Column" tooltip="Delete the selected column"/>
+	<btnInsert label="Insert" tooltip="Insert"/>
+	<btnAddChild tooltip="add some children"/>
+	<btnDuplicate label="Copy" tooltip="Duplicate"/>
+	<btnDelete label="Delete" tooltip="Delete"/>
+	<btnMoveUp tooltip="Move Up"/>
+	<btnMoveDown tooltip="Move Down"/>
+	<btnNext tooltip="Next Item"/>
+	<btnPreview label="Play" tooltip="Preview"/>
+	<btnPrev tooltip="Previous Item"/>
+	<icDelete tooltip="Delete" prompt="Delete the item?"/>
+	<addProp label="Add" tooltip="add" />
+	<optionalProp label="Optional Properties:"/>
+	<optionalPropHTML label="Optional Properties"/>
+	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
+	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
+    <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
+	<compMedia tooltip="Import Media"/>
+	<compPreview tooltip="Preview"/>
+	<filemenu title="File">
+		<menuNew>New Project...</menuNew>
+		<menuOpen>Open...</menuOpen>
+		<menuSave>Save</menuSave>
+		<menuExit>Exit</menuExit>
+	</filemenu>
+	<menuOpen title="Please select a Project">
+		<dialogText>Select a file</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Learning Templates|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="View">
+		<menuPreview>Preview</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publish">
+		<menuPublish>Publish</menuPublish>
+		<menuPackage>Package</menuPackage>
+	</publishmenu>
+	<menuPackage title="Save SCORM 1.2 Package">
+		<dialogText>Select a file</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip Files|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Help">
+		<menuHelp>Help</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Help file comming soon.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>All Files (*.*)</allfiles>
+			<images>Images (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash Files (*.swf)</flash>
+			<sound>Sound Files (*.mp3)</sound>
+			<video>Video Files (*.flv)</video>
+		</filters>
+		<title>Select file to import...</title>
+		<filter>All Files|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</filter>
+		<btnimport>Import</btnimport>
+		<btncancel>Cancel</btncancel>
+		<fileexists>
+			<prompt>The file {f} already exists.\r\rOverwrite this file?</prompt>
+			<title>Confirm</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Cancel</cancellabel>
+		<nolabel>No</nolabel>
+		<yeslabel>Yes</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Enter the URL for the link</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>You may only add {m} {i}s</prompt>
+				<title>Error</title>
+			</max>
+			<mixedcontent>
+				<prompt>You cannot mix content here.</prompt>
+				<title>Error</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>That folder is not empty. Are you sure you want to use it for the new project?</prompt>
+			<title>Confirm</title>
+		</newproject>
+		<openproject>
+			<prompt>Do you want to open the new project?</prompt>
+			<title>Confirm</title>
+		</openproject>
+		<initpreview>
+			<prompt>You must select media before you can preview it.</prompt>
+			<title>Info</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>You cannot duplicate that item.</prompt>
+			<title>Error</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Do you want to delete the item?</prompt>
+				<title>Confirmation</title>
+			</confirm>
+			<error>
+				<prompt>You cannot delete this item</prompt>
+				<title>Error</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>The XML could not be formatted, and changes have not been saved. Check your recent changes.</prompt>
+		</savefile>
+        <exitwizard>
+            <prompt>You are about to leave the editor.</prompt>
+        </exitwizard>
+        <upload>
+            <successful>Upload successful</successful>
+            <failed>
+                <permissions>Upload failed: Check permissions</permissions>
+                <HTTPError>Upload failed: HTTPError</HTTPError>
+                <IOError>Upload failed: IOError</IOError>
+                <security>Upload failed: Security Error</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>

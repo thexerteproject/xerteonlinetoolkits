@@ -1,0 +1,463 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* MAIN CSS DOCUMENT */
+/* styles we recommend changing to rebrand your version of Xerte Online Toolkits are in themeStyles.css */
+/* changing other styles in this file may cause problems in functionality */
+
+body {
+	margin:			0px;
+}
+
+p {
+    padding: 4px;
+    margin: 0;
+}
+
+
+
+#x_mainHolder {
+	width:		800px;
+	height:		600px;
+	position:	absolute;
+	z-index:	-3;
+}
+
+#x_headerBlock {
+	width:			100%;
+	height:			auto;
+	position:		absolute;
+	top:			0px;
+}
+
+#x_headerBlock div, #x_pageDiv {
+	padding:	10px;
+}
+
+#x_pageHolder {
+	width:		100%;
+	overflow:	auto;
+	position:	absolute;
+	top:		0;
+	bottom:		0;
+}
+
+#x_mobileScroll {
+	z-index:	99999;
+}
+
+#x_background {
+	width:		100%;
+	position:	absolute;
+	top:		0;
+	bottom:		0;
+	z-index:	-10;
+}
+
+#x_background img {
+	width:		100%;
+	height:		100%;
+	position:	absolute;
+}
+
+#x_footerBlock {
+	width:			100%;
+	position:		absolute;
+	bottom:			0px;
+	z-index:		10;
+}
+
+#x_footerBg {
+	position:			absolute;
+	width:				100%;
+	height:				100%;
+	z-index:			-1;
+}
+
+
+.x_floatLeft {
+	float:		left;
+}
+
+.x_floatRight {
+	float:		right;
+}
+
+#x_pageHolder button:disabled {
+	cursor: 	default;
+	opacity:	0.5;
+	filter:		alpha(opacity=50); /* For IE8 and earlier */
+}
+
+#x_footerBlock .x_floatLeft, #x_footerBlock .x_floatRight, #x_headerBlock .x_floatLeft {
+	padding:	3px;
+}
+
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+	height:		40px;
+	cursor:		pointer;
+	padding: 	0 41px 0 0;
+	/* override JQuery UI css from buttons on footer */
+	border:		0px; -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;
+}
+
+#x_prevBtn, #x_nextBtn {
+	padding: 	0 43px 0 0;
+}
+
+#x_footerBlock .x_floatLeft button {
+	margin-right:	3px;
+}
+
+#x_prevBtn {
+	/* removes automatic spacing added between inline-block elements */
+	margin-right:	-4px;
+}
+
+#x_menuBtn {
+	margin-right:	-1px;
+}
+
+#x_pageNo {
+	vertical-align:	top;
+	text-align:		center;
+	display:		inline-block;
+	padding:		10px 5px 0px;
+	margin-right:	-5px;
+	height:			30px;
+	width:			4em;
+	z-index:		100;
+}
+
+#x_pageControls {
+	display:	inline-block;
+}
+
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
+	height:					40px;
+	background-position:	center;
+}
+
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home {
+	width:	41px;
+}
+
+.ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
+	width:	43px;
+}
+
+.spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
+
+#x_footerBlock .ui-button-icon-only .ui-icon, #x_footerBlock .ui-button-text-icon-primary .ui-icon, #x_footerBlock .ui-button-text-icon-secondary .ui-icon, #x_footerBlock .ui-button-text-icons .ui-icon, #x_footerBlock .ui-button-icons-only .ui-icon {
+	position:	absolute;
+	top:		0;
+	margin-top:	0px;
+}
+#x_footerBlock .ui-button-icon-only .ui-icon {
+	left:			0;
+	margin-left:	0px;
+}
+
+#x_footerBlock .ui-state-default {									background: 50% 50% repeat-x; }
+#x_footerBlock .ui-state-hover, #x_footerBlock .ui-state-focus {	background: 50% 50% repeat-x; }
+#x_footerBlock .ui-state-active {									background: 50% 50% repeat-x; }
+
+/* override JQuery UI css for dialog box */
+.ui-dialog .ui-widget-header {
+	border: 		1px solid #666666;
+	background: 	#2d2a2a url(smoothness/images/ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat-x;
+	color: 			#ffffff;
+	font-weight: 	bold;
+}
+
+.ui-widget {
+	font-size: 1em;
+}
+
+.ui-dialog .ui-dialog-content {
+	padding:	4px 0px 0px 0px;
+	overflow-x:	hidden;
+}
+
+.ui-dialog-titlebar-close {
+	background: 	#dadada url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+}
+
+/* standard link style - overrides the way links are styled on tab navigator */
+.ui-tabs-panel a:link, .ui-accordion-content a:link			{ color:	#0000FF; }
+.ui-tabs-panel a:visited, .ui-accordion-content a:visited	{ color:	#800080; }
+.ui-tabs-panel a:hover, .ui-accordion-content a:hover		{ color:	#FF0000; }
+.ui-tabs-panel a:active, .ui-accordion-content a:active		{ color:	#FF0000; }
+
+
+/* GLOSSARY */
+
+a.x_glossary {
+	font-weight:		bold;
+	text-decoration:	none;
+	color:				#010101;
+	border-bottom:		1px dotted;
+}
+
+a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+	color:	#010101;
+}
+
+#x_glossaryHover {
+	display:			none;
+	max-width:			200px;
+}
+
+.x_tooltip {
+	position:			absolute;
+	border:				1px solid #333;
+	background-color:	#161616;
+	border-radius:		4px;
+	padding:			2px 5px;
+	color:				#fff;
+}
+
+
+/* STYLES FOR PAGE MODEL CONTENTS */
+/* don't change styles that start with x_ in page models as they will change interface css */
+
+.leftAlign {
+	text-align:	left;
+}
+
+.centerAlign {
+	text-align:	center;
+}
+
+.rightAlign {
+	text-align:	right;
+}
+
+img {
+	vertical-align:	bottom;
+}
+
+
+span.cke_image_nocaption[align="left"],
+span.cke_image_nocaption[style*="float: left"],
+span.cke_image_nocaption[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+div[align="left"] figure,
+div[style*="float: left"] figure,
+div[style*="float:left"] figure
+{
+    margin: 5px 15px 0px 0px;
+}
+
+img[align="left"],
+img[style*="float: left"],
+img[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+figure[align="left"],
+figure[style*="float: left"],
+figure[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+span.cke_image_nocaption[align="right"],
+span.cke_image_nocaption[style*="float: right"],
+span.cke_image_nocaption[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
+div[align="right"] figure,
+div[style*="float: right"] figure,
+div[style*="float:right"] figure{
+    margin: 5px 0px 0px 15px;
+}
+
+img[align="right"],
+img[style*="float: right"],
+img[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
+figure[align="right"],
+figure[style*="float: right"],
+figure[style*="float:right"]{
+    margin: 5px 0px 0px 15px;
+}
+
+img.centre {
+	display:		block;
+    margin-left:	auto;
+    margin-right:	auto;
+}
+
+.panel {
+	padding:			10px;
+	background-color:	white;
+	border:				1px solid #ffffff;
+	-moz-box-shadow:    2px 2px 5px #888888;
+	-webkit-box-shadow: 2px 2px 5px #888888;
+	box-shadow:         2px 2px 5px #888888;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')"; /* for IE 8 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888'); /* for IE 5.5-7 */
+}
+
+.panel.inline {
+	display:	inline-block;
+	margin:		0 20px 20px;
+}
+
+audio {
+	display:	block;
+	margin-top:	10px;
+}
+
+.highlight {
+	background-image:	url("../highlight.png");
+}
+
+.highlightDark {
+	background-image:	url("../highlight_dark.png");
+}
+
+.transparent {
+	background-image:	url("../transparent.png");
+}
+
+.hidden {
+	opacity:	0;
+	filter:		alpha(opacity = 0);
+}
+
+.alert {
+	font-weight:	bold;
+	color:			red;
+}
+
+
+/* TABLE STYLES */
+
+#x_pageDiv table {
+	text-align:			left;
+	border-collapse:	collapse;
+}
+
+#x_pageDiv table td {
+	padding:		10px;
+	vertical-align:	top;
+}
+
+table tr.shaded {
+	background:	#E3FFD6;
+}
+
+/* BORDER STYLES */
+table.full td {
+	border:	1px solid #333333;
+	border:	1px solid #333333;
+}
+table.simple {
+	border-top:		2px solid #333333;
+	border-bottom:	2px solid #333333;
+}
+table.horizontal tr {
+	border-bottom:	1px solid #333333;
+}
+table.horizontal tr:last-child {
+	border-bottom:	0px;
+}
+table.vertical td {
+	border-right:	1px solid #333333;
+}
+table.vertical td:last-child {
+	border-right:	0px;
+}
+table.outside {
+	border:	1px solid #333333;
+}
+
+table.glossary {
+	width:			100%;
+	border-collapse:collapse;
+}
+
+table.glossary td {
+	padding:		5px;
+	vertical-align:	top;
+}
+
+table.glossary tr td:first-child {
+	font-weight:	bold;
+}
+
+table.glossary tr {
+	background:	#FFFFFF;
+}
+
+table.glossary tr td:first-child {
+	border-right:	1px solid #EEEEEE;
+}
+
+table.glossary tr.shaded {
+	background:	#EEEEEE;
+}
+
+table.glossary tr.shaded td:first-child {
+	border-right:	1px solid #FFFFFF;
+}
+
+/* HEADER / FOOTER STYLES */
+table.header tr:first-child {
+	font-weight:	bold;
+}
+table.footer tr:last-child {
+	font-weight:	bold;
+}
+table.header.shaded tr:first-child {
+	background:	#F2F2F2;
+}
+table.footer.shaded tr:last-child {
+	background:	#F2F2F2;
+}
+table.header.simple tr:first-child {
+	border-bottom:	1px solid #333333;
+}
+table.footer.simple tr:last-child {
+	border-top:	1px solid #333333;
+}
+
+/* SPECIFIC IE FIXES */
+
+.lt-ie8 #x_pageNo {
+    display:inline;
+}
+
+.lt-ie8 #x_pageControls {
+    display:inline;
+}
+
+/* CSS BUTTON ADDITIONS */
+#x_colourChangerBtn {
+	margin-right:	-1px;
+}
