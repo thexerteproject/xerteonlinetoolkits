@@ -1,0 +1,132 @@
+<language name="Français" code="fr-FR">
+	<btnSaveXerte label="Enregistrer" tooltip="Enregistrer le projet" description="Bouton d'enregistrement"/>
+	<btnPublishXot label="Publier" tooltip="Publier le projet" description="Bouton de publication"/>
+	<popupFileUpload title="Télécharger un fichier" cancelLabel="Annuler"/>
+	<browseImportFile title="Sélectionner un fichier à importer">
+		<dialogFilter>Tous les fichiers|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importer</buttontext>
+	</browseImportFile>
+	<kblanguage title="Pavé de caractères" tooltip="Pavé de caractères" description="Disposition du clavier">
+		<item>Français</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="New {i}" />
+	<helpLink tooltip="Cliquer pour plus d'aide"/>
+	<btnInsert label="Insérer" tooltip="Insérer"/>
+	<btnAddChild tooltip="Ajouter des sous dossiers"/>
+	<btnDuplicate label="Copier" tooltip="Copier"/>
+	<btnDelete label="Supprimer" tooltip="Supprimer"/>
+	<btnMoveUp tooltip="Monter"/>
+	<btnMoveDown tooltip="Descendre"/>
+	<btnNext tooltip="Modèle suivant"/>
+	<btnPreview label="Lecture" tooltip="Lecture"/>
+	<btnPrev tooltip="Modèle précédent"/>
+	<icDelete tooltip="Supprimer" prompt="Supprimer ce modèle?"/>
+	<addProp label="Ajouter" tooltip="Ajouter" />
+	<optionalProp label="Propriétés optionnelles:"/>
+	<chkShowLanguage label="Montrer les options de langage" />
+	<chkShowAdvanced label="Montrer les options avancées" />
+	<compMedia tooltip="Importer média"/>
+	<compPreview tooltip="Aperçu"/>
+	<filemenu title="File">
+		<menuNew>Nouveau projet...</menuNew>
+		<menuOpen>Ouvrir...</menuOpen>
+		<menuSave>Enregistrer</menuSave>
+		<menuExit>Sortir</menuExit>
+	</filemenu>
+	<menuOpen title="Veuillez sélectionner un projet">
+		<dialogText>Sélectionnez un fichier</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Modèles|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Voir">
+		<menuPreview>Aperçu</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publier">
+		<menuPublish>Publier</menuPublish>
+		<menuPackage>Package</menuPackage>
+	</publishmenu>
+	<menuPackage title="Enregistrer un package SCORM 1.2">
+		<dialogText>Sélectionnez un fichier</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Fichier Zip|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Aide">
+		<menuHelp>Aide</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Le fichier d'aide va s'afficher</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Tous les fichiers (*.*)</allfiles>
+			<images>Images (*.jpg, *.jpeg, *.png)</images>
+			<flash>Fichiers Flash (*.swf)</flash>
+			<sound>Fichiers sonore (*.mp3)</sound>
+			<video>Fichiers vidéo (*.flv)</video>
+		</filters>
+		<title>Sélectionnez le fichier à importer...</title>
+		<filter>Tous |*.*|JPG|*.jpg|PNG|*.png|Fichiers SWF|*.swf|Sons|*.mp3|Videos|*.flv</filter>
+		<btnimport>Importer</btnimport>
+		<btncancel>Annuler</btncancel>
+		<fileexists>
+			<prompt>Le fichier {f} exsite déjà.\r\Remplacer ce fichier ?</prompt>
+			<title>Confirmation</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Annuler</cancellabel>
+		<nolabel>Non</nolabel>
+		<yeslabel>Oui</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Entrez l'URL du lien</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Vous ne pouvez seulement ajouter {m} {i}s</prompt>
+				<title>Erreur</title>
+			</max>
+			<mixedcontent>
+				<prompt>Vous ne pouvez pas mélanger le contenu ici.</prompt>
+				<title>Erreur</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>The dossier n'est pas vide. Êtes-vous sûr(e) de vouloir l'utiliser pour votre nouveau projet?</prompt>
+			<title>Confirmation</title>
+		</newproject>
+		<openproject>
+			<prompt>Voulez-vous ouvrir le nouveau projet?</prompt>
+			<title>Confirmation</title>
+		</openproject>
+		<initpreview>
+			<prompt>Vous devez sélectionner un média avant de pouvoir le visualiser.</prompt>
+			<title>Information</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Vous ne pouvez dupliquer ce modèle.</prompt>
+			<title>Erreur</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Voulez-vous supprimer ce modèle?</prompt>
+				<title>Confirmation</title>
+			</confirm>
+			<error>
+				<prompt>Vous ne pouvez supprimer ce modèle</prompt>
+				<title>Erreur</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>Le XML n'a pas pu être formaté et les changements n'ont pas été enregistrés. Vérifiez vos changements récents.
+			</prompt>
+		</savefile>
+		
+	</Alert>
+</language>

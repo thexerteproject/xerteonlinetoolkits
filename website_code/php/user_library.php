@@ -195,7 +195,7 @@ function create_a_virtual_root_folder(){
     $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
     $params = array($_SESSION['toolkits_logon_id'], "0", $_SESSION['toolkits_logon_username']);
 
-    if(db_query($query, $params)){
+    if(db_query($query, $params) !== false){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
 
@@ -225,7 +225,7 @@ function update_user_logon_time(){
     $query = "UPDATE {$prefix}logindetails SET lastlogin = ? WHERE username = ?";
     $params = array(date('Y-m-d'), $_SESSION['toolkits_logon_username']); 
 
-    if(db_query($query, $params)){
+    if(db_query($query, $params) !== false){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time " . $_SESSION['toolkits_logon_username'], "Succeeded in updating users login time " . $_SESSION['toolkits_logon_id']);
 
@@ -238,7 +238,7 @@ function update_user_logon_time(){
     $query = "UPDATE {$prefix}logindetails SET firstname = ?, surname = ? WHERE username = ?";
     $params = array($_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname'], $_SESSION['toolkits_logon_username'] ); 
 
-    if(db_query($query, $params)){
+    if(db_query($query, $params) !== false){
 
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users username " . $_SESSION['toolkits_logon_username'], "Succeeded in updating usersname ");
 

@@ -1,0 +1,150 @@
+<language name="Norsk bokmål" code="no-NB">
+    <layout closetooltip="Lukk denne fanen" opentooltip="Åpne fanen" resizetooltip="Endre størrelse på fanen" />
+    <edit label="Endre ..." tooltip="Endre dette valget" description="Endreknapp" />
+    <insertDialog>
+        <insertBefore label="Sett inn før" tooltip="Sett inn før valgte objekt"/>
+        <insertAfter label="Sett inn etter" tooltip="Sett inn etter valgte objekt"/>
+        <insertAtEnd label="Sett inn på slutten" tooltip="Sett inn som siste objekt"/>
+    </insertDialog>
+    <btnSaveXerte label="Lagre" tooltip="Lagre prosjekt" description="Lagreknapp"/>
+	<btnPublishXot label="Publiser" tooltip="Publiser prosjekt" description="Publiseringsknapp"/>
+	<popupFileUpload title="Filopplasting" cancelLabel="Avbryt"/>
+	<browseImportFile title="Velg fil som skal lastes opp...">
+		<dialogFilter>Alle filer|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Importer</buttontext>
+	</browseImportFile>
+	<kblanguage title="Tastatur" tooltip="Tastatur" description="Tastaturspråk">
+		<item>French</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="Ny {i}" />
+	<helpLink tooltip="Klikk for hjelp"/>
+    <btnAddColumn label="Legg til kolonne" tooltip="Legg til kolonne til høyre"/>
+    <btnDelColumn label="Slett kolonne" tooltip="Slett valgte kolonne"/>
+	<btnInsert label="Sett inn" tooltip="Sett inn"/>
+	<btnAddChild tooltip="lag noen barn"/>
+	<btnDuplicate label="Kopier" tooltip="Klone"/>
+	<btnDelete label="Slett" tooltip="Slett"/>
+	<btnMoveUp tooltip="Flytt opp"/>
+	<btnMoveDown tooltip="Flytt ned"/>
+	<btnNext tooltip="Neste element"/>
+	<btnPreview label="Spill av" tooltip="Forhåndsvis"/>
+	<btnPrev tooltip="Forrige element"/>
+	<icDelete tooltip="Slett" prompt="Slette objektet?"/>
+	<addProp label="Legg til" tooltip="legg til" />
+	<optionalProp label="Valgfrie innstillinger:"/>
+	<chkShowLanguage label="Vis språkinnstillinger" tooltip="Vis språkalternativer hvis tilgjengelige."/>
+	<chkShowAdvanced label="Vis avanserte innstillinger" tooltip="Vis avanserte alternativer hvis tilgjengelige."/>
+    <chkShowToolbar label="Vis menyer" tooltip="Vis alle menyer dersom de er tilgjengelige."/>
+	<compMedia tooltip="Importer media"/>
+	<compPreview tooltip="Forhåndsvisning"/>
+	<filemenu title="Fil">
+		<menuNew>Nytt prosjekt...</menuNew>
+		<menuOpen>Åpne...</menuOpen>
+		<menuSave>Lagre</menuSave>
+		<menuExit>Lukk</menuExit>
+	</filemenu>
+	<menuOpen title="Velg et prosjekt">
+		<dialogText>Velg en fil</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Læringsobjekter|*.rlt|MXML Files|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Vis">
+		<menuPreview>Forhåndsvis</menuPreview>
+	</viewmenu>
+	<publishmenu title="Publiser">
+		<menuPublish>Publiser</menuPublish>
+		<menuPackage>Pakke</menuPackage>
+	</publishmenu>
+	<menuPackage title="Lagre SCORM 1.2 pakke">
+		<dialogText>Velg fil</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip-filer|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Hjelp">
+		<menuHelp>Hjelp</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Hjelpetekster kommer snart.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Alle filer (*.*)</allfiles>
+			<images>Bilder (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flashfiler (*.swf)</flash>
+			<sound>Lydfiler (*.mp3)</sound>
+			<video>Videofiler (*.flv)</video>
+		</filters>
+		<title>Velg fil som skal importeres...</title>
+		<filter>Alle filer|*.*|JPG|*.jpg|PNG|*.png|SWF Files|*.swf|Sounds|*.mp3|Video|*.flv</filter>
+		<btnimport>Importer</btnimport>
+		<btncancel>Avbryt</btncancel>
+		<fileexists>
+			<prompt>Filen {f} eksisterer allerede.\r\rOverskriv denne filen?</prompt>
+			<title>Bekreft</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Ok</oklabel>
+		<cancellabel>Avbryt</cancellabel>
+		<nolabel>Nei</nolabel>
+		<yeslabel>Ja</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Oppgi URL for lenken</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Du kan bare legge til {m} {i}s</prompt>
+				<title>Feil</title>
+			</max>
+			<mixedcontent>
+				<prompt>Du kan ikke blande innhold her.</prompt>
+				<title>Feil</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Mappen er ikke tom. Er du sikker på at du vil bruke den til ditt nye prosjekt?</prompt>
+			<title>Bekreft</title>
+		</newproject>
+		<openproject>
+			<prompt>Vil du åpne det nye prosjektet?</prompt>
+			<title>Bekreft</title>
+		</openproject>
+		<initpreview>
+			<prompt>Du må velge et objekt før du kan forhåndsvise det.</prompt>
+			<title>Info</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Du kan ikke duplisere dette objektet.</prompt>
+			<title>Feil</title>
+		</duplicateitem>
+		<deletenode>
+			<confirm>
+				<prompt>Vil du slette objektet?</prompt>
+				<title>Bekreftelse</title>
+			</confirm>
+			<error>
+				<prompt>Du kan da ikke slette dette</prompt>
+				<title>Feil</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>XML kunne ikke bli formattert, endringer har ikke blitt lagret. Sjekk hva du nettopp endret.</prompt>
+		</savefile>
+        <upload>
+            <successful>Opplasting fullført</successful>
+            <failed>
+                <permissions>Opplasting feilet: Sjekk tillatelser</permissions>
+                <HTTPError>Opplasting feilet: HTTPError</HTTPError>
+                <IOError>Opplasting feilet: IOError</IOError>
+                <security>Opplasting feilet: Sikkerhetsfeil</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>

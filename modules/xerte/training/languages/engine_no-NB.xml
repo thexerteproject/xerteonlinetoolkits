@@ -1,0 +1,143 @@
+<language name="Bokmål">
+
+  <nextButton label="Neste" description="Knapp for å gå til neste side"/>
+  
+  <backButton label="Forrige" description="Knapp for å gå til forrige side"/>
+  
+  <tocButton label="Innhold" description="Knapp for å vise innhold"/>
+  
+  <helpButton label="Hjelp" description="Hjelpeknapp"/>
+
+  <mediaButton label="Media" description="Mediaknapp. "/>
+  
+  <homeButton label="Hjem" description="Hjemknapp"/>
+  
+  <pageHelp name="Hjelp for siden" description="Hjelp for siden" toClose="Trykk Space-tasten (mellomrom) for å lukke hjelp."/>
+  
+  <glossaryButton label="Ordliste" description="Ordlisteknapp. "/>
+  
+  <continueButton label="Fortsett" description="Fortsettknapp"/>
+  
+  <toc label="Innholdsfortegnelse" description="Innholdsfortegnelse. Bruk piltastene for å velge side. Space-tasten (mellomrom) for å gå inn i valgte side.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="Knapp for å lukke innholdsfortegnelse"/>
+	  <gotoPageButton label="Gå til side" description="Knapp for å gå til side"/>
+  </toc>
+  
+  <glossary label="Ordliste" description="Liste over ord og definisjoner.">
+	  <closeButton label="" description="Knapp for å lukke ordliste"/>
+  </glossary>
+  
+  <kbLanguage label="Spesielle tegn" description="Liste over knapper som setter inn spesielle tegn i tekstbokser.">
+	  <closeButton label="" description="Knapp for å lukke spesielle tegn"/>
+	  <dialog instruction="Bruk CAPS og SHIFT" on="ON" off="OFF" caps="Caps"/>
+  </kbLanguage>
+  
+  <textToSpeech label="null" description="Tekst til tale"/>
+  
+  <errorProject label="Prosjektet er ikke lastet."/>
+  
+  <errorPage label="Ingen mal tilgjengelig for denne objekttypen."/>
+  
+  <errorBrowser label="Din nettleser støtter ikke denne objekttypen fullt ut."/>
+  
+  <errorFlash label="Du må installere Adobe Flash for å kunne se denne siden." description="Skaff Adobe Flash"/>
+  
+  <tick label="Tick"/>
+  
+  <cross label="Cross"/>
+
+  <themes label="--Fargeskjema--" description="Valg for fargeskjema">
+    <item>standard</item>
+    <item>blå</item>
+    <item>grønn</item>
+    <item>rød</item>
+    <item>oransje</item>
+    <item>lilla</item>
+    <item>grå</item>
+    <item>høykontrast 1</item>
+    <item>høykontrast 2</item>
+  </themes>
+ 
+  <sizes label="--Skjermstørrelse--" description="Valg for skjermstørrelse">
+	<item>standard</item>
+	<item>stor</item>
+	<item>større</item>
+	<item>fullskjerm</item>
+	<item>fyll tilgjengelig skjerm</item>
+  </sizes>
+  
+  <fonts label="--Tekstfont--" description="Fontvalg">
+	  <item>standard</item>
+  </fonts>
+  
+  <textSizes label="--Tekststørrelse--" description="Valg for tekststørrelse">
+	  <item>standard</item>
+	  <item>liten</item>
+	  <item>medium</item>
+	  <item>stor</item>
+	  <item>større</item>
+  </textSizes>
+  
+  <volumeControl label="Lyd:" description="Lydstyrke"/>
+  <volumeControlSlider label="" description="Lydstyrke"/>
+  
+  <vocab>
+	  <page>Objekt</page>
+	  <of>av</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Stopp lyd" description="Knapp for å stoppe lyd"/>
+	<playButton label="Spill av lyd" description="Knapp for å spille av lyd"/>
+	<pauseButton label="Pause lyd" description="Pauseknapp"/>
+	<rwndButton label="Spol lyd bakover" description="Rewind Audio Button"/>
+	<ffwdButton label="Spol lyd fremover" description="Forward Audio Button"/>
+	<loader label="Laster: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Stopp film" description="Knapp for å stoppe filmen"/>
+	<playButton label="Spill av film" description="Knapp for å spille av film"/>
+	<pauseButton label="Pause" description="Pauseknapp"/>
+	<rwndButton label="Spol filmen bakover" description="Rewind Movie Button"/>
+	<ffwdButton label="Spol filmen forover" description="Forward Movie Button"/>
+	<loader label="Laster: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Stop" description="Stop Media Button"/>
+	<playPauseButton label="Play/Pause" description="Play/Pause Media Button"/>
+	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
+	<fullscreenButton label="Fullscreen" description="Fullscreen Movie Button"/>
+	<captionsButton label="Captions/Subtitles" description="Show/Hide Captions Button"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Button"/>
+	  <radioButton selected="valgt. Bruk piltastene for å velge"/>
+	  <checkBox selected="valgt" deselected="dee selected"/>
+	  <comboBox name="ComboBox" options="Options." selected="selected." selectedOptions="valgt. Bruk piltastene for å velge" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Trykk Space-tasten for å velge." selected="Hot Spot Selected"/>
+	  <hotObject name="HotObject" toSelect="Trykk Space-tasten for å velge." selected="Hot Object Selected"/>
+	  <textEntry name="Tekstboks" selected="Tekstboks valgt"/>
+	  <targetArea name="Hotspot-område" description="Slippsone for" toSelect="Trykk space-tasten for å slippe valgte objekt."/>
+	  <draggableItem name="Flyttbart objekt" selected="Item Selected" toSelect="Trykk space-tasten for å velge" deSelected="Intet objekt valgt." />
+  </interactions>
+  
+  <fetchResults label="Henter resultat..."/>
+  <errorResults label="Klarte ikke å laste resultat"/>
+  <loadError label="Feil ved innlasting"/>
+  <noResults label="Ingen resultater tilgjengelige."/>
+  
+  <timer>
+	  <remaining name="Tid som gjenstår"/>
+	  <timeUp name="Tiden er ute"/>
+	  <seconds name="sekunder"/>
+  </timer>
+
+  <colourChanger label="Fargeskifter" description="Skifter farge.">
+	  <closeButton label="" description="Lukk fargeskifter"/>
+  </colourChanger>
+
+</language>
