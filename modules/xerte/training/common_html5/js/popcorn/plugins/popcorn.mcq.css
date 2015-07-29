@@ -1,0 +1,83 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* _____MCQ POPCORN PLUGIN STYLES_____ */
+
+.mcqHolder.overlay {
+	position:	absolute;
+	top:		0px;
+	left:		0px;
+	width:		100%;
+	pointer-events: none;
+}
+
+.mcqHolder.overlay button, .mcqHolder.overlay input, .mcqHolder.overlay select {
+	pointer-events: all;
+}
+
+.mcqHolder.overlay .holder {
+	margin:	10px;
+}
+
+.mcqHolder .optionHolder {
+	margin-top:	15px;
+}
+
+.mcqHolder .optionHolder.centre {
+	text-align:	center;
+}
+
+.mcqHolder .optionHolder button {
+	float:		none;
+}
+
+.mcqHolder .optionGroup {
+	padding-top:	5px;
+	padding-bottom:	5px;
+	pointer-events: all;
+}
+
+.mcqHolder .optionTxt {
+	cursor:			pointer;
+	position:		relative;
+	margin-left:	30px;
+	display:		block;
+}
+
+.mcqHolder .mcqFeedback {
+	clear:		both;
+}
+
+.mcqHolder div.feedback {
+	margin-bottom:	0.5em;
+}
+
+.mcqHolder .bottom {
+	clear: both;
+}
+
+.mcqHolder input {
+	float:		left;
+	display:	block;
+}
+
+.mcqHolder button {
+	margin:		10px;
+	float:		right;
+}

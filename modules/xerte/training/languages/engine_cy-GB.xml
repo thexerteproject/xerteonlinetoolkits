@@ -1,0 +1,143 @@
+<language name="Cymraeg">
+
+  <nextButton label="Nesaf" description="Botwm Tudalen Nesaf"/>
+  
+  <backButton label="Nôl" description="Botwm Tudalen Diwethaf"/>
+  
+  <tocButton label="Cynnwys" description="Botwm Cynnwys"/>
+  
+  <helpButton label="Cymorth" description="Botwm Cymorth. "/>
+
+  <mediaButton label="Cyfryngau" description="Botwm Cyfryngau. "/>
+  
+  <homeButton label="Cartref" description="Botwm Cartref. "/>
+  
+  <pageHelp name="Tudalen Cymorth" description="Tudalen Cymorth" toClose="Pwyswch ar y fysell fylchu (Space) i gau'r cymorth"/>
+  
+  <glossaryButton label="Geirfa" description="Botwm Geirfa. "/>
+  
+  <continueButton label="Parhau" description="Botwm Parhau"/>
+  
+  <toc label="Tabl Cynnwys" description="tabl cynnwys. Defnyddiwch y bysellau saeth i ddewis tudalen.  Pwyswch ar y fysell fylchu (Space) i fynd i'r tudalen hwnnw.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="botwm cau tabl cynnwys"/>
+	  <gotoPageButton label="Ewch i Dudalen" description="Botwm Ewch i Dudalen"/>
+  </toc>
+  
+  <glossary label="Geirfa" description="Rhestr o eiriau a diffiniadau.">
+	  <closeButton label="" description="Botwm cau geirfa"/>
+  </glossary>
+  
+  <kbLanguage label="Llythrennau Arbennig" description="Rhestr o fotymau sy'n ychwanegu llythrennau arbennig at destun">
+	  <closeButton label="" description="Botwm cau llythrennau arbennig"/>
+	  <dialog instruction="Defnyddio CAPS a SHIFT" on="YMLAEN" off="I FFWRDD" caps="Caps"/>
+  </kbLanguage>
+  
+  <textToSpeech label="nwl" description="Testun i Araith"/>
+  
+  <errorProject label="Nid yw data'r prosiect wedi llwytho."/>
+  
+  <errorPage label="Nid oes templed ar gael ar hyn o bryd ar gyfer y math hwn o dudalen."/>
+  
+  <errorBrowser label="Nid yw eich porwr yn gallu cefnogi'r math hwn o dudalen yn llawn."/>
+  
+  <errorFlash label="Rhaid ichi osod y Chwaraewr Flash i weld y cynnwys hwn." description="Nôl y Chwaraewr Flash"/>
+  
+  <tick label="Tic"/>
+  
+  <cross label="Croes"/>
+
+  <themes label="--Cynlluniau Lliw--" description="Dewisiadau Lliw">
+    <item>rhagosod</item>
+    <item>glas</item>
+    <item>gwyrdd</item>
+    <item>coch</item>
+    <item>oren</item>
+    <item>porffor</item>
+    <item>llwyd</item>
+    <item>lliwiau cyferbyniol 1</item>
+    <item>lliwiau cyferbyniol 2</item>
+  </themes>
+ 
+  <sizes label="--Maint Sgrîn--" description="Dewisiadau Maint Sgrîn">
+	<item>rhagosod</item>
+	<item>mawr</item>
+	<item>mwy</item>
+	<item>sgrîn lawn</item>
+	<item>llenwi ffenestr</item>
+  </sizes>
+  
+  <fonts label="--Ffont Testun--" description="Dewisiadau Ffurfdeip">
+	  <item>rhagosod</item>
+  </fonts>
+  
+  <textSizes label="--Maint Testun--" description="Dewisiadau Maint Testun">
+	  <item>rhagosod</item>
+	  <item>bychan</item>
+	  <item>canolig</item>
+	  <item>mawr</item>
+	  <item>mwy</item>
+  </textSizes>
+  
+  <volumeControl label="Lefel Sain:" description="Rheoli'r Lefel Sain"/>
+  <volumeControlSlider label="" description="Rheolydd y Lefel Sain"/>
+  
+  <vocab>
+	  <page>Tudalen</page>
+	  <of>o</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Diffodd Sain" description="Botwm Diffodd Sain"/>
+	<playButton label="Chwarae Sain" description="Botwm Chwarae Sain"/>
+	<pauseButton label="Atal Sain" description="Botwm Atal Sain"/>
+	<rwndButton label="Ailddirwyn Sain" description="Botwm Ailddirwyn Sain"/>
+	<ffwdButton label="Gyrru Sain Ymlaen" description="Botwm Gyrru Sain Ymlaen"/>
+	<loader label="Llwytho: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Ailosod Ffilm" description="Botwm Ailosod Ffilm"/>
+	<playButton label="Chwarae Ffilm" description="Botwm Chwarae Ffilm"/>
+	<pauseButton label="Atal Ffilm" description="Botwm Atal Ffilm"/>
+	<rwndButton label="Ailddirwyn Ffilm" description="Botwm Ailddirwyn Ffilm"/>
+	<ffwdButton label="Gyrru Ffilm Ymlaen" description="Botwm Gyrru Ymlaen trwy'r Ffilm"/>
+	<loader label="Llwytho: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Diffodd" description="Botwm Diffodd Cyfryngau"/>
+	<playPauseButton label="Chwarae/Atal" description="Botwm Chwarae/Atal Cyfryngau"/>
+	<muteButton label="Pylu Sain" description="Botwm Pylu Sain"/>
+	<fullscreenButton label="Sgrîn lawn" description="Botwm Sgrîn Lawn Ffilm"/>
+	<captionsButton label="Isdeitlau/Isbenawdau" description="Botwm Dangos/Cuddio Isdeitlau"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Botwm"/>
+	  <radioButton selected="a ddewiswyd. Defnyddiwch y bysellau saeth i ddewis"/>
+	  <checkBox selected="a ddewiswyd" deselected="a ddad-ddewiswyd"/>
+	  <comboBox name="Blwch Cyfuno" options="Dewisiadau." selected="a ddewiswyd." selectedOptions="a ddewiswyd. efnyddiwch y bysellau saeth i ddewis" />
+	  <hotSpot name="PoethFan" toSelect="Man Poeth. Pwyswch ar y fysell fylchu (Space) i ddewis." selected="Dewiswyd PoethFan"/>
+	  <hotObject name="Gwrthrych Poeth" toSelect="Pwyswch ar y fysell fylchu (Space) i ddewis." selected="Dewiswyd Gwrthrych Poeth"/>
+	  <textEntry name="Blwch Gosod Testun" selected="Dewiswyd Blwch Gosod Testun"/>
+	  <targetArea name="Man Cyrchu" description="Y gyrchfan ar gyfer" toSelect="Pwyswch ar y fysell fylchu (Space) i ollwng yr eitem a ddewiswyd."/>
+	  <draggableItem name="Eitem i'w lusgo" selected="Dewiswyd Eitem" toSelect="Pwyswch ar y fysell fylchu (Space) i ddewis" deSelected="Ni ddewiswyd eitem." />
+  </interactions>
+  
+  <fetchResults label="Wrthi'n hôl canlyniadau..."/>
+  <errorResults label="Cafwyd gwall wrth lwytho'r canlyniadau"/>
+  <loadError label="Gwall wrth lwytho"/>
+  <noResults label="Ni chafwyd canlyniadau"/>
+  
+  <timer>
+	  <remaining name="Amser ar ôl"/>
+	  <timeUp name="Amser ar ben"/>
+	  <seconds name="eiliad"/>
+  </timer>
+
+  <colourChanger label="Newid Lliwiau" description="Newid y lliwiau.">
+	  <closeButton label="" description="Cau'r Newidiwr Lliwiau"/>
+  </colourChanger>
+
+</language>
