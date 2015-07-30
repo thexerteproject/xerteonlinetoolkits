@@ -169,7 +169,6 @@ function process($json, $xml = null) {
                     if (is_null($xml)) {
                             if ($name == 'nodeName') {
                                     $xml = new ExSimpleXMLElement('<'.$value.'/>');
-                                    $xml->addAttribute('editorVersion', '3');
                             }
                             else {
                                     $xml->addAttribute($name, $value);
@@ -180,8 +179,7 @@ function process($json, $xml = null) {
                                     $xml = $xml->addChild($value);
                             }
                             else {
-                            		if ($name != 'editorVersion')
-                                    		$xml->addAttribute($name, $value);
+                                    $xml->addAttribute($name, $value);
                             }
                     }
             }
