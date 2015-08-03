@@ -385,10 +385,10 @@ function upgrade_5()
 
 function upgrade_6()
 {
-
     $table = table_by_key('originaltemplatesdetails');
-
     db_query_one("insert  into " . $table . " (`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (17,'decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1)");
+
+	return true;
 }
 
 ?>
