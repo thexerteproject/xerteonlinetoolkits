@@ -157,7 +157,16 @@ var EDITOR = (function ($, parent) {
         $(xmlData[0].attributes).each(function() {
             attributes[this.name] = this.value;
         });
+
+		if (parent_id == null)
+        {
+    		// Look for the editor version attribute and then add xml flag to show we've checked
+        	if (attributes.editorVersion && parseInt("0" + attributes.editorVersion, 10) >= 3) alreadyUpgraded = true;
+        	attributes["editorVersion"] = "3";
+        }
+
         // Expand FileLocation + to full path, except for attributes of type media
+        //  also take care here of converting CRs to <br /> where appropriate
         var options = wizard_data[xmlData[0].nodeName].node_options;
         $.each(attributes, function(key, attribute){
             var attroptions = {};
@@ -169,6 +178,14 @@ var EDITOR = (function ($, parent) {
                     break;
                 }
             }
+
+            // Deal with line breaks in TextInput and TextArea fields
+            if (!alreadyUpgraded && attroptions.type && (attroptions.type.toLowerCase() == 'textinput' || attroptions.type.toLowerCase() == 'textarea'))
+            {
+                attributes[key] = addLineBreaks(attributes[key]);
+            }
+
+            // Deal with media
             if (attroptions.type != 'media')
             {
                 attributes[key] = makeAbsolute(attributes[key]);
@@ -1519,58 +1536,66 @@ var EDITOR = (function ($, parent) {
      * This is replica of the function used in Xenith.js (ref. x_addLineBreaks).
      */
         addLineBreaks = function(text) {
-            if (text.indexOf("<") == 0)
-            {
-                // Seems to start with a tag
-                // probably with new editor, don't replace newlines!
-                return text;
-            }
-            if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
-                return text.replace(/(\n|\r|\r\n)/g, "<br />");
+			// First test for new editor - Only applicable for Xenith.js
+			//if (x_params && x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
+			//{
+			//	return text; // Return text unchanged
+			//}
+	
+			// Now try to identify v3beta created LOs
+			if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
+			{
+				return text; // Return text unchanged
+			}
+	
+			// Now assume it's v2.1 or before
+			if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
+			{
+				return text.replace(/(\n|\r|\r\n)/g, "<br />");
+			}
+			else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+				var newText = text;
+				if (newText.indexOf("<math") != -1) { // math tag found
+					var tempText = "",
+						mathNum = 0;
 
-            } else { // ignore any line breaks inside these tags as they don't work correctly with <br>
-                var newText = text;
-                if (newText.indexOf("<math") != -1) { // math tag found
-                    var tempText = "",
-                        mathNum = 0;
+					while (newText.indexOf("<math", mathNum) != -1) {
+						var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
+							tableNum = 0;
+						while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+							tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+							tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
+							tableNum = text1.indexOf("</table>", tableNum) + 8;
+						}
+						tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+						tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
+						mathNum = newText.indexOf("</math>", mathNum) + 7;
+					}
 
-                    while (newText.indexOf("<math", mathNum) != -1) {
-                        var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
-                            tableNum = 0;
-                        while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
-                            tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-                            tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
-                            tableNum = text1.indexOf("</table>", tableNum) + 8;
-                        }
-                        tempText += text1.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-                        tempText += newText.substring(newText.indexOf("<math", mathNum), newText.indexOf("</math>", mathNum) + 7);
-                        mathNum = newText.indexOf("</math>", mathNum) + 7;
-                    }
+					var text2 = newText.substring(mathNum),
+						tableNum = 0;
+					while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+						tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+						tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
+						tableNum = text2.indexOf("</table>", tableNum) + 8;
+					}
+					tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+					newText = tempText;
 
-                    var text2 = newText.substring(mathNum),
-                        tableNum = 0;
-                    while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
-                        tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-                        tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
-                        tableNum = text2.indexOf("</table>", tableNum) + 8;
-                    }
-                    tempText += text2.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-                    newText = tempText;
+				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
+					var tempText = "",
+						tableNum = 0;
+					while (newText.indexOf("<table", tableNum) != -1) {
+						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
+						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
+						tableNum = newText.indexOf("</table>", tableNum) + 8;
+					}
+					tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
+					newText = tempText;
+				}
 
-                } else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
-                    var tempText = "",
-                        tableNum = 0;
-                    while (newText.indexOf("<table", tableNum) != -1) {
-                        tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
-                        tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
-                        tableNum = newText.indexOf("</table>", tableNum) + 8;
-                    }
-                    tempText += newText.substring(tableNum).replace(/(\n|\r|\r\n)/g, "<br />");
-                    newText = tempText;
-                }
-
-                return newText;
-            }
+				return newText;
+			}
         },
 
         displayDataType = function (value, options, name, key) {
@@ -1625,10 +1650,6 @@ var EDITOR = (function ($, parent) {
                     var id = "textarea_" + form_id_offset;
                     var textvalue = value;
 
-                    if (options.type.toLowerCase() == 'text' || options.type.toLowerCase() == 'textarea')
-                    {
-                        textvalue = addLineBreaks(value);
-                    }
                     form_id_offset++;
 
                     var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
