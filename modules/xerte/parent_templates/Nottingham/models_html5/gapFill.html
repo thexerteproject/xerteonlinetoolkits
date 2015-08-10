@@ -78,7 +78,12 @@
 			}
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage")),
-				passageArray = origPassage.split("|"),
+				if (origPassage.substr(0,3) == '<p>'){
+					origPassage = origPassage.substr(3);
+					origPassage = origPassage.substr(0, origPassage.length - 5);
+				}
+			
+			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;
 			
