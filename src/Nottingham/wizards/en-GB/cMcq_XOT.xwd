@@ -11,7 +11,7 @@
 
   
   <!-- MCQ PAGE =========================================== -->
-  <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Poses a multiple answer question with multiple options. Each response option has a destination page assigned to it"  thumb="thumbs/connectorMCQ.jpg" remove="true">
+  <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information."  thumb="thumbs/connectorMCQ.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <instruction label="Instruction" type="TextArea" height="100"/>	

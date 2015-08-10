@@ -1,6 +1,6 @@
 display name: Decision Tree Template
 description: A template for presenting a series of questions to reach a solution to a problem.
-editor size: 800,665
+editor size: 1024,768
 preview size: 800,665
 preview filename: preview.xml
 public filename: data.xml

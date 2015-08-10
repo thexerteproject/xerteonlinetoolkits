@@ -1,0 +1,143 @@
+<language name="Čeština">
+
+  <nextButton label="Další" description="Tlačítko další stránka"/>
+  
+  <backButton label="Předchozí" description="Tlačítko předchozí stránka"/>
+  
+  <tocButton label="Obsah" description="Tlačítko obsah"/>
+  
+  <helpButton label="Nápověda" description="Tlačítko nápověda"/>
+
+  <mediaButton label="Multimédia" description="Tlačítko multimédia. "/>
+  
+  <homeButton label="Domů" description="Tlačítko domů. "/>
+  
+  <pageHelp name="Stránka s nápovědou" description="Stránka s nápovědou" toClose="Pro zavření nápovědy stiskněte mezerník"/>
+  
+  <glossaryButton label="Slovník" description="Tlačítko slovník. "/>
+  
+  <continueButton label="Pokračovat" description="Tlačítko pokračovat"/>
+  
+  <toc label="Obsah" description="obsah. Pro výběr stránky použijte šipky. Pro přesun na určitou stránku použijte mezerník.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="tlačítko zavření obsahu"/>
+	  <gotoPageButton label="Přejít na stránku" description="Tlačítko přejít na stránku"/>
+  </toc>
+  
+  <glossary label="Slovník" description="Seznam slov a jejich definicí.">
+	  <closeButton label="" description="Tlačítko zavřít slovník"/>
+  </glossary>
+  
+  <kbLanguage label="Speciální znaky" description="Seznam tlačítek pro přidání speciálních znaků do textové oblasti">
+	  <closeButton label="" description="Tlačítko zavřít seznam speciálních znaků"/>
+	  <dialog instruction="Použít CAPS a SHIFT" on="ZAPNUTO" off="VYPNUTO" caps="Caps"/>
+  </kbLanguage>
+  
+  <textToSpeech label="null" description="Text na mluvené slov"/>
+  
+  <errorProject label="Data projektu nebyla načtena."/>
+  
+  <errorPage label="Pro tento typ stránky není v současné době k dispozici žádná šablona."/>
+  
+  <errorBrowser label="Váš prohlížeč plně nepodporuje tento typ stránky."/>
+  
+  <errorFlash label="Pro prohlédnutí tohoto obsahu musíte nainstalovat přehrávač Flash Player." description="Získat přehrávač Flash Player"/>
+  
+  <tick label="Časovač"/>
+  
+  <cross label="Přejít"/>
+
+  <themes label="--Barevná schémata--" description="Možnosti barevného schéma">
+    <item>výchozí</item>
+    <item>modré</item>
+    <item>zelené</item>
+    <item>červené</item>
+    <item>oranžové</item>
+    <item>purpurové</item>
+    <item>šedé</item>
+    <item>vysoký kontrast 1</item>
+    <item>vysoký kontrast 2</item>
+  </themes>
+ 
+  <sizes label="--Velikost obrazovky--" description="Možnosti velikosti obrazovky">
+	<item>výchozí</item>
+	<item>velká</item>
+	<item>největší</item>
+	<item>celá obrazovka</item>
+	<item>vyplnit okno</item>
+  </sizes>
+  
+  <fonts label="--Řez písma--" description="Možnosti řezu písma">
+	  <item>výchozí</item>
+  </fonts>
+  
+  <textSizes label="--Velikost písma--" description="Možnosti velikosti písma">
+	  <item>výchozí</item>
+	  <item>malá</item>
+	  <item>střední</item>
+	  <item>velká</item>
+	  <item>největší</item>
+  </textSizes>
+  
+  <volumeControl label="Hlasitost:" description="Nastavení hlasitosti"/>
+  <volumeControlSlider label="" description="Posuvník nastavení hlasitosti"/>
+  
+  <vocab>
+	  <page>Strana</page>
+	  <of>z</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Vypnout zvuk" description="Tlačítko vypnout zvuk"/>
+	<playButton label="Přehrát zvuk" description="Tlačítko přehrát zvuk"/>
+	<pauseButton label="Pozastavit zvuk" description="Tlačítko pozastavit zvuk"/>
+	<rwndButton label="Posunout zvuk dozadu" description="Tlačítko posunout zvuk dozadu"/>
+	<ffwdButton label="Posunout zvuk dopředu" description="Tlačítko posunout zvuk dopředu"/>
+	<loader label="Načítám: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Vypnout film" description="Tlačítko vypnout film"/>
+	<playButton label="Spustit film" description="Tlačítko spustit film"/>
+	<pauseButton label="Pozastavit film" description="Tlačítko pozastavit film"/>
+	<rwndButton label="Posunout film dozadu" description="Tlačítko posunout film dozadu"/>
+	<ffwdButton label="Posunout film dopředu" description="Tlačítko posunout film dopředu"/>
+	<loader label="Načítám: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Zastavit" description="Tlačítko zastavit"/>
+	<playPauseButton label="Spustit/pozastavit" description="Tlačítko spustit/pozastavit"/>
+	<muteButton label="Zapnout/vypnout zvuk" description="Tlačítko zapnout/vypnout zvuk"/>
+	<fullscreenButton label="Celoobrazovkový režim" description="Tlačítko celoobrazovkového režimu"/>
+	<captionsButton label="Titulky" description="Tlačítko zobrazit/skrýt titulky"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Tlačítko"/>
+	  <radioButton selected="vybráno. Pro výběr možností použijte  šipky na klávesnici"/>
+	  <checkBox selected="vybraný" deselected="nevybraný"/>
+	  <comboBox name="ComboBox" options="Možnosti." selected="selected." selectedOptions="vybráno. Pro výběr použijte šipky na klávesnici" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Pro výběr stiskněte mezerník." selected="Vybrán Hot Spot"/>
+	  <hotObject name="HotObject" toSelect="Pro výběr stiskněte mezerník." selected="Vybrán Hot Object"/>
+	  <textEntry name="Textové políčko" selected="Vybráno textové pole"/>
+	  <targetArea name="Cílová oblast" description="Oblast pro přesun objektu" toSelect="Pro zobrazení vybraných možností stiskněte mezerník."/>
+	  <draggableItem name="Přesunovatelná položka" selected="Položka vybrána" toSelect="Pro výběr stiskněte mezerník" deSelected="Žádná položka nevybrána." />
+  </interactions>
+  
+  <fetchResults label="Stahuji výsledky..."/>
+  <errorResults label="Při načítání výsledků došlo k chybě"/>
+  <loadError label="Chyba načítání"/>
+  <noResults label="Žádné výsledky"/>
+  
+  <timer>
+	  <remaining name="Zbývající čas"/>
+	  <timeUp name="Čas vypršel"/>
+	  <seconds name="sekund"/>
+  </timer>
+
+  <colourChanger label="Výběr barev" description="Mění barvy.">
+	  <closeButton label="" description="Zavře výběr barev"/>
+  </colourChanger>
+
+</language>

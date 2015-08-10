@@ -1,0 +1,145 @@
+<language name="日本語" code="ja-JP">
+
+  <nextButton label="次へ" description="[次へ]ボタン"/>
+  
+  <backButton label="戻る" description="[戻る]ボタン"/>
+  
+  <tocButton label="目次" description="[目次]ボタン"/>
+  
+  <helpButton label="ヘルプ" description="[ヘルプ]ボタン"/>
+
+  <mediaButton label="メディア" description="[メディア]ボタン"/>
+  
+  <homeButton label="ホーム" description="[ホーム]ボタン"/>
+  
+  <pageHelp name="ページのヘルプ" description="ページのヘルプ" toClose="ヘルプを閉じるには、スペース キーを押してください"/>
+  
+  <glossaryButton label="用語集" description="[用語集]ボタン"/>
+  
+  <continueButton label="続行" description="[続行]ボタン"/>
+  
+  <toc label="目次" description="目次。方向キーでページを選択し、そのページに移動するには、スペース キーを押してください。">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="[目次を閉じる]ボタン"/>
+	  <gotoPageButton label="ページに移動" description="[ページに移動]ボタン"/>
+  </toc>
+  
+  <glossary label="用語集" description="用語とその説明のリスト">
+	  <closeButton label="" description="[用語集を閉じる]ボタン"/>
+  </glossary>
+  
+  <kbLanguage label="特殊文字" description="テキスト領域に特殊文字を追加するボタンのリスト">
+	  <closeButton label="" description="[特殊文字リストを閉じる]ボタン"/>
+	  <dialog instruction="CAPS キーとSHIFT キーを使います" on="オン" off="オフ" caps="CAPS"/>
+  </kbLanguage>
+  
+  <textToSpeech label="Null" description="読み上げ"/>
+  
+  <errorProject label="プロジェクト データが読み込まれていません。"/>
+  
+  <errorPage label="このページの種類には、現在利用可能なテンプレートはありません。"/>
+  
+  <errorBrowser label="お使いのブラウザーはこのページの種類を完全にはサポートしていません。"/>
+  
+  <errorFlash label="このコンテンツを表示するには Flash Player をインストールする必要があります。" description=" Flash Player を入手します"/>
+  
+  <tick label="チェック印"/>
+  
+  <cross label="バツ印"/>
+
+  <themes label="--配色--" description="配色オプション">
+    <item>デフォルト</item>
+    <item>青</item>
+    <item>緑</item>
+    <item>赤</item>
+    <item>橙</item>
+    <item>紫</item>
+    <item>灰色</item>
+    <item>ハイコントラスト1</item>
+    <item>ハイコントラスト2</item>
+  </themes>
+ 
+  <sizes label="--画面サイズ--" description="画面サイズ オプション">
+	<item>デフォルト</item>
+	<item>大</item>
+	<item>より大きく</item>
+	<item>全画面</item>
+	<item>ウィンドウ全体</item>
+  </sizes>
+  
+  <fonts label="--文字フォント--" description="書体オプション">
+	  <item>デフォルト</item>
+  </fonts>
+  
+  <textSizes label="--文字サイズ--" description="文字サイズ オプション">
+	  <item>デフォルト</item>
+	  <item>小</item>
+	  <item>中</item>
+	  <item>大</item>
+	  <item>より大きく</item>
+  </textSizes>
+  
+  <volumeControl label="音量" description="音量コントロール"/>
+  <volumeControlSlider label="" description="音量スライダー"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>of</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="停止" description="[停止]ボタン"/>
+	<playButton label="再生" description="[再生]ボタン"/>
+	<pauseButton label="一時停止" description="[一時停止]ボタン"/>
+	<rwndButton label="巻き戻し" description="[巻き戻し]ボタン"/>
+	<ffwdButton label="早送り" description="[早送り]ボタン"/>
+	<loader label="読み込み中："/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="停止" description="[停止]ボタン"/>
+	<playButton label="再生" description="[再生]ボタン"/>
+	<pauseButton label="一時停止" description="[一時停止]ボタン"/>
+	<rwndButton label="巻き戻し" description="[巻き戻し]ボタン"/>
+	<ffwdButton label="早送り" description="[早送り]ボタン"/>
+	<loader label="読み込み中："/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="停止" description="[停止]ボタン"/>
+	<playPauseButton label="再生/一時停止" description="[再生/一時停止]ボタン"/>
+	<muteButton label="ミュート切り替え" description="[ミュート切り替え]ボタン"/>
+	<fullscreenButton label="全画面表示" description="[全画面表示]ボタン"/>
+	<captionsButton label="キャプション・字幕" description="[キャプションの表示/非表示]ボタン"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="ボタン"/>
+	  <radioButton selected="選択済み。方向キーでオプションを選択します。"/>
+	  <checkBox selected="選択済み" deselected="選択解除済み"/>
+	  <comboBox name="コンボ ボックス" options="オプション" selected="選択済み" selectedOptions="選択済み。方向キーで選択します。" />
+	  <hotSpot name="ホットスポット" toSelect="ホットスポット。スペース キーを押して選択します。" selected="ホットスポット選択済み"/>
+	  <hotObject name="ホットオブジェクト" toSelect="スペース キーを押して選択します。" selected="ホットオブジェクト選択済み"/>
+	  <textEntry name="テキスト ボックス" selected="テキスト ボックス選択済み"/>
+	  <targetArea name="ターゲット領域" description="ドロップ エリア" toSelect="スペース キーを押して選択されたアイテムをドロップします。"/>
+	  <draggableItem name="ドラッグ可能なアイテム" selected="アイテムが選択されました。" toSelect="スペース キーを押して選択します。" deSelected="アイテムが選択されていません。" />
+  </interactions>
+  
+  <fetchResults label="結果を取得しています..."/>
+  <errorResults label="結果の読み込みエラーが発生しました。"/>
+  <loadError label="読み込みエラー"/>
+  <noResults label="結果はありません"/>
+  
+  <timer>
+	  <remaining name="残り時間"/>
+	  <timeUp name="時間切れ"/>
+	  <seconds name="秒"/>
+  </timer>
+
+  <colourChanger label="色の変更" description="色の変更">
+	  <closeButton label="" description="[色の変更を閉じる]ボタン"/>
+  </colourChanger>
+
+</language>
+
+

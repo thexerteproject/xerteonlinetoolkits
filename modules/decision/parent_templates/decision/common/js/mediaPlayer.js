@@ -164,13 +164,15 @@
 						
 						if (opts.type == "video") {
 							mediaElement.addEventListener("loadedmetadata", function() {
-								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
+								// Special version of this file just for decision tree
+								// since x_templateLocation is empty for offline viewing
+								//if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);
-								} else {
-									try {
-										eval(x_pageInfo[x_currentPage].type).mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]); // send dimensions details back to page
-									} catch(e) {};
-								}
+								//} else {
+								//	try {
+								//		eval(x_pageInfo[x_currentPage].type).mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]); // send dimensions details back to page
+								//	} catch(e) {};
+								//}
 							});
 						}
 						

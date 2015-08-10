@@ -500,7 +500,9 @@
 									$thisStep.append('<div class="dropDownAnswer"><select></select></div>');
 								}
 								
-								$thisStep.find("select").append('<option id="opt' + i + '">' + $this.attr("name") + authorSupport + '</option>');
+								$thisStep.find("select")
+									.css("font-size", $x_body.css("font-size"))
+									.append('<option id="opt' + i + '">' + $this.attr("name") + authorSupport + '</option>');
 								
 								if ($this.attr("selected") == "true") {
 									select = i;

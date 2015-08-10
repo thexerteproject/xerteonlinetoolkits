@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- BUTTON NAVIGATOR============================= -->
-  <buttonNav menu="Navigators" menuItem="Button Navigator" hint="Presents a series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
+  <buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -32,8 +32,8 @@
 	
     <url label="Image" type="media"  optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true"/>
-	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
+    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
+	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 
   </nestedPage>   
 

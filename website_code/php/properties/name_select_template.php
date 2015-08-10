@@ -45,11 +45,11 @@ if(is_numeric($_POST['template_id'])){
 
     if(strlen($search)!=0){
 
-        $query_for_names = "select login_id, firstname, surname from {$prefix}logindetails WHERE "
-        . "((firstname like ?) or (surname like ?)) AND login_id NOT IN ( "
+        $query_for_names = "select login_id, firstname, surname, username from {$prefix}logindetails WHERE "
+        . "((firstname like ?) or (surname like ?) or (username like ?)) AND login_id NOT IN ( "
         . "SELECT user_id from {$prefix}templaterights where template_id = ? ) ORDER BY firstname ASC";
 
-        $params = array("$search%", "$search%", $tutorial_id);
+        $params = array("$search%", "$search%", "$search%", $tutorial_id);
                 
         $query_names_response = db_query($query_for_names, $params); 
 
@@ -57,7 +57,7 @@ if(is_numeric($_POST['template_id'])){
 
             foreach($query_names_response as $row){
 
-                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['login_id'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\">" . NAME_SELECT_CLICK . "</button></p>";
+                echo "<p>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] . ")  - <button type=\"button\" class=\"xerte_button\" onclick=\"share_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_CLICK . "</button></p>";
 
             }
 

@@ -45,7 +45,7 @@ if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon
 }
 
 
-$sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
+$sql = "SELECT template_id, user_id, firstname, surname, username, role FROM " .
     " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
     " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? AND user_id != ?";
 
@@ -71,7 +71,7 @@ if(is_user_creator((int) $_POST['template_id'])){
  */
 
 if(sizeof($query_sharing_rows)==0){
-    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span</p>";
+    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
     exit(0);
 }
 
@@ -80,7 +80,7 @@ echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
 foreach($query_sharing_rows as $row) { 
 
-    echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['role'] . ")</span></p>"; 
+    echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] .") - (" . $row['role'] . ")</span></p>"; 
 
     if($row['role']!="creator"){
 
@@ -111,7 +111,7 @@ foreach($query_sharing_rows as $row) {
 
             echo "<p>" . SHARING_REMOVE_DESCRIPTION . "</p>";
 
-            echo "<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" >" . SHARING_REMOVE . "</button>";
+            echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $row['template_id'] . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" ><i class=\"fa fa-user-times\"></i>&nbsp;" . SHARING_REMOVE . "</button>";
 
             echo "<p class=\"share_border\"></p>";
 

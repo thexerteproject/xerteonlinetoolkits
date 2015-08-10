@@ -12,7 +12,7 @@
 	 
 	define("EXTEND_LOGIN","Adding new modules");
 
-    define("EXTEND_BUTTON_LOGIN","Sign In");
+    define("EXTEND_BUTTON_LOGIN","Login");
 
     define("EXTEND_NOT_ADMIN_USERNAME","This is the new modules panel. Only site administrators can access this resource");
 	

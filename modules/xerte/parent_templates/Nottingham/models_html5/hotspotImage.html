@@ -21,12 +21,12 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var hotspotImage = new function() {
-		var	$imageHolder,
-			$img,
-			padding;
+		var	$img;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$img = $("#image");
+			
 			$(".selected").removeClass("selected");
 			$("#infoHolder").html("");
 			$("#nextHS").button("enable");
@@ -35,40 +35,33 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			$img.css({
+				"opacity"	:0,
+				"filter"	:'alpha(opacity=0)'
+			});
+			this.resizeImg(false);
 		}
 		
 		this.init = function() {
-			$imageHolder = $("#imageHolder");
 			$img = $("#image");
-			padding = parseInt($imageHolder.css("padding-left"));
-			
-			if (x_currentPageXML.getAttribute("align") == "Left") {
-				$("#pageContents").prepend($("#textContents"));
-				$imageHolder.css("right", "10px");
+
+            if (x_currentPageXML.getAttribute("align") == "Right") {
+				$("#panel").addClass("left");
+			} else {
+				$("#panel").addClass("right");
 			}
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
 			$img
-				.css({ // stops flicker on 1st load of image
+				.css({
 						"opacity"	:0,
 						"filter"	:'alpha(opacity=0)'
 				})
 				.one("load", function() {
-					var imgMaxW = 400,	imgMaxH = 450;
-					if (x_browserInfo.mobile == true) {
-						imgMaxW = 250; // mobile
-						imgMaxH = 250;
-					}
+					hotspotImage.resizeImg(true);
 					
-					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
-					
-					$(this).css({ // stops flicker on 1st load of image
-						"opacity"	:1,
-						"filter"	:'alpha(opacity=100)'
-					});
-					
-					hotspotImage.imgLoaded();
+					// call this function in every model once everything's loaded
+					x_pageLoaded();
 				})
 				.attr({
 					"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
@@ -120,17 +113,24 @@
 			}
 		}
 		
-		this.imgLoaded = function() {
-			// position text correctly
-			var marginW = $img.width() + (padding * 4);
-			if (x_currentPageXML.getAttribute("align") == "Left") {
-				$("#textContents").css("margin-right", marginW + "px");
-			} else {
-				$("#textContents").css("margin-left", marginW + "px");
-			}
+		this.resizeImg = function(firstLoad) {
+			var imgMaxW = Math.round($x_pageHolder.width() * (400.0/800.0)),
+				imgMaxH = Math.round($x_pageHolder.height() * (550.0/600.0) - 100);
+			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 			
+			$img.css({
+				"opacity"	:1,
+				"filter"	:'alpha(opacity=100)'
+			});
+			
+			this.createHS();
+		}
+		
+		this.createHS = function() {
 			// create hotspots - taking scale of image into account
-			var scale = $img.width() / $img.data("origSize")[0];
+			var scale = $img.width() / $img.data("origSize")[0],
+				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
+			$("#hsHolder").html("");
 			
 			$(x_currentPageXML).children()
 				.each(function(i){
@@ -142,11 +142,11 @@
 						.css({
 							width	:Math.round(this.getAttribute("w") * scale) + "px",
 							height	:Math.round(this.getAttribute("h") * scale) + "px",
-							left	:Math.round(this.getAttribute("x") * scale) + padding + "px",
-							top		:Math.round(this.getAttribute("y") * scale) + padding + "px"
+							left	:Math.round(this.getAttribute("x") * scale) + "px",
+							top		:Math.round(this.getAttribute("y") * scale) + "px"
 							})
 						.click(function() {
-							$("#infoHolder").html("<h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+							$("#infoHolder").html("<hr/><h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
 							$(".selected").removeClass("selected");
 							var $this = $(this);
 							$this.addClass("selected");
@@ -188,15 +188,16 @@
 			
 			var highlightColour = "yellow";
 			if (x_currentPageXML.getAttribute("hicol") != undefined && x_currentPageXML.getAttribute("hicol") != "") {
-				highlightColour = "#" + x_currentPageXML.getAttribute("hicol").substr(2, 6);
+				highlightColour = x_getColour(x_currentPageXML.getAttribute("hicol"));
 			}
 			$("#pageContents .hotspot").css("border-color", highlightColour);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
 				$("#pageContents .hotspot").addClass("highlightBorder");
 			}
 			
-			// call this function in every model once everything's loaded
-			x_pageLoaded();
+			if (selected != undefined) {
+				$("#pageContents .hotspot:eq(" + selected + ")").trigger("click");
+			}
 		}
 		
 		this.selectHs = function(type) {
@@ -219,19 +220,18 @@
 
 <style>
 	
+	#panel.right {
+		float:	right;
+		margin:	0 0 20px 20px;
+	}
+	
+	#panel.left {
+		float:	left;
+		margin:	0 20px 20px 0;
+	}
+	
 	#imageHolder {
-		position: absolute;
-		margin:	0;
-	}
-	
-	#textContents {
-		position: 	absolute;
-		top:		0;
-		left:		0;
-	}
-	
-	#textContents div {
-		padding:	10px;
+		position:	relative;
 	}
 	
 	#pageContents .hotspot {
@@ -239,12 +239,27 @@
 		cursor:		pointer;
 	}
 	
+	#infoHolder {
+		padding-top: 10px;
+	}
+	
+	#infoHolder hr {
+		border: none;
+		background-color: #CCCCCC;
+		height: 1px;
+		margin-bottom: 20px;
+	}
+	
 	#pageContents .highlightBorder {
 		border:		1px solid;
+		margin-top: -1px;
+		margin-left: -1px;
 	}
 	
 	#pageContents .selected {
 		border:		2px solid;
+		margin-top: -2px;
+		margin-left: -2px;
 	}
 	
 	#btns {
@@ -258,12 +273,14 @@
 
 <div id="pageContents">
 	
-	<div id="imageHolder" class="panel inline">
-		<img id="image" />
-		<div id="hsHolder"></div>
-		<div id="btns">
-			<button id="prevHS"></button>
-			<button id="nextHS"></button>
+	<div id="panel" class="panel inline">
+		<div id="imageHolder">
+			<img id="image" />
+			<div id="hsHolder"></div>
+			<div id="btns">
+				<button id="prevHS"></button>
+				<button id="nextHS"></button>
+			</div>
 		</div>
 	</div>
 	

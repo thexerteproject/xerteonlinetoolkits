@@ -47,7 +47,7 @@ if(is_numeric($_POST['template_id'])){
         notes_display($_POST['notes'],true, $_POST['template_id']);
 
     }else{
-        die("db query didn't work?");
+        notes_display($_POST['notes'],false, $_POST['template_id']);
     }
 
 }

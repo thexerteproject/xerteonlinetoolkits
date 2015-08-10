@@ -99,7 +99,7 @@ var EDITOR = (function ($, parent) {
 				.attr('title', value.tooltip)
 				.attr('value', value.btnvalue)
 				.attr('tabindex', index + 3)
-				.addClass("xerte_button")
+				.addClass("insert_button")
 				.click(add_page)
 				.append($('<img>').attr('src', value.icon).height(14))
 				.append(value.name);
@@ -566,6 +566,12 @@ var EDITOR = (function ($, parent) {
 
     },
 
+    delRow = function(id,key,name, rowid){
+        jqGrGridData[key].splice(rowid-1, 1);
+        var xerte = convertjqGridData(jqGrGridData[key]);
+        setAttributeValue(key, [name], [xerte]);
+    },
+
     addColumn = function(id, key, name, colnr)
     {
         console.log('Add column');
@@ -643,9 +649,9 @@ var EDITOR = (function ($, parent) {
                 { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
                 { name: 'colors' },
                 { name: 'insert' }],
-            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
             mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
@@ -753,9 +759,9 @@ var EDITOR = (function ($, parent) {
 
             };
             var ckoptions = {
-                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
@@ -870,9 +876,9 @@ var EDITOR = (function ($, parent) {
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
                         [ 'Sourcedialog' ]
                     ],
-                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
-                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable,
+                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     extraPlugins : 'sourcedialog',
@@ -903,7 +909,7 @@ var EDITOR = (function ($, parent) {
     {
         $.each(colorpickers, function (i, options){
             var myPicker = new jscolor.color(document.getElementById(options.id), {})
-            myPicker.fromString(options.value)  // now you can access API via 'myPicker' variable
+            myPicker.fromString(Array(7-options.value.length).join('0') + options.value)  // now you can access API via 'myPicker' variable
         });
     },
 
@@ -1117,6 +1123,7 @@ var EDITOR = (function ($, parent) {
                         grid.trigger("reloadGrid", [{page:newPage}]);
                     }
 
+                    delRow(id, key, name, rowid);
                     return true;
                 },
                 processing:true
@@ -1385,7 +1392,7 @@ var EDITOR = (function ($, parent) {
             //console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
             if (pos >=0)
-                url = "FileLocation + '" + url.substr(rlourlvariable.length) + "'";
+                url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
             $('#' + id).attr("value", url);
             setAttributeValue(key, [name], [url]);
             window.elFinder = null;

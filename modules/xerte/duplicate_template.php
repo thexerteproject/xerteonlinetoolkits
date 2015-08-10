@@ -40,85 +40,47 @@ $temp_new_path="";
  * @author Patrick Lockley
  */
 
-function create_folder_loop($folder_name,$loop_level){
+function create_folder_loop($dir_path,$new_path){
 
-    global $dir_path, $new_path, $temp_dir_path, $temp_new_path;
+    $folder_name = opendir($dir_path);
 
     while($f = readdir($folder_name)){
-
-        $full = $dir_path . "/" . $f;
-
+        $full = $dir_path . $f;
         if(is_dir($full)){
-
-            if(($f==".")||($f=="..")){
-
-            }else{
-
-                $new_folder = opendir($full);
-                $temp_dir_path = $dir_path;
-                $temp_new_path = $new_path;
-                $new_path = $new_path . "/" . $f;
-                $dir_path=$full;
-
-                if(@mkdir($new_path)){
-                    if(@chmod($new_path, 0777)){
-
-                        create_folder_loop($new_folder,++$loop_level);
-
+            if(($f!=".")&&($f!="..")){
+                $temp_new_path = $new_path . $f . "/";
+                if(@mkdir($temp_new_path)){
+                    if(@chmod($temp_new_path, 0777)){
+                        create_folder_loop($full . "/", $temp_new_path);
                     }else{
-
-                        receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set permissions on folder", "Failed to set correct rights on " . $new_path);
-
+                        receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set permissions on folder", "Failed to set correct rights on " . $temp_new_path);
                         return false;
                     }
                 }else{
-
-                    receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICIAL", "Failed to create folder", "Failed to create folder " . $new_path);
-
+                    receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICIAL", "Failed to create folder", "Failed to create folder " . $temp_new_path);
                     return false;
-
                 }
-
-
             }
-
         }else{
-
-            $file_dest_path = $new_path . "/" . $f;
+            $file_dest_path = $new_path . $f;
             if(@copy($full, $file_dest_path)){
-                if(@chmod($file_dest_path, 0777)){
-
-
-                }else{
-
-                    receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to copy file", "Failed to copy file " . $full . " " . $file_dest_path);
+                if(!@chmod($file_dest_path, 0777)){
+                    receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to copy file", "Failed to set rights on file " . $full . " " . $file_dest_path);
                     return false;
-
                 }
             }else{
-
-                receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set rights on file", "Failed to set rights on file " . $full . " " . $file_dest_path);
-
+                receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "MAJOR", "Failed to set rights on file", "Failed to copy file " . $full . " " . $file_dest_path);
                 return false;
-
             }
-
         }
-    }	
-
-    $dir_path = $temp_dir_path;
-    $new_path = $temp_new_path;
+    }
+    closedir($folder_name);
 
     /*
      * loop level is used to check for the recusion to make sure it has worked ok. A failure in this is not critical but is used in error reporting
      */
 
-    $loop_level--;
-
-    if($loop_level==-1){
-        return true;
-    }
-
+    return true;
 }
 
 /**
@@ -144,15 +106,11 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
 
     $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
 
-    $path = $xerte_toolkits_site->users_file_area_full . $folder_name_id  . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
+    if(mkdir($new_path)){
 
-    if(mkdir($path)){
+        if(@chmod($new_path,0777)){
 
-        if(@chmod($path,0777)){
-
-            $d = opendir($dir_path);
-
-            if(create_folder_loop($d,-1)){ 
+            if(create_folder_loop($dir_path, $new_path)){
 
                 if(file_exists($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt")){
 
@@ -179,7 +137,7 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
         }
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to create parent folder for template", "Failed to create parent folder " . $path);
+        receive_message($_SESSION['toolkits_logon_username'], "FILE_SYSTEM", "CRITICAL", "Failed to create parent folder for template", "Failed to create parent folder " . $new_path);
 
         return false;
 

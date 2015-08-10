@@ -148,6 +148,9 @@ var EDITOR = (function ($, parent) {
             if (path.substr(path.length-1)=="#") path = path.substr(0,path.length-1);
             if (this.href.substr(this.href.length-1) == "#") this.href = path +"#";
         });
+		
+		var optionaltitle = language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties";
+		$("#optional_title").html(optionaltitle);
     }
 
     // Create the layout once the document has finished loading

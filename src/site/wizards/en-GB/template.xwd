@@ -29,6 +29,7 @@
 		<name type="TextInput" label="Section Title"/>
 
 		<newNodes>
+			<pdf><![CDATA[<pdf name="Name" url="Select File" width="500" height="350"/>]]></pdf>
 			<markup><![CDATA[<markup name="Name">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
 			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
@@ -66,7 +67,12 @@
 
 		<name type="TextInput" label="Name"/>
 
-	</text><canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
+	</text><pdf icon="icPDF" menuItem="PDF Document" remove="true">
+
+		<name type="TextInput" label="Name"/>
+		<url type="Media" label="PDF Document File"/>
+
+	</pdf><canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 
 		<name type="TextInput" label="Name"/>
 		<id type="TextInput" label="ID"/>
@@ -112,7 +118,7 @@
 
 		<newNodes>
 			
-			<pdf><![CDATA[<pdf name="Name" url="Select File..."/>]]></pdf>
+			<pdf><![CDATA[<pdf name="Name" url="Select File" width="500" height="350"/>]]></pdf>
 			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
 			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
 			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>

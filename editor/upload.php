@@ -135,36 +135,8 @@ function make_refs_local($json, $media)
 
     $temp = $json;
     //file_put_contents("step0_$mode.txt", print_r($temp, true));
-    // Handle .thumbs first
-    $thumbs = $media . ".thumbs/";
-    //1a. \" followed by .thumbs/media/
-    $pos = strpos($temp, '\"' . $thumbs);
-    while ($pos !== false)
-    {
-        $pos2 = strpos($temp, '\"', $pos+1);
-        $temp = substr($temp, 0, $pos) . '\"FileLocation + \'' . substr($temp, $pos + strlen($thumbs) + 2, $pos2 - $pos - strlen($thumbs)-2) . '\'\"' . substr($temp, $pos2+2);
-        $pos = strpos($temp, '\"' . $thumbs);
-    }
-    //file_put_contents("step1a_$mode.txt", print_r($temp, true));
-    //1b. " followed by .thumbs/media/
-    $pos = strpos($temp, '"' . $thumbs);
-    while ($pos !== false)
-    {
-        $pos2 = strpos($temp, '"', $pos+1);
-        $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($thumbs) + 1, $pos2 - $pos - strlen($thumbs)-1) . '\'"' . substr($temp, $pos2+1);
-        $pos = strpos($temp, '"' . $thumbs);
-    }
-    //file_put_contents("step1b_$mode.txt", print_r($temp, true));
-    //2. ' followed by .thumbs/media/
-    $pos = strpos($temp, "'" . $thumbs);
-    while ($pos !== false)
-    {
-        $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($thumbs)) . '\'"';
-        $pos = strpos($temp, '"' . $thumbs);
-    }
-    //file_put_contents("step2_$mode.txt", print_r($temp, true));
 
-    //3a. \" followed by media
+    //1a. \" followed by media
     $pos = strpos($temp, '\"' . $media);
     while ($pos !== false)
     {
@@ -173,7 +145,7 @@ function make_refs_local($json, $media)
         $pos = strpos($temp, '\"' . $media);
     }
     //file_put_contents("step3a_$mode.txt", print_r($temp, true));
-    //3b. " followed by media
+    //1b. " followed by media
     $pos = strpos($temp, '"' . $media);
     while ($pos !== false)
     {
@@ -181,15 +153,9 @@ function make_refs_local($json, $media)
         $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($media) + 1, $pos2 - $pos - strlen($media) -1) . '\'"' . substr($temp, $pos2+1);
         $pos = strpos($temp, '"' . $media);
     }
-    //file_put_contents("step3b_$mode.txt", print_r($temp, true));
-    //4. ' followed by media
-    $pos = strpos($temp, "'" . $media);
-    while ($pos !== false)
-    {
-        $temp = substr($temp, 0, $pos) . '"FileLocation + \'' . substr($temp, $pos + strlen($media) . '\'"');
-        $pos = strpos($temp, '"' . $media);
-    }
-    //file_put_contents("step4_$mode.txt", print_r($temp, true));
+
+    //1c. FIX '/media'
+    $temp = str_replace("'/media", "'media", $temp);
     return $temp;
 }
 

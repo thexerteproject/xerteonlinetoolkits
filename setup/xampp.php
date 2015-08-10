@@ -38,11 +38,6 @@ $xerte_toolkits_site->database_host = "localhost";
 $xerte_toolkits_site->database_username = "root";
 $xerte_toolkits_site->database_password = "";
 
-function _debug($string) {
-    global $dberr;
-    $dberr = $string;
-}
-
 require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
 // $xerte_toolkits_site->database_name should NOT be set

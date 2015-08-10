@@ -1,12 +1,12 @@
 <wizard menus="Navigators">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <columnPage><![CDATA[<columnPage name="Column Page"/>]]></columnPage>
+      <columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage>
     </newNodes>
   </pageWizard>
 
   <!-- COLUMN PAGE============================== -->
-  <columnPage menu="Navigators" menuItem="Column Page" hint="Presents a page with a series of columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
+  <columnPage menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
 
@@ -31,8 +31,8 @@
 	
     <url label="Image" type="media"  optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true"/>
-	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
+    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
+	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 
   </nestedPage> 
 
