@@ -17,7 +17,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once('../../../config.php');
+if (file_exists('../../../config.php')) {
+
+  require_once('../../../config.php');
+
+} elseif (file_exists(dirname(__FILE__) . '/../../config.php')) {
+  require_once(dirname(__FILE__) . '/../../config.php');
+} else {
+
+  require_once('config.php');
+
+}
 include 'file_library.php';
 include 'user_library.php';
 
