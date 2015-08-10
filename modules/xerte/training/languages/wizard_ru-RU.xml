@@ -1,0 +1,162 @@
+<language name="Russian" code="ru-RU">
+<layout closetooltip="Закрыть панель" opentooltip="Открыть панель" resizetooltip="Размер панели"/>
+<edit label="Изменить" tooltip="Изменить" description="Кнопка Изменить"/>
+<insertDialog label="Вставить {i}" preview="Предпросмотр">
+<insertBefore label="До" tooltip="Вставить перед выбранной страницей"/>
+<insertAfter label="После" tooltip="Вставить после выбранной страницы"/>
+<insertAtEnd label="В конце" tooltip="Вставить как последнюю страницу"/>
+</insertDialog>
+<btnSaveXerte label="Сохранить" tooltip="Сохранить проект" description="Кнопка Сохранить"/>
+<btnPublishXot label="Опубликовать" tooltip="Опубликовать проект" description="Кнопка Опубликовать"/>
+<popupFileUpload title="Файл загружен" cancelLabel="Закрыть"/>
+<browseImportFile title="Выбрать файл для импорта">
+<dialogFilter>
+Все файлы|*.*|JPG|*.jpg|PNG|*.png|SWF-файлы|*.swf|Аудиофайлы|*.mp3|Видеофайлы|*.flv
+</dialogFilter>
+<buttontext>Импорт</buttontext>
+</browseImportFile>
+<kblanguage title="Раскладка клавиатуры" tooltip="Раскладка клавиатуры" description="Раскладка клавиатуры">
+<item>Французский</item>
+<item>Немецкий</item>
+<item>Итальянский</item>
+<item>Польский</item>
+<item>Португальский</item>
+<item>Испанский</item>
+</kblanguage>
+<newLink label="Новый {i}"/>
+<helpLink tooltip="Нажмите для справки"/>
+<btnAddColumn label="Добавить столбец" tooltip="Добавить столбец справа"/>
+<btnDelColumn label="Удалить столбец" tooltip="Удалить выбранный столбец"/>
+<btnInsert label="Вставить" tooltip="Вставить"/>
+<btnAddChild tooltip="добавить несколько дочерних элементов"/>
+<btnDuplicate label="Копировать" tooltip="Дублировать"/>
+<btnDelete label="Удалить" tooltip="Удалить"/>
+<btnMoveUp tooltip="Вверх"/>
+<btnMoveDown tooltip="Вниз"/>
+<btnNext tooltip="Следующий элемент"/>
+<btnPreview label="Предпросмотр" tooltip="Предпросмотр"/>
+<btnPrev tooltip="Предыдущий элемент"/>
+<icDelete tooltip="Удалить" prompt="Удалить элемент"/>
+<addProp label="Добавить" tooltip="добавить"/>
+<optionalProp label="Дополнительные свойства:"/>
+<chkShowLanguage label="Показать языковые настройки" tooltip="Если языковые настройки доступны, показать их."/>
+<chkShowAdvanced label="Показать дополнительные настройки" tooltip="Если дополнительные настройки доступны, показать их."/>
+<chkShowToolbar label="Показать инструменты" tooltip="Показать все панели инструментов по умолчанию."/>
+<compMedia tooltip="Импорт Медиа"/>
+<compPreview tooltip="Предпросмотр"/>
+<filemenu title="Файл">
+<menuNew>Новый проект</menuNew>
+<menuOpen>Открыть</menuOpen>
+<menuSave>Сохранить</menuSave>
+<menuExit>Закрыть</menuExit>
+</filemenu>
+<menuOpen title="Выберите проект">
+<dialogText>Выбрать файл</dialogText>
+<filterList>*.rlt|*.mxml</filterList>
+<filterText>Шаблоны ресурса|*.rlt|MXML файлы|*.mxml</filterText>
+</menuOpen>
+<viewmenu title="Просмотр">
+<menuPreview>Предпросмотр</menuPreview>
+</viewmenu>
+<publishmenu title="Опубликовать">
+<menuPublish>Опубликовать</menuPublish>
+<menuPackage>Пакет</menuPackage>
+</publishmenu>
+<menuPackage title="Сохранить SCORM 1.2 Package">
+<dialogText>Выбрать файл</dialogText>
+<filterList>*.zip</filterList>
+<filterText>Zip файлы|*.zip</filterText>
+</menuPackage>
+<helpmenu title="Справка">
+<menuHelp>Справка</menuHelp>
+</helpmenu>
+<menuHelp>
+<prompt>Файл справки скоро появится.</prompt>
+</menuHelp>
+<importMedia>
+<filters>
+<allfiles>Все файлы (*.*)</allfiles>
+<images>Изображения (*.jpg, *.jpeg, *.png)</images>
+<flash>Flash-файлы (*.swf)</flash>
+<sound>Аудиофайлы (*.mp3)</sound>
+<video>Видеофайлы (*.flv)</video>
+</filters>
+<title>Выберите файл для импорта</title>
+<filter>
+Все файлы|*.*|JPG|*.jpg|PNG|*.png|SWF-файлы|*.swf|Аудиофайлы|*.mp3|Видеофайлы|*.flv
+</filter>
+<btnimport>Импорт</btnimport>
+<btncancel>Закрыть</btncancel>
+<fileexists>
+<prompt>
+Файл {f} уже существует.\r\rПерезаписать этот файл?
+</prompt>
+<title>Подтвердить</title>
+</fileexists>
+</importMedia>
+<Alert>
+<oklabel>Ok</oklabel>
+<cancellabel>Закрыть</cancellabel>
+<nolabel>Нет</nolabel>
+<yeslabel>Да</yeslabel>
+<linkhandler>
+<prompt/>
+<title>Введите URL</title>
+</linkhandler>
+<validate>
+<max>
+<prompt>Вы можете добавить только {m} {i}</prompt>
+<title>Error</title>
+</max>
+<mixedcontent>
+<prompt>Вы не можете смешивать контент здесь.</prompt>
+<title>Ошибка</title>
+</mixedcontent>
+</validate>
+<newproject>
+<prompt>
+Эта папка не пуста. Вы уверены, что хотите использовать ее для нового проекта?
+</prompt>
+<title>Подтвердить</title>
+</newproject>
+<openproject>
+<prompt>Вы хотите открыть новый проект?</prompt>
+<title>Подтвердить</title>
+</openproject>
+<initpreview>
+<prompt>Вам необходимо выбрать медиафайл перед просмотром.</prompt>
+<title>Информация</title>
+</initpreview>
+<duplicateitem>
+<prompt>Вы не можете дублировать этот элемент.</prompt>
+<title>Ошибка</title>
+</duplicateitem>
+<deletenode>
+<confirm>
+<prompt>Вы хотите удалить этот элемент?</prompt>
+<title>Подтвердить</title>
+</confirm>
+<error>
+<prompt>Вы не можете удалить этот элемент.</prompt>
+<title>Ошибка</title>
+</error>
+</deletenode>
+<savefile>
+<prompt>
+XML не может быть отформатирован, изменения не сохранены. Проверьте ваши последние изменения.
+</prompt>
+</savefile>
+<exitwizard>
+<prompt>Вы собираетесь выйти из редактора.</prompt>
+</exitwizard>
+<upload>
+<successful>Загрузка завершена</successful>
+<failed>
+<permissions>Загрузка прервана: проверьте разрешения</permissions>
+<HTTPError>Загрузка прервана: HTTPError</HTTPError>
+<IOError>Загрузка прервана: IOError</IOError>
+<security>Загрузка прервана: Security Error</security>
+</failed>
+</upload>
+</Alert>
+</language>

@@ -80,10 +80,7 @@
 					$(x_currentPageXML).children().each(function () {
 						var name = this.getAttribute("name"),
 							dataString = this.getAttribute("data"),
-							colour = this.getAttribute("colour");
-						if (colour.substring(0, 2) == '0x') { // hex value
-							colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
-						}
+							colour = x_getColour(this.getAttribute("colour"));
 
 						var	dataPair,
 							dataPairs = dataString.split('||'),

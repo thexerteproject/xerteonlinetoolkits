@@ -29,15 +29,17 @@
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && x_currentPageXML.getAttribute("labelPos") != "text" ? true : false;
 			this.createLabels();
+			if (resize) {
+				this.sizeChanged();
+			}
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
+			$x_pageHolder.scrollTop(0);
 			var $panel = $("#mainPanel");
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
 
 			if (firstLoad == true) {
 				firstLoad = false;
@@ -45,8 +47,12 @@
 			} else {
 				// resize image to max that will fit space
 				var $image = $("#image"),
-					prevW = $image.width();
-				x_scaleImg($image, $panel.width(), $panel.height() - $("#labelHolder").height());
+					prevW = $image.width(),
+					labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
+					imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
+				
+				x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10);
+				$("#labelHolder").width($image.width());
 
 				// adjust target sizes and positions
 				var scale = $image.width() / prevW;
@@ -64,11 +70,10 @@
 				$("#labelHolder .ui-draggable-disabled").each(function() {
 					var $this = $(this);
 					$this.css({
-						"left"		:$this.position().left * scale,
-						"top"		:$this.position().top * scale,
+						"left"		:$this.data("target").position().left + 2 + $panel.position().left,
+						"top"		:$this.data("target").position().top + 2 + $panel.position().top
 					});
 				});
-				
 			}
 		}
 
@@ -81,6 +86,12 @@
 			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			if (x_currentPageXML.getAttribute("labelPos") == "text") {
+				$("#mainText")
+					.after($("#labelHolder"))
+					.after('<hr/>');
+			}
 
 			var tryTxt = x_currentPageXML.getAttribute("tryAgainTxt");
 			if (tryTxt == undefined || tryTxt == "") {
@@ -89,18 +100,9 @@
 			$("#pageContents").data("tryTxt", tryTxt);
 
 			if (x_currentPageXML.getAttribute("align") == "Right") {
-				var $splitScreen = $("#pageContents .splitScreen");
-
-				$("#textHolder")
-					.removeClass("left")
-					.addClass("right")
-					.appendTo($splitScreen);
-				$("#dragDropHolderLabelling")
-					.removeClass("right")
-					.addClass("left");
-				$splitScreen
-					.removeClass("medium")
-					.addClass("large");
+				$("#dragDropHolderLabelling").addClass("x_floatLeft");
+			} else {
+				$("#dragDropHolderLabelling").addClass("x_floatRight");
 			}
 
 			this.sizeChanged(true);
@@ -132,10 +134,10 @@
 				});
 
 			// set up drag events (mouse and keyboard controlled)
-			$("#dragDropHolderLabelling .label")
+			$("#labelHolder .label")
 				.draggable({
-					containment:	"#dragDropHolderLabelling",
-					stack:			"#dragDropHolderLabelling .label", // item being dragged is always on top (z-index)
+					containment:	"#x_pageHolder",
+					stack:			"#labelHolder .label", // item being dragged is always on top (z-index)
 					revert:			"invalid", // snap back to original position if not dropped on target
 					start:			function() {
 						// remove any focus/selection highlights made by tabbing to labels/targets
@@ -151,9 +153,9 @@
 						if (targetInFocus.length > 0) {
 							targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
 						}
-						$("#dragDropHolderLabelling .selected").removeClass("selected");
-						$("#dragDropHolderLabelling .focus").removeClass("focus");
-						$("#dragDropHolderLabelling .highlight").addClass("transparent").removeClass("highlight");
+						$("#labelHolder .selected").removeClass("selected");
+						$("#labelHolder .focus").removeClass("focus");
+						$("#labelHolder .highlight").addClass("transparent").removeClass("highlight");
 
 						$("#infoHolder").html("");
 					},
@@ -233,13 +235,16 @@
 
 		this.imgLoaded = function() {
 			// labels have been created and image loaded - can now resize image to fit space and create targets on it
-			var $image = $("#image");
-			x_scaleImg($image, 1, 1, true, true); // resizing small initially otherwise vertical scrollbar width means the dimensions aren't being calculated properly
-			x_scaleImg($image, $("#mainPanel").width(), $("#mainPanel").height() - $("#labelHolder").height());
-			var scale = $image.width() / $image.data("origSize")[0];
-
-			var $targetHolder = $("#targetHolder");
-
+			var $image = $("#image"),
+				labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
+				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
+			
+			x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10, true, true);
+			$("#labelHolder").width($image.width());
+			
+			var scale = $image.width() / $image.data("origSize")[0],
+				$targetHolder = $("#targetHolder");
+			
 			// create targets
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -288,7 +293,7 @@
 			if (x_currentPageXML.getAttribute("showHighlight") != "false") {
 				var highlightColour = "yellow";
 				if (x_currentPageXML.getAttribute("highlightColour") != undefined && x_currentPageXML.getAttribute("highlightColour") != "") {
-					highlightColour = "#" + x_currentPageXML.getAttribute("highlightColour").substr(2, 6);
+					highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightColour"));
 				}
 				$targets
 					.addClass("border")
@@ -356,6 +361,7 @@
 
 		// function called when label dropped on target - by mouse or keyboard
 		this.dropLabel = function($thisTarget, $thisLabel) {
+			$x_pageHolder.scrollTop(0);
 			var $infoHolder = $("#infoHolder");
 			$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
 
@@ -371,8 +377,8 @@
 				.css({
 					"opacity"	:1,
 					"position"	:"absolute",
-					"top"		:$thisTarget.position().top + 2,
-					"left"		:$thisTarget.position().left + 2
+					"top"		:$thisTarget.position().top + 2 + $("#mainPanel").position().top,
+					"left"		:$thisTarget.position().left + 2 + $("#mainPanel").position().left
 				})
 				.off("keypress focusin focusout")
 				.click(function() {
@@ -385,7 +391,8 @@
 				.focusout(function() {
 					$(this).removeClass("focus");
 					$("#infoHolder").html("");
-				});
+				})
+				.data("target", $thisTarget);
 
 			$thisTarget
 				.attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
@@ -394,7 +401,11 @@
 				.click(function() {
 					$("#infoHolder").html($(this).data("infoTxt"));
 				});
-
+			
+			if ($("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length) {
+				$("#pageContents hr:eq(1)").remove();
+			}
+			
 			$("#pageContents").data("selectedLabel", "");
 		}
 	}
@@ -408,19 +419,24 @@
 	#textHolder {
 		margin-bottom:	10px;
 	}
-
-	#infoHolder {
+	
+	.borderTop {
+		border-top:		1px solid gray;
 		margin-top:		20px;
 		padding-top:	20px;
-		border-top:		1px solid gray;
 	}
 
 	#mainPanel {
 		position:	relative;
 	}
 
-	#labelHolder {
+	#mainPanel #labelHolder {
 		margin-top:	10px;
+	}
+	
+	#dragDropHolderLabelling #labelHolder {
+		clear: both;
+		float:left;
 	}
 
 	#labelHolder .label {
@@ -452,26 +468,29 @@
 	#targetHolder .target.border {
 		border:	1px solid;
 	}
+	
+	#pageContents hr {
+		border: none;
+		background-color: #CCCCCC;
+		height: 1px;
+	}
 
 </style>
 
 <div id="pageContents">
-
-	<div class="splitScreen medium">
-
-		<div id="textHolder" class="left">
-			<div id="mainText" tabindex="1"></div>
-			<div id="infoHolder" tabindex="2"></div>
+	
+	<div id="dragDropHolderLabelling">
+		<div id="mainPanel" class="panel">
+			<img id="image" />
+			<div id="targetHolder"></div>
 		</div>
-
-		<div id="dragDropHolderLabelling" class="right">
-			<div id="mainPanel" class="panel">
-				<img id="image" />
-				<div id="targetHolder"></div>
-				<div id="labelHolder"></div>
-			</div>
-		</div>
-
+		<div id="labelHolder"></div>
 	</div>
-
+	
+	<div id="textHolder">
+		<div id="mainText" tabindex="1"></div>
+		<hr/>
+		<div id="infoHolder" tabindex="2"></div>
+	</div>
+	
 </div>

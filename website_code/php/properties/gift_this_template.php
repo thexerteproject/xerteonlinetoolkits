@@ -42,6 +42,10 @@ function copy_loop($start_path, $final_path){
 
     global $xerte_toolkits_site;
 
+    if (!file_exists($final_path)) {
+        mkdir($final_path, 0777, true);
+    }
+
     $d = opendir($start_path);
 
     while($f = readdir($d)){
@@ -55,7 +59,8 @@ function copy_loop($start_path, $final_path){
             }			
 
         }else{
-
+            $ok = copy($start_path . $f, $final_path . $f);
+            /*
             $data = file_get_contents($start_path . $f);
 
             $fh = fopen($final_path . $f, "w");
@@ -63,7 +68,7 @@ function copy_loop($start_path, $final_path){
             fwrite($fh,$data);
 
             fclose($fh);
-
+            */
         }
 
     }	
@@ -164,9 +169,9 @@ if(is_numeric($_POST['tutorial_id'])){
         $new_template_id = get_maximum_template_number()+1;
 
         $creation_query = "INSERT INTO {$prefix}templatedetails "
-        . "(template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom) "
-        . " VALUES (?,?,?,?,?,?,?,?,?)";
-        $params = array($new_template_id, $user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"private");
+        . "(template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
+        . " VALUES (?,?,?,?,?,?,?,?,?,?)";
+        $params = array($new_template_id, $user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"Private",$row_currentdetails['extra_flags']);
 
         $ok = db_query($creation_query, $params);
         
@@ -175,7 +180,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         $row_currentrights = db_query_one($query_for_currentdetails, $params);
 
-        $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ? ";
+        $query_for_root_folder = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name != ?  AND folder_parent=0";
         $params = array($user_id, 'recyclebin');
 
         $row_folder = db_query_one($query_for_root_folder, $params);
@@ -207,7 +212,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
         copy_loop($current_directory, $new_directory);
 
-        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
+        echo "<div class=\"share_top\"><p class=\"header\"><span>" . GIFT_RESPONSE_INSTRUCTIONS . ".<br><br></span></p><p>" . GIFT_RESPONSE_SUCCESS . " " . $row_new_login['firstname'] . " " . $row_new_login['surname'] . "  (" . $row_new_login['username'] . ")</p><form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form><div id=\"area2\"><p>" . GIFT_RESPONSE_NAMES . "</p></div><p id=\"area3\"></div>";
 
     }
 

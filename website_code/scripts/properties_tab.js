@@ -167,7 +167,7 @@ function delete_share_stateChanged(){
 
 		if(after_sharing_deleted){
             if(typeof window_reference==="undefined"){
-                window.opener.refres_workspace();
+                window.opener.refresh_workspace();
             }
             else {
                 window_reference.refresh_workspace();
@@ -206,45 +206,24 @@ function share_rights_stateChanged(){
 function rename_stateChanged(){ 
 
 	if (xmlHttp.readyState==4){ 
-		
 		if(xmlHttp.responseText!=""){
-
 			/*
 			* split the two returning bits of info (the html and the new file name)
 			*/
 			
 			array_response = xmlHttp.responseText.split("~~**~~");
-
 			document.getElementById('dynamic_area').innerHTML = array_response[2];
-
 			/*
 			* set the file name in the file_area
 			*/
-
 			if(typeof window_reference==="undefined"){
-			
-				current_innerHTML = window.opener.document.getElementById("file_" + window.name).innerHTML;
-
-				future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
-                
-                window.opener.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
-                
-            }else{
-                
-				current_innerHTML = window_reference.document.getElementById("file_" + window.name).innerHTML;
-
-				future_innerHTML = current_innerHTML.substr(0,current_innerHTML.lastIndexOf(">")+1) + array_response[1];
-				
-                window_reference.document.getElementById("file_" + window.name).innerHTML = future_innerHTML;
-                
-            }
-			
-			
-
+				window.opener.refresh_workspace();
+			}
+			else {
+				window_reference.refresh_workspace();
+			}
 		}
-
-	}		
-
+	}
 }
 
 var after_sharing_deleted = false;

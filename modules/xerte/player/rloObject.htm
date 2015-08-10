@@ -46,13 +46,23 @@
         }
         return vars;
     }
+    function getLocation(){
+        var loc = document.location.toString();
+        loc = loc.substr(0, loc.lastIndexOf('/') + 1);
+        return loc;
+    }
     linkId = null;
     if (getUrlVars()['linkID'])
     {
         linkId = getUrlVars()['linkID'];
     }
 
-    myRLO = new rloObject('%WIDTH%','%HEIGHT%','%RLOFILE%', '%XMLPATH%', '%XMLFILE%', '%SITE%', linkId);
+    var FileLocation = '%XMLPATH%';
+    if (FileLocation == "")
+    {
+        FileLocation = getLocation();
+    }
+    myRLO = new rloObject('%WIDTH%','%HEIGHT%','%RLOFILE%', FileLocation, '%XMLFILE%', '%SITE%', linkId);
 </script>
 
 </div>

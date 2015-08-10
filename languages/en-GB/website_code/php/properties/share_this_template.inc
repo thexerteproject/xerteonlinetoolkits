@@ -10,7 +10,7 @@
 	 * @package
 	 */
 
-	define("SHARING_THIS_FEEDBACK_SUCCESS","Template successfully shared with ");
+	define("SHARING_THIS_FEEDBACK_SUCCESS","project successfully shared with ");
 	
 	define("SHARING_THIS_FEEDBACK_FAIL","Sharing failed ");
 

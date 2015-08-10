@@ -83,6 +83,21 @@
 				restartBtnText = "Restart";
 			}
 			
+			var scoreQ = function($btn) {
+				$("#optionHolder input").attr("disabled", "disabled");
+				
+				// add question weighted score to class score
+				var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+				
+				$("#optionHolder input:checked").each(function() {
+					// calculate and store new score for this option's class based on it's previous score and this option's weight
+					var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
+					$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
+				});
+				
+				$btn.attr("disabled", "disabled");
+				$btn.hide().show(); // hack to take care of IEs inconsistent handling of clicks
+			}
 			
 			// set up buttons - check & next buttons shown during quiz and restart button shown at end with chart
 			$("#checkBtn")
@@ -91,18 +106,12 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					$("#optionHolder input").attr("disabled", "disabled");
-					
-					// get feedback for selected options and add question weighted score to class score
+					// get feedback for selected options
 					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]],
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
-						var $this = $(this),
-							selectedOptionData = $(currentQuestion).children()[$this.index()/2];
-						// calculate and store new score for this option's class based on it's previous score and this option's weight
-						$pageContents.data("scores").splice(selectedOptionData.getAttribute("class"), 1, $pageContents.data("scores")[selectedOptionData.getAttribute("class")] + Number([selectedOptionData.getAttribute("weight")]));
-						
+						var selectedOptionData = $(currentQuestion).children()[$(this).index()/2];
 						if (currentQuestion.getAttribute("questionFeedback") == "yes") {
 							feedbackTxt += x_addLineBreaks(selectedOptionData.getAttribute("feedback")) + '<br/>';
 						}
@@ -114,8 +123,8 @@
 					}
 					
 					$("#nextBtn").removeAttr("disabled");
-					$(this).attr("disabled", "disabled");
-					$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+					
+					scoreQ($(this));
 				});
 			
 			$("#nextBtn")
@@ -124,7 +133,13 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					$(this).attr("disabled", "disabled");
+					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+					if (currentQuestion.getAttribute("questionFeedback") != "yes") {
+						scoreQ($(this));
+					} else {
+						$(this).attr("disabled", "disabled");
+						$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+					}
 					
 					$pageContents.data("currentQ", $pageContents.data("currentQ") + 1);
 					if ($pageContents.data("currentQ") == $pageContents.data("questions").length) {
@@ -275,11 +290,12 @@
 								})
 							.change(function() {
 								$qFeedback.hide();
-								var $selected = $("#optionHolder input:checked");
+								var $selected = $("#optionHolder input:checked"),
+									$btn = thisQ.getAttribute("questionFeedback") == "yes" ? $checkBtn : $("#nextBtn");
 								if ($selected.length > 0) {
-									$checkBtn.removeAttr("disabled");
+									$btn.removeAttr("disabled");
 								} else {
-									$checkBtn.attr("disabled", "disabled");
+									$btn.attr("disabled", "disabled");
 								}
 							});
 						
@@ -299,6 +315,11 @@
 							$pageContents.data("totals").splice(this.getAttribute("class"), 1, $pageContents.data("totals")[this.getAttribute("class")] + Number(this.getAttribute("weight")));
 						}
 					});
+			}
+			if (thisQ.getAttribute("questionFeedback") != "yes") {
+				$("#checkBtn").hide();
+			} else {
+				$("#checkBtn").show();
 			}
 		}
 		
@@ -360,7 +381,7 @@
 					chartHolderContext.translate(30, 0); // space on left for y axis text
 				}
 				
-				var	colour = x_currentPageXML.getAttribute("chartColour"),
+				var	colour = x_getColour(x_currentPageXML.getAttribute("chartColour")),
 					txtColour = $("#mainTxt").css("color");
 				
 				if (colour.substring(0, 2) == "0x") { // hex value

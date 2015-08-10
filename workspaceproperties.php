@@ -43,6 +43,7 @@ Version 1.0
 <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" href="editor/css/jquery-ui.css">
 <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
@@ -77,7 +78,7 @@ Hidden Iframe to allow for ajax file uploads
 
 <iframe id="upload_iframe" name="upload_iframe" src="" style="width:0px;height:0px; display:none"></iframe>
 <!--- error widget -->
-<div id="errorpopup" title="PHP_ERROR" styl="display:none"></div>
+<div id="errorpopup" title="PHP_ERROR" style="display:none"></div>
 
 <div class="properties_main">
             <div class="main_area">
@@ -116,7 +117,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div id="tab1" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('1');my_properties_template()">
-                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_DETAILS; ?>
+                                    <?PHP echo "<i class=\"fa fa-user\"></i>&nbsp;".WORKSPACE_PROPERTIES_TAB_DETAILS; ?>
                                 </p>
                             </div>
                             <div class="tab_spacer">
@@ -125,7 +126,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div id="tab2" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('2'); workspace_templates_template()">
-                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_PROJECTS; ?>
+                                    <?PHP echo "<i class=\"fa fa-info-circle\"></i>&nbsp;".WORKSPACE_PROPERTIES_TAB_PROJECTS; ?>
                                 </p>
                             </div>
                             <div class="tab_spacer">
@@ -134,7 +135,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div id="tab3" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('3'); folder_rss_templates_template()">
-                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_FEEDS; ?>
+                                    <?PHP echo "<i class=\"fa fa-rss\"></i>&nbsp;".WORKSPACE_PROPERTIES_TAB_FEEDS; ?>
                                 </p>
                             </div>
                             <div class="tab_spacer">
@@ -143,7 +144,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div id="tab4" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('4');import_templates_template()">
-                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_IMPORT; ?>
+                                    <?PHP echo "<i class=\"fa fa-upload\"></i>&nbsp;".WORKSPACE_PROPERTIES_TAB_IMPORT; ?>
                                 </p>
                             </div>
                             <div class="tab_spacer">
@@ -152,7 +153,7 @@ Hidden Iframe to allow for ajax file uploads
                             </div>
                             <div id="tab5" class="tab" style="width:146px; height:38px;">
                                 <p onclick="javascript:tab_highlight('5');api_template()">
-                                    <?PHP echo WORKSPACE_PROPERTIES_TAB_API; ?>
+                                    <?PHP echo "<i class=\"fa fa-file-code-o\"></i>&nbsp;".WORKSPACE_PROPERTIES_TAB_API; ?>
                                 </p>
                             </div>
                             <div class="tab_spacer">

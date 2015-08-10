@@ -44,17 +44,17 @@ if(is_numeric($_POST['template_id'])){
 
     if(strlen($search)!=0){
         
-        $query_for_names = "SELECT login_id, firstname, surname from {$prefix}logindetails WHERE "
-        . "((firstname like ? ) or (surname like ?) ) "
+        $query_for_names = "SELECT login_id, firstname, surname, username from {$prefix}logindetails WHERE "
+        . "((firstname like ? ) or (surname like ?) or (username like ?) ) "
         . "AND login_id not in( SELECT creator_id from {$prefix}templatedetails where template_id= ? ) ORDER BY firstname ASC"; 
 
-$params = array("$search%", "$search%", $tutorial_id);
+$params = array("$search%", "$search%", "$search%", $tutorial_id);
         $rows = db_query($query_for_names, $params);
 
         if(sizeof($rows) > 0){			
 
             foreach($rows as $row) { 
-                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['login_id'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\">" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
+                echo "<p>" . $row['firstname'] . "  "  . $row['surname'] .  " (" . $row['username'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
 
             }
 

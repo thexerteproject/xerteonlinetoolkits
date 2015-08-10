@@ -40,9 +40,13 @@ define("INDEX_FOLDER_PROMPT","What would you like to call your folder?");
 
 define("INDEX_WORKSPACE_TITLE","My Projects");
 
-define("INDEX_CREATE","Create a new project");
+define("INDEX_CREATE","Project Templates");
 
-define("INDEX_SORT","Sort your files");
+define("INDEX_DETAILS","Project Details");
+
+define("INDEX_SORT","Sort");
+
+define("INDEX_SEARCH","Search");
 
 define("INDEX_SORT_A","Alphabetical A-Z");
 
@@ -58,7 +62,7 @@ define("INDEX_LOGGED_IN_AS","Logged in as");
 
 define("INDEX_BUTTON_LOGIN","Sign In");
 
-define("INDEX_BUTTON_LOGOUT","Log out");
+define("INDEX_BUTTON_LOGOUT","Logout");
 
 define("INDEX_BUTTON_PROPERTIES","Properties");
 

@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- TABBED NAVIGATOR PLUS========================= -->
-  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="The tabbed navigator + allows you to create a list of topic links.  Each topic displays a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
+  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNavExtra.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -52,8 +52,8 @@
 	
     <url label="Image" type="media"  optional="true"/>
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true"/>
-	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true"/>
+    <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
+	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 
   </nestedPage>  
   

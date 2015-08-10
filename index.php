@@ -116,7 +116,7 @@ body_scroll handles the calculation of the documents actual height in IE.
 
 -->
 
-<body onselectstart="return false;">
+<body >
 <?php body_start(); ?>
 <!--
 
@@ -145,6 +145,7 @@ Folder popup is the div that appears when creating a new folder
 
 <div class="ui-layout-north">
     <div class="content" id="mainHeader">
+
         <div class="topbar">
             <?php
             if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
@@ -178,29 +179,7 @@ Folder popup is the div that appears when creating a new folder
 
         <div class="buttonbar">
             <div class="file_mgt_area_top">
-                <div class="file_mgt_area_buttons">
-                    <div class="file_mgt_area_middle_button_left">
-                        <button type="button" class="xerte_button_c_no_width" id="newfolder" onclick="javascript:make_new_folder()">
-                            <i class="fa fa-lg fa-folder xerte-icon"></i><?php echo INDEX_BUTTON_NEWFOLDER; ?>
-                        </button>
-                    </div>
-                    <div class="file_mgt_area_middle_button_left">
-                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-                                id="properties"><?php echo INDEX_BUTTON_PROPERTIES; ?></button>
-                        <button type="button" class="xerte_button_c_nowidth_disabled" disabled="disabled"
-                                id="edit"><?php echo INDEX_BUTTON_EDIT; ?></button>
-                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-                                id="preview"><?php echo INDEX_BUTTON_PREVIEW; ?></button>
-                    </div>
-                    <div class="file_mgt_area_middle_button_right">
-                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-                                id="delete"><?php echo INDEX_BUTTON_DELETE; ?></button>
-                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-                                id="duplicate"><?php echo INDEX_BUTTON_DUPLICATE; ?></button>
-                        <button type="button" class="xerte_button_c_no_width_disabled" disabled="disabled"
-                                id="publish"><?php echo INDEX_BUTTON_PUBLISH; ?></button>
-                    </div>
-                </div>
+                
 
             </div>
 
@@ -208,9 +187,9 @@ Folder popup is the div that appears when creating a new folder
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
                 echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
                <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
-               <button type="button" class="xerte_button_c"
+               <button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
-                    <?PHP echo INDEX_BUTTON_LOGOUT; ?>
+                    <i class="fa fa-sign-out xerte-icon"></i><?PHP echo INDEX_BUTTON_LOGOUT; ?>
                 </button>
             </div>
             <div style="clear:both;"></div>
@@ -228,33 +207,63 @@ Folder popup is the div that appears when creating a new folder
 
     <div class="ui-layout-west" id="workspace_layout">
         <div class="header" id="inner_left_header">
-            <div class="workspace_search_outer">
-            <div class="workspace_search">
-                <input type="text" id="workspace_search">
-            </div>
-            </div>
+			<div class="file_mgt_area_buttons">
+				<!--Workspace buttons-->
+
+				<div class="file_mgt_area_middle_button_left">
+					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="edit"><i class="fa fa-pencil-square-o xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="properties"><i class="fa fa-info-circle xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="preview"><i class="fa fa-play xerte-icon"></i></button>
+				</div>
+				
+				<div class="file_mgt_area_middle_button_left">
+					<button title="<?php echo INDEX_BUTTON_NEWFOLDER; ?>" type="button" class="xerte_workspace_button" id="newfolder" onClick="javascript:make_new_folder()">
+						<i class="fa fa-folder xerte-icon"></i>
+					</button>
+				</div>
+				
+				<div class="file_mgt_area_middle_button_right">
+					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="duplicate"><i class="fa fa-copy xerte-icon"></i></button>
+					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
+							id="publish"><i class="fa  fa-share xerte-icon"></i></button>
+				</div>
+			</div>
         </div>
         <div class="content">
             <div id="workspace"></div>
         </div>
         <div class="footer" id="sortContainer">
             <div class="file_mgt_area_bottom">
-                <form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
-                    <?PHP echo INDEX_SORT; ?>
-                    <select id="sort-selector" name="type" onchange="refresh_workspace()">>
-                        <option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
-                        <option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
-                        <option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
-                        <option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
-                    </select>
-                </form>
-            </div>
+				<div class="sorter">
+					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
+						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<?PHP echo INDEX_SORT; ?>
+						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
+							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
+							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
+							<option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
+							<option value="date_up"><?PHP echo INDEX_SORT_OLD; ?></option>
+						</select>
+					</form>
+				</div>
+				<div class="workspace_search_outer">
+					<div class="workspace_search">
+						<i class="fa  fa-search"></i>&nbsp;<?PHP echo INDEX_SEARCH; ?>
+						<input type="text" id="workspace_search" label="Search">
+					</div>
+				</div>
+			</div>
         </div>
     </div>
 
     <div class="ui-layout-center">
         <div class="header" id="inner_center_header">
-
+			<p class="heading"><i class="fa  icon-info-sign xerte-icon"></i>&nbsp;<?PHP echo INDEX_DETAILS; ?></p>
         </div>
         <div class="content">
             <div class="projectInformationContainer" id="project_information">
@@ -265,10 +274,11 @@ Folder popup is the div that appears when creating a new folder
     </div>
 
     <div class="ui-layout-east">
-
+	
         <div class="header" id="inner_right_header">
-            <p class="heading"><?PHP echo INDEX_CREATE; ?></p>
+            <p class="heading"><i class="fa  icon-wrench xerte-icon"></i>&nbsp;<?PHP echo INDEX_CREATE; ?></p>
         </div>
+		
         <div class="content">
             <div class="new_template_area_middle">
                 <div id="new_template_area_middle_ajax" class="new_template_area_middle_scroll"><?PHP
@@ -308,7 +318,7 @@ Folder popup is the div that appears when creating a new folder
             <!--<img src="website_code/images/lt_logo.gif" /><br/>-->
             <?PHP
             echo $xerte_toolkits_site->copyright;
-            ?></p>
+            ?></p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
 
         <div style="clear:both;"></div>
     </div>
@@ -322,5 +332,4 @@ Folder popup is the div that appears when creating a new folder
 </script>
 <?php body_end(); ?></body>
 </html>
-
 <?php shutdown(); ?>
