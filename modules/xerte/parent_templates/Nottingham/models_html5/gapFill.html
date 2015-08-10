@@ -79,10 +79,8 @@
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
 			
-				if (origPassage.substr(0,3) == '<p>'){
-					origPassage = origPassage.substr(3);
-					origPassage = origPassage.substr(0, origPassage.length - 5);
-				}
+			origPassage = origPassage.split('<p>').join('');
+			origPassage = origPassage.split('</p>').join('<br/><br/>');
 			
 			var passageArray = origPassage.split("|"),
 				markedWord = false,
