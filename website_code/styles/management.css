@@ -1,267 +1,47 @@
-/**
- * Licensed to The Apereo Foundation under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
-
- * The Apereo Foundation licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-html{
-
-	margin:0px;
-	padding:0px;
-	font-family:Verdana, Arial, Helvetica, sans-serif;
-	font-size:80%;
-
-}
-
-body{
-
-	margin:0px;
-	padding:0px;
-	
-}
-
-.topbar{
-
-	height:80px;
-	background-image:url(../images/TopBar.jpg);
-	background-repeat:repeat-x;
-	margin:0 auto;
-	width:910px;
-}
-
-
-.border{
-	
-	height:1px; 
-	width:100%; 
-	float:left; 
-	position:relative; 
-	border-bottom:#f3eee2 1px dotted; 
-	line-height:1px; 
-	margin:0px; 
-	padding:0px; 
-	overflow:hidden
-	
-}
-
-.copyright{
-
-	width:100%;
-	text-align:center;
-	color:#645f4f;
-	margin:25px 0;
-	width:100%;
-	float:left;
-	position:relative;
-	font-size:85%;
-	
-}
-
-/* 2nd page css code */
-
-.pagecontainer{
-	margin:0 auto; 
-	width:910px
-}
-
-.admin_mgt_area{
-	float:left; 
-	width:100%; 
-	position:relative; 
-	margin:10px 0 10px 0;
-}
-
-.admin_mgt_area_top{
-	width:100%; 
-	float:left; 
-	position:relative; 
-	background:#ededed;
-}
-
-.heading{
-
-	color:#645f4f; 
-	font-weight:bold; 
-	padding:0px; 
-	margin:10px 0 5px 10px;
-	
-}
-
-.admin_mgt_area_middle{
-	float:left; 
-	position:relative; 
-	width:100%; 
-	border:1px #f3eee2 solid; 
-	background-color:#fff; 
-	margin:0px; 
-	padding:0px;
-}
-
-.admin_mgt_area_middle_button{
-	float:left; 
-	position:relative; 
-	width:99.5%; 
-	border:1px #b6b3a8 solid; 
-	background-color:#e8edf3; 
-}
-
-.admin_mgt_area_middle_button img{
-	margin:5px;
-}
-
-.admin_mgt_area_middle_button_left{
-	float:left; 
-	position:relative; 
-	height:35px;
-	padding-top:10px;
-	border-right:1px #b6b3a8 solid;
-}
-
-.admin_mgt_area_middle_button_left a{
-	color:#000;
-	text-decoration:none;
-	padding:10px;
-}
-
-.admin_mgt_area_middle_button_right{
-	float:left;
-	position:relative;
-	padding-top:10px;
-	padding-left:25px;
-}
-
-.admin_mgt_area_middle_button_right a{
-	color:#000;
-	text-decoration:none;
-	padding:10px;
-}
-
-
-.admin_mgt_area_bottom{
-	width:100%; 
-	float:left; 
-	position:relative;
-	background:#f3eee2;
-	height:20px;
-}
-
-.demo{
-	margin:0px; 
-	color:#000; 
-	margin:0px; 
-	padding:0px 10px 10px 10px; 
-	font-size:85%;
-}
-
-.demo a{
-	font-weight:bold;
-	color:#000;
-	text-decoration:none;
-}
-
-.help{
-	background-color:#f9f7f2; 
-	float:left; 
-	width:100%;  
-	margin:10px 0;
-	height:150px;
-	min-height:150px;
-	overflow:visible;
-}
-
-.new_template_area{
-	width:310px; 
-	float:right; 
-	position:relative; 
-	margin-top:10px;
-}
-
-div#admin_area{
-	height:500px; 
-	overflow:scroll; 
-	float:left; 
-	position:relative; 
-	width:100%;
-	background-color:#fff;
-	color:#555;
-}
-
-div#admin_area p{
-
-	margin:5px 0 0 10px;
-	padding:0px;
-	margin-left:5px;
-	font-weight:bold;
-}
-
-div#admin_area a{
-
-	color:#888;
-
-}
-
-div#admin_area p form{
-
-	margin:5px 0 5px 10px;
-	padding:0px;
-}
-
-div#admin_area form textarea{
-
-	margin:5px 0 5px 10px;
-	padding:0px;
-}
-
-.template{
-
-	float:left; 
-	position:relative;
-	padding:0px;
-	margin:5px;
-	width:100%;
-	height:20px;
-	font-size:normal;
-
-}
-
-.template_details{
-
-	float:left; 
-	position:relative;
-	display:none;
-	padding:10px;
-	width:100%;
-
-}
-
-.template_details form{
-	
-	width:100%;
-	display:inline;
-
-}
-
-.template_details form textarea{
-
-	width:95%;
-
-}
-
-.template_details p{
-	
-	font-weight:normal;
-
-}
+--- website_code/styles/management.css.orig	2015-07-29 23:17:24.000000000 +0100
++++ website_code/styles/management.css	2015-08-05 13:52:09.820744845 +0100
+@@ -39,7 +39,7 @@
+ 	background-image:url(../images/TopBar.jpg);
+ 	background-repeat:repeat-x;
+ 	margin:0 auto;
+-	width:910px;
++	width:935px;
+ }
+ 
+ 
+@@ -74,7 +74,7 @@
+ 
+ .pagecontainer{
+ 	margin:0 auto; 
+-	width:910px
++	width:935px;
+ }
+ 
+ .admin_mgt_area{
+@@ -127,7 +127,7 @@
+ 	position:relative; 
+ 	height:35px;
+ 	padding-top:10px;
+-	border-right:1px #b6b3a8 solid;
++/* 	border-right:1px #b6b3a8 solid; */
+ }
+ 
+ .admin_mgt_area_middle_button_left a{
+@@ -139,8 +139,9 @@
+ .admin_mgt_area_middle_button_right{
+ 	float:left;
+ 	position:relative;
++	height:35px;
+ 	padding-top:10px;
+-	padding-left:25px;
++	padding-left:10px;
+ }
+ 
+ .admin_mgt_area_middle_button_right a{
+@@ -264,4 +265,4 @@
+ 	
+ 	font-weight:normal;
+ 
+-}
+\ No newline at end of file
++}
