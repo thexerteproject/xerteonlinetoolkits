@@ -12,7 +12,7 @@
 
 	var IMPORT_TEXT = "Import";
 
-	var IMPORT_PROMPT = "You are about to replace an exisiting project with the one you are about to import";
+	var IMPORT_PROMPT = "You are about to replace an existing project with the one you are about to import";
 
 	var NEW_PROJECT_NAME = "New project name";
 
@@ -22,7 +22,7 @@
 
 	var IMPORT_OVER = "Sorry you cannot import over a template";
 
-	var IMPORT_OVERWRITE_CONFIRM = "By selection this option you will import a new template into this folder - are you sure?";
+	var IMPORT_OVERWRITE_CONFIRM = "By selecting this option you will import a new template into this folder - are you sure?";
 
 	var IMPORT_CONFIRM = "You are about to import a new template - are you sure?";
 

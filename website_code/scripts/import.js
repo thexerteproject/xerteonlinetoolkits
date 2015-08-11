@@ -314,7 +314,7 @@ function import_template(){
 			alert(IMPORT_OVER);
 
 			/*
-			var answer = confirm("By selection this option you will replace this template with a new version - are you sure?");
+			var answer = confirm("By selecting this option you will replace this template with a new version - are you sure?");
 
 			if(answer){
 
