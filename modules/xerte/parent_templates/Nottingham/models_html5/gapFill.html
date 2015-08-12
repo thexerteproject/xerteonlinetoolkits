@@ -52,8 +52,7 @@
 			
 			$pageContents.find("#hint").remove();
 		}
-
-
+		
 		this.init = function() {
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
@@ -78,12 +77,9 @@
 			}
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
-			
-				if (origPassage.substr(0,3) == '<p>'){
-					origPassage = origPassage.substr(3);
-					origPassage = origPassage.substr(0, origPassage.length - 5);
-				}
-			
+			if (origPassage.indexOf("<p>") != -1){
+				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
+			}
 			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;
@@ -91,24 +87,19 @@
 			answerData = []; // contains array of possible correct texts for blanks
 			
 			// add passage with spaces for marked works
+			var gapFillStr = "";
 			for (i=0; i<passageArray.length; i++) {
 				tabIndex++;
 				if (markedWord == false) {
-					$('<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>').appendTo($targetHolder);
+					gapFillStr += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
-					var answers = passageArray[i].split("/"),
-						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
-						$('<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + longest + '</span>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
+						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
 						answerData.push(passageArray[i].split("/"));
 						
 					} else { // fill in the blank
-						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>';
 						
 						var tempArray = [],
 							splitString = passageArray[i].split("/");
@@ -120,6 +111,22 @@
 					markedWord = false;
 				}
 			}
+			
+			var $gapFillTxt = $('<div>' + gapFillStr + '</div>').appendTo($targetHolder);
+			$gapFillTxt.find("span.target, input").each(function(i) {
+				var $this = $(this);
+				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
+					$this.data("answer", $this.html());
+					var	answers = $this.html().split("/"),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.html(longest);
+				} else {
+					$this.data("answer", $this.html());
+					var	answers = $this.attr("value").split("/"),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.attr("value", longest);
+				}
+			});
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 				this.setUpDragDrop();
