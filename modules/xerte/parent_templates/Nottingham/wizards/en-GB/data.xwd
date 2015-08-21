@@ -666,7 +666,7 @@
     <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
-    <answerDelimeter label="Answer Delimeter" type="textInput" defaultValue="," optional="true"/>
+    <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
@@ -766,6 +766,7 @@
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <noise label="Distractors" type="script" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces"/>
+	<answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End (Drag Drop Only)" type="CheckBox" defaultValue="true" optional="true"/>
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
