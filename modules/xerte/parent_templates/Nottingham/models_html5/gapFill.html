@@ -30,12 +30,14 @@
 			tabIndex = 1,
 			answerData,
 			$pageContents,
-			$targetHolder;
+			$targetHolder,
+			delimiter;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -55,6 +57,8 @@
 
 
 		this.init = function() {
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
+			
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			
@@ -94,18 +98,16 @@
 					var answers = passageArray[i].split("/"),
 						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
-						$('<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + longest + '</span>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
-						answerData.push(passageArray[i].split("/"));
-						
+						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
+						answerData.push(passageArray[i].split(delimiter));
+
 					} else { // fill in the blank
 						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>')
 							.appendTo($targetHolder)
 							.data("answer", passageArray[i]);
 						
 						var tempArray = [],
-							splitString = passageArray[i].split("/");
+							splitString = passageArray[i].split(delimiter);
 						for (var j=0; j<splitString.length; j++) {
 							tempArray.push(splitString[j].toLowerCase());
 						}
@@ -114,6 +116,22 @@
 					markedWord = false;
 				}
 			}
+			
+			var $gapFillTxt = $('<div>' + gapFillStr + '</div>').appendTo($targetHolder);
+			$gapFillTxt.find("span.target, input").each(function(i) {
+				var $this = $(this);
+				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
+					$this.data("answer", $this.html());
+					var	answers = $this.html().split(delimiter),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.html(longest);
+				} else {
+					$this.data("answer", $this.html());
+					var	answers = $this.attr("value").split(delimiter),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.attr("value", longest);
+				}
+			});
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 				this.setUpDragDrop();
@@ -282,7 +300,7 @@
 				var arrayString = "";
 				for (var j=0; j<answerData[i].length; j++) {
 					if (j != 0) {
-						arrayString += "/";
+						arrayString += delimiter;
 					}
 					arrayString += answerData[i][j];
 				}
