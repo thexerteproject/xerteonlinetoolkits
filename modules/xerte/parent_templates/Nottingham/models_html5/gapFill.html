@@ -30,12 +30,14 @@
 			tabIndex = 1,
 			answerData,
 			$pageContents,
-			$targetHolder;
+			$targetHolder,
+			delimiter;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -54,6 +56,8 @@
 		}
 		
 		this.init = function() {
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
+			
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			
@@ -96,13 +100,13 @@
 				} else {
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
-						answerData.push(passageArray[i].split("/"));
+						answerData.push(passageArray[i].split(delimiter));
 						
 					} else { // fill in the blank
 						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>';
 						
 						var tempArray = [],
-							splitString = passageArray[i].split("/");
+							splitString = passageArray[i].split(delimiter);
 						for (var j=0; j<splitString.length; j++) {
 							tempArray.push(splitString[j].toLowerCase());
 						}
@@ -117,12 +121,12 @@
 				var $this = $(this);
 				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 					$this.data("answer", $this.html());
-					var	answers = $this.html().split("/"),
+					var	answers = $this.html().split(delimiter),
 						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					$this.html(longest);
 				} else {
 					$this.data("answer", $this.html());
-					var	answers = $this.attr("value").split("/"),
+					var	answers = $this.attr("value").split(delimiter),
 						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					$this.attr("value", longest);
 				}
@@ -295,7 +299,7 @@
 				var arrayString = "";
 				for (var j=0; j<answerData[i].length; j++) {
 					if (j != 0) {
-						arrayString += "/";
+						arrayString += delimiter;
 					}
 					arrayString += answerData[i][j];
 				}
