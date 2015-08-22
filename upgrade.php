@@ -52,7 +52,7 @@ function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
     $table = $xerte_toolkits_site->database_table_prefix . $table;
     $sql = "SHOW COLUMNS FROM $table LIKE '$field'";
-    $r = db_query_one($sql);
+    $r = db_query($sql);
     return !empty($r);
 }
 
@@ -320,6 +320,10 @@ function upgrade_4()
         }
 
         return "Creating default engine flag - ok ? " . ($error_returned ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default engine flag already present - ok ? true";
     }
 }
 
