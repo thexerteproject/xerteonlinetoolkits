@@ -31,8 +31,9 @@
 			answerData,
 			$pageContents,
 			$targetHolder,
-			delimiter;
-		
+			delimiter,
+			decodedAnswer;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
@@ -89,7 +90,7 @@
 				i;
 			
 			answerData = []; // contains array of possible correct texts for blanks
-			
+			debugger;
 			// add passage with spaces for marked works
 			var gapFillStr = "";
 			for (i=0; i<passageArray.length; i++) {
@@ -100,15 +101,20 @@
 				} else {
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
-						answerData.push(passageArray[i].split(delimiter));
-						
+
+						//Decode HTML
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						answerData.push(decodedAnswer.split(delimiter));
+
 					} else { // fill in the blank
 						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>';
-						
-						var tempArray = [],
-							splitString = passageArray[i].split(delimiter);
-						for (var j=0; j<splitString.length; j++) {
-							tempArray.push(splitString[j].toLowerCase());
+
+						// Decode HTML and make lowercase
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						var tempArray = [];
+						tempArray = decodedAnswer.split(delimiter);
+						for (var j=0; j<tempArray.length; j++) {
+							tempArray[j] = tempArray[j].toLowerCase();
 						}
 						answerData.push(tempArray);
 					}
@@ -191,7 +197,7 @@
 										if ($this.data("attempt") % 2 != 0) { // odd num
 											var currentHint = $this.data("hint"),
 												correctAnswer = answerData[$targetHolder.find("input").index($this)][0];
-											
+
 											if (currentHint == undefined) { // show 1st letter
 												currentHint = "";
 												for (i=0; i<correctAnswer.length; i++) {
