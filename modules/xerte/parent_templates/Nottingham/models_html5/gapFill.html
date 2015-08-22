@@ -31,7 +31,8 @@
 			answerData,
 			$pageContents,
 			$targetHolder,
-			delimiter;
+			delimiter,
+			decodedAnswer;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -54,8 +55,7 @@
 			
 			$pageContents.find("#hint").remove();
 		}
-
-
+		
 		this.init = function() {
 			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			
@@ -81,35 +81,40 @@
 				}
 			}
 			
-			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage")),
-				passageArray = origPassage.split("|"),
+			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
+			if (origPassage.indexOf("<p>") != -1){
+				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
+			}
+			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;
 			
 			answerData = []; // contains array of possible correct texts for blanks
-			
+			debugger;
 			// add passage with spaces for marked works
+			var gapFillStr = "";
 			for (i=0; i<passageArray.length; i++) {
 				tabIndex++;
 				if (markedWord == false) {
-					$('<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>').appendTo($targetHolder);
+					gapFillStr += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
-					var answers = passageArray[i].split("/"),
-						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
-						answerData.push(passageArray[i].split(delimiter));
+
+						//Decode HTML
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						answerData.push(decodedAnswer.split(delimiter));
 
 					} else { // fill in the blank
-						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
-						
-						var tempArray = [],
-							splitString = passageArray[i].split(delimiter);
-						for (var j=0; j<splitString.length; j++) {
-							tempArray.push(splitString[j].toLowerCase());
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>';
+
+						// Decode HTML and make lowercase
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						var tempArray = [];
+						tempArray = decodedAnswer.split(delimiter);
+						for (var j=0; j<tempArray.length; j++) {
+							tempArray[j] = tempArray[j].toLowerCase();
 						}
 						answerData.push(tempArray);
 					}
@@ -192,7 +197,7 @@
 										if ($this.data("attempt") % 2 != 0) { // odd num
 											var currentHint = $this.data("hint"),
 												correctAnswer = answerData[$targetHolder.find("input").index($this)][0];
-											
+
 											if (currentHint == undefined) { // show 1st letter
 												currentHint = "";
 												for (i=0; i<correctAnswer.length; i++) {
