@@ -1566,16 +1566,24 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-    if (text.trim().indexOf("<") == 0 && text.trim().lastIndexOf(">") == text.trim().length-1)
+	// First test for new editor
+	if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
     {
-        // Seems to start with a tag
-        // probably with new editor, don't replace newlines!
-        return text;
+        return text; // Return text unchanged
     }
-    if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
+    
+    // Now try to identify v3beta created LOs
+    if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
+    {
+        return text; // Return text unchanged
+    }
+    
+    // Now assume it's v2.1 or before
+    if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
+    {
         return text.replace(/(\n|\r|\r\n)/g, "<br />");
-
-    } else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+    }
+    else { // ignore any line breaks inside these tags as they don't work correctly with <br>
         var newText = text;
         if (newText.indexOf("<math") != -1) { // math tag found
             var tempText = "",

@@ -1,1 +1,1 @@
-Xerte Online Toolkits v3.0 - installed from github
+3.01 - installed from github
