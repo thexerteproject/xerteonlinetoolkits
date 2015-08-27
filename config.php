@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = true;
+$development = false;
 
 ini_set('error_reporting', 0);
 if ($development) {
