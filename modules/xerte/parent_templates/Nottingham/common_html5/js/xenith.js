@@ -291,7 +291,7 @@ function x_evalURL(url)
     if (url == null)
         return null;
     var trimmedURL = $.trim(url);
-    if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
+    if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("FileLocation + ") >=0)
     {
         return eval(url)
     }
