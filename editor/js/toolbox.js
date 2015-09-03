@@ -621,7 +621,7 @@ var EDITOR = (function ($, parent) {
         console.log('Del column ' + colnr);
         // Modify data, and rebuild Xerte structure
         $.each(jqGrGridData[key], function(i, row){
-             delete row['col_' + (colnr-1)];
+            delete row['col_' + (colnr)];
         });
         var data = convertjqGridData(jqGrGridData[key]);
         setAttributeValue(key, [name], [data]);
@@ -636,11 +636,14 @@ var EDITOR = (function ($, parent) {
             {
                 xerte += '||';
             }
+			var k = 0;
             $.each(row, function(j, field){
                 if (j != 'col_0') {
-
-                    if (j !== 'col_1')
+                    if (k != 0) {
                         xerte += '|';
+					} else {
+						k++;
+					}
                     xerte += field;
                 }
             });
