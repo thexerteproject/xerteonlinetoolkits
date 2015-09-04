@@ -25,11 +25,14 @@
 			fixedCells = [],
 			timeout,
 			labelData = [],
-			separator = "|";
+			separator = "|",
+			$pageContents;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			labelData = $("#pageContents").data("labelData");
+			$pageContents = $("#pageContents");
+			this.removeFocus();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -38,6 +41,8 @@
 		}
 		
 		this.init = function() {
+			$pageContents = $("#pageContents");
+			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
 				$("#feedback")
@@ -49,7 +54,7 @@
 			
 			if (x_currentPageXML.getAttribute("align") == "top") {
 				$("#gridHolder")
-					.appendTo("#pageContents")
+					.appendTo($pageContents)
 					.css("margin","auto");
 			} else if (x_currentPageXML.getAttribute("align") == "right") {
 				$("#gridHolder")
@@ -63,6 +68,8 @@
 					label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"
 				})
 				.click(function() {
+					grid.removeFocus();
+					
 					// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
 					// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
 					var allCorrect = true;
@@ -78,7 +85,9 @@
 					if (allCorrect == true) {
 						$(this).hide();
 						$("#feedback").show();
-						$("#grid .listHolder ul li.ui-draggable").draggable( "option", "disabled", true );
+						$("#grid .listHolder ul li.ui-draggable")
+							.draggable( "option", "disabled", true )
+							.off("focusin focusout keypress");
 					}
 				});
 			
@@ -286,7 +295,7 @@
 				}
 			}
 			
-			$("#pageContents").data("labelData", labelData);
+			$pageContents.data("labelData", labelData);
 			
 			// insert rows & cells that make up grid borders (has to be overlaid as the swapping of labels would be too complicated if labels were really in the table)
 			$gridBorders.insertBefore($grid);
@@ -414,6 +423,8 @@
 						.removeClass("shadow");
 			});
 			
+			var tabIndex = 3;
+			
 			// this uses draggable & droppable rather than sortable as sortable doesn't deal with fixed labels well
 			$grid
 				.find("ul:not(.preview) li:not(.static)")
@@ -421,9 +432,12 @@
 						stack:	"#grid ul:not(.preview) li", // item being dragged is always on top (z-index)
 						revert:	"invalid", // snap back to original position if not dropped on target
 						start:	function() {
+							grid.removeFocus();
+							
 							$(this)
 								.removeClass("shadow")
 								.addClass("panel");
+							
 							$grid.find(".tick").hide();
 						},
 						stop:	function() {
@@ -432,7 +446,78 @@
 								.addClass("shadow");
 						}
 						})
-					.disableSelection();
+					
+					// set up events used when keyboard rather than mouse is used
+					.on("focusin", function() {
+						var $this = $(this);
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
+							if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
+								if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
+									grid.overEvent($this, $pageContents.data("selectedLabel"));
+									$this
+										.html($pageContents.data("selectedLabel").html())
+										.addClass("selected");
+								} else {
+									$this.addClass("focus");
+								}
+							}
+							
+						} else {
+							$this.addClass("focus");
+						}
+						})
+					.on("focusout", function() {
+						var $this = $(this);
+						$this.removeClass("focus selected");
+						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "" && $this.is($pageContents.data("selectedLabel")) == false) {
+							if ($this.parent().is($pageContents.data("selectedLabel").parent())) {
+								grid.outEvent($this, 0);
+								$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
+							}
+						}
+						})
+					.on("keypress", function(e) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32) {
+							var $this = $(this);
+							if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") { // a label has been selected...
+								if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
+									if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
+										$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
+										
+										$pageContents.data("selectedLabel")
+											.removeClass("selected")
+											.addClass("focus");
+										
+										$this.removeClass("focus");
+										
+										grid.dropEvent($this, $pageContents.data("selectedLabel"));
+									}
+										
+								} else {
+									$this
+										.removeClass("selected")
+										.addClass("focus");
+								}
+								
+								$pageContents.data("selectedLabel", "");
+							
+							} else {
+								$this
+									.removeClass("focus")
+									.addClass("selected");
+								
+								$pageContents.data("selectedLabel", $this);
+							}
+						}
+					})
+					.disableSelection()
+					.each(function(i) {
+						$(this).attr({
+							"tabindex"	:tabIndex
+						});
+						tabIndex++;
+					});
 			
 			$grid.find("ul:not(.preview) li:not(.static)")
 				.droppable({
@@ -441,101 +526,16 @@
 							return true;
 						}},
 					drop:	function(event, ui) {
-						var $this = $(this);
-						
-						$grid.find("ul.preview li").css("visibility","hidden");
-						$grid.find("ul:not(.preview) li").css("visibility","visible");
-						
-						if (x_currentPageXML.getAttribute("drag") == "insert") {
-							// insert dragged label into list
-							if (ui.draggable.index() > $this.index()) {
-								ui.draggable.insertBefore($this);
-							} else {
-								ui.draggable.insertAfter($this);
-							}
-							ui.draggable.css({"top":"auto","left":"auto"});
-							
-							// adjust position of fixed labels
-							var fixedLabels = $this.parent().find("li.static"),
-								$ul = $this.parent();
-							
-							fixedLabels.detach();
-							fixedLabels.each(function() {
-								if ($ul.find("li").length <= $(this).data("correct")) {
-									$ul.append($(this));
-								} else {
-									$ul.find("li:eq(" + ($(this).data("correct")) + ")").before($(this));
-								}
-							});
-							
-						} else {
-							// swap dragged label with label it's dropped on
-							var index = $this.index();
-							$this.insertBefore(ui.draggable);
-							if ($this.index() < index) {
-								ui.draggable.insertAfter($this.parent().find("li")[index]);
-							} else if (index != 0) {
-								ui.draggable.insertAfter($this.parent().find("li")[index - 1]);
-							} else {
-								ui.draggable.insertBefore($this.parent().find("li")[index]);
-							}
-							
-							ui.draggable.css({"top":"auto","left":"auto"});
-						}
+						grid.dropEvent($(this), ui.draggable);
 						},
 					over:	function(event, ui) {
-						clearTimeout(timeout);
-						var $this = $(this),
-							$thisParent = $this.parent();
-						
-						if (x_currentPageXML.getAttribute("drag") == "insert") {
-							// show preview for all labels that will be moved
-							var toPreview = [], newTxt = [],
-								indexDrag = ui.draggable.index(),
-								indexDrop = $this.index(),
-								lowest = Math.min(indexDrop, indexDrag),
-								highest = Math.max(indexDrag, indexDrop);
-							
-							$this.parent().find("li").css("visibility", "visible");
-							$this.parent().prev(".preview").find("li").css("visibility", "hidden");
-							
-							for (var i=0; i<highest - lowest + 1; i++) {
-								if (!$thisParent.find("li:eq(" + (i + lowest) + ")").hasClass("static")) {
-									toPreview.push(i + lowest);
-									newTxt.push(i + lowest);
-								}
-							}
-							toPreview.splice(lowest == indexDrag ? toPreview.length-1 : 0, 1);
-							newTxt.splice(lowest == indexDrag ? 0 : newTxt.length-1, 1);
-							
-							for (i=0; i<toPreview.length; i++) {
-								$thisParent.prev(".preview").find("li:eq(" + toPreview[i] + ")")
-									.html($thisParent.find("li:eq(" + newTxt[i] + ")").html())
-									.css("visibility", "visible");
-								
-								var $label = $thisParent.find("li:eq(" + toPreview[i] + ")");
-								if ($label[0] != ui.draggable[0]) {
-									$label.css("visibility", "hidden");
-								}
-							}
-							
-						} else {
-							// show preview for two labels that will be swapped
-							$thisParent.prev(".preview").find("li:eq(" + ui.draggable.index() + ")")
-								.css("visibility","visible")
-								.html($this.html());
-						}
+						grid.overEvent($(this), ui.draggable);
 						},
 					out:	function() {
-						// slight delay in removing previews on roll over to avoid flickers over gaps between labels
-						var $this = $(this);
-						timeout = setTimeout(function () {
-							$this.parent().find("li").css("visibility", "visible");
-							$this.parent().prev(".preview").find("li").css("visibility", "hidden");
-						}, 200);
+						grid.outEvent($(this), 200);
 					},
 					hoverClass:	"ui-state-highlight"
-					})
+					});
 			
 			$grid.find("ul li").css("color",$x_body.css("color")); // override jquery ui style
 		}
@@ -572,6 +572,124 @@
 			 });
 			
 			labelData[$parent.parent().index()].push(txt);
+		}
+		
+		this.overEvent = function($this, draggable) {
+			clearTimeout(timeout);
+			var $thisParent = $this.parent();
+			
+			if (x_currentPageXML.getAttribute("drag") == "insert") {
+				// show preview for all labels that will be moved
+				var toPreview = [], newTxt = [],
+					indexDrag = draggable.index(),
+					indexDrop = $this.index(),
+					lowest = Math.min(indexDrop, indexDrag),
+					highest = Math.max(indexDrag, indexDrop);
+				
+				$this.parent().find("li").css("visibility", "visible");
+				$this.parent().prev(".preview").find("li").css("visibility", "hidden");
+				
+				for (var i=0; i<highest - lowest + 1; i++) {
+					if (!$thisParent.find("li:eq(" + (i + lowest) + ")").hasClass("static")) {
+						toPreview.push(i + lowest);
+						newTxt.push(i + lowest);
+					}
+				}
+				toPreview.splice(lowest == indexDrag ? toPreview.length-1 : 0, 1);
+				newTxt.splice(lowest == indexDrag ? 0 : newTxt.length-1, 1);
+				
+				for (i=0; i<toPreview.length; i++) {
+					$thisParent.prev(".preview").find("li:eq(" + toPreview[i] + ")")
+						.html($thisParent.find("li:eq(" + newTxt[i] + ")").html())
+						.css("visibility", "visible");
+					
+					var $label = $thisParent.find("li:eq(" + toPreview[i] + ")");
+					if ($label[0] != draggable[0]) {
+						$label.css("visibility", "hidden");
+					}
+				}
+				
+			} else {
+				// show preview for two labels that will be swapped
+				$thisParent.prev(".preview").find("li:eq(" + draggable.index() + ")")
+					.css("visibility","visible")
+					.html($this.html());
+				
+				if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+					$pageContents.data("selectedLabel").css("visibility", "hidden");
+				}
+			}
+		}
+		
+		this.outEvent = function($this, time) {
+			// slight delay in removing previews on roll over to avoid flickers over gaps between labels
+			timeout = setTimeout(function () {
+				$this.parent().find("li").css("visibility", "visible");
+				$this.parent().prev(".preview").find("li").css("visibility", "hidden");
+			}, time);
+		}
+		
+		this.dropEvent = function($this, draggable) {
+			this.removeFocus();
+			
+			if (x_currentPageXML.getAttribute("drag") == "insert") {
+				// insert dragged label into list
+				if (draggable.index() > $this.index()) {
+					draggable.insertBefore($this);
+				} else {
+					draggable.insertAfter($this);
+				}
+				draggable.css({"top":"auto","left":"auto"});
+				
+				// adjust position of fixed labels
+				var fixedLabels = $this.parent().find("li.static"),
+					$ul = $this.parent();
+				
+				fixedLabels.detach();
+				fixedLabels.each(function() {
+					if ($ul.find("li").length <= $(this).data("correct")) {
+						$ul.append($(this));
+					} else {
+						$ul.find("li:eq(" + ($(this).data("correct")) + ")").before($(this));
+					}
+				});
+				
+			} else {
+				// swap dragged label with label it's dropped on
+				var index = $this.index();
+				$this.insertBefore(draggable);
+				if ($this.index() < index) {
+					draggable.insertAfter($this.parent().find("li")[index]);
+				} else if (index != 0) {
+					draggable.insertAfter($this.parent().find("li")[index - 1]);
+				} else {
+					draggable.insertBefore($this.parent().find("li")[index]);
+				}
+				
+				draggable.css({"top":"auto","left":"auto"});
+			}
+			
+			var tabIndex = 3;
+			$("#grid ul:not(.preview) li:not(.static)").each(function(i) {
+				$(this).attr({
+					"tabindex"	:tabIndex
+				});
+				tabIndex++;
+			});
+		}
+		
+		this.removeFocus = function() {
+			$pageContents.data("selectedLabel", "");
+			
+			$("#grid ul.preview li").css("visibility","hidden");
+			$("#grid ul:not(.preview) li")
+				.each(function() {
+					var $this = $(this)
+					$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
+				})
+				.css("visibility","visible")
+				.blur()
+				.removeClass("focus selected");
 		}
 	}
 	
@@ -661,7 +779,6 @@
 		bottom:		2px;
 	}
 	
-	<!--
 	#grid li.focus {
 		border:	2px solid yellow;
 	}
@@ -669,7 +786,6 @@
 	#grid li.selected {
 		border:	2px solid green;
 	}
-	-->
 	
 	#gridBorders {
 		background-color:	white;
@@ -692,7 +808,7 @@
 		<div id="textHolder" tabindex="1"/>
 		<div id="feedback"/>
 		<div id="btnHolder">
-			<button id="checkBtn"></button>
+			<button id="checkBtn" tabindex="2"></button>
 		</div>
 	</div>
 	
