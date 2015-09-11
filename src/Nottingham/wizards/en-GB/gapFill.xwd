@@ -20,6 +20,8 @@
 	<answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End (Drag Drop Only)" type="CheckBox" defaultValue="true" optional="true"/>
+	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
+	
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
