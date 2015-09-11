@@ -2050,6 +2050,7 @@
     <p1 label="Part 1" type="TextArea" height="50"/>
     <hint label="Hint" type="TextArea" height="50"/>
     <p2 label="Part 2" type="TextArea" height="50"/>
+	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
   </sentence><textSWF menu="Media" menuItem="Flash Animation" hint="A page for integrating Flash animations and movies with your presentation." label="Page Text" icon="icPageWhiteFlash" thumb="thumbs/textSWF.jpg" type="text" height="300" remove="true" deprecated="This page is no longer supported.">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>

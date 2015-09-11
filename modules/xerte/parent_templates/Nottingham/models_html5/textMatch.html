@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textMatch = new function() {
@@ -32,10 +31,13 @@
 		this.pageChanged = function() {
 			numAttempts = 0;
 			$("#labelHolder .label, #targetHolder .hint").remove();
-			$("#feedback").hide();
+			$("#labelHolder .audioHolder, #feedback").hide();
+			$("#button").show();
+			
 			$("#targetHolder .target")
 				.data("currentLabel", "")
 				.css("height", "auto");
+			
 			this.createLabels();
 			this.sizeChanged();
 		}
@@ -52,6 +54,12 @@
 			$labels.each(function() {
 				var $this = $(this);
 				$this.width($target.find("h3").width() + 5); // + 5 is so drop shadow width is ignored
+				if ($this.find(".audioHolder").length > 0) {
+					$this.find(".labelTxt").width($this.width() - $("#pageContents").data("audioW"));
+				} else {
+					$this.find(".labelTxt").width($this.width());
+				}
+				
 				if ($this.outerHeight() > tallestLabel) {
 					tallestLabel = $this.outerHeight();
 				}
@@ -91,6 +99,8 @@
 		}
 		
 		this.init = function() {
+			$("#pageContents").data("audioW", 0);
+			
 			numAttempts = 0;
 			
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -128,6 +138,7 @@
 					numAttempts++;
 					
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
+					$("#labelHolder .audioHolder").hide();
 					
 					// are any labels not on a target?
 					var labelOffTarget = false;
@@ -141,7 +152,8 @@
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
 							// correct - show tick
-							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							$this.find(".audioHolder").show();
 							
 						} else {
 							// incorrect - remove label and show hint
@@ -160,7 +172,8 @@
 										"left"	:"auto"
 										})
 									.data("currentTarget", "")
-									.attr("tabindex", Number($this.attr("id").replace("label","")) + 2);
+									.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
+									.find(".audioHolder").hide();
 								
 								$prevTarget.data("currentLabel", "");
 								
@@ -175,6 +188,8 @@
 					});
 					if (allCorrect == false && numAttempts >= maxAttempts) {
 						$("#feedback").show();
+					} else if (allCorrect == true) {
+						$(this).hide();
 					}
 				});
 			
@@ -201,7 +216,7 @@
 							})
 						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
 						
-					labels.push({text:this.getAttribute("p2"), correct:$thisTarget});
+					labels.push({text:this.getAttribute("p2"), correct:$thisTarget, audio:this.getAttribute("audioFeedback")});
 				});
 			
 			var $pageContents = $("#pageContents");
@@ -278,9 +293,24 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + x_addLineBreaks(labels[i].text) + '</div>');
+				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
+				
+				if (labels[i].audio != "" && labels[i].audio != undefined) {
+					if ($("#pageContents").data("audioW") == 0) {
+						$("#pageContents").data("audioW", 25);
+					}
+					
+					$('<div class="audioHolder"/>')
+						.appendTo($thisLabel)
+						.hide()
+						.mediaPlayer({
+							type		:"audio",
+							source		:labels[i].audio,
+							width		:25
+						})
+				}
 				
 				if (i != 0) {
 					$thisLabel.hide();
@@ -311,6 +341,9 @@
 						
 						$("#feedback").hide();
 						$("#dragDropHolder .tick, #targetHolder .hint").remove();
+						$("#labelHolder .audioHolder").hide();
+						
+						$("#button").show();
 					}
 					})
 				// set up events used when keyboard rather than mouse is used
@@ -346,8 +379,9 @@
 							.attr("title", labelTxt1 + ' - ' + labelTxt2);
 						$pageContents.data("selectedLabel", $this);
 						
-						$("#feedback").hide();
 						$("#dragDropHolder .tick, #targetHolder .hint").remove();
+						$("#labelHolder .audioHolder, #feedback").hide();
+						$("#button").show();
 					}
 					})
 				.css("position", "absolute")
@@ -437,6 +471,19 @@
 	
 	#dragDropHolder .label.selected {
 		border:		2px solid green;
+	}
+	
+	#dragDropHolder .labelTxt {
+		position:	relative;
+		float:		left;
+	}
+	
+	#dragDropHolder .audioHolder {
+		float:	left;
+	}
+	
+	#dragDropHolder .audioHolder .mejs-controls div:not(.mejs-playpause-button) {
+		display:	none;
 	}
 	
 	#dragDropHolder .tick {
