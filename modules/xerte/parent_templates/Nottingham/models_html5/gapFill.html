@@ -18,7 +18,6 @@
  * limitations under the License.
  */
  
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var gapFill = new function() {
@@ -52,8 +51,15 @@
 					$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5
 				));
 			}
-			
 			$pageContents.find("#hint").remove();
+			
+			var audioBarW = 0;
+			$("#pageContents #audioHolder .mejs-inner .mejs-controls").children().each(function() {
+				audioBarW += $(this).outerWidth();
+			});
+			if (audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() > 2) {
+				$x_window.resize();
+			}
 		}
 		
 		this.init = function() {
@@ -146,8 +152,18 @@
 			
 			
 			$("#feedbackTxt")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+				.prepend(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
 				.hide();
+			
+			if (x_currentPageXML.getAttribute("audioFeedback") != "" && x_currentPageXML.getAttribute("audioFeedback") != undefined) {
+				$("#pageContents #audioHolder").mediaPlayer({
+					type	:"audio",
+					source	:x_currentPageXML.getAttribute("audioFeedback"),
+					width	:"100%"
+				});
+			} else {
+				$("#pageContents #audioHolder").remove();
+			}
 			
 			this.sizeChanged();
 			x_pageLoaded();
@@ -567,6 +583,10 @@
 		border-top:		1px solid gray;
 	}
 	
+	#feedbackTxt #audioHolder {
+		margin-top:	20px;
+	}
+	
 </style>
 
 <div id="pageContents">
@@ -581,7 +601,9 @@
 			<div id="mainPanel" class="panel">
 				<div id="targetHolder"></div>
 				<div id="labelHolder"></div>
-				<div id="feedbackTxt"></div>
+				<div id="feedbackTxt">
+					<div id="audioHolder"></div>
+				</div>
 			</div>
 		</div>
 		
