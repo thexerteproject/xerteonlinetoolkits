@@ -290,7 +290,7 @@
 				
 			} else {
 				$("#pageContents .infoHolder").tabs({
-					show: function(event, ui) {
+					activate: function(event, ui) {
 						if (firstLoad != true) {
 							$(".customHTMLHolder").detach();
 							tabNavExtra.scaleImages();
@@ -405,8 +405,8 @@
 	}
 	
 	#pageContents .paneImg img {
-		/* opacity:	0; */
-		/* filter:		alpha(opacity=0); */
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 	#pageContents .paneHolder {
