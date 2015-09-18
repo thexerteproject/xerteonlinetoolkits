@@ -105,7 +105,13 @@
 				var html = "<iframe";
 				html += " width=\"" + iframe.width + "\"";
 				html += " height=\"" + iframe.height + "\"";
-				html += " src=\"//www.youtube.com/embed/" + iframe.code;
+				
+				if (xot_offline == true) {
+					html += " src=\"https://www.youtube.com/embed/" + iframe.code;
+				} else {
+					html += " src=\"//www.youtube.com/embed/" + iframe.code;
+				}
+				
 				var params = "?wmode=opaque";
 				if (iframe.time > 0) {
 					params += "&start=" + iframe.time;
