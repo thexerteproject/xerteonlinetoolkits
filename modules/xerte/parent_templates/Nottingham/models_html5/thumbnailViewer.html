@@ -172,7 +172,7 @@
 								.hide()
 								.width($img.width())
 								.height($img.height())
-								.html('<p>' + x_addLineBreaks(thisData.getAttribute("text")) + '</p>');
+								.html('<div>' + x_addLineBreaks(thisData.getAttribute("text")) + '</div>');
 							
 							
 							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn
@@ -378,10 +378,10 @@
 		overflow:	auto;
 	}
 	
-	#panelTxt p {
+	#panelTxt div {
 		position:			absolute;
 		top:				0px;
-		padding:			10px;
+		padding:			6px;
 		margin:				0px;
 		background-color:	#010101;
 		color:				white;

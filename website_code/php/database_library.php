@@ -142,16 +142,22 @@ function db_query($sql, $params = array())
         $connection = null;
         return $rows;
     }
-
-    if(preg_match('/^(update|delete)/i', $sql)) {
+    else if(preg_match('/^(update|delete)/i', $sql)) {
         return $statement->rowCount();  /* number of rows affected */
     }
-
-    if(preg_match('/^insert/i', $sql)) {
+    else if(preg_match('/^insert/i', $sql)) {
         $lastid = $connection->lastInsertId();;
         $statement = null;
         $connection = null;
         return $lastid;
+    }
+    else if(preg_match('/^(show)/i', $sql))
+    {
+        // Just fetch all and return result
+        $r = $statement->fetchAll();
+        $statement = null;
+        $connection = null;
+        return $r;
     }
     $statement = null;
     $connection = null;

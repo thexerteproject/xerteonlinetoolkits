@@ -67,7 +67,7 @@ END;
 
 	#playitcontainer
 	{
-	wisdth:900px;
+	width:900px;
 	background-color:#e5eecc;
 	border:1px solid #98bf21;
 	margin:auto;

@@ -62,6 +62,31 @@ if (!$.fn.toggleClick) {
     };
 }
 
+$(document).keydown(function(e) {
+    switch(e.which) {
+        case 33: // PgUp
+            if (x_currentPage>0) {
+                if (x_params.navigation != "Historic") {
+                    x_changePage(x_currentPage -1);
+                } else {
+                    var prevPage = x_pageHistory[x_pageHistory.length-2];
+                    x_pageHistory.splice(x_pageHistory.length - 2, 2);
+                    x_changePage(prevPage);
+                }
+            }
+            break;
+
+        case 34: // PgDn
+            if (x_pageInfo.length > x_currentPage + 1) {
+                x_changePage(x_currentPage + 1);
+            }
+            break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+
 $(document).ready(function() {
 
     $x_mainHolder = $("#x_mainHolder");
@@ -291,7 +316,7 @@ function x_evalURL(url)
     if (url == null)
         return null;
     var trimmedURL = $.trim(url);
-    if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("+") >=0)
+    if (trimmedURL.indexOf("'")==0 || trimmedURL.indexOf("FileLocation + ") >=0)
     {
         return eval(url)
     }
@@ -1454,11 +1479,11 @@ function x_insertText(node) {
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
-            var regExp = new RegExp('(^|\\s)(' + x_glossary[k].word + ')([\\s\\.,!?]|$)', 'i');
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
         for (var k=0, len=x_glossary.length; k<len; k++) {
-			var regExp = new RegExp('(^|\\s)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?]|$)', 'i');
+			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
 			//tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" title="' + x_glossary[k].definition + '">$3</a>$4');
 			tempText = tempText.replace(regExp, '$1<a class="x_glossary" href="#" def="' + x_glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
         }
@@ -1566,16 +1591,24 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
 function x_addLineBreaks(text) {
-    if (text.trim().indexOf("<") == 0 && text.trim().lastIndexOf(">") == text.trim().length-1)
+	// First test for new editor
+	if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
     {
-        // Seems to start with a tag
-        // probably with new editor, don't replace newlines!
-        return text;
+        return text; // Return text unchanged
     }
-    if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1) {
+    
+    // Now try to identify v3beta created LOs
+    if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
+    {
+        return text; // Return text unchanged
+    }
+    
+    // Now assume it's v2.1 or before
+    if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
+    {
         return text.replace(/(\n|\r|\r\n)/g, "<br />");
-
-    } else { // ignore any line breaks inside these tags as they don't work correctly with <br>
+    }
+    else { // ignore any line breaks inside these tags as they don't work correctly with <br>
         var newText = text;
         if (newText.indexOf("<math") != -1) { // math tag found
             var tempText = "",

@@ -18,7 +18,7 @@
     <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
-    <answerDelimeter label="Answer Delimeter" type="textInput" defaultValue="," optional="true"/>
+    <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
