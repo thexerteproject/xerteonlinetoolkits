@@ -23,7 +23,9 @@
 	var textVideo = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			this.loadVideo();
+			if (x_currentPageXML.getAttribute("url").substr(0,7) != "<iframe") {
+				this.loadVideo();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -83,34 +85,42 @@
 			}
 			
 			var $pageVideo = $("#pageVideo"),
-				videoDimensions = [320,240];
+				videoSrc = x_currentPageXML.getAttribute("url");
 			
-			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-				if (dimensions[0] != 0 && dimensions[1] != 0) {
-					videoDimensions = dimensions;
+			if (videoSrc.substr(0,7) == "<iframe") {
+				$("#pageContents .panel").removeClass("panel inline");
+				
+				$pageVideo.append(videoSrc);
+				
+			} else {
+				var videoDimensions = [320,240];
+				
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (dimensions[0] != 0 && dimensions[1] != 0) {
+						videoDimensions = dimensions;
+					}
 				}
+				
+				$pageVideo
+					.data({
+						"src"			:videoSrc,
+						"dimensions"	:videoDimensions,
+						"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
+					})
+					.attr("title", x_currentPageXML.getAttribute("tip"));
+				
+				this.loadVideo();
+				
+				//controls toggle
+				$(".panel.inline.x_floatRight")
+					.mouseover(function(){
+						$(".mejs-controls").show();
+					})
+					.mouseout(function(){
+						$(".mejs-controls").hide();
+					});
 			}
-			
-			var videoSrc = x_currentPageXML.getAttribute("url");
-			$pageVideo
-				.data({
-					"src"			:videoSrc,
-					"dimensions"	:videoDimensions,
-					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
-				})
-				.attr("title", x_currentPageXML.getAttribute("tip"));
-			
-			this.loadVideo();
-			
-			//controls toggle
-			$(".panel.inline.x_floatRight")
-				.mouseover(function(){
-					$(".mejs-controls").show();
-				})
-				.mouseout(function(){
-					$(".mejs-controls").hide();
-				});
 			
 			x_pageLoaded();
 		}

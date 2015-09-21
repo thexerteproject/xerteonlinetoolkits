@@ -157,7 +157,7 @@
 			
 			
 			$("#infoHolder").tabs({
-				select:	function(e, ui) {
+				activate:	function(e, ui) {
 					$("#paneHolder").scrollTop(0);
 					setTimeout(function () {
 						tabNav.scaleImages();
@@ -247,8 +247,8 @@
 	}
 	
 	#infoHolder .paneImg img {
-		/* opacity:	0; */
-		/* filter:		alpha(opacity=0); */
+		opacity:	0;
+		filter:		alpha(opacity=0);
 	}
 	
 	#paneHolder {

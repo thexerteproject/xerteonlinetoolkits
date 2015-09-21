@@ -52,7 +52,7 @@ function _db_field_exists($table, $field) {
     global $xerte_toolkits_site;
     $table = $xerte_toolkits_site->database_table_prefix . $table;
     $sql = "SHOW COLUMNS FROM $table LIKE '$field'";
-    $r = db_query_one($sql);
+    $r = db_query($sql);
     return !empty($r);
 }
 
@@ -321,6 +321,10 @@ function upgrade_4()
 
         return "Creating default engine flag - ok ? " . ($error_returned ? 'true' : 'false');
     }
+    else
+    {
+        return "Default engine flag already present - ok ? true";
+    }
 }
 
 function upgrade_5_step1()
@@ -369,7 +373,7 @@ function upgrade_5_step2()
             {
                 $tutorial = "";
             }
-            db_query_one("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraparams);
+            db_query_one("insert into " . $table . " set config_key='" . $tutorialkey . "', value='" . $tutorial . "', category='xerte', mandatory=1" . $extraflags);
         }
         db_query_one("insert into " . $table . " set config_key='" . $key . "', value='" . $value . "', category='xerte', mandatory=1" . $extraflags);
     }
@@ -381,6 +385,14 @@ function upgrade_5()
     upgrade_5_step1();
     upgrade_5_step2();
     return true;
+}
+
+function upgrade_6()
+{
+    $table = table_by_key('originaltemplatesdetails');
+    db_query_one("insert  into " . $table . " (`template_type_id`,`template_framework`,`template_name`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (17,'decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1)");
+
+	return true;
 }
 
 ?>

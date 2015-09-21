@@ -18,7 +18,6 @@
  * limitations under the License.
  */
  
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var gapFill = new function() {
@@ -30,12 +29,15 @@
 			tabIndex = 1,
 			answerData,
 			$pageContents,
-			$targetHolder;
-		
+			$targetHolder,
+			delimiter,
+			decodedAnswer;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -49,12 +51,20 @@
 					$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5
 				));
 			}
-			
 			$pageContents.find("#hint").remove();
+			
+			var audioBarW = 0;
+			$("#pageContents #audioHolder .mejs-inner .mejs-controls").children().each(function() {
+				audioBarW += $(this).outerWidth();
+			});
+			if (audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents #audioHolder").parents("#mainPanel").width() > 2) {
+				$x_window.resize();
+			}
 		}
-
-
+		
 		this.init = function() {
+			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
+			
 			$pageContents = $("#pageContents");
 			$targetHolder = $("#targetHolder");
 			
@@ -78,46 +88,69 @@
 			}
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
+<<<<<<< .mine
 			
 			origPassage = origPassage.split('<p>').join('');
 			origPassage = origPassage.split('</p>').join('<br/><br/>');
 			
+=======
+			if (origPassage.indexOf("<p>") != -1){
+				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
+			}
+
+>>>>>>> .theirs
 			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;
 			
 			answerData = []; // contains array of possible correct texts for blanks
-			
+
 			// add passage with spaces for marked works
+			var gapFillStr = "";
 			for (i=0; i<passageArray.length; i++) {
 				tabIndex++;
 				if (markedWord == false) {
-					$('<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>').appendTo($targetHolder);
+					gapFillStr += '<span tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
 					markedWord = true;
 				} else {
-					var answers = passageArray[i].split("/"),
-						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
-						$('<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + longest + '</span>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
-						answerData.push(passageArray[i].split("/"));
-						
+						gapFillStr += '<span id="gap' + (i-1)/2 + '" class="target highlight" tabindex="' + tabIndex + '">' + passageArray[i] + '</span>';
+
+						//Decode HTML
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						answerData.push(decodedAnswer.split(delimiter));
+
 					} else { // fill in the blank
-						$('<input type="text" id="gap' + (i-1)/2 + '" value="' + longest + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>')
-							.appendTo($targetHolder)
-							.data("answer", passageArray[i]);
-						
-						var tempArray = [],
-							splitString = passageArray[i].split("/");
-						for (var j=0; j<splitString.length; j++) {
-							tempArray.push(splitString[j].toLowerCase());
+						gapFillStr += '<input type="text" id="gap' + (i-1)/2 + '" value="' + passageArray[i] + '" tabindex="' + tabIndex + '" style="font-size:' + $x_body.css("font-size") + '"/>';
+
+						// Decode HTML and make lowercase
+						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+						var tempArray = [];
+						tempArray = decodedAnswer.split(delimiter);
+						for (var j=0; j<tempArray.length; j++) {
+							tempArray[j] = tempArray[j].toLowerCase();
 						}
 						answerData.push(tempArray);
 					}
 					markedWord = false;
 				}
 			}
+			
+			var $gapFillTxt = $('<div>' + gapFillStr + '</div>').appendTo($targetHolder);
+			$gapFillTxt.find("span.target, input").each(function(i) {
+				var $this = $(this);
+				if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
+					$this.data("answer", $this.html());
+					var	answers = $this.html().split(delimiter),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.html(longest);
+				} else {
+					$this.data("answer", $this.html());
+					var	answers = $this.attr("value").split(delimiter),
+						longest = answers.sort(function (a, b) { return b.length - a.length; })[0];
+					$this.attr("value", longest);
+				}
+			});
 			
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 				this.setUpDragDrop();
@@ -127,8 +160,18 @@
 			
 			
 			$("#feedbackTxt")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
+				.prepend(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
 				.hide();
+			
+			if (x_currentPageXML.getAttribute("audioFeedback") != "" && x_currentPageXML.getAttribute("audioFeedback") != undefined) {
+				$("#pageContents #audioHolder").mediaPlayer({
+					type	:"audio",
+					source	:x_currentPageXML.getAttribute("audioFeedback"),
+					width	:"100%"
+				});
+			} else {
+				$("#pageContents #audioHolder").remove();
+			}
 			
 			this.sizeChanged();
 			x_pageLoaded();
@@ -178,7 +221,7 @@
 										if ($this.data("attempt") % 2 != 0) { // odd num
 											var currentHint = $this.data("hint"),
 												correctAnswer = answerData[$targetHolder.find("input").index($this)][0];
-											
+
 											if (currentHint == undefined) { // show 1st letter
 												currentHint = "";
 												for (i=0; i<correctAnswer.length; i++) {
@@ -286,7 +329,7 @@
 				var arrayString = "";
 				for (var j=0; j<answerData[i].length; j++) {
 					if (j != 0) {
-						arrayString += "/";
+						arrayString += delimiter;
 					}
 					arrayString += answerData[i][j];
 				}
@@ -548,6 +591,10 @@
 		border-top:		1px solid gray;
 	}
 	
+	#feedbackTxt #audioHolder {
+		margin-top:	20px;
+	}
+	
 </style>
 
 <div id="pageContents">
@@ -562,7 +609,9 @@
 			<div id="mainPanel" class="panel">
 				<div id="targetHolder"></div>
 				<div id="labelHolder"></div>
-				<div id="feedbackTxt"></div>
+				<div id="feedbackTxt">
+					<div id="audioHolder"></div>
+				</div>
 			</div>
 		</div>
 		
