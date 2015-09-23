@@ -118,7 +118,9 @@
 		this.showCurrent = function() {
 			$("#menuItems").find(".current").removeClass("current");
 			var $thisItem = $("#menuItems .menuItem:eq(" + x_currentPage + ")").addClass("current");
-			$thisItem[0].scrollIntoView();
+			if ($thisItem.position().top != $thisItem.parents("#x_menu").scrollTop()) {
+				$thisItem.parents("#x_menu").scrollTop($thisItem.position().top - parseInt($thisItem.css("margin-bottom")));
+			}
 		}
 		
 		// function sets up full screen bg image
