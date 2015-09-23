@@ -51,8 +51,8 @@
 				} else {
 					$thisItem = $menuItem;
 				}
-				
-				$thisItem.html((i+1) + ") " + x_pages[i+numOffset].getAttribute("name"));
+				var pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ") ";
+				$thisItem.html(pageNum + x_pages[i+numOffset].getAttribute("name"));
 			}
 			
 			$("#menuItems .menuItem")
