@@ -51,8 +51,8 @@
 				} else {
 					$thisItem = $menuItem;
 				}
-				
-				$thisItem.html((i+1) + ") " + x_pages[i+numOffset].getAttribute("name"));
+				var pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ") ";
+				$thisItem.html(pageNum + x_pages[i+numOffset].getAttribute("name"));
 			}
 			
 			$("#menuItems .menuItem")
@@ -118,7 +118,9 @@
 		this.showCurrent = function() {
 			$("#menuItems").find(".current").removeClass("current");
 			var $thisItem = $("#menuItems .menuItem:eq(" + x_currentPage + ")").addClass("current");
-			$thisItem[0].scrollIntoView();
+			if ($thisItem.position().top != $thisItem.parents("#x_menu").scrollTop()) {
+				$thisItem.parents("#x_menu").scrollTop($thisItem.position().top - parseInt($thisItem.css("margin-bottom")));
+			}
 		}
 		
 		// function sets up full screen bg image
