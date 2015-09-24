@@ -26,6 +26,7 @@
 
 		this.filterMap = [
 			  {class:'filter_off', name:'off', default:'Off'},
+			  {class:'filter_nobg', name:'noBg', default:'Remove Background Images'},
 			  {class:'filter_inv', name:'invert', default:'Invert'},
 			  {class:'filter_boy', name:'blackYellow', default:'Black on Yellow'}
 		];
@@ -61,7 +62,7 @@
 			styles.push(['.filter_inv #x_pageNo', 'color:white;']);
 			styles.push(['.filter_inv .panel', 'background:black;']);
 			styles.push(['.filter_inv #x_footerBg', 'visibility:hidden;']);
-			styles.push(['.filter_inv #x_mainBg', 'visibility:hidden;']);
+			styles.push(['.filter_inv #x_background', 'visibility:hidden;']);
 
 			styles.push(['.filter_inv div#thumbHolder a.thumbBox', 'color:white; background:black;']);
 			styles.push(['.filter_inv .thumbBox h3', 'color:white; background:black;']);
@@ -106,7 +107,7 @@
 			styles.push(['.filter_boy #x_footerBlock', 'color:#ffff99; background:black; filter:none;']);
 			styles.push(['.filter_boy .panel', 'background:#ffff99;']);
 			styles.push(['.filter_boy #x_footerBg', 'visibility:hidden;']);
-			styles.push(['.filter_boy #x_mainBg', 'visibility:hidden;']);
+			styles.push(['.filter_boy #x_background', 'visibility:hidden;']);
 			styles.push(['.filter_boy div#thumbHolder a.thumbBox', 'color:black; background:#ffff99;']);
 			styles.push(['.filter_boy #x_colourChanger', 'color:black; background:#ffff99;']);
 			styles.push(['.filter_boy .paneInfo', 'color:black; background:#ffff99;']);
@@ -186,7 +187,7 @@
 		}
 
 		this.applyFilter = function (index) {
-			if (index % 3) $("#x_mainBg").hide(); else $("#x_mainBg").show();
+			if (index % 4) $("#x_background").hide(); else $("#x_background").show();
 			//console.log("Applying filter " + index);
 
 			for (var i=0; i<this.filterMap.length; i++) {
