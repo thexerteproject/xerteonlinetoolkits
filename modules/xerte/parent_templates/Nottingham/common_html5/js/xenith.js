@@ -370,7 +370,6 @@ function x_setUp() {
 			});
 		}
 		
-		
 		if (screen.width <= 550) {
 			x_browserInfo.mobile = true;
 			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css");
@@ -1268,8 +1267,8 @@ function x_updateCss(updatePage) {
     if (x_browserInfo.mobile == false) {
         $x_pageHolder.css("margin-top", $x_headerBlock.height());
         $x_background.css("margin-top", $x_headerBlock.height());
+		$x_pageHolder.height($x_mainHolder.height() - parseInt($x_pageHolder.css("margin-bottom")) - parseInt($x_pageHolder.css("margin-top"))); // fix for Opera - css in other browsers do this automatically
     }
-    $x_pageHolder.height($x_mainHolder.height() - parseInt($x_pageHolder.css("margin-bottom")) - parseInt($x_pageHolder.css("margin-top"))); // fix for Opera - css in other browsers do this automatically
 
     if (updatePage != false) {
         try {
