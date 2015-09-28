@@ -19,6 +19,10 @@
 
 /* MOBILE LAYOUT CSS */
 
+body {
+	overflow:	hidden;
+}
+
 #x_mainHolder {
 	width:		100%;
 	height:		100%;
@@ -31,6 +35,7 @@
 
 #x_pageHolder {
 	position:	relative;
+	overflow:	hidden;
 }
 
 #x_mobileScroll {
