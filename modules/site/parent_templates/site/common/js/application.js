@@ -301,7 +301,7 @@ function parseContent(pageIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="400"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
 			if (this.nodeName == 'navigator'){
@@ -446,7 +446,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="100%"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
 		});
@@ -523,6 +523,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 				
 				inner.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
 				
+			}
+			
+			if (this.nodeName == 'pdf'){
+				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 		});
 		
@@ -602,6 +606,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 				
 				pane.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
 				
+			}
+			
+			if (this.nodeName == 'pdf'){
+				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
 		});
