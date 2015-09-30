@@ -94,9 +94,9 @@
 				}
 				
 				if ($this.attr("align") == "Bottom") {
-					divString = "<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>"
-				} else {
 					divString = "<div>"  + imgStr + x_addLineBreaks($this.attr("text")) + "</div>"
+				} else {
+					divString = "<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>"
 				}
 				
 				var $caption = $(divString)
@@ -163,6 +163,11 @@
 				mediaElement.addEventListener("timeupdate", function(e) {
 					videoSynch.timeUpdate(mediaElement, mediaElement.currentTime);
 				});
+				
+				var $captionAtStart = $($("#pageContents").data("captions")).filter( function(){ return $(this).data("synch") == 0; });
+				if ($captionAtStart.length > 0) {
+					$captionAtStart.show();
+				}
 				
 			} else {
 				// VIMEO
