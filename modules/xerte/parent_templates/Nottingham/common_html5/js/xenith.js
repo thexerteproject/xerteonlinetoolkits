@@ -436,6 +436,7 @@ function x_setUp() {
 			x_insertCSS(x_evalURL(x_params.stylesheet));
 		}
 		if (x_params.theme != undefined && x_params.theme != "default") {
+			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css');
 		}
 		
