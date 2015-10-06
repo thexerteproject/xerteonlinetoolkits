@@ -10,11 +10,11 @@
 	 * @package
 	 */
 	 
-	define("MANAGEMENT_LOGIN","login area for site administration");
+	define("MANAGEMENT_LOGIN","Admin Login Area");
 
     define("MANAGEMENT_BUTTON_LOGIN","Login");
 
-    define("MANAGEMENT_NOT_ADMIN_USERNAME","This is the management panel. Only site administrators can access this resource");
+    define("MANAGEMENT_NOT_ADMIN_USERNAME","Access denied. Site admins only.");
 	
 	define("MANAGEMENT_USERNAME_AND_PASSWORD_EMPTY","Please enter your username and password");
 	
@@ -22,7 +22,7 @@
 	
 	define("MANAGEMENT_PASSWORD_EMPTY","Please enter your password");
 	
-	define("MANAGEMENT_LOGON_FAIL","Sorry that password combination was not correct");
+	define("MANAGEMENT_LOGON_FAIL","Sorry! Username and password not recognised.");
 	
 	define("MANAGEMENT_LOGOUT","Log out");
 	
