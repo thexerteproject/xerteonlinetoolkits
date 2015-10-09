@@ -38,7 +38,7 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			// refresh media if the current info showing is audio/video
-			if ($("#mainInfoHolder #pageVideo").length > 0) {
+			if ($("#mainInfoHolder #pageVideo:not('.iframe')").length > 0) {
 				this.loadVideo($("#mainInfoHolder #pageVideo"));
 			} else if ($("#mainInfoHolder #pageAudio").length > 0) {
 				this.loadAudio($("#mainInfoHolder #pageAudio"));
@@ -153,7 +153,7 @@
 						// defaults to use video.jpg as thumbnail
 						// unless an img is uploaded
 						// or the useVidThumb optional property is set so 1st frame in video shows (not default any more as often takes too long for them all to load)
-						if (this.getAttribute("useVidThumb") == "true") {
+						if (this.getAttribute("useVidThumb") == "true" && this.getAttribute("src").substr(0,7) != "<iframe") {
 							$thisThumbMedia.html('<div class="thumbVideo" title="' + imgTip + '"></div>');
 							
 							var $thisVideo = $thisThumbMedia.find("div");
@@ -245,22 +245,27 @@
 								perspectives.loadAudio($thisAudio);
 								
 							} else { // movie
-								var videoDimensions = [320,240];
-								if (thisData.getAttribute("movieSize") != "" && thisData.getAttribute("movieSize") != undefined) {
-									var dimensions = thisData.getAttribute("movieSize").split(",");
-									if (dimensions[0] != 0 && dimensions[1] != 0) {
-										videoDimensions = dimensions;
+								if (thisData.getAttribute("src").substr(0,7) == "<iframe") {
+									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '" class="iframe">' + thisData.getAttribute("src") + '</div>');
+									
+								} else {
+									var videoDimensions = [320,240];
+									if (thisData.getAttribute("movieSize") != "" && thisData.getAttribute("movieSize") != undefined) {
+										var dimensions = thisData.getAttribute("movieSize").split(",");
+										if (dimensions[0] != 0 && dimensions[1] != 0) {
+											videoDimensions = dimensions;
+										}
 									}
+									
+									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '"></div>');
+									
+									var $thisVideo = $mediaPanel.find("#pageVideo");
+									$thisVideo.data({
+										"src"		:thisData.getAttribute("src"),
+										"dimensions":videoDimensions
+									});
+									perspectives.loadVideo($thisVideo);
 								}
-								
-								$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '"></div>');
-								
-								var $thisVideo = $mediaPanel.find("#pageVideo");
-								$thisVideo.data({
-									"src"		:thisData.getAttribute("src"),
-									"dimensions":videoDimensions
-								});
-								perspectives.loadVideo($thisVideo);
 							}
 							
 							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn
