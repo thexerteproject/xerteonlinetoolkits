@@ -109,8 +109,6 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
      */
     $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['template_name'] . "/";
     $ThemeList = array();
-    // Add default theme
-    $ThemeList[] = array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => "");
     if (file_exists($theme_folder))
     {
         $d = opendir($theme_folder);
@@ -145,6 +143,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                 }
             }
         }
+		// sort into alphabetical order
+		$display_name = array();
+		foreach ($ThemeList as $key => $row) {
+			$display_name[$key] = $row['display_name'];
+		}
+		array_multisort($display_name, SORT_ASC, $ThemeList);
+		// Add default theme to beginning
+		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => ""));
     }
     /**
      * sort of the screen sies required for the preview window
