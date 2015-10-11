@@ -3,7 +3,7 @@
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
-
+ *
  * The Apereo Foundation licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at:
@@ -13,7 +13,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -36,7 +36,7 @@ function _debug($string) {
 ini_set('error_reporting', E_ALL);
 
 
-echo file_get_contents("page_top");
+require_once('page_header.php');
 
 $res = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
@@ -155,7 +155,7 @@ if($_POST['apache']=="true"){
 <h2 style="margin-top:15px">
     Install complete
 </h2>
-<?PHP
+<?php
 
 if($fail_string!=""){
 
@@ -171,7 +171,7 @@ if($success_string!=""){
 }
 
 ?>
-<p> Your site URL is  <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> </p>
+<p> Your site URL is  <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15); ?></a> </p>
 
 <h2>Security Warning</h2>
 <p><strong><u>If you have installed this on a public facing server, ensure you delete the following:<br/>
@@ -188,10 +188,9 @@ if($success_string!=""){
 
 <h2>Register!</h2>
 <p>Please register your site to receive valuable notifications regarding Xerte Online Toolkits. You can find the registration button in the management page:
-    <a href="http://<?PHP echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php"; ?></a></p>
+    <a href="http://<?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php?register"; ?>"><?php echo $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "/management.php"; ?></a></p>
 
 <h2>Need more help?</h2>
 <p>Please see the Xerte Community site at <a href="http://www.xerte.org.uk" target="new">http://www.xerte.org.uk</a> and please consider joining the forum.</p>
 
-</body>
-</html>
+<?php require_once('page_footer.php'); ?>
