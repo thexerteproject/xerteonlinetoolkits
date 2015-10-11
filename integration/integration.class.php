@@ -26,8 +26,6 @@
  */
 require_once(dirname(__FILE__) . "/../config.php");
 
-_load_language_file("/integration/integration_library.inc");
-
 class Integrate
 {
 
@@ -77,13 +75,13 @@ class Integrate
                     $temp_new_path = $new_path . $f . "/";
                     if (@mkdir($temp_new_path)) {
                         if (@chmod($temp_new_path, 0777)) {
-                            create_folder_loop($full . "/", $temp_new_path);
+                            $this->createFolderLoop($full . "/", $temp_new_path);
                         } else {
-                            $this->mesg = "Failed to set permissions on folder: Failed to set correct rights on " . $temp_new_path . ".\n";
+                            $this->mesg .= "Failed to set permissions on folder: Failed to set correct rights on " . $temp_new_path . ".\n";
                             return false;
                         }
                     } else {
-                        $this->mesg = "Failed to create folder: Failed to create folder " . $temp_new_path . ".\n";
+                        $this->mesg .= "Failed to create folder: Failed to create folder " . $temp_new_path . ".\n";
                         return false;
                     }
                 }
@@ -91,11 +89,11 @@ class Integrate
                 $file_dest_path = $new_path . $f;
                 if (@copy($full, $file_dest_path)) {
                     if (!@chmod($file_dest_path, 0777)) {
-                        $this->mesg = "Failed to copy file: Failed to set rights on file " . $full . " " . $file_dest_path . ".\n";
+                        $this->mesg .= "Failed to copy file: Failed to set rights on file " . $full . " " . $file_dest_path . ".\n";
                         return false;
                     }
                 } else {
-                    $this->mesg = "Failed to set rights on file: Failed to copy file " . $full . " " . $file_dest_path . ".\n";
+                    $this->mesg .= "Failed to set rights on file: Failed to copy file " . $full . " " . $file_dest_path . ".\n";
                     return false;
                 }
             }
@@ -130,12 +128,12 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $this->mesg("Copy template contents");
+        $this->mesg .= " - Copy template contents\n";
         $q = "select ld.username from {$prefix}templatedetails td, {$prefix}logindetails ld where td.template_id=? and td.creator_id=ld.login_id";
-        $row = deb_query_one($q, array($id_to_copy));
+        $row = db_query_one($q, array($id_to_copy));
 
-        if ($row === false) {
-            $this->mesg = "Cannot find user of template " . $id_to_copy . ".\n";
+        if ($row == null) {
+            $this->mesg .= "Cannot find user of template " . $id_to_copy . ".\n";
             return false;
         }
         $org_user_name = $row['username'];
@@ -159,11 +157,11 @@ class Integrate
                     return false;
                 }
             } else {
-                $this->mesg = "Failed to set rights on parent folder for template: Failed to set rights on parent folder " . $new_path . ".\n";
+                $this->mesg .= "Failed to set rights on parent folder for template: Failed to set rights on parent folder " . $new_path . ".\n";
                 return false;
             }
         } else {
-            $this->mesg = "Failed to create parent folder for template: Failed to create parent folder " . $new_path . ".\n";
+            $this->mesg .= "Failed to create parent folder for template: Failed to create parent folder " . $new_path . ".\n";
             return false;
         }
     }
@@ -182,20 +180,20 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        if (!Allowed())
+        if (!$this->Allowed())
             return false;
 
-        $this->mesg = "Check login " . $username . "\n";
-        $this->mesg = "   - Check if user " . $username . " exists.\n";
+        $this->mesg .= "Check login " . $username . "\n";
+        $this->mesg .= "   - Check if user " . $username . " exists.\n";
         // search for user in logindetails table
         $q = "select * from {$prefix}logindetails where username=?";
         $row = db_query_one($q, array($username));
 
-        if ($row !== false) {
+        if ($row !== false && $row != null) {
             $login_id = $row['login_id'];
         } else {
 
-            $this->mesg = "   - Create user login for " . $username . ".\n";
+            $this->mesg .= "   - Create user login for " . $username . ".\n";
 
             // Create logindetails
             $query = "insert into {$prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
@@ -206,15 +204,15 @@ class Integrate
             $res = db_query($query, array($login_id, "0", 'recyclebin'));
 
             if ($res === false) {
-                $this->mesg = "   - Failed to create recyclebin for user " . $username . "\n";
+                $this->mesg .= "   - Failed to create recyclebin for user " . $username . "\n";
                 return false;
             }
         }
 
         // Check root folder
         $root_folder_id = $this->checkCreateRootFolder($login_id, $username);
-        if ($root_folder_id === false) {
-            $this->mesg = "   - Cannot find/create root folder for user " . $username . ".\n";
+        if ($root_folder_id == null || $root_folder_id === false) {
+            $this->mesg .= "   - Cannot find/create root folder for user " . $username . ".\n";
             return false;
         }
         return array('login_id' => $login_id, 'root_folder_id' => $root_folder_id);
@@ -232,19 +230,19 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        if (!Allowed())
+        if (!$this->Allowed())
             return false;
 
         // Check root folder
-        $this->mesg = "   - Check root folder for user " . $username . ".\n";
+        $this->mesg .= "   - Check root folder for user " . $username . ".\n";
 
         $query = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name = ?";
         $params = array($login_id, $username);
 
-        $response = db_query($query, $params);
-        if ($response === false) {
+        $response = db_query_one($query, $params);
+        if ($response == null) {
 
-            $this->mesg = "   - Create root folder for user " . $username . ".\n";
+            $this->mesg .= "   - Create root folder for user " . $username . ".\n";
 
             $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
             $params = array($login_id, "0", $username);
@@ -270,14 +268,14 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        if (!Allowed())
+        if (!$this->Allowed())
             return false;
 
         // search for user in logindetails table
         $q = "select * from {$prefix}folderdetails where login_id=? and folder_parent=? and folder_name=?";
         $row = db_query_one($q, array($login_id, $parent_folder_id, $foldername));
 
-        if ($row === false) {
+        if ($row == null) {
             // Create folder
             $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
             $params = array($login_id, $parent_folder_id, $foldername, date('Y-m-d'));
@@ -299,7 +297,7 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        if (!Allowed())
+        if (!$this->Allowed())
             return false;
 
         /*
@@ -308,7 +306,7 @@ class Integrate
         $row = db_query_one("SELECT max(template_id) as count FROM {$prefix}templatedetails");
 
         if ($row === false) {
-            $this->mesg = "Failed to get the maximum template number.\n";
+            $this->mesg .= "Failed to get the maximum template number.\n";
             return false;
         }
         $new_template_id = $row['count'] + 1;
@@ -346,7 +344,7 @@ class Integrate
 
             if (db_query($query_for_template_rights, $params) !== FALSE) {
 
-                $this->mesg = "Created new template record for the database.\n";
+                $this->mesg .= " - Created new template record for the database.\n";
 
                 if ($this->duplicateTemplate($user_name, $new_template_id, $template_id, $row_template_type['org_template_name']))
                 {
@@ -354,19 +352,19 @@ class Integrate
                 }
                 else
                 {
-                    $this->mesg = "Failed to duplicate contents to new template.\n";
+                    $this->mesg .= "Failed to duplicate contents to new template.\n";
                     return false;
                 }
 
             } else {
 
-                $this->mesg = "Failed to create new template record for the database.\n";
+                $this->mesg .= "Failed to create new template record for the database.\n";
                 return false;
             }
 
         } else {
 
-            $this->mesg = "Failed to create new template record for the database.\n";
+            $this->mesg .= "Failed to create new template record for the database.\n";
 
             return false;
 
@@ -383,15 +381,15 @@ class Integrate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        if (!Allowed())
+        if (!$this->Allowed())
             return false;
 
-        //$this->mesg = "Share template\n;";
+        //$this->mesg .= "Share template\n;";
 
         $query_to_insert_share = "insert into {$prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
         $params = array($template_id, $new_login_id, "editor", $new_folder_id);
 
-        if (db_query($query_to_insert_share, $params)) {
+        if (db_query($query_to_insert_share, $params) !== false) {
 
             return true;
 
@@ -443,37 +441,38 @@ class Integrate
     public function setOriginalTemplateId($template_id)
     {
         $this->org_template_id = $template_id;
-        $this->mesg = "Set original template to " . $template_id . ".\n";
+        $this->mesg .= "Set original template to " . $template_id . ".\n";
     }
     
     public function addStudent($username, $firstname, $surname)
     {
         // Create login for student
-        $this->mesg = "Add student " . $firstname . " " . $surname . ".\n";
+        $this->mesg .= "Add student " . $firstname . " " . $surname . ".\n";
         $login = $this->checkCreateLogin($username, $firstname, $surname);
 
         if ($login !== false)
         {
             // Place template in teachers folder for this student
-            $this->mesg = " - Place template in teachers folder.\n";
+            $this->mesg .= " - Place template in teachers folder.\n";
             $template_id = $this->copyTemplateToUserFolder($this->org_template_id, $this->teacher_id, $this->teacher_name, $this->teacher_group_folder_id, $firstname . " " . $surname);
 
             if ($this->status)
             {
                 // Share template with student
-                $this->mesg = " - Share template with student.\n";
+                $this->mesg .= " - Share template with student.\n";
                 if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $login['root_folder_id']))
                 {
+                    $this->mesg .= "\n";
                     return true;
                 }
                 else
                 {
-                    $this->mesg = "Failed to share template with student\n";
+                    $this->mesg .= "Failed to share template with student\n";
                 }
             }
             else
             {
-                $this->mesg = "Failed to copy template to teacher folder\n";
+                $this->mesg .= "Failed to copy template to teacher folder\n";
                 return false;
             }
         }
