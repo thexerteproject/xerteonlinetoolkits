@@ -124,6 +124,14 @@ $xot_setup = new Setup(); ?>
 		.setup_error {
 			color: #F00;
 		}
+
+		.setup_error {
+			margin: 20px 0;
+		}
+
+		.previous {
+			margin-top: 20px;
+		}
 		</style>
 	</head>
 
