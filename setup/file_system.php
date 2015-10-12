@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once("../functions.php");
 require_once('page_header.php'); 
 
 $xot_setup->check['file_system'] = SetupRequirements::folders(dirname(__FILE__) );

@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+require_once("../functions.php");
+require_once('../website_code/php/database_library.php');
 require_once('setup_class_library.php');
 
 $xot_setup = new Setup(); ?>
