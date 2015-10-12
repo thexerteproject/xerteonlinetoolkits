@@ -132,6 +132,11 @@ $xot_setup = new Setup(); ?>
 		.previous {
 			margin-top: 20px;
 		}
+
+		.screenshot {
+			float: right;
+			margin-left: 30px;
+		}
 		</style>
 	</head>
 

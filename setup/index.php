@@ -25,12 +25,12 @@ if ( file_exists( '../database.php' ) ):
 
 else: ?>
 
-			<h2>About</h2>
+			<h2>About Xerte Online Toolkits</h2>
 
-			<img src="screenshot.jpg" alt="Xerte Online Toolkits admin login screen" title="Xerte Online Toolkits admin login screen" width="350px" style="float: right; margin-left: 20px;" />
+			<img class="screenshot" src="screenshot.jpg" alt="Xerte Online Toolkits admin login screen" title="Xerte Online Toolkits admin login screen" width="350px" />
 			<p>Xerte Online Toolkits is a suite of web based tools which have been designed, and continue to be developed, by a wonderful community of <a href="http://www.xerte.org.uk" target="_blank">open source developers.</a> The suite enables users to log on and create interactive learning materials simply and effectively using a web browser.</p>
 
-			<p>A number of project templates are provided for creating online presentations and interactive content which which users can assemble using the intuitive interface. The suite also enables multiple users to collaborate on shared projects.</p>
+			<p>A number of project templates are provided for creating online presentations and interactive content which users can assemble using the intuitive interface. The suite also enables multiple users to collaborate on shared projects.</p>
 
 			<h3>License</h3>
 
