@@ -35,8 +35,10 @@ class Setup {
 
     public function __construct() {
     	$this->root_path 	= substr(getcwd(), 0, strlen(getcwd()) - 5);
-      $this->xot_url = $_SERVER['REQUEST_SCHEME'] . '://' 
-      	. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $http = ($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] . '://' : 'http://';
+
+        $this->xot_url = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
 
     public function getRootPath() {
@@ -329,9 +331,10 @@ class SetupPage extends Setup {
         $this->page['name'] = 'settings'; // default if not logged in
         // $this->login = new ManagementLogin( $this->settings );
 
-        if ( !empty($this->login->getLoginMessage()) ) {
+        $msg = $this->login->getLoginMessage();
+        if ( !empty($msg) ) {
             $this->page['name']          = 'login';
-            $this->page['login_message'] = $this->login->getLoginMessage();
+            $this->page['login_message'] = $msg;
         }
 
         return $this->showPage();
