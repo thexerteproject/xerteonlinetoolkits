@@ -23,7 +23,7 @@ require_once('page_header.php'); ?>
 
 		<h2>MySQL Database Creation page</h2>
 		
-		<p>The installer will now try to create a database for Xerte Online Toolkits to use.</p>
+		<p>The installer will now try to create a database for Xerte Online Toolkits to use. Edit the fields below to provide information about YOUR database.</p>
 
 		<h3>Note to Xampp Users</h3>
 
