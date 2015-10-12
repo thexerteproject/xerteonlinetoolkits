@@ -30,7 +30,8 @@ $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
 
     <ol>
         <li>A Web server running PHP version 5.2 or above.        
-            <div class="<?php echo $xot_setup->check['php']->css; ?>">Your version of PHP is <?php echo $xot_setup->check['php']->message; ?></div>
+            <div class="<?php echo $xot_setup->check['php']->css; ?>">Your version of PHP is <?php echo $xot_setup->check['php']->message; ?>
+            </div>
             <ul>
                 <li>Xerte Online Toolkits was developed on PHP 5.2+, it may work on older versions. It may not.</li>
             </ul>
@@ -45,8 +46,9 @@ $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
             <?php else: ?>
 
                 <div class="error">
-                    <p>Your PHP does not seem to have MySQL support</p>
-                    <p>Please see <a href="http://uk3.php.net/manual/en/mysql.installation.php">PHP's own guide</a> for more details. Xampp installs should come with MySQL installed. Different versions of PHP however may or may not have MySQL installed by default. If on the PHP Info page you can find a section headed "MySQL", then you should find it is installed.</p>
+                    <p>Your version of PHP does not seem to have MySQL support.</p>
+                    <p>Please see <a href="http://uk3.php.net/manual/en/mysql.installation.php">PHP's own guide</a> for more details.</p>
+                    <p>Xampp installs come with MySQL installed. However, some versions of PHP may or may not have MySQL installed by default. If you can find a section headed "MySQL" on the PHP Info page, then you should find that MySQL is installed.</p>
                 </div>
 
             <?php endif; ?>
@@ -59,7 +61,6 @@ $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
     </ol>
 
     <h2>Notes</h2>
-
 
       <?php if ( !$xot_setup->check['mysql']->passed || !$xot_setup->check['php']->passed ): ?>
 
