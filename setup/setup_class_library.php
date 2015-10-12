@@ -131,9 +131,11 @@ class SetupRequirements {
 class SetupDatabase {
 
     public $connection 		= '';
-    public $settings 			= '';
+    public $settings 	    = '';
     public $error_msg    	= 'Sorry, the attempt to connect to the host 
     	has failed. MySQL reports the following error -';
+    public $debug           = 'No error message defined.';
+    public $conn_error      = '';
 
     public function __construct( $post = array(), $session = array() ) {
 		$this->settings = new stdClass();
@@ -191,30 +193,70 @@ class SetupDatabase {
         return $this->settings;
     }
 
-	public function getConnection() {
-		try {
-			return $this->connection = database_connect();
-
-		} catch(PDOException $e) {
-            // $this->_debug("Failed to connect to db: {$e->getMessage()}");
-            $this->showError($e->getMessage(), $xot_error_txt, $xot_error_tag, $xot_error_css);
-            return false;
-        }
+    public function setName( $name = '' ) {
+        $this->settings->database_name = $name;
     }
 
-	public function query( $query = false ) {
+    /**
+     * Create PDO connection to the database.
+     * @return PDO instance
+     * @throws PDOException if it's not setup / working etc.
+     */
+    public function connect() 
+    {
+        global $xerte_toolkits_site, $dberr;
+        /*
+         * Try to connect
+         */
+
+        $dsn = false;
+
+        if ($xerte_toolkits_site->database_type == 'sqlite') {
+            $dsn = "sqlite:{$xerte_toolkits_site->database_location}";
+            /* not relevant parameters */
+            $xerte_toolkits_site->database_username = null;
+            $xerte_toolkits_site->database_password = null;
+        }
+
+        if ($dsn == false) {
+            // default to MySQL.
+            if (isset($xerte_toolkits_site->database_name))
+            {
+                $dsn = "mysql:dbname={$xerte_toolkits_site->database_name};host={$xerte_toolkits_site->database_host}";
+            }
+            else if (isset($xerte_toolkits_site->database_host))
+            {
+                $dsn = "mysql:host={$xerte_toolkits_site->database_host}";
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+
+        try
+        {
+            $db_connection = new PDO($dsn, $xerte_toolkits_site->database_username, $xerte_toolkits_site->database_password, $options);
+        }
+        catch(PDOException $e) {
+            $this->conn_error = $e->getMessage();
+            // _debug("Failed to connect to db: {$e->getMessage()}");
+            return false;
+        }
+        $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+        return $db_connection;
+    }
+
+	public function runQuery( $query = false ) {
 		return db_query($query);
 	}
 
-	static function showError($error_msg, $error_txt, $html_tag, $css_class) {
-        $str  = '<' . $html_tag . '>' . $error_txt . '</' . $html_tag . '>';
-        $str .= '<' . $html_tag . ' class="' . $css_class . '">';
-        $str .= $error_msg . '</' . $html_tag . '>'; 
-		// @todo: use css to remove need for this
-		$str .= '<br>';
-
-		return $str;
-	}
+    static public function getError( $error_msg = '' ) {
+        return $error_msg;
+    }
 
 	public function create($connection = '', $query = '') {
         // Sets an attribute on the database handle.
@@ -225,16 +267,22 @@ class SetupDatabase {
             $statement = $connection->query($query);
         }
         catch(PDOException $e) {
-            // $this->_debug("Failed to connect to db: {$e->getMessage()}");
+            $this->_debug("Failed to connect to db: {$e->getMessage()}");
             return false;
         }
 
         return true;
 	}
 
-	protected function _debug( $string ) {
-	    echo $string;
+	public function _debug( $string = '' ) {
+        if ($string) {
+            $this->debug = $string;
+        }
 	}
+
+    public function getDebug() {
+        return $this->debug;
+    }
 
 	public function getSQL($file = 'basic.sql') {
         $sql = file_get_contents($file);
