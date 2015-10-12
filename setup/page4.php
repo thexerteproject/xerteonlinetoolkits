@@ -22,7 +22,6 @@ global $development;
 $xerte_toolkits_site = new stdClass();
 
 require_once(dirname(__FILE__) . "/../database.php");
-require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
 
 $success_string = '';
 $fail_string = '';
