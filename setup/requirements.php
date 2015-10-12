@@ -76,7 +76,7 @@ $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
         
         <p>Your system meets the minimum requirements.</p>
 
-        <a href="file_system_test.php"><button>Next &raquo;</button></a>
+        <a href="file_system.php"><button>Next &raquo;</button></a>
 
     <?php endif; ?>
 
