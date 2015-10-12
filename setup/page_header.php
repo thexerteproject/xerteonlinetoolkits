@@ -97,6 +97,7 @@ $xot_setup = new Setup(); ?>
 
 		code, kbd {
 			font-size: 16px;
+			font-weight: bold;
 		}
 
 		.info {
