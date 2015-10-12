@@ -19,12 +19,9 @@
  */
 require_once('page_header.php'); ?>
 
-        <h2 style="margin-top:15px">
-            Toolkits Set up page
-        </h2>
-        <p>
-Use this page to set up Xerte Online Toolkits. The various settings have been grouped into areas depending on what part of the site they effect or change. <b>Please note that this code comes with management features that will allow you to change all these settings at a later point.</b>
-        </p>
+        <h2>Toolkits Set up page</h2>
+
+        <p>Use this page to set up Xerte Online Toolkits. The various settings have been grouped into areas depending on what part of the site they effect or change. <b>Please note that this code comes with management features that will allow you to change all these settings at a later point.</b></p>
 
         <form action="page4.php" method="post" enctype="multipart/form-data" name="setup">
 
@@ -167,6 +164,6 @@ echo "<p>By directly editing the rss proxy.php file (in the root folder), you ca
 
 ?>
         <button type="submit">Save</button>
-        </form>
+    </form>
 
 <?php require_once('page_footer.php'); ?>
