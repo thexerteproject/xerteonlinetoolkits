@@ -29,17 +29,24 @@ require_once('page_header.php'); ?>
 
 		<p>The default database host for Xampp is <kbd>localhost</kbd>, the master MySQL user name is <kbd>root</kbd> and <strong>no password is set</strong> (i.e it is empty). If you have not changed those settings you can skip to the end of this page and click next. The installer will create a database for you called <kbd>toolkits_data</kbd>.</p> 
 
-		<form action="page2.php" method="post" enctype="multipart/form-data">
+		<form action="page2.php" method="post" enctype="multipart/form-data"  
+			onSubmit="javascript:
+                if (document.getElementById('host').value == ''
+                		|| document.getElementById('username').value == '') {
+                    alert('Please enter a Database Host AND Username');
+                    return false;
+                }
+                return true;">
 
 		<div class="form_field">
 			<label>Database Host</label>
-			<input type="text" size="100" name="host" value="<?php if ( isset($_POST['host']) ) { echo $_POST['host']; } else { echo 'localhost'; }?>" />
+			<input type="text" size="100" name="host" id="host" value="<?php if ( isset($_POST['host']) ) { echo $_POST['host']; } else { echo 'localhost'; }?>" />
 			<span class="form_help">Enter the name of the host for the database.</span>
 		</div>
 
 		<div class="form_field">
 			<label>Database Username</label>
-			<input type="text" size="100" name="username" value="<?php if ( isset($_POST['username']) ) { echo $_POST['username'];} else { echo 'root'; } ?>" />
+			<input type="text" size="100" name="username"  id="username" value="<?php if ( isset($_POST['username']) ) { echo $_POST['username'];} else { echo 'root'; } ?>" />
 			<span class="form_help">Enter the username for a MySQL account that has Create and Insert rights on this host from this location.</span>
 		</div>
 
