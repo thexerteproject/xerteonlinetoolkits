@@ -145,7 +145,7 @@ if ($success):
         <input type="hidden" name="password" value="<?php echo $_POST['password'];?>"/>
         <input type="hidden" name="database_name" value="<?php echo $_POST['database_name'];?>"/>
         <input type="hidden" name="database_prefix" value="<?php echo $_POST['database_prefix'];?>"/>
-        <button type="submit">Previous</button>
+        <button type="submit">&laquo; Previous</button>
     </form>
 
 <?php endif; ?>
