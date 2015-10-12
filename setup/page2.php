@@ -108,7 +108,7 @@ if ($success):
 
     <p>Your Xerte Online Toolkits database has been successfully created. When users are creating work on the site, PHP will need a MySQL username with select, insert, update and delete privileges.</p>
 
-    <p>Re-enter you database username and password below.</p>
+    <p>Re-enter your database username and password below.</p>
 
     <form action="page_password.php" method="post" enctype="multipart/form-data">
 
@@ -145,7 +145,7 @@ if ($success):
         <input type="hidden" name="password" value="<?php echo $_POST['password'];?>"/>
         <input type="hidden" name="database_name" value="<?php echo $_POST['database_name'];?>"/>
         <input type="hidden" name="database_prefix" value="<?php echo $_POST['database_prefix'];?>"/>
-        <button type="submit">Previous</button>
+        <button type="submit">&laquo; Previous</button>
     </form>
 
 <?php endif; ?>
