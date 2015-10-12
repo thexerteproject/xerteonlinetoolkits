@@ -152,9 +152,8 @@ if($_POST['apache']=="true"){
 
 ?>
 
-<h2 style="margin-top:15px">
-    Install complete
-</h2>
+<h2>Install complete</h2>
+
 <?php
 
 if($fail_string!=""){
