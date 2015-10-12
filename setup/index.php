@@ -27,9 +27,14 @@ else: ?>
 
 			<h2>About</h2>
 
-			<p>Xerte Online Toolkits is a suite of web based tools designed and developed by a wonderful community of <a href="http://www.xerte.org.uk" target="_blank">open source developers.</a></p>
+			<img src="screenshot.jpg" alt="Xerte Online Toolkits admin login screen" title="Xerte Online Toolkits admin login screen" width="350px" style="float: right; margin-left: 20px;" />
+			<p>Xerte Online Toolkits is a suite of web based tools which have been designed, and continue to be developed, by a wonderful community of <a href="http://www.xerte.org.uk" target="_blank">open source developers.</a> The suite enables users to log on and create interactive learning materials simply and effectively using a web browser.</p>
 
-			<p>Xerte Online Toolkits is a powerful suite of browser-based tools that allow anyone with a web browser to log on and create interactive learning materials simply and effectively, and to collaborate with other users in developing content. Xerte Online Toolkits provides a number of project templates for creating online presentations and interactive content. Content is assembled using an intuitive interface, and multiple users can collaborate on shared projects. Xerte Toolkits is free software, released under the Apache License v2.0.</p>
+			<p>A number of project templates are provided for creating online presentations and interactive content which which users can assemble using the intuitive interface. The suite also enables multiple users to collaborate on shared projects.</p>
+
+			<h3>License</h3>
+
+			<p>Xerte Online Toolkits is free software, released under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank" title="Apache License v2.0">Apache License v2.0</a>.</p>
 
 			<h2>Notes</h2>
 
