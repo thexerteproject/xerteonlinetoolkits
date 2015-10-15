@@ -115,7 +115,11 @@ function mgt_page($xerte_toolkits_site, $extra)
 										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo "<i class=\"fa fa-sign-in\"></i> ".MANAGEMENT_BUTTON_LOGIN; ?></button>
 										</form>
 										<script>document.getElementById("login_box").focus();</script>
+<<<<<<< HEAD
 										<p><?php echo $extra; ?></p>
+=======
+										<!--<p><?PHP echo $extra; ?></p>-->
+>>>>>>> refs/remotes/thexerteproject/develop
 									</div>		
 								</div>
 								<div style="clear:both;"></div>		

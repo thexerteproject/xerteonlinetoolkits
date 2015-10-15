@@ -2059,7 +2059,23 @@ var EDITOR = (function ($, parent) {
             }
             return html;
         };
+<<<<<<< HEAD
 
+=======
+		
+	CKEDITOR.on('dialogDefinition', function(event) {
+		try {
+			var dialogName = event.data.name;
+			var dialogDefinition = event.data.definition;
+			if (dialogName == 'link') {
+				var informationTab = dialogDefinition.getContents('target');
+				var targetField = informationTab.get('linkTargetType');
+				targetField['default'] = '_blank';
+			}
+		} catch(e) {};
+	});
+	
+>>>>>>> refs/remotes/thexerteproject/develop
     // Add the functions that need to be public
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
@@ -2077,5 +2093,11 @@ var EDITOR = (function ($, parent) {
 
     return parent;
 
+<<<<<<< HEAD
 })(jQuery, EDITOR || {});
 
+=======
+	
+	
+})(jQuery, EDITOR || {});
+>>>>>>> refs/remotes/thexerteproject/develop
