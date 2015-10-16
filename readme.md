@@ -1,12 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-<<<<<<< HEAD
 Latest release : v3.0
-=======
-Latest release : v2.1
->>>>>>> dec8ff96f52e284b82909f0579aa399d4c6f3502
-
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------

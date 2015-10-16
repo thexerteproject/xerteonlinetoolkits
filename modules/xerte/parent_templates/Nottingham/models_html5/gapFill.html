@@ -88,23 +88,11 @@
 			}
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
-<<<<<<< HEAD
-<<<<<<< .mine
-			
-			origPassage = origPassage.split('<p>').join('');
-			origPassage = origPassage.split('</p>').join('<br/><br/>');
-			
-=======
+
 			if (origPassage.indexOf("<p>") != -1){
 				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
 			}
 
->>>>>>> .theirs
-=======
-			if (origPassage.indexOf("<p>") != -1){
-				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
-			}
->>>>>>> dec8ff96f52e284b82909f0579aa399d4c6f3502
 			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;

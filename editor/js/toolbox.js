@@ -2059,9 +2059,7 @@ var EDITOR = (function ($, parent) {
             }
             return html;
         };
-<<<<<<< HEAD
 
-=======
 		
 	CKEDITOR.on('dialogDefinition', function(event) {
 		try {
@@ -2075,7 +2073,6 @@ var EDITOR = (function ($, parent) {
 		} catch(e) {};
 	});
 	
->>>>>>> dec8ff96f52e284b82909f0579aa399d4c6f3502
     // Add the functions that need to be public
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
@@ -2093,11 +2090,6 @@ var EDITOR = (function ($, parent) {
 
     return parent;
 
-<<<<<<< HEAD
 })(jQuery, EDITOR || {});
 
-=======
-	
-	
-})(jQuery, EDITOR || {});
->>>>>>> dec8ff96f52e284b82909f0579aa399d4c6f3502
+
