@@ -99,38 +99,34 @@ function mgt_page($xerte_toolkits_site, $extra)
                 ?>
             </div>
 
-						
-						<div class="mainbody">
-								<div class="title_holder">
-									<div class="title_welcome">
-										<?PHP echo $xerte_toolkits_site->welcome_message; ?>
-									</div>
-									<div class="mainbody_holder">
-										<div style="margin:0 7px 4px 0"><?PHP echo MANAGEMENT_LOGIN; ?></div>
-										<form method="post" enctype="application/x-www-form-urlencoded" >
-										<p style="margin:4px">Username:
-										<input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
-										<p style="margin:4px">Password:
-										<input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
-										<button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo "<i class=\"fa fa-sign-in\"></i> ".MANAGEMENT_BUTTON_LOGIN; ?></button>
-										</form>
-										<script>document.getElementById("login_box").focus();</script>
-<<<<<<< HEAD
-										<p><?php echo $extra; ?></p>
-=======
-										<!--<p><?PHP echo $extra; ?></p>-->
->>>>>>> refs/remotes/thexerteproject/develop
-									</div>		
-								</div>
-								<div style="clear:both;"></div>		
-						</div>
-						
-						<div class="bottompart">
-							<div class="border"></div>
-							<p class="copyright">
-								<?php echo $xerte_toolkits_site->copyright; ?>
-							</p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
-						</div>
+                        
+                        <div class="mainbody">
+                                <div class="title_holder">
+                                    <div class="title_welcome">
+                                        <?PHP echo $xerte_toolkits_site->welcome_message; ?>
+                                    </div>
+                                    <div class="mainbody_holder">
+                                        <div style="margin:0 7px 4px 0"><?PHP echo MANAGEMENT_LOGIN; ?></div>
+                                        <form method="post" enctype="application/x-www-form-urlencoded" >
+                                        <p style="margin:4px">Username:
+                                        <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+                                        <p style="margin:4px">Password:
+                                        <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" /></p>
+                                        <button type="submit" class="xerte_button_c" style="margin:0 3px 0 0"><?php echo "<i class=\"fa fa-sign-in\"></i> ".MANAGEMENT_BUTTON_LOGIN; ?></button>
+                                        </form>
+                                        <script>document.getElementById("login_box").focus();</script>
+                                        <!--<p><?PHP echo $extra; ?></p>-->
+                                    </div>      
+                                </div>
+                                <div style="clear:both;"></div>     
+                        </div>
+                        
+                        <div class="bottompart">
+                            <div class="border"></div>
+                            <p class="copyright">
+                                <?php echo $xerte_toolkits_site->copyright; ?>
+                            </p><div class="footerlogos"><a href="http://opensource.org/" target="_blank" title="Open Source Initiative: http://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0"></a> <a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0"></a> <a href="http://xerte.org.uk" target="_blank" title="Xerte: http://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0"></a></div>
+                        </div>
         </body>
     </html>
 
@@ -202,7 +198,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 Version 1.0
 
                 -->
-		<?php
+        <?php
                 _include_javascript_file("website_code/scripts/file_system.js");
                 _include_javascript_file("website_code/scripts/screen_display.js");
                 _include_javascript_file("website_code/scripts/ajax_management.js");
@@ -239,7 +235,8 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         ?>
                         <div
                             style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
+
+
                         </div>
                         <?php
                     }
@@ -247,7 +244,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         ?>
                         <div
                             style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
                         </div>
                         <?php
                     }
@@ -273,12 +269,28 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                 <div class="pagecontainer">
 
+                    <div class="buttonbar">
+
+                       <div class="userbar">
+                            <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
+                            echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
+                            <button title="<?php echo MANAGEMENT_LOGOUT; ?>" 
+                                type="button" class="xerte_button_c_no_width"
+                                onclick="javascript:logout()" style="margin-bottom: 10px;">
+                                <i class="fa fa-sign-out"></i><?php echo MANAGEMENT_LOGOUT; ?>
+                            </button>
+                        </div>
+                        <div style="clear:both;"></div>
+                        <div class="separator"></div>
+                    </div>
+
+
                     <div class="admin_mgt_area">
                         <div class="admin_mgt_area_top">
                             <div class="top_left sign_in_TL m_b_d_2_child">
                                 <div class="top_right sign_in_TR m_b_d_2_child">
-                                    <p class="heading">			
-        <?PHP echo MANAGEMENT_TITLE; ?>					
+                                    <p class="heading">         
+        <?PHP echo MANAGEMENT_TITLE; ?>                 
                                     </p>
                                 </div>
                             </div>
@@ -294,20 +306,20 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                                 -->
 
                                 <div class="admin_mgt_area_middle_button_left">
-                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="fa fa-file-text-o"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>	</button>
+                                    <button type="button" style="margin-left:10px;" class="xerte_button" onclick="javascript:site_list();"><i class="fa fa-sitemap"></i> <?PHP echo MANAGEMENT_MENUBAR_SITE; ?> </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:templates_list();"><i class="fa fa-file-code-o"></i> <?PHP echo MANAGEMENT_MENUBAR_CENTRAL; ?>   </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:users_list();"><i class="fa fa-users"></i> <?PHP echo MANAGEMENT_MENUBAR_USERS; ?>   </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:user_templates_list();"><i class="fa fa-file-text-o"></i> <?PHP echo MANAGEMENT_MENUBAR_TEMPLATES; ?>    </button>
                                     <button type="button" class="xerte_button" onclick="javascript:errors_list();"><i class="fa fa-exclamation-triangle
-"></i> <?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>	</button>
-                                    <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>	</button>
-                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>	</button>
+"></i> <?PHP echo MANAGEMENT_MENUBAR_ERRORS; ?> </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:play_security_list();"><i class="fa fa-key"></i> <?PHP echo MANAGEMENT_MENUBAR_PLAY; ?>  </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:categories_list();"><i class="fa fa-list-ul"></i> <?PHP echo MANAGEMENT_MENUBAR_CATEGORIES; ?>   </button>
+                                    <button type="button" class="xerte_button" onclick="javascript:licenses_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_LICENCES; ?>    </button>
+                                    <button type="button" style="margin-right:10px;" class="xerte_button" onclick="javascript:feeds_list();"><i class="fa fa-rss"></i> <?PHP echo MANAGEMENT_MENUBAR_FEEDS; ?>  </button>
                                 </div>
                                 <div class="admin_mgt_area_middle_button_right">
                                     <button type="button" class="xerte_button" onclick="javascript:save_changes()"><i class="fa fa-floppy-o"></i> <?PHP echo MANAGEMENT_MENUBAR_SAVE; ?></button>
-                                </div>					
+                                </div>                  
                                 <div id="admin_area">
                                 </div>
                             </div>
@@ -327,6 +339,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
     }
 }
-?>	
+?>  
                             </body>
                             </html>
+
