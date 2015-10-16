@@ -3,7 +3,7 @@
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
-
+ *
  * The Apereo Foundation licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at:
@@ -13,50 +13,40 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
  
 session_start();
+require_once('page_header.php');
 
-echo file_get_contents("page_top");
-$success = true;
-// First try if we have access to the db
-require_once(dirname(__FILE__) . '/../website_code/php/database_library.php');
+global $xerte_toolkits_site, $development;
+$success                = true;
+$_POST['mysql']         = "mysql";
+$xot_setup->database    = new SetupDatabase($_POST, $_SESSION);
+$xerte_toolkits_site    = $xot_setup->database->getSettings();
 
-global $xerte_toolkits_site;
-global $development;
-$xerte_toolkits_site = new stdClass();
+// Create a PDO instance to represent a connection to the database.
+$connection = $xot_setup->database->connect();
 
-$xerte_toolkits_site->database_type = "mysql";
-$xerte_toolkits_site->database_host = $_SESSION['DATABASE_HOST'];
-$xerte_toolkits_site->database_name = $_SESSION['DATABASE_NAME'];
-$xerte_toolkits_site->database_prefix = $_SESSION['DATABASE_PREFIX'];
-$xerte_toolkits_site->database_username = $_POST['account'];
-$xerte_toolkits_site->database_password = $_POST['accountpw'];
+if (!$connection) { ?>
 
-function _debug($string) {
-    // pass, for now.
-}
-
-
-$connection = database_connect();
-
-if(!$connection) {
-    ?>
     <p>Sorry, the attempt to connect to MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>. MySQL reports the following error -</p>
-    <p class="error">
-        <?php echo $connection->errorInfo(); ?>
-    </p><br />
+    
+    <p class="setup_error"><?php echo $connection->errorInfo(); ?></p>
+
     <p>The account <?php echo $_POST['account']; ?> must already exist, and have access to database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
     $success = false;
 }
+
 $connection = null;
+
 if ($success)
 {
-    $res = db_query("insert  into " . $_SESSION['DATABASE_PREFIX'] . "sitedetails(site_id) VALUES (999)");
+    $res = $xot_setup->database->runQuery("insert into " 
+        . $_SESSION['DATABASE_PREFIX'] . "sitedetails(site_id) VALUES (999)");
     if ($res === false)
     {
         $success = false;
@@ -69,10 +59,12 @@ if ($success)
             $success=false;
         }
     }
+
     if (!$success)
     {
 ?>
-        <p>Sorry, the attempt to insert and delete records in MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.
+       <p>Sorry, the attempt to insert and delete records in MySql on the host <?php echo $_SESSION['DATABASE_HOST']; ?> has failed using account <?php echo $_POST['account']; ?>.</p>
+
         <p>The account <?php echo $_POST['account']; ?> exists, but does not have enough privileges to access database <?php echo $_SESSION['DATABASE_NAME'];?></p>
 <?php
         // Remove record as DBA
@@ -81,6 +73,7 @@ if ($success)
         $res = db_query("delete from " . $_SESSION['DATABASE_PREFIX'] . "sitedetails where site_id=999");
     }
 }
+
 if ($success)
 {
 
@@ -99,16 +92,12 @@ if ($success)
 
 ?>
 
-    <h2 style="margin-top:15px">
-    Admin Password Setup Page
-    </h2>
-    <p>
-    Your Xerte Online Toolkits database configuration has been successfully created.
-    </p>
-    <p>
-    Now please create an admin username and password for the site
-    </p>
-    <p>
+    <h2>Admin Password Setup Page</h2>
+
+    <p>Your Xerte Online Toolkits database configuration has been successfully created.</p>
+    
+    <p>Now please create an admin username and password for the site</p>
+
     <form action="page3.php" method="post" onSubmit="javascript:
                 if(document.getElementById('account').value==''||document.getElementById('password').value==''){
                     alert('Please set a username and password');
@@ -119,19 +108,16 @@ if ($success)
         <label for="password">Admin account password</label><br /><br /><input type="password" width="100" name="password" id="password"/><br /><br />
         <button type="submit">Next</button>
     </form>
-    </p>
+
 <?php
 }
 else
 {
 ?>
-    <h2 style="margin-top:15px">
-        Using given MySQL account failed!
-    </h2>
-    <p>
-        Your Xerte Online Toolkits database configuration file is not created! Please investigate the error messages and return to the previous page by pressing the button below!
-    </p>
-    <p>
+    <h2>Using given MySQL account failed!</h2>
+
+    <p>Your Xerte Online Toolkits database configuration file is not created! Please investigate the error messages and return to the previous page by pressing the button below!</p>
+
     <form action="page2.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="host" value="<?php echo $_SESSION['DATABASE_HOST'];?>"/>
         <input type="hidden" name="database_name" value="<?php echo $_SESSION['DATABASE_NAME'];?>"/>
@@ -141,11 +127,9 @@ else
         <input type="hidden" name="accountpw" value="<?php echo $_POST['accountpw'];?>"/>
         <button type="submit">Previous</button>
     </form>
-    </p>
 
 <?php
 }
 ?>
-</div>
-</body>
-</html>
+
+<?php require_once('page_footer.php'); ?>

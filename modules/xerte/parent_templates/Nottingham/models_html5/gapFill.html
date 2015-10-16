@@ -88,9 +88,23 @@
 			}
 			
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
+<<<<<<< HEAD
+<<<<<<< .mine
+			
+			origPassage = origPassage.split('<p>').join('');
+			origPassage = origPassage.split('</p>').join('<br/><br/>');
+			
+=======
 			if (origPassage.indexOf("<p>") != -1){
 				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
 			}
+
+>>>>>>> .theirs
+=======
+			if (origPassage.indexOf("<p>") != -1){
+				origPassage = origPassage.replace(/<p>/gi,"").replace(/<\/p>/gi,"<br/><br/>");
+			}
+>>>>>>> refs/remotes/thexerteproject/develop
 			var passageArray = origPassage.split("|"),
 				markedWord = false,
 				i;
