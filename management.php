@@ -235,7 +235,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         ?>
                         <div
                             style="width:50%; height:100%; float:right; position:relative; background-image:url(<?php echo "branding/logo_right.png";?>); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
                         </div>
                         <?php
                     }
@@ -243,7 +242,6 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                         ?>
                         <div
                             style="width:50%; height:100%; float:right; position:relative; background-image:url(website_code/images/apereoLogo.png); background-repeat:no-repeat; background-position:right; margin-right:10px; float:right">
-                            <p style="float:right; margin:0px; color:#a01a13;"><button type="button" class="xerte_button" onclick="javascript:logout()" ><i class="fa fa-sign-out"></i> <?PHP echo MANAGEMENT_LOGOUT; ?></button></p>
                         </div>
                         <?php
                     }
@@ -268,6 +266,21 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
                 -->
 
                 <div class="pagecontainer">
+
+                <div class="buttonbar">
+
+                   <div class="userbar">
+                        <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
+                        echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
+                        <button title="<?php echo MANAGEMENT_LOGOUT; ?>" 
+                            type="button" class="xerte_button_c_no_width"
+                            onclick="javascript:logout()" style="margin-bottom: 8px;">
+                            <i class="fa fa-sign-out"></i><?php echo MANAGEMENT_LOGOUT; ?>
+                        </button>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="separator"></div>
+                </div>
 
                     <div class="admin_mgt_area">
                         <div class="admin_mgt_area_top">
