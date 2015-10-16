@@ -1,9 +1,9 @@
-<?PHP
+<?php
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
-
+ *
  * The Apereo Foundation licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at:
@@ -13,12 +13,11 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-echo file_get_contents("page_top");
+require_once('page_header.php');
 $ok = true;
 $warning=false;
 ?>
@@ -31,7 +30,7 @@ $warning=false;
 <ol>
     <li><b>The PHP " File uploads" setting</b>
         <ul>
-            <li>Look in the Ini file for "file_uploads =" and set the value to be On :<?PHP if (ini_get("file_uploads") == 1){ echo "<div class=\"ok\">OK</div>";} else {echo "div class=\"error\">Off</div>"; $ok=false;} ?></li>
+            <li>Look in the Ini file for "file_uploads =" and set the value to be On :<?php if (ini_get("file_uploads") == 1){ echo "<div class=\"ok\">OK</div>";} else {echo "div class=\"error\">Off</div>"; $ok=false;} ?></li>
             <li>Look in the Ini file for "upload_tmp_dir =" and set the value to a path of your system outside of the area available from the web server (i.e if you are using XAMPP - do not put the temp directory in the HTDOCS folder): <div class="info"><?php echo ini_get("upload_tmp_dir"); ?></div>
                 <?php if (ini_get("upload_tmp_dir") == "") {echo "<div class=\"warning\">Not set!</div>"; $warning=true;}?></li>
             <li>Look in the Ini file for "upload_max_filesize =" and set the value to a that you want to be the maximum file size you can upload. The format for the setting is the number, then the letter 'M': <div class="info"><?php echo ini_get("upload_max_filesize");?></div></li>
@@ -123,6 +122,4 @@ else{
 ?>
 </p>
 
-
-</body>
-</html>
+<?php require_once('page_footer.php'); ?>
