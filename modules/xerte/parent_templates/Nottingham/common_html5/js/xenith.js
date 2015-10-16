@@ -1721,3 +1721,15 @@ function x_selectText(element) {
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
 }
+
+
+// function randomises the order of items in an array
+function x_shuffleArray(array) {
+	for (var i = array.length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		var temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+	return array;
+}
