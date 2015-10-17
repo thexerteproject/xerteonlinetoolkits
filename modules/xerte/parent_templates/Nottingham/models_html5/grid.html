@@ -398,7 +398,7 @@
 				$ul.find("li.static").detach();
 				
 				var labels = $ul.children("li");
-				labels.sort(function() { return (Math.round(Math.random())-0.5); });
+				labels = x_shuffleArray(labels);
 				$ul.children("li").detach();
 				for (var i=0; i<labels.length; i++) {
 					$ul.append(labels[i]);

@@ -717,27 +717,6 @@ function x_setUp() {
 					dataType: "xml",
 					success: function (xml) {
 						x_charmapLoaded(xml);
-						/*
-						 x_dialogInfo.push({type:'language', built:false});
-
-						 var $charPadData = $(xml).find("data").find("language[name='" + x_params.kblanguage + "']"),
-						 specCharsLower = $charPadData.find("char[case='lower']").text().split(""),
-						 specCharsUpper = $charPadData.find("char[case='upper']").text().split("");
-
-						 for (var i=0, len=specCharsLower.length; i<len; i++) {
-						 x_specialChars.push({lower:specCharsLower[i] ,upper:specCharsUpper[i]});
-						 }
-
-						 $x_pageDiv.on("focus", "textarea,input[type='text'],input:not([type])",function() {
-						 var $this = $(this);
-						 if ($this.attr("readonly") == undefined) { // focus is on editable text field
-						 x_inputFocus = this;
-						 if ($("#x_language").length == 0 && x_specialChars.length != 0) { // language dialog isn't already open
-						 x_openDialog("language", x_getLangInfo(x_languageData.find("kbLanguage")[0], "label", "Special Characters"), x_getLangInfo(x_languageData.find("kbLanguage").find("closeButton")[0], "description", "Close special character list button"), {left:"left", top:"top", width:"small"});
-						 }
-						 }
-						 });
-						 */
 					},
 					error: function () {
 						delete x_params["kblanguage"];
@@ -1303,15 +1282,12 @@ function x_openDialog(type, title, close, position, load) {
                 if (load != undefined) {
                     x_dialogInfo[i].built.children(".x_popupDialog").html(load);
                 }
-
-                if (type != "language") {
-                    x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
-                } else {
-                    x_dialogInfo[i].built.show(); // don't reset size / position for language dialogs
-                    language.turnOnKeyEvents();
-                }
 				
-				if (type == "menu") {
+				x_setDialogSize(x_dialogInfo[i].built.children(".x_popupDialog"), position);
+				
+                if (type == "language") {
+                    language.turnOnKeyEvents();
+                } else if (type == "menu") {
 					menu.showCurrent();
 				}
 
@@ -1720,4 +1696,16 @@ function x_selectText(element) {
 // function deals with hex values that might be abbreviated ones from the flash editor
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
+}
+
+
+// function randomises the order of items in an array
+function x_shuffleArray(array) {
+	for (var i = array.length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		var temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+	return array;
 }

@@ -2059,6 +2059,7 @@ var EDITOR = (function ($, parent) {
             }
             return html;
         };
+
 		
 	CKEDITOR.on('dialogDefinition', function(event) {
 		try {
@@ -2089,6 +2090,6 @@ var EDITOR = (function ($, parent) {
 
     return parent;
 
-	
-	
 })(jQuery, EDITOR || {});
+
+
