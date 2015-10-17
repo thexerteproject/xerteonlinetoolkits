@@ -39,7 +39,9 @@ CKEDITOR.dialog.add( 'xotlinkDialog', function( editor ) {
 
 						// Called by the main commitContent method call on dialog confirmation.
 						commit: function( element ) {
-							element.setAttribute( "href", "asfunction:_level0.engine.rootIcon.pageLink," + this.getValue() );
+							//element.setAttribute( "href", "asfunction:_level0.engine.rootIcon.pageLink," + this.getValue() );
+							element.setAttribute( "href", "#" );
+							element.setAttribute( "onclick", "x_navigateToPage(false,{type:'linkID',ID:'"+ this.getValue()  + "'}); return false;" );
 						}
 					},
 				]
