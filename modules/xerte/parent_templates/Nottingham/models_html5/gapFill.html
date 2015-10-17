@@ -31,7 +31,9 @@
 			$pageContents,
 			$targetHolder,
 			delimiter,
-			decodedAnswer;
+			decodedAnswer,
+			casesensitive,
+			currvalue;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -121,8 +123,14 @@
 						decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
 						var tempArray = [];
 						tempArray = decodedAnswer.split(delimiter);
-						for (var j=0; j<tempArray.length; j++) {
-							tempArray[j] = tempArray[j].toLowerCase();
+						if (x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1") {
+							for (var j = 0; j < tempArray.length; j++) {
+								tempArray[j] = tempArray[j].toLowerCase();
+							}
+							casesensitive = false;
+						}
+						else{
+							casesensitive = true;
 						}
 						answerData.push(tempArray);
 					}
@@ -188,8 +196,13 @@
 					})
 				.on("keypress", function() {
 					var $this = $(this);
+
 					setTimeout(function() {
-						if (answerData[$targetHolder.find("input").index($this)].indexOf($this.val().toLowerCase()) != -1) { // correct
+						currvalue = $this.val();
+						if (!casesensitive) {
+							currvalue = $this.val().toLowerCase();
+						}
+						if (answerData[$targetHolder.find("input").index($this)].indexOf(currvalue) != -1) { // correct
 							$this.attr("readonly", "readonly");
 							$pageContents.find("#hint").remove();
 							
@@ -201,7 +214,21 @@
 							if (x_currentPageXML.getAttribute("showHint") != "false") {
 								var wrong = 0;
 								for (i=0; i<$this.val().length; i++) {
-									if (answerData[$targetHolder.find("input").index($this)].length == 1 && (i+1 > answerData[$targetHolder.find("input").index($this)][0].length || $this.val()[i].toLowerCase() != answerData[$targetHolder.find("input").index($this)][0][i].toLowerCase())) {
+									if (answerData[$targetHolder.find("input").index($this)].length == 1 && i+1 > answerData[$targetHolder.find("input").index($this)][0].length)
+									{
+										answerData = answerData[$targetHolder.find("input").index($this)][0][i];
+										if (!casesensitive) {
+											answerData = answerData[$targetHolder.find("input").index($this)][0][i].toLowerCase();
+										}
+									}
+
+									if (!casesensitive) {
+										currvalue = $this.val()[i].toLowerCase();
+									}
+									else{
+										currvalue = $this.val()[i];
+									}
+									if (answerData[$targetHolder.find("input").index($this)].length == 1 && (i+1 > answerData[$targetHolder.find("input").index($this)][0].length || currvalue != answerData)) {
 										wrong++;
 									}
 								}
