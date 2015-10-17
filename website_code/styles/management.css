@@ -18,7 +18,6 @@
  */
 
 html{
-
 	margin:0px;
 	padding:0px;
 	font-family:Verdana, Arial, Helvetica, sans-serif;
@@ -27,14 +26,12 @@ html{
 }
 
 body{
-
 	margin:0px;
 	padding:0px;
 	
 }
 
 .topbar{
-
 	height:80px;
 	background-image:url(../images/TopBar.jpg);
 	background-repeat:repeat-x;
@@ -44,7 +41,6 @@ body{
 
 
 .border{
-	
 	height:1px; 
 	width:100%; 
 	float:left; 
@@ -58,7 +54,6 @@ body{
 }
 
 .copyright{
-
 	width:100%;
 	text-align:center;
 	color:#645f4f;
@@ -92,7 +87,6 @@ body{
 }
 
 .heading{
-
 	color:#645f4f; 
 	font-weight:bold; 
 	padding:0px; 
@@ -200,7 +194,6 @@ div#admin_area{
 }
 
 div#admin_area p{
-
 	margin:5px 0 0 10px;
 	padding:0px;
 	margin-left:5px;
@@ -208,19 +201,15 @@ div#admin_area p{
 }
 
 div#admin_area a{
-
 	color:#888;
-
 }
 
 div#admin_area p form{
-
 	margin:5px 0 5px 10px;
 	padding:0px;
 }
 
 div#admin_area form textarea{
-
 	margin:5px 0 5px 10px;
 	padding:0px;
 }
@@ -234,11 +223,7 @@ div#admin_area form textarea{
 	width:100%;
 	height:20px;
 	font-size:normal;
-<<<<<<< HEAD
 	padding-bottom: 15px;
-=======
->>>>>>> refs/remotes/thexerteproject/develop
-
 }
 
 .template_details{
@@ -248,28 +233,18 @@ div#admin_area form textarea{
 	display:none;
 	padding:10px;
 	width:100%;
-
 }
 
 .template_details form{
-	
 	width:100%;
 	display:inline;
-
 }
 
 .template_details form textarea{
-
 	width:95%;
-
 }
 
 .template_details p{
-	
 	font-weight:normal;
+}
 
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> refs/remotes/thexerteproject/develop
