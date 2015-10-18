@@ -477,7 +477,12 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 /* only add file if used */
                 $string = str_replace($dir_path, "", $file[0]);
 
-                if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false) {
+                $data = file_get_contents($dir_path . "data.xml");
+                // Decode all filenames in data
+                $data2 = rawurldecode($data);
+                $data3 = html_entity_decode($data2);
+
+                if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
                 }
             } else {
