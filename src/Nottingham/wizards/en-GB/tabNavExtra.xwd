@@ -54,6 +54,7 @@
     <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <initObject label="Init Object" type="TextInput"  optional="true" flashonly="true" deprecated="This property is deprecated"/>
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
+	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
 
   </nestedPage>  
   
