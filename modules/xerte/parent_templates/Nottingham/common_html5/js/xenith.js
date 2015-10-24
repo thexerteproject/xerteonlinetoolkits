@@ -65,21 +65,21 @@ if (!$.fn.toggleClick) {
 $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
-            if (x_currentPage>0) {
+            if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
                 if (x_params.navigation != "Historic") {
-                    x_changePage(x_currentPage -1);
+					x_changePage(x_currentPage -1);
                 } else {
                     var prevPage = x_pageHistory[x_pageHistory.length-2];
                     x_pageHistory.splice(x_pageHistory.length - 2, 2);
                     x_changePage(prevPage);
                 }
-            }
+			}
             break;
 
         case 34: // PgDn
-            if (x_pageInfo.length > x_currentPage + 1) {
-                x_changePage(x_currentPage + 1);
-            }
+			if ($x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
+				x_changePage(x_currentPage + 1);
+			}
             break;
 
         default: return; // exit this handler for other keys
@@ -88,7 +88,6 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
-
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
