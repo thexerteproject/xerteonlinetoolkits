@@ -59,8 +59,8 @@
 				
 				if ($pageContents.data("intType") == "Show Me") {
 					$pageContents.data("counter", 0);
-					$("#nextBtn").button("enable");
-					$("#prevBtn").button("disable");
+					$("#nextBtn").show();
+					$("#prevBtn").hide();
 					
 				} else if ($pageContents.data("intType") == "MCQ") {
 					this.createQuiz();
@@ -897,7 +897,7 @@
 				// set up divs needed for quiz - one containing question stuff and one containing results shown at end of the quiz
 				$("#labelHolder, #hsInfo").remove();
 				$("#textHolder")
-					.append('<div id="qHolder"><h3 id="qCount"></h3><p id="qTxt">' + fixedPhrases.questionTxt + ':</p><div id="optionHolder"></div><div class="buttonHolder"><button id="checkBtn"></button><button id="nextBtn"></button></div><div id="feedback"></div></div>')
+					.append('<div id="qHolder"><h3 id="qCount"></h3><p id="qTxt">' + fixedPhrases.questionTxt + ':</p><div id="optionHolder"></div><div class="buttonHolder"><button id="checkBtn"></button></div><div id="feedback"></div><div class="buttonHolder"><button id="nextBtn"></button></div>')
 					.append('<div id="scoreHolder"><h3 id="score">' + fixedPhrases.scoreLabel + '</h3><p id="scoreTxt"></p><p id="retakeTxt">' + fixedPhrases.onCompletion + '.</p><div class="buttonHolder"><button id="restartBtn"></button></div></div>');
 				
 				$("#checkBtn")
@@ -939,17 +939,14 @@
 						}
 						
 						$("#optionHolder input").prop("disabled", true);
-						$("#nextBtn").removeAttr("disabled");
-						$(this)
-							.attr("disabled", "disabled")
-							.hide()
-							.show(); // hack to take care of IEs inconsistent handling of clicks
+						$("#nextBtn").show();
+						$(this).hide();
 					});
 				
 				$("#nextBtn")
 					.button({ label:	fixedPhrases.nextBtnTxt })
 					.click(function() {
-						$(this).attr("disabled", "disabled");
+						$(this).hide();
 						$pageContents.data("mcqData").currentQ++;
 						if ($pageContents.data("mcqData").currentQ == $pageContents.data("mcqData").questions.length) {
 							// last question answered - show results
@@ -1078,11 +1075,7 @@
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
 			$("#qHolder").show();
-			$("#nextBtn, #checkBtn")
-				.show()
-				.attr("disabled", "disabled");
-			
-			$("#scoreHolder").hide();
+			$("#nextBtn, #checkBtn, #scoreHolder").hide();
 			
 			var mcqData = {};
 				mcqData.currentQ = 0;
@@ -1168,7 +1161,7 @@
 						"id"	:"option" + i
 						})
 					.change(function() {
-						$("#checkBtn").removeAttr("disabled");
+						$("#checkBtn").show();
 					});
 				
 				$thisOptionTxt
@@ -1606,7 +1599,7 @@
 	}
 	
 	#optionHolder {
-		margin-left:	15px;
+		margin:	15px 0px 15px 15px;
 	}
 	
 	#optionHolder input {

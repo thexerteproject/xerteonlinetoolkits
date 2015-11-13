@@ -74,20 +74,9 @@
 
 			$("#optionHolder").show();
 			$("#restartBtn").hide();
-			$("#checkBtn")
-				.show()
-				.attr("disabled", "disabled");
-
-            if (this.showfeedback)
-            {
-                $("#nextBtn")
-                        .show()
-                        .attr("disabled", "disabled");
-            }
-            else
-            {
-                $("#nextBtn").hide();
-            }
+			$("#checkBtn").hide();
+			$("#nextBtn").hide();
+			
             this.currentQ = 0;
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
@@ -227,11 +216,11 @@
 									$feedback.html("");
 									var $selected = $("#optionHolder input:checked");
 									if ($selected.length > 0) {
-										$checkBtn.removeAttr("disabled");
+										$checkBtn.show();
 									} else {
-										$checkBtn.attr("disabled", "disabled");
+										$checkBtn.hide();
 									}
-									$("#nextBtn").attr("disabled", "disabled");
+									$("#nextBtn").hide();
 								});
 
 							$thisOptionTxt
@@ -327,8 +316,8 @@
                     $("#feedback").find("a.x_glossary").contents().unwrap();
                 }
 
-                $("#nextBtn").removeAttr("disabled");
-				$("#checkBtn").attr("disabled", "disabled");
+                $("#nextBtn").show();
+				$("#checkBtn").hide();
 
                 $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
             }
@@ -533,19 +522,18 @@
 				.button({
 					label:	submitBtnText
 					})
-				.attr("disabled", "disabled")
 				.click(function() {
 					    quiz.showFeedBackandTrackResults();
                         quiz.checked = true;
-                    });
+                    })
+				.hide();
 
 			$("#nextBtn")
 				.button({
 					label:	nextBtnText
 					})
-				.attr("disabled", "disabled")
 				.click(function() {
-					$(this).attr("disabled", "disabled");
+					$(this).hide();
 					quiz.currentQ++;
 					if (quiz.currentQ == quiz.questions.length) {
                         // last question answered - show results
@@ -556,7 +544,8 @@
 					}
                     // Queue reparsing of MathJax - fails if no network connection
                     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-				});
+					})
+				.hide();
 
 			$("#restartBtn")
 				.button({
@@ -595,6 +584,7 @@
 
 	#optionHolder {
 		margin-top:	15px;
+		margin-bottom:	15px;
 	}
 
 	#pageContents input {
@@ -611,8 +601,8 @@
 	}
 
 	#pageContents button {
-		margin-left:	10px;
-		float:			right;
+		margin:	10px;
+		float:	right;
 	}
 
 	#feedbackHolder, #feedback, #buttonHolder {
