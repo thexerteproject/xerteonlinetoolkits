@@ -7,4 +7,8 @@
 	 * @package
 	 */
 
-// Empty language file to prevent warning in the logs
+	var OPENTOOLTIP = "Open this pane";
+
+	var CLOSETOOLTIP = "Close this pane";
+
+	var RESIZETOOLTIP = "Resize this pane";

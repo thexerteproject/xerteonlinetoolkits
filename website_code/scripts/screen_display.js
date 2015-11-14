@@ -431,9 +431,9 @@ function button_check(){
 
 function setupMainLayout()
 {
-    var opentooltip = "Open this pane",
-        closetooltip = "Close this pane",
-        resizetooltip = "Resize this pane",
+    var opentooltip = OPENTOOLTIP,
+        closetooltip = CLOSETOOLTIP,
+        resizetooltip = RESIZETOOLTIP,
         xertemain_layout_settings = {
             name: "xertemain_layout",
             defaults: {
