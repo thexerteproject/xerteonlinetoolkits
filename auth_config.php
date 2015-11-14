@@ -27,11 +27,11 @@
  * See code in library/Xerte/Authentication/*.php - where each file should match up to the value used below.
  */
 
-$xerte_toolkits_site->authentication_method = 'Guest';
-//$xerte_toolkits_site->authentication_method = 'Ldap';
-//$xerte_toolkits_site->authentication_method = 'Db';
-//$xerte_toolkits_site->authentication_method = 'Static';
-//$xerte_toolkits_site->authentication_method = "Moodle";
+// set authentication method to guest if not set in db via management area
+if (!isset($xerte_toolkits_site->authentication_method)) {
+    $xerte_toolkits_site->authentication_method = 'Guest';  
+    $res = db_query_one("insert into {$xerte_toolkits_site->database_table_prefix}sitedetails (`site_id`, `authentication_method`) values (1,'Guest')");
+}
 
 //restrict moodle guest access
 //comment out the following if you want the Moodle guest account to have authoring access

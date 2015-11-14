@@ -93,6 +93,7 @@ CREATE TABLE `$sitedetails` (
   `apache` char(255) DEFAULT NULL,
   `mimetypes` text,
   `site_session_name` char(255) DEFAULT NULL,
+  `authentication_method` char(255) DEFAULT NULL,
   `LDAP_preference` char(255) DEFAULT NULL,
   `LDAP_filter` char(255) DEFAULT NULL,
   `integration_config_path` char(255) DEFAULT NULL,

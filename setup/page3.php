@@ -161,6 +161,24 @@ echo "<p>The site's proxy port is <textarea name=\"port1\"></textarea></p>";
 
 echo "<p>By directly editing the rss proxy.php file (in the root folder), you can add up to 4 proxies and ports should you wish.</p>";
 
+// Authentication method
+echo "<br><h3 style=\"clear:left\">Authentication Method</h3>";
+
+echo "<p>The default setting for user authentication is 'Guest' - which allows ANY visitor to access Xerte's front end with privileges to create, edit and delete ALL content. So… <span style=\"color: red;\">using <strong>'Guest' on a public web server</strong> (where anyone could access it) unless you have other security measures in place</span> is <strong  style=\"color: red;\">NOT recommended</strong>.</p>";
+
+echo "<p>See: <code>documentation/ToolkitsInstallationGuide.pdf</code> for details about each of the authentication options (Guest, Ldap, Db, Static, Moodle).</p>";
+
+echo "<label>Choose an authentication method:</label><br>";
+
+echo "<select name=\"authentication_method\" style=\"padding: 0.4em 0.15em; \">
+    		<option value=\"Guest\">Guest</option>
+    		<option value=\"Ldap\">Ldap</option>
+    		<option value=\"Db\">Db</option>
+    		<option value=\"Static\">Static</option>
+    		<option value=\"Moodle\">Moodle</option>
+  		</select>";
+
+echo "<br><br>";
 
 ?>
         <button type="submit">Save</button>
