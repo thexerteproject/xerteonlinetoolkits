@@ -1,5 +1,5 @@
 <language name="Nederlands" code="nl-NL">
-    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" />
+    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
     <edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
     <insertDialog label="Voeg {i} toe" preview="Voorbeeld">
         <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>

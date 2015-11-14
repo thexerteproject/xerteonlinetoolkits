@@ -1,5 +1,5 @@
 <language name="English" code="en-GB">
-    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" />
+    <layout closetooltip="Close this pane" opentooltip="Open this pane" resizetooltip="Resize this pane" pin="Pin" unpin="Un-Pin" />
     <edit label="Edit ..." tooltip="Edit this option" description="Edit button" />
     <insertDialog label="Insert New {i}" preview="Preview">
         <insertBefore label="Before" tooltip="Insert before selected page"/>
