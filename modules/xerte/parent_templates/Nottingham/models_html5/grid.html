@@ -55,7 +55,12 @@
 			if (x_currentPageXML.getAttribute("align") == "top") {
 				$("#gridHolder")
 					.appendTo($pageContents)
-					.css("margin","auto");
+					.css({
+						"margin":"auto",
+						"margin-top":"10px"
+					});
+				$("#feedback").appendTo($pageContents);
+				$("#btnHolder").appendTo($pageContents);
 			} else if (x_currentPageXML.getAttribute("align") == "right") {
 				$("#gridHolder")
 					.addClass("x_floatLeft")
@@ -64,32 +69,47 @@
 					.addClass("x_floatRight")
 			}
 			
-			$("#checkBtn").button({
-					label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"
-				})
+			$("#checkBtn")
+				.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
 				.click(function() {
-					grid.removeFocus();
-					
-					// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
-					// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
-					var allCorrect = true;
-					$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
-						var $this = $(this);
-						if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-							$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-						} else {
-							allCorrect = false;
+					if ($(this).data("state") == "check") {
+						grid.removeFocus();
+						
+						// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
+						// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
+						var allCorrect = true;
+						$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
+							var $this = $(this);
+							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
+								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							} else {
+								allCorrect = false;
+							}
+						});
+						
+						if (allCorrect == true) {
+							$(this)
+								.button({label: x_currentPageXML.getAttribute("resetBtnTxt") != undefined ? x_currentPageXML.getAttribute("resetBtnTxt") : "Reset"})
+								.data("state", "reset");
+							$("#feedback").show();
+							$("#grid .listHolder ul li.ui-draggable")
+								.draggable( "option", "disabled", true )
+								.off("focusin focusout keypress");
 						}
-					});
-					
-					if (allCorrect == true) {
-						$(this).hide();
-						$("#feedback").show();
+					} else {
+						$(this)
+							.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
+							.data("state", "check");
+						
+						$("#feedback").hide();
+						$("#grid .tick").remove();
 						$("#grid .listHolder ul li.ui-draggable")
-							.draggable( "option", "disabled", true )
-							.off("focusin focusout keypress");
+							.draggable( "option", "disabled", false )
+							.on("focusin focusout keypress"); // 
+						grid.randomiseLabels();
 					}
-				});
+				})
+				.data("state", "check");
 			
 			if (x_currentPageXML.getAttribute("url") != undefined && x_currentPageXML.getAttribute("url") != "") {
 				$.ajax({
@@ -102,7 +122,7 @@
 							csvData.splice(csvData.length-1, 1);
 						}
 						separator = ","
-						grid.sortData(csvData, true);
+						grid.sortData(csvData);
 					},
 					error: function () {
 						grid.sortData(x_currentPageXML.getAttribute("data").split("||"), false);
@@ -116,7 +136,7 @@
 			x_pageLoaded();
 		}
 		
-		this.sortData = function(data, csv) {
+		this.sortData = function(data) {
 			var $grid = $("#grid"), $ul, $holder, row,
 				$gridBorders = $("#gridBorders"), $tr;
 			
@@ -390,28 +410,7 @@
 				.width($grid.width())
 				.height($grid.height());
 			
-			// randomise labels (keeping fixed ones in correct place)
-			$grid.find("ul").each(function(i) {
-				var fixedLabels = $(this).find("li.static"),
-					$ul = $(this);
-				
-				$ul.find("li.static").detach();
-				
-				var labels = $ul.children("li");
-				labels = x_shuffleArray(labels);
-				$ul.children("li").detach();
-				for (var i=0; i<labels.length; i++) {
-					$ul.append(labels[i]);
-				}
-				
-				fixedLabels.each(function() {
-					if ($ul.find("li").length <= $(this).data("correct")) {
-						$ul.append($(this));
-					} else {
-						$ul.find("li:eq(" + ($(this).data("correct")) + ")").before($(this));
-					}
-				});
-			});
+			this.randomiseLabels();
 			
 			// create duplicate labels used to show previews when dragging the real labels
 			$grid.find("ul").each(function() {
@@ -572,6 +571,31 @@
 			 });
 			
 			labelData[$parent.parent().index()].push(txt);
+		}
+		
+		// randomise labels (keeping fixed ones in correct place)
+		this.randomiseLabels = function() {
+			$("#grid").find("ul").each(function(i) {
+				var fixedLabels = $(this).find("li.static"),
+					$ul = $(this);
+				
+				$ul.find("li.static").detach();
+				
+				var labels = $ul.children("li");
+				labels = x_shuffleArray(labels);
+				$ul.children("li").detach();
+				for (var i=0; i<labels.length; i++) {
+					$ul.append(labels[i]);
+				}
+				
+				fixedLabels.each(function() {
+					if ($ul.find("li").length <= $(this).data("correct")) {
+						$ul.append($(this));
+					} else {
+						$ul.find("li:eq(" + ($(this).data("correct")) + ")").before($(this));
+					}
+				});
+			});
 		}
 		
 		this.overEvent = function($this, draggable) {
@@ -793,6 +817,14 @@
 	
 	#btnHolder {
 		margin:	10px;
+	}
+	
+	#pageContents > #btnHolder {
+		float:	right;
+	}
+	
+	#feedback {
+		margin-top:	10px;
 	}
 	
 </style>
