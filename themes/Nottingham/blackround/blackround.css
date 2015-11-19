@@ -275,30 +275,3 @@ figcaption {
     font-size:2.5vmin;
     margin-top:2%;
 }
-/*--end of text size changes-----------------------------------------*/
-}
-/*--end of TABLETS and above-----------------------------------------*/
-
-
-/*--other @media queries not used or disabled at moment-----------------------------------------*/
-/* --LARGE DESKTOP-------------------------------------------------------------- */
-@media (min-width: 1200px) {
-
-}
-/* --DESKTOP-------------------------------------------------------------- */
-@media (max-width: 980px) {
-
-}
-/* --TABLETS TO DESKTOPS-------------------------------------------------------------- */
-@media (min-width: 768px) and (max-width: 980px) {
-
-}
-/* --TABLETS-------------------------------------------------------------- */
-@media (max-width: 767px) {
-
-}
-
-/* --LANDSCAPE PHONES-------------------------------------------------------------- */
-@media (max-width: 480px) {
-
-}
