@@ -645,6 +645,11 @@ function x_continueSetUp() {
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 	$("#x_headerBlock h1").html(x_params.name);
 	
+	// strips code out of page title
+	if (x_params.name != $(x_params.name).text()) {
+		document.title = $(x_params.name).text();
+	}
+	
 	
 	var prevIcon = "x_prev";
 	if (x_params.navigation == "Historic") {
