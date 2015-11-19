@@ -454,7 +454,11 @@ function x_cssSetUp(param) {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-			x_continueSetUp();
+			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", x_continueSetUp, true);
+			} else {
+				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", x_continueSetUp);
+			}
 		}
 	} else if (param == "theme2") {
 		if (x_params.responsive == "true") {
