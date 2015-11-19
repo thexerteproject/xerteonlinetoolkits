@@ -35,7 +35,8 @@ var x_languageData  = [],
     x_volume        = 1,
     x_audioBarH     = 30,
     x_mediaText     = [],
-    x_timer;        // use as reference to any timers in page models - they are cancelled on page change
+    x_timer,        // use as reference to any timers in page models - they are cancelled on page change
+	x_responsive = []; // list of any responsivetext.css files in use
 
 if (typeof modelfilestrs == 'undefined')
 {
@@ -390,7 +391,6 @@ function x_desktopSetUp() {
 				text:	false
 			})
 			.click(function() {
-
 				// Post flag to containing page for iframe resizing
 				if (window && window.parent && window.parent.postMessage) {
 					window.parent.postMessage((String)(!x_fillWindow), "*");
@@ -399,6 +399,10 @@ function x_desktopSetUp() {
 				if (x_fillWindow == false) {
 					x_setFillWindow();
 				} else {
+					for (var i=0; i<x_responsive.length; i++) {
+						$(x_responsive[i]).prop("disabled", true);
+					};
+					
 					// minimised size to come from display size specified in xml or url param
 					if ($.isArray(x_params.displayMode)) {
 						$x_mainHolder.css({
@@ -445,12 +449,23 @@ function x_cssSetUp(param) {
 		} else {
 			x_cssSetUp("theme");
 		}
-	} else {
+	} else if (param == "theme") {
 		if (x_params.theme != undefined && x_params.theme != "default") {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
-			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', x_continueSetUp);
+			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-			x_continueSetUp()
+			x_continueSetUp();
+		}
+	} else if (param == "theme2") {
+		if (x_params.responsive == "true") {
+			// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', x_continueSetUp, true);
+			} else {
+				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', x_continueSetUp);
+			}
+		} else {
+			x_continueSetUp();
 		}
 	}
 }
@@ -1505,6 +1520,10 @@ function x_insertText(node) {
 
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
+	for (var i=0; i<x_responsive.length; i++) {
+		$(x_responsive[i]).prop("disabled", false);
+	};
+	
     $x_mainHolder.css({
         "width"     :"100%",
         "height"    :"100%"
@@ -1524,16 +1543,34 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func) {
+function x_insertCSS(href, func, disable) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
+	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
-		css.onload = function(){func();};
-		css.onerror = function(){func();};
+		css.onload = function() {
+			if (href.indexOf("responsivetext.css") >= 0) {
+				x_responsive.push(this);
+				if (disable == true) {
+					$(this).prop("disabled", true);
+				}
+			}
+			func();
+		};
+		
+		css.onerror = function(){
+			func();
+		};
+		
+	} else if (disable == true) {
+		css.onload = function() {
+			$(this).prop("disabled", true);
+		}
 	}
+	
     document.getElementsByTagName("head")[0].appendChild(css);
 }
 
