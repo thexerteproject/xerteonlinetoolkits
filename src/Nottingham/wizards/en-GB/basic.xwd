@@ -38,6 +38,7 @@
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
+	<styles optional="true" type="script" height="200" label="Styles"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <trackingMode optional="true" label="SCORM Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>

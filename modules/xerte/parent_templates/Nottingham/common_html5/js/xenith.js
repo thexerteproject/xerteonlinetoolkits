@@ -374,7 +374,7 @@ function x_setUp() {
 		
 		if (screen.width <= 550) {
 			x_browserInfo.mobile = true;
-			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp("stylesheet")});
+			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp("theme")});
 		} else {
 			x_insertCSS(x_templateLocation + "common_html5/css/desktopStyles.css", x_desktopSetUp);
 		}
@@ -439,35 +439,35 @@ function x_desktopSetUp() {
 		x_setFillWindow(false);
 	}
 	
-	x_cssSetUp("stylesheet");
+	x_cssSetUp("theme");
 }
 
 function x_cssSetUp(param) {
-	if (param == "stylesheet") {
-		if (x_params.stylesheet != undefined) {
-			x_insertCSS(x_evalURL(x_params.stylesheet), function() {x_cssSetUp("theme")});
-		} else {
-			x_cssSetUp("theme");
-		}
-	} else if (param == "theme") {
+	if (param == "theme") {
 		if (x_params.theme != undefined && x_params.theme != "default") {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
 			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", x_continueSetUp, true);
+				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function() {x_cssSetUp("stylesheet")}, true);
 			} else {
-				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", x_continueSetUp);
+				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function() {x_cssSetUp("stylesheet")});
 			}
 		}
 	} else if (param == "theme2") {
 		if (x_params.responsive == "true") {
 			// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
 			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', x_continueSetUp, true);
+				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function() {x_cssSetUp("stylesheet")}, true);
 			} else {
-				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', x_continueSetUp);
+				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function() {x_cssSetUp("stylesheet")});
 			}
+		} else {
+			x_cssSetUp("stylesheet");
+		}
+	} else if (param == "stylesheet") {
+		if (x_params.stylesheet != undefined) {
+			x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp);
 		} else {
 			x_continueSetUp();
 		}
@@ -475,6 +475,10 @@ function x_cssSetUp(param) {
 }
 
 function x_continueSetUp() {
+	if (x_params.styles != undefined){
+		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
+	}
+	
 	if (x_pageInfo[0].type == "menu") {
 		$x_pageNo.hide();
 		if (x_params.navigation == "Menu") {
