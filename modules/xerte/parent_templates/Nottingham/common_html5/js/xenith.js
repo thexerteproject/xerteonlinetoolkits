@@ -654,7 +654,7 @@ function x_continueSetUp() {
 	$("#x_headerBlock h1").html(x_params.name);
 	
 	// strips code out of page title
-	if (x_params.name != $(x_params.name).text()) {
+	if ($(x_params.name).text() != "") {
 		document.title = $(x_params.name).text();
 	}
 	
