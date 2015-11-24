@@ -44,6 +44,11 @@ require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 login_processing();
 login_processing2();
 
+/*If the authentication method isn't set to Moodle
+* the code in the required file below is simply skipped
+*/
+require_once(dirname(__FILE__) . "/moodle_restrictions.php");
+
 recycle_bin();
 
 
