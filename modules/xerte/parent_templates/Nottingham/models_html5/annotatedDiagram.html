@@ -47,6 +47,7 @@
 					height	:$x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2
 				});
 				
+				$x_pageHolder.scrollTop(0);
 				context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));
 				context.strokeStyle = highlightColour;
 				context.fillStyle = highlightColour;
@@ -216,6 +217,7 @@
 									$("#hsHolder .selected").removeClass("selected");
 									$($("#hsHolder").children()[$this.index()]).addClass("selected");
 								} else {
+									$x_pageHolder.scrollTop(0);
 									var $canvas = $("#canvas"),
 										context = $canvas[0].getContext("2d");
 									context.clearRect($canvas.position().left, $canvas.position().top, $canvas.attr("width"), $canvas.attr("height"));

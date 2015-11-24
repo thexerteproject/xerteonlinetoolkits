@@ -15,6 +15,7 @@
 
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <displayMode type="ComboBox" options="Default,Full Screen,Fill Window" data="default,full screen,fill window" label="Display Mode" width="100"/>
+	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24"/>
 	<tocNumbers type="CheckBox" label="Page Numbering (Table of Contents)" defaultValue="true" optional="true"/>
 	
@@ -38,6 +39,7 @@
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
+	<styles optional="true" type="script" height="200" label="Styles"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <trackingMode optional="true" label="SCORM Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
@@ -68,7 +70,7 @@
 	  restart="Restart"  
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman><hotspotImage><![CDATA[<hotspotImage name="Enter Page Title" text="Enter text for the page here" url="Select an Image" tip="Enter a Description for Accessibility" interactivity="Show Me" highlight="false" hicol="0xFFFF00" align="Left" 
@@ -200,7 +202,7 @@
     <text label="Text" type="TextArea" height="250"/>
 
     <newNodes>
-      <hotspot><![CDATA[<hotspot name="Hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+      <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
   </hotspotGroup><hotspot type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
@@ -844,6 +846,7 @@
     <shade label="Shade Alternate Rows" type="Checkbox" defaultValue="true" optional="true"/>
 	
 	<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
@@ -1193,7 +1196,7 @@
 			<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="false" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
-			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Image Description" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
+			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" overlay="false" clearPanel="false" pauseMedia="false"><synchSlide name="Enter a Description for Accessibility" url="Select Image" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
 			<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>

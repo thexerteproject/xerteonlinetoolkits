@@ -1,0 +1,187 @@
+/* --@media TABLETS and above-------------------------------------------------------------- */
+@media (min-width: 768px) {
+/*--start of text size changes-----------------------------------------*/
+p {
+  font-size: 3.0vmin;
+}
+body {
+	font-size: 3.0vmin;
+}
+body ul{
+	font-size: 3.0vmin;
+}
+
+li.bullet {
+    font-size: 3.0vmin;
+}
+h3 {
+    font-size: 3.0vmin;
+}
+panelPage h3 {
+    font-size: 3.0vmin;
+}
+mainTxt h3 {
+    font-size: 3.0vmin;
+}
+#infoHolder {
+    font-size: 3.0vmin;
+}
+.splitScreen.medium {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+}
+#linkHolder .panel.linkBlock {
+/*better slightly smaller than other text*/
+    font-size: 2.5vmin;
+}
+.topic {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+}
+#optionHolder {
+    font-size: 3.0vmin;
+}
+.listItem {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+}
+#categoryHolder {
+    font-size: 3.0vmin;
+}
+#dragDropHolder {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 2.5vmin;
+}
+#dragDropHolder .label {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 2.5vmin;
+}
+#pageContents h3{
+  font-size:3.0vmin;
+}
+#pageContents .question {
+    font-size: 3.0vmin;
+}
+#pageContents .question input {
+    font-size: 3.0vmin;
+}
+#labelHolder {
+    font-size: 3.0vmin;
+}
+mainPanel .panel {
+    font-size: 3.0vmin;
+}
+#infoHolder {
+    font-size: 3.0vmin;
+}
+#targetHolder h3 {
+    font-size: 3.0vmin;
+}
+#answerTxt {
+    font-size: 3.0vmin;
+}
+#pageContents textarea {
+    font-size: 3.0vmin;
+}
+#targetHolder .target {
+    font-size: 2.5vmin;
+    /*remove padding in gap fill targets*/
+    padding: 0.6vmin !important;
+}
+#targetHolder p {
+    /*reduce font-size in matching sentences targets*/
+    font-size: 2.5vmin;
+}
+.labelTxt p{
+/*reduce font-size in matching sentences labels*/
+    font-size:2.5vmin;
+}
+#resultsHolder div img {
+    width: 8.0vmin !important;
+    padding-right: 8px;
+    clear:both;
+}
+#hsInfo {
+    font-size: 3.0vmin;
+}
+#x_headerBlock h2 {
+  font-size:5.0vmin;
+  font-weight:bold;
+}
+#x_headerBlock h1 {
+  font-size:2.5vmin;
+}
+.ui-accordion .ui-accordion-header a {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+    /*padding: .3em .3em .3em 1.7em;*/
+}
+.ui-button-text-only .ui-button-text {
+/*reduce padding inside buttons e.g. zoom, submit, check etc*/
+    padding: .1em 1em;
+}
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+    padding: .1em;
+}
+#slideTxt {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+}
+.ui-tabs .ui-tabs-nav li a {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+    /*reduce padding in tabnave buttons*/
+    padding: .4em .4em;
+}
+.ui-button-text-only .ui-button-text {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    /*padding: .3em 1em;*/
+    font-size: 3.0vmin;
+}
+#thumbHolder .thumbBox h3{
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 2.5vmin;
+}
+#thumbHolder .thumbBox {
+/****This probably needs a better solution****/
+    width: 18.0vmin !important;
+}
+#resultsHolder div p, #resultsHolder div a {
+/*possibly better slightly smaller than other text e.g. 2.5vmin*/
+    font-size: 3.0vmin;
+}
+#optionHolder input {
+    width: 3.0vmin;
+    height: 3.0vmin;
+}
+figcaption {
+    font-size:2.5vmin;
+    margin-top:2%;
+}
+/*--end of text size changes-----------------------------------------*/
+}
+/*--end of TABLETS and above-----------------------------------------*/
+
+
+/*--other @media queries not used or disabled at moment-----------------------------------------*/
+/* --LARGE DESKTOP-------------------------------------------------------------- */
+@media (min-width: 1200px) {
+
+}
+/* --DESKTOP-------------------------------------------------------------- */
+@media (max-width: 980px) {
+
+}
+/* --TABLETS TO DESKTOPS-------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 980px) {
+
+}
+/* --TABLETS-------------------------------------------------------------- */
+@media (max-width: 767px) {
+
+}
+
+/* --LANDSCAPE PHONES-------------------------------------------------------------- */
+@media (max-width: 480px) {
+
+}
