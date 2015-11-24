@@ -453,8 +453,8 @@ function x_setUp() {
 			x_dialogInfo.push({type:'menu', built:false});
 		}
 		
-		
-		if (x_params.nfo != undefined && x_params.nfo.trim() != '') {
+		var trimmedNfo = $.trim(x_params.nfo);
+		if (x_params.nfo != undefined && trimmedNfo != '') {
 			$x_footerL.prepend('<button id="x_helpBtn"></button>');
 			$("#x_helpBtn")
 				.button({
@@ -1573,7 +1573,8 @@ function x_addLineBreaks(text) {
     }
     
     // Now try to identify v3beta created LOs
-    if ((text.trim().indexOf("<p") == 0 || text.trim().indexOf("<h") == 0) && (text.trim().lastIndexOf("</p") == text.trim().length-4 || text.trim().lastIndexOf("</h") == text.trim().length-5))
+    var trimmedText = $.trim(text);
+    if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
     {
         return text; // Return text unchanged
     }
