@@ -870,7 +870,8 @@ var EDITOR = (function ($, parent) {
                     this.on('change', function(event) {
                         if (options.name == 'name') {
                             var thisValue = this.getData();
-                            var thisText = $(thisValue).text();
+                            var thisValueDiv = $("<div>").html(thisValue);
+                            var thisText = thisValueDiv.text();
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
