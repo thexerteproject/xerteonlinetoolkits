@@ -1337,9 +1337,13 @@ function setUpSection(section, $step) {
 							col = "0" + col;
 						}
 						
+						var rgbval = parseInt(col, 16),
+							brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
+							txtColour = (brightness > 160) ? "dark" : "light"; // checks whether black or white text is best on bg colour
+						
 						$section
 							.css("background-color", "#" + col)
-							.addClass((parseInt("#" + col, 16) > 0xffffff/2) ? "dark":"light"); // checks whether black or white text is best on bg colour
+							.addClass(txtColour);
 					}
 					
 					$section.append('<h3>' + allSections[i].name + '</h3>');
