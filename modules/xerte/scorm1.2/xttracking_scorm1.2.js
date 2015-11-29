@@ -41,7 +41,12 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
     }
     if (ia_name)
     {
-        tmpid += ':' + encodeURIComponent(ia_name.replace(/ /g, "_"));
+        // ia_nam can be HTML, just extract text from it
+        var div = $("<div>").html(ia_name);
+        var strippedName = div.text();
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/ /g, "_"));
+        // Truncate to max 255 chars
+        tmpid = tmpid.substr(0,255);
     }
     return tmpid;
 }
