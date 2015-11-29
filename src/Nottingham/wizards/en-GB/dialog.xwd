@@ -35,6 +35,7 @@
 
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
     <commentary label="Commentary" type="TextArea" height="100"/> 

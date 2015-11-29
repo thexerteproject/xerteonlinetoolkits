@@ -207,7 +207,7 @@
 
   </hotspotGroup><hotspot type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
 
-    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <name label="Label" type="TextInput"/>
     <text label="Text" type="TextArea" height="250"/>
 
   </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
@@ -348,10 +348,11 @@
     <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cOption><![CDATA[<cOption text="Here is an option" destination="" />]]></cOption>
+      <cOption><![CDATA[<cOption name="Option" text="Here is an option" destination="" />]]></cOption>
     </newNodes>
 	
   </cMcq><cOption menuItem="Option" icon="icBullet" remove="true">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
     <text label="Option" type="TextArea" height="100"/>
 	<destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption><captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true" deprecated="Captivate is no longer supported.">
@@ -456,11 +457,11 @@
     <info><![CDATA[<b>For full details on how to use the Hotspot Image Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/HotspotImageConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cHotspot><![CDATA[<cHotspot name="Enter Hotspot Title Here" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
+      <cHotspot><![CDATA[<cHotspot name="Hotspot" destination="Enter Destination Page ID" exitNav="all" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></cHotspot>
     </newNodes>
 
   </connectorHotspotImage><cHotspot menuItem="Hotspot" label="Edit Hotspot" type="hotSpot" icon="icLayers" remove="true">
-    <name label="Title" type="TextInput" wysiwyg="true"/>
+    <name label="Label" type="TextInput"/>
 
 	<destination label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Go to a page with this object"/>
     <hotspotSound label="Sound" type="media" optional="true"/>
@@ -684,6 +685,7 @@
 
   </dialog><dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
     <commentary label="Commentary" type="TextArea" height="100"/> 
@@ -741,7 +743,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
   </dragDropLabel><embedDiv menu="Navigators" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" remove="true">
@@ -893,7 +895,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Enter Hotspot Title Here" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
+	  <hotspot><![CDATA[<hotspot name="Hotspot" text="Description for the hotspot" x="0" y="0" w="100" h="100" />]]></hotspot>
     </newNodes>
 
   </hotspotImage><iSpring menu="Media" menuItem="iSpring Movie" hint="Adds an iSpring Movie to your piece. iSpring movies should be published to 685 x 514 pixels." icon="icISpring" thumb="thumbs/ispring.jpg" remove="true" deprecated="This page is no longer supported">
@@ -964,10 +966,11 @@
     <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <invQuestion><![CDATA[<invQuestion prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+      <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
     </newNodes>
 	
   </inventory><invQuestion menuItem="Question" remove="true">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
@@ -976,10 +979,11 @@
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 
     <newNodes>
-      <invOption><![CDATA[<invOption text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
+      <invOption><![CDATA[<invOption name="Option" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
     </newNodes>
 
   </invQuestion><invOption menuItem="Option" icon="icBullet" remove="true">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
     <text label="Option" type="TextArea" height="100"/>
 	<class label="Classification" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>	
     <feedback label="Feedback" type="TextArea" height="100"/>
@@ -1148,10 +1152,11 @@
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
-      <option><![CDATA[<option text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option name="Option" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </mcq><option menuItem="Option" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
 
     <text label="Option" type="TextArea" height="100"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
@@ -1335,11 +1340,12 @@
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 		
 		<newNodes>
-			<synchMCQOption><![CDATA[<synchMCQOption text="Option text" correct="false"/>]]></synchMCQOption>
+			<synchMCQOption><![CDATA[<synchMCQOption name="Option" text="Option text" correct="false"/>]]></synchMCQOption>
 		</newNodes>
 		
 	</synchMCQ><synchMCQOption menuItem="Option" icon="icBullet" remove="true">
-		
+
+		<name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
 		<text label="Option" type="TextInput" wysiwyg="true"/>
 		<correct label="Correct" options="true,false" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 		
@@ -1693,10 +1699,11 @@
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
-      <question><![CDATA[<question  prompt="Here is a prompt" type="Single Answer" />]]></question>
+      <question><![CDATA[<question  name="Question" prompt="Here is a prompt" type="Single Answer" />]]></question>
 	</newNodes>
 	
   </quiz><question menuItem="Question">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
 
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
@@ -1706,7 +1713,7 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option name="Option" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question><raptivity menu="Media" menuItem="Raptivity SWF" hint="A page for incorporating Raptivity swfs." icon="icRaptivity" thumb="thumbs/raptivity.jpg" remove="true" deprecated="This page is no longer supported">
