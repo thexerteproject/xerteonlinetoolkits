@@ -10,13 +10,13 @@ global $automation_config;
 
 class automationConfig
 {
-    public $groupMemberSharingRole =  [12, 5];  // non-editing teacher
-    public $groupMemberTeacherAccessRole = [12, 5];
-    public $groupMemberStudentAccessRole = [4];
-    public $sharingRole = [1]; // course leader
-    public $teacherAccessRole = [];
-    public $studentAcessRole = [];
-    public $availableTemplates = []; // template_ids of available project templates
+    public $groupMemberSharingRole =  [];               // group members allowed to share LO's
+    public $groupMemberTeacherAccessRole = [];          // group members that should get read-only access (teacher access)
+    public $groupMemberStudentAccessRole = [];          // group members that should get full access (student access)
+    public $sharingRole = [];                           // non-group members allowed to share LO's (doesn't do anything yet)
+    public $teacherAccessRole = [];                     // group members that should get read-only access (teacher access) when shared by non-group members
+    public $studentAcessRole = [];                      // group members that should get full access (student access) when shared by non-group members
+    public $availableTemplates = [];                    // template_ids of available project templates
     public $moodleServer = "localhost";
     public $moodleDB = "moodle";
     public $moodleDBUser = "";
