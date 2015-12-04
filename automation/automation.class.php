@@ -1006,30 +1006,48 @@ class Automate
             {
                 // Share template with student
                 $this->mesg .= " - Share template with student.\n";
-                if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $login['root_folder_id'], $role) !== false)
-                {
-                    // Share template with other teachers
-                    foreach ($teachers as $teacher) {
-                        $this->mesg .= " - Share template with teacher (" . $teacher['firstname'] . " " . $teacher['lastname'] . ").\n";
-                        $teacher_login = $this->checkCreateLogin($teacher['username'], $teacher['firstname'], $teacher['lastname']);
-                        if ($teacher_login !== false) {
-                            if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $teacher_login['root_folder_id'], 'read-only') === false) {
-                                $this->mesg .= "Failed to share template with teacher " . $teacher['username'] . "\n";
+
+                $folderid = $this->checkCreateFolder($login['login_id'], $username, $login['root_folder_id'], $this->group_name);
+
+                if ($folderid !== false) {
+                    if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $login['root_folder_id'], $role) !== false) {
+                        // Share template with other teachers
+                        foreach ($teachers as $teacher) {
+                            $this->mesg .= " - Share template with teacher (" . $teacher['firstname'] . " " . $teacher['lastname'] . ").\n";
+                            $teacher_login = $this->checkCreateLogin($teacher['username'], $teacher['firstname'], $teacher['lastname']);
+                            if ($teacher_login !== false) {
+                                $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher['username'], $teacher_login['root_folder_id'], $this->group_name);
+
+                                if ($folderid !== false) {
+                                    if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $teacher_login['root_folder_id'], 'read-only') === false) {
+                                        $this->mesg .= "Failed to share template with teacher " . $teacher['username'] . "\n";
+                                        $this->status = false;
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    $this->mesg .= "Failed to create group folder for teacher\n";
+                                    $this->status = false;
+                                    return false;
+                                }
+                            } else {
+                                $this->mesg .= "Failed to create/find teacher login for " . $teacher['username'];
                                 $this->status = false;
                                 return false;
                             }
                         }
-                        else
-                        {
-                            $this->mesg .= "Failed to create/find teacher login for " . $teacher['username'];
-                            $this->status = false;
-                            return false;
-                        }
+                    }
+                    else
+                    {
+                        $this->mesg .= "Failed to share template with student\n";
+                        $this->status = false;
+                        return false;
                     }
                 }
                 else
                 {
-                    $this->mesg .= "Failed to share template with student\n";
+                    $this->mesg .= "Failed to create group folder for student\n";
                     $this->status = false;
                     return false;
                 }

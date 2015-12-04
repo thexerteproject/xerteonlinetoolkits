@@ -74,7 +74,7 @@ $templates = $auto->availableTemplates();
     <p><div id="courseDiv" class="label">
         <label for="group">Course:</label>
     </div>
-    <select name="course" id="course" onchange="updateGroupList">
+    <select name="course" id="course" onchange="updateGroupList();">
         <?php
         foreach($courses as $course)
         {
@@ -86,7 +86,7 @@ $templates = $auto->availableTemplates();
     <p><div class="label">
         <label for="group">Group:</label></div>
         <div id="groupDiv">
-        <select name="group" id="group">
+        <select name="group" id="group" onchange="clearResult();">
             <?php
             foreach($groups as $group)
             {
@@ -101,7 +101,7 @@ $templates = $auto->availableTemplates();
     <p><div class="label">
             <label for="template">Template:</label>
         </div>
-        <select name="template" id="template">
+        <select name="template" id="template" onchange="clearResult();">
             <?php
             foreach($templates as $template)
             {

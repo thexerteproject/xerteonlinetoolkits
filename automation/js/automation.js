@@ -25,12 +25,22 @@ doAction = function(action)
         });
 }
 
+clearResult = function()
+{
+    // Clear message
+    $("#result").html("");
+}
+
+
 updateGroupList = function()
 {
     var courseid = $("#course").val();
     var select = $("<select>")
         .attr("id", "group")
         .attr("name", "group");
+
+    // Clear message
+    $("#result").html("");
 
     var selectedCourse = null;
     for (var courseidx in courses)
