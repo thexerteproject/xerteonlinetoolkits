@@ -34,7 +34,7 @@ var allParams		= {},	// all attributes of learningObject
 	x_audioBarH     = 30,
 	x_mediaText     = [];
 
-var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog;
+var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog, $head;
 
 
 function init() {
@@ -51,6 +51,7 @@ function init() {
 	$overviewHolder	= $("#overviewHolder");
 	$footerBlock	= $("#footerBlock");
 	$dialog			= $(".dialog");
+	$head           = $("head");
 	
 	smallScreen = screen.width <= 550 ? true : false;
 	
@@ -183,6 +184,10 @@ function setUpInterface() {
 	if (allParams.stylesheet != undefined) {
 		insertCSS(evalURL(allParams.stylesheet));
 	}
+	if (allParams.styles != undefined){
+        $head.append('<style type="text/css">' +  allParams.styles + '</style>');
+    }
+
 	
 	if (allParams.displayMode == "fixed" && smallScreen == false) {
 		$mainHolder
