@@ -712,7 +712,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 
     <newNodes>
-      <nestedDictation><![CDATA[<nestedDictation name="Sentance" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
+      <nestedDictation><![CDATA[<nestedDictation name="Sentence" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
     </newNodes>
 
   </dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
