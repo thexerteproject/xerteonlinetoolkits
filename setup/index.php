@@ -1,4 +1,4 @@
-<?PHP 
+<?php 
 /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
@@ -57,7 +57,7 @@ else: ?>
 
     	<p>The next pages will help you verify and solve system issues. You will not be able to continue until all requirements are fulfilled.</p>
 
-			<a href="requirements.php"><button>Press here to install</button></a>
+			<a href="requirements.php"><button>Install</button></a>
 
 <?php require_once('page_footer.php'); ?>
 
