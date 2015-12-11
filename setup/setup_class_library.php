@@ -33,12 +33,24 @@ class Setup {
     // DOCUMENT_ROOT 'WITH' trailing slash
     public $root_path = '';
 
+
     public function __construct() {
         $this->root_path    = substr(getcwd(), 0, strlen(getcwd()) - 5);
 
-        $http = (isset($_SERVER['REQUEST_SCHEME'])) ? $_SERVER['REQUEST_SCHEME'] . '://' : 'http://';
+        $http =  $this->getProtocol();
 
         $this->xot_url = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    }
+
+    public function isSecure() {
+        return
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || $_SERVER['SERVER_PORT'] == 443;
+    }
+
+    public function getProtocol()
+    {
+        return ($this->isSecure() ?  'https://' : 'http://');
     }
 
     public function getRootPath() {
