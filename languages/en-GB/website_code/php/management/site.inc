@@ -144,6 +144,10 @@
 
 	define("MANAGEMENT_SITE_PROXY_EXPLAINED", "By directly editing the rss proxy.php file (in the root folder), you can add up to 4 proxys and ports should you wish.");
 
+  define("MANAGEMENT_SITE_AUTH_DETAILS", "Authentication settings");
+
+  define("MANAGEMENT_SITE_AUTH_METHOD", "The authentication method to use");
+
   define("MANAGEMENT_SITE_LTI","LTI settings");
 
 define("LTI_TOGGLE","View");
