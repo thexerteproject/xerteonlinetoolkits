@@ -651,21 +651,40 @@ var EDITOR = (function ($, parent) {
         return xerte;
     }
 
-    jqGridAfterShowForm = function(id, ids)
+    jqGridAfterShowForm = function(id, ids, options)
     {
-        //the field name that needs to be edited with CKEditor is 'col_2'
-        if( CKEDITOR.instances.col_2 )
+        //the field name that needs to be edited with CKEditor is 'col_2' or all columns is options.wysiwyg is true
+        if (options.wysiwyg == 'true')
         {
-            try {
-                CKEDITOR.instances.col_2.destroy();
-            } catch(e) {
-                CKEDITOR.remove( 'col_2' );
+            // destroy editor for all columns
+            $('#' + ids[0].id + ' textarea').each(function(){
+                var col_id = this.id;
+                if (CKEDITOR.instances[col_id])
+                {
+                    try {
+                        CKEDITOR.instances[col_id].destroy(true);
+                    }
+                    catch (e) {
+                        CKEDITOR.remove(col_id);
+                    }
+                }
+            });
+
+        }
+        else {
+            if (CKEDITOR.instances.col_2) {
+                try {
+                    CKEDITOR.instances.col_2.destroy(true);
+                } catch (e) {
+                    CKEDITOR.remove('col_2');
+                }
+                //CKEDITOR.instances.col_2 = null;
             }
-            //CKEDITOR.instances.col_2 = null;
         }
         var ckoptions = {
             toolbarGroups : [
                 { name: 'basicstyles', groups: [ 'basicstyles' ] },
+                { name: 'styles' },
                 { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
                 { name: 'colors' },
                 { name: 'insert' }],
@@ -678,35 +697,82 @@ var EDITOR = (function ($, parent) {
             height : 150,
             resize_enabled: false
         };
-
-        $('#col_2').ckeditor(function(){
-            // JQGrid
-            // we need to get selected row in case currently we are in Edit Mode
-            var grid = $('#' + id + '_jqgrid');
-            var selID = grid.getGridParam('selrow'); // get selected row
-            // I don't know how to get the current mode is, in Editing or Add new?
-            // then let's find out if
-            //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
-            if( !($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID==null))
-            { // then it must be edit?
-                var va = grid.getRowData(selID);
-                CKEDITOR.instances.col_2.setData( va['col_2'] );
-            }
-        }, ckoptions);
+        if (options.wysiwyg == 'true')
+        {
+            // destroy editor for all columns
+            $('#' + ids[0].id + ' textarea').each(function() {
+                var col_id = this.id;
+                $('#'+ col_id).ckeditor(function () {
+                    // JQGrid
+                    // we need to get selected row in case currently we are in Edit Mode
+                    var grid = $('#' + id + '_jqgrid');
+                    var selID = grid.getGridParam('selrow'); // get selected row
+                    // I don't know how to get the current mode is, in Editing or Add new?
+                    // then let's find out if
+                    //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
+                    if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
+                        var va = grid.getRowData(selID);
+                        CKEDITOR.instances[col_id].setData(va[col_id]);
+                    }
+                }, ckoptions);
+            });
+        }
+        else {
+            $('#col_2').ckeditor(function () {
+                // JQGrid
+                // we need to get selected row in case currently we are in Edit Mode
+                var grid = $('#' + id + '_jqgrid');
+                var selID = grid.getGridParam('selrow'); // get selected row
+                // I don't know how to get the current mode is, in Editing or Add new?
+                // then let's find out if
+                //navigational buttons are hidden for both of it and selID == null <– Add mode ^0^
+                if (!($('a#pData').is(':hidden') || $('a#nData').is(':hidden') && selID == null)) { // then it must be edit?
+                    var va = grid.getRowData(selID);
+                    CKEDITOR.instances.col_2.setData(va['col_2']);
+                }
+            }, ckoptions);
+        }
 
     },
 
-    jqGridBeforeSubmit = function(data)
+    jqGridAfterCloseForm = function (id, selector, options)
     {
-        data['col_2'] = CKEDITOR.instances.col_2.getData();
-        return [true, ""];
+        // Clean up
+        //the field name that needs to be edited with CKEditor is 'col_2' or all columns is options.wysiwyg is true
+        if (options.wysiwyg == 'true')
+        {
+            // destroy editor for all columns
+            $(selector + ' textarea').each(function(){
+                var col_id = this.id;
+                if (CKEDITOR.instances[col_id])
+                {
+                    try {
+                        CKEDITOR.instances[col_id].destroy(true);
+                    }
+                    catch (e) {
+                        CKEDITOR.remove(col_id);
+                    }
+                }
+            });
+
+        }
+        else {
+            if (CKEDITOR.instances.col_2) {
+                try {
+                    CKEDITOR.instances.col_2.destroy(true);
+                } catch (e) {
+                    CKEDITOR.remove('col_2');
+                }
+                //CKEDITOR.instances.col_2 = null;
+            }
+        }
     },
 
     jqGridAfterclickPgButtons = function(id, whichbutton, formid, rowid)
     {
         var grid = $('#' + id + '_jqgrid');
         var va = grid.getRowData(rowid);
-        CKEDITOR.instances.col_1.setData( va['col_2'] );
+        CKEDITOR.instances.col_2.setData( va['col_2'] );
     },
 
     convertTextAreas = function ()
@@ -961,6 +1027,7 @@ var EDITOR = (function ($, parent) {
             var gridoptions = options.options;
             var id = options.id;
             var key = options.key;
+
             jqGridsLastSel[key] = -1;
             jqGridsColSel[key] = -1;
             jqGrGridData[key] = rows;
@@ -1042,7 +1109,13 @@ var EDITOR = (function ($, parent) {
                 if (options.name == 'glossary' && i == 2)
                 {
                     col['edittype'] = 'textarea';
-                    col['editoptions'] = {rows:"12",cols:"40"};
+                    col['editoptions'] = {rows:"20",cols:"40"};
+                    col['editrules'] = {edithidden:true};
+                }
+                if (gridoptions.wysiwyg == 'true')
+                {
+                    col['edittype'] = 'textarea';
+                    col['editoptions'] = {rows:"6",cols:"40"};
                     col['editrules'] = {edithidden:true};
                 }
                 colModel.push(col);
@@ -1051,14 +1124,27 @@ var EDITOR = (function ($, parent) {
             var editSettings,
                 addSettings,
                 delSettings;
-            if (options.name == 'glossary')
+            if (options.name == 'glossary' || gridoptions.wysiwyg == 'true')
             {
                 // other set of options for the glossary
                 // to be able to replace the editor of the descrition with ckEditor
+                if (gridoptions.wysiwyg == 'true')
+                {
+                    var height = 550;
+                    var dataheight = 450;
+                }
+                else {
+                    var height = 410;
+                    var dataheight = 330;
+                }
                 editSettings = {
-                    height:450,
-                    width:500,
-                    jqModal:false,
+                    top: 50,
+                    left: 300,
+                    height:height,
+                    width:700,
+                    resize: true,
+                    dataheight:dataheight,
+                    jqModal:true,
                     reloadAfterSubmit:false,
                     closeOnEscape:true,
                     savekey: [true,13],
@@ -1075,13 +1161,20 @@ var EDITOR = (function ($, parent) {
                     //    return jqGridBeforeSubmit(data);
                     //},
                     afterShowForm: function(ids){
-                        jqGridAfterShowForm(id, ids);
+                        jqGridAfterShowForm(id, ids, gridoptions);
+                    },
+                    onClose: function (selector) {
+                        jqGridAfterCloseForm(id, selector, gridoptions);
                     }
                 };
                 addSettings = {
-                    height:450,
-                    width:500,
+                    top: 50,
+                    left: 300,
+                    height:height,
+                    width:700,
                     jqModal:false,
+                    dataheight:dataheight,
+                    jqModal:true,
                     reloadAfterSubmit:false,
                     savekey: [true,13],
                     closeOnEscape:true,
@@ -1093,8 +1186,11 @@ var EDITOR = (function ($, parent) {
                     //{
                     //    return jqGridBeforeSubmit(data);
                     //},
-                    afterShowForm: function(ids){
-                        jqGridAfterShowForm(id, ids);
+                    afterShowForm: function(ids) {
+                        jqGridAfterShowForm(id, ids, gridoptions);
+                    },
+                    onClose: function (selector) {
+                        jqGridAfterCloseForm(id, selector, gridoptions);
                     }
                 }
             }

@@ -834,7 +834,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="150"/>
 	<feedback label="Feedback" type="TextArea" height="150"/>
-	<data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" rendererOptions="none,none"/>
+	<data label="Table Data" newRow="data,data" newCol="data" type="DataGrid" height="190" width="390" columns="2" editable="1,1" controls="1" addCols="true" showHeaderRow="false" rendererOptions="none,none" wysiwyg="true"/>
 	<constrain label="Constrain Labels" type="ComboBox" options="Off,On (Row),On (Column)" data="none,row,col"/>
 	<style label="Borders" type="ComboBox" options="None,Full Grid,Simple,Horizontal Only,Vertical Only,Outside Border" data="none,full,simple,horizontal,vertical,outside"/>
 	<align label="Text Align" type="ComboBox" options="Left,Right,Top" data="left,right,top" defaultValue="left" width="100"/>

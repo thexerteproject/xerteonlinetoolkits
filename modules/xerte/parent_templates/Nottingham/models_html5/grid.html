@@ -540,7 +540,7 @@
 		}
 		
 		this.addLabel = function(txt, $parent, i, j) {
-			var $li = $('<li>' + txt + '</li>')
+			var $li = $('<li><table><tr><td>' + txt + '</td></tr></table></li>')
 				.appendTo($parent)
 				.addClass("ui-state-default");
 			
@@ -810,7 +810,17 @@
 	#grid li.selected {
 		border:	2px solid green;
 	}
-	
+
+	#grid table	{
+		height: 100%;
+		width: 100%;
+	}
+
+	#grid td {
+		vertical-align: middle !important;
+		text-align: center;
+	}
+
 	#gridBorders {
 		background-color:	white;
 	}
