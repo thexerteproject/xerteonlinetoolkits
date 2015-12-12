@@ -141,7 +141,7 @@ function ScormTrackingState()
     this.trackingmode = "full";
     this.skipcomments = false;
     this.skipinteractions = false;
-    this.scoremode = "last";
+    this.scoremode = "first";
     this.nrpages = 0;
     this.pages_visited=0;
     this.start = new Date();
