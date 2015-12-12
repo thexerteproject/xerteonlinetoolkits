@@ -410,7 +410,7 @@ function persistData()
       }
       else
       {
-         return api.Commit();
+         return api.Commit("");
       }
    }
    else
