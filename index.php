@@ -56,7 +56,6 @@ recycle_bin();
  * Output the main page, including the user's and blank templates
  */
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
