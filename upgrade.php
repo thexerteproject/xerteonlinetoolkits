@@ -397,10 +397,11 @@ function upgrade_6()
 
 function upgrade_7()
 {
+    global $xerte_toolkits_site;
     if (! _db_field_exists('sitedetails', 'authentication_method')) {
         $error1 = _db_add_field('sitedetails', 'authentication_method', 'char(255)', '', 'site_session_name');      
         $error_returned = true;
-        $res = db_query("insert into {$xerte_toolkits_site->database_table_prefix}sitedetails(authentication_method) VALUES ('Guest')");
+        $res = db_query("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
         if($res === false) {
             die("Error creating authentication_method field");
         }

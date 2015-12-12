@@ -28,9 +28,9 @@
  */
 
 // set authentication method to guest if not set in db via management area
-if (!isset($xerte_toolkits_site->authentication_method)) {
+if (!isset($xerte_toolkits_site->authentication_method) || $xerte_toolkits_site->authentication_method=="") {
     $xerte_toolkits_site->authentication_method = 'Guest';  
-    $res = db_query_one("insert into {$xerte_toolkits_site->database_table_prefix}sitedetails (`site_id`, `authentication_method`) values (1,'Guest')");
+    $res = db_query_one("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
 }
 
 /*
