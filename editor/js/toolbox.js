@@ -142,6 +142,20 @@ var EDITOR = (function ($, parent) {
 		parent.tree.addNode($(this).closest("[item]").attr("item"), $(this).attr("value"));
 	}
 
+    // Get text from html, by putting html in a div, strip out the scripts
+    // and convert to text
+    getTextFromHTML = function(html)
+    {
+        var tmpDiv = $("<div>").html(html);
+        tmpDiv
+            .find("script")
+            .remove()
+            .end();
+        var tmpText = tmpDiv.text();
+        return tmpText;
+
+    },
+
     // ** Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
 
@@ -203,8 +217,8 @@ var EDITOR = (function ($, parent) {
         var treeLabel = xmlData[0].nodeName;
         if (xmlData[0].attributes['name'])
         {
-            // Create valid HTML to be able to use jQuery to strip HTML out of it again....
-            treeLabel = $('<div>' + xmlData[0].attributes['name'].value + '<div>').text();
+            // Cleanup label
+            treeLabel = getTextFromHTML(xmlData[0].attributes['name'].value);
         }
         else
         {
@@ -936,8 +950,7 @@ var EDITOR = (function ($, parent) {
                     this.on('change', function(event) {
                         if (options.name == 'name') {
                             var thisValue = this.getData();
-                            var thisValueDiv = $("<div>").html(thisValue);
-                            var thisText = thisValueDiv.text();
+                            var thisText = getTextFromHTML(thisValue);
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
@@ -1601,6 +1614,8 @@ var EDITOR = (function ($, parent) {
      *
      * This is the format that ckEditor dialog expects for se;ect lists
      * We use the same format in the displayDataType for the pagelist type.
+     *
+     * Also make sure we only take the text from the name, and not the full HTML
      */
         getPageList = function()
         {
@@ -1614,7 +1629,8 @@ var EDITOR = (function ($, parent) {
                 if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
                 {
                     var page = [];
-                    page.push(name.value);
+                    // Also make sure we only take the text from the name, and not the full HTML
+                    page.push(getTextFromHTML(name.value));
                     if (pageID.found)
                     {
                         page.push(pageID.value);
