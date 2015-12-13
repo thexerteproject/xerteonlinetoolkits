@@ -1,5 +1,5 @@
-moodle authentication integration for Xerte toolkits updated for use with version 3 and later
-updated November 2015
+moodle authentication integration for Xerte toolkits updated for use with version 3.1 and later
+updated December 2015
 
 This method of authentication integration has been tested with XOT 3.x and enables authentication integration with the moodle installation on the same server. Specifically it enables integration with the moodle authentication system allowing seamless login from moodle to toolkits. This is achieved by using the moodle session data so at the moment this will not work if moodle and toolkits are installed on separate servers. 
 
@@ -24,7 +24,7 @@ Please follow these steps carefully.
 Step 1. 
 Test your XOT installation before trying to use the moodle integration e.g. install toolkits and use the guest authentication to make sure everything is working - creating, viewing, exporting an LO etc
 
-Note: the different authentication options are enabled/disabled at the bottom of auth_config.php e.g. uncomment //$xerte_toolkits_site->authentication_method = 'Guest'; to test with guest authentication.
+Note: from version 3.1 onwards the different authentication options are set via the management area.
 
 Step 2. 
 Either by using the management page or by editing sitedetails in the database add the path to your moodle installation to the integration config path field
@@ -38,7 +38,7 @@ for a xampp/maxos install this should be something like:
 /xampp/htdocs/moodle/config.php
 
 Step 3.
-In the XOT auth_config.php comment out //$xerte_toolkits_site->authentication_method = 'Guest'; and uncomment //$xerte_toolkits_site->authentication_method = 'Moodle';
+Via the management area Authentication Settings set authentication to Moodle and save.
 
 Step 4.
 View http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
