@@ -45,6 +45,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
         exit;
     }
 
@@ -52,6 +53,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
         exit;
     }
 
@@ -80,6 +82,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
                     if ($auto->addAccessToLO($person['username'], $person['firstname'], $person['lastname'], $role, $teachers) === false) {
                         echo $auto->getMesgHTML();
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;
@@ -88,6 +91,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
                     if ($auto->removeAccessFromLO($person['username'], $person['firstname'], $person['lastname'], $template_id) === false) {
                         echo $auto->getMesgHTML();
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;

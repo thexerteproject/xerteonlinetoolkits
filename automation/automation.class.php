@@ -1010,7 +1010,7 @@ class Automate
                 $folderid = $this->checkCreateFolder($login['login_id'], $username, $login['root_folder_id'], $this->group_name);
 
                 if ($folderid !== false) {
-                    if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $login['root_folder_id'], $role) !== false) {
+                    if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $folderid, $role) !== false) {
                         // Share template with other teachers
                         foreach ($teachers as $teacher) {
                             $this->mesg .= " - Share template with teacher (" . $teacher['firstname'] . " " . $teacher['lastname'] . ").\n";
@@ -1019,7 +1019,7 @@ class Automate
                                 $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher['username'], $teacher_login['root_folder_id'], $this->group_name);
 
                                 if ($folderid !== false) {
-                                    if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $teacher_login['root_folder_id'], 'read-only') === false) {
+                                    if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $folderid, 'read-only') === false) {
                                         $this->mesg .= "Failed to share template with teacher " . $teacher['username'] . "\n";
                                         $this->status = false;
                                         return false;
