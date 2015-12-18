@@ -152,7 +152,7 @@ function show_template_page($row, $datafile="")
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 		
-		$page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $page_content);
+		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
 		
     }
     return $page_content;
