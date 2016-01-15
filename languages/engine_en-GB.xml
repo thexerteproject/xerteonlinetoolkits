@@ -129,6 +129,7 @@
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
+	  <moreInfoItem toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
   </interactions>
   
   <fetchResults label="Fetching results..."/>
