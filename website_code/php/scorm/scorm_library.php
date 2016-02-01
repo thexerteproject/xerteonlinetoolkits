@@ -285,7 +285,7 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
         $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 
