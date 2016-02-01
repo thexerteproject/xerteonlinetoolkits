@@ -66,7 +66,7 @@ if (!$.fn.toggleClick) {
 $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
-        case 38:    
+        case 38:
             if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
                 if (x_params.navigation != "Historic") {
 					x_changePage(x_currentPage -1);
@@ -79,7 +79,7 @@ $(document).keydown(function(e) {
             break;
 
         case 34: // PgDn
-        case 40:    
+        case 40:
 			if ($x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
 				x_changePage(x_currentPage + 1);
 			}
@@ -448,10 +448,12 @@ function x_cssSetUp(param) {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function() {x_cssSetUp("stylesheet")}, true);
-			} else {
-				x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function() {x_cssSetUp("stylesheet")});
+			if (x_params.responsive == "true") {
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") }, true);
+				} else {
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
+				}
 			}
 		}
 	} else if (param == "theme2") {
