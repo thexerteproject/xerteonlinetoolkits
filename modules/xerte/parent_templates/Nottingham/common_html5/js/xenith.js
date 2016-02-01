@@ -446,13 +446,12 @@ function x_cssSetUp(param) {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-			if (x_params.responsive == "true") {
-				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") }, true);
-				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
-				}
-			}
+            if (x_params.responsive == "true" && !(x_params.displayMode == "default" || $.isArray(x_params.displayMode))) { //Leave it enabled
+                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
+            }
+            else {
+                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
+            }
 		}
 	} else if (param == "theme2") {
 		if (x_params.responsive == "true") {
@@ -1536,9 +1535,11 @@ function x_insertText(node) {
 
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
-	for (var i=0; i<x_responsive.length; i++) {
-		$(x_responsive[i]).prop("disabled", false);
-	};
+    if (x_params.responsive == "true") {
+        for (var i = 0; i < x_responsive.length; i++) {
+            $(x_responsive[i]).prop("disabled", false);
+        }
+    }
 	
     $x_mainHolder.css({
         "width"     :"100%",
