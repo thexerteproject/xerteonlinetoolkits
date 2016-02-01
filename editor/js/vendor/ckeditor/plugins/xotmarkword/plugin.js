@@ -15,8 +15,9 @@ CKEDITOR.plugins.add('xotmarkword', {
     init: function (editor) {
         editor.addCommand( 'xotMarkWord', {
             exec: function( editor ) {
-                var selection = editor.getSelection().getNative();
-                editor.insertText('|' + selection + '|');
+                var selection = editor.getSelection().getNative(),
+					mainDelimiter = $("#opt_mainDelimiter").length != 0 ? $("#opt_mainDelimiter").find(".wizardvalue input")[0].value : "|";
+                editor.insertText(mainDelimiter + selection + mainDelimiter);
                 //alert("Word Marked");
             }
         });

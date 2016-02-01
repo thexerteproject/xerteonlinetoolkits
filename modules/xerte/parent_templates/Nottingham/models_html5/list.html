@@ -51,6 +51,15 @@
 			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Small") {
+				$("#pageContents .splitScreen").addClass("medium");
+			} else if (panelWidth == "Medium") {
+				$("#pageContents .splitScreen").addClass("medium2");
+			} else {
+				$("#pageContents .splitScreen").addClass("small");
+			}
+			
 			list.sizeChanged(true);
 			$infoHolder.hide();
 			
