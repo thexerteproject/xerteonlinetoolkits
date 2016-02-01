@@ -126,8 +126,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?php echo DECISION_EDIT_TITLE ?></title>
 
     <link rel="stylesheet" href="editor/css/jquery-ui.css">

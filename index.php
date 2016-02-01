@@ -55,10 +55,12 @@ recycle_bin();
 /*
  * Output the main page, including the user's and blank templates
  */
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
     <?php head_start(); ?>
     <!--
 
@@ -67,8 +69,6 @@ recycle_bin();
     Version 1.0
 
     -->
-
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
     <link rel="stylesheet" href="editor/css/jquery-ui.css">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
@@ -215,9 +215,9 @@ Folder popup is the div that appears when creating a new folder
 				<!--Workspace buttons-->
 
 				<div class="file_mgt_area_middle_button_left">
-					<button title="<?php echo INDEX_BUTTON_EDIT; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_EDIT; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="edit"><i class="fa fa-pencil-square-o xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_PROPERTIES; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="properties"><i class="fa fa-info-circle xerte-icon"></i></button>
 					<button title="<?php echo INDEX_BUTTON_PREVIEW; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="preview"><i class="fa fa-play xerte-icon"></i></button>
@@ -232,7 +232,7 @@ Folder popup is the div that appears when creating a new folder
 				<div class="file_mgt_area_middle_button_right">
 					<button title="<?php echo INDEX_BUTTON_DELETE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="delete"><i class="fa  fa-trash xerte-icon"></i></button>
-					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>"type="button" class="xerte_workspace_button disabled" disabled="disabled"
+					<button title="<?php echo INDEX_BUTTON_DUPLICATE; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="duplicate"><i class="fa fa-copy xerte-icon"></i></button>
 					<button title="<?php echo INDEX_BUTTON_PUBLISH; ?>" type="button" class="xerte_workspace_button disabled" disabled="disabled"
 							id="publish"><i class="fa  fa-share xerte-icon"></i></button>
