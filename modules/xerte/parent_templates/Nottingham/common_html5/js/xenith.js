@@ -66,7 +66,6 @@ if (!$.fn.toggleClick) {
 $(document).keydown(function(e) {
     switch(e.which) {
         case 33: // PgUp
-        case 38:
             if (x_currentPage > 0 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
                 if (x_params.navigation != "Historic") {
 					x_changePage(x_currentPage -1);
@@ -79,7 +78,6 @@ $(document).keydown(function(e) {
             break;
 
         case 34: // PgDn
-        case 40:
 			if ($x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
 				x_changePage(x_currentPage + 1);
 			}
