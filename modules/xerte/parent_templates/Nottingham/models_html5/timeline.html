@@ -82,6 +82,8 @@
 			});
 		}
 		
+		
+		
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
 			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
@@ -126,7 +128,7 @@
 							$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
 					}
-					
+					timeline.finishTracking();
 					$("#feedback").show();
 				});
 			
@@ -229,9 +231,76 @@
 				$targetHolder.find(".target").css("background-image", "url('" + x_templateLocation + "common_html5/arrow.png')");
 			}
 			
+			this.initTracking();
+			
 			this.sizeChanged();
 			x_pageLoaded();
 		}
+		
+		this.finishTracking = function()
+		{
+			var l_options = [],
+            l_answers = [],
+            l_feedback = [],
+            l_correct = 0,
+            l_total = 0;
+
+            $("#labelHolder .label").each(function() {
+				var $this = $(this);
+				l_total++;
+				var l_option={};
+        		var l_placeholder = this.getAttribute("name"); 
+        		var l_draglabel	= this.getAttribute("description");
+        		l_option.source = l_draglabel;
+        		l_option.target = l_placeholder;
+        		l_options.push(l_option);
+        		l_answer = l_placeholder + "-->" + l_draglabel;
+				if ($this.data("target").is($this.data("currentTarget"))) {
+					l_correct++;
+					l_feedback.push("Correct");
+				}else{
+					l_feedback.push("Incorrect");
+				}
+			});
+            
+            
+            
+            
+			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
+         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+         	console.log((l_correct * 100.0)/l_total + "");
+		}
+		
+		this.initTracking = function(){
+			
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            correctOptions 		= [];
+            correctAnswer 		= [];
+            correctFeedback 	= [];
+            $(x_currentPageXML).children().each(
+            	function(i)
+            	{
+            		var correctOption={};
+            		var placeholder = this.getAttribute("name"); 
+            		var draglabel	= this.getAttribute("description");
+            		correctOption.source = draglabel;
+                    correctOption.target = placeholder;
+                    correctOptions.push(correctOption);
+                    correctAnswer.push(placeholder + "-->" + draglabel);
+            		correctFeedback.push("Correct");
+            		
+            	}
+            );
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer, correctFeedback);
+			console.log("init");
+		}
+		
+		
 		
 		this.createLabels = function() {
 			// randomise order and create labels
