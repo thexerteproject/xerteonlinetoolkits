@@ -268,7 +268,6 @@
             
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
-         	console.log((l_correct * 100.0)/l_total + "");
 		}
 		
 		this.initTracking = function(){
@@ -297,7 +296,6 @@
             	}
             );
             XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer, correctFeedback);
-			console.log("init");
 		}
 		
 		
