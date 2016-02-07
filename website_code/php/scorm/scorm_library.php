@@ -285,7 +285,7 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
         $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY", $youtube_api_key, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
     $file_handle = fopen($dir_path . "scormRLO.htm", 'w');
 
@@ -477,7 +477,12 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
                 /* only add file if used */
                 $string = str_replace($dir_path, "", $file[0]);
 
-                if (strpos(file_get_contents($dir_path . "data.xml"), $string) !== false) {
+                $data = file_get_contents($dir_path . "data.xml");
+                // Decode all filenames in data
+                $data2 = rawurldecode($data);
+                $data3 = html_entity_decode($data2);
+
+                if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
                 }
             } else {

@@ -3,7 +3,7 @@
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
-
+ *
  * The Apereo Foundation licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at:
@@ -13,27 +13,21 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+require_once('page_header.php'); ?>
 
-echo file_get_contents("page_top");
+        <h2>Toolkits Set up page</h2>
 
-?>
-
-        <h2 style="margin-top:15px">
-            Toolkits Set up page
-        </h2>
-        <p>
-Use this page to set up Xerte Online Toolkits. The various settings have been grouped into areas depending on what part of the site they effect or change. <b>Please note that this code comes with management features that will allow you to change all these settings at a later point.</b>
-        </p>
+        <p>Use this page to set up Xerte Online Toolkits. The various settings have been grouped into areas depending on what part of the site they effect or change. <b>Please note that this code comes with management features that will allow you to change all these settings at a later point.</b></p>
 
         <form action="page4.php" method="post" enctype="multipart/form-data" name="setup">
 
 <?php echo "<h3>Site formatting settings - Customising the first login page</h3><p>Please see <a href=\"page1.gif\" target=\"new\">this screen shot</a> for guidance.";
 
-echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
+echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $xot_setup->getProtocol() . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
 
 echo "<p>The site title is (This is the HTML title tag content) <textarea name=\"site_title\">Welcome to Xerte Online Toolkits</textarea></p>";
 
@@ -167,10 +161,28 @@ echo "<p>The site's proxy port is <textarea name=\"port1\"></textarea></p>";
 
 echo "<p>By directly editing the rss proxy.php file (in the root folder), you can add up to 4 proxies and ports should you wish.</p>";
 
+// Authentication method
+echo "<br><h3 style=\"clear:left\">Authentication Method</h3>";
+
+echo "<p>The default setting for user authentication is 'Guest' - which allows ANY visitor to access Xerte's front end with privileges to create, edit and delete ALL content. So… <span style=\"color: red;\">using <strong>'Guest' on a public web server</strong> (where anyone could access it) unless you have other security measures in place</span> is <strong  style=\"color: red;\">NOT recommended</strong>.</p>";
+
+echo "<p>See: <code>documentation/ToolkitsInstallationGuide.pdf</code> for details about each of the authentication options (Guest, Ldap, Db, Static, Moodle).</p>";
+
+echo "<label>Choose an authentication method:</label><br>";
+
+echo "<select name=\"authentication_method\" style=\"padding: 0.4em 0.15em; \">
+    		<option value=\"Guest\">Guest</option>
+    		<option value=\"Ldap\">Ldap</option>
+    		<option value=\"Db\">Db</option>
+    		<option value=\"Static\">Static</option>
+    		<option value=\"Moodle\">Moodle</option>
+    		<option value=\"Saml2\">Saml2</option>
+  		</select>";
+
+echo "<br><br>";
 
 ?>
         <button type="submit">Save</button>
-        </form>
+    </form>
 
-</body>
-</html>
+<?php require_once('page_footer.php'); ?>

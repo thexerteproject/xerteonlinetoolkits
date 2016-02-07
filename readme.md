@@ -1,8 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-Latest release : v2.1
-
+Latest release : v3.0
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------

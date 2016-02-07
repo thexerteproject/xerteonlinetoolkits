@@ -28,18 +28,25 @@ var EDITOR = (function ($, parent) {
         console.log("Setting up layout...");
         var opentooltip = "Open this pane",
             closetooltip = "Close this pane",
-            resizetooltip = "Resize this pane";
+            resizetooltip = "Resize this pane",
+            pin = "Pin",
+            unpin = "Un-Pin";
+
         if (language.layout.$opentooltip)
             opentooltip = language.layout.$opentooltip;
         if (language.layout.$closetooltip)
             closetooltip = language.layout.$closetooltip;
         if (language.layout.$resizetooltip)
             resizetooltip = language.layout.$resizetooltip;
+        if (language.layout.$pin)
+            pin = language.layout.$pin;
+        if (language.layout.$unpin)
+            unpin = language.layout.$unpin;
 
         var xerte_layout,
             xerte_editor_layout_settings = {
                 name: "xerte_editor_layout"
-            ,   defaults: {
+            ,   panes: {
                     size:                   "auto",
                     minSize:                50,
                     paneClass:              "pane",
@@ -51,9 +58,13 @@ var EDITOR = (function ($, parent) {
                     togglerLength_open:     35,
                     togglerLength_closed:   35,
                     hideTogglerOnSlide:     true,
-                    togglerTip_open:        closetooltip,
-                    togglerTip_closed:      opentooltip,
-                    resizerTip:             resizetooltip,
+                    tips: {
+                        Open: opentooltip    // eg: "Open Pane"
+                        , Close: closetooltip
+                        , Resize: resizetooltip
+                        , Pin: pin
+                        , Unpin: unpin
+                        },
                     fxName:                 "none"
                     /*
                     fxSpeed_open:           750,
@@ -87,9 +98,6 @@ var EDITOR = (function ($, parent) {
                     togglerLength_closed:   21,
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
-                    togglerTip_open:        closetooltip,
-                    togglerTip_closed:      opentooltip,
-                    resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "click",
                     initClosed:             false
                     /*
@@ -107,9 +115,6 @@ var EDITOR = (function ($, parent) {
                     togglerLength_closed:   21,
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
-                    togglerTip_open:        closetooltip,
-                    togglerTip_closed:      opentooltip,
-                    resizerTip_open:        resizetooltip,
                     slideTrigger_open:      "click",
                     initClosed:             true
                     /*

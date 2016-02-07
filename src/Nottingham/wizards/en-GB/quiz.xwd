@@ -57,12 +57,13 @@
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
-      <question><![CDATA[<question  prompt="Here is a prompt" type="Single Answer" />]]></question>
+      <question><![CDATA[<question  name="Question" prompt="Here is a prompt" type="Single Answer" />]]></question>
 	</newNodes>
 	
   </quiz>
 
   <question menuItem="Question">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
 
     <prompt label="Prompt" type="TextArea"  height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
@@ -72,12 +73,13 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option name="Option" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question>
 
   <option menuItem="Option" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
 
     <text label="Option" type="TextArea"  height="100"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>

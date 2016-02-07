@@ -34,7 +34,7 @@ var allParams		= {},	// all attributes of learningObject
 	x_audioBarH     = 30,
 	x_mediaText     = [];
 
-var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog;
+var $mainHolder, $headerBlock, $backBtn, $infoBtn,	$fwdBtn, $newBtn,	$contentHolder,	$stepHolder, $submitBtn, $introHolder, $overviewHolder, $footerBlock,	$dialog, $head;
 
 
 function init() {
@@ -51,6 +51,7 @@ function init() {
 	$overviewHolder	= $("#overviewHolder");
 	$footerBlock	= $("#footerBlock");
 	$dialog			= $(".dialog");
+	$head           = $("head");
 	
 	smallScreen = screen.width <= 550 ? true : false;
 	
@@ -183,6 +184,10 @@ function setUpInterface() {
 	if (allParams.stylesheet != undefined) {
 		insertCSS(evalURL(allParams.stylesheet));
 	}
+	if (allParams.styles != undefined){
+        $head.append('<style type="text/css">' +  allParams.styles + '</style>');
+    }
+
 	
 	if (allParams.displayMode == "fixed" && smallScreen == false) {
 		$mainHolder
@@ -1337,9 +1342,13 @@ function setUpSection(section, $step) {
 							col = "0" + col;
 						}
 						
+						var rgbval = parseInt(col, 16),
+							brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
+							txtColour = (brightness > 160) ? "dark" : "light"; // checks whether black or white text is best on bg colour
+						
 						$section
 							.css("background-color", "#" + col)
-							.addClass((parseInt("#" + col, 16) > 0xffffff/2) ? "dark":"light"); // checks whether black or white text is best on bg colour
+							.addClass(txtColour);
 					}
 					
 					$section.append('<h3>' + allSections[i].name + '</h3>');

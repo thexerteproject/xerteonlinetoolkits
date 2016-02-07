@@ -395,4 +395,28 @@ function upgrade_6()
 	return true;
 }
 
+function upgrade_7()
+{
+    global $xerte_toolkits_site;
+    if (! _db_field_exists('sitedetails', 'authentication_method')) {
+        $error1 = _db_add_field('sitedetails', 'authentication_method', 'char(255)', '', 'site_session_name');      
+        $error_returned = true;
+        $res = db_query("update {$xerte_toolkits_site->database_table_prefix}sitedetails set authentication_method = 'Guest' where site_id=1");
+        if($res === false) {
+            die("Error creating authentication_method field");
+        }
+
+        if (($error1 === false)) {
+            $error_returned = false;
+            // echo "creating authentication_method field FAILED";
+        }
+
+        return "Creating authentication_method field - ok ? " . ($error_returned ? 'true' : 'false');
+    }
+    else
+    {
+        return "authentication_method field already present - ok ? true";
+    }
+}
+
 ?>

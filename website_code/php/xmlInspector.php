@@ -166,7 +166,13 @@ class XerteXMLInspector
         $this->language = (string)$this->xml['language'];
         if (strlen($this->language) == 0)
             $this->language = 'en-GB';
-        $this->name = (string)$this->xml['name'];
+        $name = (string)$this->xml['name'];
+        // This may contain HTML tags, convert to plain text
+        // Remove the HTML tags
+        $name = strip_tags($name);
+        // Convert HTML entities to single characters
+        $name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
+        $this->name = $name;
         $this->models = array();
         $nodes = $this->xml->xpath('/*/*');
         foreach ($nodes as $node) {

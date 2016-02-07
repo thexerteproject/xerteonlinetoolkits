@@ -51,8 +51,9 @@
 			else if (youtubeCode.indexOf('iframe') != -1) {
 				iframe = this.parseIframeCode(youtubeCode, iframe);
 			}
-			else if (youtubeCode.substring(0, 29) == "http://www.youtube.com/watch?") {
-				var keypairs = youtubeCode.substring(29).split('&');
+			else if (youtubeCode.substring(0, 30).toLowerCase().indexOf("www.youtube.com/watch?") != -1) {
+				var idx = youtubeCode.substring(0, 30).toLowerCase().indexOf("www.youtube.com/watch?");
+				var keypairs = youtubeCode.substring(idx+22).split('&');
 				for (var i=0; i < keypairs.length; i++) {
 					var parts = keypairs[i].split("=");
 					if (parts[0] == "v") {
@@ -63,7 +64,8 @@
 					}
 				}
 			}
-			else if (youtubeCode.substring(0, 16) == "http://youtu.be/") {
+			else if (youtubeCode.substring(0, 17).toLowerCase().indexOf("youtu.be/") != -1) {
+				var idx = youtubeCode.substring(0, 17).toLowerCase().indexOf("youtu.be/");
 				var finish = youtubeCode.length;
 				if (youtubeCode.indexOf('?') != -1 ) {
 					finish = youtubeCode.indexOf('?');
@@ -73,10 +75,15 @@
 						iframe.time = eval(parts[1].replace("s", "").replace("m", "*60+"));
 					}
 				}
-				iframe.code = youtubeCode.substring(16, finish);
+				iframe.code = youtubeCode.substring(idx+9, finish);
 			}
 			else if (youtubeCode.indexOf('http://www.youtube.com/v/') != -1) {
 				var str = 'http://www.youtube.com/v/';
+				var start = youtubeCode.indexOf(str) + str.length;
+				iframe.code = youtubeCode.substr(start, 11);
+			}
+			else if (youtubeCode.indexOf('https://www.youtube.com/v/') != -1) {
+				var str = 'https://www.youtube.com/v/';
 				var start = youtubeCode.indexOf(str) + str.length;
 				iframe.code = youtubeCode.substr(start, 11);
 			}

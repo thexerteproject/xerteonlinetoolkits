@@ -427,6 +427,7 @@ function update_site(){
 					 '&email_error_list=' + document.getElementById("error_email_list").value + 
 					 '&error_log_message=' + document.getElementById("error_log_message").value + 
 					 '&error_email_message=' + document.getElementById("error_email_message").value + 
+					 '&authentication_method=' + document.getElementById("authentication_method").value + 
 					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
 					 '&ldap_port=' + document.getElementById("ldap_port").value + 
 					 '&bind_pwd=' + document.getElementById("bind_pwd").value + 

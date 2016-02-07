@@ -431,12 +431,14 @@ function button_check(){
 
 function setupMainLayout()
 {
-    var opentooltip = "Open this pane",
-        closetooltip = "Close this pane",
-        resizetooltip = "Resize this pane",
+    var opentooltip = LAYOUT_OPENTOOLTIP,
+        closetooltip = LAYOUT_CLOSETOOLTIP,
+        resizetooltip = LAYOUT_RESIZETOOLTIP,
+        unpin = LAYOUT_UNPIN,
+        pin = LAYOUT_PIN,
         xertemain_layout_settings = {
             name: "xertemain_layout",
-            defaults: {
+            panes: {
                 size:                   "auto",
                 minSize:                50,
                 paneClass:              "pane",
@@ -448,10 +450,19 @@ function setupMainLayout()
                 togglerLength_open:     35,
                 togglerLength_closed:   35,
                 hideTogglerOnSlide:     true,
+                /*
                 togglerTip_open:        closetooltip,
                 togglerTip_closed:      opentooltip,
                 resizerTip:             resizetooltip,
+                */
                 fxName:                 "none",
+                tips: {
+                    Open: opentooltip    // eg: "Open Pane"
+                    , Close: closetooltip
+                    , Resize: resizetooltip
+                    , Pin: pin
+                    , Unpin: unpin
+                }
                 /*
                 fxName:                 "none",
                 fxSpeed_open:           750,
@@ -480,9 +491,6 @@ function setupMainLayout()
                 togglerLength_closed:   21,
                 togglerLength_open:     0,
                 togglerAlign_closed:    "right",
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip_open:        resizetooltip,
                 slideTrigger_open:      "mouseover",
                 slidable:               true,
                 initClosed:             false,
@@ -504,7 +512,7 @@ function setupMainLayout()
         },
         xerteinner_layout_settings = {
             name: "xerteinner_layout",
-            defaults: {
+            panes: {
                 size:                   "auto",
                 minSize:                50,
                 paneClass:              "pane",
@@ -516,10 +524,14 @@ function setupMainLayout()
                 togglerLength_open:     35,
                 togglerLength_closed:   35,
                 hideTogglerOnSlide:     true,
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip:             resizetooltip,
                 fxName:                 "none",
+                tips: {
+                    Open: opentooltip    // eg: "Open Pane"
+                    , Close: closetooltip
+                    , Resize: resizetooltip
+                    , Pin: pin
+                    , Unpin: unpin
+                },
                 /*
                 fxName:                 "slide",
                 fxSpeed_open:           750,
@@ -538,9 +550,6 @@ function setupMainLayout()
                 togglerLength_closed:   21,
                 togglerAlign_closed:    "top",
                 togglerLength_open:     0,
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip_open:        resizetooltip,
                 slideTrigger_open:      "click",
                 initClosed:             false
                 /*
@@ -558,9 +567,6 @@ function setupMainLayout()
                 togglerLength_closed:   21,
                 togglerAlign_closed:    "top",
                 togglerLength_open:     0,
-                togglerTip_open:        closetooltip,
-                togglerTip_closed:      opentooltip,
-                resizerTip_open:        resizetooltip,
                 slideTrigger_open:      "click",
                 initClosed:             false,
                 closable:               true,

@@ -151,6 +151,28 @@ if(is_user_admin()){
 
     echo "</div>";
 
+    echo "<div class=\"template\" id=\"authdetails\"><p>" . MANAGEMENT_SITE_AUTH_DETAILS . " <button type=\"button\" class=\"xerte_button\" id=\"authdetails_btn\" onclick=\"javascript:templates_display('authdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"authdetails_child\">";
+
+    echo "<p>" . MANAGEMENT_SITE_AUTH_METHOD . "<form style=\"margin: top: 20px; padding: 4em 0.15em; \">";
+
+        echo "<select name=\"authentication_method\" id=\"authentication_method\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
+
+        if(isset($row['authentication_method'])) {
+          echo "<option value=\"". $row['authentication_method'] . "\">". $row['authentication_method'] . "</option>";
+        }
+
+        echo "<option value=\"Guest\">Guest</option>
+              <option value=\"Ldap\">Ldap</option>
+              <option value=\"Db\">Db</option>
+              <option value=\"Static\">Static</option>
+              <option value=\"Moodle\">Moodle</option>
+              <option value=\"Saml2\">Saml2</option>
+            </select>";
+
+        echo "</form></p>"; 
+
+    echo "</div>";
+
     echo "<div class=\"template\" id=\"ldapdetails\"><p>" . MANAGEMENT_SITE_LDAP . " <button type=\"button\" class=\"xerte_button\" id=\"ldapdetails_btn\" onclick=\"javascript:templates_display('ldapdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ldapdetails_child\">";
 
     echo "<p>" . MANAGEMENT_SITE_LDAP_DELIMIT . "</p>";

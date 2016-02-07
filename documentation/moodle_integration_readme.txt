@@ -1,9 +1,9 @@
-moodle authentication integration for Xerte toolkits updated for use with 1.8+
-updated May 2012
+moodle authentication integration for Xerte toolkits updated for use with version 3 and later
+updated November 2015
 
-This method of authentication integration has been tested with XOT 1.8 and enables authentication integration with the moodle installation on the same server. Specifically it enables integration with the moodle authentication system allowing seamless login from moodle to toolkits. This is achieved by using the moodle session data so at the moment this will not work if moodle and toolkits are installed on separate servers. 
+This method of authentication integration has been tested with XOT 3.x and enables authentication integration with the moodle installation on the same server. Specifically it enables integration with the moodle authentication system allowing seamless login from moodle to toolkits. This is achieved by using the moodle session data so at the moment this will not work if moodle and toolkits are installed on separate servers. 
 
-Note: this latest integration will only work with XOT 1.8 and above and is not backwards compatible with previous XOT versions. It should however work with any version of Moodle e.g. 1.9x as well as 2.x.
+Note: this latest integration will only work with XOT 1.8 and above and is not backwards compatible with XOT versions prior to 1.8. It should however work with any version of Moodle e.g. 1.9x as well as 2.x, 3.x.
 
 /////////////////////////////////////////////////////
 How this works
@@ -43,7 +43,7 @@ In the XOT auth_config.php comment out //$xerte_toolkits_site->authentication_me
 Step 4.
 View http://yourmoodle/yourxot/ and ensure everything still works. You should be forced to login to Moodle and then returned back to XOT if installed inside the moodle directory. (see how this works above)
 
-Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented our code at the bottom of auth_config.php
+Step 5 (optional): If you wish to restrict authoring access to XOT e.g. not allow all moodle users to author you can easily do so by creating a custom profile field in moodle - see the commented out code in moodle_restrictions.php
 
 
 /////////////////////////////////////////////////////

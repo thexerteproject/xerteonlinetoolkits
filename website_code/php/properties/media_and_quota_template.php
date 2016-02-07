@@ -49,14 +49,23 @@ $quota=0;
  * @author Patrick Lockley
  */
 
-function in_use($file_name){
+function in_use($file_name)
+{
 
     global $xmlpath, $previewpath;
-	$file_name2 = str_replace("&", "&amp;", $file_name);
-	$file_name2 = str_replace(" ", "%20", $file_name);
-    if(!strpos(file_get_contents($xmlpath),$file_name)&&!strpos(file_get_contents($previewpath),$file_name)&&!strpos(file_get_contents($xmlpath),$file_name2)&&!strpos(file_get_contents($previewpath),$file_name2)){
+
+    $preview = file_get_contents($previewpath);
+    // Decode all filenames in preview
+    $preview2 = rawurldecode($preview);
+    $preview3 = html_entity_decode($preview2);
+    $data = file_get_contents($xmlpath);
+    // Decode all filenames in data
+    $data2 = rawurldecode($data);
+    $data3 = html_entity_decode($data2);
+    if (strpos($data3, $file_name) === false && strpos($preview3, $file_name) === false)
+    {
         return false;
-    }else{
+    } else {
         return true;
     }
 

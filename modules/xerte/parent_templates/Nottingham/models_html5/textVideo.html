@@ -92,6 +92,10 @@
 				
 				$pageVideo.append(videoSrc);
 				
+				if ($("#transcriptHolder").length > 0) {
+					$("#transcript").width($pageVideo.width());
+				}
+				
 			} else {
 				var videoDimensions = [320,240];
 				
@@ -120,6 +124,10 @@
 					.mouseout(function(){
 						$(".mejs-controls").hide();
 					});
+				
+				if ($("#transcriptHolder").length > 0) {
+					$("#transcript").width(videoDimensions[0]);
+				}
 			}
 			
 			x_pageLoaded();

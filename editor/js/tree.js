@@ -584,6 +584,10 @@ var EDITOR = (function ($, parent) {
             {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['name'], attribute_name, attribute_value.value, key);
             }
+            else if (node_options['name'][0].value.mandatory)
+            {
+                toolbox.displayParameter('#mainPanel .wizard', node_options['name'], attribute_name, node_options['name'][0].value.defaultValue, key);
+            }
         }
         // If the main node has a label, display the node item second (unconditionaly)
         if (node_label.length > 0 && !node_options['cdata'])

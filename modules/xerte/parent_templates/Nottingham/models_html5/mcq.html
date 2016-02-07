@@ -30,7 +30,7 @@
 				this.startQ();
 				$("#feedback").html("");
 				$("#optionHolder input:checked").prop("checked", false);
-				$("#checkBtn").attr("disabled", "disabled");
+				$("#checkBtn").hide();
 			}
 		}
 
@@ -281,10 +281,10 @@
 								var $checkBtn = $("#checkBtn"),
 									$selected = $("#optionHolder input:checked");
 
-								if ($checkBtn.attr("disabled") != "disabled" && $selected.length == 0) {
-									$checkBtn.attr("disabled", "disabled");
-								} else if ($checkBtn.attr("disabled") == "disabled" && $selected.length > 0) {
-									$checkBtn.removeAttr("disabled");
+								if ($checkBtn.is(":visible") && $selected.length == 0) {
+									$checkBtn.hide();
+								} else if ($checkBtn.is(":hidden") && $selected.length > 0) {
+									$checkBtn.show();
 								}
 							})
 							.focusin(function() {
@@ -317,11 +317,12 @@
 				}
 				$("#checkBtn")
 					.button({ label: checkBtnTxt })
-					.attr("disabled", "disabled")
 					.click(function() {
+						$(this).hide();
 						mcq.showFeedBackandTrackScore();
 						mcq.checked = true;
-					});
+					})
+					.hide();
 
 				this.startQ();
 				
@@ -345,6 +346,7 @@
 
 	#optionHolder {
 		margin-top:	15px;
+		margin-bottom:	15px;
 	}
 
 	#pageContents input {

@@ -1,7 +1,7 @@
 <language name="Nederlands" code="nl-NL">
-    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" />
+    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
     <edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
-    <insertDialog>
+    <insertDialog label="Voeg {i} toe" preview="Voorbeeld">
         <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
         <insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
         <insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
@@ -22,6 +22,8 @@
 	</kblanguage>
 	<newLink label="{i} toevoegen" />
 	<helpLink tooltip="Klik voor Help"/>
+    <btnAddColumn label="Kolom toevoegen" tooltip="Kolom rechts toevoegen"/>
+    <btnDelColumn label="Kolom verwijderen" tooltip="Verwijder de geselecteerde tabel"/>
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
@@ -34,7 +36,7 @@
 	<icDelete tooltip="Verwijder" prompt="Verwijder dit item?"/>
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
-	<optionalProphtml label="Extra eigenschappen"/>
+	<optionalPropHTML label="Extra eigenschappen"/>
 	<chkShowLanguage label="Toon Taal Opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon Geavanceerde Opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
     <chkShowToolbar label="Toon Knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
@@ -134,6 +136,9 @@
 		<savefile>
 			<prompt>Het genereren van de XML is mislukt. Wijzigingen zijn niet opgeslagen. Controleer uw laatste wijzigingen.</prompt>
 		</savefile>
+        <exitwizard>
+            <prompt>Je staat op het punt om de editor te verlaten</prompt>
+        </exitwizard>
         <upload>
             <successful>Importeren is geslaagd!</successful>
             <failed>

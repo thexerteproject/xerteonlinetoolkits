@@ -38,9 +38,15 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
             tmpid += '-' + ia_type;
         }
     }
+
     if (ia_name)
     {
-        tmpid += ':' + encodeURIComponent(ia_name.replace(/ /g, "_"));
+        // ia_nam can be HTML, just extract text from it
+        var div = $("<div>").html(ia_name);
+        var strippedName = div.text();
+        tmpid += ':' + encodeURIComponent(strippedName.replace(/ /g, "_"));
+        // Truncate to max 255 chars, this should be 4000
+        tmpid = tmpid.substr(0,255);
     }
     return tmpid;
 }
@@ -137,7 +143,7 @@ function ScormTrackingState()
     this.currentid = "";
     this.currentpageid = "";
     this.trackingmode = "full";
-    this.scoremode = 'last';
+    this.scoremode = 'first';
     this.nrpages = 0;
     this.pages_visited=0;
     this.start = new Date();

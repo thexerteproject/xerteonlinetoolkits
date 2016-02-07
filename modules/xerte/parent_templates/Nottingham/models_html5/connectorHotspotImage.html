@@ -53,6 +53,9 @@
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				$("#mainText").remove();
 				$("#pageContents").css("text-align", "center");
+				// Remove panel
+				//$("#panel").removeClass("inline");
+				$("#panel").removeClass("panel");
 			} else {
 				$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 				
@@ -124,12 +127,12 @@
 				"continueBtnTxt":x_currentPageXML.getAttribute("continueBtnTxt") != undefined ? x_currentPageXML.getAttribute("continueBtnTxt") : "Close"
 			});
 		}
-		
 		this.resizeImg = function(firstLoad) {
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
-				imgMaxW = Math.round($x_pageHolder.width() - 50);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxW = Math.round($x_pageHolder.width() - 30);
+				imgMaxH = Math.round($x_pageHolder.height() - 30);
+				$('#panel').css('margin', '0px');
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageHolder.width() * 0.8 - 20);
 				imgMaxH = Math.round($x_pageHolder.height() - 50);
@@ -165,7 +168,7 @@
 					// open dialog popup
 					if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
 						hsType = "dialog";
-						hsInfo = "video";Math.round(docWidth * (500.0/800.0))
+						hsInfo = "video";
 					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
 						hsType = "dialog";
 						hsInfo = "sound";
