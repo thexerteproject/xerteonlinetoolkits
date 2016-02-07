@@ -17,7 +17,9 @@ doAction = function(action)
             data: { action: action,
                     group: $("#group").val(),
                     template: $("#template").val(),
-                    readonly: $("#readonly").prop('checked')
+                    readonly: $("#readonly").prop('checked'),
+                    practice: $("#practice").prop('checked'),
+                    attempt: $("#attempt").val()
             }
         })
         .done(function( msg ) {
@@ -31,6 +33,17 @@ clearResult = function()
     $("#result").html("");
 }
 
+changePractice = function()
+{
+    if($('#practice').prop('checked'))
+    {
+        $('#attempt').prop('disabled', false);
+    }
+    else
+    {
+        $('#attempt').prop('disabled', true);
+    }
+}
 
 updateGroupList = function()
 {

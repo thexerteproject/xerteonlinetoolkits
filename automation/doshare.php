@@ -27,6 +27,9 @@
 
 require_once(dirname(__FILE__) . "/../config.php");
 require_once(dirname(__FILE__) . "/automation.class.php");
+require_once(dirname(__FILE__) . "/../functions.php");
+
+_load_language_file("/automation/doshare.inc");
 
 $auto = new Automate();
 
@@ -35,17 +38,26 @@ $groups = $auto->allowedGroups();
 $templates = $auto->availableTemplates();
 
 
-if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['template']) && !empty($_POST['readonly'])) {
+if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['template']) && !empty($_POST['readonly']) && !empty($_POST['practice'])) {
     $action = $_POST['action'];
     $group = $_POST['group'];
     $template_id = $_POST['template'];
     $readonly = $_POST['readonly'];
+    $practice = $_POST['practice'];
+    $attempt = 1;
+    if ($practice && !empty($_POST['attempt']))
+    {
+        $attempt = $_POST['attempt'];
+    }
 
     $auto->setOriginalTemplateId($template_id);
+    $auto->setReadonly($readonly);
+    $auto->setPractice($practice);
+    $auto->setAttempt($attempt);
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
-        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
         exit;
     }
 
@@ -53,7 +65,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
-        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
         exit;
     }
 
@@ -82,7 +94,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
                     if ($auto->addAccessToLO($person['username'], $person['firstname'], $person['lastname'], $role, $teachers) === false) {
                         echo $auto->getMesgHTML();
-                        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;
@@ -91,7 +103,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
                     if ($auto->removeAccessFromLO($person['username'], $person['firstname'], $person['lastname'], $template_id) === false) {
                         echo $auto->getMesgHTML();
-                        $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;
@@ -100,17 +112,20 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
         }
     }
 
-    $auto->recordSharing($action,  $template_id, $group, $readonly, $auto->getMesg());
+    $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
         exit;
     }
 
+    $mesg = AUTOMATION_DO_SHARE_SUCCESS_MESG;
+    $mesg = str_replace("%n", $nrpersons, $mesg);
+
     echo "<br>";
-    echo "Action is successfully completed for " . $nrpersons . " students.";
+    echo $mesg;
     exit;
 
 }
-echo "Empty action, group, template or readonly parameter";
+echo AUTOMATION_DO_SHARE_FAILED;
 

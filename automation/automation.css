@@ -40,3 +40,8 @@ body{
 	font-weight:bold;
 	padding:4px;
 }
+
+#attempt {
+	width: 20px;
+	text-align: right;
+}

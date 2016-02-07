@@ -26,6 +26,9 @@
  */
 require_once(dirname(__FILE__) . "/../config.php");
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/../functions.php");
+
+_load_language_file("/automation/automation.class.inc");
 
 class Automate
 {
@@ -40,9 +43,13 @@ class Automate
     private $owner_username;
     private $teacher_root_folder_id;
     private $owner_group_folder_id;
+    private $practice_prefix;
     private $group_name;
     private $folder_name;
     private $org_template_id;
+    private $readonly;
+    private $practice;
+    private $attempt;
     private $course_roles;
     private $allowed = null;
     private $db_connection = null;
@@ -287,11 +294,11 @@ class Automate
                         if (@chmod($temp_new_path, 0777)) {
                             $this->createFolderLoop($full . "/", $temp_new_path);
                         } else {
-                            $this->mesg .= "Failed to set permissions on folder: Failed to set correct rights on " . $temp_new_path . ".\n";
+                            $this->mesg .= AUTOMATION_FOLDERPERMS_FAILED . $temp_new_path . ".\n";
                             return false;
                         }
                     } else {
-                        $this->mesg .= "Failed to create folder: Failed to create folder " . $temp_new_path . ".\n";
+                        $this->mesg .= AUTOMATION_FOLDER_CREATE_FAILED . $temp_new_path . ".\n";
                         return false;
                     }
                 }
@@ -299,11 +306,11 @@ class Automate
                 $file_dest_path = $new_path . $f;
                 if (@copy($full, $file_dest_path)) {
                     if (!@chmod($file_dest_path, 0777)) {
-                        $this->mesg .= "Failed to copy file: Failed to set rights on file " . $full . " " . $file_dest_path . ".\n";
+                        $this->mesg .= AUTOMATION_COPY_PERMS_FAILED . $full . " " . $file_dest_path . ".\n";
                         return false;
                     }
                 } else {
-                    $this->mesg .= "Failed to set rights on file: Failed to copy file " . $full . " " . $file_dest_path . ".\n";
+                    $this->mesg .= AUTOMATION_COPY_FAILED . $full . " " . $file_dest_path . ".\n";
                     return false;
                 }
             }
@@ -338,12 +345,12 @@ class Automate
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
-        $this->mesg .= " - Copy template contents\n";
+        $this->mesg .= AUTOMATION_DUPLICATE_MESG;
         $q = "select ld.username from {$prefix}templatedetails td, {$prefix}logindetails ld where td.template_id=? and td.creator_id=ld.login_id";
         $row = db_query_one($q, array($id_to_copy));
 
         if ($row == null) {
-            $this->mesg .= "Cannot find user of template " . $id_to_copy . ".\n";
+            $this->mesg .= AUTOMATION_DUPLICATE_USER_NOT_FOUND . $id_to_copy . ".\n";
             return false;
         }
         $org_user_name = $row['username'];
@@ -367,11 +374,11 @@ class Automate
                     return false;
                 }
             } else {
-                $this->mesg .= "Failed to set rights on parent folder for template: Failed to set rights on parent folder " . $new_path . ".\n";
+                $this->mesg .= AUTOMATION_DUPLCATE_CREATE_FOLDER_PERMS_FAILED . $new_path . ".\n";
                 return false;
             }
         } else {
-            $this->mesg .= "Failed to create parent folder for template: Failed to create parent folder " . $new_path . ".\n";
+            $this->mesg .= AUTOMATION_DUPLICATE_CREATE_FOLDER_FAILED . $new_path . ".\n";
             return false;
         }
     }
@@ -393,8 +400,10 @@ class Automate
         //if (!$this->Allowed())
         //    return false;
 
-        $this->mesg .= "Check login " . $username . "\n";
-        $this->mesg .= "   - Check if user " . $username . " exists.\n";
+        $this->mesg .= AUTOMATION_CHECK_USER_MESG1 . $username . "\n";
+        $mesg = AUTOMATION_CHECK_USER_MESG2;
+        $mesg = str_replace("%s", $username, $mesg);
+        $this->mesg .= $mesg;
         // search for user in logindetails table
         $q = "select * from {$prefix}logindetails where username=?";
         $row = db_query_one($q, array($username));
@@ -403,7 +412,7 @@ class Automate
             $login_id = $row['login_id'];
         } else {
 
-            $this->mesg .= "   - Create user login for " . $username . ".\n";
+            $this->mesg .= AUTOMATION_CREATE_USER_LOGIN . $username . ".\n";
 
             // Create logindetails
             $query = "insert into {$prefix}logindetails (username, lastlogin, firstname, surname) values (?,?,?,?)";
@@ -414,7 +423,7 @@ class Automate
             $res = db_query($query, array($login_id, "0", 'recyclebin'));
 
             if ($res === false) {
-                $this->mesg .= "   - Failed to create recyclebin for user " . $username . "\n";
+                $this->mesg .= AUTOMATION_CREATE_USER_LOGIN_RECYCLEBIN_FAILED . $username . "\n";
                 return false;
             }
         }
@@ -422,7 +431,7 @@ class Automate
         // Check root folder
         $root_folder_id = $this->checkCreateRootFolder($login_id, $username);
         if ($root_folder_id == null || $root_folder_id === false) {
-            $this->mesg .= "   - Cannot find/create root folder for user " . $username . ".\n";
+            $this->mesg .= AUTOMATION_CREATE_USER_LOGIN_ROOTFOLDER_FAILED . $username . ".\n";
             return false;
         }
         return array('login_id' => $login_id, 'root_folder_id' => $root_folder_id);
@@ -444,7 +453,7 @@ class Automate
         //    return false;
 
         // Check root folder
-        $this->mesg .= "   - Check root folder for user " . $username . ".\n";
+        $this->mesg .= AUTMATION_CHECK_ROOTFOLDER_MESG . $username . ".\n";
 
         $query = "select folder_id from {$prefix}folderdetails where login_id= ? AND folder_name = ?";
         $params = array($login_id, $username);
@@ -452,7 +461,7 @@ class Automate
         $response = db_query_one($query, $params);
         if ($response == null) {
 
-            $this->mesg .= "   - Create root folder for user " . $username . ".\n";
+            $this->mesg .= AUTOMATION_CHECK_ROOTFOLDER_CREATE_MESG . $username . ".\n";
 
             $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
             $params = array($login_id, "0", $username);
@@ -498,13 +507,15 @@ class Automate
                 if ($folder !== false)
                 {
                     if ($folder['folder_name'] == $foldername) {
-                        $this->mesg .= "Folder " . $foldername . " exists: owner=" . $rows[0]['user_name'] . ".\n";
+                        $mesg = AUTOMATION_CHECK_OWNERFOLDER_MESG;
+                        str_replace("%f", $foldername, $mesg);
+                        $this->mesg .= $mesg . $rows[0]['user_name'] . ".\n";
                         $this->status = true;
                         return $this->owner_group_folder_id;
                     }
                     else
                     {
-                        $this->mesg .= "Inconsistent data detected! Aborting!\n";
+                        $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_INCONISTENT;
                         $this->status = false;
                         return false;
                     }
@@ -512,7 +523,7 @@ class Automate
                 }
                 else
                 {
-                    $this->mesg .= "Failed to query group folder, Aborting!\n";
+                    $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_QUERY_FAILED;
                     $this->status = false;
                     return false;
                 }
@@ -534,22 +545,24 @@ class Automate
                     $folder_id = db_query($query, $params);
                     if ($folder_id !== false) {
                         // Create record in auto_template_group_folders
-                        $query = "insert into {$prefix}auto_template_group_folders set date_created=?, template_id=? group_name=?, user_id=? user_name=?, folder_id=?";
+                        $query = "insert into {$prefix}auto_template_group_folders set date_created=?, template_id=?, group_name=?, user_id=?, user_name=?, folder_id=?";
                         $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $folder_id);
                         $record = db_query($query, $params);
 
                         if ($record !== false) {
-                            $this->mesg .= "Created new group folder '" . $foldername . "' for template " . $this->org_template_id . "\n";
+                            $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE;
+                            $mesg = str_replace("%f", $foldername, $mesg);
+                            $this->mesg .= $mesg . $this->org_template_id . "\n";
                             return $folder_id;  // Might be false
                         }
                         else{
-                            $this->mesg .= "Failed to auto_template_group_folders record, Aborting!\n";
+                            $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_FAILED;
                             $this->status = false;
                             return false;
                         }
                     }
                     else{
-                        $this->mesg .= "Failed to create group folder, Aborting!\n";
+                        $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_FAILED;
                         $this->status = false;
                         return false;
                     }
@@ -559,11 +572,13 @@ class Automate
                     $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $row['folder_id']);
                     $record = db_query($query, $params);
                     if ($record !== false) {
-                        $this->mesg .= "Created new auto_template_group_folders record for group '" . $foldername . "' and template " . $this->org_template_id . "\n";
+                        $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_MESG;
+                        $mesg = str_replace("%f", $foldername, $mesg);
+                        $this->mesg .= $mesg . $this->org_template_id . "\n";
                         return $row['folder_id'];  // Might be false
                     }
                     else{
-                        $this->mesg .= "Failed to auto_template_group_folders record, Aborting!\n";
+                        $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_FAILED;
                         $this->status = false;
                         return false;
                     }
@@ -623,14 +638,62 @@ class Automate
         if ($rows === false || count($rows)>0)
         {
             // Error or already added, do not add again
-            if ($rows == false) {
-                $this->mesg .= "Error querying auto_copied_templates table.\n";
+            if ($rows === false) {
+                $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_QUERY_FAILED;
                 return false;
             }
             else
             {
-                $this->mesg .= "This template (" . $template_id . ") is already copied to " . $login_id . ". Skip!\n";
-                return $rows[0]['copied_template_id'];
+                // It was already copied. Check if the LO still actuall exists by checking if there is a template in the correct folder
+                // Step 1. Check if template actually exists
+                $q = "select * from {$prefix}templatedetails where template_id=?";
+                $params = array($rows[0]['copied_template_id']);
+                $res = db_query_one($q, $params);
+                if ($res !== false && $res['template_id'] == $rows[0]['copied_template_id']) {
+                    // Step 2. Template exists. Check whther it's in the correct folder
+                    $q = "select * from {$prefix}templaterights where template_id=? and user_id=? and folder=?";
+                    $params = array($rows[0]['copied_template_id'], $rows[0]['owner_id'], $rows[0]['owner_folder_id']);
+                    $res = db_query_one($q, $params);
+                    if ($res !== false && $res!=null) {
+                        $mesg = AUTOMATION_COPY_TEMPLATE_TO_USER_EXISTS;
+                        $mesg = str_replace("%t", $template_id, $mesg);
+                        $mesg = str_replace("%l", $login_id, $mesg);
+                        $this->mesg .= $mesg;
+                        return $rows[0]['copied_template_id'];
+                    }
+                    else
+                    {
+                        $mesg = AUTOMATION_COPY_TEMPLATE_TO_USER_SHARED_WRONG_FOLDER;
+                        $mesg = str_replace("%t", $template_id, $mesg);
+                        $this->mesg .= $mesg;
+
+                        // Remove all sharing to moved LO
+                        $q = "delete from {$prefix}templaterights where template_id=? and role != 'creator'";
+                        $params = array($rows[0]['copied_template_id']);
+                        $res = db_query($q, $params);
+
+                        // Remove record from auto_copied_templates
+                        $q = "delete from {$prefix}auto_copied_templates where org_template_id=? and owner_id=? and owner_user_name=? and owner_folder_id=? and for_user_id=? and for_user_name=? and for_user=?";
+                        $params = array($template_id, $login_id, $user_name, $folder_id, $for_user_id, $for_username, $for_user);
+                        $res = db_query($q, $params);
+                    }
+                }
+                else
+                {
+                    $mesg = AUTOMATION_COPY_TEMPLATE_TO_USER_SHARED_DELETED;
+                    $mesg = str_replace("%t", $template_id, $mesg);
+                    $this->mesg .= $mesg;
+
+                    // Remove all sharing to moved LO
+                    $q = "delete from {$prefix}templaterights where template_id=? and role != 'creator'";
+                    $params = array($rows[0]['copied_template_id']);
+                    $res = db_query($q, $params);
+
+                    // Remove record from auto_copied_templates
+                    $q = "delete from {$prefix}auto_copied_templates where org_template_id=? and owner_id=? and owner_user_name=? and owner_folder_id=? and for_user_id=? and for_user_name=? and for_user=?";
+                    $params = array($template_id, $login_id, $user_name, $folder_id, $for_user_id, $for_username, $for_user);
+                    $res = db_query($q, $params);
+                }
             }
         }
 
@@ -640,7 +703,7 @@ class Automate
         $row = db_query_one("SELECT max(template_id) as count FROM {$prefix}templatedetails");
 
         if ($row === false) {
-            $this->mesg .= "Failed to get the maximum template number.\n";
+            $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_GETID_FAILED;
             return false;
         }
         $new_template_id = $row['count'] + 1;
@@ -668,7 +731,7 @@ class Automate
             date('Y-m-d'),
             date('Y-m-d'),
             "Private",
-            $row_template_type['template_name'] . "_-_" . $for_user,
+            $this->practice_prefix . $row_template_type['template_name'] . "_-_" . $for_user,
             $row_template_type['extra_flags']);
 
         if (db_query($query_for_new_template, $params) !== FALSE) {
@@ -678,7 +741,7 @@ class Automate
 
             if (db_query($query_for_template_rights, $params) !== FALSE) {
 
-                $this->mesg .= " - Created new template record for the database.\n";
+                $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_RECORD_CREATED;
 
                 if ($this->duplicateTemplate($user_name, $new_template_id, $template_id, $row_template_type['org_template_name']))
                 {
@@ -688,25 +751,25 @@ class Automate
                     $row = db_query($sql, $params);
                     if ($row === false)
                     {
-                        $this->mesg .= "Failed to insert registration into copied_template.\n";
+                        $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_CREATE_REGISTRATIONRECORD_FAILED;
                     }
                     return $new_template_id;
                 }
                 else
                 {
-                    $this->mesg .= "Failed to duplicate contents to new template.\n";
+                    $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_DUPLICATION_FAILED;
                     return false;
                 }
 
             } else {
 
-                $this->mesg .= "Failed to create new template record for the database.\n";
+                $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_CREATE_RECORD_FAILED;
                 return false;
             }
 
         } else {
 
-            $this->mesg .= "Failed to create new template record for the database.\n";
+            $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_CREATE_RECORD_FAILED;
 
             return false;
 
@@ -827,6 +890,20 @@ class Automate
         }
     }
 
+    private function constructGroupname($groupname)
+    {
+        if ($this->practice) {
+            // Construct Practice prefix
+            $this->practice_prefix = AUTOMATION_PRACTICE_PREFIX . AUTOMATION_ATTEMPT_PREFIX . $this->attempt . " - ";
+            $this->group_name = $this->practice_prefix . $groupname;
+        }
+        else
+        {
+            $this->practice_prefix = "";
+            $this->group_name = $groupname;
+        }
+    }
+
     function __construct()
     {
         global $xerte_toolkits_site;
@@ -835,7 +912,7 @@ class Automate
 
         if (!isset($_SESSION['toolkits_logon_username']))
         {
-            die("You're not logged in to Xerte Online Toolkits");
+            die(AUTOMATION_NOT_LOGGED_IN);
         }
         // Add tables to xot database
         $sql = "CREATE TABLE IF NOT EXISTS {$prefix}auto_copied_templates (
@@ -850,7 +927,7 @@ class Automate
                     UNIQUE KEY copied_idx (org_template_id, owner_id, owner_user_name, owner_folder_id, for_user_name)
                   )";
 
-        db_query($sql) or die("Failed to create auto_copied_templates table!");
+        db_query($sql) or die(AUTOMATION_CREATE_TABLE_AUTO_COPIED_TEMPLATES_FAILED);
         $sql = "CREATE TABLE IF NOT EXISTS {$prefix}auto_sharing_log (
                     id int(11) NOT NULL AUTO_INCREMENT,
                     date_created datetime NOT NULL,
@@ -861,10 +938,12 @@ class Automate
                     user_id int(11) NOT NULL,
                     user_name varchar(64) NOT NULL,
                     readonly tinyint(1) NOT NULL,
+                    practice tinyint(1) NOT NULL,
+                    attempt int(11) NOT NULL,
                     logmessage text,
                     PRIMARY KEY (`id`)
                   )";
-        db_query($sql) or die("Failed to create auto_sharing_log table!");
+        db_query($sql) or die(AUTOMATION_CREATE_TABLE_AUTO_SHARING_LOG_FAILED);
 
         $sql = "CREATE TABLE IF NOT EXISTS {$prefix}auto_template_group_folders (
                     id int(11) NOT NULL AUTO_INCREMENT,
@@ -877,7 +956,7 @@ class Automate
                     PRIMARY KEY (`id`),
                     UNIQUE KEY folder_idx (template_id, group_name)
                   )";
-        db_query($sql) or die("Failed to create auto_template_group_folders table!");
+        db_query($sql) or die(AUTOMATION_CERATE_TABLE_TEMPATE_GROUP_FOLDERS_FAILED);
 
         $this->setTeacher($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
         $this->course_roles = $this->_getUserRoles($this->teacher_username);
@@ -885,14 +964,14 @@ class Automate
 
     public function setGroupFolder($group_name)
     {
-        $this->group_name = $group_name;
+        $this->constructGroupname($group_name);
 
-        $folderid = $this->checkCreateOwnerFolder($this->teacher_id, $this->teacher_username, $this->teacher_root_folder_id, $group_name);
+        $folderid = $this->checkCreateOwnerFolder($this->teacher_id, $this->teacher_username, $this->teacher_root_folder_id, $this->group_name);
         
         if ($folderid !== false)
         {
             $this->owner_group_folder_id  = $folderid;
-            $this->folder_name = $group_name;
+            $this->folder_name = $this->group_name;
 
             $this->status = true;
         }
@@ -905,10 +984,28 @@ class Automate
     public function setOriginalTemplateId($template_id)
     {
         $this->org_template_id = $template_id;
-        $this->mesg .= "Set original template to " . $template_id . ".\n";
+        $this->mesg .= AUTOMATION_SET_ORGINAL_TEMPLATE_MESG . $template_id . ".\n";
     }
 
-    public function recordSharing($action, $templateId, $group, $readonly, $logmesg)
+    public function setReadonly($readonly)
+    {
+        $this->readonly = $readonly;
+        $this->mesg .= AUTOMATION_SET_READONLY_MESG . $readonly . ".\n";
+    }
+
+    public function setPractice($practice)
+    {
+        $this->practice = $practice;
+        $this->mesg .= AUTOMATION_SET_PRACTICE_MESG . $practice . ".\n";
+    }
+
+    public function setAttempt($attempt)
+    {
+        $this->attempt = $attempt;
+        $this->mesg .= AUTOMATION_SET_ATTEMPT_MESG . $attempt . ".\n";
+    }
+
+    public function recordSharing($action, $templateId, $group, $readonly, $practice, $attempt, $logmesg)
     {
         global $xerte_toolkits_site;
 
@@ -918,8 +1015,8 @@ class Automate
         $rows = $this->_moodleQuery($sql, $params);
         if ($rows !== false) {
 
-            $sql = "insert into {$prefix}auto_sharing_log set date_created=?, action=?, template_id=?, group_id=?, group_name=?, user_id=?, user_name=?, readonly=?, logmessage=?";
-            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly, $logmesg);
+            $sql = "insert into {$prefix}auto_sharing_log set date_created=?, action=?, template_id=?, group_id=?, group_name=?, user_id=?, user_name=?, readonly=?, practice=?, attempt=?, logmessage=?";
+            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly, $practice, $attempt, $logmesg);
             $row = db_query($sql, $params);
 
             if ($row !== false)
@@ -928,12 +1025,12 @@ class Automate
             }
             else
             {
-                $this->mesg .= "Falied to log sharing attempt";
+                $this->mesg .= AUTOMATION_LOG_SHARING_FAILED;
                 $this->status = false;
             }
         }
         else{
-            $this->mesg .= "Falied to log sharing attempt";
+            $this->mesg .= AUTOMATION_LOG_SHARING_FAILED;
             $this->status = false;
         }
     }
@@ -970,7 +1067,7 @@ class Automate
         }
         else
         {
-            $this->mesg .= "Failed to get members of group " . $group;
+            $this->mesg .= AUTOMATION_GET_GROUPMEMBERS_FAILED . $group;
             $this->status = false;
             return array();
         }
@@ -993,19 +1090,22 @@ class Automate
     public function addAccessToLO($username, $firstname, $surname, $role, $teachers)
     {
         // Create login for student
-        $this->mesg .= "Add access to " . $firstname . " " . $surname . " (" . $role . ")\n";
+        $mesg = AUTOMATION_ADD_ACCESS_TO_MESG;
+        $mesg = str_replace("%n", $firstname . " " . $surname, $mesg);
+        $mesg = str_replace("%r", $role, $mesg);
+        $this->mesg .= $mesg;
         $login = $this->checkCreateLogin($username, $firstname, $surname);
 
         if ($login !== false)
         {
             // Place template in teachers folder for this student
-            $this->mesg .= " - Place template in teachers folder.\n";
+            $this->mesg .= AUTOMATION_ADD_ACCESS_TO_PLACE_IN_TEACHER_FOLDER;
             $template_id = $this->copyTemplateToUserFolder($this->org_template_id, $this->owner_id, $this->owner_username, $this->owner_group_folder_id, $login['login_id'], $username, $firstname . " " . $surname);
 
             if ($this->status)
             {
                 // Share template with student
-                $this->mesg .= " - Share template with student.\n";
+                $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_SHARE_MESG;
 
                 $folderid = $this->checkCreateFolder($login['login_id'], $username, $login['root_folder_id'], $this->group_name);
 
@@ -1013,26 +1113,28 @@ class Automate
                     if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $folderid, $role) !== false) {
                         // Share template with other teachers
                         foreach ($teachers as $teacher) {
-                            $this->mesg .= " - Share template with teacher (" . $teacher['firstname'] . " " . $teacher['lastname'] . ").\n";
+                            $mesg = AUTOMATION_ADD_ACCESS_TO_LO_TEACHER_MESG;
+                            $mesg = str_replace("%t", $teacher['firstname'] . " " . $teacher['lastname'], $mesg);
+                            $this->mesg .= $mesg;
                             $teacher_login = $this->checkCreateLogin($teacher['username'], $teacher['firstname'], $teacher['lastname']);
                             if ($teacher_login !== false) {
                                 $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher['username'], $teacher_login['root_folder_id'], $this->group_name);
 
                                 if ($folderid !== false) {
                                     if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $folderid, 'read-only') === false) {
-                                        $this->mesg .= "Failed to share template with teacher " . $teacher['username'] . "\n";
+                                        $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_TEACHER_FAILED . $teacher['username'] . "\n";
                                         $this->status = false;
                                         return false;
                                     }
                                 }
                                 else
                                 {
-                                    $this->mesg .= "Failed to create group folder for teacher\n";
+                                    $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_CREATE_TEACHER_GROUPFOLDER_FAILED;
                                     $this->status = false;
                                     return false;
                                 }
                             } else {
-                                $this->mesg .= "Failed to create/find teacher login for " . $teacher['username'];
+                                $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_CHECK_TEACHER_LOGIN_FAILED . $teacher['username'];
                                 $this->status = false;
                                 return false;
                             }
@@ -1040,28 +1142,28 @@ class Automate
                     }
                     else
                     {
-                        $this->mesg .= "Failed to share template with student\n";
+                        $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_STUDENT_FAILED;
                         $this->status = false;
                         return false;
                     }
                 }
                 else
                 {
-                    $this->mesg .= "Failed to create group folder for student\n";
+                    $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_CREATE_STUDENT_GROUPFOLDER_FAILED;
                     $this->status = false;
                     return false;
                 }
             }
             else
             {
-                $this->mesg .= "Failed to copy template to owner folder\n";
+                $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_COPY_TO_OWNER_GROUPFOLDER_FAILED;
                 $this->status = false;
                 return false;
             }
         }
         else
         {
-            $this->mesg .= "Failed to create/find login for " . $username;
+            $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_CHECK_LOGIN_FAILED . $username;
             $this->status = false;
             return false;
         }
@@ -1071,9 +1173,9 @@ class Automate
     public function removeAccessFromLO($username, $firstname, $surname, $template_id)
     {
         // Create login for student
-        $this->mesg .= "Remove access for " . $firstname . " " . $surname . "\n";
+        $this->mesg .= AUTOMATION_UNSHARE_MESG . $firstname . " " . $surname . "\n";
         // Share template with student
-        $this->mesg .= " - Unshare template\n";
+        $this->mesg .= AUTOMATION_UNSHARE_MESG2;
         if ($this->unShareTemplateWithUserInFolder($template_id, $username) !== false) {
             $this->mesg .= "\n";
             return true;
