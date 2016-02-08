@@ -515,11 +515,18 @@ class Automate
                     }
                     else
                     {
-                        $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_INCONISTENT;
-                        $this->status = false;
-                        return false;
-                    }
+                        // Remove folder from auto_template_group_folders table and recreate it
+                        $q = "delete from {$prefix}auto_template_group_folders where template_id=? and group_name=?";
+                        $params = array($this->org_template_id, $this->group_name);
 
+                        $res = db_query($q, $params);
+
+                        if ($res === false) {
+                            $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_QUERY_FAILED;
+                            $this->status = false;
+                            return false;
+                        }
+                    }
                 }
                 else
                 {
@@ -528,60 +535,59 @@ class Automate
                     return false;
                 }
 
-            } else {
-                $this->owner_id = $login_id;
-                $this->owner_username = $user_name;
+            }
+            $this->owner_id = $login_id;
+            $this->owner_username = $user_name;
 
-                // search for folder in logindetails table
-                $q = "select * from {$prefix}folderdetails where login_id=? and folder_parent=? and folder_name=?";
-                $row = db_query_one($q, array($login_id, $parent_folder_id, $foldername));
+            // search for folder in logindetails table
+            $q = "select * from {$prefix}folderdetails where login_id=? and folder_parent=? and folder_name=?";
+            $row = db_query_one($q, array($login_id, $parent_folder_id, $foldername));
 
 
-                if ($row == null) {
-                    // Create folder
-                    $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
-                    $params = array($login_id, $parent_folder_id, $foldername, date('Y-m-d'));
+            if ($row == null) {
+                // Create folder
+                $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+                $params = array($login_id, $parent_folder_id, $foldername, date('Y-m-d'));
 
-                    $folder_id = db_query($query, $params);
-                    if ($folder_id !== false) {
-                        // Create record in auto_template_group_folders
-                        $query = "insert into {$prefix}auto_template_group_folders set date_created=?, template_id=?, group_name=?, user_id=?, user_name=?, folder_id=?";
-                        $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $folder_id);
-                        $record = db_query($query, $params);
-
-                        if ($record !== false) {
-                            $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE;
-                            $mesg = str_replace("%f", $foldername, $mesg);
-                            $this->mesg .= $mesg . $this->org_template_id . "\n";
-                            return $folder_id;  // Might be false
-                        }
-                        else{
-                            $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_FAILED;
-                            $this->status = false;
-                            return false;
-                        }
-                    }
-                    else{
-                        $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_FAILED;
-                        $this->status = false;
-                        return false;
-                    }
-                } else {
-                    // The folder exists (for a different template), create a new auto_template_group_folders record
+                $folder_id = db_query($query, $params);
+                if ($folder_id !== false) {
+                    // Create record in auto_template_group_folders
                     $query = "insert into {$prefix}auto_template_group_folders set date_created=?, template_id=?, group_name=?, user_id=?, user_name=?, folder_id=?";
-                    $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $row['folder_id']);
+                    $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $folder_id);
                     $record = db_query($query, $params);
+
                     if ($record !== false) {
-                        $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_MESG;
+                        $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE;
                         $mesg = str_replace("%f", $foldername, $mesg);
                         $this->mesg .= $mesg . $this->org_template_id . "\n";
-                        return $row['folder_id'];  // Might be false
+                        return $folder_id;  // Might be false
                     }
                     else{
                         $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_FAILED;
                         $this->status = false;
                         return false;
                     }
+                }
+                else{
+                    $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_FAILED;
+                    $this->status = false;
+                    return false;
+                }
+            } else {
+                // The folder exists (for a different template), create a new auto_template_group_folders record
+                $query = "insert into {$prefix}auto_template_group_folders set date_created=?, template_id=?, group_name=?, user_id=?, user_name=?, folder_id=?";
+                $params = array(date('Y-m-d H:i:s'), $this->org_template_id, $this->group_name, $login_id, $user_name, $row['folder_id']);
+                $record = db_query($query, $params);
+                if ($record !== false) {
+                    $mesg = AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_MESG;
+                    $mesg = str_replace("%f", $foldername, $mesg);
+                    $this->mesg .= $mesg . $this->org_template_id . "\n";
+                    return $row['folder_id'];  // Might be false
+                }
+                else{
+                    $this->mesg .= AUTOMATION_CHECK_OWNERFOLDER_CREATE_RECORD_FAILED;
+                    $this->status = false;
+                    return false;
                 }
             }
         }
@@ -989,13 +995,13 @@ class Automate
 
     public function setReadonly($readonly)
     {
-        $this->readonly = $readonly;
+        $this->readonly = ($readonly === "true");
         $this->mesg .= AUTOMATION_SET_READONLY_MESG . $readonly . ".\n";
     }
 
     public function setPractice($practice)
     {
-        $this->practice = $practice;
+        $this->practice = ($practice === "true");
         $this->mesg .= AUTOMATION_SET_PRACTICE_MESG . $practice . ".\n";
     }
 
