@@ -420,7 +420,7 @@ class Automate
 
             // Create recycle bin
             $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
-            $res = db_query($query, array($login_id, "0", 'recyclebin'));
+            $res = db_query($query, array($login_id, "0", "recyclebin"));
 
             if ($res === false) {
                 $this->mesg .= AUTOMATION_CREATE_USER_LOGIN_RECYCLEBIN_FAILED . $username . "\n";
@@ -1107,7 +1107,7 @@ class Automate
                 // Share template with student
                 $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_SHARE_MESG;
 
-                $folderid = $this->checkCreateFolder($login['login_id'], $username, $login['root_folder_id'], $this->group_name);
+                $folderid = $this->checkCreateFolder($login['login_id'], $login['root_folder_id'], $this->group_name);
 
                 if ($folderid !== false) {
                     if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $folderid, $role) !== false) {
@@ -1118,7 +1118,7 @@ class Automate
                             $this->mesg .= $mesg;
                             $teacher_login = $this->checkCreateLogin($teacher['username'], $teacher['firstname'], $teacher['lastname']);
                             if ($teacher_login !== false) {
-                                $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher['username'], $teacher_login['root_folder_id'], $this->group_name);
+                                $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher_login['root_folder_id'], $this->group_name);
 
                                 if ($folderid !== false) {
                                     if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $folderid, 'read-only') === false) {
