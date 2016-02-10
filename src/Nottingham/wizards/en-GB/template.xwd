@@ -2146,7 +2146,7 @@
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
-	
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
     <newNodes>
       <sentence><![CDATA[<sentence name="Sentence" p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint"/>]]></sentence>
     </newNodes>
@@ -2246,6 +2246,7 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
+    
     <newNodes>
       <timelinedate><![CDATA[<timelinedate name="Enter Item Name" text="Enter description"/>]]></timelinedate>
     </newNodes>

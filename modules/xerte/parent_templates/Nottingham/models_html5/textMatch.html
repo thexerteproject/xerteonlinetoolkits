@@ -155,7 +155,8 @@
 							$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 							$this.find(".audioHolder").show();
 							
-						} else {
+						} else if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+						
 							// incorrect - remove label and show hint
 							if ($this.data("currentTarget") != "") {
 								var $prevTarget = $this.data("currentTarget");
@@ -191,6 +192,7 @@
 					} else if (allCorrect == true) {
 						$(this).hide();
 					}
+					textMatch.finishTracking();
 				});
 			
 			// create targets
@@ -277,8 +279,72 @@
 			
 			this.createLabels();
 			this.sizeChanged();
+			this.initTracking();
 			x_pageLoaded();
 		}
+		
+		
+		this.finishTracking = function()
+		{
+			var l_options = [],
+            l_answers = [],
+            l_feedback = [],
+            l_correct = 0,
+            l_total = 0;
+
+            $("#labelHolder .label").each(function() {
+				var $this = $(this);
+				l_total++;
+				var l_option={};
+        		var l_placeholder = this.getAttribute("p1"); 
+        		var l_draglabel	= this.getAttribute("p2");
+        		l_option.source = l_draglabel;
+        		l_option.target = l_placeholder;
+        		l_options.push(l_option);
+        		l_answer = l_placeholder + "-->" + l_draglabel;
+				if ($this.data("target").is($this.data("currentTarget"))) {
+					l_correct++;
+					l_feedback.push("Correct");
+				}else{
+					l_feedback.push("Incorrect");
+				}
+			});
+            
+            
+            
+            
+			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
+         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+		}
+		
+		this.initTracking = function(){
+			
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+            correctOptions 		= [];
+            correctAnswer 		= [];
+            correctFeedback 	= [];
+            $(x_currentPageXML).children().each(
+            	function(i)
+            	{
+            		var correctOption={};
+            		var placeholder = this.getAttribute("p1"); 
+            		var draglabel	= this.getAttribute("p2");
+            		correctOption.source = draglabel;
+                    correctOption.target = placeholder;
+                    correctOptions.push(correctOption);
+                    correctAnswer.push(placeholder + "-->" + draglabel);
+            		correctFeedback.push("Correct");
+            		
+            	}
+            );
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer, correctFeedback);
+		}
+		
 		
 		this.createLabels = function() {
 			// randomise order and create labels
