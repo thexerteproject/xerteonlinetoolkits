@@ -40,6 +40,16 @@
 				var $panel = $("#pageContents .panel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
+			
+			if ($("#pageContents .audioHolder").length > 0) {
+				var audioBarW = 0;
+				$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+					$x_window.resize();
+				}
+			}
 		}
 
         this.startQ = function() {
@@ -97,7 +107,10 @@
                 (selectedOption.correct == "false" && !$(selected[i]).is(':checked')));
                 if ($(selected[i]).is(':checked')) {
                     answerFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback) + "</p>";
-
+					if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+						answerFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+					}
+					
                     l_options.push(optionIndex+1+"");
                     l_answer.push(selectedOption.text);
                     l_feedback.push(selectedOption.feedback);
@@ -146,8 +159,16 @@
             if (feedbackLabel == undefined) {
                 feedbackLabel = "Feedback";
             }
-            $("#feedback").html("<h3>" + feedbackLabel + "</h3>" + generalFeedback);
-
+            $("#feedback")
+				.html("<h3>" + feedbackLabel + "</h3>" + generalFeedback)
+				.find(".audioHolder").each(function() {
+					$(this).mediaPlayer({
+						type	:"audio",
+						source	:$(this).data("audio"),
+						width	:"100%"
+					});
+				});
+			
             if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
                 $("#feedback").find("a.x_glossary").contents().unwrap();
             }
@@ -242,7 +263,8 @@
 						{
 							text:		this.getAttribute("text"),
 							correct:	this.getAttribute("correct"),
-							feedback:	this.getAttribute("feedback")
+							feedback:	this.getAttribute("feedback"),
+							audioFB:	this.getAttribute("audioFB")
 						}
 					);
 				});
@@ -366,13 +388,17 @@
 		display:		block;
 	}
 
-	#pageContents button {
+	#pageContents #checkBtn {
 		margin:		10px;
 		float:		right;
 	}
 
 	#pageContents #feedback {
 		clear:		both;
+	}
+	
+	#feedback .audioHolder {
+		margin:	0.5em 0 1em 0;
 	}
 
 </style>
@@ -384,7 +410,7 @@
 		<div id="textHolder" class="left" tabindex="1"></div>
 
 		<div id="infoHolder" class="right">
-			<div class="panel">
+			<div id="mainPanel" class="panel">
 				<h3 id="question"></h3>
 				<div id="optionHolder">
 					<div class="optionGroup">

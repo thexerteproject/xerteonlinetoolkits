@@ -80,10 +80,10 @@
 
   <option menuItem="Option" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
-
     <text label="Option" type="TextArea"  height="100"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>
     <correct label="Correct" options="true,false" type="ComboBox"  data="true,false" defaultValue="false" width="100" />
-
+	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
   </option>
+  
 </wizard>
