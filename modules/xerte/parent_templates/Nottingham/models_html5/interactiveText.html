@@ -120,26 +120,31 @@
 			}
 			
 			var groupStyles = "<style type='text/css'>";
+			var illegalDelims = [];
 			
 			// get group info
 			for (var i=0; i<x_currentPageXML.childNodes.length; i++) {
-				var group = new Object();
-				for (var j=0; j<x_currentPageXML.childNodes[i].attributes.length; j++) {
-					group[x_currentPageXML.childNodes[i].attributes[j].name] = x_currentPageXML.childNodes[i].attributes[j].value;
-				}
-				group.numSubGroups = 0;
-				groupInfo.push(group);
-				
-				var bgColour = x_getColour(group.bgColour),
-					rgbval = parseInt(bgColour.substr(1), 16),
-					brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
-					txtColour = (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
-				
-				groupStyles += " .group" + i + ".on {color:" + txtColour + "; background-color:" + bgColour + ";} ";
-				
-				if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
-					$pageContents.addClass("line");
-					groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
+				if ("&<>;".indexOf(x_currentPageXML.childNodes[i].getAttribute("delimiter")) != -1) {
+					illegalDelims.push(x_currentPageXML.childNodes[i].getAttribute("delimiter"));
+				} else {
+					var group = new Object();
+					for (var j=0; j<x_currentPageXML.childNodes[i].attributes.length; j++) {
+						group[x_currentPageXML.childNodes[i].attributes[j].name] = x_currentPageXML.childNodes[i].attributes[j].value;
+					}
+					group.numSubGroups = 0;
+					groupInfo.push(group);
+					
+					var bgColour = x_getColour(group.bgColour),
+						rgbval = parseInt(bgColour.substr(1), 16),
+						brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
+						txtColour = (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
+					
+					groupStyles += " .group" + i + ".on {color:" + txtColour + "; background-color:" + bgColour + ";} ";
+					
+					if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
+						$pageContents.addClass("line");
+						groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
+					}
 				}
 			}
 			
@@ -147,32 +152,53 @@
 			groupStyles += "</style>";
 			$pageContents.prepend($(groupStyles));
 			
+			if (illegalDelims.length > 0) {
+				var str1 = "",
+					str2 = "";
+				for (var i=0; i<illegalDelims.length; i++) {
+					if (i > 0) {
+						if (i != illegalDelims.length - 1) {
+							str1 += ", " + illegalDelims[i];
+						} else if (i == illegalDelims.length - 1) {
+							str2 += illegalDelims[i];
+						}
+					} else {
+						str1 += illegalDelims[i];
+					}
+				}
+				var delimiterErrorMsg = illegalDelims.length > 1 ? (x_currentPageXML.getAttribute("delimiterErrorMsg") != undefined ? x_currentPageXML.getAttribute("delimiterErrorMsg") : "Error: The delimiters {n} and {m} are not allowed.") : (x_currentPageXML.getAttribute("delimiterErrorMsg2") != undefined ? x_currentPageXML.getAttribute("delimiterErrorMsg2") : "Error: The delimiter {n} is not allowed.");
+				delimiterErrorMsg = delimiterErrorMsg.replace("{n}", str1).replace("{m}", str2);
+				$("#pageContents").prepend('<p class="alert">' + delimiterErrorMsg + '</p>');
+			}
+			
 			// get info about position of every delimiter in every group - create subgroups from these with an opening & closing delimiter
 			for (var i=0; i<groupInfo.length; i++) {
 				var temp = interactionText,
 					index = 0,
 					open = true,
 					count = 0;
-				
+								
 				if (temp.indexOf(groupInfo[i].delimiter) != -1) {
 					while (temp.indexOf(groupInfo[i].delimiter) != -1) {
 						var tempIndex = temp.indexOf(groupInfo[i].delimiter);
 						index = index + tempIndex;
 						
-						if (open == true) {
-							var subGroup = new Object({
-								delim:	groupInfo[i].delimiter,
-								open:	index,
-								ref:	i,
-								overlap:[]
-							});
-							subGroups.push(subGroup);
-							
-							count++;
-							open = false;
-						} else {
-							subGroups[subGroups.length-1].close = index;
-							open = true;
+						if (!(groupInfo[i].delimiter == "#" && temp.indexOf("&#") != -1 && temp.indexOf("&#") + 1 == tempIndex)) { // ignore if fits this as it's likely to be a html code not delimiter
+							if (open == true) {
+								var subGroup = new Object({
+									delim:	groupInfo[i].delimiter,
+									open:	index,
+									ref:	i,
+									overlap:[]
+								});
+								subGroups.push(subGroup);
+								
+								count++;
+								open = false;
+							} else {
+								subGroups[subGroups.length-1].close = index;
+								open = true;
+							}
 						}
 						
 						temp = temp.substring(tempIndex + groupInfo[i].delimiter.length);
