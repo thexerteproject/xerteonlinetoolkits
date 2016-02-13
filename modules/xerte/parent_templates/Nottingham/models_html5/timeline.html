@@ -263,8 +263,11 @@
 				}
 			});
             
-            
-            
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                $("#dragDropHolder .label").draggable("disable");
+             	$("#button").hide();
+            }
             
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);

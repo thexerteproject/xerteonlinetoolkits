@@ -100,7 +100,6 @@
 		
 		this.init = function() {
 			$("#pageContents").data("audioW", 0);
-			
 			numAttempts = 0;
 			
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -309,13 +308,17 @@
 					l_feedback.push("Incorrect");
 				}
 			});
-            
-            
+            $("#button").hide();
+            if(x_currentPageXML.getAttribute("trackingWeight") != undefined){
+	            $("#dragDropHolder .label")
+				.draggable("disable");
+            }
             
             
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
+
 		
 		this.initTracking = function(){
 			
