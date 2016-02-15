@@ -50,6 +50,21 @@ margin-top: 20px;
   line-height: 30px;
   margin-bottom: 30px;
 }
+/* --NAVBAR-------------------------------------------------------------- */
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+color: #ffffff;
+text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a {
+color: #ffffff;
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a:hover{
+color: #6FD9D9;
+}
+.navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
+color: #6FD9D9;
+}
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
