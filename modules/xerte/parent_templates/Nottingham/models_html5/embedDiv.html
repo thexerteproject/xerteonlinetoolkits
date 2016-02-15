@@ -62,7 +62,7 @@
 			if (pageSrc.substr(0, 1) == "<") { // insert html directly
 				$iFrameHolder.html(pageSrc);
 			} else { // use iframe to load web page
-				var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '"></iframe>';
+				var iFrameTag = '<iframe id="iFrame" src="' + pageSrc + '" width="100%" height="' + embedDiv.calcHeight() + '" frameBorder="0"></iframe>';
 				$iFrameHolder.html(iFrameTag);
 				$iFrameHolder.addClass("centerAlign");
 			}
