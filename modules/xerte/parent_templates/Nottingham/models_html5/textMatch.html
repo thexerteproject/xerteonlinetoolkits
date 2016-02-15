@@ -295,8 +295,8 @@
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-        		var l_placeholder = this.getAttribute("p1"); 
-        		var l_draglabel	= this.getAttribute("p2");
+        		var l_placeholder = $this.find("div").val(); 
+        		var l_draglabel	= $this.data("target").val();
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
         		l_options.push(l_option);

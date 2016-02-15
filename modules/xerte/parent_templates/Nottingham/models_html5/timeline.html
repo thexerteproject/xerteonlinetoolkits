@@ -249,8 +249,9 @@
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-        		var l_placeholder = this.getAttribute("name"); 
-        		var l_draglabel	= this.getAttribute("description");
+				var tData = $this.data("target");
+        		var l_placeholder = tData.val(); 
+        		var l_draglabel	= $this.val();
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
         		l_options.push(l_option);
@@ -289,7 +290,7 @@
             	{
             		var correctOption={};
             		var placeholder = this.getAttribute("name"); 
-            		var draglabel	= this.getAttribute("description");
+            		var draglabel	= this.getAttribute("text");
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
                     correctOptions.push(correctOption);
