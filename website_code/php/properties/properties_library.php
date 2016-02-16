@@ -604,7 +604,7 @@ function media_quota_info($template_id)
                 }
             }
             $info =  PROJECT_INFO_MEDIA . ": ";
-            $info .=  substr(($quota/1000000),0,4) . " MB<br/>";
+            $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
         }
         else
