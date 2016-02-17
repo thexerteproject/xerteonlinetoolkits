@@ -104,6 +104,7 @@
 					fullscreenText:		x_mediaText[3].label,
 					stopText:			x_mediaText[0].label,
 					tracksText:			x_mediaText[4].label,
+					enableKeyboard:		false,
 					enablePluginDebug:  false,
 					
 					success: function (mediaElement, domObject) {
