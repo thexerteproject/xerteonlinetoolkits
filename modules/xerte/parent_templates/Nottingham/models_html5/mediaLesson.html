@@ -254,7 +254,6 @@
 		
 		// function called when popcorn.js & plugin files have all loaded
 		this.setUp = function() {
-			
 			// _____ SORT PAGE LAYOUT _____
 			
 			$panelHolder = $("#panelHolder");
@@ -467,7 +466,7 @@
 			
 			if (popcornInstance != undefined) {
 				panelData.each(function(i) {
-					mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance);
+					mediaLesson.sortPopcorn($(this).children(), "panel" + i, popcornInstance, $(".mainMedia"));
 				});
 			}
 			
@@ -493,7 +492,6 @@
 				if (mediaData.media.indexOf("www.youtube.com") != -1 || mediaData.media.indexOf("//youtu") != -1) {
 					var $youTube = $holder.find(".popcornMedia").addClass("youTube");
 					mediaLesson.resizeYouTube($youTube);
-					
 					popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .youTube", mediaData.media + "&controls=2"); // force controls to appear
 					$youTube.data("popcornInstance", popcornInstance);
 					
@@ -615,13 +613,28 @@
 		// the following three functions sort synchData (so events have correct start / end points), creates popcorn instance and calls plugins to create synch points
 		
 		// function can be called for mainMedia & additional media from mediaPlus plugin
-		this.sortPopcorn = function(synchData, targetRef, popcornInstance) {
+		this.sortPopcorn = function(synchData, targetRef, popcornInstance, $mediaDiv) {
 			// wait until metadata has loaded before continuing
 			if (popcornInstance.duration()) {
-				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance);
+				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
+				function onMessageReceived(event) {
+					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)) {
+						return false;
+					}
+					
+					var data = JSON.parse(event.data);
+					if (data.event == "loadProgress") {
+						$mediaDiv.data("duration", data.data.duration);
+						mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+						window.removeEventListener("message", onMessageReceived, false);
+						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why. Possible issue in popcorn.js itself
+					}
+				}
+				window.addEventListener("message", onMessageReceived, false);
 			} else {
 				popcornInstance.on("loadedmetadata", function() {
-					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance);
+					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
 				});
 			}
 		}
@@ -649,7 +662,7 @@
 			return synch;
 		}
 		
-		this.sortPopcornNow = function(synchData, targetRef, popcornInstance) {
+		this.sortPopcornNow = function(synchData, targetRef, popcornInstance, $mediaDiv) {
 			var data = new Array(), // array of objects containing details of a synch point event
 				prevStart = 0,
 				start, end;
@@ -760,8 +773,12 @@
 			// set end point to end of media if still undefined
 			for (var j=0; j<data.length; j++) {
 				if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
-					if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
-						data[j].end = popcornInstance.duration();
+					if (popcornInstance.media._util != undefined && (popcornInstance.media._util.type == "Vimeo" || popcornInstance.media._util.type == "YouTube")) {
+						if (popcornInstance.duration()) {
+							data[j].end = popcornInstance.duration() - 1;
+						} else {
+							data[j].end = $mediaDiv.data("duration") - 1;
+						}
 					} else {
 						// apart from vimeo it works better if end is set to after the end of media
 						data[j].end = popcornInstance.duration() + 10;
