@@ -48,7 +48,7 @@ else
     xot_offline = true;
 }
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -338,6 +338,7 @@ function x_setUp() {
 		$x_mobileScroll	= $("#x_mobileScroll");
 		$x_headerBlock	= $("#x_headerBlock");
 		$x_pageHolder	= $("#x_pageHolder");
+		$x_helperText	= $("#x_helperText");
 		$x_pageDiv		= $("#x_pageDiv");
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
@@ -993,6 +994,7 @@ function x_changePage(x_gotoPage) {
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
+		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
         // stop any swfs on old page before detaching it so that any audio stops playing (problem in IE only)
