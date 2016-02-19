@@ -1,4 +1,11 @@
 <language name="Polish" code="pl-PL">
+    <layout closetooltip="Zamknij ten panel" opentooltip="Otwórz ten panel" resizetooltip="Poszersz ten panel" pin="Załącz" unpin="Odłącz" />
+    <edit label="Edytuj ..." tooltip="Edytuj tę opcję" description="Edytuj przycisk" />
+    <insertDialog label="Wstaw Nowy {i}" preview="Podgląd">
+        <insertBefore label="Przed" tooltip="Wstaw przed zaznaczoną stroną"/>
+        <insertAfter label="Po" tooltip="Wstaw po zaznaczonej stronie"/>
+        <insertAtEnd label="Na końcu" tooltip="Wstaw na końcu strony"/>
+    </insertDialog>
 	<btnSaveXerte label="Zapisz" tooltip="Zapisz projekt" description="Przycisk zapisu"/>
 	<btnPublishXot label="Publikuj" tooltip="Publikuj projekt" description="Przycisk publikacji"/>
 	<popupFileUpload title="Załaduj plik" cancelLabel="Anuluj"/>
@@ -14,8 +21,10 @@
 		<item>Portugalski</item>
 		<item>Hiszpański</item>
 	</kblanguage>
-	<newLink label="Nowy " />
+	<newLink label="Nowy {i}" />
 	<helpLink tooltip="Kliknij po pomoc"/>
+    <btnAddColumn label="Dodaj Kolumnę" tooltip="Dodaj kolumnę na prawo od siatki"/>
+    <btnDelColumn label="Usuń Kolumnę" tooltip="Usuń zaznaczoną kolumnę"/>
 	<btnInsert label="Wstaw" tooltip="Wstaw"/>
 	<btnAddChild tooltip="dodaj jakieś dzieci"/>
 	<btnDuplicate label="Kopiuj" tooltip="Klonuj"/>
@@ -28,8 +37,10 @@
 	<icDelete tooltip="Usuń" prompt="Usuń pozycję?"/>
 	<addProp label="Dodaj" tooltip="dodaj"/>
 	<optionalProp label="Dodatkowe właściwości:"/>
-	<chkShowLanguage label="Pokaż opcje języka" />
-	<chkShowAdvanced label="Pokaż zaawansowane opcje" />
+	<optionalPropHTML label="Dodatkowe właściwości"/>
+	<chkShowLanguage label="Pokaż opcje języka" tooltip="Jeżeli opcje językowe są dostępne, pokaż je."/>
+	<chkShowAdvanced label="Pokaż zaawansowane opcje" tooltip="Jeżeli zaawansowane opcje są dostępne, pokaż je."/>
+    <chkShowToolbar label="Pokaż pasek narzędziowy" tooltip="Pokaż domyślnie wszystkie paski narzędziowe."/>
 	<compMedia tooltip="Zaimportuj media"/>
 	<compPreview tooltip="Podgląd"/>
 	<filemenu title="Plik">
@@ -126,6 +137,9 @@
 		<savefile>
 			<prompt>XML nie może być sformatowany, i zmiany nie mogą być zapisane. Sprawdź swoje zmiany.</prompt>
 		</savefile>
+        <exitwizard>
+            <prompt>Masz zamiar opuścić edytor.</prompt>
+        </exitwizard>
         <upload>
             <successful>Pomyślnie załadowano</successful>
             <failed>
@@ -135,5 +149,6 @@
                 <security>Załadowanie niepowiodło się: błąd zabezpieczeń</security>
             </failed>
         </upload>
+		
 	</Alert>
 </language>
