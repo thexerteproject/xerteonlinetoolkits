@@ -162,8 +162,10 @@ function show_preview_code2($row, $row_username){
     }
     else
     {
-        // $engine is assumed to be html5 if flash is NOT set
+        $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+        // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+        $page_content = str_replace("%VERSION%", $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
@@ -175,7 +177,7 @@ function show_preview_code2($row, $row_username){
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
         $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
         $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
