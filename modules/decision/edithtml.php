@@ -110,6 +110,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
 
+    $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+
     //$edit_site_logo = $xerte_toolkits_site->site_logo;
     //$pos = strrpos($edit_site_logo, '/') + 1;
     //$edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
@@ -131,19 +133,19 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?php echo DECISION_EDIT_TITLE ?></title>
 
-    <link rel="stylesheet" href="editor/css/jquery-ui.css">
-    <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
-    <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css" />
-    <link rel="stylesheet" type="text/css" href="editor/css/complex.css" />
-    <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css" />
-    <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css" />
-    <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css" />
-    <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="editor/css/jquery-ui.css?version=<?php echo $version;?>">
+    <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/css/complex.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
-    <script src="website_code/scripts/template_management.js"></script>
+    <script src="website_code/scripts/template_management.js?version=<?php echo $version;?>"></script>
     <!--[if lte IE 7]>
     <style type="text/css"> body { font-size: 85%; } </style>
     <![endif]-->
@@ -231,27 +233,26 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <?php } ?>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
-<script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
-<!-- <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>  -->
-<script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js"></script>
-<script type="text/javascript" src="editor/js/vendor/jscolor.js"></script>
-<script type="text/javascript" src="editor/js/vendor/xml2json.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js"></script>
-<script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/modernizr-latest.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/jscolor.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/xml2json.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/featherlight/featherlight.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
-<script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery.jqGrid.min.js?version=<?php echo $version;?>"></script>
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.javascript.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/beautify.min.js"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.mode.javascript.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/beautify.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js?version=<?php echo $version;?>"></script>
 
 <script>
     <?php
@@ -293,12 +294,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     }
 </script>
-<script type="text/javascript" src="editor/js/data.js"></script>
-<script type="text/javascript" src="editor/js/application.js"></script>
-<script type="text/javascript" src="editor/js/toolbox.js"></script>
-<script type="text/javascript" src="editor/js/language.js"></script>
-<script type="text/javascript" src="editor/js/layout.js"></script>
-<script type="text/javascript" src="editor/js/tree.js"></script>
+<script type="text/javascript" src="editor/js/data.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/application.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/toolbox.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/language.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/layout.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/tree.js?version=<?php echo $version;?>"></script>
 </body>
 </html>
 
