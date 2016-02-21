@@ -147,55 +147,96 @@
 						}
 					});
 					
+					if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								// correct - show tick
+								$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.find(".audioHolder").show();
+								
+							} else{							
+								// incorrect - remove label and show hint
+								if ($this.data("currentTarget") != "") {
+									var $prevTarget = $this.data("currentTarget");
+									
+									if (labelOffTarget == true) {
+										$this.hide();
+									} else {
+										labelOffTarget = true;
+									}
+									
+									$this
+										.css({
+											"top"	:"auto",
+											"left"	:"auto"
+											})
+										.data("currentTarget", "")
+										.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
+										.find(".audioHolder").hide();
+									
+									$prevTarget.data("currentLabel", "");
+									
+									if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
+										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
+									} else {
+										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
+									}
+								}
+								allCorrect = false;
+							}
+						});
+					}
+					else{
+						if (!labelOffTarget){
+							textMatch.finishTracking();
+							$("#labelHolder .label").each(function() {
+								var $this = $(this);
+								if ($this.data("target").is($this.data("currentTarget"))) {
+									// correct - show tick
+									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+									$this.find(".audioHolder").show();								
+								} else{	
+									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');	
+								}
+							});						
+							
+						}	
+						else{					
+							$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));	
+						}
+						$("#feedback").show();
+					}
+					
+					var correct = 0;
+					
 					$("#labelHolder .label").each(function() {
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
-							// correct - show tick
-							$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-							$this.find(".audioHolder").show();
+							correct++;
+						} 
+					});			
+					
+					allCorrect = correct == $("#labelHolder .label").length;
+					
+					if(!labelOffTarget || x_currentPageXML.getAttribute("trackingWeight") == undefined){
+						console.log("a" + correct + "b" + allCorrect);
+						if (allCorrect == false && numAttempts >= maxAttempts) {
 							
-						} else if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
-						
-							// incorrect - remove label and show hint
-							if ($this.data("currentTarget") != "") {
-								var $prevTarget = $this.data("currentTarget");
-								
-								if (labelOffTarget == true) {
-									$this.hide();
-								} else {
-									labelOffTarget = true;
-								}
-								
-								$this
-									.css({
-										"top"	:"auto",
-										"left"	:"auto"
-										})
-									.data("currentTarget", "")
-									.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
-									.find(".audioHolder").hide();
-								
-								$prevTarget.data("currentLabel", "");
-								
-								if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
-									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
-								} else {
-									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
-								}
-							}
-							allCorrect = false;
-						}else{
-							$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-
+						} else if (allCorrect == true) {
+							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$(this).hide();
+						} else if (correct == 0){
+							$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						} else {
+							$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
-					});
-					if (allCorrect == false && numAttempts >= maxAttempts) {
-						$("#feedback").show();
-					} else if (allCorrect == true) {
-						$(this).hide();
+						$("#feedback").show();						
+						
 					}
-					textMatch.finishTracking();
+					
 				});
+				
 			
 			// create targets
 			var $targetHolder = $("#targetHolder"),
@@ -522,99 +563,98 @@
 </script>
 
 <style type="text/css">
-	
-	#textHolder {
-		margin-bottom:	20px;
-	}
-	
-	#dragDropHolder {
-		overflow:		auto;
-		margin-bottom:	10px;
-	}
-	
-	#dragDropHolder .label {
-		cursor:		pointer;
-		padding:	5px;
-	}
-	
-	#dragDropHolder .label.focus {
-		border:		2px solid yellow;
-	}
-	
-	#dragDropHolder .label.selected {
-		border:		2px solid green;
-	}
-	
-	#dragDropHolder .labelTxt {
-		position:	relative;
-		float:		left;
-	}
-	
-	#dragDropHolder .audioHolder {
-		float:	left;
-	}
-	
-	#dragDropHolder .audioHolder .mejs-controls div:not(.mejs-playpause-button) {
-		display:	none;
-	}
-	
-	#dragDropHolder .tick {
-		position:	absolute;
-		top:		0.5em;
-		right:		0.5em;
-	}
-	
-	#labelHolder {
-		padding:		0px;
-		margin-bottom:	20px;
-		margin-right:	20px;
-		float:			right;
-	}
-	
-	#targetHolder {
-		clear:		right;
-	}
-	
-	#targetHolder .target {
-		padding:		1%;
-		margin-top:		10px;
-		margin-bottom:	10px;
-	}
-	
-	#targetHolder h3 {
-		width:	48%;
-	}
-	
-	#targetHolder .hint {
-		width:	50%;
-		float:	right;
-	}
-	
-	#button {
-		margin-bottom:	10px;
-		float:			right;
-	}
-	
+#textHolder {
+	margin-bottom: 20px;
+}
+
+#dragDropHolder {
+	overflow: auto;
+	margin-bottom: 10px;
+}
+
+#dragDropHolder .label {
+	cursor: pointer;
+	padding: 5px;
+}
+
+#dragDropHolder .label.focus {
+	border: 2px solid yellow;
+}
+
+#dragDropHolder .label.selected {
+	border: 2px solid green;
+}
+
+#dragDropHolder .labelTxt {
+	position: relative;
+	float: left;
+}
+
+#dragDropHolder .audioHolder {
+	float: left;
+}
+
+#dragDropHolder .audioHolder .mejs-controls div:not (.mejs-playpause-button
+	) {
+	display: none;
+}
+
+#dragDropHolder .tick {
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+}
+
+#labelHolder {
+	padding: 0px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	float: right;
+}
+
+#targetHolder {
+	clear: right;
+}
+
+#targetHolder .target {
+	padding: 1%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#targetHolder h3 {
+	width: 48%;
+}
+
+#targetHolder .hint {
+	width: 50%;
+	float: right;
+}
+
+#button {
+	margin-bottom: 10px;
+	float: right;
+}
 </style>
 
 <div id="pageContents">
-	
+
 	<div id="textHolder" tabindex="1"></div>
-	
+
 	<div id="dragDropHolder">
-		
+
 		<div id="labelHolder"></div>
-		
+
 		<div id="targetHolder">
 			<div class="target highlight">
 				<h3></h3>
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 	<button id="button"></button>
-	
+
 	<div id="feedback"></div>
-	
+
 </div>

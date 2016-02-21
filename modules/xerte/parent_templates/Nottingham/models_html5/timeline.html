@@ -111,6 +111,14 @@
 				.click(function() { // mark labels and show feedback
 					$("#dragDropHolder .tick").remove();
 					var correct = 0;
+					
+					var empty = false;
+					$("#labelHolder .label").each(function() {
+						if($(this).data("currentTarget") == "")
+							empty = true;
+					});
+					
+					if(!empty){
 					$("#labelHolder .label").each(function() {
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
@@ -118,21 +126,33 @@
 							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 						}else{
 							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-						}
+						}					
 					});
+					}				
 					
-					if (correct == $("#labelHolder .label").length) {
+					if (empty){
+						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					}	
+					else if (correct == $("#labelHolder .label").length) {
 						$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						timeline.finishTracking();
 					} else {
 						if (correct == 0) {
-							$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							if(x_currentPageXML.getAttribute("trackingWeight") != undefined)  
+								$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							else
+								$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
-							$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							if(x_currentPageXML.getAttribute("trackingWeight") != undefined)
+								$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							else	
+								$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
+						timeline.finishTracking();
 					}
-					timeline.finishTracking();
 					$("#feedback").show();
 				});
+			
 			
 			// create targets
 			var $targetHolder = $("#targetHolder"),
