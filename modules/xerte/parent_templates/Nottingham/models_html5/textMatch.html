@@ -186,6 +186,7 @@
 								allCorrect = false;
 							}
 						});
+						textMatch.finishTracking();
 					}
 					else{
 						if (!labelOffTarget){
@@ -220,19 +221,31 @@
 					allCorrect = correct == $("#labelHolder .label").length;
 					
 					if(!labelOffTarget || x_currentPageXML.getAttribute("trackingWeight") == undefined){
-						console.log("a" + correct + "b" + allCorrect);
+						
+						var wrongFeedback, scoreFeedback;
+						
+						if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+							wrongFeedback = x_currentPageXML.getAttribute("allWrong")
+							scoreFeedback = x_currentPageXML.getAttribute("score")
+						}
+						else{
+							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking")
+							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking")										
+						}
+							
+						
 						if (allCorrect == false && numAttempts >= maxAttempts) {
 							
 						} else if (allCorrect == true) {
 							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							console.log("hide");
 							$(this).hide();
 						} else if (correct == 0){
-							$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$feedback.html(wrongFeedback != undefined ? wrongFeedback : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
-							$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$feedback.html(scoreFeedback != undefined ? scoreFeedback.replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
 						$("#feedback").show();						
-						
 					}
 					
 				});
