@@ -143,6 +143,12 @@ function _include_javascript_file($file_path) {
     global $development;
     $languages = 'languages/';
 
+    // Remove URI parameters
+    $parpos = strpos($file_path, "?");
+    if ($parpos >= 0)
+    {
+        $file_path = substr($file_path, 0, $parpos);
+    }
     if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
         $_SESSION['toolkits_language'] = $_GET['language'];
     }

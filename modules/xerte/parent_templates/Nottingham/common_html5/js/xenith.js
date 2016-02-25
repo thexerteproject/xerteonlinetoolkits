@@ -1495,7 +1495,10 @@ function x_findText(pageXML) {
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
-    var tempText = node.nodeValue;
+	// Decode node.value in order to make sure it works for for foreign characters like é
+	// But keep html tags, so use textarea
+	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
+    var tempText = $("<textarea/>").html(node.nodeValue).text();
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
