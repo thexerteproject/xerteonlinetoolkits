@@ -145,7 +145,7 @@ function _include_javascript_file($file_path) {
 
     // Remove URI parameters
     $parpos = strpos($file_path, "?");
-    if ($parpos >= 0)
+    if ($parpos !== false)
     {
         $file_path = substr($file_path, 0, $parpos);
     }
