@@ -1,0 +1,154 @@
+<language name="Turkish">
+
+  <noPages label="Bu projede hiç bir sayfa yok."/> 
+
+  <nextButton label="İleri" description="Sonraki Sayfa Butonu"/>
+  
+  <backButton label="Geri" description="Önceki Sayfa Butonu"/>
+  
+  <tocButton label="İçindekiler" description="İçindekiler Tablosu Butonu"/>
+  
+  <helpButton label="Yardım" description="Yardım Butonu"/>
+
+  <mediaButton label="Medya" description="Medya Butonu"/>
+  
+  <homeButton label="Ana Sayfa" description="Ana Sayfa Butonu"/>
+  
+  <pageHelp name="Sayfa Yardımı" description="Sayfa Yardımı" toClose="Yardım sayfasını kapatmak için Boşluk Çubuğu'nu tuşlayın."/>
+  
+  <glossaryButton label="Sözlük" description="Sözlük Butonu"/>
+  
+  <continueButton label="Devam" description="Devam Butonu"/>
+  
+  <toc label="İçindekiler Tablosu" description="İçindekiler tablosu. Yön tuşlarını ile bir sayfa seçin. Sayfaya gitmek için Boşluk Çubuğu'nu tuşlayın.">
+	  <contentsList label="" description=""/>
+	  <closeButton label="" description="İçindekiler Tablosunu Kapat"/>
+	  <gotoPageButton label="Sayfaya Git" description="Sayfaya Git Butonu"/>
+  </toc>
+  
+  <mediaWindow label="Medya Görüntüleyici"/>
+  
+  <glossary label="Sözlük" description="Sözcükler listesi ve onların tanımları.">
+	  <closeButton label="" description="Sözlüğü Kapat"/>
+  </glossary>
+  
+  <kbLanguage label="Özel Karakterler" description="Metin alanına özel karakterler ekleyen butonlar listesi.">
+	  <closeButton label="" description="Özel Karakterleri kapat"/>
+	  <dialog instruction="CAPS ve SHIFT kullanın" on="AÇIK" off="KAPALI" caps="Büyük Harf"/>
+  </kbLanguage>
+  
+  <textToSpeech label="null" description="Metin Seslendirme"/>
+  
+  <errorProject label="Projenin verileri yüklenemedi."/>
+  
+  <errorPage label="Bu sayfa tipi için güncel bir şablon yok."/>
+  
+  <errorBrowser label="Tarayıcınız bu sayfa tipini desteklemiyor."/>
+  
+  <errorQuestions noQ="Hiçbir soru eklenmedi" noA="Hiçbir cevap eklenmedi" />
+  
+  <errorFlash label="Bu sayfayı görüntüleyebilmek için Flash Player kurmalısınız." description="Flash Player İndir"/>
+  
+  <tick label="Tick"/>
+  
+  <cross label="Cross"/>
+
+  <themes label="--Renk Şeması--" description="Renk Şeması Seçenekleri">
+    <item>default</item>
+    <item>blue</item>
+    <item>green</item>
+    <item>red</item>
+    <item>orange</item>
+    <item>purple</item>
+    <item>grey</item>
+    <item>high contrast 1</item>
+    <item>high contrast 2</item>
+  </themes>
+ 
+  <sizes label="--Ekran Boyutu--" description="Ekran Boyutu Seçenekleri">
+	<item>Default</item>
+	<item>large</item>
+	<item>larger</item>
+	<item>Full Screen</item>
+	<item>fill window</item>
+  </sizes>
+  
+  <fonts label="--Metin Font--" description="Font Seçenekleri">
+	  <item>default</item>
+  </fonts>
+  
+  <textSizes label="--Metin Boyut--" description="Metin Boyutu Seçenekleri">
+	  <item>default</item>
+	  <item>small</item>
+	  <item>medium</item>
+	  <item>large</item>
+	  <item>larger</item>
+  </textSizes>
+  
+  <volumeControl label="Ses şiddeti:" description="Ses Kontrol"/>
+  <volumeControlSlider label="" description="Ses şiddeti Kontrol Sürgüsü"/>
+  
+  <vocab>
+	  <page>Page</page>
+	  <of>of</of>
+  </vocab>
+  
+  <soundController>
+	<stopButton label="Dur" description="Ses Durdurma Butonu"/>
+	<playButton label="Çal" description="Ses Çalma Butonu"/>
+	<pauseButton label="Durakla" description="Ses Duraklatma Butonu"/>
+	<rwndButton label="Geri" description="Ses Geri Butonu"/>
+	<ffwdButton label="İleri" description="Ses İleri Butonu"/>
+	<loader label="yükleniyor: "/>
+  </soundController>
+  
+  <movieController>
+	<stopButton label="Dur" description="Video Durdurma Butonu"/>
+	<playButton label="Oynat" description="Video Oynatma Butonu"/>
+	<pauseButton label="Duraklat" description="Video Duraklatma Butonu"/>
+	<rwndButton label="Geri" description="Video İleri Butonu"/>
+	<ffwdButton label="İleri" description="Video Geri Butonu"/>
+	<loader label="yükleniyor: "/>
+  </movieController>
+  
+  <mediaElementControls>
+	<stopButton label="Dur" description="Medya Durdurma Button"/>
+	<playPauseButton label="Oynat/Duraklat" description="Medya Oynat/Duraklat Butonu"/>
+	<muteButton label="Ses Aç/Kapat" description="Ses Aç/Kapat Butonu"/>
+	<fullscreenButton label="Tam Ekran" description="Tam Ekran Butonu"/>
+	<captionsButton label="Başlıklar/Alt yazılar" description="Başlıklar/Alt yazıları Göster/Gizle Butonu"/>
+  </mediaElementControls>
+  
+  <interactions>
+	  <button name="Button"/>
+	  <radioButton selected="seçildi. Seçeneklerden seçim yapmak için yön tuşlarını kullanın"/>
+	  <checkBox selected="seçildi" deselected="seçilmedi"/>
+	  <comboBox name="ComboBox" options="Seçenekler." selected="seçildi." selectedOptions="seçildi. Seşmek için yön tuşlarını kullanın" />
+	  <hotSpot name="HotSpot" toSelect="Hot Spot. Seçmek için Boşluk Çubuğu'nu tuşlayın." selected="Hot Spot seçildi"/>
+	  <hotObject name="HotObject" toSelect="Seçmek için Boşluk Çubuğu'nu tuşlayın" selected="Hot Object seçildi"/>
+	  <textEntry name="Text Entry Box" selected="Metin Kutusu seçildi"/>
+	  <targetArea name="Target Area" description="Hedef alana bırkmak için" toSelect="Seçilen elemanı alana bırakmak için Boşluk Çubuğu'nu tuşlayın."/>
+	  <draggableItem name="Draggable Item" selected="Eleman Seçildi" toSelect="Seçmek için Boşluk Çubuğu'nu tuşlayın" deSelected="Hiçbir eleman seçilmedi." />
+  </interactions>
+  
+  <fetchResults label="Sonuçlar alınıyor..."/>
+  <errorResults label="Sonuçlar yüklenirken bir hata oluştu"/>
+  <loadError label="Hata yükleniyor"/>
+  <noResults label="Hiçbir sonuç alınamadı"/>
+  
+  <timer>
+	  <remaining name="Time remaining"/>
+	  <timeUp name="Time up"/>
+	  <seconds name="seconds"/>
+  </timer>
+
+  <colourChanger label="Renk Değiştirici" description="Renkleri değiştirir.">
+	  <closeButton label="" description="Renk değiştiriciyi kapat"/>
+	  <selectTxt label="Lütfen aşağıdaki seçeneklerden seçiniz"/>
+	  <adviceTxt label="Yardıma mı ihtiyacınız var? Jisc TechDis' ziyaret ediniz &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+	  <off label="Yok"/>
+	  <invert label="Invert"/>
+	  <blackYellow label="Sarı üzerine Siyah"/>
+  </colourChanger>
+
+</language>
