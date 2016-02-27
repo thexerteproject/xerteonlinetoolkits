@@ -1,0 +1,156 @@
+<language name="Turkish" code="tr-TR">
+    <layout closetooltip="Bu paneli kapat" opentooltip="Bu paneli aç" resizetooltip="Bu paneli boyutlandır" />
+    <edit label="Düzenle ..." tooltip="Bu seçeneği düzenle" description="Düzenle butonu" />
+    <insertDialog label="Yeni ekle {i}" Ön İzleme="Ön izleme">
+        <insertBefore label="Önce" tooltip="Seçilen sayfadan önce ekle"/>
+        <insertAfter label="Sonra" tooltip="Seçilen sayfadan sonra ekle"/>
+        <insertAtEnd label="Sonuna" tooltip="Son sayfa olarak ekle"/>
+    </insertDialog>
+    <btnSaveXerte label="Kaydet" tooltip="Projeyi Kaydet" description="Kaydet Butonu"/>
+	<btnPublishXot label="Yayınla" tooltip="Projeyi Yayınla" description="Yayınla Butonu"/>
+	<popupFileUpload title="Dosya Yükle" cancelLabel="Vazgeç"/>
+	<browseImportFile title="Eklemek için dosyayı seçin...">
+		<dialogFilter>Tüm Dosyalar|*.*|JPG|*.jpg|PNG|*.png|SWF Dosyaları|*.swf|Sesler|*.mp3|Video|*.flv</dialogFilter>
+		<buttontext>Ekle</buttontext>
+	</browseImportFile>
+	<kblanguage title="Karakter Pad" tooltip="Karakter Pad" description="Klavye Dilleri">
+		<item>Turkish</item>
+		<item>French</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Polish</item>
+		<item>Portuguese</item>
+		<item>Spanish</item>
+	</kblanguage>
+	<newLink label="Yeni {i}" />
+	<helpLink tooltip="Yardım için tıklayın"/>
+    <btnAddColumn label="Sütun Ekle" tooltip="Tablonun sağına sütun ekle"/>
+    <btnDelColumn label="Sütun Sil" tooltip="Seçilen sütunu sil"/>
+	<btnInsert label="Ekle" tooltip="Ekle"/>
+	<btnAddChild tooltip="add some children"/>
+	<btnDuplicate label="Kopyala" tooltip="Kopyala"/>
+	<btnDelete label="Sil" tooltip="Sil"/>
+	<btnMoveUp tooltip="Yukarı Taşı"/>
+	<btnMoveDown tooltip="Aşağı Taşı"/>
+	<btnNext tooltip="Sonraki Eleman"/>
+	<btnPreview label="Oynat" tooltip="Ön İzleme"/>
+	<btnPrev tooltip="Önceki Eleman"/>
+	<icDelete tooltip="Sil" prompt="Eleman silinecek mi?"/>
+	<addProp label="Ekle" tooltip="ekle" />
+	<optionalProp label="Seçenekli Özellikler:"/>
+	<optionalPropHTML label="Seçenekli Özellikler"/>
+	<chkShowLanguage label="Dil Seçeneklerini Göster" tooltip="Dil seçenekleri mevcutsa göster"/>
+	<chkShowAdvanced label="Gelişmiş Seçenekleri Göster" tooltip="Gelişmiş seçenekler mevcutsa göster"/>
+    <chkShowToolbar label="Araç Çubuğunu Göster" tooltip="Varsayılan olarak tüm araç çubuklarını göster"/>
+	<compMedia tooltip="Medya Ekleme"/>
+	<compPreview tooltip="Ön İzleme"/>
+	<filemenu title="Dosya">
+		<menuNew>Yeni Proje...</menuNew>
+		<menuOpen>Aç...</menuOpen>
+		<menuSave>Kaydet</menuSave>
+		<menuExit>Çıkış</menuExit>
+	</filemenu>
+	<menuOpen title="Lütfen bir proje seçin">
+		<dialogText>Bir dosya seç</dialogText>
+		<filterList>*.rlt|*.mxml</filterList>
+		<filterText>Öğrenme Şablonları|*.rlt|MXML Dosyaları|*.mxml</filterText>
+	</menuOpen>
+	<viewmenu title="Görünüş">
+		<menuPreview>Ön İzleme</menuPreview>
+	</viewmenu>
+	<publishmenu title="Yayınla">
+		<menuPublish>Yayınla</menuPublish>
+		<menuPackage>Paket</menuPackage>
+	</publishmenu>
+	<menuPackage title="Save SCORM 1.2 Paket">
+		<dialogText>Bir dosya seç</dialogText>
+		<filterList>*.zip</filterList>
+		<filterText>Zip Dosyaları|*.zip</filterText>
+	</menuPackage>
+	<helpmenu title="Yardım">
+		<menuHelp>Yardım</menuHelp>
+	</helpmenu>
+	<menuHelp>
+		<prompt>Yakında yardım dosyası olacak.</prompt>
+	</menuHelp>
+	<importMedia>
+		<filters>
+			<allfiles>Bütün Dosyalar (*.*)</allfiles>
+			<images>Görüntüler (*.jpg, *.jpeg, *.png)</images>
+			<flash>Flash Dosyaları (*.swf)</flash>
+			<sound>Ses Dosyaları (*.mp3)</sound>
+			<video>Video Dosyaları (*.flv)</video>
+		</filters>
+		<title>Eklemek için dosya seç...</title>
+		<filter>Tüm Dosyalar|*.*|JPG|*.jpg|PNG|*.png|SWF Dosyaları|*.swf|Sesler|*.mp3|Video|*.flv</filter>
+		<btnimport>Ekle</btnimport>
+		<btncancel>Vazgeç</btncancel>
+		<fileexists>
+			<prompt>Bu dosya {f} zaten var.\r\rÜzerine yazılsın mı?</prompt>
+			<title>Onaylama</title>
+		</fileexists>
+	</importMedia>
+	<Alert>
+		<oklabel>Tamam</oklabel>
+		<cancellabel>Vazgeç</cancellabel>
+		<nolabel>Hayır</nolabel>
+		<yeslabel>Evet</yeslabel>
+		<linkhandler>
+			<prompt></prompt>
+			<title>Bu link için URL girin</title>
+		</linkhandler>
+		<validate>
+			<max>
+				<prompt>Sadece ekleyebilirsiniz {m} {i}s</prompt>
+				<title>Hata</title>
+			</max>
+			<mixedcontent>
+				<prompt>Burada içerikleri karıştıramazsınız.</prompt>
+				<title>Hata</title>
+			</mixedcontent>
+		</validate>
+		<newproject>
+			<prompt>Bu klasör boş değil. Yeni proje için kullanmak istediğinizden emin misiniz?</prompt>
+			<title>Onaylama</title>
+		</newproject>
+		<openproject>
+			<prompt>Yeni proje açmak ister misiniz?</prompt>
+			<title>Onaylama</title>
+		</openproject>
+		<initpreview>
+			<prompt>Ön izleme yapmak için önce medyayı seçmelisiniz.</prompt>
+			<title>Bilgi</title>
+		</initpreview>
+		<duplicateitem>
+			<prompt>Bu elemanı çoğaltamazsınız.</prompt>
+			<title>Hata</title>
+		</duplicateitem>
+		<deletenode>
+			<Onaylama>
+				<prompt>Bu elemanı silmek ister misiniz?</prompt>
+				<title>Onaylama</title>
+			</Onaylama>
+			<error>
+				<prompt>Bu elemanı silemezsiniz</prompt>
+				<title>Hata</title>
+			</error>
+		</deletenode>
+		<savefile>
+			<prompt>Bu XML düzenlenemiyor bu nedenden değişiklikler kaydedilemedi. En son yaptığınız değişiklikleri kontrol ediniz.</prompt>
+		</savefile>
+        <exitwizard>
+            <prompt>Editörden çıkmak üzeresiniz.</prompt>
+        </exitwizard>
+        <upload>
+            <successful>Yükleme başarılı</successful>
+            <failed>
+                <permissions>Yükleme başarısız:İzinleri kontrol ediniz</permissions>
+                <HTTPError>Yükleme başarısız: HTTP Hatası</HTTPError>
+                <IOError>Yükleme başarısız: Giriş/Çıkış Hatası</IOError>
+                <security>Yükleme başarısız: Güvenlik Hatası</security>
+            </failed>
+        </upload>
+		
+	</Alert>
+</language>
+
