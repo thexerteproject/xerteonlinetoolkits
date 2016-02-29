@@ -147,7 +147,7 @@
 						}
 					});
 					
-					if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+					if(XTGetMode() != "normal"){
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
@@ -220,11 +220,11 @@
 					
 					allCorrect = correct == $("#labelHolder .label").length;
 					
-					if(!labelOffTarget || x_currentPageXML.getAttribute("trackingWeight") == undefined){
+					if(!labelOffTarget || XTGetMode() != "normal"){
 						
 						var wrongFeedback, scoreFeedback;
 						
-						if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+						if(XTGetMode() == "normal"){
 							wrongFeedback = x_currentPageXML.getAttribute("allWrong")
 							scoreFeedback = x_currentPageXML.getAttribute("score")
 						}
@@ -336,7 +336,9 @@
 			this.createLabels();
 			this.sizeChanged();
 			this.initTracking();
+			console.log(XTGetMode());
 			x_pageLoaded();
+			
 		}
 		
 		
@@ -365,13 +367,12 @@
 					l_feedback.push("Incorrect");
 				}
 			});
-            $("#button").hide();
-            if(x_currentPageXML.getAttribute("trackingWeight") != undefined){
+            if(XTGetMode() == "normal"){
 	            $("#dragDropHolder .label")
 				.draggable("disable");
             }
             
-            
+            console.log("Finish: " + XTGetMode());
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}

@@ -138,12 +138,12 @@
 						timeline.finishTracking();
 					} else {
 						if (correct == 0) {
-							if(x_currentPageXML.getAttribute("trackingWeight") != undefined)  
+							if(XTGetMode() == "normal")  
 								$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							else
 								$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
-							if(x_currentPageXML.getAttribute("trackingWeight") != undefined)
+							if(XTGetMode() == "normal")
 								$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							else	
 								$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
@@ -288,7 +288,7 @@
             
                   
             
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            if (XTGetMode() == "normal")
             {
                 $("#dragDropHolder .label").draggable("disable");
              	$("#button").hide();
@@ -296,6 +296,7 @@
             
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+         	console.log("Finish: " + XTGetMode());
 		}
 		
 		this.initTracking = function(){
