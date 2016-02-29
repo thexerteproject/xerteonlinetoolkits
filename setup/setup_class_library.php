@@ -95,7 +95,9 @@ class SetupRequirements {
         $check                  = new stdClass();
         $check->passed  = false;
 
-        if (function_exists('mysql_connect')) {
+        if (extension_loaded ('PDO' ) // returns boolean
+            && extension_loaded('pdo_mysql'))
+        {
             $check->passed = true;
         }
 
