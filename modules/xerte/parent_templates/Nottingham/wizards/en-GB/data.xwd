@@ -422,13 +422,15 @@
   </series><columnPage menu="Navigators" menuItem="Column Page" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
+	
+	<header label="Header Text" type="TextArea" height="100" optional="true"/>
+	<showTitles label="Show Column Titles" type="CheckBox" defaultValue="false" optional="true"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <narration label="Narration" type="media" optional="true"/>
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
-    <header label="Header Text" type="TextArea" height="100" optional="true"/>
 
     <newNodes>
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
@@ -1100,7 +1102,7 @@
   </jmolOption><links menu="Navigators" menuItem="Hyperlinks" hint="A list of keyboard accessible links." icon="icWorld" remove="true" thumb="thumbs/links.jpg">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Title" type="TextArea" height="100"/>
+    <text label="Page Text" type="TextArea" height="100"/>
     <cols label="Number of Columns" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
     <height label="Link Height" options="Small,Medium,Large" type="ComboBox" data="55,80,105" defaultValue="80" width="100" deprecated="This property is deprecated. Height is now set automatically."/>
 

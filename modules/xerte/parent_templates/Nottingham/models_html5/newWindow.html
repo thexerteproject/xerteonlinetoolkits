@@ -32,10 +32,17 @@
 		}
 		
 		this.init = function() {
+			// warn that links open in new window (for screen readers)
+			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
+			linkWarning = linkWarning != "" ? '<span id="linkHelper" class="ui-helper-hidden-accessible">' + linkWarning + '</span>' : linkWarning;
+			
 			// descrip is a new field so old projects might not have it
 			var linkTxt = x_currentPageXML.getAttribute("descrip") != undefined ? x_currentPageXML.getAttribute("descrip") : x_currentPageXML.getAttribute("tip");
+			linkTxt += linkWarning;
 			
-			$("#textHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</p><p><a class="newWindowLink" href="#">' + linkTxt + '</a></p>');
+			$("#textHolder")
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a id="newWindowLink" class="newWindowLink" href="#">' + linkTxt + '</a></p>')
+				.find("a.newWindowLink").attr("aria-labelledby", "newWindowLink"); // forces screen readers to include linkWarning text in link description
 			
 			$("#pageImg")
 				.one("load", function() {
@@ -51,7 +58,7 @@
 				})
 				.attr({
 					"src": x_evalURL(x_currentPageXML.getAttribute("previewImage")),
-					"alt":	x_currentPageXML.getAttribute("tip")
+					"alt": x_currentPageXML.getAttribute("tip")
 				})
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
 					if (this.complete) {
@@ -98,7 +105,7 @@
 		</div>
 	</div>
 	
-	<div id="textHolder" tabindex="1">
+	<div id="textHolder">
 	
 	</div>
 	

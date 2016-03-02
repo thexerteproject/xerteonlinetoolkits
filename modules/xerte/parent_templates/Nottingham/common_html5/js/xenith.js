@@ -1026,6 +1026,11 @@ function x_changePage(x_gotoPage) {
         pageTitle = x_currentPageXML.getAttribute("name");
         x_addNarration();
         x_addCountdownTimer();
+		
+		// add screen reader info for this page type (if exists)
+		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
+			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
+		}
     }
     $("#x_headerBlock h2").html(pageTitle);
 
