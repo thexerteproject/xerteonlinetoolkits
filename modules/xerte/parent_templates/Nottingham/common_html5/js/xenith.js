@@ -466,7 +466,7 @@ function x_cssSetUp(param) {
 			x_cssSetUp("stylesheet");
 		}
 	} else if (param == "stylesheet") {
-		if (x_params.stylesheet != undefined) {
+		if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
 			x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp);
 		} else {
 			x_continueSetUp();
