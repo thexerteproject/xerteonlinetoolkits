@@ -133,10 +133,13 @@ mainPanel .panel {
     /*reduce padding in tabnave buttons*/
     padding: .4em .4em;
 }
-.ui-button-text-only .ui-button-text {
+.ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     /*padding: .3em 1em;*/
     font-size: 3.0vmin;
+}
+.ui-button-text-icon-secondary .ui-button-text {
+	padding-right: 1.2em;
 }
 #thumbHolder .thumbBox h3{
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/

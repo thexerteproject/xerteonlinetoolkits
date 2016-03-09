@@ -53,31 +53,28 @@
 			// transcript stuff
 			var transcriptTxt = x_currentPageXML.getAttribute("transcript");
 			if (transcriptTxt != undefined && transcriptTxt != "") {
-				var $transcript = $("#transcript");
-				$transcript
+				$("#transcript")
 					.hide()
 					.html(x_addLineBreaks(transcriptTxt));
 				
-				var btnLabel = x_currentPageXML.getAttribute("transcriptTabTxt");
-				
-				if (btnLabel == undefined) {
-					btnLabel = "Transcript";
-				}
-				
 				$("#transcriptBtn")
-					.button({ label: btnLabel })
-					.data({
-						"up"			:true,
-						"transcriptTag"	:$transcript
+					.button({
+						icons:	{secondary:"ui-icon-carat-1-n"},
+						label:	(x_currentPageXML.getAttribute("transcriptTabTxt") != undefined ? x_currentPageXML.getAttribute("transcriptTabTxt") : "Transcript")
 					})
+					.attr("aria-expanded", false)
 					.click(function() {
 						$this = $(this);
-						if ($this.data("up") == true) {
-							$this.data("transcriptTag").slideDown();
-							$this.data("up", false);
+						if ($this.attr("aria-expanded") == "false") {
+							$("#transcript").slideDown();
+							$this
+								.attr("aria-expanded", true)
+								.button({icons: {secondary:"ui-icon-carat-1-s"}});
 						} else {
-							$this.data("transcriptTag").slideUp();
-							$this.data("up", true);
+							$("#transcript").slideUp();
+							$this
+								.attr("aria-expanded", false)
+								.button({icons: {secondary:"ui-icon-carat-1-n"}});
 						}
 					});
 			} else {
@@ -106,13 +103,11 @@
 					}
 				}
 				
-				$pageVideo
-					.data({
-						"src"			:videoSrc,
-						"dimensions"	:videoDimensions,
-						"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
-					})
-					.attr("title", x_currentPageXML.getAttribute("tip"));
+				$pageVideo.data({
+					"src"			:videoSrc,
+					"dimensions"	:videoDimensions,
+					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
+				});
 				
 				this.loadVideo();
 				
@@ -140,7 +135,8 @@
 				source			:$video.data("src"),
 				width			:Number($video.data("dimensions")[0]),
 				height			:Number($video.data("dimensions")[1]),
-				startEndFrame	:$video.data("startEndFrame")
+				startEndFrame	:$video.data("startEndFrame"),
+				title			:x_currentPageXML.getAttribute("tip")
 			});
 		}
 	}
@@ -162,13 +158,13 @@
 		padding-bottom:	20px;
 	}
 	
-	#transcript {
-		padding-top:	10px;
-		text-align:		left;
+	#transcriptHolder {
+		margin-top:	10px;
+		text-align:	right;
 	}
 	
-	#transcriptBtn {
-		margin-top:	10px;
+	#transcript {
+		text-align:		left;
 	}
 	
 </style>
@@ -179,8 +175,8 @@
 		<div class="panel inline">
 			<div id="pageVideo"></div>
 			<div id="transcriptHolder">
-				<div id="transcript"></div>
 				<button id="transcriptBtn"></button>
+				<div id="transcript"></div>
 			</div>
 		</div>
 	</div>

@@ -111,7 +111,7 @@
 	<loader label="Loading: "/>
   </movieController>
   
-  <mediaElementControls>
+  <mediaElementControls video="Video" audio="Audio">
 	<stopButton label="Stop" description="Stop Media Button"/>
 	<playPauseButton label="Play/Pause" description="Play/Pause Media Button"/>
 	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
@@ -153,7 +153,7 @@
 	  <blackYellow label="Black on Yellow"/>
   </colourChanger>
   
-  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window">
+  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window">
 	  <tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
 	  <accNav selected="selected"/>
 	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>

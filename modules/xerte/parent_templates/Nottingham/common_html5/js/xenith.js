@@ -869,6 +869,10 @@ function x_continueSetUp() {
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
+	x_mediaText.push(
+		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "video", "")},
+		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
+	);
 
 	XTInitialise(); // initialise here, because of XTStartPage in next function
 	x_navigateToPage(true, x_startPage);
