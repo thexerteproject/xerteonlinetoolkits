@@ -42,10 +42,16 @@
 				$infoHolder.height($panel.height() - x_audioBarH);
 			}
 			
+			if ($pageContents.data("mediaElement") != undefined) {
+				$pageContents.data("mediaElement").setCurrentTime(0);
+			}
+			
 			$infoHolder.scrollTop(0);
-			$infoHolder.find("div").each(function() {
+			$infoHolder.children("div").each(function() {
 				var $caption = $(this);
-				$caption.data("scrollPos", $caption.position().top);
+				$caption
+					.data("scrollPos", $caption.position().top)
+					.removeClass("highlight");
 			});
 			this.loadAudio();
 		}
@@ -110,28 +116,43 @@
 		}
 		
 		this.createCaptions = function(captionInfo) {
-			var	captions = new Array();
+			var	captions = new Array(),
+				tabIndex = 1;
 			
 			$(captionInfo).each(function() {
 				var	$this = $(this);
 				
-				var $caption = $("<div>" + x_addLineBreaks($this.attr("text")) + "</div>")
+				var $caption = $('<div tabindex="' + tabIndex + '" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
 					.data("synch", $this.attr("synch"));
 				
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
+				tabIndex++;
 			});
 			
 			$pageContents.data("captions", captions);
 			
-			$(captions).click(function() {
-				$infoHolder.find(".highlight").removeClass("highlight");
-				
-				var $this = $(this);
-				$this.addClass("highlight");
-				$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
-				$pageContents.data("mediaElement").setCurrentTime($this.data("synch"));
-			});
+			$(captions)
+				.click(function() {
+					$infoHolder.find(".highlight").removeClass("highlight");
+					
+					var $this = $(this);
+					$this.addClass("highlight");
+					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+					$pageContents.data("mediaElement").setCurrentTime($this.data("synch") + 0.1);
+				})
+				.focusin(function() {
+					$(this).addClass("focusBorder");
+				})
+				.focusout(function() {
+					$(this).removeClass("focusBorder");
+				})
+				.keypress(function(e) {
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 32) {
+						$(this).trigger("click");
+					}
+				});
 			
 			setTimeout(function() { // audio won't load properly without a delay here
 				transcriptReader.sizeChanged();
@@ -180,11 +201,11 @@
 <style type="text/css">
 	
 	#infoHolder {
-		overflow:	auto;
+		overflow: auto;
 	}
 	
 	#infoHolder div {
-		padding:		10px;
+		padding: 10px;
 	}
 	
 </style>
@@ -193,7 +214,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1">
+		<div id="textHolder" class="left">
 			
 		</div>
 		
