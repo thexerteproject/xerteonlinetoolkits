@@ -45,9 +45,13 @@
 			
 			if ($tableInfo[0].getAttribute("name") != "") {
 				$pageContents.find("#tableName").html("<p>" + $tableInfo[0].getAttribute("name") + "</p>");
+			} else {
+				$pageContents.find("#tableName").remove();
 			}
 			if ($tableInfo[0].getAttribute("caption") != "" && $tableInfo[0].getAttribute("caption") != undefined) {
 				$pageContents.find("#footnote").html("<p>" + $tableInfo[0].getAttribute("caption") + "</p>");
+			} else {
+				$pageContents.find("#footnote").remove();
 			}
 			
 			var textAlign = x_currentPageXML.getAttribute("align"),
@@ -172,6 +176,11 @@
 	#tableName {
 		text-align:		center;
 		font-weight:	bold;
+		margin-bottom:	10px;
+	}
+	
+	#footnote {
+		margin-top:	10px;
 	}
 	
 </style>
@@ -186,7 +195,7 @@
 		</div>
 	</div>
 	
-	<div id="textHolder" tabindex="1">
+	<div id="textHolder">
 	
 	</div>
 	

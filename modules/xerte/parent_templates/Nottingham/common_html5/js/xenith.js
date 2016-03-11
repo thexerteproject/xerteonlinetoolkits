@@ -1652,19 +1652,21 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
-function x_addLineBreaks(text) {
-	// First test for new editor
-	if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
-    {
-        return text; // Return text unchanged
-    }
-    
-    // Now try to identify v3beta created LOs
-    var trimmedText = $.trim(text);
-    if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
-    {
-        return text; // Return text unchanged
-    }
+function x_addLineBreaks(text, override) {
+	if (override != true) { // override only used when text being tested isn't from xml (e.g. modelAnswer page)
+		// First test for new editor
+		if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
+		{
+			return text; // Return text unchanged
+		}
+		
+		// Now try to identify v3beta created LOs
+		var trimmedText = $.trim(text);
+		if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
+		{
+			return text; // Return text unchanged
+		}
+	}
     
     // Now assume it's v2.1 or before
     if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)

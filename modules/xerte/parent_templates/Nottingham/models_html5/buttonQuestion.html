@@ -24,7 +24,7 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
-			$("#answer").hide();
+			$("#answer").empty(); // emptied rather than hidden so it's read immediately by screenreaders when text appears
 		}
 		
 		// function called every time the size of the LO is changed
@@ -84,12 +84,8 @@
 				})
 				.click(function() {
 					$(this).hide();
-					$("#answer").fadeIn();
+					$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 				});
-			
-			$("#answer")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-				.hide();
 			
 			this.sizeChanged();
 			x_pageLoaded();
@@ -121,13 +117,13 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="infoHolder" class="right">
 			<div class="panel">
-				<div id="prompt" tabindex="2"></div>
-				<button id="button" tabindex="3"></button>
-				<div id="answer" tabindex="4"></div>
+				<div id="prompt"></div>
+				<button id="button"></button>
+				<div id="answer" aria-live="polite"></div>
 			</div>
 		</div>
 		

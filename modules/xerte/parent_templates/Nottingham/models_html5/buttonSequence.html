@@ -23,7 +23,9 @@
 	var buttonSequence = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+			$("#myPanel .infoBtn").hide();
+			$("#myPanel .infoTxt").not(":eq(0)").empty();
+			$("#myPanel .infoGroup:eq(0) .infoBtn").show();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -75,8 +77,6 @@
 			
 			var $infoGroup = $(".infoGroup:first");
 			
-			$infoGroup.find("p").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
-			
 			$(x_currentPageXML).children()
 				.each(function(i) {
 					var $thisGroup;
@@ -84,15 +84,15 @@
 					if (i == $(x_currentPageXML).children().length - 1) {
 						$thisGroup.find("button").remove();
 					}
-					$thisGroup.hide();
-					$thisGroup.find("p")
-						.html(x_addLineBreaks(this.getAttribute("text")));
+					$thisGroup.find(".infoBtn").hide();
 				});
+			
+			$infoGroup.find(".infoTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
 			
 			$panel.children()
 				.each(function(i) {
 					if (i != $panel.children().length - 1) {
-						$panel.find(".infoGroup:eq(" + i + ") button")
+						$panel.find(".infoGroup:eq(" + i + ") .infoBtn")
 							.button({
 								label:	$(x_currentPageXML).children()[i].getAttribute("name")
 								})
@@ -100,7 +100,11 @@
 								var $this = $(this);
 								$this.hide();
 								if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
-									$("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")").fadeIn();
+									var $thisGroup = $("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")");
+									$thisGroup.find(".infoTxt").html(x_addLineBreaks($(x_currentPageXML).children()[$thisGroup.index() - 1].getAttribute("text")));
+									$thisGroup.find(".infoBtn")
+										.show()
+										.focus();
 								}
 							});
 					}
@@ -126,11 +130,6 @@
 		float:		right;
 	}
 	
-	.infoGroup p {
-		padding-left:	0;
-		padding-right:	0;
-	}
-	
 	.infoGroup > p {
 		padding-left:	4px;
 		padding-right:	4px;
@@ -142,13 +141,13 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="infoHolder" class="right">
 			<div id="myPanel" class="panel">
 				<div class="infoGroup">
-					<p></p>
-					<button></button>
+					<div class="infoTxt" aria-live="polite">&nbsp;</div>
+					<button class="infoBtn"></button>
 				</div>
 			</div>
 		</div>

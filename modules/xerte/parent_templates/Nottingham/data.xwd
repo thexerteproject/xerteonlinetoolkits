@@ -404,6 +404,8 @@
     <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
     <chartType label="Chart Type" options="line,bar,stacked bar,pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
     <align label="Align Text" options="left,right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
+	
+	<alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Chart's Contents for Accessibility" optional="true"/>
 
     <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>

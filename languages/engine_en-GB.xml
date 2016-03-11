@@ -159,6 +159,8 @@
 	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
 	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
 	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
+	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
+	  <modelAnswerResults selected="Text selected"/>
   </screenReaderInfo>
 
 </language>

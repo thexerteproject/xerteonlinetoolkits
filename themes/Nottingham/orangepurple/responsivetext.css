@@ -161,6 +161,12 @@ figcaption {
     font-size:2.5vmin;
     margin-top:2%;
 }
+#chartHolder {
+	font-size: 2.5vmin;
+}
+table {
+	font-size: 3vmin;
+}
 /*--end of text size changes-----------------------------------------*/
 }
 /*--end of TABLETS and above-----------------------------------------*/
