@@ -104,8 +104,54 @@
 			} else {
 				$("#dragDropHolderLabelling").addClass("x_floatRight");
 			}
-
+			
+			$("#submitBtn")
+			.button({
+				label:	submitBtnText
+				})
+			.click(function() {
+				    $x_pageHolder.scrollTop(0);
+					var $infoHolder = $("#infoHolder");
+					$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
+					
+					$("#labelHolder .label").each(function() {
+						var $this = $(this);
+							.attr({
+								"title"		:labelTxt1,
+								"tabindex"	:$thisTarget.attr("tabindex") + 1,
+								"style"		:"cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
+							})
+							.data("infoTxt", $infoHolder.html())
+							//.removeClass("selected")
+							.draggable("disable")
+							.off("keypress focusin focusout")
+							.click(function() {
+								$("#infoHolder").html($(this).data("infoTxt"));
+							})
+							.focusin(function() {
+								$(this).addClass("focus");
+								$("#infoHolder").html($(this).data("infoTxt"));
+							})
+							.focusout(function() {
+								$(this).removeClass("focus");
+								$("#infoHolder").html("");
+							})
+							.data("target", $thisTarget);	
+					});
+					$("#pageContents hr:eq(1)").remove();
+					$("#pageContents").data("selectedLabel", "");
+					dragDropLabel.showFeedBackandTrackResults();
+                })
+			.hide();
+			
+			this.startTracking();
 			this.sizeChanged(true);
+		}
+		
+		this.startTracking = function() {
+			var numHotspots = $(x_currentPageXML).children().length;
+			this.weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+            XTSetPageType(x_currentPage, 'numeric', numHotspots, this.weighting);
 		}
 
 		this.createLabels = function() {
@@ -138,7 +184,7 @@
 				.draggable({
 					containment:	"#x_pageHolder",
 					stack:			"#labelHolder .label", // item being dragged is always on top (z-index)
-					revert:			"invalid", // snap back to original position if not dropped on target
+					revert:			"valid", // snap back to original position if not dropped on target
 					start:			function() {
 						// remove any focus/selection highlights made by tabbing to labels/targets
 						var $pageContents = $("#pageContents");
@@ -282,7 +328,7 @@
 						})
 						.droppable({
 							tolerance: "pointer",
-							// only correct label can be dropped on target
+							// only correct label can be dropped on target TODO
 							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
 						});
 				});
@@ -330,7 +376,7 @@
 						var $pageContents = $("#pageContents");
 						var $selectedLabel = $pageContents.data("selectedLabel");
 						if ($selectedLabel != undefined && $selectedLabel != "") {
-							// only accept drops for correct answers
+							// only accept drops for correct answers TODO
 							if ($selectedLabel.data("correct") == $(this).index()) {
 								dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
 							} else {
@@ -358,58 +404,121 @@
 
 			x_pageLoaded();
 		}
+		
+		this.showFeedBackandTrackResults = function()
+        {
+			$("#targetHolder .target").each(function(i) {
+				//var $this = $(this);
+				$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
+					.
+				
+				
+                    var selected = $("#optionHolder input:checked"),
+                    optionFeedback = "",
+                    correct = true,
+                    l_options = [],
+                    l_answer = [],
+                    l_feedback = [];
 
-		// function called when label dropped on target - by mouse or keyboard
-		this.dropLabel = function($thisTarget, $thisLabel) {
-			$x_pageHolder.scrollTop(0);
-			var $infoHolder = $("#infoHolder");
-			$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
+            var generalFeedback = "";
 
-			$thisLabel
-				.attr({
-					"title"		:labelTxt1,
-					"tabindex"	:$thisTarget.attr("tabindex") + 1,
-					"style"		:"cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
-				})
-				.data("infoTxt", $infoHolder.html())
-				.removeClass("selected")
-				.draggable("disable")
-				.css({
-					"opacity"	:1,
-					"position"	:"absolute",
-					"top"		:$thisTarget.position().top + 2 + $("#mainPanel").position().top,
-					"left"		:$thisTarget.position().left + 2 + $("#mainPanel").position().left
-				})
-				.off("keypress focusin focusout")
-				.click(function() {
-					$("#infoHolder").html($(this).data("infoTxt"));
-				})
-				.focusin(function() {
-					$(this).addClass("focus");
-					$("#infoHolder").html($(this).data("infoTxt"));
-				})
-				.focusout(function() {
-					$(this).removeClass("focus");
-					$("#infoHolder").html("");
-				})
-				.data("target", $thisTarget);
+            // get feedback for selected options and check if they are correct
+            for (var i=0; i<selected.length; i++) {
+                var optionIndex = $(selected[i]).index()/2,
+                        selectedOption = quiz.currentAnswers[optionIndex];
 
-			$thisTarget
-				.attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
-				.data("infoTxt", $infoHolder.html())
-				.css("cursor", "pointer")
-				.click(function() {
-					$("#infoHolder").html($(this).data("infoTxt"));
-				});
-			
-			if ($("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length) {
-				$("#pageContents hr:eq(1)").remove();
-			}
-			
-			$("#pageContents").data("selectedLabel", "");
-		}
+                optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
+				if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+					optionFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+				}
+				
+                if (correct != false && selectedOption.correct == "true") {
+                    correct = true;
+                } else {
+                    correct = false;
+                }
+                l_options.push(optionIndex+1+"");
+                l_answer.push(selectedOption.text);
+                l_feedback.push(selectedOption.feedback);
+            }
+            generalFeedback += optionFeedback;
+            var rightWrongTxt = "";
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                // if all selected are correct - check that none of the unselected options should have been
+                if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
+                    var notSelected = $("#optionHolder input:not(:checked)");
+                    for (var i=0; i<notSelected.length; i++) {
+                        var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
+                        if (notSelectedOption.correct == "true") {
+                            correct = false;
+                        }
+                    }
+                }
+                // add correct feedback depending on if question overall has been answered correctly or not
+                if (currentQuestion.getAttribute("type") == "Multiple Answer") {
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiRight") + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("multiWrong") + '</p>';
+                    }
+                } else {
+                    if (correct == true) {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleRight") + '</p>';
+                    } else {
+                        rightWrongTxt = '<p><br/>' + $("#pageContents").data("singleWrong") + '</p>';
+                    }
+                }
+                // Track answer
+                XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback);
+                quiz.myProgress.splice(quiz.currentQ, 1, correct);
+            }
+            generalFeedback += rightWrongTxt;
+            var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
+            if (XTGetMode() == "normal")
+            {
+                // Disable all options
+                var i=0;
+                for (i=0; i<quiz.currNrOptions; i++)
+                {
+                    $("#option"+i).attr("disabled", "disabled");
+                }
+            }
+            if (quiz.showfeedback)
+            {
+                $("#feedback")
+					.html(answerFeedback)
+					.find(".audioHolder").each(function() {
+						$(this).mediaPlayer({
+							type	:"audio",
+							source	:$(this).data("audio"),
+							width	:"100%"
+						});
+					});
+
+                if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+                    $("#feedback").find("a.x_glossary").contents().unwrap();
+                }
+
+                $("#nextBtn").show();
+				$("#checkBtn").hide();
+
+                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+            }
+            else
+            {
+                // Continue to next question
+                quiz.currentQ++;
+                if (quiz.currentQ == quiz.questions.length) {
+                    // last question answered - show results
+                    quiz.showResults();
+                } else {
+                    quiz.loadQ();
+                }
+            }
+            // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+        }
 	}
-
 	dragDropLabel.init();
 
 </script>
@@ -453,6 +562,11 @@
 	#labelHolder .label.selected {
 		border:		2px solid green;
 	}
+	
+	#buttonHolder button {
+		margin:	10px;
+		float:	right;
+	}
 
 	#targetHolder {
 		position:	absolute;
@@ -483,6 +597,9 @@
 		<div id="mainPanel" class="panel">
 			<img id="image" />
 			<div id="targetHolder"></div>
+			<div id="buttonHolder">
+					<button id="submitBtn"></button>
+					</div>
 		</div>
 		<div id="labelHolder"></div>
 	</div>
