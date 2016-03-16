@@ -104,7 +104,7 @@
 			} else {
 				$("#dragDropHolderLabelling").addClass("x_floatRight");
 			}
-			
+
 			$("#submitBtn")
 			.button({
 				label:	"Submit"
@@ -112,7 +112,7 @@
 			.click(function() {
 				    $x_pageHolder.scrollTop(0);
 					var $infoHolder = $("#infoHolder");
-					
+
 					$("#labelHolder .label").each(function() {
 						var $this = $(this)
 							.draggable("disable")
@@ -138,7 +138,7 @@
 			this.startTracking();
 			this.sizeChanged(true);
 		}
-		
+
 		this.startTracking = function() {
 			var numHotspots = $(x_currentPageXML).children().length;
 			this.weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
@@ -395,7 +395,7 @@
 
 			x_pageLoaded();
 		}
-		
+
 		this.showFeedBackandTrackResults = function() {
             var generalFeedback = "",
                 numCorrect = 0,
@@ -530,7 +530,7 @@
 	#labelHolder .label.selected {
 		border:		2px solid green;
 	}
-	
+
 	#buttonHolder button {
 		margin:	10px;
 		float:	right;
