@@ -208,59 +208,57 @@ function edit_window(admin,edit){
             if(node.xot_type == "file"){
 
                 if(node.parent != workspace.recyclebin_id){
-				
-					size = node.editor_size.split(",");
-
-					if(size.length==1){
-						var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id );
-					}else{
-						var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
-					}
-
-                    try{
-
-                        xmlHttp=new XMLHttpRequest();
-
-                    }catch (e){    // Internet Explorer    
-                        try{
-                            xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-                        }catch (e){
-                            try{
-                                xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-                            }catch (e){
-
-                            }      
-                        }    
-                    }
-
-
-                    NewEditWindow.ajax_handle = xmlHttp;		
-                    self.last_reference = self;		
 					
-                    NewEditWindow.focus();
-
+					// ** Fay: moved stuff around in here so it checks edit_window_open array to see if currently open before opening a new window
                     window_id = "editwindow" + node.id;
-
+					
                     window_open = false;
+					
 					if (typeof(edit_window_open) != 'undefined') {
 
 						for(z=0;z<edit_window_open.length;z++){
-
-								if(("editwindow" + edit_window_open[z])==window_id){
-
-										window_open = true;
-
-								}
-
+							if(("editwindow" + edit_window_open[z].id)==window_id) {
+								window_open = edit_window_open[z].window;
+							}
 						}
 					}
 
                     if(!window_open){
+						
+						size = node.editor_size.split(",");
 
-                        edit_window_open.push(node.id);
+						if(size.length==1){
+							var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id );
+						}else{
+							var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", resizable=yes");
+						}
 
-                    }
+						try{
 
+							xmlHttp=new XMLHttpRequest();
+
+						}catch (e){    // Internet Explorer    
+							try{
+								xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+							}catch (e){
+								try{
+									xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+								}catch (e){
+
+								}      
+							}    
+						}
+
+						NewEditWindow.ajax_handle = xmlHttp;		
+						self.last_reference = self;		
+						
+						NewEditWindow.focus();
+						
+						edit_window_open.push({id:node.id, window:NewEditWindow});
+
+                    } else {
+						window_open.focus();
+					}
 
                 }else{
 
@@ -306,12 +304,11 @@ function close_edit_window(path){
     /*
      * use the for loop to check for its place in the array then delete it
      */
-
     for(x=0;x<edit_window_open.length;x++){
 
         if(path.indexOf("-")!=-1){
-
-            if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
+			// ** Fay: haven't changed this but it might need changing too - this is the same as in edit_window_close funct below where I have made changes
+            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path.substr(0,path.indexOf("-"))){
 
                 edit_window_open.splice(x,1);
 
@@ -319,7 +316,7 @@ function close_edit_window(path){
 
         }else{
 
-            if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path){
+            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path){
 
                 edit_window_open.splice(x,1);
 
@@ -397,19 +394,18 @@ function edit_window_close(path){
     for(x=0;x<edit_window_open.length;x++){
 
         if(path.indexOf("-")!=-1){
-
-            if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
-
+			
+			// ** Fay: Changed what's being compared here to check if it's already open - it never seemed to match before
+			
+			if(edit_window_open[x].id.substr(edit_window_open[x].id.lastIndexOf("_")+1,edit_window_open[x].id.length)==path.substr(0,path.indexOf("-"))){
+			//if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
                 edit_window_open.splice(x,1);
-
-            }			
+            }
 
         }else{
-
-            if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path){
-
+			// ** Fay: this might need changing too but I'm not sure under what circumstances it gets here...
+            if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path){
                 edit_window_open.splice(x,1);
-
             }
 
         }
