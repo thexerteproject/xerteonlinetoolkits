@@ -134,7 +134,7 @@
 				.click(function() { // mark labels and show feedback
 					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
 						allCorrect = true;
-					numAttempts++;
+					
 					
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
 					$("#labelHolder .audioHolder").hide();
@@ -146,6 +146,10 @@
 							labelOffTarget = true;
 						}
 					});
+					if(!labelOffTarget)
+					{
+						numAttempts++;
+					}
 					
 					if(XTGetMode() != "normal"){
 						$("#labelHolder .label").each(function() {
@@ -224,13 +228,14 @@
 						
 						var wrongFeedback, scoreFeedback;
 						
-						if(XTGetMode() == "normal"){
-							wrongFeedback = x_currentPageXML.getAttribute("allWrong")
-							scoreFeedback = x_currentPageXML.getAttribute("score")
+						if(XTGetMode() != "normal"){
+							wrongFeedback = x_currentPageXML.getAttribute("allWrong");
+							scoreFeedback = x_currentPageXML.getAttribute("score");
 						}
 						else{
-							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking")
-							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking")										
+							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking");
+							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking");	
+							$(this).hide();
 						}
 							
 						
@@ -238,7 +243,6 @@
 							
 						} else if (allCorrect == true) {
 							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-							console.log("hide");
 							$(this).hide();
 						} else if (correct == 0){
 							$feedback.html(wrongFeedback != undefined ? wrongFeedback : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
@@ -336,7 +340,6 @@
 			this.createLabels();
 			this.sizeChanged();
 			this.initTracking();
-			console.log(XTGetMode());
 			x_pageLoaded();
 			
 		}
@@ -372,7 +375,6 @@
 				.draggable("disable");
             }
             
-            console.log("Finish: " + XTGetMode());
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
