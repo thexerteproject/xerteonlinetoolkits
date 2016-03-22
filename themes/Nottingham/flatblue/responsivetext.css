@@ -17,10 +17,10 @@ li.bullet {
 h3 {
     font-size: 3.0vmin;
 }
-panelPage h3 {
+.panelPage h3 {
     font-size: 3.0vmin;
 }
-mainTxt h3 {
+#mainTxt h3 {
     font-size: 3.0vmin;
 }
 #infoHolder {
@@ -68,7 +68,7 @@ mainTxt h3 {
 #labelHolder {
     font-size: 3.0vmin;
 }
-mainPanel .panel {
+#mainPanel .panel {
     font-size: 3.0vmin;
 }
 #infoHolder {
