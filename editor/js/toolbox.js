@@ -1394,6 +1394,64 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [value]);
     },
 
+    changeLanguage = function(id, key, name, value, obj)
+    {
+        if (value == language.$code)
+        {
+            // The same language is chosen as the selected XOT language
+            // Do we want to replace all the language options with the default
+            // This way a user that inadvertantly (or previously) created an LO in English can switch to Dutch
+            // Ask confirmation (for now not implemented)
+            // So loop over all the pages and replace the language options with their defaults
+            if (confirm(language.Alert.changeLanguage.prompt + " " + language.$name + " (" + language.$code + ")")) {
+                $.each(lo_data, function (key, page) {
+                    var attributes = page['attributes'];
+
+                    // Get the node name
+                    var node_name = attributes.nodeName;
+
+                    var node_options = wizard_data[node_name].node_options;
+
+                    if (node_options.language.length) {
+                        // There are options to set. get parent, because the parent holds the default values of the language options
+                        var tree = $.jstree.reference("#treeview");
+                        var p_node_name;
+                        var p_attributes;
+
+                        var current_node = tree.get_node(key, false);
+                        var id = tree.get_parent(current_node);
+
+                        p_attributes = lo_data[id]['attributes'];
+                        // Get the node name
+                        p_node_name = p_attributes.nodeName;
+
+                        // Get the default node
+                        // Search in array newnodes for node_name
+                        i = $.inArray(node_name, wizard_data[p_node_name].new_nodes);
+                        node_xml = wizard_data[p_node_name].new_nodes_defaults[i];
+
+                        // Parse XML
+                        var x2js = new X2JS({
+                            // XML attributes. Default is "_"
+                            attributePrefix: "$"
+                        });
+                        var defaults = x2js.xml_str2json(node_xml)[node_name];
+
+                        $.each(node_options.language, function (index, lang_attr) {
+                            // search
+                            if (typeof defaults['$' + lang_attr.name] !== 'undefined') {
+                                setAttributeValue(key, [lang_attr.name], [defaults['$' + lang_attr.name]])
+                            }
+                        });
+
+                    }
+
+
+                });
+            }
+
+        }
+    },
 
     selectChanged = function (id, key, name, value, obj)
     {
@@ -1895,6 +1953,7 @@ var EDITOR = (function ($, parent) {
                         .attr('id', id)
                         .change({id:id, key:key, name:name}, function(event)
                         {
+                            changeLanguage(event.data.id, event.data.key, event.data.name, this.value, this);
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
                     for (var i=0; i<installed_languages.length; i++) {
