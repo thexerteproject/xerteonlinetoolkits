@@ -67,8 +67,6 @@ function make_new_template($type,$zip_path){
      * get the maximum id number from templates, as the id for this template
      */
 
-    $maximum_template_id = get_maximum_template_number();
-
     $root_folder = get_user_root_folder();
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -98,11 +96,10 @@ function make_new_template($type,$zip_path){
     }
 
     $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
-    . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
-    . "VALUES (?,?,?,?,?,?,?,?)";
+    . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
+    . "VALUES (?,?,?,?,?,?,?)";
     
     $params = array(
-        $maximum_template_id+1, 
         $_SESSION['toolkits_logon_id'],
         $row_template_type['template_type_id'],
         date('Y-m-d'),

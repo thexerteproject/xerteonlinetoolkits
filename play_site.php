@@ -164,15 +164,6 @@ if (!isset($_GET['template_id']) || !is_numeric($_GET['template_id'])) {
 
 $safe_template_id = (int) $_GET['template_id'];
 
-/*
- * Check to see whether it is less than the highest ID we have created
- */
-
-if (get_maximum_template_number() < $safe_template_id) {
-
-    echo file_get_contents($xerte_toolkits_site->website_code_path . "error_top") . " " . PLAY_RESOURCE_FAIL . " </div></div></body></html>";
-    die();
-}
 
 /*
  * Take the query from site variable and alter it to suit this request
