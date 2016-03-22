@@ -419,4 +419,32 @@ function upgrade_7()
     }
 }
 
+function upgrade_8()
+{
+    // Make template_id of templatedetails autoincrement
+    global $xerte_toolkits_site;
+
+    // Check if auto_increment is set
+    $sql = "SELECT * FROM information_schema.COLUMNS where table_schema=? and table_name=? and column_name='template_id'";
+    $res = db_query($sql, array($xerte_toolkits_site->database_name, $xerte_toolkits_site->database_table_prefix . 'templatedetails'));
+    if ($res !== false && count($res)>1)
+    {
+        if (strpos('auto_increment', $res[0]['extra']) === false)
+        {
+            // Add auto_increment flag to column
+            $sql = "ALTER TABLE " . $xerte_toolkits_site->database_table_prefix . "templatedetails CHANGE COLUMN `template_id` `template_id` BIGINT(20) NOT NULL AUTO_INCREMENT";
+            $res = db_query($sql);
+            if($res === false) {
+                die("Error adding auto_incement to templatedetails.template_id column.");
+            }
+            return "Adding auto_increment to templatedetails.template_id column - ok true";
+        }
+    }
+    else
+    {
+        return "Auto_increment already set on templatedetails.template_id column - ok true";
+    }
+}
+
+
 ?>
