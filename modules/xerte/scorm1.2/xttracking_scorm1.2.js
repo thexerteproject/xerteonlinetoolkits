@@ -725,7 +725,7 @@ function ScormTrackingState()
         }
         else
         {
-            if (interactions_supported.indexOf('íd') < 0
+            if (interactions_supported.indexOf('id') < 0
                 || interactions_supported.indexOf('time') < 0
                 || interactions_supported.indexOf('type') < 0
                 || interactions_supported.indexOf('correct_responses') < 0
