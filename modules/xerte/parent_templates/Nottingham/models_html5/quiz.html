@@ -49,13 +49,29 @@
 				this.loadVideo();
 			}
 			
+			var resized = false;
 			if ($("#questionAudio").children().length > 0) {
-				var audioBarW = 0;
-				$("#questionAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
-					audioBarW += $(this).outerWidth();
-				});
-				if (audioBarW < $("#questionAudio").width() - 5 || audioBarW > $("#questionAudio").width() + 5) {
-					$x_window.resize();
+				if (resized == false) {
+					var audioBarW = 0;
+					$("#questionAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW < $("#questionAudio").width() - 5 || audioBarW > $("#questionAudio").width() + 5) {
+						resized = true;
+						$x_window.resize();
+					}
+				}
+			}
+			if ($("#pageContents .audioHolder").length > 0) {
+				if (resized == false) {
+					var audioBarW = 0;
+					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2) {
+						resized = true;
+						$x_window.resize();
+					}
 				}
 			}
 		}
@@ -174,7 +190,8 @@
 							{
 								text:		this.getAttribute("text"),
 								correct:	this.getAttribute("correct"),
-								feedback:	this.getAttribute("feedback")
+								feedback:	this.getAttribute("feedback"),
+								audioFB:	this.getAttribute("audioFB")
 							}
 						);
 					});
@@ -257,6 +274,10 @@
                         selectedOption = quiz.currentAnswers[optionIndex];
 
                 optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
+				if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+					optionFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '"></div>';
+				}
+				
                 if (correct != false && selectedOption.correct == "true") {
                     correct = true;
                 } else {
@@ -310,7 +331,15 @@
             }
             if (quiz.showfeedback)
             {
-                $("#feedback").html(answerFeedback);
+                $("#feedback")
+					.html(answerFeedback)
+					.find(".audioHolder").each(function() {
+						$(this).mediaPlayer({
+							type	:"audio",
+							source	:$(this).data("audio"),
+							width	:"100%"
+						});
+					});
 
                 if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
                     $("#feedback").find("a.x_glossary").contents().unwrap();
@@ -410,7 +439,7 @@
 				$("#infoHolder .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
 			} else {
-				$textHolder.html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</p>');
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
 				
 				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 					$textHolder.find("a.x_glossary").contents().unwrap();
@@ -600,7 +629,7 @@
 		display:		block;
 	}
 
-	#pageContents button {
+	#pageContents #buttonHolder button, #feedbackHolder #nextBtn {
 		margin:	10px;
 		float:	right;
 	}
@@ -631,6 +660,10 @@
 	#questionAudio {
 		clear:	both;
 	}
+	
+	#feedback .audioHolder {
+		margin:	0.5em 0 1em 0;
+	}
 
 </style>
 
@@ -641,7 +674,7 @@
 		<div id="textHolder" class="left" tabindex="1"></div>
 
 		<div id="infoHolder" class="right">
-			<div class="panel qPanel">
+			<div id="mainPanel" class="panel qPanel">
 				<h3 id="qNo"></h3>
 				<p id="qTxt"></p>
 				<div id="questionAudio"></div>

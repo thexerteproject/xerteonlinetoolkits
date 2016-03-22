@@ -35,8 +35,12 @@
 			}
 			
 			var $pageContents = $("#pageContents");
-			$pageContents.data("count", $pageContents.data("count") + 1);
-			this.scaleImages();
+			if ($pageContents.data("count") != 0) {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+				this.scaleImages();
+			} else {
+				$pageContents.data("count", $pageContents.data("count") + 1);
+			}
 		}
 		
 		this.init = function() {
@@ -193,6 +197,8 @@
 				var $img = $("#infoHolder .paneImg img:visible"),
 					$infoHolder = $("#infoHolder"),
 					firstScale = false;
+				
+				$pageContents.data("count", $pageContents.data("count") + 1);
 				
 				if ($img.data("count") == undefined) {
 					firstScale = true;

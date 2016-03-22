@@ -1,0 +1,1081 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var interactiveText = new function() {
+		var groupInfo = [],
+			subGroups = [],
+			mcqCurrentQ,
+			mcqAnswers = [],
+			mcqAnswerOptions = [],
+			tabIndex = 2,
+			lang1,
+			lang2,
+			lang3,
+			
+			$pageContents,
+			$groupInfo,
+			$instructions,
+			
+			interactionText = "",
+			tempTxt = "",
+			tempTxtPos = 0,
+			tempTag = -1,
+			openTagInfo = [];
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
+			$pageContents.data("currentGroup", -1);
+			$groupInfo = $("#groupInfo");
+			$instructions = $("#instructions");
+			groupInfo = $pageContents.data("groupInfo");
+			subGroups = $pageContents.data("subGroups");
+			
+			$("#passage .group").removeClass("on");
+			$groupInfo
+				.html("")
+				.removeAttr("tabindex");
+			$("#buttons .listItem").removeClass("highlight");
+			
+			if (x_currentPageXML.getAttribute("interactivity") == "explore") {
+				$("#showBtn").hide();
+			} else if (x_currentPageXML.getAttribute("interactivity") == "show2") {
+				$("#prevBtn").button("disable");
+				$("#nextBtn").button("enable");
+			} else if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
+				this.createQuiz();
+			} else if (x_currentPageXML.getAttribute("interactivity") == "find") {
+				$("#feedback #countFb").hide();
+				$("#feedback #endFb").html("");
+				
+				$pageContents.data({
+					"found" : [],
+					"complete" : []
+				});
+				this.setUpFind(false);
+			}
+		};
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		};
+		
+        this.init = function() {
+			$pageContents = $("#pageContents");
+			$pageContents.data("currentGroup", -1);
+			$groupInfo = $("#groupInfo");
+			$instructions = $("#instructions");
+			lang1 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "moreInfo", "Press space to learn more");
+			lang2 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected");
+			lang3 = x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "toSelect", "Press space to select");
+			
+			interactionText = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
+			
+			if (x_currentPageXML.getAttribute("text") != "") {
+				$("#pageTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			} else {
+				$("#pageTxt").remove();
+			}
+			
+			// layout
+			if (x_currentPageXML.getAttribute("panelWidth") != "full") { // text to go on left with panel on right
+				if (x_browserInfo.mobile != true) {
+					$("#passageHolder")
+						.addClass("inline")
+						.css("float","right");
+				} else {
+					$("#passageHolder")
+						.addClass("mobileInline")
+						.insertAfter("#pageTxt");
+				}
+				if (x_currentPageXML.getAttribute("panelWidth") == "small") {
+					$("#passageHolder").addClass("width40");
+				} else if (x_currentPageXML.getAttribute("panelWidth") == "large") {
+					$("#passageHolder").addClass("width80");
+				} else {
+					$("#passageHolder").addClass("width60");
+				}
+			} else { // text above
+				$("#passageHolder").insertAfter($instructions);
+			}
+			
+			var groupStyles = "<style type='text/css'>";
+			var illegalDelims = [];
+			
+			// get group info
+			for (var i=0; i<x_currentPageXML.childNodes.length; i++) {
+				if ("&<>;".indexOf(x_currentPageXML.childNodes[i].getAttribute("delimiter")) != -1) {
+					illegalDelims.push(x_currentPageXML.childNodes[i].getAttribute("delimiter"));
+				} else {
+					var group = new Object();
+					for (var j=0; j<x_currentPageXML.childNodes[i].attributes.length; j++) {
+						group[x_currentPageXML.childNodes[i].attributes[j].name] = x_currentPageXML.childNodes[i].attributes[j].value;
+					}
+					group.numSubGroups = 0;
+					groupInfo.push(group);
+					
+					var bgColour = x_getColour(group.bgColour),
+						rgbval = parseInt(bgColour.substr(1), 16),
+						brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
+						txtColour = (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
+					
+					groupStyles += " .group" + i + ".on {color:" + txtColour + "; background-color:" + bgColour + ";} ";
+					
+					if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
+						$pageContents.addClass("line");
+						groupStyles += " .group" + i + " {border-bottom: 2px solid " + x_getColour(group.bgColour) + ";} ";
+					}
+				}
+			}
+			
+			groupStyles += "#pageContents a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active { color: " + $x_body.css("color") + "; } ";
+			groupStyles += "</style>";
+			$pageContents.prepend($(groupStyles));
+			
+			if (illegalDelims.length > 0) {
+				var str1 = "",
+					str2 = "";
+				for (var i=0; i<illegalDelims.length; i++) {
+					if (i > 0) {
+						if (i != illegalDelims.length - 1) {
+							str1 += ", " + illegalDelims[i];
+						} else if (i == illegalDelims.length - 1) {
+							str2 += illegalDelims[i];
+						}
+					} else {
+						str1 += illegalDelims[i];
+					}
+				}
+				var delimiterErrorMsg = illegalDelims.length > 1 ? (x_currentPageXML.getAttribute("delimiterErrorMsg") != undefined ? x_currentPageXML.getAttribute("delimiterErrorMsg") : "Error: The delimiters {n} and {m} are not allowed.") : (x_currentPageXML.getAttribute("delimiterErrorMsg2") != undefined ? x_currentPageXML.getAttribute("delimiterErrorMsg2") : "Error: The delimiter {n} is not allowed.");
+				delimiterErrorMsg = delimiterErrorMsg.replace("{n}", str1).replace("{m}", str2);
+				$("#pageContents").prepend('<p class="alert">' + delimiterErrorMsg + '</p>');
+			}
+			
+			// get info about position of every delimiter in every group - create subgroups from these with an opening & closing delimiter
+			for (var i=0; i<groupInfo.length; i++) {
+				var temp = interactionText,
+					index = 0,
+					open = true,
+					count = 0;
+								
+				if (temp.indexOf(groupInfo[i].delimiter) != -1) {
+					while (temp.indexOf(groupInfo[i].delimiter) != -1) {
+						var tempIndex = temp.indexOf(groupInfo[i].delimiter);
+						index = index + tempIndex;
+						
+						if (!(groupInfo[i].delimiter == "#" && temp.indexOf("&#") != -1 && temp.indexOf("&#") + 1 == tempIndex)) { // ignore if fits this as it's likely to be a html code not delimiter
+							if (open == true) {
+								var subGroup = new Object({
+									delim:	groupInfo[i].delimiter,
+									open:	index,
+									ref:	i,
+									overlap:[]
+								});
+								subGroups.push(subGroup);
+								
+								count++;
+								open = false;
+							} else {
+								subGroups[subGroups.length-1].close = index;
+								open = true;
+							}
+						}
+						
+						temp = temp.substring(tempIndex + groupInfo[i].delimiter.length);
+						index += groupInfo[i].delimiter.length;
+					}
+					
+					// if the last delimiter isn't closed then ignore it
+					if (subGroups[subGroups.length-1].close == undefined) {
+						subGroups.pop();
+					}
+				}
+				
+				groupInfo[i].numSubGroups = count;
+			}
+			
+			// sort subgroups by opening tag position
+			subGroups.sort(function(a, b) { return a.open - b.open; });
+			
+			// check for any overlaps within subgroups (because spans can't overlap we will need to add some extra tags in to display them properly)
+			for (var i=0; i<subGroups.length; i++) {
+				var thisOpen = subGroups[i].open,
+					thisClose = subGroups[i].close;
+				
+				for (var j=0; j<subGroups.length - (i + 1); j++) { // check against every subsequent subgroups
+					var thatOpen = subGroups[j + i + 1].open,
+						thatClose = subGroups[j + i + 1].close;
+					
+					if (thisOpen < thatOpen && thisClose > thatOpen && thisClose < thatClose) {
+						subGroups[i].overlap.push(j + i + 1);
+					}
+				}
+			}
+			
+			if (x_currentPageXML.getAttribute("interactivity") == "show" || x_currentPageXML.getAttribute("interactivity") == "find") {
+				tabIndex = tabIndex + groupInfo.length;
+			} else if (x_currentPageXML.getAttribute("interactivity") == "mcq") {
+				tabIndex--;
+				$instructions.remove();
+			}
+			
+			// insert span tags into interactionText
+			while (tempTxtPos != interactionText.length) {
+				this.createTags();
+			}
+			
+			interactionText = tempTxt;
+			$("#passage").html(interactionText);
+			
+			$pageContents.data({
+				"groupInfo": groupInfo,
+				"subGroups": subGroups
+			});
+			
+			this.setUpInteraction();
+			
+			x_pageLoaded(); 
+		};
+		
+		this.createTags = function() {
+			if (openTagInfo.length == 0) { // there are no tags currently open...
+				if (subGroups.length - 1 == tempTag) { // ...no more tags to add
+					tempTxt += interactionText.substring(tempTxtPos);
+					tempTxtPos = interactionText.length;
+					
+				} else { // ...insert next tag
+					this.openTag();
+				}
+				
+			} else { // there are some tags already open...
+				var toClose = openTagInfo[0];
+				for (var i=0; i<openTagInfo.length-1; i++) {
+					toClose = subGroups[openTagInfo[i+1]].close < subGroups[toClose].close ? openTagInfo[i+1] : toClose;
+				}
+				
+				if (subGroups.length - 1 == tempTag || subGroups[toClose].close < subGroups[tempTag + 1].open) { // ...close a tag (ensuring no overlapping tags)
+					tempTxt += interactionText.substring(tempTxtPos, subGroups[toClose].close);
+					for (var j=0; j<subGroups[toClose].overlap.length; j++) {
+						tempTxt += '</span>';
+					}
+					tempTxt += '</span>';
+					tempTxtPos = subGroups[toClose].close + subGroups[toClose].delim.length;
+					for (var j=0; j<subGroups[toClose].overlap.length; j++) {
+						tabIndex++;
+						tempTxt += '<span class="group group' + subGroups[subGroups[toClose].overlap[j]].ref + '" data-index="' + subGroups[toClose].overlap[j] + '" tabindex="' + tabIndex + '">';
+					}
+					openTagInfo = jQuery.grep(openTagInfo, function(value) {
+						return value != toClose;
+					});
+					
+				} else { //...open another tag
+					this.openTag();
+				}
+			}
+		};
+		
+		this.openTag = function() {
+			tabIndex++;
+			tempTag++;
+			tempTxt += interactionText.substring(tempTxtPos, subGroups[tempTag].open);
+			tempTxt += '<span class="group group' + subGroups[tempTag].ref + '" data-index="' + tempTag + '" tabindex="' + tabIndex + '">';
+			tempTxtPos = subGroups[tempTag].open + subGroups[tempTag].delim.length;
+			openTagInfo.push(tempTag);
+		};
+		
+		this.setUpInteraction = function() {
+			var intType = x_currentPageXML.getAttribute("interactivity");
+			$pageContents.addClass(intType);
+			
+			// --- EXPLORE ---
+			// click any subgroup - you then get info about the group it falls into, with the option of showing all related subgroups
+			if (intType == "explore") {
+				$('<button id="showBtn"></button>')
+					.appendTo("#buttons")
+					.hide();
+				
+				var instructions = x_currentPageXML.getAttribute("exploreTxt") != undefined ? x_currentPageXML.getAttribute("exploreTxt") : "Explore the text. Click on a section to learn more.";
+				$instructions.html('<p>' + instructions + '</p>');
+				
+				
+				$("#passage").click(function(e) {
+					var $this = $(this);
+					$this.find(".group")
+						.removeClass("on")
+						.removeAttr("title");
+					
+					if ($(e.target).hasClass("group")) {
+						var clicked = $.merge($(e.target), $(e.target).parents(".group"));
+						interactiveText.clickExplore($(clicked[0]));
+						
+					} else {
+						$pageContents.data("currentGroup", -1);
+						$groupInfo
+							.html("")
+							.removeAttr("tabindex");
+						$("#showBtn").hide();
+					}
+				});
+				
+				$("#passage .group")
+					.focusin(function(e) {
+						var $this = $(this);
+						$this.addClass("highlight");
+						
+						if (!$this.hasClass("on")) {
+							$(this).attr("title", lang1);
+						}
+						})
+					.focusout(function() {
+						var $this = $(this);
+						$this.removeClass("highlight");
+						
+						if (!$this.hasClass("on")) {
+							$this.removeAttr("title");
+						}
+						})
+					.keypress(function(e) {
+						var charCode = e.charCode || e.keyCode;
+						if (charCode == 32) {
+							$("#passage").find(".group")
+								.removeClass("on")
+								.removeAttr("title");
+							
+							interactiveText.clickExplore($(this));
+						}
+					});
+				
+				$("#showBtn")
+					.button({
+						label:	(x_currentPageXML.getAttribute("showBtnTxt") != undefined ? x_currentPageXML.getAttribute("showBtnTxt") : "Show All")
+					}).click(function() {
+						$("#passage .group" + $pageContents.data("currentGroup"))
+							.addClass("on")
+							.attr("title", lang2 + ": " + groupInfo[$pageContents.data("currentGroup")].name);
+						
+						$(this).hide();
+					});
+			
+			
+			// --- SHOW ME (BY NAME) ---
+			// group names are shown and subgroups are highlighted when a group is selected
+			} else if (intType == "show") {
+				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt2") != undefined ? x_currentPageXML.getAttribute("showMeTxt2") : "Click a group to learn more.") + '</p>');
+				
+				var $buttons = $("#buttons");
+				$buttons.insertBefore($("#passage"));
+				
+				for (var i=0; i<groupInfo.length; i++) {
+					var $groupBtn = $('<a/>');
+					$groupBtn
+						.addClass("listItem")
+						.html(groupInfo[i].name)
+						.attr({
+							"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+							"href"		: "#group" + i
+							})
+						.data("index", i);
+					
+					$buttons.append($groupBtn);
+				}
+				
+				$buttons.find(".listItem")
+					.click(function() {
+						var index = $(this).data("index");
+						
+						if ($pageContents.data("currentGroup") != index) {
+							$("#buttons .listItem.highlight").removeClass("highlight");
+							$("#passage .group")
+								.removeClass("on")
+								.removeAttr("title");
+							
+							$(this).addClass("highlight");
+							$("#passage .group" + index)
+								.addClass("on")
+								.attr("title", lang2 + ": " + groupInfo[index].name);
+							
+							$groupInfo
+								.hide()
+								.html('<h3>' + groupInfo[index].name + '</h3>' + x_addLineBreaks(groupInfo[index].text))
+								.attr("tabindex", tabIndex++)
+								.fadeIn();
+							
+							$pageContents.data("currentGroup", index);
+						}
+					});
+				
+				
+			// --- SHOW ME (IN ORDER) ---
+			// next/prev buttons show details of each group in turn, highlighting relevant subgroups
+			} else if (intType == "show2") {
+				$instructions.html('<p>' + (x_currentPageXML.getAttribute("showMeTxt") != undefined ? x_currentPageXML.getAttribute("showMeTxt") : "Click the arrow buttons to learn more.") + '</p>');
+				$("#buttons")
+					.html('<button id="nextBtn"></button><button id="prevBtn"></button>')
+					.insertAfter($("#passage"));
+				
+				var btnTxt = [
+					x_currentPageXML.getAttribute("nextTxt") != undefined ? x_currentPageXML.getAttribute("nextTxt") : "Next",
+					x_currentPageXML.getAttribute("prevTxt") != undefined ? x_currentPageXML.getAttribute("prevTxt") : "Previous"
+				];
+				
+				$("#nextBtn")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-e"
+						},
+						label:	btnTxt[0],
+						text:	false
+					})
+					.click(function() {
+						var currentGroup = $pageContents.data("currentGroup");
+						currentGroup++;
+						
+						$("#passage .group")
+							.removeClass("on")
+							.removeAttr("title");
+							
+						$("#passage .group" + currentGroup)
+							.addClass("on")
+							.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+						
+						$groupInfo
+							.hide()
+							.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
+							.attr("tabindex", tabIndex+3)
+							.fadeIn();
+						
+						if (currentGroup == groupInfo.length - 1) {
+							$(this).button("disable");
+						}
+						$("#prevBtn").button("enable");
+						
+						$pageContents.data("currentGroup", currentGroup);
+					})
+					.attr("tabindex", tabIndex+1);
+				
+				$("#prevBtn")
+					.button({
+						icons: {
+							primary: "ui-icon-carat-1-w"
+						},
+						label:	btnTxt[1],
+						text:	false,
+						disabled:	true
+					})
+					.click(function() {
+						var currentGroup = $pageContents.data("currentGroup");
+						currentGroup--;
+						$("#passage .group")
+							.removeClass("on")
+							.removeAttr("title");
+						
+						if (currentGroup == -1) {
+							$(this).button("disable");
+							$groupInfo
+								.html("")
+								.removeAttr("tabindex");
+						} else {
+							$("#passage .group" + currentGroup)
+								.addClass("on")
+								.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+							
+							$groupInfo
+								.hide()
+								.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
+								.attr("tabindex", tabIndex+3)
+								.fadeIn();
+						}
+						$("#nextBtn").button("enable");
+						
+						$pageContents.data("currentGroup", currentGroup);
+					})
+					.attr("tabindex", tabIndex+2);
+				
+				
+			// --- FIND ---
+			// select a group and then click to find all of its subgroups
+			} else if (intType == "find") {
+				$pageContents.data({
+					"found" : [],
+					"complete" : [],
+					"findTxt2" : x_currentPageXML.getAttribute("findTxt2") != undefined ? x_currentPageXML.getAttribute("findTxt2") : "You have found {i} of {n}"
+				});
+				
+				var $buttons = $("#buttons");
+				$buttons.insertBefore($("#passage"));
+				$("#questionHolder").hide();
+				
+				var count = this.setUpFind(true);
+				
+				$("#feedback")
+					.insertAfter($("#passage"))
+					.html('<div id="countFb"></div><div id="endFb"/>')
+					.attr("tabindex", tabIndex+1);
+				
+				// there's only one group marked up - no need for listItems
+				if (count == 1) {
+					var currentGroup = $("#buttons .listItem").data("index");
+					$("#buttons .listItem").remove();
+					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt3") != undefined ? x_currentPageXML.getAttribute("findTxt3") : "Can you find all of the examples?") + '</p>');
+					
+					$groupInfo
+						.hide()
+						.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
+						.attr("tabindex", tabIndex+2)
+						.fadeIn();
+					
+					$("#feedback #countFb")
+						.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+						.show();
+					
+					$pageContents.data("currentGroup", currentGroup);
+				} else {
+					$instructions.html('<p>' + (x_currentPageXML.getAttribute("findTxt") != undefined ? x_currentPageXML.getAttribute("findTxt") : "Click a group to begin, then click the text to find all examples.") + '</p>');
+				}
+				
+				$("#buttons .listItem").click(function() {
+					var index = $(this).data("index"),
+						currentGroup = $pageContents.data("currentGroup");
+					
+					if (currentGroup != index) {
+						currentGroup = index;
+						
+						$("#buttons .listItem.highlight").removeClass("highlight");
+						$(this).addClass("highlight");
+						
+						$groupInfo
+							.hide()
+							.html('<h3>' + groupInfo[index].name + '</h3>' + x_addLineBreaks(groupInfo[index].text))
+							.attr("tabindex", tabIndex+2)
+							.fadeIn();
+						
+						if ($.inArray(0, $pageContents.data("complete")) != -1) {
+							$("#feedback #countFb")
+								.hide()
+								.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+								.fadeIn();
+						}
+						
+						$("#passage .group")
+							.removeClass("on")
+							.removeAttr("title");
+						
+						for (var i=0; i<$pageContents.data("found")[index].length; i++) {
+							$("#passage .group" + currentGroup + "[data-index=" + $pageContents.data("found")[index][i] + "]")
+								.addClass("on")
+								.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+						}
+						
+						$pageContents.data("currentGroup", currentGroup);
+					}
+				});
+				
+				$("#passage").click(function(e) {
+					if ($(e.target).hasClass("group")) {
+						var clicked = $.merge($(e.target), $(e.target).parents(".group"));
+						for (var i=0; i<clicked.length; i++) {
+							interactiveText.clickFind($(clicked[i]));
+						}
+					}
+				});
+				
+				$("#passage .group")
+					.focusin(function(e) {
+						if (!$(this).hasClass("on")) {
+							$(this).attr("title", lang3);
+						}
+						})
+					.focusout(function() {
+						if (!$(this).hasClass("on")) {
+							$(this).removeAttr("title");
+						}
+						})
+					.keypress(function(e) {
+						if (!$(this).hasClass("on")) {
+							var charCode = e.charCode || e.keyCode;
+							if (charCode == 32) {
+								interactiveText.clickFind($(this));
+							} else {
+								$(this).removeAttr("title");
+							}
+						}
+					});
+			
+			
+			// --- MCQ ---
+			// quiz asks what is highlighted
+			} else if (intType == "mcq") {
+				// get all fixed strings used in quiz
+				var phrases = {},
+					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3", "mcqDialogClose"],
+					defaultText = ["What is highlighted in the text? Choose from the following options:", "Question {i} of {n}", "That's right.", "No, the correct answer is {i}.", "You have completed the quiz.", "More Information", "You scored {i} / {n}", "Check", "Next", "Restart", "Close"];
+				
+				for (var i=0; i<langOptions.length; i++) {
+					phrases[langOptions[i]] = x_currentPageXML.getAttribute(langOptions[i]) != undefined ? x_currentPageXML.getAttribute(langOptions[i]) : defaultText[i];
+				}
+				$pageContents.data("phrases", phrases);
+				
+				$("#questionHolder").html('<h3 id="qNum" tabindex="' + (tabIndex+1) + '"></h3><div id="qText" tabindex="' + (tabIndex+2) + '"><p>' + phrases.mcqText + '</p></div><div id="optionHolder"></div>');
+				
+				$("#feedback")
+					.html('<div id="marking"><a id="more" class="fa fa-info-circle fa-lg" title="' + phrases.mcqMore + '" href="#"/></div>')
+					.appendTo($("#questionHolder"))
+					.attr("tabindex", tabIndex+3)
+					.on("click", "#more", function() {
+						$(".x_popupDialog").parent().detach();
+						
+						var mcqAnswers = $pageContents.data("mcqAnswers"),
+							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
+							correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref,
+							$dialog = $('<div id="x_interactiveTextInfo" class="x_popupDialog">' + x_addLineBreaks(groupInfo[correctGroup].text) + '</div>').appendTo($x_body);
+						
+						$dialog.dialog({
+							closeOnEscape:  true,
+							title:          groupInfo[correctGroup].name,
+							closeText:      $pageContents.data("phrases").mcqDialogClose,
+							close: function() { $(this).parent().detach(); }
+						});
+						
+						x_setDialogSize($dialog);
+					});
+				
+				$("#buttons")
+					.html('<button id="quizBtn"></button>')
+					.appendTo($("#questionHolder"))
+					.after($groupInfo);
+				
+				$("#quizBtn")
+					.button()
+					.click(function() {
+						var mcqAnswers = $pageContents.data("mcqAnswers"),
+							mcqCurrentQ = $pageContents.data("mcqCurrentQ");
+						
+						$("#x_interactiveTextInfo").parent().detach();
+						if ($(this).data("state") == 0) { // check
+							var correctGroup = x_currentPageXML.getAttribute("mcqType") == "all" ? mcqAnswers[mcqCurrentQ] : subGroups[mcqAnswers[mcqCurrentQ]].ref;
+							
+							var $moreInfo = $("#more");
+							$moreInfo.remove();
+							
+							if (correctGroup == $("#optionHolder input:checked").val()) {
+								$("#marking").html('<p>' + $pageContents.data("phrases").mcqCorrect + '</p>');
+								$pageContents.data("mcqScore", $pageContents.data("mcqScore") + 1);
+							} else {
+								$("#marking").html('<p>' + $pageContents.data("phrases").mcqWrong.replace("{i}", groupInfo[correctGroup].name) + '</p>');
+							}
+							
+							$("#marking").children().last().append($moreInfo);
+							$("#feedback").show();
+							if ($("<div/>").html(groupInfo[correctGroup].text).text().trim() != "") {
+								$("#more").show();
+							} else {
+								$("#more").hide();
+							}
+							
+							$(this)
+								.button({"label":$pageContents.data("phrases").mcqBtnTxt2})
+								.data("state", 1);
+							
+						} else if ($(this).data("state") == 1) { // next
+							if (mcqCurrentQ + 1 == mcqAnswers.length) {
+								$("#passage .group")
+									.removeClass("on")
+									.removeAttr("title");
+								
+								$("#qText").hide();
+								$("#optionHolder").hide();
+								
+								var $moreInfo = $("#more");
+								$moreInfo.remove();
+								$("#marking")
+									.html('<p>' + $pageContents.data("phrases").mcqScore.replace("{i}", $pageContents.data("mcqScore")).replace("{n}", mcqAnswers.length) + '</p>' + (x_currentPageXML.getAttribute("mcqFB") != "" && x_currentPageXML.getAttribute("mcqFB") != undefined ? '<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("mcqFB")) + '</p>' : ""))
+									.children().last().append($moreInfo);
+								$("#more").hide();
+								
+								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
+								
+								$("#feedback").show();
+								
+								$(this)
+									.button({"label":$pageContents.data("phrases").mcqBtnTxt3})
+									.data("state", 2);
+							} else {
+								interactiveText.createQ();
+							}
+						} else { // restart
+							interactiveText.createQuiz();
+						}
+					});
+				
+				this.createQuiz();
+			}
+		};
+		
+		// only used in explore interaction - triggered when subgroup selected (with or without mouse)
+		this.clickExplore = function($this) {
+			var index = $this.data("index"),
+				currentGroup = $pageContents.data("currentGroup"),
+				prevGroup = currentGroup;
+			
+			currentGroup = subGroups[index].ref;
+			
+			$("#passage").find(".group[data-index='" + index + "']")
+				.addClass("on")
+				.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+			
+			$("#passage .group").removeClass("highlight");
+			
+			if (prevGroup != currentGroup) {
+				$groupInfo
+					.hide()
+					.html('<h3>' + groupInfo[currentGroup].name + '</h3>' + x_addLineBreaks(groupInfo[currentGroup].text))
+					.attr("tabindex", tabIndex++)
+					.fadeIn();
+				
+				$("#showBtn").hide();
+			}
+			
+			// button offers option of viewing all related subgroups
+			if ($("#passage").find(".group" + currentGroup).length > 1) {
+				$("#showBtn").fadeIn();
+			} else {
+				$("#showBtn").hide();
+			}
+			
+			$pageContents.data("currentGroup", currentGroup);
+		}
+		
+		// only used in find interactions - sets up arrays to hold found/complete data & create buttons
+		this.setUpFind = function(firstLoad) {
+			var count = 0;
+			for (var i=0; i<groupInfo.length; i++) {
+				$pageContents.data("found").push([]);
+				
+				if (groupInfo[i].numSubGroups > 0) {
+					if (firstLoad == true) {
+						var $groupBtn = $('<a/>');
+						$groupBtn
+							.addClass("listItem")
+							.html(groupInfo[i].name)
+							.attr({
+								"tabindex"	: $("#passage .group:eq(0)").attr("tabindex") - groupInfo.length + i,
+								"href"		: "#group" + i
+								})
+							.data("index", i);
+						
+						$("#buttons").append($groupBtn);
+					}
+					
+					count++;
+					$pageContents.data("complete").push(0);
+				} else {
+					$pageContents.data("complete").push(1);
+				}
+			}
+			return count;
+		}
+		
+		// only used in find interaction - triggered when subgroup selected (with or without mouse)
+		this.clickFind = function($this) {
+			var currentGroup = $pageContents.data("currentGroup");
+			if ($this.hasClass("group" + currentGroup) && !$this.hasClass("on")) {
+				$this
+					.addClass("on")
+					.attr("title", lang2 + ": " + groupInfo[currentGroup].name);
+				
+				$pageContents.data("found")[currentGroup].push($this.data("index"));
+				$("#feedback #countFb")
+					.html('<p>' + $pageContents.data("findTxt2").replace("{i}", $pageContents.data("found")[currentGroup].length).replace("{n}", groupInfo[currentGroup].numSubGroups) + '</p>')
+					.show();
+				
+				if ($pageContents.data("found")[currentGroup].length == groupInfo[currentGroup].numSubGroups) {
+					$pageContents.data("complete").splice(currentGroup, 1, 1);
+					if ($.inArray(0, $pageContents.data("complete")) == -1) {
+						$("#feedback #countFb").hide();
+						$("#feedback #endFb").html('<p>' + (x_currentPageXML.getAttribute("findFeedback") != undefined ? x_currentPageXML.getAttribute("findFeedback") : "Well done! You have completed this activity.") + '</p>');
+					}
+				}
+			} else if (!$this.hasClass("on")) {
+				$this.removeAttr("title");
+			}
+		}
+		
+		// only used in mcq interaction - creates new quiz
+		this.createQuiz = function() {
+			mcqCurrentQ = -1;
+			mcqAnswers.length = 0;
+			mcqAnswerOptions.length = 0;
+			
+			$("#qText").show();
+			$("#questionHolder").show();
+			$("#feedback").hide();
+			
+			// highlight shown for question can be either for all group or an individual sub group
+			if (x_currentPageXML.getAttribute("mcqType") == "all") {
+				for (var i=0; i<groupInfo.length; i++) {
+					mcqAnswers.push(i);
+				}
+			} else {
+				for (var i=0; i<subGroups.length; i++) {
+					mcqAnswers.push(i);
+				}
+			}
+			x_shuffleArray(mcqAnswers);
+			
+			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
+			mcqAnswers = mcqAnswers.slice(0, numQs);
+			
+			for (var i=0; i<groupInfo.length; i++) {
+				mcqAnswerOptions.push({index:i, text:groupInfo[i].name});
+			}
+			
+			$pageContents.data({
+				"mcqAnswers": mcqAnswers,
+				"mcqScore"	: 0
+				});
+			
+			this.createQ();
+		};
+		
+		// only used in mcq interaction - creates new question
+		this.createQ = function() {
+			mcqCurrentQ++;
+			$pageContents.data("mcqCurrentQ", mcqCurrentQ);
+			
+			$("#feedback").hide();
+			$("#passage .group")
+				.removeClass("on")
+				.removeAttr("title");
+			
+			$("#qNum").html($pageContents.data("phrases").mcqQuesCount.replace("{i}", (mcqCurrentQ + 1)).replace("{n}", mcqAnswers.length));
+			$("#quizBtn")
+				.button({"label":$pageContents.data("phrases").mcqBtnTxt})
+				.data("state", 0)
+				.hide();
+			
+			// turn on highlight & set up answers - correct answer plus number of random incorrect wrong answers
+			var options = mcqAnswerOptions.slice(0),
+				correct;
+			
+			if (x_currentPageXML.getAttribute("mcqType") == "all") {
+				$("#passage .group" + mcqAnswers[mcqCurrentQ])
+					.addClass("on")
+					.attr("title", lang2);
+				
+				correct = options[mcqAnswers[mcqCurrentQ]];
+				options.splice(mcqAnswers[mcqCurrentQ], 1);
+			} else {
+				$("#passage .group[data-index='" + mcqAnswers[mcqCurrentQ] + "']")
+					.addClass("on")
+					.attr("title", lang2);
+				
+				correct = options[subGroups[mcqAnswers[mcqCurrentQ]].ref];
+				options.splice(correct.index, 1);
+			}
+			x_shuffleArray(options);
+			
+			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
+			options = options.length <= numOptions - 1 ? options : options.slice(0, numOptions - 1);
+			options.push(correct);
+			x_shuffleArray(options);
+			
+			var $optionHolder = $("#questionHolder #optionHolder")
+					.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>')
+					.show();
+			
+			var	$optionGroup = $optionHolder.find(".optionGroup");
+			for (i=0; i<options.length; i++) {
+				var $thisOptionGroup;
+				if (i != 0) {
+					$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
+				} else {
+					$thisOptionGroup = $optionGroup;
+				}
+				
+				$thisOptionGroup.find("input")
+					.attr({
+						"value"	:options[i].index,
+						"id"	:"option" + i
+						})
+					.change(function() {
+						$("#quizBtn").show();
+					})
+					.focusin(function() {
+						$(this).parent().addClass("highlight");
+					})
+					.focusout(function() {
+						$(this).parent().removeClass("highlight");
+					});
+				
+				$thisOptionGroup.find(".optionTxt")
+					.attr("for", "option" + i)
+					.html(options[i].text);
+			}
+		}
+	}
+
+    interactiveText.init();
+
+</script>
+
+<style type="text/css">
+	
+	h3 {
+		padding: 5px;
+	}
+	
+	#passageHolder {
+		margin: 20px 10px;
+		overflow:	hidden;
+	}
+	
+	#passageHolder.inline {
+		margin:	0px 0px 20px 20px;
+	}
+	
+	#passageHolder.mobileInline {
+		margin:	20px 0px 20px -10px;
+	}
+	
+	#passage {
+		margin:			0px;
+		display:		block;
+		line-height:	2;
+	}
+	
+	#passage span {
+		padding-bottom:	2px;
+	}
+	
+	#passage .highlight {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+	
+	#pageContents.line #passage .highlight {
+		padding-bottom:	2px;
+	}
+	
+	#passage .on {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+	
+	#pageContents.line #passage .on {
+		padding-bottom:	3px;
+	}
+	
+	#pageContents.explore #passage, #pageContents.find #passage {
+		cursor: pointer;
+	}
+	
+	#pageContents.find #feedback {
+		float:		right;
+		margin-top:	0.5em;
+	}
+	
+	#groupInfo, #questionHolder {
+		margin-top:	2em;
+	}
+	
+	#buttons button {
+		margin:	10px;
+		float:	right;
+	}
+	
+	#pageContents.show #buttons, #pageContents.find #buttons {
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	0.8em;
+		margin-bottom:	1em;
+	}
+	
+	#pageContents.show2 #buttons {
+		border-top:	1px solid #CCCCCC;
+		padding-top:	0.8em;
+		margin-top:	1em;
+	}
+	
+	#pageContents.show2 #buttons button {
+		margin:	0px;
+	}
+	
+	#pageContents.show2 #buttons button#prevBtn {
+		margin-right:	1em;
+	}
+	
+	#pageContents .listItem {
+		cursor:			pointer;
+		font-weight:	bold;
+		display:		block;
+		padding:		5px;
+		text-decoration: none;
+	}
+	
+	#pageContents.show .listItem, #pageContents.find .listItem {
+		display:	inline-block;
+		margin-right:	1em;
+	}
+	
+	#pageContents.mcq #optionHolder {
+		margin-top:	15px;
+		margin-bottom:	15px;
+	}
+
+	#pageContents.mcq input {
+		float:		left;
+		display:	block;
+	}
+
+	#pageContents.mcq .optionGroup {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+
+	#pageContents.mcq .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		display:		block;
+	}
+	
+	#more {
+		text-decoration:none;
+		margin-left:	0.5em;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="passageHolder" class="panel">
+		<div id="passage"/>
+	</div>
+	<div id="pageTxt" tabindex="1"/>
+	<div id="instructions" tabindex="2"/>
+	<div id="groupInfo"/>
+	<div id="buttons"/>
+	<div id="questionHolder"/>
+	<div id="feedback"/>
+	
+</div>
+

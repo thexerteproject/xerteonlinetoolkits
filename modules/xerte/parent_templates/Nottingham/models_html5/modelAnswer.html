@@ -24,7 +24,8 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
-			$("#answer").hide();
+			$("#fbTxt").empty();
+			$("#copyBtn, #copyTxt").hide();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -34,13 +35,7 @@
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 		}
-
-        this.leavePage = function()
-        {
-            //console.log("Leave page");
-
-        }
-
+		
 		this.init = function() {
 			// if language attributes aren't in xml will have to use english fall back
 			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
@@ -69,7 +64,7 @@
 			}
 			
 			$("#pageContents").data({
-				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '</br></br>' + x_addLineBreaks(responseTxt) + '</br>' + '{A}' + '</br></br>' + x_addLineBreaks(exampleTxt) + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
+				"dataString"	:instructA + ' ' + pageNo + ' ' + instructB + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '</br>' + x_addLineBreaks(responseTxt) + '</br>' + '{A}' + '</br></br>' + x_addLineBreaks(exampleTxt) + '</br>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
 				"noAnswerTxt"	:noAnswerTxt
 			})
 			
@@ -113,7 +108,7 @@
 			}
 			
 			
-			var promptString = '<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt") )+ '</p>',
+			var promptString = x_addLineBreaks(x_currentPageXML.getAttribute("prompt")),
 				url = x_currentPageXML.getAttribute("image");
 			if (url != undefined && url != "") {
 				if (url.split('.').pop().slice(0, -1) == "swf") {
@@ -146,26 +141,52 @@
 			}
 			
 			
-			var feedbackString = '<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))+ '</p>',
-				copyTxt = x_currentPageXML.getAttribute("copypasteinfo2"),
-				copyTxtFlash = x_currentPageXML.getAttribute("copypasteinfo"),
-				copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel");
+			var copyTxt = x_currentPageXML.getAttribute("copypasteinfo2"),
+				copyTxtFlash = x_currentPageXML.getAttribute("copypasteinfo");
 			
 			// should instructions about copying & pasting answer be shown?
 			if ((copyTxt != undefined && copyTxt != "") || (copyTxtFlash != undefined && copyTxtFlash != "")) {
 				if (copyTxt == undefined || copyTxt == "") {
 					// the only copy text is for Flash version - the instructions need to be different for HTML version so am forced to use English fall back
-					copyTxt = "Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
+					copyTxt = "<p>Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.</p>";
 				}
-				if (copyBtnLabel == undefined) {
-					copyBtnLabel = "Select Text";
-				}
-				feedbackString += '<div id="copyTxt">' + copyTxt + '</div><button id="copyBtn">' + copyBtnLabel + '</button>';
+				
+				var copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel") != undefined ? x_currentPageXML.getAttribute("copyBtnLabel") : "Select Text",
+					copyBtnSRInfo = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
+				
+				$("#copyTxt")
+					.html(copyTxt)
+					.hide();
+				
+				$("#copyBtn")
+					.button({
+						label:	copyBtnLabel
+					})
+					.click(function() {
+						// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
+						$(".x_popupDialog").parent().detach(); // removes any dialogs already open
+						var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
+						
+						$thisDialog.dialog({
+							closeOnEscape:	true,
+							title:			copyShortcutTxt,
+							closeText:		closeBtnTxt,
+							close: function() {$thisDialog.parent().detach();}
+						});
+						
+						$thisDialog.html(x_pageInfo[x_currentPage].savedData);
+						x_setDialogSize($thisDialog);
+						
+						x_selectText("modelAnswerDialog");
+					})
+					.attr("aria-label", copyBtnLabel + copyBtnSRInfo)
+					.hide();
+				
+			} else {
+				$("#copyBtn, #copyTxt").remove();
 			}
 			
-			$("#answer")
-				.html(feedbackString)
-				.hide();
+			$("#pageContents").data("feedback", x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			
 			var btnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
 			if (btnTxt == undefined || btnTxt == "") {
@@ -180,7 +201,8 @@
 				.click(function() {
 					var $this = $(this);
 					$this.hide();
-					$("#answer").fadeIn();
+					$("#fbTxt").html($("#pageContents").data("feedback"));
+					$("#copyBtn, #copyTxt").show();
 					
 					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {
 						
@@ -201,28 +223,6 @@
 				closeBtnTxt = "close"
 			}
 			
-			$("#copyBtn")
-				.button({
-					label:	copyBtnLabel
-				})
-				.click(function() {
-					// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
-					$(".x_popupDialog").parent().detach(); // removes any dialogs already open
-					var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
-					
-					$thisDialog.dialog({
-						closeOnEscape:	true,
-						title:			copyShortcutTxt,
-						closeText:		closeBtnTxt,
-						close: function() {$thisDialog.parent().detach();}
-					});
-					
-					$thisDialog.html(x_pageInfo[x_currentPage].savedData);
-					x_setDialogSize($thisDialog);
-					
-					x_selectText("modelAnswerDialog");
-				});
-			
 			this.sizeChanged();
 			this.saveData();
 			x_pageLoaded();
@@ -233,10 +233,12 @@
 			var $pageContents = $("#pageContents"),
 				stringToSave = $pageContents.data("dataString"),
 				answerTxt = $("#answerTxt").val();
+			
 			if (answerTxt == "") {
 				answerTxt = $pageContents.data("noAnswerTxt");
 			}
-			stringToSave = stringToSave.replace("{A}", x_addLineBreaks(answerTxt));
+			
+			stringToSave = stringToSave.replace("{A}", x_addLineBreaks(answerTxt, true));
 			x_pageInfo[x_currentPage].savedData = stringToSave;
 		}
 	}
@@ -283,17 +285,20 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="textToCopy"></div>
 		
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="prompt"></div>
-				
 				<textarea id="answerTxt" rows="5"></textarea>
 				<button id="button"></button>
-				<div id="answer"></div>
+				<div id="answer">
+					<div id="fbTxt" aria-live="polite"/>
+					<div id="copyTxt"/>
+					<button id="copyBtn"/>
+				</div>
 			</div>
 		</div>
 		

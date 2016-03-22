@@ -87,10 +87,12 @@
 					$("#pageContents").prepend($textHolder);
 				}
 				$("#imgHolder").addClass("centerAlign");
-				$pageImg.css({
-					"left"	:0,
-					"top"	:0
-				});
+				$pageImg
+					.addClass("noFocus")
+					.css({
+						"left"	:0,
+						"top"	:0
+					});
 			} else if (textAlign == "Right") {
 				$panel.addClass("x_floatLeft");
 			} else {
@@ -134,7 +136,15 @@
 					
 					$pageImg
 						.addClass("move")
-						.draggable({disabled:	false});
+						.draggable({disabled:	false})
+						.focusin(function() {
+							if ($pageImg.hasClass("move")) {
+								$cropImg.addClass("focusBorder");
+							}
+						})
+						.focusout(function() {
+							$cropImg.removeClass("focusBorder");
+						});
 					
 					imageViewer.calculateDragArea();
 					$imgCover.hide();
@@ -199,6 +209,8 @@
 					
 					$imgCover.show();
 					$("#pageContents").off("keydown");
+					
+					$cropImg.removeClass("focusBorder");
 				}
 			);
 			
@@ -637,17 +649,17 @@
 			
 			<div id="cropImg">
 				
-				<img id="pageImg" tabindex="2" style="visibility: hidden" />
+				<img id="pageImg" style="visibility: hidden" tabindex="7"/>
 				
-				<div id="imgCover" class="transparent" />
+				<div id="imgCover" class="transparent" aria-hidden="true"/>
 				
 				<div id="controlPanel" class="panel">
-					<input  id="move" type="checkbox" tabindex="3" /><label for="move"></label>
-					<button id="zoomIn" tabindex="4"></button>
-					<button id="zoomOut" tabindex="5"></button>
-					<input  id="selectArea" type="checkbox" tabindex="6"/><label for="selectArea"></label>
-					<button id="resetImage" tabindex="7"></button>
-					<input  id="toggleScreen" type="checkbox" tabindex="8"/><label for="toggleScreen"></label>
+					<input  id="move" type="checkbox" tabindex="1"/><label for="move"></label>
+					<button id="zoomIn" tabindex="2"></button>
+					<button id="zoomOut" tabindex="3"></button>
+					<input  id="selectArea" type="checkbox" tabindex="4"/><label for="selectArea"></label>
+					<button id="resetImage" tabindex="5"></button>
+					<input  id="toggleScreen" type="checkbox" tabindex="6"/><label for="toggleScreen"></label>
 				</div>
 				
 			</div>
@@ -655,6 +667,6 @@
 		</div>
 	</div>
 	
-	<div id="textHolder" tabindex="1"></div>
+	<div id="textHolder"></div>
 	
 </div>

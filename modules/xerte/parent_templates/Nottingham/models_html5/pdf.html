@@ -52,9 +52,9 @@
 			setTimeout(function(){
 				$("#link").remove();
 				$("#pdfCover").css({
-						width:	$("#pdfPage").width(),
-						height: $("#pdfPage").height()
-					});
+					width:	$("#pdfPage").width(),
+					height: $("#pdfPage").height()
+				});
 				$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF" : x_currentPageXML.getAttribute("open")) + '</a></div>');
 			}, 1);
 		}
@@ -85,6 +85,14 @@
 	#pdfCover {
 		background-color:	rgba(255,0,0,0);
 		position:	absolute;
+	}
+	
+	#pdfDoc {
+		border:	2px solid transparent;
+	}
+	
+	#pdfDoc.focus {
+		border-color:	orange;
 	}
 	
 	#pdfLink {

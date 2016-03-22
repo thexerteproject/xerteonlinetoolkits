@@ -1,4 +1,4 @@
-<language name="Nederlands" code="nl-NL">
+<language name="Vlaams" code="nl-BE">
 	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
 	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>

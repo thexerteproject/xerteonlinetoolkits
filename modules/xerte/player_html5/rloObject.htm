@@ -40,12 +40,12 @@
 
 	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
 
-	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css" type="text/css" />
-	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/themeStyles.css" type="text/css" />
-	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css" type="text/css" />
-	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/smoothness/jquery-ui-1.8.18.custom.css?version=%VERSION%" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/themeStyles.css?version=%VERSION%" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/css/mainStyles.css?version=%VERSION%" type="text/css" />
+	<link rel="stylesheet" href="%TEMPLATEPATH%common_html5/mediaelement/mediaelementplayer.min.css?version=%VERSION%" />
 	
-	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href="%TEMPLATEPATH%common_html5/font-awesome/css/font-awesome.min.css?version=%VERSION%" rel="stylesheet">
     <link href="%TEMPLATEPATH%common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
     %OFFLINESCRIPTS%
@@ -60,14 +60,13 @@
 			<div id="x_headerBlock" role="banner">
 				<div>
 					<h1> </h1>
-					<h2> </h2>
+					<h2 aria-live="assertive"> </h2>
 				</div>
 			</div>
 
 			<div id="x_pageHolder" role="main">
-				<div id="x_pageDiv">
-
-				</div>
+				<div id="x_helperText" class="ui-helper-hidden-accessible"></div>
+				<div id="x_pageDiv"></div>
 			</div>
 		</div>
 
@@ -86,7 +85,7 @@
 			</div>
 		</div>
 
-		<div id="x_background"></div>
+		<div id="x_background" aria-hidden="true"></div>
 
     </div>
 
@@ -98,12 +97,12 @@
     <!-- <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery-ui-1.8.18.custom.min.js"></script> -->
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery-ui-1.10.4.min.js"></script>
 
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery.ui.touch-punch.min.js"></script>			<!-- allows jQuery components to work on touchscreen devices -->
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/imageLens.js"></script>							<!-- for creating magnifiers on images -->
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaelement-and-player.js"></script>	<!-- for audio & video players -->
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/mediaPlayer.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/jquery.ui.touch-punch.min.js?version=%VERSION%"></script>			<!-- allows jQuery components to work on touchscreen devices -->
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/imageLens.js?version=%VERSION%"></script>							<!-- for creating magnifiers on images -->
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/mediaelement/mediaelement-and-player.js?version=%VERSION%"></script>	<!-- for audio & video players -->
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/mediaPlayer.js?version=%VERSION%"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/swfobject.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common_html5/js/xenith.js?version=%VERSION%"></script>
     %TRACKING_SUPPORT%
     <script type="text/javascript" src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
 

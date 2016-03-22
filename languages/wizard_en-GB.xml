@@ -149,6 +149,9 @@
                 <security>Upload failed: Security Error</security>
             </failed>
         </upload>
+		<changeLanguage>
+			<prompt>Do you want to change all the language options to the default values of language </prompt>
+		</changeLanguage>
 		
 	</Alert>
 </language>

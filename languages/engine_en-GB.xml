@@ -20,7 +20,7 @@
   
   <continueButton label="Continue" description="Continue Button"/>
   
-  <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page.">
+  <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page." htmlDescription="Use the tab key to select a page. Press space to go to that page.">
 	  <contentsList label="" description=""/>
 	  <closeButton label="" description="Close Table of Contents"/>
 	  <gotoPageButton label="Go to Page" description="Go to Page Button"/>
@@ -111,7 +111,7 @@
 	<loader label="Loading: "/>
   </movieController>
   
-  <mediaElementControls>
+  <mediaElementControls video="Video" audio="Audio">
 	<stopButton label="Stop" description="Stop Media Button"/>
 	<playPauseButton label="Play/Pause" description="Play/Pause Media Button"/>
 	<muteButton label="Mute Toggle" description="Toggle Mute Button"/>
@@ -129,6 +129,7 @@
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
 	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
+	  <moreInfoItem toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
   </interactions>
   
   <fetchResults label="Fetching results..."/>
@@ -151,5 +152,15 @@
 	  <invert label="Invert"/>
 	  <blackYellow label="Black on Yellow"/>
   </colourChanger>
+  
+  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
+	  <tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
+	  <accNav selected="selected"/>
+	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
+	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
+	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
+	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
+	  <modelAnswerResults selected="Text selected"/>
+  </screenReaderInfo>
 
 </language>

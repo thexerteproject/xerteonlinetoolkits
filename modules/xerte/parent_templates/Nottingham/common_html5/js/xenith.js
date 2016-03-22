@@ -48,7 +48,7 @@ else
     xot_offline = true;
 }
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL, $x_menuBtn, $x_colourChangerBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_background, $x_glossaryHover;
 
 // Patch jQuery to add support for .toggle(function, function...) which was removed in jQuery 1.9
 // Code from http://forum.jquery.com/topic/beginner-function-toggle-deprecated-what-to-use-instead
@@ -338,6 +338,7 @@ function x_setUp() {
 		$x_mobileScroll	= $("#x_mobileScroll");
 		$x_headerBlock	= $("#x_headerBlock");
 		$x_pageHolder	= $("#x_pageHolder");
+		$x_helperText	= $("#x_helperText");
 		$x_pageDiv		= $("#x_pageDiv");
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
@@ -465,7 +466,7 @@ function x_cssSetUp(param) {
 			x_cssSetUp("stylesheet");
 		}
 	} else if (param == "stylesheet") {
-		if (x_params.stylesheet != undefined) {
+		if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
 			x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp);
 		} else {
 			x_continueSetUp();
@@ -868,6 +869,10 @@ function x_continueSetUp() {
 			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
 		});
 	}
+	x_mediaText.push(
+		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "video", "")},
+		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
+	);
 
 	XTInitialise(); // initialise here, because of XTStartPage in next function
 	x_navigateToPage(true, x_startPage);
@@ -993,6 +998,7 @@ function x_changePage(x_gotoPage) {
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
+		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
         // stop any swfs on old page before detaching it so that any audio stops playing (problem in IE only)
@@ -1024,6 +1030,11 @@ function x_changePage(x_gotoPage) {
         pageTitle = x_currentPageXML.getAttribute("name");
         x_addNarration();
         x_addCountdownTimer();
+		
+		// add screen reader info for this page type (if exists)
+		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
+			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
+		}
     }
     $("#x_headerBlock h2").html(pageTitle);
 
@@ -1493,7 +1504,10 @@ function x_findText(pageXML) {
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
 function x_insertText(node) {
-    var tempText = node.nodeValue;
+	// Decode node.value in order to make sure it works for for foreign characters like é
+	// But keep html tags, so use textarea
+	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
+    var tempText = $("<textarea/>").html(node.nodeValue).text();
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
@@ -1638,19 +1652,21 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
 
 
 // function called from model pages - swaps line breaks in xml text attributes and CDATA to br tags
-function x_addLineBreaks(text) {
-	// First test for new editor
-	if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
-    {
-        return text; // Return text unchanged
-    }
-    
-    // Now try to identify v3beta created LOs
-    var trimmedText = $.trim(text);
-    if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
-    {
-        return text; // Return text unchanged
-    }
+function x_addLineBreaks(text, override) {
+	if (override != true) { // override only used when text being tested isn't from xml (e.g. modelAnswer page)
+		// First test for new editor
+		if (x_params.editorVersion && parseInt("0" + x_params.editorVersion, 10) >= 3)
+		{
+			return text; // Return text unchanged
+		}
+		
+		// Now try to identify v3beta created LOs
+		var trimmedText = $.trim(text);
+		if ((trimmedText.indexOf("<p") == 0 || trimmedText.indexOf("<h") == 0) && (trimmedText.lastIndexOf("</p") == trimmedText.length-4 || trimmedText.lastIndexOf("</h") == trimmedText.length-5))
+		{
+			return text; // Return text unchanged
+		}
+	}
     
     // Now assume it's v2.1 or before
     if (text.indexOf("<math") == -1 && text.indexOf("<table") == -1)
