@@ -371,6 +371,16 @@ audio {
 	color:			red;
 }
 
+fieldset.noStyle {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+
+fieldset.noStyle legend {
+	display:	table;
+}
 
 /* TABLE STYLES */
 

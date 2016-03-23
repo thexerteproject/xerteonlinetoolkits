@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
@@ -30,7 +30,9 @@
 				this.startQ();
 				$("#feedback").html("");
 				$("#optionHolder input:checked").prop("checked", false);
-				$("#checkBtn").hide();
+				$("#checkBtn")
+					.show()
+					.button("disable");
 			}
 		}
 
@@ -302,11 +304,12 @@
 								$("#feedback").html("");
 								var $checkBtn = $("#checkBtn"),
 									$selected = $("#optionHolder input:checked");
-
-								if ($checkBtn.is(":visible") && $selected.length == 0) {
-									$checkBtn.hide();
-								} else if ($checkBtn.is(":hidden") && $selected.length > 0) {
-									$checkBtn.show();
+								
+								$checkBtn.show();
+								if ($selected.length == 0) {
+									$checkBtn.button("disable");
+								} else if ($selected.length > 0) {
+									$checkBtn.button("enable");
 								}
 							})
 							.focusin(function() {
@@ -338,13 +341,15 @@
 					checkBtnTip = "Check Answer";
 				}
 				$("#checkBtn")
-					.button({ label: checkBtnTxt })
+					.button({
+						label: checkBtnTxt,
+						disabled: true
+					})
 					.click(function() {
 						$(this).hide();
 						mcq.showFeedBackandTrackScore();
 						mcq.checked = true;
 					})
-					.hide();
 
 				this.startQ();
 				
@@ -384,7 +389,7 @@
 	#pageContents .optionTxt {
 		cursor:			pointer;
 		position:		relative;
-		margin-left:	30px;
+		margin-left:	2em;
 		display:		block;
 	}
 
@@ -407,20 +412,24 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 
 		<div id="infoHolder" class="right">
 			<div id="mainPanel" class="panel">
-				<h3 id="question"></h3>
-				<div id="optionHolder">
-					<div class="optionGroup">
-						<input type="radio" name="option" />
-						<input type="checkbox" name="option" />
-						<label class="optionTxt"></label>
+				<fieldset class="noStyle">
+					<h3>
+						<legend id="question"></legend>
+					</h3>
+					<div id="optionHolder">
+						<div class="optionGroup">
+							<input type="radio" name="option" />
+							<input type="checkbox" name="option" />
+							<label class="optionTxt"></label>
+						</div>
 					</div>
-				</div>
-				<button id="checkBtn"></button>
-				<div id="feedback"></div>
+					<button id="checkBtn"></button>
+					<div id="feedback" aria-live="polite"></div>
+				</fieldset>
 			</div>
 		</div>
 
