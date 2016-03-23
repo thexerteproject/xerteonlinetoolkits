@@ -346,6 +346,7 @@ function file_version_sync(){
         if(response!=""){
             alert(response);
         }
+        refresh_workspace();
     }
 }
 
