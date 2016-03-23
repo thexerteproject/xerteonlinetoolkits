@@ -27,6 +27,9 @@
  * See code in library/Xerte/Authentication/*.php - where each file should match up to the value used below.
  */
 
+global $container_auth;
+$container_auth = false;
+
 // set authentication method to guest if not set in db via management area
 if (!isset($xerte_toolkits_site->authentication_method) || $xerte_toolkits_site->authentication_method=="") {
     $xerte_toolkits_site->authentication_method = 'Guest';  

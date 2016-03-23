@@ -39,13 +39,14 @@ class Xerte_Authentication_Factory
      */
     public static function create($method)
     {
+        global $container_auth;
         global $xerte_toolkits_site;
 
         $method = ucfirst(strtolower($method));
         if (is_file(dirname(__FILE__) . DIRECTORY_SEPARATOR . $method . ".php")) {
             $class_name = "Xerte_Authentication_$method";
 
-            $auth_mech = new $class_name($xerte_toolkits_site);
+            $auth_mech = new $class_name($container_auth, $xerte_toolkits_site);
             return $auth_mech;
         }
         //throw new InvalidArgumentException("Authentication mechanism defined in xerte_site_details is not valid");

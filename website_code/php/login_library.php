@@ -293,7 +293,7 @@ function login_form($messages, $xerte_toolkits_site)
 }
 
 function login_processing($exit = true) {
-  global $errors, $authmech, $xerte_toolkits_site;
+  global $errors, $authmech, $xerte_toolkits_site, $container_auth;
 
   /**
    *  Check to see if anything has been posted to distinguish between log in attempts
@@ -301,6 +301,21 @@ function login_processing($exit = true) {
 
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
+  if ($_SERVER['REQUEST_METHOD'] !== "POST") {
+    if ($container_auth) {
+      if (isset($_SERVER['REMOTE_USER'])) {
+        _debug("REMOTE_USER: " . $_SERVER['REMOTE_USER']);
+        $success = $authmech->login($_SERVER['REMOTE_USER'], '');
+        return(array($success, $errors));
+      } else {
+        _debug("container_auth is true but REMOTE_USER has not been set");
+      }
+    }
+    if ($authmech->needsLogin() && $exit) { 
+      login_form($errors, $xerte_toolkits_site);
+      exit(0);
+    }
+  }
   if ($authmech->needsLogin()) {
    /**
     *  Check if we are logged in
