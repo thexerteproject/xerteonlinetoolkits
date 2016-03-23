@@ -21,10 +21,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dictation = new function() {
-		var $pageContents,
-			showBtnTxt,
-			nextBtnTxt,
-			restartBtnTxt;
+		var $pageContents;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -32,12 +29,6 @@
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime($pageContents.data("captionInfo")[$pageContents.data("current")].start);
 			}
-			
-			showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
-			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
-			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			
-			$("#button").show();
 		}
 		
 		// function called every time the size of the LO is changed
@@ -59,10 +50,6 @@
 		}
 		
 		this.init = function() {
-			showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
-			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
-			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			
 			$pageContents = $("#pageContents");
 			
 			var captionInfo = new Array(),
@@ -82,42 +69,46 @@
 				} 
 			}
 			
-			$("#button")
+			$("#showBtn")
 				.button({
-					label:	showBtnTxt
+					label:	x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer"
 				})
 				.click(function() {
-					var $this = $(this);
-					if ($this.data("state") == "show") {
-						$("#button").hide();
-						$("#answer").slideDown(function() {
-							$("#button").show();
-						});
-						if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-							$this
-								.data("state", "next")
-								.button("option", "label", nextBtnTxt);
-						} else {
-							$this
-								.data("state", "restart")
-								.button("option", "label", restartBtnTxt);
-						}
-						
-					} else if ($this.data("state") == "next") {
-						$pageContents.data("current", $pageContents.data("current") + 1);
-						dictation.loadQ();
-						$this
-							.data("state", "show")
-							.button("option", "label", showBtnTxt);
-						
-					} else { // restart
-						dictation.sortCaptions();
-						$this
-							.data("state", "show")
-							.button("option", "label", showBtnTxt);
+					$(this).button("disable");
+					
+					$("#answer").html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].answer));
+					
+					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+						$("#nextBtn").button("enable");
+					} else {
+						$("#restartBtn").button("enable");
 					}
+				});
+			
+			$("#nextBtn")
+				.button({
+					label:	x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next",
+					"disabled":	true
 				})
-				.data("state", "show");
+				.click(function() {
+					$(this).button("disable");
+					$("#showBtn").button("enable");
+					
+					$pageContents.data("current", $pageContents.data("current") + 1);
+					dictation.loadQ();
+				});
+			
+			$("#restartBtn")
+				.button({
+					label:	x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart",
+					"disabled":	true
+				})
+				.click(function() {
+					$(this).button("disable");
+					$("#showBtn").button("enable");
+					
+					dictation.sortCaptions();
+				});
 			
 			// uses data from timedText file if there is one - otherwise use nested page info
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {
@@ -172,13 +163,10 @@
 		}
 		
 		this.loadQ = function() {
-			if (count != "") {
-				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
-			} else {
-				$("#count").hide();
-			}
+			$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
 			
 			$("#answerTxt").val("");
+			
 			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {
 				$("#prompt").hide();
 			} else {
@@ -187,9 +175,7 @@
 					.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt));
 			}
 			
-			$("#answer")
-				.hide()
-				.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].answer));
+			$("#answer").html("");
 			
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 		}
@@ -245,7 +231,7 @@
 		overflow:	auto;
 	}
 	
-	#prompt, #count, #answer {
+	#prompt, #count {
 		margin-bottom:	10px;
 	}
 	
@@ -263,9 +249,13 @@
 		margin-bottom:	10px;
 	}
 	
-	#button {
+	#btnHolder {
 		float:	right;
 		margin-bottom:	10px;
+	}
+	
+	#answer {
+		clear:	both;
 	}
 	
 </style>
@@ -274,18 +264,22 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div class="panel">
-				<h3 id="count"></h3>
+				<h3 id="count" aria-live="polite"></h3>
 				<div id="prompt"></div>
 				<div id="audioHolder">
 					<div id="pageAudio"></div>
 				</div>
 				<textarea id="answerTxt" rows="6"></textarea>
-				<div id="answer"></div>
-				<button id="button"></button>
+				<div id="btnHolder">
+					<button id="showBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+				<div id="answer" aria-live="polite"/>
 			</div>
 		</div>
 		

@@ -161,6 +161,8 @@
 	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
 	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
+	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
   </screenReaderInfo>
 
 </language>

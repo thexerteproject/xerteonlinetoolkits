@@ -18,6 +18,13 @@
  * limitations under the License.
  */
 
+require_once(dirname(__FILE__) . "/../config.php");
+
+if (!isset($_SESSION['toolkits_logon_username']))
+{
+    die("Session is invalid or expired");
+}
+
 // Check for Preview/Publish
 $fileupdate = $_POST["fileupdate"];
 $filename = $_POST["filename"];
@@ -32,7 +39,7 @@ $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 // This code miserably fails if get_magic_quotes_gpc is turned on
 // decoding the json doesn't work anymore
-if (get_magic_quotes_gpc())
+if (function_exists(get_magic_quotes_gpc) && get_magic_quotes_gpc())
 {
     $lo_data=stripslashes($_POST["lo_data"]);
 }
@@ -73,6 +80,10 @@ file_put_contents($filename, $data->asXML());
 if ($mode == "publish")
 {
     file_put_contents($preview, $data->asXML());
+    // Update templatedetails modify date
+    $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
+    $params = array(date("Y-m-d"), $_POST['template_id']);
+    db_query_one($sql, $params);
 }
 
 echo true;
