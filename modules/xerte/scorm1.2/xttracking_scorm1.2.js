@@ -612,6 +612,7 @@ function ScormTrackingState()
             var score = [];
             var weight = [];
             var totalweight = 0.0;
+            var i;
             // Walk passed the pages
             for (i=0; i<this.nrpages; i++)
             {
