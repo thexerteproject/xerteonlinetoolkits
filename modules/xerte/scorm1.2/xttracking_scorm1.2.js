@@ -400,11 +400,8 @@ function ScormTrackingState()
         if (sit != null && sit.exit())
         {
             if (this.scoremode == 'first' && sit.count > 1)
-            {
-                if (sit.ia_nr < 0)
-                    this.pages_visited++;
                 return;
-            }
+
             // Record this action
             var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
             var currnrinteractions = this.scorm_nr_interactions();
