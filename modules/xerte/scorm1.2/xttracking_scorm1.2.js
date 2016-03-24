@@ -865,7 +865,7 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = value;
+            state.lo_passed = Number(value);
             break;
     }
 }
