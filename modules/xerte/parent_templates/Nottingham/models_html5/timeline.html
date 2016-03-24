@@ -125,7 +125,7 @@
 					}	
 					else if (correct == $("#labelHolder .label").length) {
 						$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-						timeline.fTracking();
+						timeline.finishTracking();
 					} else {
 						if (correct == 0) {
 							if(XTGetMode() == "normal")  
