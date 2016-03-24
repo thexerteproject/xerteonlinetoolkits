@@ -419,10 +419,10 @@ function button_check(){
                 };
         }
     }
-    else
+    else if(ids.length > 1)
     {
         deletebtn.removeAttribute("disabled");
-        deletebtn.className = "xerte_button";
+        deletebtn.className = "xerte_workspace_button";
         deletebtn.onclick = function () {
             remove_this()
         };
@@ -741,6 +741,10 @@ function init_workspace()
                 button_check();
                 showInformationAndSetStatus(data.node);
             })
+			.bind('deselect_node.jstree', function (event, data) {
+                button_check();
+                showInformationAndSetStatus();
+            })
             .bind('move_node.jstree',function(event,data)
             {
                 console.log(event);
@@ -812,20 +816,25 @@ function init_workspace()
 
 function showInformationAndSetStatus(node)
 {
-    var type = node.type;
-    var id = node.id;
-    var xot_id = node.original.xot_id;
+	if (node == undefined) {
+		$("#project_information").html("");
+		
+	} else { 
+		var type = node.type;
+		var id = node.id;
+		var xot_id = node.original.xot_id;
 
-    switch(type)
-    {
-        case "folder":
-            $("#project_information").html("Folder " + node.text);
-            break;
-        case "workspace":
-        case "recyclebin":
-            $("#project_information").html("");
-            break;
-        default:
-            getProjectInformation(workspace.user, xot_id);
-    }
+		switch(type)
+		{
+			case "folder":
+				$("#project_information").html("Folder " + node.text);
+				break;
+			case "workspace":
+			case "recyclebin":
+				$("#project_information").html("");
+				break;
+			default:
+				getProjectInformation(workspace.user, xot_id);
+		}
+	}
 }
