@@ -28,14 +28,14 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			this.responsiveTitle();
 		}
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
-			$pageContents
-				.html(x_currentPageXML.childNodes[0].nodeValue)
-				.css("font-size", x_currentPageXML.getAttribute("size") + "pt");
+			$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
+			
+			this.responsiveTitle();
 			
 			if (x_currentPageXML.getAttribute("titleTextColour") != undefined) {
 				$pageContents.css("color", x_currentPageXML.getAttribute("titleTextColour").replace("0x","#"));
@@ -68,6 +68,16 @@
 			}
 			
 			title.setUpBg(true);
+		}
+		
+		this.responsiveTitle = function() {
+			if (window.innerWidth >= 768 && x_fillWindow == true) {
+				$(".titlePageTxt p").css("font-size", "");
+				$(".titlePageTxt p").css("font-size", parseInt($(".titlePageTxt p").css("font-size")) * (x_currentPageXML.getAttribute("size") / (x_params.textSize - 2)));
+			} else {
+				$(".titlePageTxt p").css("font-size", "");
+				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
+			}
 		}
 		
 		this.setUpBg = function(firstLoad) {
@@ -170,6 +180,6 @@
 	
 </style>
 
-<div id="pageContents">
-	
+<div id="pageContents" class="titlePageTxt">
+
 </div>
