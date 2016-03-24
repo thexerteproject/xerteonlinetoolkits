@@ -1549,6 +1549,8 @@ function x_insertText(node) {
 
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
+	 x_fillWindow = true;
+	 
     if (x_params.responsive == "true") {
         for (var i = 0; i < x_responsive.length; i++) {
             $(x_responsive[i]).prop("disabled", false);
@@ -1568,8 +1570,6 @@ function x_setFillWindow(updatePage) {
         icons:  {primary: "x_minimise"},
         label:  x_getLangInfo(x_languageData.find("sizes").find("item")[0], false, "Default")
     });
-
-    x_fillWindow = true;
 }
 
 
