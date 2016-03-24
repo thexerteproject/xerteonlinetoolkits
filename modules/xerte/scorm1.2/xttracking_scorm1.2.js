@@ -455,7 +455,7 @@ function ScormTrackingState()
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
                         res = setValue(interaction + 'weighting', sit.weighting);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', result);
+                        res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
                         break;
                     case 'multiplechoice':
                         var psit = this.findPage(sit.page_nr);
@@ -504,6 +504,7 @@ function ScormTrackingState()
                         res = setValue(interaction + 'result', sit.score);
                         break;
                     case 'text':
+                    case 'fill-in':
                         // Hmmm is this the page or the interaction itself
                         if (ia_nr < 0)
                         {
@@ -518,7 +519,12 @@ function ScormTrackingState()
                         res = setValue(interaction + 'correct_responses.0.pattern', sit.correctanswer);
                         res = setValue(interaction + 'weighting', sit.weighting);
                         res = setValue(interaction + 'student_response', sit.learneranswer);
-                        res = setValue(interaction + 'result', 'neutral');
+                        if (sit.ia_type=='text') {
+                            res = setValue(interaction + 'result', 'neutral');
+                        }
+                        else {
+                            res = setValue(interaction + 'result',(result ? 'correct' : 'wrong'));
+                        }
                         break;
                     case 'page':
                     default:

@@ -26,7 +26,8 @@
 				nextBtnTxt,
 				restartBtnTxt;
 		//The number of correct answers
-		var answers = 0;
+		var correct_answers = 0;
+
 		//The total number of questions answered
 		var total = 0;
 
@@ -63,7 +64,6 @@
 		}
 
 		this.init = function() {
-			debugger;
 			showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
 			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
@@ -92,16 +92,19 @@
 						label:	showBtnTxt
 					})
 					.click(function() {
-						var feedback = [];
+						var feedback;
 						var $this = $(this);
 						if ($this.data("state") == "show") {
 							$("#button").hide();
 							//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
 							var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
 							//Checks if the answer is correct, and if so it adds one to the total of correct answers
-							if (document.getElementById('answerTxt').value == text) {
-								answers++;
-								feedback.push("correct");
+							var answer = $('#answerTxt').val();
+                            var correct = false;
+                            if (answer == text) {
+								correct_answers++;
+                                correct = true;
+								feedback="Correct";
 								$("#answer").slideDown(function () {
 									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
 										$("#button").show();
@@ -118,7 +121,7 @@
 								});
 							}
 							else {
-								feedback.push("Incorrect");
+								feedback="Incorrect";
 								$("#incorrect").slideDown(function () {
 									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
 										$("#button").show();
@@ -134,10 +137,7 @@
 									}
 								});
 							}
-							var filledAnswer = document.getElementById('answerTxt').value;
-							if (XTGetMode() == "normal") {
-								XTExitInteraction(x_currentPage, [$pageContents.data("current")], [text], [], [filledAnswer], feedback);
-							}
+							XTExitInteraction(x_currentPage, $pageContents.data("current"),correct, [], answer, feedback)
 							total++;
 
 							if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
@@ -202,7 +202,7 @@
 			} else {
 				$(x_currentPageXML).children().each(function() {
 					var	$this = $(this);
-					captionInfo.push({prompt:$this.attr("prompt"), answer:$this.attr("answer"), audio:$this.attr("audio")});
+					captionInfo.push({prompt:$this.attr("prompt"), name:$this.attr("name"), answer:$this.attr("answer"), audio:$this.attr("audio")});
 				});
 
 				$pageContents.data("captionInfo", captionInfo);
@@ -246,9 +246,12 @@
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var correctAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-			if (XTGetMode() == "normal") {
-				XTEnterInteraction(x_currentPage, [$pageContents.data("current")], 'text', x_currentPageXML.getAttribute("text"), [], [correctAnswer], ["Correct"]);
+			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
+			if (name == "")
+			{
+				name = x_currentPageXML.getAttribute("name");
 			}
+			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], correctAnswer, "Correct");
 		}
 
 		this.loadAudio = function(caption) {
@@ -292,13 +295,14 @@
 		}
 		//Stopping the tracking
 		this.finishTracking = function() {
-			XTSetPageScore(x_currentPage, ((answers * 100.0)/total));
+			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
 		}
 		//Starting the tracking
 		this.initTracking = function() {
 			// Track the dictation page
 			this.weighting = 1.0;
-			if (XTGetMode() == "normal") {
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
 				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 			}
 			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
