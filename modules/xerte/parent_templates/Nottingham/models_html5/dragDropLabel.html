@@ -34,7 +34,7 @@
 			if (resize) {
 				this.sizeChanged();
 			}
-		}
+		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
@@ -67,15 +67,15 @@
 				});
 				
 				// also adjust labels
-				$("#labelHolder .ui-draggable-disabled").each(function() {
+				/*$("#labelHolder .ui-draggable-disabled").each(function() {
 					var $this = $(this);
 					$this.css({
 						"left"		:$this.data("target").position().left + 2 + $panel.position().left,
 						"top"		:$this.data("target").position().top + 2 + $panel.position().top
 					});
-				});
+				});*/
 			}
-		}
+		};
 
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -137,13 +137,13 @@
 
 			this.startTracking();
 			this.sizeChanged(true);
-		}
+		};
 
 		this.startTracking = function() {
 			var numHotspots = $(x_currentPageXML).children().length;
 			this.weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
             XTSetPageType(x_currentPage, 'numeric', numHotspots, this.weighting);
-		}
+		};
 
 		this.createLabels = function() {
 			var	$labelHolder = $("#labelHolder"),
@@ -179,11 +179,6 @@
 					start:			function() {
                         var $this = $(this);
                         $("#infoHolder").html('<h3>' + $this.html() + '</h3>');
-                        if ($this.data("target") != "" && $this.data("target") != undefined)
-                        {
-                            var $curTarget = $("#targetHolder .target")[$this.data("target")];
-                            $curTarget.droppable("enable");
-                        }
 
                         // remove any focus/selection highlights made by tabbing to labels/targets
 						var $pageContents = $("#pageContents");
@@ -277,7 +272,7 @@
 					})
 					.off("click");
 			}
-		}
+		};
 
 		this.imgLoaded = function() {
 			// labels have been created and image loaded - can now resize image to fit space and create targets on it
@@ -349,10 +344,10 @@
 				.droppable({
 					tolerance: "pointer",
 					drop:	function(event, ui) {
-						dragDropLabel.dropLabel($(this), ui.draggable); // target, label
-						ui.draggable.data("success", true);
+                        dragDropLabel.dropLabel($(this), ui.draggable); // target, label
+                        ui.draggable.data("success", true);
 					}
-					})
+                })
 				.focusin(function(e) {
 					$(this)
 						.addClass("highlight")
@@ -380,7 +375,45 @@
 					}
 				});
 
-			// set tab index for targets - leaving space between them for a label to be put on it
+            $("#labelHolder")
+                .droppable({
+                    tolerance: "pointer",
+                    drop:	function(event, ui) {
+                        if(ui.draggable.data("target") != undefined)
+                            $("#targetHolder .target").eq(ui.draggable.data("target")).droppable("enable");
+                        ui.draggable.data("target", undefined);
+                        ui.draggable.data("success", false);
+                    },
+                    accept: $("#labelHolder .label")
+                })
+                .focusin(function(e) {
+                    $(this)
+                            .addClass("highlight")
+                            .removeClass("transparent");
+                    var $pageContents = $("#pageContents");
+                    if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                        $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
+                    }
+                })
+                .focusout(function() {
+                    var $pageContents = $("#pageContents");
+                    $(this)
+                            .addClass("transparent")
+                            .removeClass("highlight")
+                            .attr("title", targetTxt1 + " " + ($(this).index() + 1));
+                })
+                .keypress(function(e) {
+                    var charCode = e.charCode || e.keyCode;
+                    if (charCode == 32) {
+                        var $pageContents = $("#pageContents");
+                        var $selectedLabel = $pageContents.data("selectedLabel");
+                        if ($selectedLabel != undefined && $selectedLabel != "") {
+                            $selectedLabel.data("target", "");
+                        }
+                    }
+                });
+
+            // set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 2;
 			tabIndex += $("#labelHolder .label").length;
 			$targets.each(function() {
@@ -391,48 +424,17 @@
 			});
 
 			x_pageLoaded();
-		}
-
-		this.showFeedBackandTrackResults = function() {
-            var generalFeedback = "",
-                numCorrect = 0,
-                l_options = [],
-                l_answer = [],
-                l_feedback = [],
-                tempanswer;
-
-            $("#labelHolder .ui-draggable-disabled").each(function() {
-                var $this = $(this);
-                if ($this.data("correct") == $this.data("target"))
-                {
-                    numCorrect++;
-                }
-                tempanswer = $this.data("target") == undefined ? "This label was not placed in any hotspot." : "This label was placed in hotspot number " + ($this.data("target") + 1) + ".";
-                l_answer.push(tempanswer);
-            });
-
-            if (x_currentPageXML.getAttribute("judge") != "false") {
-                // Track answer
-                XTExitInteraction(x_currentPage, 0, numCorrect * 100 / ("#labelHolder .label").length, l_options, l_answer, l_feedback);
-            }
-
-            if (XTGetMode() == "normal") {
-
-            }
-
-            // Queue reparsing of MathJax - fails if no network connection
-            try {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            } catch (e) {
-            }
-        }
+		};
 
         // function called when label dropped on target - by mouse or keyboard
         this.dropLabel = function($thisTarget, $thisLabel) {
             $x_pageHolder.scrollTop(0);
             var $infoHolder = $("#infoHolder");
             //$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
-			$infoHolder.html('<h3>' + $thisLabel.html() + '</h3>');
+            $infoHolder.html('<h3>' + $thisLabel.html() + '</h3>');
+
+            if($thisLabel.data("target") != undefined)
+                $("#targetHolder .target").eq($thisLabel.data("target")).droppable("enable");
 
             var targetIndex = $thisTarget.index();
 
@@ -470,11 +472,45 @@
                     .click(function() {
                         $("#infoHolder").html($(this).data("infoTxt"));
                     })
-                    .droppable( "disable" );
+                    .droppable("disable");
 
             $("#pageContents").data("selectedLabel", "");
-        }
-	}
+        };
+
+		this.showFeedBackandTrackResults = function() {
+            var generalFeedback = "",
+                numCorrect = 0,
+                l_options = [],
+                l_answer = [],
+                l_feedback = [],
+                tempAnswer;
+
+            $("#labelHolder .ui-draggable-disabled").each(function() {
+                var $this = $(this);
+                if ($this.data("correct") == $this.data("target"))
+                {
+                    numCorrect++;
+                }
+                tempAnswer = $this.data("target") == undefined ? "This label was not placed in any hotspot." : "This label was placed in hotspot number " + ($this.data("target") + 1) + ".";
+                l_answer.push(tempAnswer);
+            });
+
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                // Track answer
+                XTExitInteraction(x_currentPage, 0, numCorrect * 100 / ("#labelHolder .label").length, l_options, l_answer, l_feedback);
+            }
+
+            if (XTGetMode() == "normal") {
+
+            }
+
+            // Queue reparsing of MathJax - fails if no network connection
+            try {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            } catch (e) {
+            }
+        };
+	};
 
 	dragDropLabel.init();
 
@@ -504,6 +540,10 @@
 		clear: both;
 		float:left;
 	}
+
+    #labelHolder {
+        border:     1px solid black;
+    }
 
 	#labelHolder .label {
 		display:	inline-block;
@@ -554,11 +594,11 @@
 		<div id="mainPanel" class="panel">
 			<img id="image" />
 			<div id="targetHolder"></div>
-			<div id="buttonHolder">
-			    <button id="submitBtn"></button>
-            </div>
 		</div>
 		<div id="labelHolder"></div>
+        <div id="buttonHolder">
+            <button id="submitBtn"></button>
+        </div>
 	</div>
 	
 	<div id="textHolder">
