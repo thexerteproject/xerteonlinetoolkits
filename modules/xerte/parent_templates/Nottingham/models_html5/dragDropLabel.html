@@ -67,13 +67,13 @@
 				});
 				
 				// also adjust labels
-				/*$("#labelHolder .ui-draggable-disabled").each(function() {
+				$("#labelHolder .ui-draggable-disabled").each(function() {
 					var $this = $(this);
 					$this.css({
 						"left"		:$this.data("target").position().left + 2 + $panel.position().left,
 						"top"		:$this.data("target").position().top + 2 + $panel.position().top
 					});
-				});*/
+				});
 			}
 		};
 
@@ -110,30 +110,30 @@
 				label:	"Submit"
 				})
 			.click(function() {
-				    $x_pageHolder.scrollTop(0);
-					var $infoHolder = $("#infoHolder");
+                $x_pageHolder.scrollTop(0);
+                var $infoHolder = $("#infoHolder");
 
-					$("#labelHolder .label").each(function() {
-						var $this = $(this)
-							.draggable("disable")
-							.off("keypress focusin focusout")
-							.click(function() {
-								$("#infoHolder").html($(this).data("infoTxt"));
-							})
-							.focusin(function() {
-								$(this).addClass("focus");
-								$("#infoHolder").html($(this).data("infoTxt"));
-							})
-							.focusout(function() {
-								$(this).removeClass("focus");
-								$("#infoHolder").html("");
-							})
-					});
-					$("#pageContents hr:eq(1)").remove();
-					$("#pageContents").data("selectedLabel", "");
-					dragDropLabel.showFeedBackandTrackResults();
-                    $("#submitBtn").hide();
-                })
+                $("#labelHolder .label").each(function() {
+                    var $this = $(this)
+                        .draggable("disable")
+                        .off("keypress focusin focusout")
+                        .click(function() {
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusin(function() {
+                            $(this).addClass("focus");
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusout(function() {
+                            $(this).removeClass("focus");
+                            $("#infoHolder").html("");
+                        })
+                });
+                $("#pageContents hr:eq(1)").remove();
+                $("#pageContents").data("selectedLabel", "");
+                dragDropLabel.showFeedBackandTrackResults();
+                $("#submitBtn").hide();
+            });
 
 			this.startTracking();
 			this.sizeChanged(true);
@@ -172,10 +172,27 @@
 
 			// set up drag events (mouse and keyboard controlled)
 			$("#labelHolder .label")
-				.draggable({
+                .draggable({
 					containment:	"#x_pageHolder",
 					stack:			"#labelHolder .label", // item being dragged is always on top (z-index)
-					revert:			"invalid", // snap back to original position if not dropped on target
+					revert:			function(event, ui){
+                        if(!event) {
+                            var $this = $(this);
+                            if ($this.data("target") != undefined && $this.data("target")!== "")
+                                $("#targetHolder .target").eq($this.data("target")).droppable("enable");
+
+                            $this
+                                .css({"position": "relative"})
+                                .data("target", "")
+                                .data("success", false)
+                                .data("ui-draggable").originalPosition = {
+                                    top: 0,
+                                    left: 0
+                                };
+                        }
+
+                        return !event;
+                    },
 					start:			function() {
                         var $this = $(this);
                         $("#infoHolder").html('<h3>' + $this.html() + '</h3>');
@@ -203,7 +220,7 @@
 							$("#infoHolder").html($("#pageContents").data("tryTxt"));
 						}
 					}
-					})
+				})
 				// set up events used when keyboard rather than mouse is used
 				// these highlight selected labels / targets and set the title attr which the screen readers will use
 				.focusin(function() {
@@ -214,7 +231,7 @@
 							.addClass("focus")
 							.attr("title", labelTxt1 + " - " + labelTxt3);
 					}
-					})
+				})
 				.focusout(function() {
 					var $this = $(this);
                     $("#infoHolder").html("");
@@ -222,7 +239,7 @@
 					if ($this.is($("#pageContents").data("selectedLabel")) == false) {
 						$this.attr("title", labelTxt1);
 					}
-					})
+				})
 				.keypress(function(e) {
 					var charCode = e.charCode || e.keyCode;
 					if (charCode == 32) {
@@ -241,7 +258,7 @@
 
 						$("#infoHolder").html("");
 					}
-					})
+				})
 				.disableSelection();
 
 			if ($("#image").attr("src") == undefined) {
@@ -375,44 +392,6 @@
 					}
 				});
 
-            $("#labelHolder")
-                .droppable({
-                    tolerance: "pointer",
-                    drop:	function(event, ui) {
-                        if(ui.draggable.data("target") != undefined)
-                            $("#targetHolder .target").eq(ui.draggable.data("target")).droppable("enable");
-                        ui.draggable.data("target", undefined);
-                        ui.draggable.data("success", false);
-                    },
-                    accept: $("#labelHolder .label")
-                })
-                .focusin(function(e) {
-                    $(this)
-                            .addClass("highlight")
-                            .removeClass("transparent");
-                    var $pageContents = $("#pageContents");
-                    if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-                        $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
-                    }
-                })
-                .focusout(function() {
-                    var $pageContents = $("#pageContents");
-                    $(this)
-                            .addClass("transparent")
-                            .removeClass("highlight")
-                            .attr("title", targetTxt1 + " " + ($(this).index() + 1));
-                })
-                .keypress(function(e) {
-                    var charCode = e.charCode || e.keyCode;
-                    if (charCode == 32) {
-                        var $pageContents = $("#pageContents");
-                        var $selectedLabel = $pageContents.data("selectedLabel");
-                        if ($selectedLabel != undefined && $selectedLabel != "") {
-                            $selectedLabel.data("target", "");
-                        }
-                    }
-                });
-
             // set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 2;
 			tabIndex += $("#labelHolder .label").length;
@@ -433,7 +412,7 @@
             //$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
             $infoHolder.html('<h3>' + $thisLabel.html() + '</h3>');
 
-            if($thisLabel.data("target") != undefined)
+            if($thisLabel.data("target") != undefined && $thisLabel.data("target") !== "")
                 $("#targetHolder .target").eq($thisLabel.data("target")).droppable("enable");
 
             var targetIndex = $thisTarget.index();
@@ -447,10 +426,10 @@
                     .data("infoTxt", $infoHolder.html())
                     .removeClass("selected")
                     .css({
-                        "opacity" :1,
-                        "position" :"absolute",
-                        "top"  :$thisTarget.position().top + 2 + $("#mainPanel").position().top,
-                        "left"  :$thisTarget.position().left + 2 + $("#mainPanel").position().left
+                        "opacity"   :   1,
+                        "position"  :   "absolute",
+                        "top"       :   $thisTarget.position().top + 2 + $("#mainPanel").position().top,
+                        "left"      :   $thisTarget.position().left + 2 + $("#mainPanel").position().left
                     })
                     .click(function() {
                         $("#infoHolder").html($(this).data("infoTxt"));
@@ -538,12 +517,8 @@
 	
 	#dragDropHolderLabelling #labelHolder {
 		clear: both;
-		float:left;
+		float: left;
 	}
-
-    #labelHolder {
-        border:     1px solid black;
-    }
 
 	#labelHolder .label {
 		display:	inline-block;
