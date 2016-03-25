@@ -1507,7 +1507,7 @@ function x_insertText(node) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
-    var tempText = $("<textarea/>").html(node.nodeValue).text();
+    var tempText = $("<textarea/>").html(node.nodeValue).html();
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {
