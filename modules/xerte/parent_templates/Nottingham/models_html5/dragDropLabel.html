@@ -175,7 +175,8 @@
                 .draggable({
 					containment:	"#x_pageHolder",
 					stack:			"#labelHolder .label", // item being dragged is always on top (z-index)
-					revert:			function(event, ui){
+					revertDuration: 0,
+                    revert:			function(event, ui){
                         if(!event) {
                             var $this = $(this);
                             if ($this.data("target") != undefined && $this.data("target")!== "")
@@ -466,12 +467,27 @@
 
             $("#labelHolder .ui-draggable-disabled").each(function() {
                 var $this = $(this);
-                if ($this.data("correct") == $this.data("target"))
+                if ($this.data("correct") === $this.data("target"))
                 {
                     numCorrect++;
+					$this.css({
+                        "background" : "green"
+                    });
+                    l_feedback.push("The label for " + $this.html() + " was placed in the correct hotspot.");
                 }
-                tempAnswer = $this.data("target") == undefined ? "This label was not placed in any hotspot." : "This label was placed in hotspot number " + ($this.data("target") + 1) + ".";
+                else
+                {
+                    $this.css({
+                        "background" : "red"
+                    });
+                    l_feedback.push("The label for " + $this.html() + " was placed in the wrong hotspot.");
+                }
+                tempAnswer = $this.data("target") == undefined || $this.data("target") == "" ?
+                    "The label for " + $this.html() + " was not placed in any hotspot." :
+                    "The label for " + $this.html() + " was placed in the hotspot for " + $("#labelHolder .label").eq($this.data("target")).html() + ".";
+
                 l_answer.push(tempAnswer);
+                l_options.push($this.html());
             });
 
             if (x_currentPageXML.getAttribute("judge") != "false") {
@@ -535,9 +551,12 @@
 		border:		2px solid green;
 	}
 
-	#buttonHolder button {
-		margin:	10px;
-		float:	right;
+	#buttonHolder {
+        margin   : 10px;
+		float    : right;
+        position : absolute;
+        bottom   : 0;
+        right    : 0;
 	}
 
 	#targetHolder {
@@ -570,12 +589,13 @@
 			<img id="image" />
 			<div id="targetHolder"></div>
 		</div>
-		<div id="labelHolder"></div>
+        <div id="labelHolder"></div>
         <div id="buttonHolder">
             <button id="submitBtn"></button>
         </div>
+
 	</div>
-	
+
 	<div id="textHolder">
 		<div id="mainText" tabindex="1"></div>
 		<hr/>
