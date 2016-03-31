@@ -545,10 +545,9 @@ function ScormTrackingState()
                     this.skipcomments = true;
                 }
             }
+            this.finishTracking(state.currentpageid, true);
+            doLMSCommit();
         }
-        this.finishTracking(state.currentpageid, true);
-        doLMSCommit();
-
     }
 
     function getSuccessStatus()
