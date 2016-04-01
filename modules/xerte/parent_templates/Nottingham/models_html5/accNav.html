@@ -65,6 +65,9 @@
 				$paneContents = $("#infoHolder .paneContents");
 			
 			$("#pageContents").data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("accNav")[0], "click", ""));
+			if ($("#pageContents").data("clickTxt") == null) {
+				$("#pageContents").data("clickTxt", "");
+			}
 			
 			// set up accordion contents
 			$(x_currentPageXML).children().each(function(i) {
