@@ -64,7 +64,9 @@
 				$paneHeader = $("#infoHolder .paneHeader"),
 				$paneContents = $("#infoHolder .paneContents");
 			
-			// set up accordian contents
+			$("#pageContents").data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("accNav")[0], "click", ""));
+			
+			// set up accordion contents
 			$(x_currentPageXML).children().each(function(i) {
 				var $thisHeader, $thisContents;
 				if (i != 0) {
@@ -74,7 +76,11 @@
 					$thisHeader = $paneHeader;
 					$thisContents = $paneContents;
 				}
-				$thisHeader.find("a").html(this.getAttribute("name"));
+				
+				$thisHeader
+					.data("name", this.getAttribute("name"))
+					.attr("aria-label", this.getAttribute("name") + (i != 0 ? " " + $("#pageContents").data("clickTxt") : ""))
+					.find("a").html(this.getAttribute("name"));
 				
 				var infoString = '<p>' + x_addLineBreaks(this.getAttribute("text")) + '</p>',
 					url = this.getAttribute("url");
@@ -116,7 +122,7 @@
 				if ($thisContents.find(".paneImg").length > 0) {
 					var $img = $thisContents.find(".paneImg img");
 					if (i == 0) {
-						// don't set src of image that's visible until later as accordian needs to be fully set up for image scaling to work correctly
+						// don't set src of image that's visible until later as accordion needs to be fully set up for image scaling to work correctly
 						$img.data("src", x_evalURL(url));
 					} else {
 						$img.attr("src", x_evalURL(url));
@@ -149,22 +155,18 @@
 				fillSpace:	true,
 				heightStyle: "fill",
 				activate:	function(e, ui) {
+					if ($("#pageContents").data("clickTxt") != "" && $("#pageContents").data("clickTxt") != null) {
+						ui.oldHeader.attr("aria-label", ui.oldHeader.data("name") + $("#pageContents").data("clickTxt"));
+						ui.newHeader.attr("aria-label", ui.newHeader.data("name"));
+					}
+					
 					// remove any custom HTML so it doesn't mess up any custom HTML that might be loaded on another pane
 					$(".customHTMLHolder").detach();
-					
-					// force tabindex to stay the same - jquery ui accordion code overrides this otherwise
-					ui.oldHeader.attr("tabindex", (ui.oldHeader.index() / 2) + 1);
-					ui.newHeader.attr("tabindex", (ui.newHeader.index() / 2) + 1);
 					
 					// call functions that sort out any images / custom HTML on the newly opened pane
 					accNav.scaleImages();
 					accNav.loadCustomHTML();
 				}
-			});
-			
-			// default accordion uses arrow keys to focus on headers but all other navigators use tab - force tab index on headers so it's consistent with other pages
-			$(".ui-accordion-header").each(function(i) {
-				$(this).attr("tabindex", ($(this).index() / 2) + 1);
 			});
 			
 			if ($paneContents.find(".paneImg img").length > 0) {
@@ -268,7 +270,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div>
