@@ -450,11 +450,15 @@ function x_cssSetUp(param) {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-            if (x_params.responsive == "true" && !(x_params.displayMode == "default" || $.isArray(x_params.displayMode))) { //Leave it enabled
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
-            }
-            else {
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
+            if (x_params.responsive == "true") {
+				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
+				} else {
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
+				}
+            } else {
+                x_cssSetUp("stylesheet");
             }
 		}
 	} else if (param == "theme2") {
