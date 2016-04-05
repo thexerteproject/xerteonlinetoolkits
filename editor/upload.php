@@ -39,9 +39,12 @@ $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 // This code miserably fails if get_magic_quotes_gpc is turned on
 // decoding the json doesn't work anymore
-if (function_exists(get_magic_quotes_gpc) && get_magic_quotes_gpc())
+if (function_exists('get_magic_quotes_gpc'))
 {
-    $lo_data=stripslashes($_POST["lo_data"]);
+    if (get_magic_quotes_gpc())
+    {
+        $lo_data=stripslashes($_POST["lo_data"]);
+    }
 }
 else
 {
