@@ -118,6 +118,9 @@ if (count($courses) > 0) {
         <div class="label"><label for="readonly"><?php echo AUTOMATION_LABEL_READONLY; ?></label></div>
         <input name="readonly" type="checkbox" id="readonly"/></p>
         <p>
+        <div class="label"><label for="unshare_teachers"><?php echo AUTOMATION_LABEL_UNSHARE_TEACHERS; ?></label></div>
+        <input name="unshare_teachers" type="checkbox" id="unshare_teachers"/></p>
+        <p>
         <div class="label"><label for="practice"><?php echo AUTOMATION_LABEL_PRACTICE; ?></label></div>
         <input name="practice" type="checkbox" id="practice" onchange="changePractice();"/>
         <label for="attempt"><?php echo AUTOMATION_LABEL_ATTEMPT; ?></label><input name="attempt" id="attempt"

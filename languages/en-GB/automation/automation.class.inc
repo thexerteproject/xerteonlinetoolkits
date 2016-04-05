@@ -88,6 +88,8 @@ define("AUTOMATION_SET_ORGINAL_TEMPLATE_MESG", "Set original template to ");
 
 define("AUTOMATION_SET_READONLY_MESG", "Set readonly flag to ");
 
+define("AUTOMATION_SET_UNSHARE_TEACHER_MESG", "Set unshare teacher flag to ");
+
 define("AUTOMATION_SET_PRACTICE_MESG", "Set practice flag to ");
 
 define("AUTOMATION_SET_ATTEMPT_MESG", "Set attempt to ");
@@ -120,4 +122,8 @@ define("AUTOMATION_ADD_ACCESS_TO_LO_CHECK_LOGIN_FAILED", "Failed to create/find 
 
 define("AUTOMATION_UNSHARE_MESG", "Remove access for ");
 
+define("AUTOMATION_UNSHARE_TEACHER_MESG", "Remove access for teacher ");
+
 define("AUTOMATION_UNSHARE_MESG2", " - Unshare template\n");
+
+define("AUTOMATION_UNSHARE_FAILED_MESG", "Failed to remove access!\n");

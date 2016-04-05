@@ -18,6 +18,7 @@ doAction = function(action)
                     group: $("#group").val(),
                     template: $("#template").val(),
                     readonly: $("#readonly").prop('checked'),
+                    unshare_teachers: $("#unshare_teachers").prop('checked'),
                     practice: $("#practice").prop('checked'),
                     attempt: $("#attempt").val()
             }

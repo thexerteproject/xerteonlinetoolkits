@@ -22,6 +22,8 @@ define("AUTOMATION_LABEL_TEMPLATE", "Template:");
 
 define("AUTOMATION_LABEL_READONLY", "Readonly");
 
+define("AUTOMATION_LABEL_UNSHARE_TEACHERS", "Unshare (other) teachers as well");
+
 define("AUTOMATION_LABEL_PRACTICE", "Practice");
 
 define("AUTOMATION_LABEL_ATTEMPT", "Attempt ");

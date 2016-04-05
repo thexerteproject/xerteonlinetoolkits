@@ -48,11 +48,21 @@ class Automate
     private $folder_name;
     private $org_template_id;
     private $readonly;
+    private $unshare_teacher;
     private $practice;
     private $attempt;
     private $course_roles;
     private $allowed = null;
     private $db_connection = null;
+    private $students_updated;
+    private $students_created;
+    private $students_unchanged;
+    private $objects_updated;
+    private $objects_created;
+    private $objects_unchanged;
+    private $teachers_updated;
+    private $teachers_created;
+    private $teachers_unchanged;
 
     private function _moodleConnect()
     {
@@ -152,6 +162,20 @@ class Automate
         }
     }
 
+    private function _getAllGroupsOfCourse($courseid)
+    {
+        $result = array();
+        $sql = "select g.* from mdl_groups g where g.courseid=?";
+        $params = array($courseid);
+
+        $rows = $this->_moodleQuery($sql, $params);
+        if ($rows !== false)
+        {
+            $result = $rows;
+        }
+        return $result;
+    }
+
     private function _getGroups($courseid)
     {
         $result = array();
@@ -168,6 +192,8 @@ class Automate
 
     private function _getUserRoles($username)
     {
+        global $automation_config;
+
         $sql = "SELECT c.id AS courseid, ra.roleid, c.fullname, c.shortname, u.username, u.firstname, u.lastname, u.email
                     FROM mdl_role_assignments ra
                     JOIN mdl_user u ON u.id = ra.userid
@@ -186,7 +212,13 @@ class Automate
         {
             foreach ($rows as $row)
             {
-                $groups = $this->_getGroups($row['courseid']);
+                if (in_array($row['roleid'], $automation_config->groupMemberSharingRole)) {
+                    $groups = $this->_getGroups($row['courseid']);
+                }
+                else
+                {
+                    $groups = $this->_getAllGroupsOfCourse($row['courseid']);
+                }
                 $nrgroups = count($groups);
                 $result[] = ['courseid' => $row['courseid'], 'coursename' => $row['shortname'], 'roleid' => $row['roleid'], "nrgroups" => $nrgroups, "groups" => $groups];
             }
@@ -630,6 +662,7 @@ class Automate
     private function copyTemplateToUserFolder($template_id, $login_id, $user_name, $folder_id, $for_user_id, $for_username,  $for_user)
     {
         global $xerte_toolkits_site;
+        $changed = false;
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -665,6 +698,7 @@ class Automate
                         $mesg = str_replace("%t", $template_id, $mesg);
                         $mesg = str_replace("%l", $login_id, $mesg);
                         $this->mesg .= $mesg;
+                        $this->objects_unchanged++;
                         return $rows[0]['copied_template_id'];
                     }
                     else
@@ -682,6 +716,8 @@ class Automate
                         $q = "delete from {$prefix}auto_copied_templates where org_template_id=? and owner_id=? and owner_user_name=? and owner_folder_id=? and for_user_id=? and for_user_name=? and for_user=?";
                         $params = array($template_id, $login_id, $user_name, $folder_id, $for_user_id, $for_username, $for_user);
                         $res = db_query($q, $params);
+                        $this->objects_updated++;
+                        $changed = true;
                     }
                 }
                 else
@@ -699,20 +735,12 @@ class Automate
                     $q = "delete from {$prefix}auto_copied_templates where org_template_id=? and owner_id=? and owner_user_name=? and owner_folder_id=? and for_user_id=? and for_user_name=? and for_user=?";
                     $params = array($template_id, $login_id, $user_name, $folder_id, $for_user_id, $for_username, $for_user);
                     $res = db_query($q, $params);
+
+                    $this->objects_updated++;
+                    $changed = true;
                 }
             }
         }
-
-        /*
-         * get the maximum id number from templates, as the id for this template
-         */
-        $row = db_query_one("SELECT max(template_id) as count FROM {$prefix}templatedetails");
-
-        if ($row === false) {
-            $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_GETID_FAILED;
-            return false;
-        }
-        $new_template_id = $row['count'] + 1;
 
         $query_for_template_type_id = "select otd.template_type_id, otd.template_name as org_template_name, otd.template_framework, td.extra_flags, td.template_name from "
             . "{$prefix}originaltemplatesdetails otd, {$prefix}templatedetails td where "
@@ -728,10 +756,9 @@ class Automate
          */
 
         $query_for_new_template = "insert into {$prefix}templatedetails "
-            . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
-            . " VALUES (?,?,?,?,?,?,?,?)";
+            . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
+            . " VALUES (?,?,?,?,?,?,?)";
         $params = array(
-            $new_template_id,
             $login_id,
             $row_template_type['template_type_id'],
             date('Y-m-d'),
@@ -740,7 +767,8 @@ class Automate
             $this->practice_prefix . $row_template_type['template_name'] . "_-_" . $for_user,
             $row_template_type['extra_flags']);
 
-        if (db_query($query_for_new_template, $params) !== FALSE) {
+        $new_template_id = db_query($query_for_new_template, $params);
+        if ($res !== FALSE) {
 
             $query_for_template_rights = "insert into {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
             $params = array($new_template_id, $login_id, "creator", $folder_id);
@@ -758,6 +786,10 @@ class Automate
                     if ($row === false)
                     {
                         $this->mesg .= AUTOMATION_COPY_TEMPLATE_TO_USER_CREATE_REGISTRATIONRECORD_FAILED;
+                    }
+                    if (!$changed)
+                    {
+                        $this->objects_created++;
                     }
                     return $new_template_id;
                 }
@@ -786,7 +818,7 @@ class Automate
     /*
      * Copy template to userfolder and return id of template
      */
-    private function shareTemplateWithUserInFolder($template_id, $new_login_id, $new_folder_id, $role)
+    private function shareTemplateWithUserInFolder($template_id, $new_login_id, $new_folder_id, $role, $is_student)
     {
         global $xerte_toolkits_site;
 
@@ -805,8 +837,32 @@ class Automate
             // Ok already present, update sharing role
             $sql = "update {$prefix}templaterights set role=? where template_id=? and user_id=? and folder=?";
             $params = array($role, $template_id, $new_login_id, $new_folder_id);
-            if(db_query($sql, $params) !== false)
+            $res = db_query($sql, $params);
+            if($res !== false)
             {
+                if ($is_student)
+                {
+                    if ($res === 0)
+                    {
+                        $this->students_unchanged++;
+                    }
+                    else
+                    {
+                        $this->students_updated++;
+                    }
+                }
+                else
+                {
+                    if ($res === 0)
+                    {
+                        $this->teachers_unchanged++;
+                    }
+                    else
+                    {
+                        $this->teachers_updated++;
+                    }
+
+                }
                 return true;
             }
             else
@@ -822,11 +878,17 @@ class Automate
             $params = array($template_id, $new_login_id, $role, $new_folder_id);
 
             if (db_query($query_to_insert_share, $params) !== false) {
-
+                if ($is_student)
+                {
+                    $this->students_created++;
+                }
+                else
+                {
+                    $this->teachers_created++;
+                }
                 return true;
 
             } else {
-
                 return false;
             }
         }
@@ -835,7 +897,7 @@ class Automate
     /*
      * Copy template to userfolder and return id of template
      */
-    private function unShareTemplateWithUserInFolder($template_id, $username)
+    private function unShareTemplateWithUserInFolder($template_id, $for_username, $username, $is_student)
     {
         global $xerte_toolkits_site;
 
@@ -846,28 +908,67 @@ class Automate
 
         // Get the rights of the templates of owner_id in owner_group_folder of user $login_id
         $q = "select * from {$prefix}auto_copied_templates where org_template_id=? and owner_folder_id=? and for_user_name=?";
-        $params = array($template_id, $this->owner_group_folder_id, $username);
+        $params = array($template_id, $this->owner_group_folder_id, $for_username);
         $row = db_query_one($q, $params);
 
         if ($row !== false) {
             if ($row != null) {
 
                 //$this->mesg .= "Share template\n;";
+                // Get userid of user $username
+                $q = "select * from {$prefix}logindetails where username=?";
+                $userrow = db_query_one($q, array($username));
 
-                $query_to_delete_share = "delete from {$prefix}templaterights where template_id=? and user_id=?";
-                $params = array($row['copied_template_id'], $row['for_user_id']);
+                if ($userrow !== false && $userrow != null) {
+                    $login_id = $userrow['login_id'];
+                    $query_to_delete_share = "delete from {$prefix}templaterights where template_id=? and user_id=?";
+                    $params = array($row['copied_template_id'], $login_id);
+                    $res = db_query($query_to_delete_share, $params);
+                    if ($res !== false) {
 
-                if (db_query($query_to_delete_share, $params) !== false) {
+                        if ($res === 0) {
+                            if ($is_student) {
+                                $this->students_unchanged++;
+                            } else {
+                                $this->teachers_unchanged++;
+                            }
+                        } else {
+                            if ($is_student) {
+                                $this->students_updated++;
+                            } else {
+                                $this->teachers_updated++;
+                            }
+                        }
+                        return true;
 
+                    } else {
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Cannot find login_id, nothing to unshare (?)
+                    if ($is_student)
+                    {
+                        $this->students_unchanged++;
+                    }
+                    else
+                    {
+                        $this->teachers_unchanged++;
+                    }
                     return true;
-
-                } else {
-
-                    return false;
                 }
             }
             else{
                 // Not found, noting to unshare
+                if ($is_student)
+                {
+                    $this->students_unchanged++;
+                }
+                else
+                {
+                    $this->teachers_unchanged++;
+                }
                 return true;
             }
         }
@@ -944,6 +1045,7 @@ class Automate
                     user_id int(11) NOT NULL,
                     user_name varchar(64) NOT NULL,
                     readonly tinyint(1) NOT NULL,
+                    unshare_teacher tinyint(1) NOT NULL,
                     practice tinyint(1) NOT NULL,
                     attempt int(11) NOT NULL,
                     logmessage text,
@@ -962,10 +1064,76 @@ class Automate
                     PRIMARY KEY (`id`),
                     UNIQUE KEY folder_idx (template_id, group_name)
                   )";
-        db_query($sql) or die(AUTOMATION_CERATE_TABLE_TEMPATE_GROUP_FOLDERS_FAILED);
+        db_query($sql) or die(AUTOMATION_CREATE_TABLE_TEMPATE_GROUP_FOLDERS_FAILED);
+
+        // Upgrade table auto_sharing_log to include column unshare_teacher
+        // Check if column exists
+        $sql = "SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{$xerte_toolkits_site->database_name}' and TABLE_NAME = '{$prefix}auto_sharing_log' AND COLUMN_NAME = 'unshare_teacher'";
+        $res = db_query($sql);
+        // If not, add column
+        if ($res !== false && $res == null)
+        {
+            $sql = "ALTER TABLE {$prefix}auto_sharing_log ADD COLUMN `unshare_teacher` TINYINT(1) NOT NULL  AFTER readonly";
+            $res = db_query($sql) or die(AUTOMATION_CREATE_TABLE_AUTO_SHARING_LOG_FAILED);
+        }
 
         $this->setTeacher($_SESSION['toolkits_logon_username'], $_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname']);
         $this->course_roles = $this->_getUserRoles($this->teacher_username);
+        $this->students_updated = 0;
+        $this->students_created = 0;
+        $this->students_unchanged = 0;
+        $this->objects_updated = 0;
+        $this->objects_created = 0;
+        $this->objects_unchanged = 0;
+        $this->teachers_updated = 0;
+        $this->teachers_created = 0;
+        $this->teachers_unchanged = 0;
+    }
+
+    // Getters
+    public function getObjectsUpdated()
+    {
+        return $this->objects_updated;
+    }
+
+    public function getObjectsCreated()
+    {
+        return $this->objects_created;
+    }
+
+    public function getObjectsUnchanged()
+    {
+        return $this->objects_unchanged;
+    }
+
+    public function getStudentsUpdated()
+    {
+        return $this->students_updated;
+    }
+
+    public function getStudentsCreated()
+    {
+        return $this->students_created;
+    }
+
+    public function getStudentsUnchanged()
+    {
+        return $this->students_unchanged;
+    }
+
+    public function getTeachersUpdated()
+    {
+        return $this->teachers_updated;
+    }
+
+    public function getTeachersCreated()
+    {
+        return $this->teachers_created;
+    }
+
+    public function getTeachersUnchanged()
+    {
+        return $this->teachers_unchanged;
     }
 
     public function setGroupFolder($group_name)
@@ -999,6 +1167,12 @@ class Automate
         $this->mesg .= AUTOMATION_SET_READONLY_MESG . $readonly . ".\n";
     }
 
+    public function setUnshareTeachers($unshare_teacher)
+    {
+        $this->unshare_teacher = ($unshare_teacher === "true");
+        $this->mesg .= AUTOMATION_SET_UNSHARE_TEACHER_MESG . $unshare_teacher . ".\n";
+    }
+
     public function setPractice($practice)
     {
         $this->practice = ($practice === "true");
@@ -1011,7 +1185,7 @@ class Automate
         $this->mesg .= AUTOMATION_SET_ATTEMPT_MESG . $attempt . ".\n";
     }
 
-    public function recordSharing($action, $templateId, $group, $readonly, $practice, $attempt, $logmesg)
+    public function recordSharing($action, $templateId, $group, $readonly, $unshare_teacher, $practice, $attempt, $logmesg)
     {
         global $xerte_toolkits_site;
 
@@ -1021,8 +1195,8 @@ class Automate
         $rows = $this->_moodleQuery($sql, $params);
         if ($rows !== false) {
 
-            $sql = "insert into {$prefix}auto_sharing_log set date_created=?, action=?, template_id=?, group_id=?, group_name=?, user_id=?, user_name=?, readonly=?, practice=?, attempt=?, logmessage=?";
-            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly, $practice, $attempt, $logmesg);
+            $sql = "insert into {$prefix}auto_sharing_log set date_created=?, action=?, template_id=?, group_id=?, group_name=?, user_id=?, user_name=?, readonly=?, unshare_teacher=?, practice=?, attempt=?, logmessage=?";
+            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly, $unshare_teacher, $practice, $attempt, $logmesg);
             $row = db_query($sql, $params);
 
             if ($row !== false)
@@ -1116,7 +1290,7 @@ class Automate
                 $folderid = $this->checkCreateFolder($login['login_id'], $login['root_folder_id'], $this->group_name);
 
                 if ($folderid !== false) {
-                    if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $folderid, $role) !== false) {
+                    if ($this->shareTemplateWithUserInFolder($template_id, $login['login_id'], $folderid, $role, true) !== false) {
                         // Share template with other teachers
                         foreach ($teachers as $teacher) {
                             $mesg = AUTOMATION_ADD_ACCESS_TO_LO_TEACHER_MESG;
@@ -1127,7 +1301,7 @@ class Automate
                                 $folderid = $this->checkCreateFolder($teacher_login['login_id'], $teacher_login['root_folder_id'], $this->group_name);
 
                                 if ($folderid !== false) {
-                                    if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $folderid, 'read-only') === false) {
+                                    if ($this->shareTemplateWithUserInFolder($template_id, $teacher_login['login_id'], $folderid, 'read-only', false) === false) {
                                         $this->mesg .= AUTOMATION_ADD_ACCESS_TO_LO_TEACHER_FAILED . $teacher['username'] . "\n";
                                         $this->status = false;
                                         return false;
@@ -1176,14 +1350,31 @@ class Automate
 
     }
 
-    public function removeAccessFromLO($username, $firstname, $surname, $template_id)
+    public function removeAccessFromLO($for_username, $firstname, $surname, $template_id, $teachers)
     {
         // Create login for student
         $this->mesg .= AUTOMATION_UNSHARE_MESG . $firstname . " " . $surname . "\n";
         // Share template with student
         $this->mesg .= AUTOMATION_UNSHARE_MESG2;
-        if ($this->unShareTemplateWithUserInFolder($template_id, $username) !== false) {
+        if ($this->unShareTemplateWithUserInFolder($template_id, $for_username, $for_username, true) !== false) {
+            if ($this->unshare_teacher)
+            {
+                foreach ($teachers as $teacher) {
+                    // Create login for student
+                    $this->mesg .= AUTOMATION_UNSHARE_TEACHER_MESG . $teacher['firstname'] . " " . $teacher['lastname'] . "\n";
+                    // Share template with student
+                    $this->mesg .= AUTOMATION_UNSHARE_MESG2;
+                    if ($this->unShareTemplateWithUserInFolder($template_id, $for_username, $teacher['username'], false) === false) {
+                        $this->mesg .= AUTOMATION_UNSHARE_FAILED_MESG;
+                    }
+                }
+            }
             $this->mesg .= "\n";
+            return true;
+        }
+        else
+        {
+            $this->mesg .= AUTOMATION_UNSHARE_FAILED_MESG;
             return true;
         }
     }

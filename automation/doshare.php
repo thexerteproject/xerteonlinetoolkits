@@ -38,11 +38,12 @@ $groups = $auto->allowedGroups();
 $templates = $auto->availableTemplates();
 
 
-if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['template']) && !empty($_POST['readonly']) && !empty($_POST['practice'])) {
+if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['template']) && !empty($_POST['readonly']) && !empty($_POST['unshare_teachers']) && !empty($_POST['practice'])) {
     $action = $_POST['action'];
     $group = $_POST['group'];
     $template_id = $_POST['template'];
     $readonly = $_POST['readonly'];
+    $unshare_teachers = $_POST['unshare_teachers'];
     $practice = $_POST['practice'];
     $attempt = 1;
     if ($practice && !empty($_POST['attempt']))
@@ -52,12 +53,13 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
 
     $auto->setOriginalTemplateId($template_id);
     $auto->setReadonly($readonly);
+    $auto->setUnshareTeachers($unshare_teachers);
     $auto->setPractice($practice);
     $auto->setAttempt($attempt);
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
-        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $unshare_teachers, $practice, $attempt, $auto->getMesg());
         exit;
     }
 
@@ -65,7 +67,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
-        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
+        $auto->recordSharing($action,  $template_id, $group, $readonly, $unshare_teachers, $practice, $attempt, $auto->getMesg());
         exit;
     }
 
@@ -94,16 +96,16 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
                     if ($auto->addAccessToLO($person['username'], $person['firstname'], $person['lastname'], $role, $teachers) === false) {
                         echo $auto->getMesgHTML();
-                        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $unshare_teachers, $practice, $attempt, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;
                 }
             } else {
                 if ($auto->isGroupStudentAccessRole($person['roleid'])) {
-                    if ($auto->removeAccessFromLO($person['username'], $person['firstname'], $person['lastname'], $template_id) === false) {
+                    if ($auto->removeAccessFromLO($person['username'], $person['firstname'], $person['lastname'], $template_id, $teachers) === false) {
                         echo $auto->getMesgHTML();
-                        $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
+                        $auto->recordSharing($action,  $template_id, $group, $readonly, $unshare_teachers, $practice, $attempt, $auto->getMesg());
                         exit;
                     }
                     $nrpersons++;
@@ -112,7 +114,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
         }
     }
 
-    $auto->recordSharing($action,  $template_id, $group, $readonly, $practice, $attempt, $auto->getMesg());
+    $auto->recordSharing($action,  $template_id, $group, $readonly, $unshare_teachers, $practice, $attempt, $auto->getMesg());
     if ($auto->getStatus() === false)
     {
         echo $auto->getMesgHTML();
@@ -120,12 +122,40 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
     }
 
     $mesg = AUTOMATION_DO_SHARE_SUCCESS_MESG;
-    $mesg = str_replace("%n", $nrpersons, $mesg);
+    $ocr = $auto->getObjectsCreated();
+    $oup = $auto->getObjectsUpdated();
+    $oun = $auto->getObjectsUnchanged();
+    $on = $ocr + $oup + $oun;
+
+    $scr = $auto->getStudentsCreated();
+    $sup = $auto->getStudentsUpdated();
+    $sun = $auto->getStudentsUnchanged();
+    $sn = $scr + $sup + $sun;
+
+    $tcr = $auto->getTeachersCreated();
+    $tup = $auto->getTeachersUpdated();
+    $tun = $auto->getTeachersUnchanged();
+    $tn = $tcr + $tup + $tun;
+
+    $mesg = str_replace("%on", $on, $mesg);
+    $mesg = str_replace("%ocr", $ocr, $mesg);
+    $mesg = str_replace("%oup", $oup, $mesg);
+    $mesg = str_replace("%oun", $oun, $mesg);
+
+    $mesg = str_replace("%sn", $sn, $mesg);
+    $mesg = str_replace("%scr", $scr, $mesg);
+    $mesg = str_replace("%sup", $sup, $mesg);
+    $mesg = str_replace("%sun", $sun, $mesg);
+
+    $mesg = str_replace("%tn", $tn, $mesg);
+    $mesg = str_replace("%tcr", $tcr, $mesg);
+    $mesg = str_replace("%tup", $tup, $mesg);
+    $mesg = str_replace("%tun", $tun, $mesg);
 
     echo "<br>";
     echo $mesg;
     exit;
-
 }
+
 echo AUTOMATION_DO_SHARE_FAILED;
 
