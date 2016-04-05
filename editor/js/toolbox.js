@@ -210,6 +210,11 @@ var EDITOR = (function ($, parent) {
         if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4)  // cdata-section
         {
             lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
+			
+			if (!alreadyUpgraded)
+			{
+				lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
+			}
         }
 
         // Build the JSON object for the treeview

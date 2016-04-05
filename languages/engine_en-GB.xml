@@ -155,7 +155,7 @@
   
   <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
 	  <tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
-	  <accNav selected="selected"/>
+	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>
 	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
 	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
 	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>

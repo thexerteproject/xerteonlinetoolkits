@@ -328,6 +328,9 @@ function x_evalURL(url)
 
 // setup functions load interface buttons and events
 function x_setUp() {
+	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
+	x_params.newWindowTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "") : "";
+	
 	if (x_pages.length == 0) {
 		$("body").append(x_getLangInfo(x_languageData.find("noPages")[0], "label", "<p>This project does not contain any pages.</p>"));
 	} else {
@@ -447,11 +450,15 @@ function x_cssSetUp(param) {
 			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
 			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
 		} else {
-            if (x_params.responsive == "true" && !(x_params.displayMode == "default" || $.isArray(x_params.displayMode))) { //Leave it enabled
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
-            }
-            else {
-                x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
+            if (x_params.responsive == "true") {
+				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
+				} else {
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
+				}
+            } else {
+                x_cssSetUp("stylesheet");
             }
 		}
 	} else if (param == "theme2") {
@@ -504,6 +511,7 @@ function x_continueSetUp() {
 				label:	x_getLangInfo(x_languageData.find("helpButton")[0], "label", "Help"),
 				text:	false
 			})
+			.attr("aria-label", $("#x_helpBtn").attr("title") + " " + x_params.newWindowTxt)
 			.click(function() {
 				window.open(x_evalURL(x_params.nfo), "_blank");
 				$(this)
@@ -542,6 +550,7 @@ function x_continueSetUp() {
 					label:	x_getLangInfo(x_languageData.find("glossaryButton")[0], "label", "Glossary"),
 					text:	false
 				})
+				.attr("aria-label", $("#x_glossaryBtn").attr("title") + " " + x_params.dialogTxt)
 				.click(function() {
 					x_openDialog("glossary", x_getLangInfo(x_languageData.find("glossary")[0], "label", "Glossary"), x_getLangInfo(x_languageData.find("glossary").find("closeButton")[0], "description", "Close Glossary List Button"));
 					$(this)
@@ -637,6 +646,7 @@ function x_continueSetUp() {
 				label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
 				text:	false
 			})
+			.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
 			.click(function() {
 				$(this)
 					.blur()
@@ -648,7 +658,8 @@ function x_continueSetUp() {
 	}
 	
 	if (x_params.ic != undefined && x_params.ic != "") {
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" onload="if (x_firstLoad == false) {x_updateCss();}"/>');
+		var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
+		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
@@ -720,6 +731,7 @@ function x_continueSetUp() {
 			label:	menuLabel,
 			text:	false
 		})
+		.attr("aria-label", $("#x_menuBtn").attr("title") + (x_params.navigation == "Linear" || x_params.navigation == undefined ? " " + x_params.dialogTxt : ""))
 		.click(function() {
 			if (x_params.navigation == "Linear" || x_params.navigation == undefined) {
 				x_openDialog("menu", x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents"), x_getLangInfo(x_languageData.find("toc").find("closeButton")[0], "description", "Close Table of Contents"));
@@ -741,6 +753,7 @@ function x_continueSetUp() {
 			label:	"Change Colours",
 			text:	false
 		})
+		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
 		.click(function() {
 				x_openDialog("colourChanger", x_getLangInfo(x_languageData.find("colourChanger")[0], "label", "Colour Changer"), x_getLangInfo(x_languageData.find("colourChanger").find("closeButton")[0], "description", "Close Colour Changer"));
 			$(this)
@@ -1507,7 +1520,9 @@ function x_insertText(node) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
-    var tempText = $("<textarea/>").html(node.nodeValue).text();
+	var temp=document.createElement("pre");
+	temp.innerHTML=node.nodeValue;
+	var tempText = temp.innerHTML;
 
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0) {

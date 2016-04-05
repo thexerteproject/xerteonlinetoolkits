@@ -53,7 +53,7 @@
 				})
 				.click(function() {
 					x_selectText("panelTxt");
-					$("#screenReaderInfo").html(x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", ""));
+					$("#screenReaderInfo").html(x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") != null ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") : "");
 				})
 				.focusout(function() {
 					$("#screenReaderInfo").html("");

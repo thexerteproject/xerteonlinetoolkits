@@ -65,7 +65,9 @@
 			$infoHolder.hide();
 			
 			var instruction = x_getLangInfo(x_languageData.find("screenReaderInfo").find("list")[0], "click", "");
-			if (instruction != "") {
+			if (instruction == null) {
+				instruction = "";
+			} else if (instruction != "") {
 				instruction = " " + instruction;
 			}
 			

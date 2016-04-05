@@ -149,6 +149,16 @@ p {
 	display:	inline-block;
 }
 
+/* NVDA screenreader reads all buttons in one block without doing this (so you can't easily choose which to select) */
+#x_footerBlock button {
+	display:block;
+	float:	left;
+}
+#x_footerBlock  #x_prevBtn, #x_footerBlock #x_nextBtn {
+	 display:	inline-block;
+	 float:		none;
+ }
+
 .ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
 	height:					40px;
 	background-position:	center;
