@@ -141,7 +141,7 @@
 
 		this.startTracking = function() {
 			var numHotspots = $(x_currentPageXML).children().length;
-			this.weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			this.weighting = 1.0;//(x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
             XTSetPageType(x_currentPage, 'numeric', numHotspots, this.weighting);
 		};
 
@@ -166,7 +166,10 @@
 					$('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
 						.appendTo($labelHolder)
 						.data("correct", tempData[labelNum].correct);
-
+                    correctOptions = [];
+                    correctAnswer = tempData[labelNum].correct;
+                    correctFeedback = "";
+                    XTEnterInteraction(x_currentPage, i, 'multiplechoice', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
 					tempData.splice(labelNum, 1);
 				});
 
@@ -290,6 +293,7 @@
 					})
 					.off("click");
 			}
+
 		};
 
 		this.imgLoaded = function() {
@@ -464,8 +468,11 @@
                 l_answer = [],
                 l_feedback = [],
                 tempAnswer;
-
-            $("#labelHolder .ui-draggable-disabled").each(function() {
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                $("#labelHolder .ui-draggable-disabled").each(function() {
+                    l_options.push($(this).html());
+                });
+            $("#labelHolder .ui-draggable-disabled").each(function(i) {
                 var $this = $(this);
                 if ($this.data("correct") === $this.data("target"))
                 {
@@ -473,31 +480,24 @@
 					$this.css({
                         "background" : "green"
                     });
-                    l_feedback.push("The label for " + $this.html() + " was placed in the correct hotspot.");
+                    l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
                 }
                 else
                 {
                     $this.css({
                         "background" : "red"
                     });
-                    l_feedback.push("The label for " + $this.html() + " was placed in the wrong hotspot.");
+                        l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
                 }
-                tempAnswer = $this.data("target") == undefined || $this.data("target") == "" ?
-                    "The label for " + $this.html() + " was not placed in any hotspot." :
-                    "The label for " + $this.html() + " was placed in the hotspot for " + $("#labelHolder .label").eq($this.data("target")).html() + ".";
-
-                l_answer.push(tempAnswer);
-                l_options.push($this.html());
-            });
-
-            if (x_currentPageXML.getAttribute("judge") != "false") {
+                tempAnswer = $this.data("target") === undefined || $this.data("target") === "" ?
+                "The label for " + $this.html() + " was not placed in any hotspot." :
+                "The label for " + $this.html() + " was placed in the hotspot for " +  $(x_currentPageXML).children()[$this.data("target")].getAttribute(("name")) + ".";
                 // Track answer
-                XTExitInteraction(x_currentPage, 0, numCorrect * 100 / ("#labelHolder .label").length, l_options, l_answer, l_feedback);
+                l_answer = tempAnswer;
+                XTExitInteraction(x_currentPage, i, ($this.data("correct") === $this.data("target")), l_options, l_answer, l_feedback);
+                });
             }
-
-            if (XTGetMode() == "normal") {
-
-            }
+                XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
 
             // Queue reparsing of MathJax - fails if no network connection
             try {
