@@ -39,16 +39,13 @@ $filenamejson = substr($filename, 0, strlen($filename)-3) . "json";
 
 // This code miserably fails if get_magic_quotes_gpc is turned on
 // decoding the json doesn't work anymore
+$lo_data = $_POST["lo_data"];
 if (function_exists('get_magic_quotes_gpc'))
 {
     if (get_magic_quotes_gpc())
     {
         $lo_data=stripslashes($_POST["lo_data"]);
     }
-}
-else
-{
-    $lo_data = $_POST["lo_data"];
 }
 
 $relreffedjsonstr = make_refs_local(urldecode($lo_data), $_POST['absmedia']);
