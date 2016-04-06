@@ -41,12 +41,6 @@ $templates = $auto->availableTemplates();
     <meta http-equiv="content-type" content="text/html; charset=utf" />
     <title>Create group</title>
     <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/" />
-    <style>
-        .label {
-            width: 120px;
-            float: left;
-        }
-    </style>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="js/automation.js"></script>
     <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
@@ -121,11 +115,12 @@ if (count($courses) > 0) {
         <div class="label"><label for="unshare_teachers"><?php echo AUTOMATION_LABEL_UNSHARE_TEACHERS; ?></label></div>
         <input name="unshare_teachers" type="checkbox" id="unshare_teachers"/></p>
         <p>
-        <div class="label"><label for="practice"><?php echo AUTOMATION_LABEL_PRACTICE; ?></label></div>
+        <div class="practicelabel"><label for="practice"><?php echo AUTOMATION_LABEL_PRACTICE; ?></label></div>
         <input name="practice" type="checkbox" id="practice" onchange="changePractice();"/>
         <label for="attempt"><?php echo AUTOMATION_LABEL_ATTEMPT; ?></label><input name="attempt" id="attempt"
                                                                                    type="text" value="1" disabled> </p>
-        <input name="Share" type="button" onClick="doShare();" value="<?php echo AUTOMATION_BUTTON_SHARE; ?>"
+        <br>
+		<input name="Share" type="button" onClick="doShare();" value="<?php echo AUTOMATION_BUTTON_SHARE; ?>"
                id="shareButton">
         <input name="UnShare" type="button" onClick="doUnshare();" value="<?php echo AUTOMATION_BUTTON_UNSHARE; ?>"
                id="unShareButton">
@@ -146,7 +141,8 @@ else
 <?php
 }
 ?>
-<form action="../index.php" method="POST">
+<br>
+<form class="backtoworkspace" action="../index.php" method="POST">
     <input name="Go to workspace" type="submit" value="<?php echo AUTOMATION_BUTTON_GOTO_WORKSPACE;?>" id="workspace">
 </form>
 </body>

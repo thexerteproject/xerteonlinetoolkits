@@ -36,12 +36,38 @@ body{
 
 #shareButton{
 	background-color:orange;
-	margin-left:120px;
+	margin-left:150px;
 	font-weight:bold;
 	padding:4px;
+	margin-right: 5px;
 }
 
 #attempt {
 	width: 20px;
 	text-align: right;
+}
+
+.label {
+            width: 120px;
+            float: left;
+            margin-right: 30px;
+    			text-align: right;
+        }
+        
+.practicelabel {
+            /*width: 120px;*/
+            float: left;
+            text-align: right;
+        }
+        
+.backtoworkspace{
+        	margin-left:150px;
+        }
+        
+input{
+    padding: 4px;
+}
+
+select {
+	padding:4px;
 }
