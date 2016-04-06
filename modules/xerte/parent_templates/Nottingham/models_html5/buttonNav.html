@@ -33,7 +33,7 @@
 					$btnHolder = $("#btnHolder");
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-top")));
+				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-bottom")));
 			}
 			
 			var $pageContents = $("#pageContents");
@@ -46,7 +46,14 @@
 		}
 		
 		this.init = function() {
-			$("#pageContents").data("count", 0);
+			$("#pageContents").data({
+				"count": 0,
+				"clickTxt": x_getLangInfo(x_languageData.find("screenReaderInfo").find("buttonNav")[0], "click", "")
+			});
+			
+			if ($("#pageContents").data("clickTxt") == null) {
+				$("#pageContents").data("clickTxt", "");
+			}
 			
 			// buttonWidth attribute not used as they will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -83,15 +90,26 @@
 				}
 				
 				$thisBtn
-					.attr("id", "btn" + i)
+					.attr({
+						"id": "btn" + i,
+						"aria-hidden": true
+					})
 					.data({"screen"	:$thisPanelPage})
 					.on("click", function() {
 						var $thisPanelPage = $(this).data("screen");
 						if ($thisPanelPage.is(":hidden")) {
+							if ($("#pageContents").data("clickTxt") != "") {
+								var $oldSelected = $("#btnHolder .panelBtnLabel:eq(" + $("#infoHolder .panelPage:visible").index() + ")");
+								$oldSelected.attr("aria-label", $oldSelected.data("name") + $("#pageContents").data("clickTxt"));
+								var $newSelected = $("#btnHolder .panelBtnLabel:eq(" + $thisPanelPage.index() + ")");
+								$newSelected.attr("aria-label", $newSelected.data("name"));
+							}
+							
 							$("#infoHolder .panelPage:visible").hide();
 							$thisPanelPage.show();
 							$("#infoHolder").scrollTop(0);
 						}
+						
 						buttonNav.scaleImages();
 						
 						// remove any custom HTML so it doesn't mess up any custom HTML that might be loaded on another pane
@@ -99,13 +117,17 @@
 						buttonNav.loadCustomHTML();
 					});
 				
+				var strippedName = $("<div>" + this.getAttribute("name") + "</div>").text();
+				
 				$thisBtnLabel
 					.html(this.getAttribute("name"))
 					.attr({
-						"tabindex"	:i + 3,
-						"for"		:"btn" + i
+						"tabindex": i + 1, // so you can tab through buttons rather than having to use arrows which is jQuery default
+						"for": "btn" + i,
+						"aria-label": strippedName + (i != 0 ? " " + $("#pageContents").data("clickTxt") : "")
 					})
-					.keypress(function(e) { // so you can tab through buttons rather than having to use arrows which is jQuery default
+					.data("name", strippedName)
+					.keypress(function(e) {
 						var charCode = e.charCode || e.keyCode;
 						if (charCode == 32 || charCode == 13) {
 							$thisBtn.trigger("click");
@@ -146,9 +168,7 @@
 					}
 				}
 				
-				$thisPanelPage
-					.html(infoString)
-					.attr("tabindex", 2);
+				$thisPanelPage.html(infoString);
 				
 				if (i != 0) {
 					$thisPanelPage.hide();
@@ -287,7 +307,7 @@
 	
 	#btnHolder {
 		text-align:		center;
-		margin-top:		10px;
+		margin-bottom:		10px;
 		margin-right:	0px; /* over-ride ui style */
 	}
 	
@@ -297,15 +317,15 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div class="panel">
+				<div id="btnHolder">
+					<input type="radio" name="radio" class="panelBtn"/><label class="panelBtnLabel"></label>
+				</div>
 				<div id="infoHolder">
 					<div class="panelPage"></div>
-				</div>
-				<div id="btnHolder">
-					<input type="radio" name="radio" class="panelBtn" /><label class="panelBtnLabel"></label>
 				</div>
 			</div>
 		</div>
