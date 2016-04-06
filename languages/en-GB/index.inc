@@ -82,6 +82,8 @@ define("INDEX_BUTTON_DUPLICATE", "Duplicate");
 
 define("INDEX_BUTTON_PUBLISH", "Publish");
 
+define("INDEX_BUTTON_AUTOMATION", "Automation page (teachers only)");
+
 define("INDEX_BUTTON_CANCEL", "Cancel");
 
 define("INDEX_BUTTON_SAVE", "Save");
