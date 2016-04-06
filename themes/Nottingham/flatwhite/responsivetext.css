@@ -171,6 +171,12 @@ table {
 #pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
 	font-size: 8.0vmin;
 }
+.paneList a, .paneList {
+	font-size: 2.4vmin !important;
+}
+.ui-dialog {
+	font-size: 3.0vmin;
+}
 /*--end of text size changes-----------------------------------------*/
 }
 /*--end of TABLETS and above-----------------------------------------*/
