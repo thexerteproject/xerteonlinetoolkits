@@ -28,7 +28,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_params.responsive == "true" && x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) {
+			if (x_params.responsive == "true" && x_fillWindow == true) {
 				this.responsiveTitle();
 			} else {
 				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
