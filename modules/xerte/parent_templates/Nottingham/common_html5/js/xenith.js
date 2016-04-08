@@ -859,19 +859,29 @@ function x_continueSetUp() {
 		});
 	}
 	
-	
 	if (x_params.background != undefined && x_params.background != "") {
 		var alpha = 30;
 		if (x_params.backgroundopacity != undefined) {
 			alpha = x_params.backgroundopacity;
 		}
-		$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-		$("#x_mainBg").css({
-			"opacity"	:Number(alpha/100),
-			"filter"	:"alpha(opacity=" + alpha + ")"
-		});
+		if (x_params.backgroundGrey == "true") {
+			// uses a jquery plugin as just css way won't work in all browsers
+			x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
+				$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+				$("#x_mainBg").css({
+					"opacity"	:Number(alpha/100),
+					"filter"	:"alpha(opacity=" + alpha + ")"
+				});
+				// grey function called on image when unhidden later as it won't work properly otherwise
+			});
+		} else {
+			$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
+			$("#x_mainBg").css({
+				"opacity"	:Number(alpha/100),
+				"filter"	:"alpha(opacity=" + alpha + ")"
+			});
+		}
 	}
-	
 	
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
@@ -1007,6 +1017,7 @@ function x_changePage(x_gotoPage) {
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
         $("#pageBg").remove();
+		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
@@ -1213,6 +1224,9 @@ function x_setUpPage() {
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
+		if (x_params.backgroundGrey == "true") {
+			$("#x_mainBg").gray(); // won't work properly if called when hidden
+		}
         x_firstLoad = false;
     }
 }

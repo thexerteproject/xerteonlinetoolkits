@@ -37,7 +37,8 @@
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
     <background optional="true" type="media" label="Background Image"/>
-    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
+    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Opacity"/>
+	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>

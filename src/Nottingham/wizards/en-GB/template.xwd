@@ -38,7 +38,8 @@
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
     <background optional="true" type="media" label="Background Image"/>
-    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" label="Background Opacity"/>
+    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Opacity"/>
+	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
@@ -2272,7 +2273,8 @@
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true"/>
 	
     <bgImage label="Background Image" type="media" optional="true"/>
-    <bgImageAlpha label="Background Alpha" type="NumericStepper" min="10" max="100" step="10" defaultValue="50" optional="true"/>
+    <bgImageAlpha label="Background Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="50" optional="true"/>
+	<bgImageGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <bgImageVAlign label="Background Vert Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
     <bgImageHAlign label="Background Horiz Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,centre,right" defaultValue="centre" optional="true"/>
     <bgImageVConstrain label="Background Max Height" type="NumericStepper" min="10" max="500" step="10" defaultValue="500" optional="true"/>
