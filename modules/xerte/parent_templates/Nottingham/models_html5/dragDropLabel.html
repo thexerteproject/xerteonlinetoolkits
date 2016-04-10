@@ -131,6 +131,7 @@
                 });
                 $("#pageContents hr:eq(1)").remove();
                 $("#pageContents").data("selectedLabel", "");
+                $("#targetHolder .target").droppable("disable");
                 dragDropLabel.showFeedBackandTrackResults();
                 $("#submitBtn").hide();
             });
@@ -166,9 +167,10 @@
 					$('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
 						.appendTo($labelHolder)
 						.data("correct", tempData[labelNum].correct);
-                    correctOptions = [];
-                    correctAnswer = tempData[labelNum].correct;
-                    correctFeedback = "";
+
+                    var correctOptions = [],
+                        correctAnswer = tempData[labelNum].correct,
+                        correctFeedback = "";
                     XTEnterInteraction(x_currentPage, i, 'multiplechoice', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
 					tempData.splice(labelNum, 1);
 				});
@@ -370,7 +372,7 @@
                         ui.draggable.data("success", true);
 					}
                 })
-				.focusin(function(e) {
+				.focusin(function() {
 					$(this)
 						.addClass("highlight")
 						.removeClass("transparent");
@@ -423,40 +425,40 @@
             var targetIndex = $thisTarget.index();
 
             $thisLabel
-                    .attr({
-                        "title"  :labelTxt1,
-                        "tabindex" :$thisTarget.attr("tabindex") + 1,
-                        "style"  :"cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
-                    })
-                    .data("infoTxt", $infoHolder.html())
-                    .removeClass("selected")
-                    .css({
-                        "opacity"   :   1,
-                        "position"  :   "absolute",
-                        "top"       :   $thisTarget.position().top + 2 + $("#mainPanel").position().top,
-                        "left"      :   $thisTarget.position().left + 2 + $("#mainPanel").position().left
-                    })
-                    .click(function() {
-                        $("#infoHolder").html($(this).data("infoTxt"));
-                    })
-                    .focusin(function() {
-                        $(this).addClass("focus");
-                        $("#infoHolder").html($(this).data("infoTxt"));
-                    })
-                    .focusout(function() {
-                        $(this).removeClass("focus");
-                        $("#infoHolder").html("");
-                    })
-                    .data("target", targetIndex);
+                .attr({
+                    "title"  :labelTxt1,
+                    "tabindex" :$thisTarget.attr("tabindex") + 1,
+                    "style"  :"cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
+                })
+                .data("infoTxt", $infoHolder.html())
+                .removeClass("selected")
+                .css({
+                    "opacity"   :   1,
+                    "position"  :   "absolute",
+                    "top"       :   $thisTarget.position().top + 2 + $("#mainPanel").position().top,
+                    "left"      :   $thisTarget.position().left + 2 + $("#mainPanel").position().left
+                })
+                .click(function() {
+                    $("#infoHolder").html($(this).data("infoTxt"));
+                })
+                .focusin(function() {
+                    $(this).addClass("focus");
+                    $("#infoHolder").html($(this).data("infoTxt"));
+                })
+                .focusout(function() {
+                    $(this).removeClass("focus");
+                    $("#infoHolder").html("");
+                })
+                .data("target", targetIndex);
 
             $thisTarget
-                    .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
-                    .data("infoTxt", $infoHolder.html())
-                    .css("cursor", "pointer")
-                    .click(function() {
-                        $("#infoHolder").html($(this).data("infoTxt"));
-                    })
-                    .droppable("disable");
+                .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
+                .data("infoTxt", $infoHolder.html())
+                .css("cursor", "pointer")
+                .click(function() {
+                    $("#infoHolder").html($(this).data("infoTxt"));
+                })
+                .droppable("disable");
 
             $("#pageContents").data("selectedLabel", "");
         };
@@ -468,24 +470,48 @@
                 l_answer = [],
                 l_feedback = [],
                 tempAnswer;
+
             if (x_currentPageXML.getAttribute("judge") != "false") {
                 $("#labelHolder .ui-draggable-disabled").each(function() {
                     l_options.push($(this).html());
                 });
+
             $("#labelHolder .ui-draggable-disabled").each(function(i) {
-                var $this = $(this);
-                if ($this.data("correct") === $this.data("target"))
+                var $this = $(this)
+					.click(function() {
+						$("#targetHolder .target")
+							.css({
+								"background" : "transparent"
+							});
+						$("#targetHolder .target").eq($this.data("correct"))
+							.css({
+								"background" : "YellowGreen"
+							})
+					})
+					.focusin(function() {
+						$("#targetHolder .target").eq($this.data("correct"))
+							.css({
+								"background" : "YellowGreen"
+							})
+					})
+					.focusout(function() {
+						$("#targetHolder .target")
+							.css({
+								"background" : "transparent"
+							});
+					});
+				if ($this.data("correct") === $this.data("target"))
                 {
                     numCorrect++;
 					$this.css({
-                        "background" : "green"
+                        "background" : "YellowGreen"
                     });
                     l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
                 }
                 else
                 {
                     $this.css({
-                        "background" : "red"
+                        "background" : "Red"
                     });
                         l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
                 }
@@ -497,7 +523,8 @@
                 XTExitInteraction(x_currentPage, i, ($this.data("correct") === $this.data("target")), l_options, l_answer, l_feedback);
                 });
             }
-                XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+
+            XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
 
             // Queue reparsing of MathJax - fails if no network connection
             try {
