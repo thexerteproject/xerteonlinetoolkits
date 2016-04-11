@@ -117,7 +117,6 @@
 						if($(this).data("currentTarget") == "")
 							empty = true;
 					});
-
 					if(!empty){
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
@@ -129,7 +128,6 @@
 							}
 						});
 					}
-
 					if (empty){
 						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 					}	
@@ -150,7 +148,6 @@
 						}
 						timeline.finishTracking();
 					}
-
 					$("#feedback").show();
 				});
 				
@@ -278,6 +275,7 @@
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
 				l_option.answer = l_draglabel + "-->" + l_placeholder;
+        		l_options.push(l_option);
 				if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
 					l_option.result = "Correct";
