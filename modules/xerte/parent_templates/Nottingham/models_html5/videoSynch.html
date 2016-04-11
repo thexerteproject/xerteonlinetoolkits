@@ -21,18 +21,39 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var videoSynch = new function() {
+		var $infoHolder,
+			$pageContents;
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#infoHolder").children("div").hide();
+			$infoHolder = $("#infoHolder");
+			$pageContents = $("#pageContents");
+			
+			$infoHolder
+				.scrollTop(0)
+				.children("div").hide();
+			
+			var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
+			if ($captionAtStart.length > 0) {
+				$captionAtStart.show();
+			}
+			
 			this.loadVideo();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
-			$("#infoHolder .myImg img").css("max-height", $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
+			$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2);
+			
+			if ($infoHolder.children("div:visible").last().length > 0) {
+				$infoHolder.children("div:visible").last()[0].scrollIntoView(true);
+			}
 		}
 		
 		this.init = function() {
+			$infoHolder = $("#infoHolder");
+			$pageContents = $("#pageContents");
+			
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));	
 			
 			var	captionInfo = new Array();
@@ -76,9 +97,7 @@
 		}
 		
 		this.createCaptions = function(captionInfo) {
-			var	$infoHolder = $("#infoHolder"),
-				$pageContents = $("#pageContents"),
-				captions = new Array();
+			var	captions = new Array();
 			
 			$(captionInfo).each(function() {
 				var	$this = $(this),
@@ -94,23 +113,25 @@
 				}
 				
 				if ($this.attr("align") == "Bottom") {
-					divString = "<div>"  + imgStr + x_addLineBreaks($this.attr("text")) + "</div>"
+					divString = '<div aria-live="polite">'  + imgStr + x_addLineBreaks($this.attr("text")) + '</div>'
 				} else {
-					divString = "<div>" + x_addLineBreaks($this.attr("text")) + imgStr + "</div>"
+					divString = '<div aria-live="polite">' + x_addLineBreaks($this.attr("text")) + imgStr + '</div>'
 				}
 				
 				var $caption = $(divString)
-						.hide()
-						.data("synch", $this.attr("synch"));
+						.data("synch", $this.attr("synch"))
+						.hide();
 				
 				$infoHolder.append($caption);
+				
 				captions.push($caption[0]);
 			});
 			
 			$pageContents.data("captions", captions);
 			
 			$(captions).click(function() {
-				$("#pageContents").data("mediaElement").setCurrentTime($(this).data("synch"));
+				$pageContents.data("mediaElement").setCurrentTime($(this).data("synch") + 0.1);
+				this.scrollIntoView(true);
 			});
 			
 			this.sizeChanged();
@@ -158,13 +179,13 @@
 		// function called from mediaPlayer.js when video player has been set up
 		this.mediaFunct = function(mediaElement, mediaSrc, eventType, data) {
 			if (mediaSrc != "vimeo") {
-				$("#pageContents").data("mediaElement", mediaElement);
+				$pageContents.data("mediaElement", mediaElement);
 				
 				mediaElement.addEventListener("timeupdate", function(e) {
 					videoSynch.timeUpdate(mediaElement, mediaElement.currentTime);
 				});
 				
-				var $captionAtStart = $($("#pageContents").data("captions")).filter( function(){ return $(this).data("synch") == 0; });
+				var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
 				if ($captionAtStart.length > 0) {
 					$captionAtStart.show();
 				}
@@ -178,7 +199,7 @@
 		}
 		
 		this.timeUpdate = function(mediaElement, currentTime, mediaSrc) {
-			var $captions 	= $($("#pageContents").data("captions")),
+			var $captions 	= $($pageContents.data("captions")),
 				pause 		= x_currentPageXML.getAttribute("pause"),
 				erase    	= x_currentPageXML.getAttribute("erase");
 			
@@ -188,6 +209,8 @@
 					if (currentTime > $thisCaption.data("synch")) {
 						if ($thisCaption.is(":hidden") == true) {
 							$thisCaption.show();
+							$thisCaption[0].scrollIntoView(true);
+							
 							if (pause == "True") {
 								mediaElement.pause();
 							}
@@ -199,6 +222,7 @@
 					if (currentTime > $thisCaption.data("synch") && (currentTime < $thisCaption.next().data("synch") || $thisCaption.data("synch") && this == $captions.last()[0])) {
 						if ($thisCaption.is(":hidden") == true) {
 							$thisCaption.show();
+							
 							if (pause == "True") {
 								mediaElement.pause();
 							}
@@ -222,7 +246,8 @@
 	}
 	
 	#infoHolder {
-		padding: 0 10px;
+		padding: 	0 10px;
+		overflow:	auto;
 	}
 	
 	#infoHolder div {
@@ -237,6 +262,7 @@
 	
 	#infoHolder .myImg img {
 		max-width:	100%;
+		max-height:	100%;
 	}
 	
 </style>
@@ -247,13 +273,9 @@
 		<div class="panel">
 			<div id="pageVideo"></div>
 		</div>
-		<div id="mainText">
-			
-		</div>
+		<div id="mainText"></div>
 	</div>
 	
-	<div id="infoHolder" class="right">
-		
-	</div>
+	<div id="infoHolder" class="right"></div>
 	
 </div>

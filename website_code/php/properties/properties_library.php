@@ -467,7 +467,7 @@ function project_info($template_id){
 	
 	$prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
+    $query_for_names = "select {$prefix}templatedetails.template_name, template_id, template_framework, date_created, date_modified, extra_flags from "
         . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
 
     $params = array($template_id);
@@ -479,6 +479,8 @@ function project_info($template_id){
     $row_template_name = db_query_one($query_for_template_name, $params);
 	
     $info = PROJECT_INFO_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "<br/>";
+
+    $info .= PROJECT_INFO_ID . ": " . $row['template_id'] . "<br/>";
 
     $info .= PROJECT_INFO_CREATED . ": " . $row['date_created'] . "<br/>";
 
@@ -604,7 +606,7 @@ function media_quota_info($template_id)
                 }
             }
             $info =  PROJECT_INFO_MEDIA . ": ";
-            $info .=  substr(($quota/1000000),0,4) . " MB<br/>";
+            $info .=  (round($quota/10000, 0)/100) . " MB<br/>";
             return $info;
         }
         else

@@ -135,7 +135,9 @@
 			}
 			
 			if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
-				var tooltip = "";
+				var tooltip = "",
+					linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", ""); // warn about where the links will open (for screen readers)
+				
 				if (x_currentPageXML.getAttribute("linkIntro") != undefined) {
 					tooltip = x_currentPageXML.getAttribute("linkIntro");
 				}
@@ -143,8 +145,16 @@
 				if (x_currentPageXML.getAttribute("linktarget") != undefined) {
 					target = x_currentPageXML.getAttribute("linktarget");
 				}
+				if (target != "_blank") {
+					linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "thisWindow", "");
+				}
+				linkWarning = linkWarning != "" ? '<span id="linkWarning" class="ui-helper-hidden-accessible">' + tooltip + " " + linkWarning + '</span>' : linkWarning;
 				
-				$panel.append('<a href="' + x_currentPageXML.getAttribute("link") + '" target="' + target + '" id="linkImgA" title="' + tooltip + '"><img src="' + x_templateLocation + 'common_html5/linkicon.png" alt="' + tooltip + '" id="linkImg" /></a>');
+				$panel.append('<a href="' + x_currentPageXML.getAttribute("link") + '" target="' + target + '" id="linkImgA"><img src="' + x_templateLocation + 'common_html5/linkicon.png" alt="' + tooltip + '" id="linkImg" />' + linkWarning + '</a>');
+				
+				if (linkWarning != "") {
+					$("#linkImgA").attr("aria-labelledby", "linkWarning");
+				}
 			}
 			
 			if (addMargin != "true") {
@@ -242,7 +252,7 @@
 	}
 	
 	#pageContents a:focus img {
-		border-color:	red;
+		border-color:	blue;
 	}
 	
 </style>

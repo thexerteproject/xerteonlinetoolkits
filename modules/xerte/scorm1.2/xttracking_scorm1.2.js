@@ -400,11 +400,8 @@ function ScormTrackingState()
         if (sit != null && sit.exit())
         {
             if (this.scoremode == 'first' && sit.count > 1)
-            {
-                if (sit.ia_nr < 0)
-                    this.pages_visited++;
                 return;
-            }
+
             // Record this action
             var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
             var currnrinteractions = this.scorm_nr_interactions();
@@ -548,10 +545,9 @@ function ScormTrackingState()
                     this.skipcomments = true;
                 }
             }
+            this.finishTracking(state.currentpageid, true);
+            doLMSCommit();
         }
-        this.finishTracking(state.currentpageid, true);
-        doLMSCommit();
-
     }
 
     function getSuccessStatus()
@@ -612,6 +608,7 @@ function ScormTrackingState()
             var score = [];
             var weight = [];
             var totalweight = 0.0;
+            var i;
             // Walk passed the pages
             for (i=0; i<this.nrpages; i++)
             {
@@ -859,7 +856,7 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = value;
+            state.lo_passed = Number(value);
             break;
     }
 }

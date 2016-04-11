@@ -70,7 +70,9 @@
 				}
 				
 				var infoString = '<p>' + x_addLineBreaks(this.getAttribute("text")) + '</p>',
+					heading = x_currentPageXML.getAttribute("showTitles") != "true" || this.getAttribute("name") == "" ? "" : '<h3>' + this.getAttribute("name") + '</h3>',
 					url = this.getAttribute("url");
+				
 				if (url != undefined && url != "") {
 					var newString = "";
 					if (url.split('.').pop().slice(0, -1) == "swf") {
@@ -103,7 +105,7 @@
 					}
 				}
 				
-				$thisColumn.html(infoString);
+				$thisColumn.html(heading + infoString);
 				
 				if ($thisColumn.find(".pageImg").length > 0) {
 					$thisColumn.find(".pageImg img")

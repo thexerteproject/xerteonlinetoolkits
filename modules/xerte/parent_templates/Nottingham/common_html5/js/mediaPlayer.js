@@ -104,9 +104,23 @@
 					fullscreenText:		x_mediaText[3].label,
 					stopText:			x_mediaText[0].label,
 					tracksText:			x_mediaText[4].label,
+					enableKeyboard:		false,
 					enablePluginDebug:  false,
 					
 					success: function (mediaElement, domObject) {
+						// forces Jaws screen reader to find label for button
+						var $container = $(mediaElement).parents(".mejs-container");
+						$container.find(".mejs-playpause-button button").html(x_mediaText[1].label);
+						$container.find(".mejs-volume-button button").html(x_mediaText[2].label);
+						$container.find(".mejs-fullscreen-button button").html(x_mediaText[3].label);
+						$container.find(".mejs-overlay-play").attr("aria-hidden", true);
+						
+						if (opts.title != undefined) {
+							$container.find(".mejs-mediaelement").attr("aria-label", opts.title);
+						} else if (opts.type == "video" && x_mediaText[5].label != "") {
+							$container.find(".mejs-mediaelement").attr("aria-label", x_mediaText[5].label);
+						}
+						
 						if (opts.autoNavigate == "true" && x_currentPage + 1 != x_pages.length) { // go to next page when media played to end
 							mediaElement.addEventListener("ended", function() {
 								$x_nextBtn.trigger("click");
@@ -163,6 +177,16 @@
 						}
 						
 						if (opts.type == "video") {
+							// force controls to show when using keyboard only
+							$(mediaElement).parents(".mejs-video").focusin(function() {
+								if ($(mediaElement).parents(".mejs-video").find(".mejs-controls").css("visibility") == "hidden" || $(mediaElement).parents(".mejs-video").find(".mejs-controls").css("display") == "none") {
+									$(mediaElement).parents(".mejs-video").find(".mejs-controls").css({
+										"display":		"block",
+										"visibility":	"visible"
+									});
+								}
+							});
+							
 							mediaElement.addEventListener("loadedmetadata", function() {
 								if (x_templateLocation.indexOf("modules/decision") != -1) { // decision tree template
 									mediaMetadata($(this), [$(this).prop('videoWidth'), $(this).prop('videoHeight')]);

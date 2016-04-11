@@ -33,7 +33,11 @@
 					$paneHolder = $("#paneHolder");
 				
 				$infoHolder.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 10);
-				$infoHolder.tabs("refresh"); 
+				$infoHolder.tabs("refresh");
+				
+				// forces tabindexes to be different to jquery ui default so it's consistent with controls on other page types
+				$infoHolder.find(".tabHeader").attr("tabindex", 0);
+				
 				$paneHolder.height($infoHolder.height() - $("#tabList").height() - parseInt($paneHolder.css("padding-top")) * 2 - 5);
 			}
 			
@@ -155,15 +159,18 @@
 				}
 			});
 			
-			
 			$("#infoHolder").tabs({
 				activate:	function(e, ui) {
+					$("#infoHolder").find(".tabHeader").attr("tabindex", 0);
+					
 					$("#paneHolder").scrollTop(0);
 					setTimeout(function () {
 						tabNav.scaleImages();
 						// remove any custom HTML so it doesn't mess up any custom HTML that might be loaded on another pane
 						$(".customHTMLHolder").detach();
 						tabNav.loadCustomHTML();
+						
+						$("#infoHolder").find(".tabHeader").attr("tabindex", 0);
 					}, 1);
 				}
 			});
@@ -261,7 +268,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div>

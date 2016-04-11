@@ -24,7 +24,10 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$("#button").show();
-			$("#modelTxt").hide();
+			
+			$("#modelTxt")
+				.hide()
+				.html("");
 		}
 		
 		// function called every time the size of the LO is changed
@@ -33,9 +36,6 @@
 		}
 		
 		this.init = function() {
-			// feedbackBtnWidth attribute not used as button will be sized automatically
-			
-			// if language attributes aren't in xml will have to use english fall back
 			var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
 			if (answerHeaderTxt == undefined) {
 				answerHeaderTxt = "Write your answer here:"
@@ -54,15 +54,15 @@
 			$("#answer").html(answerHeaderTxt);
 			$("#answerTxt").html(x_currentPageXML.getAttribute("prompt"));
 			
-			$("#modelTxt")
-				.html(x_currentPageXML.getAttribute("answer"))
-				.hide();
+			$("#modelTxt").hide();
 			
 			$("#button")
 				.button({ label: feedbackBtnTxt })
 				.click(function() {
 					$(this).hide();
-					$("#modelTxt").fadeIn();
+					$("#modelTxt")
+						.show()
+						.html(x_currentPageXML.getAttribute("answer"));
 				});
 			
 			x_pageLoaded();
@@ -103,6 +103,6 @@
 	<p id="answer"></p>
 	<textarea id="answerTxt" rows="5"></textarea>
 	<button id="button"></button>
-	<textarea id="modelTxt" rows="5" readonly></textarea>
+	<textarea id="modelTxt" rows="5" readonly aria-live="polite"></textarea>
 	
 </div>

@@ -167,7 +167,7 @@
 			$("#prevBtn")
 				.button({
 					icons: {
-						primary: "ui-icon-carat-1-w"
+						primary: "fa fa-arrow-left"
 					},
 					label:	btnTxt[1],
 					text:	false
@@ -179,7 +179,7 @@
 			$("#nextBtn")
 				.button({
 					icons: {
-						primary: "ui-icon-carat-1-e"
+						primary: "fa fa-arrow-right"
 					},
 					label:	btnTxt[0],
 					text:	false
@@ -309,6 +309,7 @@
 	
 	#infoHolder {
 		overflow:	auto;
+		border-bottom:	1px solid #CCCCCC;
 	}
 	
 	#pageContents .pageImg {
@@ -323,14 +324,14 @@
 	
 	#btnHolder {
 		float:			right;
-		margin-top:		10px;
+		margin-top:		5px;
 		margin-right:	0px; /* over-ride ui style */
 	}
 	
 	#slideTxt {
 		float:			left;
 		font-weight:	bold;
-		margin-top:		20px;
+		margin-top:		10px;
 	}
 	
 </style>
@@ -339,14 +340,14 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div class="panel">
 				<div id="infoHolder">
 					<div class="panelPage"></div>
 				</div>
-				<p id="slideTxt"></p>
+				<p id="slideTxt" aria-live="polite"></p>
 				<div id="btnHolder">
 					<button id="prevBtn"></button>
 					<button id="nextBtn"></button>

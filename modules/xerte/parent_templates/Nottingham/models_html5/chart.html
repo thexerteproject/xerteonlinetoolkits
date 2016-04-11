@@ -67,11 +67,15 @@
 
 			} else {
 				if (chartHolder.getContext) { // canvas is supported
+					if (x_currentPageXML.getAttribute("alt") != undefined && x_currentPageXML.getAttribute("alt") != "") {
+						$("#chartHolder").html('<div>' + x_currentPageXML.getAttribute("alt") + '</div>'); // provide summary of canvas content for screenreaders
+					}
+					
 					allSeries = [];
 
 					var	$panel = $("#pageContents .panel"),
-					availW = Math.min(550, Math.max(300, $panel.width())),
-					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15- $("#chartTitle").height()));
+					availW = Math.max(300, $panel.width()),
+					availH = Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15- $("#chartTitle").height());
 
 					chartHolder.width = availW;
 					chartHolder.height = availH;
@@ -116,7 +120,14 @@
 							}
 						}
 					}
-
+					
+					// set font used to match rest of LO
+					if ($(x_responsive[0]).prop("disabled") == false) {
+						chartHolderContext.font = $("#chartHolder").css("font-size") + " " + $x_body.css("font-family");
+					} else {
+						chartHolderContext.font = (parseInt($x_body.css("font-size")) * 0.83) + "px " + $x_body.css("font-family");
+					}
+					
 					var txtColour = $textHolder.css("color");
 					switch (x_currentPageXML.getAttribute("chartType")) {
 						case "stacked bar":
@@ -396,7 +407,7 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1"/>
+		<div id="textHolder" class="left"/>
 
 		<div id="infoHolder" class="right">
 			<div class="panel">

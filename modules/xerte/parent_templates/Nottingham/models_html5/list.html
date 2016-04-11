@@ -51,8 +51,25 @@
 			
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Small") {
+				$("#pageContents .splitScreen").addClass("medium");
+				
+			} else if (panelWidth == "Medium") {
+				$("#pageContents .splitScreen").addClass("medium2");
+			} else {
+				$("#pageContents .splitScreen").addClass("small");
+			}
+			
 			list.sizeChanged(true);
 			$infoHolder.hide();
+			
+			var instruction = x_getLangInfo(x_languageData.find("screenReaderInfo").find("list")[0], "click", "");
+			if (instruction == null) {
+				instruction = "";
+			} else if (instruction != "") {
+				instruction = " " + instruction;
+			}
 			
 			var $listItem = $(".listItem:first");
 			$(x_currentPageXML).children()
@@ -65,7 +82,10 @@
 					}
 					
 					$thisItem
-						.attr("href", "#item" + i)
+						.attr({
+							"href": "#item" + i + "_" + x_pageInfo[x_currentPage].linkID,
+							"aria-label": this.getAttribute("name") + instruction
+							})
 						.html(this.getAttribute("name"))
 						.data({
 							"name"	:this.getAttribute("name"),
@@ -117,60 +137,70 @@
 								$(".customHTMLHolder").detach();
 								
 								var $infoHolder = $("#infoHolder");
+								
 								$infoHolder
 									.html(infoString)
 									.scrollTop(0);
 								
 								// first click on a link - show panel
 								if ($("#infoHolder:visible").length == 0) {
-									$infoHolder.fadeIn();
+									var thisItem = this;
+									$infoHolder.fadeIn(function() {
+										$(this).html(infoString); // reloaded so aria-live works after fade
+										list.mediaLoad($infoHolder, thisItem, url);
+									});
 								}
 								
-								if ($infoHolder.find(".paneImg").length > 0) {
-									$infoHolder.find(".paneImg img")
-										.one("load", function() {
-											list.scaleImages();
-										})
-										.attr("src", x_evalURL(url))
-										.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-											if (this.complete) {
-												$(this).trigger("load");
-											}
-										});
-									
-								} else if ($infoHolder.find(".paneSWF").length > 0) {
-									var size = [300,300];
-									if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
-										var dimensions = this.getAttribute("movieSize").split(",");
-										if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
-											size = [Number(dimensions[0]), Number(dimensions[1])];
-										}
-									}
-									
-									swfobject.embedSWF(x_evalURL(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
-									if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
-										$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
-									}
-									
-								} else if ($infoHolder.find(".jsHolder").length > 0) {
-									$infoHolder.find(".jsHolder").data("savedDataIndex", $this.data("savedDataIndex"));
-									if ($this.data("built") != false) {
-										// this has already been viewed - reload the customHTML previously used
-										$this.data("built").appendTo($infoHolder.find(".jsHolder"));
-										customHTML.pageChanged();
-										
-									} else {
-										// customHTML hasn't loaded here before - load it from file
-										var $thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($infoHolder.find(".jsHolder"));
-										$this.data("built", $thisCustomHTMLHolder);
-										$thisCustomHTMLHolder.load(x_evalURL(url));
-									}
-								}
+								list.mediaLoad($infoHolder, this, url);
 							}
 						});
 				});
 			
 			x_pageLoaded();
+		}
+		
+		this.mediaLoad = function($infoHolder, thisItem, url) {
+			if ($infoHolder.find(".paneImg").length > 0) {
+				$infoHolder.find(".paneImg img")
+					.one("load", function() {
+						list.scaleImages();
+					})
+					.attr("src", x_evalURL(url))
+					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+						if (this.complete) {
+							$(this).trigger("load");
+						}
+					});
+				
+			} else if ($infoHolder.find(".paneSWF").length > 0) {
+				var size = [300,300];
+				if (thisItem.getAttribute("movieSize") != "" && thisItem.getAttribute("movieSize") != undefined) {
+					var dimensions = thisItem.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						size = [Number(dimensions[0]), Number(dimensions[1])];
+					}
+				}
+				
+				swfobject.embedSWF(x_evalURL(url), "pageSWF" + i, size[0], size[1], "9.0.0", x_templateLocation + "common_html5/expressInstall.swf", "", "", "");
+				if (thisItem.getAttribute("tip") != undefined && thisItem.getAttribute("tip") != "") {
+					$("#pageSWF" + i).attr("title", thisItem.getAttribute("tip"));
+				}
+				
+			} else if ($infoHolder.find(".jsHolder").length > 0) {
+				var $this = $(thisItem);
+				$infoHolder.find(".jsHolder").data("savedDataIndex", $this.data("savedDataIndex"));
+				if ($this.data("built") != false) {
+					// this has already been viewed - reload the customHTML previously used
+					$this.data("built").appendTo($infoHolder.find(".jsHolder"));
+					customHTML.pageChanged();
+					
+				} else {
+					// customHTML hasn't loaded here before - load it from file
+					var $thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($infoHolder.find(".jsHolder"));
+					$this.data("built", $thisCustomHTMLHolder);
+					$thisCustomHTMLHolder.load(x_evalURL(url));
+				}
+			}
 		}
 		
 		// function scales image
@@ -241,7 +271,7 @@
 		</div>
 		
 		<div class="right">
-			<div id="infoHolder" class="panel">
+			<div id="infoHolder" class="panel" aria-live="polite">
 			</div>
 		</div>
 		

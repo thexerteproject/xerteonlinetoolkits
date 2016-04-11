@@ -907,15 +907,15 @@
 						var	$currentShape = $("#hsHolder canvas.visible, #hsHolder div.visible"),
 							myAnswer = $("#optionHolder input:checked").val();
 						if ($currentShape.data("label") == myAnswer) { // correct
-							$("#feedback").html($pageContents.data("phrases").correctTxt + "</br>" + $pageContents.data("phrases").continueTxt + ".");
+							$("#feedback").html('<p>' + $pageContents.data("phrases").correctTxt + "</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							$pageContents.data("mcqData").score++;
 							
 						} else { // incorrect
 							if ($pageContents.data("phrases").wrongFeedback != undefined) {
-								$("#feedback").html($pageContents.data("phrases").wrongFeedback.replace("{a}", myAnswer).replace("{b}", $currentShape.data("label")) + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+								$("#feedback").html('<p>' + $pageContents.data("phrases").wrongFeedback.replace("{a}", myAnswer).replace("{b}", $currentShape.data("label")) + ".</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							} else {
 								// for backward compatibility
-								$("#feedback").html($pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".");
+								$("#feedback").html('<p>' + $pageContents.data("phrases").wrong1stTxt + " " + myAnswer + " " + $pageContents.data("phrases").wrong2ndTxt +  " " + $currentShape.data("label") + ".</br>" + $pageContents.data("phrases").continueTxt + ".</p>");
 							}
 							
 							// tint wrong answer canvas/div green

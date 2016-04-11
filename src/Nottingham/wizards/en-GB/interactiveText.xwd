@@ -1,0 +1,66 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;br/&gt;&lt;br/&gt;For example:&lt;br/&gt;&lt;br/&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;br/&gt;&lt;br/&gt;Where | are adjectives, * are verbs and # are nouns." interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="Well done! You have completed this activity." findTxt2="You have found {i} of {n}" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText>
+    </newNodes>
+  </pageWizard>
+
+  <!-- INTERACTIVE TEXT======================= -->
+  <interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
+    <name label="Name" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="150"/>
+	<passage label="Interactive Text" type="TextArea" height="200"/>
+    <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,MCQ" type="ComboBox" data="explore,show,show2,find,mcq"/>
+	<highlight label="Underline Text" type="CheckBox"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
+	
+	<mcqType label="MCQ Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
+	<mcqFB label="MCQ Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
+	<mcqNumQs label="MCQ Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	<mcqNumAs label="MCQ Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	
+	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<showMeTxt2 label="Show Me Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<showMeTxt label="Show Me (Button) Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<showBtnTxt label="Show Button Label" type="TextInput" wysiwyg="true" language="true"/>
+	<nextTxt label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
+	<prevTxt label="Previous Button Label" type="TextInput" wysiwyg="true" language="true"/>
+	<findTxt label="Find Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<findTxt3 label="Find Instructions: Single Group" type="TextInput" wysiwyg="true" language="true"/>
+	<findFeedback label="Find Feedback" type="TextInput" wysiwyg="true" language="true"/>
+	<findTxt2 label="You have found {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqText label="MCQ Instructions" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqQuesCount label="Question {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqCorrect label="MCQ Correct" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqWrong label="MCQ Incorrect" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqFeedback label="MCQ Feedback" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqMore label="MCQ More Information" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqScore label="You scored {i}/{n}" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqBtnTxt label="MCQ Check Button" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqBtnTxt2 label="MCQ Next Button" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqBtnTxt3 label="MCQ Restart Button" type="TextInput" wysiwyg="true" language="true"/>
+	<mcqDialogClose label="MCQ Close Button" type="TextInput" language="true"/>
+	
+    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
+    <narration label="Narration" type="media" optional="true"/>
+    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
+    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+	
+	<newNodes>
+		<group><![CDATA[<group name="Enter Name Here" delimiter="The character used to mark up this group in the interactive text, e.g. *" text="Enter Description Here" textColour="0xFFFFFF" bgColour="0xFF0000" />]]></group>
+    </newNodes>
+
+  </interactiveText>
+  
+  <group menuItem="Group" icon="icBullet" remove="true">
+  
+	<name label="Name" type="TextInput" wysiwyg="true"/>
+	<delimiter label="Delimiter" type="TextInput"/>
+    <text label="Description" type="TextArea" height="150"/>
+	<bgColour label="Highlight Colour" type="ColourPicker"/>
+  
+  </group>
+
+
+</wizard>

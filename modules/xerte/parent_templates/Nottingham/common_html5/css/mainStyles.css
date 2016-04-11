@@ -149,6 +149,16 @@ p {
 	display:	inline-block;
 }
 
+/* NVDA screenreader reads all buttons in one block without doing this (so you can't easily choose which to select) */
+#x_footerBlock button {
+	display:block;
+	float:	left;
+}
+#x_footerBlock  #x_prevBtn, #x_footerBlock #x_nextBtn {
+	 display:	inline-block;
+	 float:		none;
+ }
+
 .ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home {
 	height:					40px;
 	background-position:	center;
@@ -371,6 +381,16 @@ audio {
 	color:			red;
 }
 
+fieldset.noStyle {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+
+fieldset.noStyle legend {
+	display:	table;
+}
 
 /* TABLE STYLES */
 
@@ -482,4 +502,20 @@ table.headerCol.simple td:first-child {
 /* CSS BUTTON ADDITIONS */
 #x_colourChangerBtn {
 	margin-right:	-1px;
+}
+
+
+/* ALLOW FONT AWESOME ICONS TO BE USED INSTEAD OF JQUERY UI ICONS */
+.ui-icon[class*=" fa-"] {
+    background: none repeat scroll 0 0 transparent;
+    text-indent: 0; 
+    margin-top: -0.5em;
+}
+
+.ui-icon.icon-large {
+    margin-top: -0.75em;
+}
+
+.ui-button-icon-only .ui-icon[class*=" fa-"] {
+    margin-left: -7px;
 }

@@ -99,6 +99,10 @@ if(isset($_POST['template_id'])){
 
 				fclose($data_handle);
 
+				// Update templatedetails modify date
+				$sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
+				$params = array(date("Y-m-d"), $temp_array[0]);
+				db_query_one($sql, $params);
 				echo UPDATE_SUCCESS;
 			
 			}
