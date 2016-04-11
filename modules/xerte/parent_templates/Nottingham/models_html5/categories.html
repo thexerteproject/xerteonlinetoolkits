@@ -73,7 +73,7 @@
                     l_feedback.push("incorrect");
                 }
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/this.totaloptions, l_options, l_answers, l_feedback);
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }

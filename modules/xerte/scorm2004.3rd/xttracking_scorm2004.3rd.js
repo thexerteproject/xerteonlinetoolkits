@@ -429,7 +429,7 @@ function ScormTrackingState()
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
                         res = setValue(interaction + 'weighting', sit.weighting);
                         res = setValue(interaction + 'learner_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', (result ? 'correct' : 'incorrect'));
+                        res = setValue(interaction + 'result', sit.score);
                         break;
                     case 'multiplechoice':
                         var psit = this.findPage(sit.page_nr);
