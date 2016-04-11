@@ -1,73 +1,78 @@
 <script type="text/javascript">
-/**
- * Licensed to The Apereo Foundation under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
+	/**
+	 * Licensed to The Apereo Foundation under one or more contributor license
+	 * agreements. See the NOTICE file distributed with this work for
+	 * additional information regarding copyright ownership.
 
- * The Apereo Foundation licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * The Apereo Foundation licenses this file to you under the Apache License,
+	 * Version 2.0 (the "License"); you may not use this file except in
+	 * compliance with the License. You may obtain a copy of the License at:
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dictation = new function() {
 		var $pageContents,
-			showBtnTxt,
-			nextBtnTxt,
-			restartBtnTxt;
-		
+				showBtnTxt,
+				nextBtnTxt,
+				restartBtnTxt;
+		//The number of correct answers
+		var correct_answers = 0;
+
+		//The total number of questions answered
+		var total = 0;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime($pageContents.data("captionInfo")[$pageContents.data("current")].start);
 			}
-			
+
 			showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
 			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			
+
 			$("#button").show();
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
 			var $panel = $("#pageContents .panel");
 			$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			
+
 			var	audioBarW = 0,
-				$pageAudio = $("#pageAudio");
-			
+					$pageAudio = $("#pageAudio");
+
 			$pageAudio.find(".mejs-inner .mejs-controls").children().each(function() {
 				audioBarW += $(this).outerWidth();
 			});
-			
+
 			var diff = audioBarW - $pageAudio.closest("#audioHolder").width();
 			if (diff > 1 || diff < -1) {
 				$x_window.resize();
 			}
 		}
-		
+
 		this.init = function() {
 			showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
 			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			
+
 			$pageContents = $("#pageContents");
-			
+
 			var captionInfo = new Array(),
-				panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			
+					panelWidth = x_currentPageXML.getAttribute("panelWidth");
+
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
@@ -79,46 +84,89 @@
 					$("#pageContents .splitScreen").addClass("small");
 				} else {
 					$("#pageContents .splitScreen").addClass("medium");
-				} 
+				}
 			}
-			
+
 			$("#button")
-				.button({
-					label:	showBtnTxt
-				})
-				.click(function() {
-					var $this = $(this);
-					if ($this.data("state") == "show") {
-						$("#button").hide();
-						$("#answer").slideDown(function() {
-							$("#button").show();
-						});
-						if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+					.button({
+						label:	showBtnTxt
+					})
+					.click(function() {
+						var feedback;
+						var $this = $(this);
+						if ($this.data("state") == "show") {
+							$("#button").hide();
+							//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
+							var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
+							//Checks if the answer is correct, and if so it adds one to the total of correct answers
+							var answer = $('#answerTxt').val();
+                            var correct = false;
+                            if (answer == text) {
+								correct_answers++;
+                                correct = true;
+								feedback="Correct";
+								$("#answer").slideDown(function () {
+									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+										$("#button").show();
+									}
+									else {
+										if(XTGetMode() == "normal")
+										{
+											$("#button").hide();
+										}
+										else {
+											$("#button").show();
+										}
+									}
+								});
+							}
+							else {
+								feedback="Incorrect";
+								$("#incorrect").slideDown(function () {
+									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+										$("#button").show();
+									}
+									else {
+										if(XTGetMode() == "normal")
+										{
+											$("#button").hide();
+										}
+										else {
+											$("#button").show();
+										}
+									}
+								});
+							}
+							XTExitInteraction(x_currentPage, $pageContents.data("current"),correct, [], answer, feedback)
+							total++;
+
+							if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+								$this
+										.data("state", "next")
+										.button("option", "label", nextBtnTxt);
+							} else {
+								dictation.finishTracking();
+								$this
+										.data("state", "done")
+										.button("option", "label", restartBtnTxt);
+							}
+
+						} else if ($this.data("state") == "next") {
+							$pageContents.data("current", $pageContents.data("current") + 1);
+							dictation.loadQ();
 							$this
-								.data("state", "next")
-								.button("option", "label", nextBtnTxt);
-						} else {
+									.data("state", "show")
+									.button("option", "label", showBtnTxt);
+
+						} else { // restart
+							dictation.sortCaptions();
 							$this
-								.data("state", "restart")
-								.button("option", "label", restartBtnTxt);
+									.data("state", "show")
+									.button("option", "label", showBtnTxt);
 						}
-						
-					} else if ($this.data("state") == "next") {
-						$pageContents.data("current", $pageContents.data("current") + 1);
-						dictation.loadQ();
-						$this
-							.data("state", "show")
-							.button("option", "label", showBtnTxt);
-						
-					} else { // restart
-						dictation.sortCaptions();
-						$this
-							.data("state", "show")
-							.button("option", "label", showBtnTxt);
-					}
-				})
-				.data("state", "show");
-			
+					})
+					.data("state", "show");
+
 			// uses data from timedText file if there is one - otherwise use nested page info
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {
 				$.ajax({
@@ -131,69 +179,81 @@
 							captionInfo.push({prompt:"", answer:$this.text().replace(/(\n|\r|\r\n)/g, "<br />"), start:$this.attr("begin"), end:$this.attr("end")});
 							// replace from x_addLineBreaks function done here directly as text from timed text file won't be changed correctly otherwise
 						});
-						
+
 						$pageContents.data({
 							"captionInfo":	captionInfo,
 							"audioSrc":		"timedTxt"
 						});
 						dictation.sortCaptions();
 					},
-					
+
 					error: function () {
 						// see if there are any captions in xml to use instead
 						$(x_currentPageXML).children().each(function() {
 							var	$this = $(this);
 							captionInfo.push({prompt:$this.attr("prompt"), answer:$this.attr("answer"), audio:$this.attr("audio")});
 						});
-						
+
 						$pageContents.data("captionInfo", captionInfo);
 						dictation.sortCaptions();
 					}
 				});
-				
+
 			} else {
 				$(x_currentPageXML).children().each(function() {
 					var	$this = $(this);
-					captionInfo.push({prompt:$this.attr("prompt"), answer:$this.attr("answer"), audio:$this.attr("audio")});
+					captionInfo.push({prompt:$this.attr("prompt"), name:$this.attr("name"), answer:$this.attr("answer"), audio:$this.attr("audio")});
 				});
-				
+
 				$pageContents.data("captionInfo", captionInfo);
 				dictation.sortCaptions();
 			}
+			this.initTracking();
 		}
-		
 		this.sortCaptions = function() {
 			$pageContents.data({
 				"captionInfo" : x_currentPageXML.getAttribute("randomise") == "true" ? x_shuffleArray($pageContents.data("captionInfo")) : $pageContents.data("captionInfo"),
 				"current" : 0
 			});
-			
 			this.loadQ();
 		}
-		
+
 		this.loadQ = function() {
 			if (count != "") {
 				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
 			} else {
 				$("#count").hide();
 			}
-			
+
 			$("#answerTxt").val("");
 			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {
 				$("#prompt").hide();
 			} else {
 				$("#prompt")
-					.show()
-					.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt));
+						.show()
+						.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt));
 			}
-			
+			//Will be shown when the answer is incorrect
+			var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
+
+			$("#incorrect")
+					.hide()
+					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '">' + x_addLineBreaks(" The answer is incorrect. The correct answer was: " + $pageContents.data("captionInfo")[$pageContents.data("current")].answer));
+			//Will be shown if the answer is correct
 			$("#answer")
-				.hide()
-				.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].answer));
-			
+					.hide()
+					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '">' + x_addLineBreaks(" Correct!"));
+
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
+			var correctAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
+			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
+			if (name == "")
+			{
+				name = x_currentPageXML.getAttribute("name");
+			}
+			XTEnterInteraction(x_currentPage, $pageContents.data("current"), 'fill-in', name, [], correctAnswer, "Correct");
 		}
-		
+
 		this.loadAudio = function(caption) {
 			if ($pageContents.data("audioSrc") == "timedTxt") {
 				$("#pageAudio").mediaPlayer({
@@ -211,19 +271,19 @@
 					width	:"100%"
 				});
 			}
-			
+
 			if ($pageContents.data("loaded") != true) {
 				$pageContents.data("loaded", true);
 				dictation.sizeChanged();
 				x_pageLoaded(); // call this function in every model once everything's loaded
 			}
 		}
-		
+
 		// function called from mediaPlayer.js when audio player has been set up
 		this.mediaFunct = function(mediaElement) {
 			if ($pageContents.data("audioSrc") == "timedTxt") {
 				$pageContents.data("mediaElement", mediaElement);
-				
+
 				// force audio back to beginning of clip when end is reached
 				mediaElement.addEventListener("timeupdate", function(e) {
 					var currentTime = mediaElement.currentTime;
@@ -233,49 +293,63 @@
 				});
 			}
 		}
+		//Stopping the tracking
+		this.finishTracking = function() {
+			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+		}
+		//Starting the tracking
+		this.initTracking = function() {
+			// Track the dictation page
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+			}
+			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+		}
 	}
-	
+
 	dictation.init();
-	
+
 </script>
 
 <style type="text/css">
-	
+
 	#pageContents .panel {
 		overflow:	auto;
 	}
-	
-	#prompt, #count, #answer {
+
+	#prompt, #count, #answer, #incorrect {
 		margin-bottom:	10px;
 	}
-	
+
 	#audioHolder {
 		width:	100%;
 		margin-bottom:	10px;
 	}
-	
+
 	#audioHolder audio {
 		width:	100%;
 	}
-	
+
 	#answerTxt {
 		width:	100%;
 		margin-bottom:	10px;
 	}
-	
+
 	#button {
 		float:	right;
 		margin-bottom:	10px;
 	}
-	
+
 </style>
 
 <div id="pageContents">
-	
+
 	<div class="splitScreen">
-		
+
 		<div id="textHolder" class="left" tabindex="1"></div>
-		
+
 		<div class="right">
 			<div class="panel">
 				<h3 id="count"></h3>
@@ -285,10 +359,11 @@
 				</div>
 				<textarea id="answerTxt" rows="6"></textarea>
 				<div id="answer"></div>
+				<div id="incorrect"></div>
 				<button id="button"></button>
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 </div>

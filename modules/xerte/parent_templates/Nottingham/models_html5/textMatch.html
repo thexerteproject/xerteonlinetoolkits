@@ -134,7 +134,7 @@
 				.click(function() { // mark labels and show feedback
 					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
 						allCorrect = true;
-					numAttempts++;
+					
 					
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
 					$("#labelHolder .audioHolder").hide();
@@ -146,8 +146,12 @@
 							labelOffTarget = true;
 						}
 					});
+					if(!labelOffTarget)
+					{
+						numAttempts++;
+					}
 					
-					if(x_currentPageXML.getAttribute("trackingWeight") == undefined){
+					if(XTGetMode() != "normal"){
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
@@ -186,6 +190,7 @@
 								allCorrect = false;
 							}
 						});
+						textMatch.finishTracking();
 					}
 					else{
 						if (!labelOffTarget){
@@ -219,20 +224,32 @@
 					
 					allCorrect = correct == $("#labelHolder .label").length;
 					
-					if(!labelOffTarget || x_currentPageXML.getAttribute("trackingWeight") == undefined){
-						console.log("a" + correct + "b" + allCorrect);
+					if(!labelOffTarget || XTGetMode() != "normal"){
+						
+						var wrongFeedback, scoreFeedback;
+						
+						if(XTGetMode() != "normal"){
+							wrongFeedback = x_currentPageXML.getAttribute("allWrong");
+							scoreFeedback = x_currentPageXML.getAttribute("score");
+						}
+						else{
+							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking");
+							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking");	
+							$(this).hide();
+						}
+							
+						
 						if (allCorrect == false && numAttempts >= maxAttempts) {
 							
 						} else if (allCorrect == true) {
 							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							$(this).hide();
 						} else if (correct == 0){
-							$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$feedback.html(wrongFeedback != undefined ? wrongFeedback : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
-							$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$feedback.html(scoreFeedback != undefined ? scoreFeedback.replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
 						$("#feedback").show();						
-						
 					}
 					
 				});
@@ -324,6 +341,7 @@
 			this.sizeChanged();
 			this.initTracking();
 			x_pageLoaded();
+			
 		}
 		
 		
@@ -352,12 +370,10 @@
 					l_feedback.push("Incorrect");
 				}
 			});
-            $("#button").hide();
-            if(x_currentPageXML.getAttribute("trackingWeight") != undefined){
+            if(XTGetMode() == "normal"){
 	            $("#dragDropHolder .label")
 				.draggable("disable");
             }
-            
             
 			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
