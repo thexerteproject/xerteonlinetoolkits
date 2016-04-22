@@ -208,8 +208,6 @@ function edit_window(admin,edit){
             if(node.xot_type == "file"){
 
                 if(node.parent != workspace.recyclebin_id){
-					
-					// ** Fay: moved stuff around in here so it checks edit_window_open array to see if currently open before opening a new window
                     window_id = "editwindow" + node.id;
 					
                     window_open = false;
@@ -307,7 +305,6 @@ function close_edit_window(path){
     for(x=0;x<edit_window_open.length;x++){
 
         if(path.indexOf("-")!=-1){
-			// ** Fay: haven't changed this but it might need changing too - this is the same as in edit_window_close funct below where I have made changes
             if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path.substr(0,path.indexOf("-"))){
 
                 edit_window_open.splice(x,1);
@@ -396,15 +393,12 @@ function edit_window_close(path){
 
         if(path.indexOf("-")!=-1){
 			
-			// ** Fay: Changed what's being compared here to check if it's already open - it never seemed to match before
-			
 			if(edit_window_open[x].id.substr(edit_window_open[x].id.lastIndexOf("_")+1,edit_window_open[x].id.length)==path.substr(0,path.indexOf("-"))){
 			//if(edit_window_open[x].substr(5,edit_window_open[x].length-5)==path.substr(0,path.indexOf("-"))){
                 edit_window_open.splice(x,1);
             }
 
         }else{
-			// ** Fay: this might need changing too but I'm not sure under what circumstances it gets here...
             if(edit_window_open[x].id.substr(5,edit_window_open[x].id.length-5)==path){
                 edit_window_open.splice(x,1);
             }
