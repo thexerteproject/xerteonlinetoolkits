@@ -43,15 +43,16 @@ if ($argc != 2)
 else
 {
 	$xwd = new XerteXWDBuilder();
-	if ($xwd->loadTemplateXWD($argv[1] . '/basic.xwd') != -1)
+	if ($xwd->loadTemplateXWD($argv[1] . '/basic.xwd', $argv[1] . '/basicPages.xwd') != -1)
 	{
 		$skipTemplate = $argv[1] . '/template.xwd';
 		$skipBasic = $argv[1] . '/basic.xwd';
+		$skipPageBasic = $argv[1] . '/basicPages.xwd';
 		$xwds = folder_loop($argv[1]);
         sort($xwds);
 		foreach($xwds as $model)
 		{
-			if ($model != $skipTemplate && $model != $skipBasic)
+			if ($model != $skipTemplate && $model != $skipBasic && $model != $skipPageBasic)
 			{
 				$xwd->addXwd($model, 'true', 'false');
 			}
