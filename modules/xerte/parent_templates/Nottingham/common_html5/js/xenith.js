@@ -1242,6 +1242,9 @@ function x_setUpPage() {
         $x_mainHolder.css("visibility", "visible");
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
+			if ($("#x_mainBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+				$(".grayscale:not(#x_mainBg):not([id])").attr("id", "x_mainBg");
+			}
 		}
         x_firstLoad = false;
     }
