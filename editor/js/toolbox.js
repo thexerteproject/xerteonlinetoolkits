@@ -232,7 +232,16 @@ var EDITOR = (function ($, parent) {
         }
         if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
         {
-            treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
+			treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
+			
+			if (xmlData[0].getAttribute("hidePage") == "true")
+			{
+				treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + treeLabel;
+			}
+        }
+		else if (xmlData[0].getAttribute("hidePage") == "true")
+		{
+            treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + treeLabel + '</span>';
         }
         var this_json = {
             id : key,
@@ -959,6 +968,18 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
+								// makes sure deprecated / hidden page highlights aren't lost when page name is changed
+								if ($("#" + options.key + " .deprecatedImg").length > 0) {
+									thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
+									if ($("#" + options.key + " .hiddenImg").length > 0)
+									{
+										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+									}
+								}
+								else if ($("#" + options.key + " .hiddenImg").length > 0)
+								{
+									thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+								}
 
                                 // Rename the node
                                 var tree = $.jstree.reference("#treeview");
@@ -1363,6 +1384,22 @@ var EDITOR = (function ($, parent) {
     {
         console.log([key, names, values]);
         // Get the node name
+		
+		if (names == "hidePage") {
+			if (values[0] == "true") {
+				if ($("#" + key + " .deprecated").length == 0) {
+					$("#" + key + " .jstree-anchor").each(function(i,v) {
+						$(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
+					});
+					$("#" + key + " .jstree-anchor .hidden").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">');
+				} else {
+					$("#" + key + " .deprecatedImg").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">');
+				}
+			} else {
+				$("#" + key + " .hiddenImg").remove();
+				$("#" + key + " .hidden").contents().unwrap();
+			}
+		}
 
         var node_name = lo_data[key]['attributes'].nodeName;
 

@@ -161,19 +161,28 @@ x_projectDataLoaded = function(xmlData) {
     }
 
     x_pages = xmlData.children();
-    x_pages.each(function () {
-        var linkID = $(this)[0].getAttribute("linkID"),
-            pageID = $(this)[0].getAttribute("pageID"),
-            page = {type: $(this)[0].nodeName, built: false};
-        if (linkID != undefined) {
-            page.linkID = linkID;
-        }
-        if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
-            page.pageID = pageID;
-        }
-        x_pageInfo.push(page);
+	var pageToHide = [];
+    x_pages.each(function (i) {
+		if ($(this)[0].getAttribute("hidePage") != "true") {
+			var linkID = $(this)[0].getAttribute("linkID"),
+				pageID = $(this)[0].getAttribute("pageID"),
+				page = {type: $(this)[0].nodeName, built: false};
+			if (linkID != undefined) {
+				page.linkID = linkID;
+			}
+			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
+				page.pageID = pageID;
+			}
+			x_pageInfo.push(page);
+		} else {
+			pageToHide.push(i);
+		}
     });
-
+	
+	// removes hidden pages from array
+	for (i=0; i<pageToHide.length; i++) {
+		x_pages.splice(pageToHide[i]-i,1);
+	}
 
     if (x_pages.length < 2) {
         // don't show navigation options if there's only one page
