@@ -236,7 +236,7 @@ var EDITOR = (function ($, parent) {
 			
 			if (xmlData[0].getAttribute("hidePage") == "true")
 			{
-				treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + treeLabel;
+				treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;' + treeLabel;
 			}
         }
 		else if (xmlData[0].getAttribute("hidePage") == "true")
@@ -1391,13 +1391,17 @@ var EDITOR = (function ($, parent) {
 					$("#" + key + " .jstree-anchor").each(function(i,v) {
 						$(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
 					});
-					$("#" + key + " .jstree-anchor .hidden").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">');
+					$("#" + key + " .jstree-anchor .hidden").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
 				} else {
-					$("#" + key + " .deprecatedImg").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">');
+					$("#" + key + " .deprecatedImg").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
 				}
 			} else {
 				$("#" + key + " .hiddenImg").remove();
 				$("#" + key + " .hidden").contents().unwrap();
+				$("#" + key).each(function() {
+					var $this = $(this);
+					$this.html($this.html().replace(/&nbsp;/, ""));
+				});
 			}
 		}
 
