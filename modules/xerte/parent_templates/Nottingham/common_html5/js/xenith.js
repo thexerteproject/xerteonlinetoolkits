@@ -997,8 +997,9 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 // function returns page no. of page with matching linkID / pageID
 function x_lookupPage(pageType, pageID) {
     for (var i=0, len = x_pageInfo.length; i<len; i++) {
-        if (    (pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-        (pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
+        if (
+			(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
         ) {
             break;
         }
@@ -1007,7 +1008,19 @@ function x_lookupPage(pageType, pageID) {
     if (i != len) {
         return i;
     } else {
-        return null;
+		// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
+		for (var i=0, len = x_pageInfo.length; i<len; i++) {
+			if (
+				pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
+			) {
+				break;
+			}
+		}
+		if (i != len) {
+			return i;
+		} else {
+			return null;
+		}
     }
 }
 
