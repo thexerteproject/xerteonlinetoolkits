@@ -187,6 +187,18 @@ function setup(){
 	}
 	
 }
+
+
+// this is the format of links added through the wysiwyg editor button
+function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
+	var pages = $(data).find('page');
+	for (var i=0; i<pages.length; i++) {
+		if (pages[i].getAttribute("linkID") == pageInfo.ID) {
+			parseContent(i);
+			break;
+		}
+	}
+}
 	
 
 function parseContent(pageIndex){
