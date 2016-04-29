@@ -923,6 +923,12 @@ function x_continueSetUp() {
 	);
 
 	XTInitialise(); // initialise here, because of XTStartPage in next function
+	
+	// script optional property added after all interface set up & before any pages load
+	if (x_params.script != undefined && x_params.script != "") {
+		$x_head.append('<script>' +  x_params.script + '</script>');
+	}
+	
 	x_navigateToPage(true, x_startPage);
 }
 
@@ -1272,6 +1278,14 @@ function x_pageLoaded() {
 
         $this.attr(attr_name, x_evalURL(val));
     });
+	
+	// script & style optional properties for each page added after page is otherwise set up
+	if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
+		$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+	}
+	if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
+		$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+	}
 
     $("#x_page" + x_currentPage)
         .hide()
