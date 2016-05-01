@@ -27,6 +27,7 @@
 			labelData = [],
 			separator = "|",
 			$pageContents;
+		var numOfQuestions = 0, correct = 0;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -81,10 +82,15 @@
 						$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
 							var $this = $(this);
 							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
+								numOfQuestions++;
+								correct++;
 							} else {
 								allCorrect = false;
+								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+								numOfQuestions++;
 							}
+							console.log(correct/numOfQuestions *100);
 						});
 						
 						if (allCorrect == true) {
@@ -715,6 +721,19 @@
 				.blur()
 				.removeClass("focus selected");
 		}
+	}
+	//Stopping the tracking
+	this.finishTracking = function() {
+		XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+	}
+	//Starting the tracking
+	this.initTracking = function() {
+		// Track the dictation page
+		this.weighting = 1.0;
+		if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+			this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+		}
+		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 	}
 	
 	grid.init();
