@@ -27,22 +27,23 @@
 			labelData = [],
 			separator = "|",
 			$pageContents;
-		
+		var numOfQuestions = 0, correct = 0;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			labelData = $("#pageContents").data("labelData");
 			$pageContents = $("#pageContents");
 			this.removeFocus();
 		}
-		
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+
 		}
-		
+
 		this.init = function() {
 			$pageContents = $("#pageContents");
-			
+
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
 				$("#feedback")
@@ -51,7 +52,7 @@
 			} else {
 				$("#feedback").remove();
 			}
-			
+
 			if (x_currentPageXML.getAttribute("align") == "top") {
 				$("#gridHolder")
 					.appendTo($pageContents)
@@ -68,25 +69,48 @@
 				$("#gridHolder")
 					.addClass("x_floatRight")
 			}
-			
+
 			$("#checkBtn")
 				.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
 				.click(function() {
 					if ($(this).data("state") == "check") {
 						grid.removeFocus();
-						
+
 						// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
 						// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
 						var allCorrect = true;
+						l_answer = [];
+						l_options = [];
+						l_feedback = [];
 						$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
 							var $this = $(this);
+							columnLength = x_currentPageXML.getAttribute("data").split("||")[0].split("|").length;
+							xPos = ($this.index() % columnLength) + 1;
+							yPos = (Math.floor($this.index() / columnLength)) + 1;
+							l_answer.push($this.html() + "-->" + yPos + "," + xPos);
+							l_option = {};
+							l_option.target = $this.html();
+							l_option.source = yPos + "," + xPos;
+							l_options.push(l_option);
 							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
+								numOfQuestions++;
+								correct++;
+								l_feedback.push("Correct");
 							} else {
 								allCorrect = false;
+								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+								numOfQuestions++;
+								l_feedback.push("Incorrect");
 							}
 						});
-						
+						debugger;
+						XTExitInteraction(x_currentPage, 0, allCorrect, l_options, l_answer.join(), l_feedback.join());
+						if(XTGetMode() == "normal") {
+							$("#checkBtn").hide();
+							$(".ui-draggable").draggable("disable");
+						}
+						XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100));
 						if (allCorrect == true) {
 							$(this)
 								.button({label: x_currentPageXML.getAttribute("resetBtnTxt") != undefined ? x_currentPageXML.getAttribute("resetBtnTxt") : "Reset"})
@@ -100,17 +124,17 @@
 						$(this)
 							.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
 							.data("state", "check");
-						
+
 						$("#feedback").hide();
 						$("#grid .tick").remove();
 						$("#grid .listHolder ul li.ui-draggable")
 							.draggable( "option", "disabled", false )
-							.on("focusin focusout keypress"); // 
+							.on("focusin focusout keypress"); //
 						grid.randomiseLabels();
 					}
 				})
 				.data("state", "check");
-			
+
 			if (x_currentPageXML.getAttribute("url") != undefined && x_currentPageXML.getAttribute("url") != "") {
 				$.ajax({
 					type: "GET",
@@ -131,47 +155,47 @@
 			} else {
 				grid.sortData(x_currentPageXML.getAttribute("data").split("||"), false);
 			}
-			
+			this.initTracking();
 			// call this function in every model once everything has loaded
 			x_pageLoaded();
 		}
-		
+
 		this.sortData = function(data) {
 			var $grid = $("#grid"), $ul, $holder, row,
 				$gridBorders = $("#gridBorders"), $tr;
-			
+
 			// rows, columns & individual labels can be fixed
 			var tempR = x_currentPageXML.getAttribute("fixedRows") != undefined ? x_currentPageXML.getAttribute("fixedRows").split(",") : [],
 				tempC = x_currentPageXML.getAttribute("fixedCols") != undefined ? x_currentPageXML.getAttribute("fixedCols").split(",") : [],
 				tempCE = x_currentPageXML.getAttribute("fixedCells") ? x_currentPageXML.getAttribute("fixedCells").split("|") : [],
 				i, j;
-			
+
 			for (i=0; i<tempR.length; i++) {
 				if ($.isNumeric(tempR[i])) {
 					fixedRows.push(Number(tempR[i]) - 1);
 				}
 			}
-			
+
 			if (x_currentPageXML.getAttribute("header") == "row" || x_currentPageXML.getAttribute("header") == "both") {
 				$gridBorders.addClass("header");
 				if ($.inArray(0, fixedRows) == -1) {
 					fixedRows.push(0);
 				}
 			}
-			
+
 			for (i=0; i<tempC.length; i++) {
 				if ($.isNumeric(tempC[i])) {
 					fixedCols.push(Number(tempC[i]) - 1);
 				}
 			}
-			
+
 			if (x_currentPageXML.getAttribute("header") == "col" || x_currentPageXML.getAttribute("header") == "both") {
 				$gridBorders.addClass("headerCol");
 				if ($.inArray(0, fixedCols) == -1) {
 					fixedCols.push(0);
 				}
 			}
-			
+
 			for (i=0; i<tempCE.length; i++) {
 				var cells = tempCE[i].split(",");
 				if (cells.length == 2) {
@@ -180,14 +204,14 @@
 					}
 				}
 			}
-			
+
 			// create labels - each label is a li with its parent ul determining which labels it can be sorted/swapped with
 			// labels can be constrained to their row or column, or can be placed anywhere
 			if (x_currentPageXML.getAttribute("constrain") == "col") {
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
-					
+
 					if (i == 0) {
 						for (j=0; j<row.length; j++) {
 							$holder = $('<div class="listHolder constrainC"></div>').appendTo($grid);
@@ -200,7 +224,7 @@
 						$tr.append('<td/>');
 					}
 				}
-				
+
 				// labels on each column should be same width & all labels should be same height...
 				var maxW, maxH = 0;
 				$grid.find("ul").each(function() {
@@ -213,7 +237,7 @@
 					}).width(maxW + 5 + "px");
 				}).find("li")
 					.height(maxH + "px");
-				
+
 				// ...unless they're in a fixed row when they must just have same height as other labels on that row
 				for (i=0; i<fixedRows.length; i++) {
 					maxH = 0;
@@ -222,7 +246,7 @@
 						maxH = Math.max(maxH, $(this).height());
 					}).height(maxH + "px");
 				}
-				
+
 			} else if (x_currentPageXML.getAttribute("constrain") == "row") {
 				for (i=0; i<data.length; i++) {
 					$holder = $('<div class="listHolder constrainR"></div>').appendTo($grid);
@@ -230,13 +254,13 @@
 					labelData.push([]);
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
-					
+
 					for (j=0; j<row.length; j++) {
 						this.addLabel(row[j], $ul, i, j);
 						$tr.append('<td/>');
 					}
 				}
-				
+
 				// labels on each row should be same height & all labels should be same width...
 				var maxW = 0, maxH;
 				$grid.find("ul").each(function() {
@@ -249,7 +273,7 @@
 					}).height(maxH + "px");
 				}).find("li")
 					.width(maxW + 5 + "px");
-				
+
 				// ...unless they're in a fixed column when they must just have same width as other labels on that column
 				for (i=0; i<fixedCols.length; i++) {
 					maxW = 0;
@@ -258,22 +282,22 @@
 						maxW = Math.max(maxW, $(this).width());
 					}).width(maxW + 5 + "px");
 				}
-				
+
 			} else {
 				$holder = $('<div class="listHolder"></div>').appendTo($grid);
 				$ul = $('<ul/>').appendTo($holder);
 				labelData.push([]);
-				
+
 				for (i=0; i<data.length; i++) {
 					row = data[i].split(separator);
 					$tr = $('<tr/>').appendTo($gridBorders);
-					
+
 					for (j=0; j<row.length; j++) {
 						this.addLabel(row[j], $ul, i, j);
 						$tr.append('<td/>');
 					}
 				}
-				
+
 				// every label should be same width & height...
 				var maxW = 0, maxH = 0;
 				$grid.find("ul li").each(function(i) {
@@ -286,7 +310,7 @@
 				})
 				  .width(maxW + 5 + "px")
 				  .height(maxH + "px");
-				
+
 				// ...unless they're in a fixed column/row when they must just have same width/height as other labels on that column/row
 				for (i=0; i<fixedCols.length; i++) {
 					maxW = 0;
@@ -300,7 +324,7 @@
 					});
 					$labels.width(maxW + 5 + "px");
 				}
-				
+
 				for (i=0; i<fixedRows.length; i++) {
 					maxH = 0;
 					var $labels = $([]);
@@ -314,12 +338,12 @@
 					$labels.height(maxH);
 				}
 			}
-			
+
 			$pageContents.data("labelData", labelData);
-			
+
 			// insert rows & cells that make up grid borders (has to be overlaid as the swapping of labels would be too complicated if labels were really in the table)
 			$gridBorders.insertBefore($grid);
-			
+
 			// fix width of grid so the correct amount of labels are on each row
 			if (x_currentPageXML.getAttribute("constrain") != "col") {
 				var $li = $grid.find("li"),
@@ -329,17 +353,17 @@
 				}
 				$grid.find("ul").width(rowW + (((parseInt($li.css("padding-left")) + parseInt($li.css("margin-left")) + parseInt($li.css("border-left-width"))) * 2) * data[0].split(separator).length));
 			}
-			
+
 			// style borders & match their size to grid labels
 			if (x_currentPageXML.getAttribute("style") != "none") {
 				$gridBorders.addClass(x_currentPageXML.getAttribute("style"));
-				
+
 				if (x_currentPageXML.getAttribute("constrain") != "col") {
 					$gridBorders.width($grid.find("ul:eq(0)").width());
 					$gridBorders.find("tr:eq(0) td").each(function(i) {
 						$(this).width($grid.find("ul:eq(0) li:eq(" + i + ")").width());
 					});
-					
+
 					if (x_currentPageXML.getAttribute("constrain") == "row") {
 						$gridBorders.find("tr").each(function(i) {
 							$(this).height($grid.find("ul:eq(" + i + ") li:eq(0)").outerHeight(true));
@@ -367,12 +391,12 @@
 						$(this).height($grid.find("li:eq(" + i + ")").outerHeight(true) - 5);
 					});
 				}
-				
+
 				// additional styling of table - shade alternative rows / shade headers etc.
 				if (x_currentPageXML.getAttribute("shadeHeader") == "true") {
 					$gridBorders.addClass("shaded");
 				}
-				
+
 				if (x_currentPageXML.getAttribute("shade") == "true") {
 					$gridBorders.find("tr").each(function() {
 						var $this = $(this),
@@ -386,13 +410,13 @@
 						}
 					});
 				}
-				
+
 				if ((x_currentPageXML.getAttribute("header") == "col" || x_currentPageXML.getAttribute("header") == "both") && x_currentPageXML.getAttribute("shadeHeader") == "true") {
 					$gridBorders.find("tr td:first-child").addClass("header");
 				}
-				
+
 				$grid.width($gridBorders.width() + 2);
-				
+
 			} else {
 				$gridBorders.remove();
 				if (x_currentPageXML.getAttribute("constrain") != "col") {
@@ -405,13 +429,13 @@
 					$grid.width(totalW);
 				}
 			}
-			
+
 			$("#gridHolder")
 				.width($grid.width())
 				.height($grid.height());
-			
+
 			this.randomiseLabels();
-			
+
 			// create duplicate labels used to show previews when dragging the real labels
 			$grid.find("ul").each(function() {
 				$(this).clone()
@@ -421,9 +445,9 @@
 						.css("visibility", "hidden")
 						.removeClass("shadow");
 			});
-			
+
 			var tabIndex = 3;
-			
+
 			// this uses draggable & droppable rather than sortable as sortable doesn't deal with fixed labels well
 			$grid
 				.find("ul:not(.preview) li:not(.static)")
@@ -432,11 +456,11 @@
 						revert:	"invalid", // snap back to original position if not dropped on target
 						start:	function() {
 							grid.removeFocus();
-							
+
 							$(this)
 								.removeClass("shadow")
 								.addClass("panel");
-							
+
 							$grid.find(".tick").hide();
 						},
 						stop:	function() {
@@ -445,7 +469,7 @@
 								.addClass("shadow");
 						}
 						})
-					
+
 					// set up events used when keyboard rather than mouse is used
 					.on("focusin", function() {
 						var $this = $(this);
@@ -460,7 +484,7 @@
 									$this.addClass("focus");
 								}
 							}
-							
+
 						} else {
 							$this.addClass("focus");
 						}
@@ -483,29 +507,29 @@
 								if ($this.is($pageContents.data("selectedLabel")) == false) { // ...it's not the label in focus...
 									if ($this.parent().is($pageContents.data("selectedLabel").parent())) { // ... and the label in focus can have the selected label dropped on it
 										$this.html(labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.data("correct")]);
-										
+
 										$pageContents.data("selectedLabel")
 											.removeClass("selected")
 											.addClass("focus");
-										
+
 										$this.removeClass("focus");
-										
+
 										grid.dropEvent($this, $pageContents.data("selectedLabel"));
 									}
-										
+
 								} else {
 									$this
 										.removeClass("selected")
 										.addClass("focus");
 								}
-								
+
 								$pageContents.data("selectedLabel", "");
-							
+
 							} else {
 								$this
 									.removeClass("focus")
 									.addClass("selected");
-								
+
 								$pageContents.data("selectedLabel", $this);
 							}
 						}
@@ -517,7 +541,7 @@
 						});
 						tabIndex++;
 					});
-			
+
 			$grid.find("ul:not(.preview) li:not(.static)")
 				.droppable({
 					accept:	function($dragged) {
@@ -535,15 +559,15 @@
 					},
 					hoverClass:	"ui-state-highlight"
 					});
-			
+
 			$grid.find("ul li").css("color",$x_body.css("color")); // override jquery ui style
 		}
-		
+
 		this.addLabel = function(txt, $parent, i, j) {
 			var $li = $('<li><table><tr><td>' + txt + '</td></tr></table></li>')
 				.appendTo($parent)
 				.addClass("ui-state-default");
-			
+
 			if (i == 0 && (x_currentPageXML.getAttribute("header") == "row" || x_currentPageXML.getAttribute("header") == "both")) {
 				$li.addClass("header static");
 			} else if (j == 0 && (x_currentPageXML.getAttribute("header") == "col" || x_currentPageXML.getAttribute("header") == "both")) {
@@ -559,35 +583,35 @@
 					}
 				}
 			}
-			
+
 			if (!$li.hasClass("static")) {
 				$li.addClass("shadow");
 			}
-			
+
 			$li
 			 .data({
 				"correct" : $li.index(),
 				"xy" : [j,i]
 			 });
-			
+
 			labelData[$parent.parent().index()].push(txt);
 		}
-		
+
 		// randomise labels (keeping fixed ones in correct place)
 		this.randomiseLabels = function() {
 			$("#grid").find("ul").each(function(i) {
 				var fixedLabels = $(this).find("li.static"),
 					$ul = $(this);
-				
+
 				$ul.find("li.static").detach();
-				
+
 				var labels = $ul.children("li");
 				labels = x_shuffleArray(labels);
 				$ul.children("li").detach();
 				for (var i=0; i<labels.length; i++) {
 					$ul.append(labels[i]);
 				}
-				
+
 				fixedLabels.each(function() {
 					if ($ul.find("li").length <= $(this).data("correct")) {
 						$ul.append($(this));
@@ -597,11 +621,11 @@
 				});
 			});
 		}
-		
+
 		this.overEvent = function($this, draggable) {
 			clearTimeout(timeout);
 			var $thisParent = $this.parent();
-			
+
 			if (x_currentPageXML.getAttribute("drag") == "insert") {
 				// show preview for all labels that will be moved
 				var toPreview = [], newTxt = [],
@@ -609,10 +633,10 @@
 					indexDrop = $this.index(),
 					lowest = Math.min(indexDrop, indexDrag),
 					highest = Math.max(indexDrag, indexDrop);
-				
+
 				$this.parent().find("li").css("visibility", "visible");
 				$this.parent().prev(".preview").find("li").css("visibility", "hidden");
-				
+
 				for (var i=0; i<highest - lowest + 1; i++) {
 					if (!$thisParent.find("li:eq(" + (i + lowest) + ")").hasClass("static")) {
 						toPreview.push(i + lowest);
@@ -621,30 +645,30 @@
 				}
 				toPreview.splice(lowest == indexDrag ? toPreview.length-1 : 0, 1);
 				newTxt.splice(lowest == indexDrag ? 0 : newTxt.length-1, 1);
-				
+
 				for (i=0; i<toPreview.length; i++) {
 					$thisParent.prev(".preview").find("li:eq(" + toPreview[i] + ")")
 						.html($thisParent.find("li:eq(" + newTxt[i] + ")").html())
 						.css("visibility", "visible");
-					
+
 					var $label = $thisParent.find("li:eq(" + toPreview[i] + ")");
 					if ($label[0] != draggable[0]) {
 						$label.css("visibility", "hidden");
 					}
 				}
-				
+
 			} else {
 				// show preview for two labels that will be swapped
 				$thisParent.prev(".preview").find("li:eq(" + draggable.index() + ")")
 					.css("visibility","visible")
 					.html($this.html());
-				
+
 				if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
 					$pageContents.data("selectedLabel").css("visibility", "hidden");
 				}
 			}
 		}
-		
+
 		this.outEvent = function($this, time) {
 			// slight delay in removing previews on roll over to avoid flickers over gaps between labels
 			timeout = setTimeout(function () {
@@ -652,10 +676,10 @@
 				$this.parent().prev(".preview").find("li").css("visibility", "hidden");
 			}, time);
 		}
-		
+
 		this.dropEvent = function($this, draggable) {
 			this.removeFocus();
-			
+
 			if (x_currentPageXML.getAttribute("drag") == "insert") {
 				// insert dragged label into list
 				if (draggable.index() > $this.index()) {
@@ -664,11 +688,11 @@
 					draggable.insertAfter($this);
 				}
 				draggable.css({"top":"auto","left":"auto"});
-				
+
 				// adjust position of fixed labels
 				var fixedLabels = $this.parent().find("li.static"),
 					$ul = $this.parent();
-				
+
 				fixedLabels.detach();
 				fixedLabels.each(function() {
 					if ($ul.find("li").length <= $(this).data("correct")) {
@@ -677,7 +701,7 @@
 						$ul.find("li:eq(" + ($(this).data("correct")) + ")").before($(this));
 					}
 				});
-				
+
 			} else {
 				// swap dragged label with label it's dropped on
 				var index = $this.index();
@@ -689,10 +713,10 @@
 				} else {
 					draggable.insertBefore($this.parent().find("li")[index]);
 				}
-				
+
 				draggable.css({"top":"auto","left":"auto"});
 			}
-			
+
 			var tabIndex = 3;
 			$("#grid ul:not(.preview) li:not(.static)").each(function(i) {
 				$(this).attr({
@@ -701,10 +725,10 @@
 				tabIndex++;
 			});
 		}
-		
+
 		this.removeFocus = function() {
 			$pageContents.data("selectedLabel", "");
-			
+
 			$("#grid ul.preview li").css("visibility","hidden");
 			$("#grid ul:not(.preview) li")
 				.each(function() {
@@ -715,7 +739,45 @@
 				.blur()
 				.removeClass("focus selected");
 		}
+	//Starting the tracking
+	this.initTracking = function() {
+		// Track the dictation page
+		this.weighting = 1.0;
+		if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+			this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+		}
+		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+		correctOptions = [];
+		correctAnswer = [];
+		correctFeedback = [];
+		rows = x_currentPageXML.getAttribute("data").split("||");
+		rowCount = 1;
+		for(row in rows)
+		{
+			columnCount = 1;
+			columns = rows[row].split("|");
+			for(column in columns)
+			{
+				if((x_currentPageXML.getAttribute("fixedCells") == undefined || x_currentPageXML.getAttribute("fixedCells").indexOf(columnCount + "," + rowCount) == -1) &&
+						(x_currentPageXML.getAttribute("fixedRows") == undefined || x_currentPageXML.getAttribute("fixedRows").indexOf(rowCount) == -1) &&
+						(x_currentPageXML.getAttribute("fixedCols") == undefined || x_currentPageXML.getAttribute("fixedCols").indexOf(columnCount) == -1)) {
+					correctOption = {};
+					correctOption.source = columns[column];
+					correctOption.target = columnCount + "," + rowCount;
+					correctOptions.push(correctOption);
+					correctAnswer.push(columns[column] + "-->" + columnCount + "," + rowCount);
+					correctFeedback.push("Correct");
+				}
+				columnCount++;
+
+			}
+			rowCount++;
+		}
+		debugger;
+		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text")), correctOptions, correctAnswer.join(), correctFeedback.join();
 	}
+}
+
 	
 	grid.init();
 	
