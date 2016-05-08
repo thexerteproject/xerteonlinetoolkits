@@ -31,6 +31,9 @@
 			delimiter,
 			casesensitive,
 			currvalue,
+			correct_answers = 0,
+			total = 0,
+			isTracked = false,
 			
 			$pageContents,
 			$targetHolder,
@@ -74,6 +77,13 @@
 			$feedbackTxt = $("#feedbackTxt");
 			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			$pageContents.data("score", 0);
+			
+			this.initTracking();			
+			if(XTGetMode() == "normal")
+			{
+				isTracked = true;
+			}
+		
 			
 			// set panel appearance
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
@@ -212,8 +222,18 @@
 				$("#pageContents #audioHolder").remove();
 			}
 			
+			// Enter the interactions for this page.
+			if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank"){			
+				for (var interactionNumber=0;  interactionNumber<answerData.length;  interactionNumber++) {				
+					var name = "interaction number" + " " + interactionNumber;
+					var correctAnswer = answerData[interactionNumber];
+					XTEnterInteraction(x_currentPage,  interactionNumber , 'fill-in', name, [], correctAnswer, "Correct");
+				}
+			}
+			
 			this.sizeChanged();
 			x_pageLoaded();
+						
 		}
 		
 		this.setUpDropDown = function() {
@@ -275,8 +295,8 @@
 				.each(function() {
 					$(this).data("index", $targetHolder.find("input").index($(this))); // stored here as using .index() won't return result needed as there are other elements (line breaks etc.) in $targetHolder
 				});
-			
-			if (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") {
+				
+			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !isTracked) {
 				$("#submitBtn").remove();
 				
 				$targetHolder.find("input").on("keypress", function() {
@@ -378,18 +398,63 @@
 					})
 					.attr("tabindex",tabIndex)
 					.click(function() {
+						
+						var empty = false;
+						$targetHolder.find("input").each(function() {
+							var $this = $(this);
+							if($this.val() == "")
+								{
+								empty = true;
+								$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillIncomplete") != undefined && x_currentPageXML.getAttribute("gapFillIncomplete") != "" ? x_currentPageXML.getAttribute("gapFillIncomplete") : "Please complete the exercise."));
+								$feedbackTxt.fadeIn();							
+								return;
+								}
+						});
+						
+						if(!empty){				
 						var wrong = 0;
+
 						$targetHolder.find("input").each(function() {
 							var $this = $(this),
 								currvalue = !casesensitive ? $this.val().toLowerCase() : $this.val();
+							var feedback = "Incorrect"
+							var correct = false;
+							var answer = currvalue;
 							
 							if (answerData[$this.data("index")].indexOf(currvalue) != -1) { // correct
 								$this.attr("readonly", "readonly");
+								$this.attr("correct", "correct");
+								feedback = "Correct";
+								correct = true;
+								correct_answers++;
+
 							} else {
+								if(XTGetMode() == "normal") $this.attr("readonly", "readonly");									
+								$this.attr("incorrect", "incorrect");
 								wrong++;
 							}
+							
+							total++;
+							XTExitInteraction(x_currentPage, $this.data("index") , correct, [], answer, feedback)
+														
 						});
 						
+						gapFill.finishTracking();
+						
+						if(XTGetMode() == "normal"){
+							if (wrong == 0) {
+								$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+								$feedbackTxt.fadeIn();
+								$(this).hide();
+							} else if (wrong == $targetHolder.find("input").length) {
+								$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillWrongTracking") : "You have not filled any gaps correctly."));
+								$feedbackTxt.fadeIn();
+							} else {
+								$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillPartWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillPartWrongTracking") : "Your correct answers are shown in green."));
+								$feedbackTxt.fadeIn();
+							}
+							}
+						else{
 						if (wrong == 0) {
 							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							$feedbackTxt.fadeIn();
@@ -401,7 +466,17 @@
 							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong."));
 							$feedbackTxt.fadeIn();
 						}
-					});
+						}
+						
+						// Hide the button so only one submission can be made whilst tracking.
+						if(XTGetMode() == "normal"){
+							$(this).hide();
+						}
+						
+						
+						
+					}});
+					
 				
 				$targetHolder.find("input").on("keypress", function() {
 					$feedbackTxt.hide();
@@ -685,6 +760,25 @@
 					}
 					});
 		}
+		
+		//Starting the tracking
+		this.initTracking = function() {
+			// Track the gapfill page
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+			}
+			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+						
+		}
+		
+		//Stopping the tracking
+		this.finishTracking = function() {
+			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+		}
+		
+		
 	}
 	
 	gapFill.init();
@@ -714,10 +808,22 @@
 		text-align:	center;
 	}
 	
+	
 	#targetHolder input[readonly], #targetHolder .target.correct {
 		color:			green;
 		border-color:	transparent;
 	}
+	
+	#targetHolder input[incorrect]{
+		color: 			red;
+		border-color:	transparent;
+	}
+	
+	#targetHolder input[correct]{
+		color: 			green;
+		border-color:	transparent;
+	}
+		
 	
 	#targetHolder select {
 		margin:	5px 0;
