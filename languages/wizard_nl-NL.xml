@@ -5,7 +5,8 @@
         <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
         <insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
         <insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
-    </insertDialog>    <btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
+    </insertDialog>
+	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
 	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
