@@ -60,6 +60,7 @@ function show_preview_code($row){
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
+    $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
 
     echo $page_content;
 }
