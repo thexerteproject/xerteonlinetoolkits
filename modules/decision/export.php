@@ -80,6 +80,7 @@ if ($fullArchive) {
     export_folder_loop($parent_template_path);
 
     copy_parent_files();
+    $row['zipname'] .= '_archive';
 }
 else
 {
@@ -87,6 +88,7 @@ else
     export_folder_loop($parent_template_path . "common/");
 
     copy_parent_files();
+    $row['zipname'] .= '_deployment';
 }
 
 
