@@ -1222,6 +1222,7 @@ function open_created_node(template_id, folder_id)
             if (workspace.items[i].xot_id == template_id)
             {
                 node = workspace.items[i];
+                tree.deselect_all();
                 tree.select_node(node.id);
                 break;
             }
