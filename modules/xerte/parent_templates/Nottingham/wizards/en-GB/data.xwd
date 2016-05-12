@@ -507,7 +507,7 @@
 	
   <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></decision><mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
@@ -523,7 +523,7 @@
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </mcqStepOption><sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<unit label="Unit of answer" type="TextInput" wysiwyg="true"/>
 	<min label="Minimum value" type="TextInput"/>
@@ -545,14 +545,14 @@
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </sliderStepOption><infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	<target label="Target ID" type="TextInput"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </infoStep><resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	
 	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
