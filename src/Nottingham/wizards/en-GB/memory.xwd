@@ -10,6 +10,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
+	<backurl label="Card Back Image" type="Media" optional="true"/>
 
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Label" url="Select Image"/>]]></matchItem>
