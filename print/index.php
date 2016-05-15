@@ -32,7 +32,7 @@ body {
   <div id="mainContent">
     <h1> Print your Xerte LO</h1>
     <p>Note: This is just a test and demo of how we could enable printing of Xerte LO's without major changes to the existing code. Longer term we would ideally add a more elegant solution and perhaps saving as pdf and epub too. Your LO must be public for this to work.</p>
-    <form id="form1" name="form1" method="get" action="scroll.php">
+    <form id="form1" name="form1" method="get" action="print.php">
       <p>To see how this works use the example below or paste the full link to your own LO.</p>
       <p>
         <label>Link to LO:
