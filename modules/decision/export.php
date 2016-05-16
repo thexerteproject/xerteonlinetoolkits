@@ -80,7 +80,6 @@ if ($fullArchive) {
     export_folder_loop($parent_template_path);
 
     copy_parent_files();
-    $row['zipname'] .= '_archive';
 }
 else
 {
@@ -88,7 +87,6 @@ else
     export_folder_loop($parent_template_path . "common/");
 
     copy_parent_files();
-    $row['zipname'] .= '_deployment';
 }
 
 
@@ -111,6 +109,20 @@ $lo_name = $xml->getName();
  * Create basic HTML page
  */
 basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name);
+
+
+/*
+ * Improve the naming of the exported zip file
+ */
+	
+$export_type = "";
+if ($fullArchive)
+	$export_type = "_archive";
+else
+	$export_type = "_deployment";
+
+$row['zipname'] .= $export_type;
+
 
 /*
  * Add the files to the zip file, create the archive, then send it to the user
