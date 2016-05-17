@@ -1282,6 +1282,11 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
+    
+    // Rip out the glossary if required
+	if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+		$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+	}
 
     // Resolve all text box added <img> and <a> src/href tags to proper urls
     $("#x_page" + x_currentPage).find("img,a").each(function() {

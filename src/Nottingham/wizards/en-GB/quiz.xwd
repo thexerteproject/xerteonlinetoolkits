@@ -49,7 +49,6 @@
     <video label="Video" type="media"  optional="true"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
-	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
       <question><![CDATA[<question  name="Question" prompt="Here is a prompt" type="Single Answer" />]]></question>

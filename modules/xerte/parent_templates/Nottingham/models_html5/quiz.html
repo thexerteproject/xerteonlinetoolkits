@@ -160,9 +160,9 @@
 				}
 				$("#qTxt").html(x_addLineBreaks(infoString));
 				
-				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-					$("#qTxt").find("a.x_glossary").contents().unwrap();
-				}
+				//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				//	$("#qTxt").find("a.x_glossary").contents().unwrap();
+				//}
 
 				$("#feedback").html("");
 				
@@ -251,9 +251,9 @@
 								.data("option", $thisOption)
 								.html(x_addLineBreaks(thisOption.text));
 							
-							if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-								$thisOptionTxt.find("a.x_glossary").contents().unwrap();
-							}
+							//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+							//	$thisOptionTxt.find("a.x_glossary").contents().unwrap();
+							//}
 						});
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
 					quiz.checked = false;
@@ -347,9 +347,9 @@
 						});
 					});
 
-                if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-                    $("#feedback").find("a.x_glossary").contents().unwrap();
-                }
+                //if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+                //    $("#feedback").find("a.x_glossary").contents().unwrap();
+                //}
 
                 $("#nextBtn").button("enable");
 				$("#checkBtn").button("disable");
@@ -390,9 +390,9 @@
             $("#feedback").html(fbTxt);
 			$("#questionAudio").empty();
 			
-			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				$("#feedback").find("a.x_glossary").contents().unwrap();
-			}
+			//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+			//	$("#feedback").find("a.x_glossary").contents().unwrap();
+			//}
 			
             $("#optionHolder").hide();
 			$("#nextBtn, #checkBtn").button("disable");
@@ -448,9 +448,9 @@
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
 				
-				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-					$textHolder.find("a.x_glossary").contents().unwrap();
-				}
+				//if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				//	$textHolder.find("a.x_glossary").contents().unwrap();
+				//}
 				
 				var textAlign = x_currentPageXML.getAttribute("align");
 				if (textAlign != "right" || (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "")) {
