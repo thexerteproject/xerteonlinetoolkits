@@ -19,6 +19,7 @@
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
+    <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
