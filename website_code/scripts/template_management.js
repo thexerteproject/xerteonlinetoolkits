@@ -162,6 +162,7 @@ function template_toggle(tag){
     if((temp.style.display=="none")||(temp.style.display=="")){
         temp.style.display="block";	
 				butt.style.display="none";
+				temp.querySelector('input[name="filename"]').focus();
     }else{
         temp.style.display="none";
 				butt.style.display="";
