@@ -615,6 +615,7 @@ div#file_area{
 	font-size: 1.0em;
 	margin-left: 10px;
 	margin-top: 10px;
+	padding-bottom: 25px;
 }
 .projectInformationContainer p{
     padding: 4px;
