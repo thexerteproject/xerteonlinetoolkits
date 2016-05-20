@@ -249,7 +249,13 @@
 								$thisOptionTxt.find("a.x_glossary").contents().unwrap();
 							}
 						});
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', $thisQ.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
+					var name = $thisQ.getAttribute("prompt");
+					if ($thisQ.getAttribute("name"))
+					{
+						name = $thisQ.getAttribute("name");
+					}
+
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
 					quiz.checked = false;
 				}
 			}

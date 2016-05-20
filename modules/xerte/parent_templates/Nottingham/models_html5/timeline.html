@@ -117,9 +117,17 @@
 						if($(this).data("currentTarget") == "")
 							empty = true;
 					});
-					
-								
-					
+					if(!empty){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								correct++;
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}else{
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}
+						});
+					}
 					if (empty){
 						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 					}	
@@ -140,17 +148,6 @@
 						}
 						timeline.finishTracking();
 					}
-					if(!empty){
-						$("#labelHolder .label").each(function() {
-							var $this = $(this);
-							if ($this.data("target").is($this.data("currentTarget"))) {
-								correct++;
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-							}else{
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-							}					
-						});
-					}	
 					$("#feedback").show();
 				});
 				
@@ -264,8 +261,6 @@
 		this.finishTracking = function()
 		{
 			var l_options = [],
-            l_answers = [],
-            l_feedback = [],
             l_correct = 0,
             l_total = 0;
 
@@ -279,15 +274,15 @@
         		var l_draglabel	= $this.html().trim();
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
+				l_option.answer = l_draglabel + "-->" + l_placeholder;
         		l_options.push(l_option);
-        		l_answer = l_placeholder + "-->" + l_draglabel;
-        		l_answers.push(l_answer);
 				if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
-					l_feedback.push("Correct");
+					l_option.result = "Correct";
 				}else{
-					l_feedback.push("Incorrect");
+					l_option.result = "Incorrect";
 				}
+				l_options.push(l_option);
 			});
             
                   
@@ -297,7 +292,7 @@
                 $("#dragDropHolder .label").draggable("disable");
              	$("#button").hide();
             }
-			XTExitInteraction(x_currentPage, 0, l_correct == l_total, l_options, l_answers.join(), l_feedback.join());
+			XTExitInteraction(x_currentPage, 0, l_correct == l_total, l_options, "", $("#feedback").text());
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
 		
@@ -309,9 +304,7 @@
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-            correctOptions 		= [];
-            correctAnswer 		= [];
-            correctFeedback 	= [];
+            var correctOptions 		= [];
             $(x_currentPageXML).children().each(
             	function(i)
             	{
@@ -320,13 +313,12 @@
             		var draglabel	= this.getAttribute("text");
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
+					correctOption.answer = draglabel + "-->" + placeholder;
                     correctOptions.push(correctOption);
-                    correctAnswer.push(placeholder + "-->" + draglabel);
-            		correctFeedback.push("Correct");
-            		
+
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer.join(), correctFeedback.join());
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, "", "");
 		}
 		
 		

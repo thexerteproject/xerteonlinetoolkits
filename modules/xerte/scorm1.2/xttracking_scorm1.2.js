@@ -494,7 +494,7 @@ function ScormTrackingState()
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
                         res = setValue(interaction + 'weighting', Math.round(pweighting/nrquestions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
+                        res = setValue(interaction + 'result', sit.score);
                         break;
                     case 'numeric':
                         res = setValue(interaction + 'type', 'numeric');
@@ -865,7 +865,7 @@ function XTSetOption(option, value)
             state.lo_completed = value;
             break;
         case "objective_passed":
-            state.lo_passed = value;
+            state.lo_passed = Number(value);
             break;
     }
 }

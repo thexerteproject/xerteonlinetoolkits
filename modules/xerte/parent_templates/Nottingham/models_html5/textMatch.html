@@ -202,7 +202,7 @@
 									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 									$this.find(".audioHolder").show();								
 								} else{	
-									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');	
+									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '"></img>');	
 								}
 							});						
 							
@@ -348,8 +348,6 @@
 		this.finishTracking = function()
 		{
 			var l_options = [],
-            l_answers = [],
-            l_feedback = [],
             l_correct = 0,
             l_total = 0;
 
@@ -361,21 +359,21 @@
         		var l_draglabel	= $this.data("target").val();
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
-        		l_options.push(l_option);
-        		l_answer = l_placeholder + "-->" + l_draglabel;
+				l_option.answer = l_draglabel + "-->" + l_placeholder;
 				if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
-					l_feedback.push("Correct");
+					l_option.result = "Correct";
 				}else{
-					l_feedback.push("Incorrect");
+					l_option.result = "Incorrect";
 				}
+        		l_options.push(l_option);
 			});
             if(XTGetMode() == "normal"){
 	            $("#dragDropHolder .label")
 				.draggable("disable");
             }
             
-			XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/l_total, l_options, l_answers, l_feedback);
+			XTExitInteraction(x_currentPage, 0, (l_correct  == l_total), l_options, "", $("#feedback").text());
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
 
@@ -399,13 +397,11 @@
             		var draglabel	= this.getAttribute("p2");
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
+					correctOption.answer = draglabel + "-->" + placeholder;
                     correctOptions.push(correctOption);
-                    correctAnswer.push(placeholder + "-->" + draglabel);
-            		correctFeedback.push("Correct");
-            		
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer, correctFeedback);
+            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, "", "");
 		}
 		
 		

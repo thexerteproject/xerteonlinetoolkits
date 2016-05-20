@@ -64,16 +64,17 @@
 
                 l_total++;
                 if ($this.data("category").is($this.parent())) {
-                    $this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+                    $this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
                     l_feedback.push("correct");
                     l_correct++;
                 }
                 else
                 {
-                    l_feedback.push("incorrect");
+					$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+					l_feedback.push("incorrect");
                 }
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct * 100.0)/this.totaloptions, l_options, l_answers, l_feedback);
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }

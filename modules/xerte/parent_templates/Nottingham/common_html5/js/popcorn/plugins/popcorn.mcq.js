@@ -33,14 +33,63 @@ optional: feedback page synch play enable
 
 */
 
+
 (function (Popcorn) {
 	Popcorn.plugin("mcq", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable;
+		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable, questions;
+		
+		var finishTracking = function(options)
+		{
+			if(options.enableTracking == "true"){
+				window.questionsAnswerd++;
+				var allValid = true;
+				for (var i=0; i<options.childNodes.length; i++)
+				{
+					var curValid = false;
+					for(var j = 0;j<selected.length;j++)
+					{
+						if(i == selected[j] && options.childNodes[i].getAttribute("correct") == "false")
+						{
+							allValid = false;
+						}
+						if(i == selected[j] && options.childNodes[i].getAttribute("correct") == "true")
+						{
+							curValid = true;
+						}
+					}
+					if(!curValid && options.childNodes[i].getAttribute("correct") == "true")
+					{
+						allValid = false;
+					}
+				}
+				l_options = [];
+				l_answers = [];
+				l_feedback = [];
+				$(selected).each(function(i, v){
+					l_options.push((i+1)+"");
+					l_answers.push(options.childNodes[v].getAttribute("text"));
+					l_feedback.push("correct");
+				});
+				if(allValid)
+				{
+					correctQuestions++;
+				}
+				
+				XTExitInteraction(x_currentPage, window.questions[options._id].nr, allValid, l_options, l_answers, l_feedback);
+				if(window.questionsAnswerd == this.numOfQuestions)
+				{
+					scormScore = Math.ceil(correctQuestions / this.numOfQuestions * 100);
+					XTSetPageScore(x_currentPage, scormScore);
+				}
+				mediaLesson.enableControls(media.media, true);
+				
+			}
+		}
 		
 		var answerSelected = function() {
-			// put together feedback string
+			// put together feedback string;
 			var feedbackTxt = "",
 				action = -1,
 				enable = false;
@@ -61,10 +110,11 @@ optional: feedback page synch play enable
 				}
 			}
 			
+
 			// feedback if question has true/false answers
 			if (judge == true) {
 				var fb;
-				
+				finishTracking(options);
 				if (options.answerType == "multiple" && options.type == "radio") {
 					fb = "multiRight";
 					for (var i=0; i<options.childNodes.length; i++) {
@@ -97,6 +147,7 @@ optional: feedback page synch play enable
 					}
 				}
 				
+			
 				feedbackTxt += options[fb] != "" ? '<div class="feedback">' + options[fb] + '</div>' : "";
 			}
 			
@@ -133,6 +184,8 @@ optional: feedback page synch play enable
 			}
 		}
 		
+		
+		
 		var doAction = function(index) {
 			if (options.childNodes[index].getAttribute("page") != undefined && options.childNodes[index].getAttribute("page") != "") {
 				// change LO page
@@ -162,7 +215,10 @@ optional: feedback page synch play enable
 		return {
 			_setup: function(options) {
 				// setup code, fire on initialisation
-				
+				options.nr = questionNr;
+				questionNr++;
+				window.questions[options._id] = options;
+
 				media = this;
 				judge = false;
 				autoEnable = true;
@@ -264,8 +320,12 @@ optional: feedback page synch play enable
 										} else if ($checkBtn.is(":disabled") && $selected.length > 0) {
 											$checkBtn.button("enable");
 										}
-										$checkBtn.show();
 										
+										if(options.enableTracking != "true")
+										{
+											$checkBtn.show();
+										}
+																				
 										selected = [];
 										$selected.each(function() {
 											selected.push($(this).data("index"));
@@ -299,7 +359,10 @@ optional: feedback page synch play enable
 											} else if ($checkBtn.is(":disabled") && this.selectedIndex > 0) {
 												$checkBtn.button("enable");
 											}
-											$checkBtn.show();
+											if(options._id.enableTracking != "true")
+											{
+												$checkBtn.show();
+											}
 											
 											selected = [this.selectedIndex-1];
 										})
@@ -355,7 +418,19 @@ optional: feedback page synch play enable
 			
 			start: function(event, options) {
 				// fire on options.start
-				
+				correctOptions = [];
+				correctAnswers = [];
+				correctFeedback = [];
+				$(options.childNodes).each(function(i, v){
+					if(v.getAttribute("correct") == "true")
+					{
+						correctOptions.push((i+1)+"");
+						correctAnswers.push(v.getAttribute("text"));
+						correctFeedback.push("correct");
+					}
+					
+				});
+				XTEnterInteraction(x_currentPage, window.questions[options._id].nr, 'multiplechoice', options.text, correctOptions, correctAnswers, correctFeedback );
 				if ($(options.childNodes).length > 0) {
 					// reset any previous answers given
 					if (options.type == "radio") {

@@ -238,11 +238,11 @@
 
 			$("#incorrect")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '">' + x_addLineBreaks(" The answer is incorrect. The correct answer was: " + $pageContents.data("captionInfo")[$pageContents.data("current")].answer));
+					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + x_addLineBreaks(" The answer is incorrect. The correct answer was: " + $pageContents.data("captionInfo")[$pageContents.data("current")].answer));
 			//Will be shown if the answer is correct
 			$("#answer")
 					.hide()
-					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '">' + x_addLineBreaks(" Correct!"));
+					.html('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '">' + x_addLineBreaks(" Correct!"));
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var correctAnswer = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");

@@ -244,6 +244,22 @@ x_projectDataLoaded = function(xmlData) {
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
+	if (x_params.trackingPassed != undefined)
+	{
+		// Get value, and try to convert to decimal between 0 and 1
+        var passed = x_params.trackingPassed;
+        var factor = 1;
+        var percpos = passed.indexOf('%')
+        if (percpos > 0)
+        {
+            factor = 0.01;
+            passed = passed.substr(0, passed.indexOf('%'));
+        }
+        // Change decimal ',' to '.'
+        passed = passed.replace(',', '.');
+        var passednumber = Number(passed) * factor;
+        XTSetOption('objective_passed', passednumber);
+	}
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
