@@ -89,6 +89,10 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
+	// Load the script.js dependency loader
+	// TODO - we should move this to play/preview and let it kickstart the loading of all files
+	$.getScript(x_templateLocation + "common_html5/js/script.js");
+
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
