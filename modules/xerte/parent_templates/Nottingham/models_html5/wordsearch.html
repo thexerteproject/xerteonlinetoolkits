@@ -1,0 +1,102 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var wordsearch = new function() {
+		var $pageContents;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			$pageContents = $("#pageContents");
+
+			// Load in the required scripts before we can begin
+			$script.path('../modules/xerte/parent_templates/Nottingham/common_html5/wordfind/');
+			$script(['wordfind.js', 'style.css'], function () {
+				$script('wordfindgame.js', function () {
+					wordsearch.begin();
+				})
+			});
+		}
+		
+		this.begin = function() {
+		
+			// Get words and sort if required
+			var words = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
+			switch(x_currentPageXML.getAttribute("order")) {
+				case 'random':
+					var tempWords = [];
+					for (var i=0, len=words.length; i<len; i++) {
+						var choice = Math.floor(Math.random() * words.length);
+						tempWords.push(words[choice]);
+						words.splice(choice, 1);
+					}
+					words = tempWords;
+					break;
+
+				case 'alphabetical':
+					words.sort();
+					break;
+
+				default:
+					break;
+			}
+		
+			// start a word find game
+			var wordsearch = wordfindgame.create(words, '#puzzle', '#words');
+
+			// Add a solve button
+			$('#solve').click( function() {
+				wordfindgame.solve(wordsearch, words);
+			});
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+		
+	}
+	
+	wordsearch.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+	#pageContents {
+		
+	}
+	
+</style>
+
+<div id="pageContents">
+<div id='puzzle'></div>
+<div id='words'></div>
+<div><button id='solve'>Solve Puzzle</button></div>
+</div>
