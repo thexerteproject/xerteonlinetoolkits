@@ -22,10 +22,11 @@
 	// other functions for model should also be in here to avoid conflicts
 	var dragDropLabel = new function() {
 		var labelTxt1,
-				labelTxt2,
-				labelTxt3,
-				targetTxt1,
-				targetTxt2;
+			labelTxt2,
+			labelTxt3,
+			targetTxt1,
+			targetTxt2,
+            checked = false;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -76,6 +77,14 @@
 				});
 			}
 		};
+
+        this.leavePage = function() {
+            if ($(x_currentPageXML).children().length > 0) {
+                if (!this.checked) {
+                    this.showFeedBackandTrackResults();
+                }
+            }
+        };
 
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -168,9 +177,11 @@
 								.appendTo($labelHolder)
 								.data("correct", tempData[labelNum].correct);
 
-						var correctOptions = {source: tempData[labelNum].name, target: tempData[labelNum].name},
-								correctAnswer = [],
-								correctFeedback = "";
+						var correctOptions = [],
+                            correctAnswer = [],
+							correctFeedback = "";
+
+                        correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
 
 						XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
 						tempData.splice(labelNum, 1);
@@ -500,20 +511,20 @@
 					{
 						numCorrect++;
 						$this.addClass("correct");
-						l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
-						result = "correct";
+						//l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
+						result = true;
 					}
 					else
 					{
 						$this.addClass("incorrect");
-						l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
-						result = "incorrect";
+						//l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
+						result = false;
 					}
 
 					l_options = [];
 					if($this.data("target") === undefined || $this.data("target") === "")
 					{
-						l_options.push({source: $this.html(), target: ""});
+						l_options.push({source: $this.html(), target: " "});
 					}
 					else {
 						l_options.push({source: $this.html(), target: $(x_currentPageXML).children()[$this.data("target")].getAttribute("name")});
@@ -523,7 +534,16 @@
 					XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback);
 				});
 
-				XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+				if ($(x_currentPageXML).children().length === 0)
+                {
+                    XTSetPageScore(x_currentPage, 100);
+                }
+                else
+                {
+                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+                }
+
+                dragDropLabel.checked = true;
 			}
 
 			// Queue reparsing of MathJax - fails if no network connection
