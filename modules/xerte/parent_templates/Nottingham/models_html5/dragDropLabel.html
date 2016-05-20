@@ -25,8 +25,7 @@
 			labelTxt2,
 			labelTxt3,
 			targetTxt1,
-			targetTxt2,
-            checked = false;
+			targetTxt2;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -184,6 +183,7 @@
                         correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
 
 						XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
+						dragDropLabel.checked = false;
 						tempData.splice(labelNum, 1);
 					});
 
