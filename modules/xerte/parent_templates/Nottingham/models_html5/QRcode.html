@@ -34,7 +34,7 @@
 		
 		this.init = function() {
 			var pastedurl	= x_currentPageXML.getAttribute("url"),
-				shorturl = "rss_proxy.php?rss=http://is.gd/api.php?longurl=" + pastedurl;
+				shorturl = "rss_proxy.php?rss=https://is.gd/api.php?longurl=" + pastedurl;
 			
 			$.ajax({
 				url: shorturl,
