@@ -82,7 +82,11 @@
 			});
 		}
 		
-		
+		this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0 && tracked != true) {
+				this.finishTracking();
+			}
+        }
 		
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -122,9 +126,6 @@
 							var $this = $(this);
 							if ($this.data("target").is($this.data("currentTarget"))) {
 								correct++;
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-							}else{
-								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
 							}
 						});
 					}
@@ -148,6 +149,17 @@
 						}
 						timeline.finishTracking();
 					}
+					if(!empty){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}else{
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}
+						});
+					}
 					$("#feedback").show();
 				});
 				
@@ -170,6 +182,7 @@
 						.attr("title", targetTxt1 + " " + this.getAttribute("text"))
 						.find("h3").html(this.getAttribute("name"));
 					labels.push({text:this.getAttribute("text"), correct:$thisTarget});
+					$thisTarget.data("id", i);
 				});
 			
 			var $pageContents = $("#pageContents");
@@ -234,7 +247,7 @@
 			// set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 1;
 			tabIndex += $pageContents.data("labels").length;
-			$targetHolder.find(".target").each(function() {
+			$targetHolder.find(".target").each(function(i) {
 				tabIndex++;
 				var $this = $(this);
 				$this.attr({
@@ -260,29 +273,31 @@
 		
 		this.finishTracking = function()
 		{
+			var tracked = true;
 			var l_options = [],
             l_correct = 0,
-            l_total = 0;
+            l_total = 0,
+            correct = false;
 
-            $("#labelHolder .label").each(function() {
+            $("#labelHolder .label").each(function(i) {
             	
 				var $this = $(this);
-				l_total++;
-				var l_option={};
-				var tData = $this.data("target");
-        		var l_placeholder = tData.html().trim(); 
-        		var l_draglabel	= $this.html().trim();
-        		l_option.source = l_draglabel;
-        		l_option.target = l_placeholder;
-				l_option.answer = l_draglabel + "-->" + l_placeholder;
-        		l_options.push(l_option);
+				
+				var tData = $this.data("currentTarget");
+        		var l_placeholder = tData.text().trim(); 
+        		var l_draglabel	= $this.text().trim();
+        		l_options = [];
+        		option = {source:l_draglabel, target:l_placeholder};
+        		l_answer = l_draglabel + "-->" + l_placeholder;
+        		l_options.push(option);
+        		correct = false;
 				if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
-					l_option.result = "Correct";
-				}else{
-					l_option.result = "Incorrect";
+					correct = true;
 				}
-				l_options.push(l_option);
+				debugger;
+				XTExitInteraction(x_currentPage, tData.data("id"), correct, l_options, l_answer, $("#feedback").text());
+				l_total++;
 			});
             
                   
@@ -292,7 +307,7 @@
                 $("#dragDropHolder .label").draggable("disable");
              	$("#button").hide();
             }
-			XTExitInteraction(x_currentPage, 0, l_correct == l_total, l_options, "", $("#feedback").text());
+			
          	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
 		
@@ -303,22 +318,22 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-            var correctOptions 		= [];
+            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
             $(x_currentPageXML).children().each(
             	function(i)
             	{
-            		var correctOption={};
-            		var placeholder = this.getAttribute("name"); 
-            		var draglabel	= this.getAttribute("text");
-            		correctOption.source = draglabel;
-                    correctOption.target = placeholder;
-					correctOption.answer = draglabel + "-->" + placeholder;
+            		var placeholder = this.getAttribute("name").trim(); 
+            		var draglabel	= $(this.getAttribute("text")).text().trim();
+					options = [];
+                    correctOption = {source:draglabel, target:placeholder};
+                    correctOptions = [];
                     correctOptions.push(correctOption);
-
+                    correctAnswer = draglabel + "-->" + placeholder;
+                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct");
+            		debugger;
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, "", "");
+           
 		}
 		
 		

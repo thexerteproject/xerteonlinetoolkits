@@ -98,6 +98,12 @@
 			});
 		}
 		
+		this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0 && tracked != true) {
+				this.finishTracking();
+			}
+        }
+		
 		this.init = function() {
 			$("#pageContents").data("audioW", 0);
 			numAttempts = 0;
@@ -150,7 +156,7 @@
 					{
 						numAttempts++;
 					}
-					
+					textMatch.finishTracking();
 					if(XTGetMode() != "normal"){
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
@@ -190,7 +196,7 @@
 								allCorrect = false;
 							}
 						});
-						textMatch.finishTracking();
+						
 					}
 					else{
 						if (!labelOffTarget){
@@ -274,7 +280,8 @@
 						.data({
 							"hint"	:this.getAttribute("hint"),
 							"name"	:this.getAttribute("name"),
-							"correct":this.getAttribute("p2")
+							"correct":this.getAttribute("p2"),
+							"id"	:i
 							})
 						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
 						
@@ -350,31 +357,33 @@
 			var l_options = [],
             l_correct = 0,
             l_total = 0;
+			var tracked = true;
 
-            $("#labelHolder .label").each(function() {
+            $("#labelHolder .label").each(function(i) {
+            	l_options = []
+            	correct = false;
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-        		var l_placeholder = $this.find("div").val(); 
-        		var l_draglabel	= $this.data("target").val();
+        		var l_placeholder = $this.data("currentTarget").text().trim();
+        		var l_draglabel	= $this.find("div").text().trim(); 
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
-				l_option.answer = l_draglabel + "-->" + l_placeholder;
+				l_answer = l_draglabel + "-->" + l_placeholder;
 				if ($this.data("target").is($this.data("currentTarget"))) {
 					l_correct++;
-					l_option.result = "Correct";
-				}else{
-					l_option.result = "Incorrect";
+					correct = true;
 				}
         		l_options.push(l_option);
+        		XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text());
 			});
+            
             if(XTGetMode() == "normal"){
 	            $("#dragDropHolder .label")
 				.draggable("disable");
             }
-            
-			XTExitInteraction(x_currentPage, 0, (l_correct  == l_total), l_options, "", $("#feedback").text());
-         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+            XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+			
 		}
 
 		
@@ -389,24 +398,31 @@
             correctOptions 		= [];
             correctAnswer 		= [];
             correctFeedback 	= [];
+           
             $(x_currentPageXML).children().each(
             	function(i)
             	{
+            		
+            		correctOptions = []
             		var correctOption={};
-            		var placeholder = this.getAttribute("p1"); 
-            		var draglabel	= this.getAttribute("p2");
+            		var placeholder = $(this.getAttribute("p1")).text(); 
+            		var draglabel	= $(this.getAttribute("p2")).text();
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
-					correctOption.answer = draglabel + "-->" + placeholder;
+					correctAnswer = draglabel + "-->" + placeholder;
+					correctFeedback = "Correct"
                     correctOptions.push(correctOption);
+                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, correctFeedback);
             	}
             );
-            XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, "", "");
+            
 		}
 		
 		
 		this.createLabels = function() {
 			// randomise order and create labels
+			
+			
 			var $pageContents = $("#pageContents"),
 				labels = [],
 				tempLabels = $pageContents.data("labels").slice(0),
@@ -419,6 +435,7 @@
 			}
 			for (i=0; i<labels.length; i++) {
 				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
+				
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
 				
