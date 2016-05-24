@@ -57,24 +57,27 @@
                 var $this = $(this);
                 var l_answer, l_option = {};
                 l_option.source = $this.data("name");
-                l_option.target = $this.data("category").data("name");
-                l_answer = $this.data("name") + "-->" + $this.data("category").data("name");
-                l_options.push(l_option);
+                //l_option.target = $this.data("category").data("name");
+				l_option.target = $this.parent().data("name");
+                l_answer = $this.data("name") + "-->" + $this.parent().data("name");
                 l_answers.push(l_answer);
 
                 l_total++;
                 if ($this.data("category").is($this.parent())) {
                     $this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
                     l_feedback.push("correct");
+					l_option.result = true;
                     l_correct++;
                 }
                 else
                 {
 					$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
 					l_feedback.push("incorrect");
+					l_option.result = false;
                 }
+				l_options.push(l_option);
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers.join(';'), l_feedback.join(';'));
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }
