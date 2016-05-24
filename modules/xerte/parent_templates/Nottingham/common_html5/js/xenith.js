@@ -1125,28 +1125,30 @@ function x_changePage(x_gotoPage) {
 
         x_setUpPage();
 
-        // calls function in current page model which does anything needed to reset the page (if it needs to be reset)
-        if (x_pageInfo[x_currentPage].type == "text") {
-            simpleText.pageChanged(); // errors if you just call text.pageChanged()
-        } else {
-            eval(x_pageInfo[x_currentPage].type).pageChanged();
-        }
+        // get short page type var
+        var pt = x_pageInfo[x_currentPage].type;
+        if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+        
+        // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
+        if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
+
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
-            try { customHTML.pageChanged(); } catch(e) {};
+                if (typeof customHTML.pageChanged === "function") {
+                	customHTML.pageChanged();
+                }
         }
 
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-            if (x_pageInfo[x_currentPage].type == "text") {
-                simpleText.sizeChanged();
-            } else {
-                eval(x_pageInfo[x_currentPage].type).sizeChanged();
-            }
+			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
+
             // calls function in any customHTML that's been loaded into page
             if ($(".customHTMLHolder").length > 0) {
-                try { customHTML.sizeChanged(); } catch(e) {};
+                if (typeof customHTML.sizeChanged === "function") {
+                	customHTML.sizeChanged();
+                }
             }
         }
 
