@@ -12,3 +12,6 @@ USER-FILES/
 
 # Ignore error-log/ folder changes 
 /error_logs/
+
+# Ignore convert.log
+/build/convert.log
