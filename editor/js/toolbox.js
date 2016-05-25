@@ -1673,7 +1673,7 @@ var EDITOR = (function ($, parent) {
         var input = $('<input>')
             .attr('type', 'hidden')
             .attr('name', 'rlofile')
-            .attr('value', rlopathvariable);
+            .attr('value', rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES")));
 
         drawingForm.append(input);
 
