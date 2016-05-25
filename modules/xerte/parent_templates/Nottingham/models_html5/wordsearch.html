@@ -18,23 +18,39 @@
  * limitations under the License.
  */
  
-	// pageChanged & sizeChanged functions are needed in every model file
-	// other functions for model should also be in here to avoid conflicts
-	var wordsearch = new function() {
-		var $pageContents;
-
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-			
+	// functions for model should be in here to avoid conflicts
+	var wordsearch = new function () {
+	
+		var puzzle,
+			words,
+			hideSolveUntilTimer;
+		
+		// function called when timer reaches zero
+		this.onTimerZero = function () { console.log(hideSolveUntilTimer);
+			if (hideSolveUntilTimer) {
+				$('#solve').show();
+			}
 		}
 		
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
+		this.init = function () {
+			// Read optional parameters
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			
-		}
-		
-		this.init = function() {
-			$pageContents = $("#pageContents");
+			// Hide the solve button completely?
+			var hideSolve = x_currentPageXML.getAttribute("hideSolve");
+			hideSolve = (hideSolve === 'true') ? true : false;
+			
+			// Hide the solve button until the timer counts down?
+			hideSolveUntilTimer = x_currentPageXML.getAttribute("hideSolveUntilTimer");
+			hideSolveUntilTimer = (hideSolveUntilTimer === 'true') ? true : false;
+			
+			var hasTimer = (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "");
+			
+			// Read language parameters if available
+			solveBtnTxt = x_currentPageXML.getAttribute("solveBtnTxt");
+			solveBtnTxt = (solveBtnTxt == undefined) ? "Solve Puzzle" : solveBtnTxt;
+			retryBtnTxt = x_currentPageXML.getAttribute("retryBtnTxt");
+			retryBtnTxt = (retryBtnTxt == undefined) ? "Restart Puzzle" : retryBtnTxt;
 
 			// Load in the required scripts before we can begin
 			$script.path('../modules/xerte/parent_templates/Nottingham/common_html5/wordfind/');
@@ -43,12 +59,32 @@
 					wordsearch.begin();
 				})
 			});
+ 
+			// Add a solve button and hide it if required
+			$('<button>')
+				.attr('id', 'solve')
+				.click( function() {
+					wordfindgame.solve(puzzle, words);
+				})
+				.text(solveBtnTxt)
+				.toggle(!(hideSolve || hideSolveUntilTimer && hasTimer))
+				.appendTo('#footerInfo');
+
+			// Add a retry button
+			$('<button>')
+				.attr('id', 'retry')
+				.click( function() {
+					wordsearch.begin();
+				})
+				.text(retryBtnTxt)
+				.appendTo('#footerInfo');
+
 		}
 		
-		this.begin = function() {
-		
+		this.game = function () {
+
 			// Get words and sort if required
-			var words = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
+			words = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
 			switch(x_currentPageXML.getAttribute("order")) {
 				case 'random':
 					var tempWords = [];
@@ -69,34 +105,42 @@
 			}
 		
 			// start a word find game
-			var wordsearch = wordfindgame.create(words, '#puzzle', '#words');
+			puzzle = wordfindgame.create(words, '#puzzle', '#words');
 
-			// Add a solve button
-			$('#solve').click( function() {
-				wordfindgame.solve(wordsearch, words);
-			});
+		}
+		
+		this.begin = function () {
+			wordsearch.game();
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
-		
 	}
 	
 	wordsearch.init();
 	
 </script>
 
-
 <style type="text/css">
 	
-	#pageContents {
-		
+	#infoHolder .panel {
+		overflow:	auto;
 	}
 	
 </style>
 
-<div id="pageContents">
-<div id='puzzle'></div>
-<div id='words'></div>
-<div><button id='solve'>Solve Puzzle</button></div>
+<div class="splitScreen small">
+
+	<div id="textHolder" class="left" tabindex="1"></div>
+	
+	<div id="infoHolder" class="right">
+		<div class="panel centerAlign">
+			<div id='puzzle'></div>
+			<div id='words'></div>
+		</div>
+		
+		<div id="footerInfo" class="x_floatRight">
+		</div>
+	</div>
+
 </div>
