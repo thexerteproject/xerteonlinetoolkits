@@ -1342,9 +1342,16 @@ function x_addCountdownTimer() {
         if (x_countdownTimer > 0) {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
-        } else {
+         	// If page model wants timer tick to know then pass value
+        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);	
+        }
+        else {
             window.clearInterval(x_timer);
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
+
+        	// If page model wants to know then pass event
+        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerZero === "function") window[x_pageInfo[x_currentPage].type].onTimerZero();
+
         }
     };
 
