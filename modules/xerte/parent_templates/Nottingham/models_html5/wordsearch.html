@@ -53,7 +53,7 @@
 			retryBtnTxt = (retryBtnTxt == undefined) ? "Restart Puzzle" : retryBtnTxt;
 
 			// Load in the required scripts before we can begin
-			$script.path('../modules/xerte/parent_templates/Nottingham/common_html5/wordfind/');
+			$script.path(x_templateLocation + 'common_html5/wordfind/');
 			$script(['wordfind.js', 'style.css'], function () {
 				$script('wordfindgame.js', function () {
 					wordsearch.begin();
