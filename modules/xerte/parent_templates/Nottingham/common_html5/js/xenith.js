@@ -686,9 +686,14 @@ function x_continueSetUp() {
 			});
 	}
 	
+	// get icon position
+	var icPosition;
+	if (x_params.icPosition != undefined && x_params.icPosition != "") {
+		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+	}
 	if (x_params.ic != undefined && x_params.ic != "") {
 		var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title

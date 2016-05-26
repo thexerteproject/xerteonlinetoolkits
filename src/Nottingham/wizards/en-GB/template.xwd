@@ -34,6 +34,7 @@
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
 	<icTip optional="true" type="TextInput" label="Icon Description" defaultValue="Enter a Description for Accessibility"/>
+	<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Icon Position" defaultValue="left" width="100"/>
     <nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
