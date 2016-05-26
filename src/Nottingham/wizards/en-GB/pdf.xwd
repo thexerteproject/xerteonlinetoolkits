@@ -10,6 +10,10 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <url label="PDF File" type="media"/>
+    
+    <pdfWidth label="PDF Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100" optional="true"/>
+    <text label="Page Text" type="TextArea" defaultValue="Enter text for the page here" height="200" optional="true"/>
+
 	<open label="Open PDF" type="TextInput" wysiwyg="true" language="true"/>
 
   </pdf>
