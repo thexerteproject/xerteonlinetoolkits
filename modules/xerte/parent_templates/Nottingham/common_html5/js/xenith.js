@@ -687,7 +687,7 @@ function x_continueSetUp() {
 	}
 	
 	// get icon position
-	var icPosition;
+	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
