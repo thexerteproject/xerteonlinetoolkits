@@ -1726,6 +1726,7 @@ var EDITOR = (function ($, parent) {
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];
+            //console.log(lo_node);
             $.each(lo_node.children, function(i, key){
                 var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
                 var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
@@ -1735,17 +1736,25 @@ var EDITOR = (function ($, parent) {
                     var page = [];
                     // Also make sure we only take the text from the name, and not the full HTML
                     page.push(getTextFromHTML(name.value));
-                    if (pageID.found)
-                    {
-                        page.push(pageID.value);
-                    }
-                    else
-                    {
-                        page.push(linkID.value);
-                    }
+                    page.push(pageID.found ? pageID.value : linkID.value);
                     pages.push(page);
-                }
 
+					// Now we do the children
+					var childNode = tree.get_node(key, false);
+					$.each(childNode.children, function(i, key){
+						var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+						var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+						var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+						if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+						{
+							var page = [];
+							// Also make sure we only take the text from the name, and not the full HTML
+							page.push(getTextFromHTML("&nbsp;- "+name.value));
+							page.push(pageID.found ? pageID.value : linkID.value);
+							pages.push(page);
+						}
+					});
+                }
             });
             return pages;
         },
