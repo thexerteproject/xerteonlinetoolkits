@@ -21,9 +21,18 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var tabNav = new function() {
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-			
+		
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(startTab) {
+			$('.tabHeader a').each(function(i) {
+				if (
+					($.isNumeric(startTab) && i === parseInt(startTab)) ||
+					(startTab.toLowerCase() === $(this).text().toLowerCase())
+				) {
+					$(this).click();
+					return false;
+				}
+			});
 		}
 		
 		// function called every time the size of the LO is changed
@@ -83,6 +92,9 @@
 					$thisHeader = $tabHeader;
 					$thisContents = $paneInfo;
 				}
+				
+				// Store the linkID for each tab for later
+				$thisHeader.data('linkID', this.getAttribute("linkID"));
 				
 				var $thisHeaderLink = $thisHeader.find("a");
 				$thisHeaderLink

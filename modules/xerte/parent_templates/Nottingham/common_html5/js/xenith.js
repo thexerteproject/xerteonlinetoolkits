@@ -35,6 +35,7 @@ var x_languageData  = [],
     x_volume        = 1,
     x_audioBarH     = 30,
     x_mediaText     = [],
+    x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = []; // list of any responsivetext.css files in use
 
@@ -177,8 +178,16 @@ x_projectDataLoaded = function(xmlData) {
 			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
 				page.pageID = pageID;
 			}
+
+			//Get child linkIDs for deeplinking
+			page.childIDs = [];
+			$(this).children().each(function () {
+				page.childIDs.push($(this)[0].getAttribute("linkID"));
+			});
+
 			x_pageInfo.push(page);
-		} else {
+		}
+		else {
 			pageToHide.push(i);
 		}
     });
@@ -973,30 +982,52 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-    var page;
-    page = XTStartPage();
+    var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
         x_changePage(page);
     }
-    else
-    {
+    else {
+    	// Handle page scope deeplinking
+    	if ((pageInfo.ID).indexOf('|') >= 0) {
+    		x_deepLink = (pageInfo.ID).split('|')[1].trim();
+    		if ($.isNumeric(x_deepLink)) x_deepLink = parseInt(x_deepLink - 1);
+
+    		pageInfo.ID = (pageInfo.ID).split('|')[0].trim();
+    	}
+    	else {
+    		x_deepLink = '';
+    	}
+
         if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
             x_changePage(parseInt(pageInfo.ID) - 1);
 
-        } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+        }
+        else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
             page = x_lookupPage(pageInfo.type, pageInfo.ID);
-            if (page != null) {
-                x_changePage(page);
-            } else if (force == true) {
-                x_changePage(0);
+            if ($.isArray(page)) {
+            	x_deepLink = page[1];
+            	x_changePage(page[0]);
             }
-
-        } else {
+            else if (page != null) {
+                x_changePage(page);
+            }
+            else {
+            	x_deepLink = "";
+            	if (force == true) {
+                	x_changePage(0);
+                }
+            }
+        }
+        else {
             page = parseInt(pageInfo.ID);
             if (page > 0 && page <= x_pages.length) {
                 x_changePage(page-1);
-            } else if (force == true) {
-                x_changePage(0);
+            }
+            else {
+            	x_deepLink = "";
+            	if (force == true) {
+                	x_changePage(0);
+                }
             }
         }
     }
@@ -1010,27 +1041,27 @@ function x_lookupPage(pageType, pageID) {
 			(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
 			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
         ) {
-            break;
+            return i
         }
     }
 
-    if (i != len) {
-        return i;
-    } else {
-		// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
-		for (var i=0, len = x_pageInfo.length; i<len; i++) {
-			if (
-				pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
-			) {
-				break;
-			}
-		}
-		if (i != len) {
+	// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
+	for (var i=0, len = x_pageInfo.length; i<len; i++) {
+		if (
+			pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
+		) {
 			return i;
-		} else {
-			return null;
 		}
-    }
+	}
+	
+	// Lastly we now need to check first children of each page
+	for (var j,i=0, len = x_pageInfo.length; i<len; i++) {
+		if ((j = x_pageInfo[i].childIDs.indexOf(pageID)) > -1) {
+			return [i, j];
+		}
+	}
+
+	return null;
 }
 
 
@@ -1156,9 +1187,9 @@ function x_changePage(x_gotoPage) {
                 }
             }
         }
-
     // x_currentPage hasn't been viewed previously - load model file
-    } else {
+    }
+    else {
         $x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
         $("#x_page" + x_currentPage).css("visibility", "hidden");
 
@@ -1182,6 +1213,8 @@ function x_changePage(x_gotoPage) {
 
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+	x_doDeepLink();
 
     x_updateHash();
 }
@@ -1216,10 +1249,19 @@ function x_loadPage(response, status, xhr) {
         x_pageLoaded();
     }
 
-        // Queue reparsing of MathJax - fails if no network connection
-        try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+    // Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
     x_setUpPage();
+}
+
+
+// function to do deeplink
+function x_doDeepLink() {
+	if (x_deepLink !== "") {
+		if (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function") window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
+		x_deepLink = "";
+	}
 }
 
 
@@ -1298,6 +1340,9 @@ function x_pageLoaded() {
 	if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
 		$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
 	}
+	
+	// Do deeplinking here so model has appropriate data at hand
+	x_doDeepLink();
 
     // Resolve all text box added <img> and <a> src/href tags to proper urls
     $("#x_page" + x_currentPage).find("img,a").each(function() {
