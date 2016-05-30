@@ -23,11 +23,11 @@
 	var tabNav = new function() {
 		
 		// Called from xenith if tab level deeplinking is available
-		this.deepLink = function(startTab) {
+		this.deepLink = function(item) {
 			$('.tabHeader a').each(function(i) {
 				if (
-					($.isNumeric(startTab) && i === parseInt(startTab)) ||
-					(startTab.toLowerCase() === $(this).text().toLowerCase())
+					($.isNumeric(item) && i === parseInt(item))
+					|| (item.toLowerCase() === $(this).text().toLowerCase())
 				) {
 					$(this).click();
 					return false;
@@ -92,9 +92,6 @@
 					$thisHeader = $tabHeader;
 					$thisContents = $paneInfo;
 				}
-				
-				// Store the linkID for each tab for later
-				$thisHeader.data('linkID', this.getAttribute("linkID"));
 				
 				var $thisHeaderLink = $thisHeader.find("a");
 				$thisHeaderLink

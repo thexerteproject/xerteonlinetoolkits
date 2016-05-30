@@ -1259,8 +1259,10 @@ function x_loadPage(response, status, xhr) {
 // function to do deeplink
 function x_doDeepLink() {
 	if (x_deepLink !== "") {
-		if (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function") window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
-		x_deepLink = "";
+		if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
+			window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
+			x_deepLink = "";
+		}
 	}
 }
 

@@ -23,7 +23,20 @@
 	var thumbnailViewer = new function() {
 		var $mainTxt,
 			$mainInfoHolder;
-		
+
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			$('.thumbBox').each(function(i) {
+				if (
+					($.isNumeric(item) && i === parseInt(item))
+					|| (item.toLowerCase() === $(this).text().toLowerCase())
+				) {
+					$(this).click();
+					return false;
+				}
+			});
+		}
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$mainTxt = $("#mainTxt");
