@@ -78,34 +78,40 @@
 
 						// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
 						// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
-						var allCorrect = true;
-						l_answer = [];
-						l_options = [];
-						l_feedback = [];
+						var Correct = true,
+								l_options = [],
+								l_answer,
+								l_feedback,
+								counter = 0,
+								allCorrect = true;
 						$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
+							Correct = true,
+							l_answer;
+							l_options = [];
+							l_feedback;
 							var $this = $(this);
 							columnLength = x_currentPageXML.getAttribute("data").split("||")[0].split("|").length;
 							xPos = ($this.index() % columnLength) + 1;
 							yPos = (Math.floor($this.index() / columnLength)) + 1;
-							l_answer.push($this.html() + "-->" + yPos + "," + xPos);
-							l_option = {};
-							l_option.target = $this.html();
-							l_option.source = yPos + "," + xPos;
+							l_answer = ($this.text().trim() + "" + yPos + "" + xPos);
+							l_option = {source: xPos.toString() + "" + yPos.toString(),target: $this.text().trim()};
 							l_options.push(l_option);
 							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
 								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
 								numOfQuestions++;
 								correct++;
-								l_feedback.push("Correct");
+								l_feedback = "Correct";
 							} else {
-								allCorrect = false;
+								Correct = false;
 								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
 								numOfQuestions++;
-								l_feedback.push("Incorrect");
+								l_feedback = "Incorrect";
+								allCorrect = false;
 							}
+							XTExitInteraction(x_currentPage, counter, Correct, l_options, l_answer, $("#feedback").text());
+							counter++;
 						});
-						debugger;
-						XTExitInteraction(x_currentPage, 0, allCorrect, l_options, l_answer.join(), l_feedback.join());
+
 						if(XTGetMode() == "normal") {
 							$("#checkBtn").hide();
 							$(".ui-draggable").draggable("disable");
@@ -743,10 +749,11 @@
 	this.initTracking = function() {
 		// Track the dictation page
 		this.weighting = 1.0;
-		if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+		if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+		{
 			this.weighting = x_currentPageXML.getAttribute("trackingWeight");
 		}
-		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+
 		correctOptions = [];
 		correctAnswer = [];
 		correctFeedback = [];
@@ -760,21 +767,25 @@
 			{
 				if((x_currentPageXML.getAttribute("fixedCells") == undefined || x_currentPageXML.getAttribute("fixedCells").indexOf(columnCount + "," + rowCount) == -1) &&
 						(x_currentPageXML.getAttribute("fixedRows") == undefined || x_currentPageXML.getAttribute("fixedRows").indexOf(rowCount) == -1) &&
-						(x_currentPageXML.getAttribute("fixedCols") == undefined || x_currentPageXML.getAttribute("fixedCols").indexOf(columnCount) == -1)) {
-					correctOption = {};
-					correctOption.source = columns[column];
-					correctOption.target = columnCount + "," + rowCount;
-					correctOptions.push(correctOption);
-					correctAnswer.push(columns[column] + "-->" + columnCount + "," + rowCount);
+						(x_currentPageXML.getAttribute("fixedCols") == undefined || x_currentPageXML.getAttribute("fixedCols").indexOf(columnCount) == -1))
+				{
+					correctAnswer.push(columns[column] + "" + columnCount + "" + rowCount);
 					correctFeedback.push("Correct");
+					correctOption = {source:columns[column], target:columnCount + "" + rowCount};
+					correctOptions.push(correctOption);
 				}
 				columnCount++;
 
 			}
 			rowCount++;
 		}
-		debugger;
-		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("text"), correctOptions, correctAnswer.join(), correctFeedback.join());
+		XTSetPageType(x_currentPage, 'numeric', correctOptions.length, this.weighting);
+		for(var i = 0; i < correctOptions.length; i++)
+		{
+			options = []
+			options.push(correctOptions[i])
+			XTEnterInteraction(x_currentPage, i, 'match', correctOptions[i].target, options, correctAnswer[i], correctFeedback[i]);
+		}
 	}
 }
 
