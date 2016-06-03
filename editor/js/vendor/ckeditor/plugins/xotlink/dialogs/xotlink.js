@@ -8,12 +8,24 @@
  * http://docs.ckeditor.com/#!/guide/plugin_sdk_sample_1
  */
 
+// Had to add a new .toggle(flag) option to the button prototype to hide the Ok button
+if (!CKEDITOR.ui.dialog.button.prototype.toggle) {
+	CKEDITOR.ui.dialog.button.prototype.toggle = function (flag) {
+		document.getElementById(this.domId).style.display = (flag ? 'block' : 'none');
+	}
+}
+
 // Our dialog definition.
 CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
+	var pageLinkChanged = function () {
+		if (this.getValue())
+			this.getDialog().getButton('ok').toggle(true);
+	};
+
 	return {
 		// Basic properties of the dialog window: title, minimum size.
-		title: 'XOT Internal Page Link',
+		title: 'Xerte Page Link',
 		minWidth: 300,
 		minHeight: 100,
 
@@ -29,6 +41,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 						type: 'select',
 						id: 'pagelink',
                         items: EDITOR.toolbox.getPageList(),
+						onChange: pageLinkChanged,
 
 						// Called by the main setupContent method call on dialog initialization
 						setup: function(element) {
@@ -54,6 +67,8 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
 		// Invoked when the dialog is loaded.
 		onShow: function() {
+			// Hide OK button
+			this.getButton('ok').toggle(false);
 
 			// Get the selection from the editor.
 			var selection = editor.getSelection();
@@ -90,7 +105,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 			// http://docs.ckeditor.com/#!/api/CKEDITOR.dialog
 			var dialog = this;
 
-			// Create a new <abbr> element.
+			// Create a new <a> element.
 			var a = this.element;
 
 			// Invoke the commit methods of all dialog window elements, so the <a> element gets modified.
