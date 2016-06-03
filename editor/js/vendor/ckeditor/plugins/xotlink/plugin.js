@@ -33,23 +33,28 @@ CKEDITOR.plugins.add('xotlink', {
 			if (editor.readOnly) return;
 
 			var element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant('a', true);
-			var command = editor.getCommand('link');
+			var linkCommand = editor.getCommand('link');
+			var xotLinkCommand = editor.getCommand('xotlink');
 			if (element && element.getName() == 'a' && element.getAttribute('href') && element.getChildCount()) {
 				var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
 				if (attr && attr.indexOf('(')) {
 					if (attr.split('(')[0] == 'x_navigateToPage') {
-						command.setState(CKEDITOR.TRISTATE_DISABLED);
+						linkCommand.setState(CKEDITOR.TRISTATE_DISABLED);
+						xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
 					}
 					else {
-						command.setState(CKEDITOR.TRISTATE_OFF);
+						linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+						xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
 					}
 				}
 				else {
-					command.setState(CKEDITOR.TRISTATE_OFF);
+					linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+					xotLinkCommand.setState(CKEDITOR.TRISTATE_DISABLED);
 				}
 			}
 			else {
-				command.setState(CKEDITOR.TRISTATE_OFF);
+				linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+				xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
 			}
 		});
 
