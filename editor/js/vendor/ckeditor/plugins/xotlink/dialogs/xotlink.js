@@ -9,9 +9,9 @@
  */
 
 // Our dialog definition.
-CKEDITOR.dialog.add( 'xotlinkDialog', function( editor ) {
-	return {
+CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
+	return {
 		// Basic properties of the dialog window: title, minimum size.
 		title: 'XOT Internal Page Link',
 		minWidth: 300,
@@ -30,18 +30,22 @@ CKEDITOR.dialog.add( 'xotlinkDialog', function( editor ) {
 						id: 'pagelink',
                         items: EDITOR.toolbox.getPageList(),
 
-						// Called by the main setupContent method call on dialog initialization.
-						setup: function( element ) {
-                            var href=element.getAttribute("href");
-                            var link=href.split(",");
-							this.setValue( link[1] );
+						// Called by the main setupContent method call on dialog initialization
+						setup: function(element) {
+							if (element) {
+								var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
+								if (attr && attr.indexOf('(')) {
+									if (attr.split('(')[0] == 'x_navigateToPage') {
+										this.setValue(attr.split('\'')[3]);
+									}
+								}
+							}
 						},
 
 						// Called by the main commitContent method call on dialog confirmation.
 						commit: function( element ) {
-							//element.setAttribute( "href", "asfunction:_level0.engine.rootIcon.pageLink," + this.getValue() );
-							element.setAttribute( "href", "#" );
-							element.setAttribute( "onclick", "x_navigateToPage(false,{type:'linkID',ID:'"+ this.getValue()  + "'}); return false;" );
+							element.setAttribute('href', '#');
+							element.setAttribute('onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
 						}
 					},
 				]
@@ -58,25 +62,25 @@ CKEDITOR.dialog.add( 'xotlinkDialog', function( editor ) {
 			var element = selection.getStartElement();
 
 			// Get the <a> element closest to the selection, if it exists.
-			if ( element )
-				element = element.getAscendant( 'a', true );
+			if (element)
+				element = element.getAscendant('a', true);
 
-			// Create a new <abbr> element if it does not exist.
-			if ( !element || element.getName() != 'a' ) {
-				element = editor.document.createElement( 'a' );
+			// Create a new <a> element if it does not exist
+			if (!element || element.getName() != 'a') {
+				element = editor.document.createElement('a');
                 element.setHtml(selection.getSelectedText());
-				// Flag the insertion mode for later use.
-				this.insertMode = true;
+				// Flag the insertion mode for later use
+				this.insertMode = true; // We've had to create a new <a> tag
 			}
 			else
-				this.insertMode = false;
+				this.insertMode = false; // We're picking up the <a> tag that is already in the editor and selected
 
 			// Store the reference to the <a> element in an internal property, for later use.
 			this.element = element;
 
 			// Invoke the setup methods of all dialog window elements, so they can load the element attributes.
-			if ( !this.insertMode )
-				this.setupContent( this.element );
+			if (!this.insertMode)
+				this.setupContent(this.element);
 		},
 
 		// This method is invoked once a user clicks the OK button, confirming the dialog.
@@ -90,11 +94,11 @@ CKEDITOR.dialog.add( 'xotlinkDialog', function( editor ) {
 			var a = this.element;
 
 			// Invoke the commit methods of all dialog window elements, so the <a> element gets modified.
-			this.commitContent( a );
+			this.commitContent(a);
 
 			// Finally, if in insert mode, insert the element into the editor at the caret position.
-			if ( this.insertMode )
-				editor.insertElement( a );
+			if (this.insertMode)
+				editor.insertElement(a);
 		}
 	};
 });
