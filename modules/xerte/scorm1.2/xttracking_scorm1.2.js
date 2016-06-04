@@ -425,6 +425,17 @@ function ScormTrackingState()
                 res = setValue(interaction + 'time', this.formatTime(sit.start));
                 res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
 
+                var psit = this.findPage(sit.page_nr);
+                if (psit != null)
+                {
+                    var pweighting = psit.weighting;
+                    var nrinteractions = psit.nrinteractions;
+                }
+                else
+                {
+                    var pweighting = 1.0;
+                    var nrquestions = 1.0;
+                }
                 switch (sit.ia_type)
                 {
                     case 'match':
@@ -453,22 +464,11 @@ function ScormTrackingState()
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'matching');
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
                         res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
                         break;
                     case 'multiplechoice':
-                        var psit = this.findPage(sit.page_nr);
-                        if (psit != null)
-                        {
-                            var pweighting = psit.weighting;
-                            var nrquestions = psit.nrinteractions;
-                        }
-                        else
-                        {
-                            var pweighting = 1.0;
-                            var nrquestions = 1.0;
-                        }
                         // We have an options as numbers, separated by ';'
                         // and we have corresponding answers strings separated by ';'
                         // Construct answers like a  (ignore answers, because we can't do anything with them in Scorm 1.2)
@@ -492,7 +492,7 @@ function ScormTrackingState()
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'choice');
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrquestions*100)/100);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
                         res = setValue(interaction + 'result', sit.score);
                         break;
@@ -517,7 +517,7 @@ function ScormTrackingState()
 
                         res = setValue(interaction + 'type', 'fill-in');
                         res = setValue(interaction + 'correct_responses.0.pattern', sit.correctanswer);
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', sit.learneranswer);
                         if (sit.ia_type=='text') {
                             res = setValue(interaction + 'result', 'neutral');
