@@ -50,6 +50,12 @@
 			$pageContents.find("#hint").remove();
 		}
 		
+        this.leavePage = function() {
+                if (!this.hasBeenTracked) {
+                    this.finishTracking();
+                }           
+        };
+		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var $panel = $("#mainPanel");
@@ -236,7 +242,9 @@
 					var name = "interaction number" + " " + interactionNumber;
 					var correctAnswer = answerData[interactionNumber][0];
 					correctAnswer = correctAnswer + "-->" + correctAnswer;
-					var correctOptions = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
+					var correctOption = {source: answerData[interactionNumber][0], target: answerData[interactionNumber][0]}
+					var correctOptions = [];
+					correctOptions.push(correctOption);
 					XTEnterInteraction(x_currentPage,  interactionNumber , 'match', name, correctOptions, correctAnswer, "Correct");
 				}
 			}
@@ -450,6 +458,7 @@
 						});
 						
 						gapFill.finishTracking();
+						hasBeenTracked = true;
 						
 						if(XTGetMode() == "normal"){
 							if (wrong == 0) {
@@ -616,7 +625,7 @@
 			
 			for (i=0; i<$("#targetHolder .target").length; i++) {
 				$("#targetHolder .target:eq(" + i + ")").droppable({
-					accept:	x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false" ?
+					accept:	(x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !isTracked ?
 						$("#labelHolder .label").filter(function() {
 							return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
 						}) : $("#labelHolder .label")
@@ -637,7 +646,7 @@
 				.off("keypress focusin focusout")
 				.css("opacity", 0);
 			
-			if (x_currentPageXML.getAttribute("markEnd") == "true") {
+			if (isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
 				if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
 					$pageContents.data("score", $pageContents.data("score") + 1);
 					$thisLabel.add($thisTarget).data("correct", true);
@@ -658,7 +667,6 @@
 			$pageContents.data("selectedLabel", "");
 
 			labelAnswers[$thisTarget.data("answer")]= $thisLabel.data("answer");
-
 
 			if ($targetHolder.find(".target.highlight").length == 0 && !isTracked) {
 				if (x_currentPageXML.getAttribute("markEnd") == "true") {
@@ -803,7 +811,7 @@
 					if (charCode == 32) {
 						var $selectedLabel = $pageContents.data("selectedLabel");
 						if ($selectedLabel != undefined && $selectedLabel != "") {
-							if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false")) {
+							if (answerData[$(this).data("index")].indexOf($selectedLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false") || (isTracked)) {
 								gapFill.dropLabel($(this), $selectedLabel); // target, label
 							} else {
 								$(this).attr("title", targetTxt1 + " " + ($(this).data("index") + 1));
