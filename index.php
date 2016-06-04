@@ -51,6 +51,7 @@ require_once(dirname(__FILE__) . "/moodle_restrictions.php");
 
 recycle_bin();
 
+$version = file_get_contents(dirname(__FILE__) . "/version.txt");
 
 /*
  * Output the main page, including the user's and blank templates
@@ -71,22 +72,22 @@ recycle_bin();
     -->
     <title><?PHP echo apply_filters("head_title", $xerte_toolkits_site->site_title); ?></title>
     <link rel="stylesheet" href="editor/css/jquery-ui.css">
-    <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css" />
+    <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
     <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
-    <script type="text/javascript" src="editor/js/vendor/jstree.js"></script>
+    <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
-    <link href="website_code/styles/folder_popup.css" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/jquery-ui-layout.css" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet"/>
-    <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css">
+    <link href="website_code/styles/folder_popup.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>">
     <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
@@ -100,15 +101,15 @@ recycle_bin();
             var ajax_php_path = \"website_code/php/\";
         </script>";
     ?>
-    <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
+    <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js?version=<?php echo $version;?>"></script>
     <?php
-    _include_javascript_file("website_code/scripts/file_system.js");
-    _include_javascript_file("website_code/scripts/screen_display.js");
-    _include_javascript_file("website_code/scripts/ajax_management.js");
-    _include_javascript_file("website_code/scripts/folders.js");
-    _include_javascript_file("website_code/scripts/template_management.js");
-    _include_javascript_file("website_code/scripts/logout.js");
-    _include_javascript_file("website_code/scripts/import.js");
+    _include_javascript_file("website_code/scripts/file_system.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/folders.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/template_management.js?version" . $version);
+    _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
+    _include_javascript_file("website_code/scripts/import.js?version=" . $version);
     ?>
     <?php head_end(); ?></head>
 

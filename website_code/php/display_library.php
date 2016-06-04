@@ -441,10 +441,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query = "select td.template_name as project_name, {$prefix}originaltemplatesdetails.template_name,"
-        . " {$prefix}originaltemplatesdetails.template_framework, td.template_id from {$prefix}templatedetails td, "
-        . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails where td.template_id = tr.template_id and tr.user_id = ? "
-        . " and tr.folder= ? and  {$prefix}originaltemplatesdetails.template_type_id = td.template_type_id ";
+    $query = "select td.template_name as project_name, otd.template_name,"
+        . " otd.template_framework, td.template_id, tr.role from {$prefix}templatedetails td, "
+        . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
+        . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
 
     $params = array($_SESSION['toolkits_logon_id'], $folder_id);
 
@@ -461,6 +461,19 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
     $query_response = db_query($query, $params);
 
     foreach($query_response as $row) {
+
+        // Check whther shared LO is in recyclebin
+        if ($row['role'] != 'creator')
+        {
+            $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
+            $params = array($row['template_id']);
+            $res = db_query_one($sql, $params);
+
+            if ($res !== false && $res['folder_name'] == 'recyclebin')
+            {
+                continue;
+            }
+        }
 
         //echo "<div id=\"file_" . $row['template_id'] .  "\" class=\"file\" preview_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->preview_size . "\" editor_size=\"" . $xerte_toolkits_site->learning_objects->{$row['template_framework'] . "_" . $row['template_name']}->editor_size . "\" style=\"padding-left:" . ($level*10) . "px\" onmousedown=\"single_click(this);file_folder_click_pause(event)\" onmouseup=\"file_drag_stop(event,this)\"><img src=\"{$xerte_toolkits_site->site_url}/website_code/images/Icon_Page_".strtolower($row['template_name']).".gif\" style=\"vertical-align:middle;padding-right:5px\" />" . str_replace("_", " ", $row['project_name']) . "</div>";
         $item = new stdClass();

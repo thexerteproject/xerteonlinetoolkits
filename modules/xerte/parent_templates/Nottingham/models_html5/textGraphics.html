@@ -91,30 +91,30 @@
 			
 			// transcript stuff
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "") {
-				var $transcript = $("#transcript");
-				$transcript
+				$("#imgCaption").addClass("transcript");
+				
+				$("#transcript")
 					.hide()
 					.html(x_addLineBreaks(transcriptTxt));
 				
-				// if language attributes aren't in xml will have to use english fall back
-				var transcriptbuttonlabel = x_currentPageXML.getAttribute("transcriptbuttonlabel");
-				if (transcriptbuttonlabel == undefined) {
-					transcriptbuttonlabel = "Transcript";
-				}
-				
 				$("#transcriptBtn")
 					.button({
-						label: 	transcriptbuttonlabel
+						icons:	{secondary:"ui-icon-carat-1-n"},
+						label:	(x_currentPageXML.getAttribute("transcriptbuttonlabel") != undefined ? x_currentPageXML.getAttribute("transcriptbuttonlabel") : "Transcript")
 					})
-					.data("up", true)
+					.attr("aria-expanded", false)
 					.click(function() {
 						$this = $(this);
-						if ($this.data("up") == true) {
+						if ($this.attr("aria-expanded") == "false") {
 							$("#transcript").slideDown();
-							$this.data("up", false);
+							$this
+								.attr("aria-expanded", true)
+								.button({icons: {secondary:"ui-icon-carat-1-s"}});
 						} else {
 							$("#transcript").slideUp();
-							$this.data("up", true);
+							$this
+								.attr("aria-expanded", false)
+								.button({icons: {secondary:"ui-icon-carat-1-n"}});
 						}
 					});
 			} else {
@@ -252,22 +252,23 @@
 	}
 	
 	#transcriptHolder {
+		margin-top:	10px;
 		text-align:	right;
 	}
 	
 	#transcript {
-		padding-top:	10px;
 		text-align:		left;
-	}
-	
-	#transcriptBtn {
-		margin-top:	10px;
 	}
 	
 	#imgCaption {
 		padding-top:	5px;
 		font-weight:	bold;
 		text-align:		right;
+	}
+	
+	#imgCaption.transcript {
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	10px;
 	}
 	
 </style>
@@ -278,10 +279,10 @@
 		<div class="panel inline">
 			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
-			<div id="imgCaption"></div>
+			<p id="imgCaption"></p>
 			<div id="transcriptHolder">
+				<button id="transcriptBtn"/>
 				<div id="transcript"></div>
-				<button id="transcriptBtn"></button>
 			</div>
 		</div>
 	</div>

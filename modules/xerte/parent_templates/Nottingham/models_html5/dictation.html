@@ -87,86 +87,92 @@
 				}
 			}
 
-			$("#button")
-					.button({
-						label:	showBtnTxt
-					})
-					.click(function() {
-						var feedback;
-						var $this = $(this);
-						if ($this.data("state") == "show") {
-							$("#button").hide();
-							//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
-							var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-							//Checks if the answer is correct, and if so it adds one to the total of correct answers
-							var answer = $('#answerTxt').val();
-                            var correct = false;
-                            if (answer == text) {
-								correct_answers++;
-                                correct = true;
-								feedback="Correct";
-								$("#answer").slideDown(function () {
-									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-										$("#button").show();
-									}
-									else {
-										if(XTGetMode() == "normal")
-										{
-											$("#button").hide();
-										}
-										else {
-											$("#button").show();
-										}
-									}
-								});
+			$("#showBtn")
+				.button({
+					label:	showBtnTxt
+				})
+				.click(function() {
+					var feedback;
+					var $this = $(this);
+					$("#showBtn").button("disable");
+					//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
+
+					var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
+					//Checks if the answer is correct, and if so it adds one to the total of correct answers
+					var answer = $('#answerTxt').val();
+					var correct = false;
+					if (answer == text) {
+						correct_answers++;
+						correct = true;
+						feedback="Correct";
+						$("#answer").slideDown(function () {
+							if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+								$("#showBtn").button("enable");
 							}
 							else {
-								feedback="Incorrect";
-								$("#incorrect").slideDown(function () {
-									if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-										$("#button").show();
-									}
-									else {
-										if(XTGetMode() == "normal")
-										{
-											$("#button").hide();
-										}
-										else {
-											$("#button").show();
-										}
-									}
-								});
+								if(XTGetMode() == "normal")
+								{
+									$("#showBtn").button("disable");
+								}
+								else {
+									$("#showBtn").button("enable");
+								}
 							}
-							XTExitInteraction(x_currentPage, $pageContents.data("current"),correct, [], answer, feedback)
-							total++;
-
+						});
+					}
+					else {
+						feedback="Incorrect";
+						$("#incorrect").slideDown(function () {
 							if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-								$this
-										.data("state", "next")
-										.button("option", "label", nextBtnTxt);
-							} else {
-								dictation.finishTracking();
-								$this
-										.data("state", "done")
-										.button("option", "label", restartBtnTxt);
+								$("#button").button("enable");
 							}
+							else {
+								if(XTGetMode() == "normal")
+								{
+									$("#showBtn").button("disable");
+								}
+									else {
+									$("#showBtn").button("enable");
+								}
+							}
+						});
+					}
+					XTExitInteraction(x_currentPage, $pageContents.data("current"),correct, [], answer, feedback)
+					total++;
 
-						} else if ($this.data("state") == "next") {
-							$pageContents.data("current", $pageContents.data("current") + 1);
-							dictation.loadQ();
-							$this
-									.data("state", "show")
-									.button("option", "label", showBtnTxt);
+					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+						$("#nextBtn").button("enable");
+					} else {
+						$("#restartBtn").button("enable");
+					}
 
-						} else { // restart
-							dictation.sortCaptions();
-							$this
-									.data("state", "show")
-									.button("option", "label", showBtnTxt);
-						}
-					})
-					.data("state", "show");
+				});
 
+			$("#nextBtn")
+				.button({
+					label:	x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next",
+					"disabled":	true
+				})
+				.click(function() {
+					$(this).button("disable");
+					$("#showBtn").button("enable");
+					
+					$pageContents.data("current", $pageContents.data("current") + 1);
+					dictation.loadQ();
+				});
+			
+			$("#restartBtn")
+				.button({
+					label:	x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart",
+					"disabled":	true
+				})
+				.click(function() {
+					$(this).button("disable");
+					$("#showBtn").button("enable");
+					
+					dictation.sortCaptions();
+				});
+			
 			// uses data from timedText file if there is one - otherwise use nested page info
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {
 				$.ajax({
@@ -225,7 +231,6 @@
 				$("#count").hide();
 			}
 
-			$("#answerTxt").val("");
 			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {
 				$("#prompt").hide();
 			} else {
@@ -337,30 +342,38 @@
 		margin-bottom:	10px;
 	}
 
-	#button {
+	#btnHolder {
 		float:	right;
 		margin-bottom:	10px;
 	}
-
+	
+	#answer {
+		clear:	both;
+	}
+	
 </style>
 
 <div id="pageContents">
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1"></div>
-
+		<div id="textHolder" class="left"></div>
+		
 		<div class="right">
 			<div class="panel">
-				<h3 id="count"></h3>
+				<h3 id="count" aria-live="polite"></h3>
 				<div id="prompt"></div>
 				<div id="audioHolder">
 					<div id="pageAudio"></div>
 				</div>
 				<textarea id="answerTxt" rows="6"></textarea>
-				<div id="answer"></div>
+				<div id="btnHolder">
+					<button id="showBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+				<div id="answer" aria-live="polite"/>
 				<div id="incorrect"></div>
-				<button id="button"></button>
 			</div>
 		</div>
 

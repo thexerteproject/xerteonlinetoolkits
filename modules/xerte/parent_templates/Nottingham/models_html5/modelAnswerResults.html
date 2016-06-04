@@ -53,6 +53,10 @@
 				})
 				.click(function() {
 					x_selectText("panelTxt");
+					$("#screenReaderInfo").html(x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") != null ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") : "");
+				})
+				.focusout(function() {
+					$("#screenReaderInfo").html("");
 				});
 			
 			$("#panelTxt").html(modelAnswerResults.getData());
@@ -89,7 +93,7 @@
 		overflow:	auto;
 	}
 	
-	#button {
+	#copyBtn {
 		margin-top:	10px;
 	}
 	
@@ -109,13 +113,15 @@
 	
 	<div class="splitScreen medium">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="panelTxt"></div>
 			</div>
 		</div>
+		
+		<div id="screenReaderInfo" class="ui-helper-hidden-accessible" aria-live="polite"/>
 		
 	</div>
 	

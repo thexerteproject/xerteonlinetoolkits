@@ -113,8 +113,8 @@ if ($zipfile_tmpname === false)
 {
     $zipfile_tmpname = tempnam('/tmp', 'xerteExport');
 }
-_debug("Temporary zip file is : $zipfile_tmpname");
 
+_debug("Temporary zip file is : $zipfile_tmpname");
 
 $options = array(
     'basedir' => $dir_path, 

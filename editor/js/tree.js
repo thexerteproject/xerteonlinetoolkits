@@ -192,7 +192,8 @@ var EDITOR = (function ($, parent) {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
-                    absmedia: rlourlvariable
+                    absmedia: rlourlvariable,
+                    template_id: template_id
                 },
                 //success: function(data){
                 //    alert("success");
@@ -226,7 +227,8 @@ var EDITOR = (function ($, parent) {
                     filename: dataxmlurl,
                     preview: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
-                    absmedia: rlourlvariable
+                    absmedia: rlourlvariable,
+                    template_id: template_id
                 },
                 //success: function(data){
                 //    alert("success");
@@ -260,7 +262,8 @@ var EDITOR = (function ($, parent) {
                     fileupdate: 0, // 1=publish -> data.xml
                     filename: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
-                    absmedia: rlourlvariable
+                    absmedia: rlourlvariable,
+                    template_id: template_id
                 },
                 //success: function(data){
                 //    alert("success");

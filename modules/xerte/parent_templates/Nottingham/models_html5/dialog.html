@@ -51,6 +51,7 @@
 		}
 
 		this.init = function() {
+
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
 			if (answerDelimeter == undefined) {
@@ -128,10 +129,11 @@
 							$feedback = $("#feedback");
 						
 						if ($this.data("state") == 0) { // mark answer
+							// Decode answer
 							var qNo = $pageContents.data("currentQ"),
 								$thisInput = $("#pageContents .question:eq(" + qNo + ") input"),
 								isCorrect = false,
-								correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase();
+								correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase()).text();
 							
 							if (correctAnswer.indexOf(answerDelimeter) != -1) {
 								var splitAnswers = correctAnswer.split(answerDelimeter);
@@ -177,7 +179,7 @@
 								} else if (currentAttempt > allowedAttempts) { // show correct answer
 									$feedback.html($pageContents.data("correctTxt"));
 									$this.focus();
-									var correctAnswer = $(x_currentPageXML).children()[qNo].getAttribute("answer");
+									var correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
 									if (correctAnswer.indexOf(answerDelimeter) != -1) {
 										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
 									}console.log(correctAnswer);

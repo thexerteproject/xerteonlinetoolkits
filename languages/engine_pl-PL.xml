@@ -1,5 +1,7 @@
 <language name="Polski">
 
+  <noPages label="Ten projekt nie zawiera żadnych stron."/>
+
   <nextButton label="Następny" description="Przycisk Następnej Strony"/>
   
   <backButton label="Poprzedni" description="Prycisk Poprzedniej Strony"/>
@@ -18,12 +20,14 @@
   
   <continueButton label="Kontynuuj" description="Przycisk Kontynuowania"/>
   
-  <toc label="Spis Treści" description="spis treści. Użyj strzałek, aby wybrać stronę. Naciśnij spację, aby przejść na tą stronę.">
+  <toc label="Spis Treści" description="Spis treści. Użyj strzałek, aby wybrać stronę. Naciśnij spację, aby przejść na tą stronę.">
 	  <contentsList label="" description=""/>
 	  <closeButton label="" description="przycisk zamykania spisu treści"/>
 	  <gotoPageButton label="Idź do Strony" description="Przycisk Idź do Strony"/>
   </toc>
   
+  <mediaWindow label="Przeglądarka Mediów"/>
+    
   <glossary label="Słownik" description="Lista słów i ich definicji.">
 	  <closeButton label="" description="Przycisk zamknięcia słownika"/>
   </glossary>
@@ -41,6 +45,8 @@
   
   <errorBrowser label="Twoja przeglądarka w pełni nie obsługuje ten typ strony."/>
   
+  <errorQuestions noQ="Żadne pytania nie zostały dodane" noA="Żadne opcje odpowiedzi nie zostały dodane" />
+    
   <errorFlash label="Musisz zainstalować Flash Player aby przeglądać tę zawartość." description="Pobierz Flash Player"/>
   
   <tick label="Zaznacz"/>
@@ -116,13 +122,14 @@
   <interactions>
 	  <button name="Przycisk"/>
 	  <radioButton selected="zaznaczony. Użyj strzałek, aby wybrać z opcji"/>
-	  <checkBox selected="selected" deselected="odznacz"/>
+	  <checkBox selected="zaznacz" deselected="odznacz"/>
 	  <comboBox name="Pole wyboru" options="Opcje." selected="zaznaczony." selectedOptions="zaznaczony. Użyj strzałek, aby zaznaczyć" />
 	  <hotSpot name="HotSpot" toSelect="Hot Spot. Naciśnij spację, aby wybrać." selected="Hot Spot zaznaczony"/>
 	  <hotObject name="HotObject" toSelect="Naciśnij spację, aby wybrać." selected="Hot Object zaznaczony"/>
 	  <textEntry name="Pole Wprowadzania Tekstu" selected="Pole wprowadzania tekstu zaznaczony"/>
 	  <targetArea name="Obszar docelowy" description="Strefa upustu dla" toSelect="Naciśnij spację, aby upuścić zaznaczoną pozycję."/>
 	  <draggableItem name="Pozycja przeciągalna" selected="Pozycja zaznaczona" toSelect="Naciśnij spację, aby zaznaczyć" deSelected="Żadna pozycja nie jest zaznaczona." />
+	  <moreInfoItem toSelect="Naciśnij spację, aby wybrać" selected="Zaznaczony" moreInfo="Naciśnij spację, aby nauczyć się więcej" />
   </interactions>
 
   <fetchResults label="Pobieranie wyników..."/>
@@ -138,6 +145,12 @@
 
   <colourChanger label="Zmieniacz kolorów" description="Zmieniacz kolorów.">
 	  <closeButton label="" description="Zamknij zmieniacza kolorów"/>
+	  <selectTxt label="Proszę wybrać z poniższych opcji"/>
+	  <adviceTxt label="Potrzebujesz więcej porad? Odwiedź Jisc TechDis &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;przewodnik dostępności Xerte Toolkits&lt;/a&gt;."/>
+	  <off label="Wyłącz"/>
+	  <noBg label="Usuń tła obrazków"/>
+	  <invert label="Odwróć"/>
+	  <blackYellow label="Czarny na żółtym"/>
   </colourChanger>
 
 </language>

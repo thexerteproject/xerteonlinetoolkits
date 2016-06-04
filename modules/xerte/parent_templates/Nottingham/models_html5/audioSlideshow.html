@@ -21,10 +21,13 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var audioSlideshow = new function() {
-		var loaded;
+		var loaded,
+			$pageContents;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
+			
 			$("#infoHolder").scrollTop(0);
 			$("#infoHolder .slide")
 				.hide()
@@ -48,26 +51,27 @@
 				
 			} else {
 				// not the 1st load of the page - scale images to new size and reset slides and audio
+				$pageContents.data("mediaElement").setCurrentTime(0);
+				$pageContents.data("count", $pageContents.data("count") + 1);
+				
 				$("#infoHolder .slide")
 					.hide()
 					.filter(function() {return $(this).data("synch") == "0";}).show();
 				
-				$("#infoHolder").scrollTop(0);
-				
-				var $pageContents = $("#pageContents");
-				$pageContents.data("count", $pageContents.data("count") + 1);
-				
 				this.scaleImages();
 				this.loadAudio();
+				
+				$("#infoHolder").scrollTop(0);
 			}
 		}
 		
 		this.init = function() {
-			$("#pageContents").data("count", 0);
+			$pageContents = $("#pageContents");
+			$pageContents.data("count", 0);
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
+				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
 			} else {
 				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -153,8 +157,6 @@
 		
 		// function scales image on visible slide - have to do them individually after slide change as I can't get dimensions of images on hidden slides
 		this.scaleImages = function() {
-			var $pageContents = $("#pageContents");
-			
 			// has img already been scaled to fit this size screen?
 			if ($pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
 				var $img = $("#infoHolder .pageImg img:visible"),
@@ -190,6 +192,8 @@
 		
 		// function called from mediaPlayer.js when audio player has been set up
 		this.mediaFunct = function(mediaElement) {
+			$pageContents.data("mediaElement", mediaElement);
+			
 			var $slides = $("#infoHolder .slide");
 			mediaElement.addEventListener("timeupdate", function(e) {
 				var currentTime = mediaElement.currentTime,
@@ -251,7 +255,7 @@
 	
 	<div class="splitScreen">
 		
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
 			<div class="panel">

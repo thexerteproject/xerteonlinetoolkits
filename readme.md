@@ -1,7 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-Latest release : v3.0
+Latest release : v3.1
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------
@@ -34,7 +34,7 @@ git clone https://github.com/thexerteproject/xerteonlinetoolkits.git .
 
 Requires :
 
- 1. PHP v5.1.0+ with either sqlite or mysql extensions available.
+ 1. PHP v5.1.2+ with either sqlite or mysql extensions available.
  2. Apache or some other web server that is setup to execute PHP.
  3. Write permission to USER-FILES
 

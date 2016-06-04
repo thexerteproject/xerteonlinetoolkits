@@ -17,10 +17,10 @@ li.bullet {
 h3 {
     font-size: 3.0vmin;
 }
-panelPage h3 {
+.panelPage h3 {
     font-size: 3.0vmin;
 }
-mainTxt h3 {
+#mainTxt h3 {
     font-size: 3.0vmin;
 }
 #infoHolder {
@@ -68,7 +68,7 @@ mainTxt h3 {
 #labelHolder {
     font-size: 3.0vmin;
 }
-mainPanel .panel {
+#mainPanel .panel {
     font-size: 3.0vmin;
 }
 #infoHolder {
@@ -133,10 +133,13 @@ mainPanel .panel {
     /*reduce padding in tabnave buttons*/
     padding: .4em .4em;
 }
-.ui-button-text-only .ui-button-text {
+.ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     /*padding: .3em 1em;*/
     font-size: 3.0vmin;
+}
+.ui-button-text-icon-secondary .ui-button-text {
+	padding-right: 1.2em;
 }
 #thumbHolder .thumbBox h3{
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/
@@ -157,6 +160,21 @@ mainPanel .panel {
 figcaption {
     font-size:2.5vmin;
     margin-top:2%;
+}
+#chartHolder {
+	font-size: 2.5vmin;
+}
+table {
+	font-size: 3vmin;
+}
+#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
+	font-size: 8.0vmin;
+}
+.paneList a, .paneList {
+	font-size: 2.4vmin !important;
+}
+.ui-dialog {
+	font-size: 3.0vmin;
 }
 /*--end of text size changes-----------------------------------------*/
 }

@@ -58,7 +58,7 @@ language: transcriptBtnTxt
 						popcornInstance = parentPageType.loadMedia($target, mediaType, options);
 					
 					if (options.childNodes != undefined) {
-						parentPageType.sortPopcorn(options.childNodes, options.target, popcornInstance);
+						parentPageType.sortPopcorn(options.childNodes, options.target, popcornInstance, $target);
 					}
 					
 					if (options.line == "true") {

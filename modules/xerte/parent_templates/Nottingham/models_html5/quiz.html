@@ -73,6 +73,8 @@
 					}
 				}
 			}
+			
+			$("#qTxt").width($panel.width());
 		}
 
 		this.startQs = function() {
@@ -88,9 +90,7 @@
             }
 
 			$("#optionHolder").show();
-			$("#restartBtn").hide();
-			$("#checkBtn").hide();
-			$("#nextBtn").hide();
+			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
 			
             this.currentQ = 0;
 			this.questions = []; // array of questions to use (index)
@@ -170,12 +170,11 @@
 				} else {
 					var $optionHolder = $("#optionHolder");
 					if ($thisQ.getAttribute("type") == "Multiple Answer") {
-						$optionHolder.html('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+						$optionHolder.html('<div class="optionGroup"><input type="checkbox" name="option" /><label class="optionTxt"></label></div>');
 					} else {
-						$optionHolder.html('<input type="radio" name="option" /><label class="optionTxt"></label>');
+						$optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
 					}
-					var $option = $optionHolder.find("input"),
-						$optionTxt = $optionHolder.find(".optionTxt"),
+					var $optionGroup = $optionHolder.find(".optionGroup"),
 						$checkBtn = $("#checkBtn"),
 						$feedback = $("#feedback"),
 						correctOptions = [],
@@ -207,14 +206,15 @@
 					}
 
 					$.each(this.currentAnswers, function(i, thisOption) {
-							var $thisOption, $thisOptionTxt;
+							var $thisOptionGroup, $thisOption, $thisOptionTxt;
 							if (i != 0) {
-								$thisOption = $option.clone().appendTo($optionHolder);
-								$thisOptionTxt = $optionTxt.clone().appendTo($optionHolder);
+								$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 							} else {
-								$thisOption = $option;
-								$thisOptionTxt = $optionTxt;
+								$thisOptionGroup = $optionGroup;
 							}
+							$thisOption = $thisOptionGroup.find("input");
+							$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
+								
 							quiz.currNrOptions = i+1;
 							if (thisOption.correct == 'true')
 							{
@@ -232,11 +232,17 @@
 									$feedback.html("");
 									var $selected = $("#optionHolder input:checked");
 									if ($selected.length > 0) {
-										$checkBtn.show();
+										$checkBtn.button("enable");
 									} else {
-										$checkBtn.hide();
+										$checkBtn.button("disable");
 									}
-									$("#nextBtn").hide();
+									$("#nextBtn").button("disable");
+								})
+								.focusin(function() {
+									$thisOptionGroup.addClass("highlight");
+								})
+								.focusout(function() {
+									$thisOptionGroup.removeClass("highlight");
 								});
 
 							$thisOptionTxt
@@ -275,7 +281,7 @@
 
             // get feedback for selected options and check if they are correct
             for (var i=0; i<selected.length; i++) {
-                var optionIndex = $(selected[i]).index()/2,
+                var optionIndex = $(selected[i]).parent().index(),
                         selectedOption = quiz.currentAnswers[optionIndex];
 
                 optionFeedback += "<p>" + x_addLineBreaks(selectedOption.feedback)  + "</p>";
@@ -299,7 +305,7 @@
                 if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
                     var notSelected = $("#optionHolder input:not(:checked)");
                     for (var i=0; i<notSelected.length; i++) {
-                        var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).index()/2];
+                        var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).parent().index()];
                         if (notSelectedOption.correct == "true") {
                             correct = false;
                         }
@@ -350,8 +356,8 @@
                     $("#feedback").find("a.x_glossary").contents().unwrap();
                 }
 
-                $("#nextBtn").show();
-				$("#checkBtn").hide();
+                $("#nextBtn").button("enable");
+				$("#checkBtn").button("disable");
 
                 $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
             }
@@ -386,19 +392,20 @@
                 fbTxt += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>";
             }
 
-            $("#qTxt").html(fbTxt);
+            $("#feedback").html(fbTxt);
 			$("#questionAudio").empty();
 			
 			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				$("#qTxt").find("a.x_glossary").contents().unwrap();
+				$("#feedback").find("a.x_glossary").contents().unwrap();
 			}
 			
-            $("#optionHolder, #nextBtn, #checkBtn").hide();
+            $("#optionHolder").hide();
+			$("#nextBtn, #checkBtn").button("disable");
             if (XTGetMode() != "normal")
             {
-                $("#restartBtn").show();
+                $("#restartBtn").button("enable");
             }
-            $("#feedback").html("");
+            $("#qTxt").html("");
 
             var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
             XTSetPageScore(x_currentPage, scormScore);
@@ -478,7 +485,7 @@
 			}
 
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
-				$textHolder.append('<div class="panel inline"><div id="pageVideo"></div></div>');
+				$textHolder.append('<div id="vidHolder" class="panel inline"><div id="pageVideo"></div></div>');
 				var $pageVideo = $("#pageVideo"),
 					videoDimensions = [320,240]; // default video size
 				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
@@ -495,7 +502,7 @@
 			}
 			
 			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
-				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? 'tip="' + x_currentPageXML.getAttribute("tip") + '"' : "";
+				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? 'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
 				$textHolder.append('<img class="quizImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
 			}
 
@@ -554,20 +561,20 @@
 
 			$("#checkBtn")
 				.button({
-					label:	submitBtnText
+					label: submitBtnText
 					})
 				.click(function() {
 					    quiz.showFeedBackandTrackResults();
                         quiz.checked = true;
-                    })
-				.hide();
+                    });
 
 			$("#nextBtn")
 				.button({
-					label:	nextBtnText
+					label: nextBtnText
 					})
 				.click(function() {
-					$(this).hide();
+					$(this).button("disable");
+					
 					quiz.currentQ++;
 					if (quiz.currentQ == quiz.questions.length) {
                         // last question answered - show results
@@ -578,14 +585,12 @@
 					}
                     // Queue reparsing of MathJax - fails if no network connection
                     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-					})
-				.hide();
+					});
 
 			$("#restartBtn")
 				.button({
-					label:	restartBtnText
+					label: restartBtnText
 					})
-				.hide()
 				.click(function() {
 					quiz.startQs();
 				});
@@ -615,7 +620,7 @@
 	.qPanel {
 		overflow:	auto;
 	}
-
+	
 	#optionHolder {
 		margin-top:	15px;
 		margin-bottom:	15px;
@@ -626,21 +631,25 @@
 		display:	block;
 	}
 
+	#optionHolder .optionGroup {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+	
 	#pageContents .optionTxt {
 		cursor:			pointer;
 		position:		relative;
-		margin-left:	30px;
-		margin-bottom:	10px;
+		margin-left:	2em;
 		display:		block;
 	}
-
-	#pageContents #buttonHolder button, #feedbackHolder #nextBtn {
-		margin:	10px;
-		float:	right;
-	}
-
-	#feedbackHolder, #feedback, #buttonHolder {
+	
+	#feedback, #buttonHolder {
 		clear:		both;
+	}
+	
+	#buttonHolder {
+		float:	right;
+		margin-bottom:	10px;
 	}
 
 	#infoHolder .quizImg {
@@ -648,6 +657,10 @@
 		float:		right;
 		max-width:	50%;
 		height:		auto;
+	}
+	
+	#vidHolder.panel {
+		margin-top:	1em;
 	}
 	
 	#textHolder .quizImg {
@@ -676,23 +689,33 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 
 		<div id="infoHolder" class="right">
+		
 			<div id="mainPanel" class="panel qPanel">
-				<h3 id="qNo"></h3>
-				<p id="qTxt"></p>
-				<div id="questionAudio"></div>
-				<div id="optionHolder"></div>
-				<div id="buttonHolder">
-					<button id="checkBtn"></button>
-					<button id="restartBtn"></button>
-				</div>
-				<div id="feedbackHolder">
-                    <div id="feedback"></div>
-                    <button id="nextBtn"></button>
-				</div>
+			
+				<h3 id="qNo" aria-live="polite"></h3>
+				
+				<fieldset class="noStyle">
+				
+					<legend id="qTxt"></legend>
+					
+					<div id="questionAudio"></div>
+					<div id="optionHolder"></div>
+					
+					<div id="buttonHolder">
+						<button id="checkBtn"></button>
+						<button id="nextBtn"></button>
+						<button id="restartBtn"></button>
+					</div>
+					
+					<div id="feedback" aria-live="polite"></div>
+					
+				</fieldset>
+				
 			</div>
+			
 		</div>
 
 	</div>

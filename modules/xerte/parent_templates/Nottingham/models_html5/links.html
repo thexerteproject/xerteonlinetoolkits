@@ -38,7 +38,11 @@
 			if (numCols < 1) {
 				numCols = 3;
 			}
-
+			
+			// warn that links open in new window (for screen readers)
+			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
+			linkWarning = linkWarning != "" ? '<span class="ui-helper-hidden-accessible">' + linkWarning + '</span>' : linkWarning;
+			
 			var $linkBlock = $(".linkBlock:first");
 			$(x_currentPageXML).children().each(function(i) {
 				var $thisLink;
@@ -47,14 +51,22 @@
 				} else {
 					$thisLink = $linkHolder;
 				}
-				$thisLink.find("h3").html(this.getAttribute("name"));
+				
+				$thisLink.find("h3")
+					.attr("id", "link" + i)
+					.html(this.getAttribute("name"));
+				
 				$thisLink.find("p").html(x_addLineBreaks(this.getAttribute("text")));
+				
 				$thisLink.find("a")
-					.html(this.getAttribute("url"))
+					.html(this.getAttribute("url") + linkWarning)
 					.attr({
-						"href"		:this.getAttribute("url"),
-						"target"	:"_blank"
-						});
+						"href" : this.getAttribute("url"),
+						"target" : "_blank",
+						"aria-labelledby" : (linkWarning != "" ? "link" + i + " linkHelper" + i : "link" + i) // the text read by screen reader for link (instead of url)
+						})
+					.find("span.ui-helper-hidden-accessible").attr("id", "linkHelper" + i);
+				
 				if (i % numCols == 0) {
 					$thisLink.addClass("clear");
 				}
@@ -110,7 +122,7 @@
 
 </style>
 
-<div id="textHolder" tabindex="1">
+<div id="textHolder">
 
 </div>
 

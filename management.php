@@ -271,7 +271,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
                    <div class="userbar">
                         <?php // echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " ";
-                        echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
+                        echo "Admin"; ?>
                         <button title="<?php echo MANAGEMENT_LOGOUT; ?>" 
                             type="button" class="xerte_button_c_no_width"
                             onclick="javascript:logout()" style="margin-bottom: 8px;">

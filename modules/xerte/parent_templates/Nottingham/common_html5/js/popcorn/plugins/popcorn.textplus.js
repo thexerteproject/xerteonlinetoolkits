@@ -35,7 +35,6 @@ optional: end position* line
 		return {
 			_setup: function(options) {
 				// setup code, fire on initialisation
-				
 				var txt = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				
 				if (options.line == "true") {

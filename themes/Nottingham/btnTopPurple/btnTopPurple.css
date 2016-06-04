@@ -1,0 +1,167 @@
+
+body {
+	font-family:Arial, sans-serif;
+	background:	#EFF5F8;
+}
+
+#x_mainHolder {
+	border:		1px solid #6B065A;
+	background:	white;
+}
+
+#x_headerBlock {
+	color:		#FFFFFF;
+	background:	#6B065A;
+}
+
+div#x_footerBlock {
+	position:	relative;
+	width:		auto;
+	font-size:	1em;
+	background:	none;
+	padding:	0px;
+}
+
+div#footerWrapper {
+	float:		left;
+	width:		100%;
+	padding:	0px;
+}
+
+div#footerInnerWrapper {
+	position:	relative;
+	padding:	0px;
+	background:	#89387B;
+	overflow:	hidden;
+}
+
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+	height:		24px;
+}
+
+div#x_pageControls {
+	padding:	0px;
+}
+
+div#x_pageNo {
+	font-weight:bold;
+	background:	none;
+	height:		auto;
+	padding:	0;
+	margin-top:	4px;
+	margin-right:0px;
+}
+
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0px 0px;
+}
+
+h3 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+.panel {
+	background-color: white;
+    border: 1px solid #6B065A;
+    box-shadow: none;
+}
+
+.ui-dialog .ui-widget-header {
+	background: #6B065A;
+    border: 1px solid #6B065A;
+}
+
+.ui-dialog.ui-widget-content {
+	border-color: #6B065A;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-bottom, .ui-corner-left, .ui-corner-right, .ui-corner-tl, .ui-corner-tr, .ui-corner-bl, .ui-corner-br {
+   border-radius:	0px;
+}
+
+#menuItems .menuItem.current {
+    border-color: #D4CB43 !important;
+}
+
+.ui-dialog #menuItems .ui-state-default {
+	background:	none;
+	color:	black;
+}
+
+.ui-dialog #menuItems .ui-state-hover {
+	background-color:	#EFF5F8;
+}
+
+a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
+	color:	#333333;
+}
+
+.x_tooltip {
+	border:				1px solid #6B065A;
+	background-color:	#6B065A;
+}
+
+/* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
+/* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
+
+.ui-button .ui-icon.x_help {					background-image: url("help.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_help {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_help {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_info {					background-image: url("info.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_info {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_info {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_home {					background-image: url("home.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_home {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_home {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_glossary {				background-image: url("glossary.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_glossary {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_glossary {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_maximise {				background-image: url("max.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_maximise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_maximise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_minimise {				background-image: url("min.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_minimise {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_minimise {background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_media {					background-image: url("media.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_media {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_media {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_next {					background-image: url("next.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_next {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_next {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_next {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev {					background-image: url("prev.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev {		background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev {		background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev_hist {					background-image: url("prev_hist.png"); background-position: 0px 0px; }
+.ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_colourChanger { background-image: url("text-colour.png"); background-position: 0px 0px;}
+.ui-button.ui-state-hover .ui-icon.x_colourChanger {	background-position: -42px 0px; }
+.ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
+.ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
