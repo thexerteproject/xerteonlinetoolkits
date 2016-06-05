@@ -80,7 +80,13 @@
 		this.createCards = function() {
 			var $pageContents		= $("#pageContents"),
 				$cardTopHolder		= $("#cardTopHolder"),
-				$cardBottomHolder	= $("#cardBottomHolder");
+				$cardBottomHolder	= $("#cardBottomHolder"),
+				cardbackurl =  x_templateLocation + 'common_html5/card.png'; // Default
+			
+			// change card back if alternative available
+			if (x_currentPageXML.getAttribute("backurl") != undefined && x_currentPageXML.getAttribute("backurl") != "") {
+				cardbackurl = x_currentPageXML.getAttribute("backurl");
+			}
 			
 			// clear existing cards
 			$cardTopHolder.add($cardBottomHolder).empty();
@@ -99,7 +105,7 @@
 			for (i=0; i<cards.length; i++) {
 				// create top of cards
 				$('<div class="card"></div>')
-					.css("background-image", 'url("' + x_templateLocation + 'common_html5/card.png' + '")')
+					.css("background-image", 'url("' + cardbackurl + '")')
 					.attr("tabindex", i+1)
 					.appendTo($cardTopHolder)
 					.click(function() {
@@ -218,6 +224,7 @@
 	
 	#cardTopHolder .card {
 		border:		1px solid transparent;
+		background-size:	100% 100%;
 		cursor:		pointer;
 	}
 	

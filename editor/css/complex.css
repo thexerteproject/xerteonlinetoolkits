@@ -663,6 +663,11 @@ span.deprecated {
     background: rgba(248, 103, 24, 0.33);
 }
 
+span.hidden {
+    padding: 0 4px 0 4px;
+    background: #e5e5e5;
+}
+
 td.wizarddeprecated {
     background: rgba(248, 103, 24, 0.33);
 }

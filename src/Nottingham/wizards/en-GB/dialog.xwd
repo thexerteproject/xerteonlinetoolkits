@@ -19,11 +19,7 @@
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true"/>
-    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
+    <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>

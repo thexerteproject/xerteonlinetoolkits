@@ -146,7 +146,7 @@
   <colourChanger label="Colour Changer" description="Change the colours.">
 	  <closeButton label="" description="Close Colour Changer"/>
 	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the Jisc TechDis &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
 	  <off label="Off"/>
 	  <noBg label="Remove Background Images"/>
 	  <invert label="Invert"/>

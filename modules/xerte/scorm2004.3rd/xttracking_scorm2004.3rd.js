@@ -8,7 +8,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /**
  * Created with JetBrains PhpStorm.
  * User: tom
@@ -186,19 +186,19 @@ function ScormTrackingState()
         if (jsonStr.length > 0)
         {
             var jsonObj = JSON.parse(jsonStr);
-            // Do NOT touch scormmode, and don't touch start
+            // Do NOT touch scormmode, don't touch start and don't touch finished
             this.currentid = jsonObj.currentid;
             this.currentpageid = jsonObj.currentpageid;
             this.trackingmode = jsonObj.trackingmode;
             this.scoremode = jsonObj.scoremode;
             this.nrpages = jsonObj.nrpages;
             this.pages_visited=jsonObj.pages_visited;
-            //this.start = new Date(jsonObj.start);
+//            this.start = new Date(jsonObj.start);
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
             this.lo_passed = jsonObj.lo_passed;
             this.lo_completed = jsonObj.lo_completed;
-            this.finished = jsonObj.finished;
+//            this.finished = jsonObj.finished;
             this.interactions = new Array();
             var i=0;
             for (i=0; i<jsonObj.interactions.length; i++)
@@ -373,7 +373,6 @@ function ScormTrackingState()
         {
             if (this.scoremode == 'first' && sit.count > 1)
                 return;
-
 
             // Record this action
             var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
@@ -575,9 +574,7 @@ function ScormTrackingState()
                 return "unknown";
             }
         }
-        return "";
     }
-
 
 
     function getdScaledScore()
@@ -675,16 +672,12 @@ function ScormTrackingState()
             var completionStatus = this.getCompletionStatus();
 
             if (completionStatus)
-            {
                 setValue('cmi.completion_status', completionStatus);
-                if (completionStatus == 'incomplete')
-                {
-                    state.currentpageid = currentid;
-                    var suspend_str = JSON.stringify(this);
-                    setValue('cmi.exit', 'suspend');
-                    setValue('cmi.suspend_data', suspend_str);
-                }
-            }
+            state.currentpageid = currentid;
+            var suspend_str = JSON.stringify(this);
+            setValue('cmi.exit', 'suspend');
+            setValue('cmi.suspend_data', suspend_str);
+
             setValue('cmi.success_status', this.getSuccessStatus());
             setValue('cmi.score.scaled', this.getScaledScore());
             setValue('cmi.score.raw', this.getRawScore());
@@ -695,7 +688,6 @@ function ScormTrackingState()
             var duration = end.getTime() - this.start.getTime();
             setValue('cmi.session_time', this.formatDuration(duration));
         }
-        this.finished = true;
     }
 
     function initTracking()
@@ -803,7 +795,6 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-
     switch (option)
     {
         case "nrpages":
@@ -900,7 +891,7 @@ function XTSetPageScore(page_nr, score)
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
-        if (sit != null)
+        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
         {
             sit.score = score;
         }
@@ -956,33 +947,32 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 
 function XTTerminate()
 {
-    if (state.scormmode == 'normal')
-    {
-        if (!state.finished)
-        {
-            var currentpageid = "";
-            if (state.currentid)
-            {
-                var sit = state.find(currentid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
-            }
-            if (state.currentpageid)
-            {
-                currentpageid = state.currentpageid;
-                var sit = state.find(currentpageid);
-                // there is still an interaction open, close it
-                if (sit != null)
-                {
-                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-                }
+    if (state.finished) return;
+    state.finished = true;
 
+    if (state.scormmode == 'normal' && (state.scoremode != 'first' || getValue('cmi.core.lesson_status') == "incomplete"))
+    {
+        var currentpageid = "";
+        if (state.currentid)
+        {
+            var sit = state.find(currentid);
+            // there is still an interaction open, close it
+            if (sit != null)
+            {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
             }
-            state.finishTracking(currentpageid);
         }
+        if (state.currentpageid)
+        {
+            currentpageid = state.currentpageid;
+            var sit = state.find(currentpageid);
+            // there is still an interaction open, close it
+            if (sit != null)
+            {
+                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+            }
+        }
+        state.finishTracking(currentpageid);
     }
     terminateCommunication();
 }

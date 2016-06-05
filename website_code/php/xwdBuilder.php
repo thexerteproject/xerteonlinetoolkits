@@ -48,7 +48,7 @@ class XerteXWDBuilder
 		$this->menuattrs = array();
 	}
 
-	public function loadTemplateXWD($name)
+	public function loadTemplateXWD($name, $basicPages)
 	{
 		$this->fname = $name;
 		$this->xml = simplexml_load_file($name);
@@ -67,6 +67,9 @@ class XerteXWDBuilder
 		  }
 		}
 		$this->menuattrs = array_values($this->menuattrs);
+		
+		global $basicPageXML;
+		$basicPageXML = simplexml_load_file($basicPages);
 	}
 
 	public function addMenuAttr($attr)
@@ -96,6 +99,7 @@ class XerteXWDBuilder
 
 	public function addXwd($name, $replace, $verbose)
 	{
+		$page = true;
 		if ($verbose == 'true')
 		{
 			print("Adding file " . $name . "\n");
@@ -213,6 +217,22 @@ class XerteXWDBuilder
 			else
 			{
 				printf("    Model " . $node->getName() . " is added.\n");
+				
+				// add nodes from basicPages.xwd to all pages
+				if ($page == true) {
+					global $basicPageXML;
+					$node = dom_import_simplexml($node);
+					
+					foreach ($basicPageXML->children() as $child) {
+						$child  = dom_import_simplexml($child);
+						$child  = $node->ownerDocument->importNode($child, TRUE);
+						$node->appendChild($child);
+					}
+					$node = simplexml_import_dom($node);
+					
+					$page = false;
+					printf("    Common nodes added.\n");
+				}
 				$this->addChildNode($this->xml, $node);
 			}
 		}

@@ -51,6 +51,19 @@
 			$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
 		}
 		
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			$('.thumbBox').each(function(i) {
+				if (
+					($.isNumeric(item) && i === parseInt(item))
+					|| (item.toLowerCase() === $(this).text().toLowerCase())
+				) {
+					$(this).click();
+					return false;
+				}
+			});
+		}
+		
 		this.init = function() {
 			var	$thumbHolder = $("#thumbHolder");
 			

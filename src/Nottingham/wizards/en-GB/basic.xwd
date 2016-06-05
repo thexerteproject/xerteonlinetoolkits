@@ -13,7 +13,7 @@
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" />
 
     <kblanguage type="ComboBox" options="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Chinese,Croation,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
-    <displayMode type="ComboBox" options="Default,Full Screen,Fill Window" data="default,full screen,fill window" label="Display Mode" width="100"/>
+    <displayMode type="ComboBox" options="Default,Fill Window" data="default,fill window" label="Display Mode" width="100"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24"/>
 	<tocNumbers type="CheckBox" label="Page Numbering (Table of Contents)" defaultValue="true" optional="true"/>
@@ -33,6 +33,7 @@
     <menuImage optional="true" type="media" label="Menu Page Image"/>
     <ic optional="true" type="media" label="Icon"/>
 	<icTip optional="true" type="TextInput" label="Icon Description" defaultValue="Enter a Description for Accessibility"/>
+	<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Icon Position" defaultValue="left" width="100"/>
     <nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
@@ -41,6 +42,7 @@
 	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
+	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
     <trackingMode optional="true" label="Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
     <trackingPassed optional="true" label="Tracking Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>

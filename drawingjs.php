@@ -103,8 +103,22 @@ if (isset($_POST['data']))
     <body onunload="closeDrawingEditor();" onbeforeunload="closeDrawingEditor();">
         <div>
             <div class="topbar" style="width:800px">
-                <img src="<?php echo $edit_site_logo;?>" style="margin-left:10px; float:left" />
-                <img src="<?php echo $edit_organisational_logo;?>" style="margin-right:10px; float:right" />
+				<?php
+				if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_left.png"))
+				{
+					echo "<img src=\"branding/logo_left.png\" style=\"float:left\" />";
+				}
+				else {
+					echo "<img src=\"website_code/images/logo.png\" style=\"float:left\" />";
+				}
+				if (file_exists($xerte_toolkits_site->root_file_path . "branding/logo_right.png"))
+				{
+					echo "<img src=\"branding/logo_right.png\" style=\"float:right\" />";
+				}
+				else {
+					echo "<img src=\"website_code/images/apereoLogo.png\" style=\"float:right\" />";
+				}
+				?>
             </div>
         </div>
 

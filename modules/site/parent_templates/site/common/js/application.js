@@ -141,6 +141,10 @@ function loadLibraries(){
 
 }
 
+function formatColour(col) {
+	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
+}
+
 function setup(){
 
 	//add all the pages to the pages menu: this links bak to the same page
@@ -163,11 +167,13 @@ function setup(){
 		var col = $(data).find('learningObject').attr('headerColour');
 		
 		//one or two?
-		if (col.substr(',') != -1){
+		if (col.indexOf(',') != -1){
 			col = col.split(',');
 		} else {
 			col = [col,col];
 		}
+		col[0] = formatColour(col[0]);
+		col[1] = formatColour(col[1]);
 		
 		$('#overview').css('background', col[0]);
 		$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
@@ -182,10 +188,22 @@ function setup(){
 	
 	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
 	
-		$('#overview').css('color', $(data).find('learningObject').attr('headerTextColour'));
+		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		
 	}
 	
+}
+
+
+// this is the format of links added through the wysiwyg editor button
+function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
+	var pages = $(data).find('page');
+	for (var i=0; i<pages.length; i++) {
+		if (pages[i].getAttribute("linkID") == pageInfo.ID) {
+			parseContent(i);
+			break;
+		}
+	}
 }
 	
 

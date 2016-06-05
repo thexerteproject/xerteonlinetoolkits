@@ -21,9 +21,20 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var slideshow = new function() {
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-			
+
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			if ($.isNumeric(item)) {
+				slideshow.panelChange(parseInt(item, 10));
+			}
+			else {
+				$(x_currentPageXML).children().each(function(i) {
+					if (item.toLowerCase() === this.getAttribute("name").toLowerCase()) {
+						slideshow.panelChange(i);
+						return false;
+					}
+				});
+			}
 		}
 		
 		// function called every time the size of the LO is changed

@@ -31,12 +31,6 @@
 	
 	<closeBtn label="Close Button" type="TextInput" wysiwyg="true" language="true"/>
 	
-	<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
-	
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="Enter result text here" destinationBtn="Continue"/>]]></resultStep>
 		<infoStep><![CDATA[<infoStep name="e.g. I1" target="e.g. Q2" text="Enter text here"/>]]></infoStep>
@@ -48,7 +42,7 @@
   
   <mcqStep icon="icComments" remove="true" duplicate="true" menuItem="Multiple Choice Question">
 	
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
@@ -68,7 +62,7 @@
   </mcqStepOption>
 
   <sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<unit label="Unit of answer" type="TextInput" wysiwyg="true"/>
 	<min label="Minimum value" type="TextInput"/>
@@ -94,7 +88,7 @@
   </sliderStepOption>
 
   <infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	<target label="Target ID" type="TextInput"/>
 	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
@@ -103,7 +97,7 @@
   </infoStep>
 
   <resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
-	<name label="Unique ID" type="TextInput" wysiwyg="true"/>
+	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	
 	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
