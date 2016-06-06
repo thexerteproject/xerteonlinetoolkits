@@ -460,8 +460,8 @@ var EDITOR = (function ($, parent) {
             return;
         }
 
-        // Get sibling node
-        var prev = tree.get_prev_dom(id);
+        // Get next sibling node
+        var next = tree.get_next_dom(id);        
 
         // Delete from the tree
         tree.delete_node(id);
@@ -469,11 +469,8 @@ var EDITOR = (function ($, parent) {
         // Delete
         delete lo_data[id];
 
-        //console.log(lo_data[id]);
-        //tree.last_error();
-
         tree.deselect_all();
-        tree.select_node(prev);
+        tree.select_node(next);  // Used to be get_prev_dom(id)
 
         return true; // Successful
     },
