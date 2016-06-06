@@ -15,6 +15,31 @@ if (!CKEDITOR.ui.dialog.button.prototype.toggle) {
 	}
 }
 
+//http://ckeditor.com/forums/CKEditor-3.x/getSelection-getNative-returns-object-Object
+CKEDITOR.editor.prototype.getSelectedHtml = function()
+{
+   var selection = this.getSelection();
+   if( selection )
+   {
+      var bookmarks = selection.createBookmarks(),
+         range = selection.getRanges()[ 0 ],
+         fragment = range.clone().cloneContents();
+
+      selection.selectBookmarks( bookmarks );
+
+      var retval = "",
+         childList = fragment.getChildren(),
+         childCount = childList.count();
+      for ( var i = 0; i < childCount; i++ )
+      {
+         var child = childList.getItem( i );
+         retval += ( child.getOuterHtml?
+            child.getOuterHtml() : child.getText() );
+      }
+      return retval;
+   }
+};
+
 // Our dialog definition.
 CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 
@@ -83,7 +108,7 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 			// Create a new <a> element if it does not exist
 			if (!element || element.getName() != 'a') {
 				element = editor.document.createElement('a');
-                element.setHtml(selection.getSelectedText());
+                element.setHtml(editor.getSelectedHtml());
 				// Flag the insertion mode for later use
 				this.insertMode = true; // We've had to create a new <a> tag
 			}
