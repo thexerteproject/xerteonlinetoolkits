@@ -595,7 +595,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
-    <commentary label="Commentary" type="TextArea" height="100"/> 
+    <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
   </dialogStep><dictation menu="Interactivity" menuItem="Dictation" hint="An interaction for typing text from a series of audio files." icon="icTranscript" thumb="thumbs/dictation.jpg" remove="true">

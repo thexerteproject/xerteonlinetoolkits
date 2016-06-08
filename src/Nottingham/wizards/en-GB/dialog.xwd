@@ -34,7 +34,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
-    <commentary label="Commentary" type="TextArea" height="100"/> 
+    <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
   </dialogStep>
