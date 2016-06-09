@@ -84,7 +84,7 @@
 
         this.leavePage = function() {
             var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
-            if (!checked && numQs > 0)
+            if (!interactiveText.checked && numQs > 0)
             {
                 interactiveText.finishTracking();
             }
@@ -695,6 +695,9 @@
 
                             l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
                             l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
+                            l_feedback.push($("#marking").text().trim());
+
+                            $("#optionHolder input").prop('disabled', true);
 
 							if (correctGroup == $("#optionHolder input:checked").val()) {
 								$("#marking").html('<p>' + $pageContents.data("phrases").mcqCorrect + '</p>');
@@ -713,9 +716,6 @@
 								$("#more").hide();
 							}
 
-                            console.log(l_options);
-                            console.log(l_answer);
-
                             XTExitInteraction(x_currentPage, mcqCurrentQ, correct, l_options, l_answer, l_feedback);
 
 							$(this)
@@ -727,31 +727,39 @@
 								$("#passage .group")
 									.removeClass("on")
 									.removeAttr("title");
-								
+
 								$("#qText").hide();
 								$("#optionHolder").hide();
-								
+
 								var $moreInfo = $("#more");
 								$moreInfo.remove();
 								$("#marking")
 									.html('<p>' + $pageContents.data("phrases").mcqScore.replace("{i}", $pageContents.data("mcqScore")).replace("{n}", mcqAnswers.length) + '</p>' + (x_currentPageXML.getAttribute("mcqFB") != "" && x_currentPageXML.getAttribute("mcqFB") != undefined ? '<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("mcqFB")) + '</p>' : ""))
 									.children().last().append($moreInfo);
 								$("#more").hide();
-								
+
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
-								
+
 								$("#feedback").show();
-								
-								$(this)
-									.button({"label":$pageContents.data("phrases").mcqBtnTxt3})
-									.data("state", 2);
+
+								if (XTGetMode() == "normal")
+                                {
+                                    $(this)
+                                        .button("disable").hide()
+                                        .data("state", 2);
+                                }
+                                else {
+                                    $(this)
+                                        .button({"label": $pageContents.data("phrases").mcqBtnTxt3})
+                                        .data("state", 2);
+                                }
 
                                 interactiveText.finishTracking();
 
 							} else {
 								interactiveText.createQ();
 							}
-						} else { // restart
+						} else if (XTGetMode() != "normal") { // restart
 							interactiveText.createQuiz();
 						}
 					});
@@ -930,6 +938,7 @@
 
             correctOptions.push(correct['index'] + 1 + "");
             correctAnswer.push(correct['text']);
+            correctFeedback.push($pageContents.data("phrases").mcqCorrect);
 
             XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
 
