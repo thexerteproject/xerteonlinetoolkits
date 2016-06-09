@@ -141,13 +141,6 @@
 		}
 	}
 	
-	//tweak for outscaled thumbnails when returned from video-full-screen for mp4
-	MediaElementPlayer.prototype.exitFullScreen_org = MediaElementPlayer.prototype.exitFullScreen;
-	MediaElementPlayer.prototype.exitFullScreen = function() {
-		textVideo.init();
-		this.exitFullScreen_org();
-	}	
-	
 	textVideo.init();
 	
 </script>
