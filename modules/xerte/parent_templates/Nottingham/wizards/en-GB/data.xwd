@@ -789,6 +789,7 @@
     <interactivity label="Interactivity" options="Explore,Show Me (By Name),Show Me (In Order),Find,MCQ" type="ComboBox" data="explore,show,show2,find,mcq"/>
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 	
 	<mcqType label="MCQ Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
 	<mcqFB label="MCQ Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>

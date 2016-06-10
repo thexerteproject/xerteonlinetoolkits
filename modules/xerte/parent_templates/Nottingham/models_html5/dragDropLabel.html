@@ -149,9 +149,9 @@
 		};
 
 		this.startTracking = function() {
-			var numHotspots = $(x_currentPageXML).children().length;
-			this.weighting = 1.0;//(x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
-			XTSetPageType(x_currentPage, 'numeric', numHotspots, this.weighting);
+			var numHotspots = $(x_currentPageXML).children().length,
+			weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			XTSetPageType(x_currentPage, 'numeric', numHotspots, weighting);
 		};
 
 		this.createLabels = function() {
