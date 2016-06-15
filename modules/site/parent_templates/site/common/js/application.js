@@ -192,6 +192,32 @@ function setup(){
 		
 	}
 	
+	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
+	$('#overview div.logoR, #overview div.logoL').hide();
+	
+	if ($(data).find('learningObject').attr('logoR') != undefined){
+		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+	}
+	
+	$.ajax({
+		url: $('#overview .logoR img').attr('src'),
+		success: function() {
+			$('#overview').addClass('logoR');
+			$('#overview div.logoR').show();
+		}
+	});
+	
+	if ($(data).find('learningObject').attr('logoL') != undefined){
+		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+	}
+	
+	$.ajax({
+		url: $('#overview .logoL img').attr('src'),
+		success: function() {
+			$('#overview').addClass('logoL');
+			$('#overview div.logoL').show();
+		}
+	});
 }
 
 
