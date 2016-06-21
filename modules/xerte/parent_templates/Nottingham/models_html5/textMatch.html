@@ -366,7 +366,15 @@
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-        		var l_placeholder = $this.data("currentTarget").text().trim();
+				var l_placeholder, l_draglabel
+		
+				if($this.data("currentTarget") != "" && $this.data("currentTarget").text() != undefined)
+				{
+					l_placeholder = $this.data("currentTarget").text().trim();
+					
+				}else{
+					l_placeholder = "";
+				}
         		var l_draglabel	= $this.find("div").text().trim(); 
         		l_option.source = l_draglabel;
         		l_option.target = l_placeholder;
