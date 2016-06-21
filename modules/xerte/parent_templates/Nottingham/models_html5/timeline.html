@@ -318,6 +318,7 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+            
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
             $(x_currentPageXML).children().each(
             	function(i)
