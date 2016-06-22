@@ -33,6 +33,8 @@
 		this.pageChanged = function() {
 			labelData = $("#pageContents").data("labelData");
 			$pageContents = $("#pageContents");
+			$("#checkBtn").show();
+			$(".ui-draggable").draggable("enable");
 			this.removeFocus();
 		}
 
