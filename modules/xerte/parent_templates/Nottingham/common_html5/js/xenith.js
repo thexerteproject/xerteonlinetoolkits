@@ -1339,8 +1339,10 @@ function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
     
     // Rip out the glossary if required
-	if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-		$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+			$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+		}
 	}
 	
 	// Do deeplinking here so model has appropriate data at hand
@@ -1356,11 +1358,13 @@ function x_pageLoaded() {
     });
 	
 	// script & style optional properties for each page added after page is otherwise set up
-	if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
-		$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
-	}
-	if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
-		$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
+			$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+		}
+		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
+			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+		}
 	}
 
     $("#x_page" + x_currentPage)
