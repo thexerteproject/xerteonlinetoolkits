@@ -25,9 +25,8 @@
 			labelTxt3,
 			targetTxt1,
 			targetTxt2,
-			numAttempts,
-			tracked = false;
-		
+			numAttempts;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			numAttempts = 0;
@@ -100,7 +99,7 @@
 		}
 		
 		this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0 && tracked != true) {
+			if ($(x_currentPageXML).children().length > 0 && this.tracked != true) {
 				this.finishTracking();
 			}
         }
@@ -157,7 +156,6 @@
 					{
 						numAttempts++;
 					}
-					textMatch.finishTracking();
 					if(XTGetMode() != "normal"){
 						$("#labelHolder .label").each(function() {
 							var $this = $(this);
@@ -201,7 +199,6 @@
 					}
 					else{
 						if (!labelOffTarget){
-							textMatch.finishTracking();
 							$("#labelHolder .label").each(function() {
 								var $this = $(this);
 								if ($this.data("target").is($this.data("currentTarget"))) {
@@ -211,9 +208,9 @@
 								} else{	
 									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '"></img>');	
 								}
-							});						
-							
-						}	
+							});
+							textMatch.finishTracking();
+						}
 						else{					
 							$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));	
 						}
@@ -358,7 +355,7 @@
 			var l_options = [],
             l_correct = 0,
             l_total = 0;
-			var tracked = true;
+			this.tracked = true;
 
             $("#labelHolder .label").each(function(i) {
             	l_options = []
