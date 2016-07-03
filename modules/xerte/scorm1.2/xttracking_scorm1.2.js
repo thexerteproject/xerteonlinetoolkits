@@ -491,14 +491,14 @@ function ScormTrackingState()
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
                         res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', sit.score);
+                        res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
                         break;
                     case 'numeric':
                         res = setValue(interaction + 'type', 'numeric');
                         res = setValue(interaction + 'correct_responses.0.pattern', '100');
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(sit.weighting*100)/100);
                         res = setValue(interaction + 'student_response', sit.score);
-                        res = setValue(interaction + 'result', sit.score);
+                        res = setValue(interaction + 'result', Math.round(sit.score*100)/100);
                         break;
                     case 'text':
                     case 'fill-in':
@@ -633,7 +633,12 @@ function ScormTrackingState()
                 }
                 totalscore = totalscore / totalweight;
             }
-            return totalscore;
+            else
+            {
+                // If the weight is 0.0, set the score to 100
+                totalscore = 100.0;    
+            }
+            return Math.round(totalscore*100/100);
         }
     }
 
@@ -894,7 +899,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
             sit.ia_type = page_type;
 
             sit.nrinteractions = nrinteractions;
-            sit.weighting = parseInt(weighting);
+            sit.weighting = parseFloat(weighting);
             if (page_type != 'page')
             {
                 state.lo_type = 'interactive';
