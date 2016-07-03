@@ -26,7 +26,8 @@
 			labelTxt3,
 			targetTxt1,
 			targetTxt2,
-			$feedback;
+			$feedback,
+			tracked = false;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -284,8 +285,17 @@
 				var $this = $(this);
 				
 				var tData = $this.data("currentTarget");
-        		var l_placeholder = tData.text().trim(); 
+        		var l_placeholder;
+        		if(tData != "")
+       			{
+        			l_placeholder = tData.text().trim(); 
+       			}else{
+       				l_placeholder = "";
+       			}
+				
+				
         		var l_draglabel	= $this.text().trim();
+        		
         		l_options = [];
         		option = {source:l_draglabel, target:l_placeholder};
         		l_answer = l_draglabel + "-->" + l_placeholder;
@@ -295,8 +305,8 @@
 					l_correct++;
 					correct = true;
 				}
-				debugger;
-				XTExitInteraction(x_currentPage, tData.data("id"), correct, l_options, l_answer, $("#feedback").text());
+				
+				XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text());
 				l_total++;
 			});
             
@@ -318,6 +328,7 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+            
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
             $(x_currentPageXML).children().each(
             	function(i)
@@ -330,7 +341,6 @@
                     correctOptions.push(correctOption);
                     correctAnswer = draglabel + "-->" + placeholder;
                     XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct");
-            		debugger;
             	}
             );
            

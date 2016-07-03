@@ -33,6 +33,8 @@
 		this.pageChanged = function() {
 			labelData = $("#pageContents").data("labelData");
 			$pageContents = $("#pageContents");
+			$("#checkBtn").show();
+			$(".ui-draggable").draggable("enable");
 			this.removeFocus();
 		}
 
@@ -68,6 +70,8 @@
 			} else if (x_currentPageXML.getAttribute("align") == "left") {
 				$("#gridHolder")
 					.addClass("x_floatRight")
+				$("#btnHolder").appendTo($pageContents)
+						.addClass("x_floatRight")
 			}
 
 			$("#checkBtn")
@@ -94,7 +98,7 @@
 							xPos = ($this.index() % columnLength) + 1;
 							yPos = (Math.floor($this.index() / columnLength)) + 1;
 							l_answer = ($this.text().trim() + "" + yPos + "" + xPos);
-							l_option = {source: xPos.toString() + "" + yPos.toString(),target: $this.text().trim()};
+							l_option = {source: $this.text().trim(),target: xPos.toString() + "" + yPos.toString()};
 							l_options.push(l_option);
 							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
 								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
@@ -899,7 +903,12 @@
 	}
 	
 	#btnHolder {
+		width: 100%;
 		margin:	10px;
+	}
+
+	#btnHolder.x_floatRight {
+		margin:	0px 0px 10px 10px;
 	}
 	
 	#pageContents > #btnHolder {
@@ -918,13 +927,12 @@
 		<table id="gridBorders"/>
 		<div id="grid"/>
 	</div>
-	
+	<div id="btnHolder">
+		<button style="float:right" id="checkBtn" tabindex="2"></button>
+	</div>
 	<div id="otherContent">
 		<div id="textHolder" tabindex="1"/>
 		<div id="feedback"/>
-		<div id="btnHolder">
-			<button id="checkBtn" tabindex="2"></button>
-		</div>
 	</div>
 	
 </div>
