@@ -431,7 +431,7 @@ function ScormTrackingState()
                 else
                 {
                     var pweighting = 1.0;
-                    var nrquestions = 1.0;
+                    var nrinteractions = 1.0;
                 }
                 switch (sit.ia_type)
                 {
