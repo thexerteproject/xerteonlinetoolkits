@@ -968,31 +968,33 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (state.finished) return;
-    state.finished = true;
-
-    if (state.scormmode == 'normal' && (state.scoremode != 'first' || getValue('cmi.core.lesson_status') == "incomplete"))
+    if (state.scormmode == 'normal')
     {
-        var currentpageid = "";
-        if (state.currentid)
+        if (!state.finished)
         {
-            var sit = state.find(currentid);
-            // there is still an interaction open, close it
-            if (sit != null)
+            var currentpageid = "";
+            state.finished = true;
+            if (state.currentid)
             {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                var sit = state.find(currentid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
             }
-        }
-        if (state.currentpageid)
-        {
-            currentpageid = state.currentpageid;
-            var sit = state.find(currentpageid);
-            // there is still an interaction open, close it
-            if (sit != null)
+            if (state.currentpageid)
             {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                currentpageid = state.currentpageid;
+                var sit = state.find(currentpageid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+
             }
+            state.finishTracking(currentpageid, false);
         }
-        state.finishTracking(currentpageid);
     }
-    doLMSFinish();
-}
+    doLMSFinish();}
