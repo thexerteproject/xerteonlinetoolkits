@@ -635,8 +635,7 @@
 			// --- MCQ ---
 			// quiz asks what is highlighted
 			} else if (intType == "mcq") {
-				// start tracking
-                this.startTracking();
+
 				// get all fixed strings used in quiz
 				var phrases = {},
 					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3", "mcqDialogClose"],
@@ -890,7 +889,9 @@
 				"mcqAnswers": mcqAnswers,
 				"mcqScore"	: 0
 				});
-			
+
+			// start tracking
+			this.startTracking();
 			this.createQ();
 		};
 		
