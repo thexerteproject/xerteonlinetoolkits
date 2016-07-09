@@ -38,9 +38,10 @@ $groups = $auto->allowedGroups();
 $templates = $auto->availableTemplates();
 
 
-if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['template']) && !empty($_POST['readonly']) && !empty($_POST['unshare_teachers']) && !empty($_POST['practice'])) {
+if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['course']) && !empty($_POST['template']) && !empty($_POST['readonly']) && !empty($_POST['unshare_teachers']) && !empty($_POST['practice'])) {
     $action = $_POST['action'];
     $group = $_POST['group'];
+    $course = $_POST['course'];
     $template_id = $_POST['template'];
     $readonly = $_POST['readonly'];
     $unshare_teachers = $_POST['unshare_teachers'];
@@ -73,7 +74,7 @@ if (!empty($_POST['action']) && !empty($_POST['group']) && !empty($_POST['templa
 
     // TODO
     // Get all the people in a group
-    $persons = $auto->getGroupMembersAndRoles($group);
+    $persons = $auto->getGroupMembersAndRoles($course, $group);
     $role = 'editor';
     if ($readonly == "true")
     {

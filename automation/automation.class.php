@@ -1215,7 +1215,7 @@ class Automate
         }
     }
 
-    public function getGroupMembersAndRoles($group)
+    public function getGroupMembersAndRoles($course, $group)
     {
         $sql = "SELECT
                 c.id AS courseid,
@@ -1236,8 +1236,8 @@ class Automate
 
                 WHERE
                 cxt.contextlevel =50
-                AND  g.id =?";
-        $params = array($group);
+                AND c.id=? AND g.id =?";
+        $params = array($course, $group);
         $rows = $this->_moodleQuery($sql, $params);
 
         if ($rows !== false)

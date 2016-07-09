@@ -16,6 +16,7 @@ doAction = function(action)
             url: "doshare.php",
             data: { action: action,
                     group: $("#group").val(),
+                    course: $("#course").val(),
                     template: $("#template").val(),
                     readonly: $("#readonly").prop('checked'),
                     unshare_teachers: $("#unshare_teachers").prop('checked'),
