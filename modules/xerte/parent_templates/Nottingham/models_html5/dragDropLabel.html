@@ -119,39 +119,22 @@
                     })
                     .click(function() {
                         $x_pageHolder.scrollTop(0);
-                        var $infoHolder = $("#infoHolder");
                         $("#labelHolder .label").each(function () {
-                            if (XTGetMode() == "normal") {
-                                var $this = $(this)
-                                        .draggable("disable")
-                                        .off("keypress focusin focusout")
-                                        .click(function () {
-                                            $("#infoHolder").html($(this).data("infoTxt"));
-                                        })
-                                        .focusin(function () {
-                                            $(this).addClass("focus");
-                                            $("#infoHolder").html($(this).data("infoTxt"));
-                                        })
-                                        .focusout(function () {
-                                            $(this).removeClass("focus");
-                                            $("#infoHolder").html("");
-                                        })
-                            } else {
-                                var $this = $(this)
-                                        .off("keypress focusin focusout")
-                                        .click(function () {
-                                            $("#infoHolder").html($(this).data("infoTxt"));
-                                        })
-                                        .focusin(function () {
-                                            $(this).addClass("focus");
-                                            $("#infoHolder").html($(this).data("infoTxt"));
-                                        })
-                                        .focusout(function () {
-                                            $(this).removeClass("focus");
-                                            $("#infoHolder").html("");
-                                        })
-                            }
-
+                            var $this = $(this)
+                                    .off("keypress focusin focusout")
+                                    .click(function () {
+                                        $("#infoHolder").html($(this).data("infoTxt"));
+                                    })
+                                    .focusin(function () {
+                                        $(this).addClass("focus");
+                                        $("#infoHolder").html($(this).data("infoTxt"));
+                                    })
+                                    .focusout(function () {
+                                        $(this).removeClass("focus");
+                                        $("#infoHolder").html("");
+                                    })
+                            if (XTGetMode() == "normal")
+                                    $this.draggable("disable");
                         });
 
                         $("#pageContents hr:eq(1)").remove();
@@ -161,13 +144,9 @@
                             $("#submitBtn").hide();
                             $("#targetHolder .target").droppable("disable");
                         }
-                        else {
-                            $("#targetHolder .target").css({"opacity" : 0.5});
-                        }
                     });
             this.startTracking();
             this.sizeChanged(true);
-
         };
 
         this.startTracking = function() {
@@ -230,7 +209,6 @@
                                     left: 0
                                 };
                             }
-
                             return !event;
                         },
                         start:			function() {
@@ -316,7 +294,6 @@
                                 $(this).trigger("load");
                             }
                         });
-
             } else {
                 // labels are being reset - make sure targets will still accept them being dropped
                 $("#targetHolder .target")
@@ -329,7 +306,6 @@
                         })
                         .off("click");
             }
-
         };
 
         this.imgLoaded = function() {
@@ -505,7 +481,6 @@
                     l_feedback = [];
 
             if (x_currentPageXML.getAttribute("judge") != "false") {
-                var $labelHolder = $("#labelHolder");
                 var labelHolderSpec = XTGetMode() != "normal" ? "#labelHolder .label" : "#labelHolder .ui-draggable-disabled";
                 $(labelHolderSpec).each(function(i) {
                     var $this = $(this)
@@ -516,13 +491,13 @@
                                         });
                                 $("#targetHolder .target").eq($this.data("correct"))
                                         .css({
-                                            "background" : "YellowGreen"
+                                            "background" : "rgba(154,205,50,0.5)" //Yellowgreen with transparency when not run in SCORM
                                         })
                             })
                             .focusin(function() {
                                 $("#targetHolder .target").eq($this.data("correct"))
                                         .css({
-                                            "background" : "YellowGreen"
+                                            "background" : "rgba(154,205,50,0.5)"
                                         })
                             })
                             .focusout(function() {
@@ -540,13 +515,17 @@
                     else {
                         if (XTGetMode() != "normal") {
                             $this
+                                    .attr({"tabindex": i + 3})
                                     .removeAttr( 'style' )
                                     .css({
                                         "position": "relative",
                                         "z-index": 0,
                                         "top": "auto"
                                     });
-                            $("#targetHolder .target").eq($this.data("target")).droppable('enable');
+
+                            if($this.data("target") !== undefined && $this.data("target") !== "") {
+                                $("#targetHolder .target").eq($this.data("target")).droppable('enable');
+                            }
                         } else {
                             $this.addClass("incorrect");
                             //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
@@ -567,16 +546,18 @@
                     XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback);
                 });
 
-                if ($(x_currentPageXML).children().length === 0)
-                {
+                if ($(x_currentPageXML).children().length === 0) {
                     XTSetPageScore(x_currentPage, 100);
                 }
-                else
-                {
+                else {
                     XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
                 }
                 if (XTGetMode() != "normal") {
                     if (numCorrect == $(x_currentPageXML).children().length) {
+                        $("#labelHolder .label").each(function() {
+                           var $this = $(this)
+                                   .draggable("disable")
+                        });
                         $("#submitBtn").hide();
                     }
                 }
