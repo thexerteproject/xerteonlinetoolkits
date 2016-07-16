@@ -68,7 +68,8 @@ optional: feedback page synch play enable
 				l_answers = [];
 				l_feedback = [];
 				$(selected).each(function(i, v){
-					l_options.push((i+1)+"");
+					l_options.push((v+1)+"");
+					
 					l_answers.push(options.childNodes[v].getAttribute("text"));
 					l_feedback.push("correct");
 				});
