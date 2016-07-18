@@ -171,7 +171,7 @@ if(is_numeric($_POST['tutorial_id'])){
         . " VALUES (?,?,?,?,?,?,?,?,?)";
         $params = array($user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"Private",$row_currentdetails['extra_flags']);
 
-        $ok = db_query($creation_query, $params);
+        $new_template_id = db_query($creation_query, $params);
         
         $query_for_currentrights = "select * from {$prefix}templaterights where template_id = ?";
         $params = array($tutorial_id);
