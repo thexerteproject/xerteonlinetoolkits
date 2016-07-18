@@ -507,10 +507,15 @@
                                         });
                             });
                     if ($this.data("correct") === $this.data("target")) {
+                        //make sure only one tick is added
                         numCorrect++;
-                        $this.addClass("correct");
-                        //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
-                        result = true;
+                        if ($this.hasClass("correct") == false) {
+                            $this.addClass("correct");
+                            //add tick
+                            $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+                            //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
+                            result = true;
+                        }
                     }
                     else {
                         if (XTGetMode() != "normal") {
@@ -528,6 +533,8 @@
                             }
                         } else {
                             $this.addClass("incorrect");
+                            // add cross
+                            $this.append('<img class="cross" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Cross") + '"></img>');
                             //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
                             result = false;
                         }
@@ -608,15 +615,9 @@
         margin:		10px;
     }
 
-    #labelHolder .label.correct {
-        background: YellowGreen;
-        border-color: YellowGreen;
-    }
+    #labelHolder .label.correct
 
-    #labelHolder .label.incorrect {
-        background: Red;
-        border-color: Red;
-    }
+    #labelHolder .label.incorrect
 
     #labelHolder .label.focus {
         border:		2px solid yellow;
