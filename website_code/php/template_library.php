@@ -28,21 +28,6 @@
  * @package
  */
 
-function get_maximum_template_number(){
-
-    global $xerte_toolkits_site;
-
-    $row = db_query_one("SELECT max(template_id) as count FROM {$xerte_toolkits_site->database_table_prefix}templatedetails");
-
-    if($row == false) {
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get the maximum template number", "Failed to get the maximum template number");
-    }
-    else {
-        return $row['count'];
-    }
-
-}
-
 function get_template_type($template_id){
 
     global $xerte_toolkits_site;
