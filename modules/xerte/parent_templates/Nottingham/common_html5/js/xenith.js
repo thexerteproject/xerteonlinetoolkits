@@ -1946,6 +1946,15 @@ function x_getColour(colour) {
 }
 
 
+// function returns black or white depending on which contrasts best with a given colour (e.g. for text over background colour)
+function x_blackOrWhite(colour) {
+	var rgbval = parseInt(colour.substr(1), 16),
+		brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114);
+	
+	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
+}
+
+
 // function randomises the order of items in an array
 function x_shuffleArray(array) {
 	for (var i = array.length - 1; i > 0; i--) {
