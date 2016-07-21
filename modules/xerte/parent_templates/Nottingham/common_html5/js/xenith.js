@@ -399,7 +399,7 @@ function x_setUp() {
 				x_authorSupport = "false";
 			} else {
 				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
-				$x_mainHolder.before('<div class="alert"><p>' + msg + '</p></div>');
+				$x_headerBlock.prepend('<div class="alert"><p>' + msg + '</p></div>');
 			}
 		}
 		
