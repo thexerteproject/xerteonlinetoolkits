@@ -507,6 +507,13 @@ var EDITOR = (function ($, parent) {
             rowid,
             addMode,
             oldValueOfSortColumn;
+		
+		// replaces contents on empty cells with " " to avoid them being interpretted as end of row
+		$.each(postdata, function(key, element, i) {
+			if (key.indexOf("col_") == 0 && element == "") {
+				postdata[key] = " ";
+			}
+		});
 
         if (postdata[id_in_postdata])
         {
@@ -1242,7 +1249,7 @@ var EDITOR = (function ($, parent) {
                     savekey: [true,13],
                     closeAfterEdit:true,
                     onclickSubmit: function(options, postdata){
-                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 };
                 addSettings = {
@@ -1252,7 +1259,7 @@ var EDITOR = (function ($, parent) {
                     closeOnEscape:true,
                     closeAfterAdd:true,
                     onclickSubmit:function(options, postdata){
-                       return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 }
             }
