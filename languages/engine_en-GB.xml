@@ -49,6 +49,8 @@
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
   
+  <authorSupport label="Author Support is ON: text shown in red will not appear in live projects."/>
+  
   <tick label="Tick"/>
   
   <cross label="Cross"/>

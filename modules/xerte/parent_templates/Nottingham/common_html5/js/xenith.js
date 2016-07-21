@@ -393,6 +393,16 @@ function x_setUp() {
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
 		
+		// author support should only work in preview mode (not play)
+		if (x_params.authorSupport == "true") {
+			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
+				x_authorSupport = "false";
+			} else {
+				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+				$x_mainHolder.before('<div class="alert"><p>' + msg + '</p></div>');
+			}
+		}
+		
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
 			$x_headerBlock.hide().height(0);
