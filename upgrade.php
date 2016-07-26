@@ -427,7 +427,7 @@ function upgrade_8()
     // Check if auto_increment is set
     $sql = "SELECT * FROM information_schema.COLUMNS where table_schema=? and table_name=? and column_name='template_id'";
     $res = db_query($sql, array($xerte_toolkits_site->database_name, $xerte_toolkits_site->database_table_prefix . 'templatedetails'));
-    if ($res !== false && count($res)>1)
+    if ($res !== false && count($res)>0)
     {
         if (strpos('auto_increment', $res[0]['extra']) === false)
         {
