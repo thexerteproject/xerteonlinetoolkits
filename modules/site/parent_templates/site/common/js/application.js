@@ -435,6 +435,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
+	var iframeKaltura = [];
 	
 	node.children().each( function(index, value){
 	
@@ -452,11 +453,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			
 		}
 		
+		var i = index;
+		
 		$(this).children().each( function(index, value){
-				
 		
 			if (this.nodeName == 'text'){
 				tab.append( '<p>' + $(this).text() + '</p>');
+				
+				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
+					iframeKaltura.push(i);
+				}
 			}
 			
 			if (this.nodeName == 'image'){
@@ -504,7 +510,28 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){ $('#tab' + sectionIndex + '_' + itemIndex + ' a:first').tab('show'); }, 0);
+	setTimeout( function(){
+		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
+		$first
+			.tab("show")
+			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
+		
+		// hacky fix for issue with UoN mediaspace videos embedded on navigators
+		var $iframeTabs = $();
+		
+		for (var i=0; i<iframeKaltura.length; i++) {
+			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
+		}
+		
+		$iframeTabs.on('shown.bs.tab', function (e) {
+			var iframeRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']");
+			if (iframeRefresh.data("refresh") != true) {
+				iframeRefresh[0].src = iframeRefresh[0].src;
+				iframeRefresh.data("refresh", true);
+			}
+		});
+		
+	}, 0);
 	
 }
 
