@@ -19,7 +19,7 @@
 
 /* --JUMBOTRON-------------------------------------------------------------------- */
 .jumbotron {
-margin-top: 20px;
+//margin-top: 20px;
   position: relative;
   padding: 20px 0;
   color: #fff;
@@ -64,6 +64,10 @@ color: #6FD9D9;
 }
 .navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
 color: #6FD9D9;
+}
+
+.navbar-fixed-top {
+	position: static;
 }
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
