@@ -197,7 +197,7 @@
 
   </hotspotGroup><hotspot type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
 
-    <name label="Label" type="TextInput"/>
+    <name label="Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
   </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
