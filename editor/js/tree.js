@@ -865,6 +865,17 @@ var EDITOR = (function ($, parent) {
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
         toolbox.convertDataGrids();
+		
+		// make buttons appear disabled when the node can't be duplicated / deleted
+		$("#copy_button, #delete_button").removeClass("disabled");
+		
+		if (menu_options.duplicate == "false") {
+			$("#copy_button").addClass("disabled");
+		}
+		
+		if (menu_options.remove == "false") {
+			$("#delete_button").addClass("disabled");
+		}
 
         // And finally, scroll to the top
         setTimeout(function(){
