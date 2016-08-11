@@ -28,6 +28,7 @@ var EDITOR = (function ($, parent) {
         jqGridsLastSel = {},
         jqGridsColSel = {},
         jqGrGridData = {},
+		jqGridSetUp = false,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -1314,7 +1315,8 @@ var EDITOR = (function ($, parent) {
                 datatype: 'local',
                 data: rows,
                 height: "100%",
-                width: "100%",
+               // width: "100%",
+				autowidth: true,
                 colNames: headers,
                 colModel: colModel,
                 rowNum: 10,
@@ -1393,11 +1395,28 @@ var EDITOR = (function ($, parent) {
                 });
                 buttons.append($('<br>'));
             }
-            // Set Width
-            setTimeout(function() {
-                var gridWidth = $('#' + id).width();
-                $('#' + id + '_jqgrid').jqGrid('setGridWidth', gridWidth);
-            }, 100);
+			
+			// can't get jqGrid to be automatically responsive so listens to window resize to manually resize the grids
+			if (jqGridSetUp != true) {
+				$(window).resize(function() {
+					if (this.resizeTo) {
+						clearTimeout(this.resizeTo);
+					}
+					this.resizeTo = setTimeout(function() {
+						$(this).trigger("resizeEnd");
+					}, 200)
+				});
+				
+				$(window).on("resizeEnd", function() {
+					console.log("resize end");
+					$("#mainPanel .ui-jqgrid").hide();
+					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
+					$("#mainPanel .ui-jqgrid").show();
+					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+				});
+				
+				jqGridSetUp == true;
+			}
 
         });
     },
