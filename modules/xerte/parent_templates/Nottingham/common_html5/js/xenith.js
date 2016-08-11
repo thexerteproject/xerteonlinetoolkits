@@ -241,6 +241,11 @@ x_projectDataLoaded = function(xmlData) {
             }
         }
     }
+	
+	if (window.location.href.indexOf("/peer.php") != -1) {
+		x_params.displayMode = "default";
+		x_fillWindow = false;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
     if (urlParams.hide != undefined) {
