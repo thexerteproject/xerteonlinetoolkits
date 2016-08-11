@@ -508,10 +508,14 @@ var EDITOR = (function ($, parent) {
             addMode,
             oldValueOfSortColumn;
 		
-		// replaces contents on empty cells with " " to avoid them being interpretted as end of row
+		// replaces contents in empty cells with " " to avoid them being interpreted as end of row
 		$.each(postdata, function(key, element, i) {
 			if (key.indexOf("col_") == 0 && element == "") {
 				postdata[key] = " ";
+			}
+			// replaces | with &#124; to avoid them being interpreted as end of cell/row
+			if (key.indexOf("col_") == 0 && postdata[key].indexOf("|") != -1) {
+				postdata[key] = postdata[key].replace(/\|/g, "&#124;");
 			}
 		});
 
@@ -615,7 +619,6 @@ var EDITOR = (function ($, parent) {
         // !!! the most important step: skip ajax request to the server
         this.processing = true;
         return {};
-
     },
 
     delRow = function(id,key,name, rowid){
