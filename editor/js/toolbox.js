@@ -441,9 +441,18 @@ var EDITOR = (function ($, parent) {
         if (!confirm('Are you sure?')) {
             return;
         }
-
+		
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
+		
+		if (name == "hidePage") {
+			$("#" + key + " .hiddenImg").remove();
+			$("#" + key + " .hidden").contents().unwrap();
+			$("#" + key).each(function() {
+				var $this = $(this);
+				$this.html($this.html().replace(/&nbsp;/, ""));
+			});
+		}
 
         if (name in lo_data[key]["attributes"])
         {
@@ -978,17 +987,20 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
-								// makes sure deprecated / hidden page highlights aren't lost when page name is changed
-								if ($("#" + options.key + " .deprecatedImg").length > 0) {
-									thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
-									if ($("#" + options.key + " .hiddenImg").length > 0)
-									{
-										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+								
+								if (options.key != "treeroot") {
+									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
+									if ($("#" + options.key + " .deprecatedImg").length > 0) {
+										thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
+										if ($("#" + options.key + " .hiddenImg").length > 0)
+										{
+											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+										}
 									}
-								}
-								else if ($("#" + options.key + " .hiddenImg").length > 0)
-								{
-									thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+									else if ($("#" + options.key + " .hiddenImg").length > 0)
+									{
+										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+									}
 								}
 
                                 // Rename the node
