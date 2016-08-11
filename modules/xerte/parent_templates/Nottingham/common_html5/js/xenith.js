@@ -242,7 +242,7 @@ x_projectDataLoaded = function(xmlData) {
         }
     }
 	
-	if (window.location.href.indexOf("/peer.php") != -1) {
+	if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
 		x_params.displayMode = "default";
 		x_fillWindow = false;
 	}
