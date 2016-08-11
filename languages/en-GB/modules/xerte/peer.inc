@@ -21,6 +21,6 @@
 
     define("XERTE_PEER_PASSWORD", "Password");
 
-    define("XERTE_PEER_LOGIN_BUTTON", "SignIn");
+    define("XERTE_PEER_LOGIN_BUTTON", "Sign In");
 
 ?>
