@@ -99,7 +99,7 @@ if(is_numeric($_POST['template_id'])){
 
                 include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/duplicate_template.php";
 
-                duplicate_template(($maximum_template_id+1),$_POST['template_id'],$row_template_type['template_name']);
+                duplicate_template($new_template_id,$_POST['template_id'],$row_template_type['template_name']);
 
             }else{
 
