@@ -32,7 +32,7 @@
   <!-- HOTSPOT============================== -->
   <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
 
-    <name label="Label" type="TextInput" />
+    <name label="Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
   </hotspot> 

@@ -71,6 +71,9 @@ h3 {
 #mainPanel .panel {
     font-size: 3.0vmin;
 }
+.panel #contentHolder {
+    font-size: 3.0vmin;
+}
 #infoHolder {
     font-size: 3.0vmin;
 }

@@ -241,6 +241,11 @@ x_projectDataLoaded = function(xmlData) {
             }
         }
     }
+	
+	if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
+		x_params.displayMode = "default";
+		x_fillWindow = false;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
     if (urlParams.hide != undefined) {
@@ -392,6 +397,16 @@ function x_setUp() {
 		
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
+		
+		// author support should only work in preview mode (not play)
+		if (x_params.authorSupport == "true") {
+			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
+				x_authorSupport = "false";
+			} else {
+				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+				$x_headerBlock.prepend('<div class="alert"><p>' + msg + '</p></div>');
+			}
+		}
 		
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
@@ -1339,8 +1354,10 @@ function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
     
     // Rip out the glossary if required
-	if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-		$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+			$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+		}
 	}
 	
 	// Do deeplinking here so model has appropriate data at hand
@@ -1356,11 +1373,13 @@ function x_pageLoaded() {
     });
 	
 	// script & style optional properties for each page added after page is otherwise set up
-	if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
-		$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
-	}
-	if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
-		$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
+			$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+		}
+		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
+			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+		}
 	}
 
     $("#x_page" + x_currentPage)
@@ -1939,6 +1958,15 @@ function x_selectText(element) {
 // function deals with hex values that might be abbreviated ones from the flash editor
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
+}
+
+
+// function returns black or white depending on which contrasts best with a given colour (e.g. for text over background colour)
+function x_blackOrWhite(colour) {
+	var rgbval = parseInt(colour.substr(1), 16),
+		brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114);
+	
+	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
 

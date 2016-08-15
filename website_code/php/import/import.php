@@ -67,8 +67,6 @@ function make_new_template($type,$zip_path){
      * get the maximum id number from templates, as the id for this template
      */
 
-    $maximum_template_id = get_maximum_template_number();
-
     $root_folder = get_user_root_folder();
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
@@ -98,11 +96,10 @@ function make_new_template($type,$zip_path){
     }
 
     $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
-    . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
-    . "VALUES (?,?,?,?,?,?,?,?)";
+    . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags) "
+    . "VALUES (?,?,?,?,?,?,?)";
     
     $params = array(
-        $maximum_template_id+1, 
         $_SESSION['toolkits_logon_id'],
         $row_template_type['template_type_id'],
         date('Y-m-d'),
@@ -111,8 +108,8 @@ function make_new_template($type,$zip_path){
         $template_name , 
         "engine=javascript");
 
-    $ok = db_query($query_for_new_template, $params);
-    if($ok!==false) {
+    $lastid = db_query($query_for_new_template, $params);
+    if($lastid!==false) {
 
         /*
          * Are we importing into a folder
@@ -127,7 +124,7 @@ function make_new_template($type,$zip_path){
         $query_for_template_rights = "INSERT INTO {$prefix}templaterights"
         . " (template_id,user_id,role, folder)"
         . "VALUES (?,?,?,?)";
-        $params = array($maximum_template_id+1, $_SESSION['toolkits_logon_id'],"creator" ,$folder_id);
+        $params = array($lastid,$_SESSION['toolkits_logon_id'],"creator" ,$folder_id);
 
         $ok = db_query($query_for_template_rights, $params);
         
@@ -139,11 +136,11 @@ function make_new_template($type,$zip_path){
 
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
-            mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type);
+            mkdir($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type);
 
-            chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type,0777);
+            chmod($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type,0777);
 
-            copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($maximum_template_id+1) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
+            copy_loop($zip_path, $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . ($lastid) . "-" . $_SESSION['toolkits_logon_username'] . "-" . $type . "/");
 
             echo IMPORT_SUCCESS . "****";
 

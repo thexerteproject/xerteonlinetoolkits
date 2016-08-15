@@ -135,7 +135,7 @@ CREATE TABLE "syndicationlicenses" (
   PRIMARY KEY ("license_id")
 );
 CREATE TABLE "templatedetails" (
-  "template_id" bigint(20) NOT NULL,
+  "template_id" bigint(20) autoincrement NOT NULL,
   "creator_id" bigint(20) DEFAULT NULL,
   "template_type_id" bigint(20) DEFAULT NULL,
   "template_name" char(255) DEFAULT NULL,

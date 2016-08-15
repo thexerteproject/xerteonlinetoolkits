@@ -62,11 +62,7 @@ if(is_numeric($_POST['template_id'])){
          * get the maximum id number from templates, as the id for this template
          */
 
-        $maximum_template_id = get_maximum_template_number();
-
-      
-
-        $query_for_template_type_id = "select otd.template_type_id, otd.template_name, otd.template_framework, td.extra_flags FROM " 
+        $query_for_template_type_id = "select otd.template_type_id, otd.template_name, otd.template_framework, td.extra_flags FROM "
                  . "{$prefix}originaltemplatesdetails otd, {$prefix}templatedetails td where "
                  . "otd.template_type_id = td.template_type_id  AND "
                  . "td.template_id = ? ";
@@ -80,11 +76,10 @@ if(is_numeric($_POST['template_id'])){
          */
 
         $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
-        . "(template_id, creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
-                . " VALUES (?,?,?,?,?,?,?,?)";
+        . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
+                . " VALUES (?,?,?,?,?,?,?)";
         $params = array(
-                ($maximum_template_id+1),
-            $_SESSION['toolkits_logon_id'], 
+                $_SESSION['toolkits_logon_id'],
             $row_template_type['template_type_id'],
             date('Y-m-d'), 
             date('Y-m-d'),
@@ -92,10 +87,11 @@ if(is_numeric($_POST['template_id'])){
             "Copy of " . $_POST['template_name'], 
             $row_template_type['extra_flags']);
 
-        if(db_query($query_for_new_template, $params) !== FALSE){
-
+        $new_template_id = db_query($query_for_new_template, $params);
+        if($new_template_id !== FALSE){
+        
             $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
-            $params = array(($maximum_template_id+1), $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
+            $params = array($new_template_id, $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
 
             if(db_query($query_for_template_rights, $params) !== FALSE){		
 
@@ -103,7 +99,7 @@ if(is_numeric($_POST['template_id'])){
 
                 include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/duplicate_template.php";
 
-                duplicate_template(($maximum_template_id+1),$_POST['template_id'],$row_template_type['template_name']);
+                duplicate_template($new_template_id,$_POST['template_id'],$row_template_type['template_name']);
 
             }else{
 

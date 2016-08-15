@@ -144,12 +144,9 @@
 					group.numSubGroups = 0;
 					groupInfo.push(group);
 					
-					var bgColour = x_getColour(group.bgColour),
-						rgbval = parseInt(bgColour.substr(1), 16),
-						brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
-						txtColour = (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
+					var bgColour = x_getColour(group.bgColour);
 					
-					groupStyles += " .group" + i + ".on {color:" + txtColour + "; background-color:" + bgColour + ";} ";
+					groupStyles += " .group" + i + ".on {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + ";} ";
 					
 					if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
 						$pageContents.addClass("line");

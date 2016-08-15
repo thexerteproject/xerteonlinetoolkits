@@ -197,7 +197,7 @@
 
   </hotspotGroup><hotspot type="hotSpot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
 
-    <name label="Label" type="TextInput"/>
+    <name label="Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
 
   </hotspot><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" remove="true">
@@ -595,7 +595,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
-    <commentary label="Commentary" type="TextArea" height="100"/> 
+    <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>
 
   </dialogStep><dictation menu="Interactivity" menuItem="Dictation" hint="An interaction for typing text from a series of audio files." icon="icTranscript" thumb="thumbs/dictation.jpg" remove="true">
@@ -1986,7 +1986,12 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
-
+	
+	<colour1 label="Select Colour" type="ColourPicker" defaultValue="0xFFA500" optional="true"/>
+	<colour2 label="Found Colour" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
+	<colour3 label="Complete Colour" type="ColourPicker" defaultValue="0x800080" optional="true"/>
+	<colour4 label="Solved Colour" type="ColourPicker" defaultValue="0x008000" optional="true"/>
+	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
 	<hideSolve label="Hide Solve Button" hint="Hide the solve button completely" type="CheckBox" optional="true"/>

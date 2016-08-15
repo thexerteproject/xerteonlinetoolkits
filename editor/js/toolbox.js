@@ -28,6 +28,7 @@ var EDITOR = (function ($, parent) {
         jqGridsLastSel = {},
         jqGridsColSel = {},
         jqGrGridData = {},
+		jqGridSetUp = false,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
@@ -441,9 +442,18 @@ var EDITOR = (function ($, parent) {
         if (!confirm('Are you sure?')) {
             return;
         }
-
+		
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
+		
+		if (name == "hidePage") {
+			$("#" + key + " .hiddenImg").remove();
+			$("#" + key + " .hidden").contents().unwrap();
+			$("#" + key).each(function() {
+				var $this = $(this);
+				$this.html($this.html().replace(/&nbsp;/, ""));
+			});
+		}
 
         if (name in lo_data[key]["attributes"])
         {
@@ -507,6 +517,17 @@ var EDITOR = (function ($, parent) {
             rowid,
             addMode,
             oldValueOfSortColumn;
+		
+		// replaces contents in empty cells with " " to avoid them being interpreted as end of row
+		$.each(postdata, function(key, element, i) {
+			if (key.indexOf("col_") == 0 && element == "") {
+				postdata[key] = " ";
+			}
+			// replaces | with &#124; to avoid them being interpreted as end of cell/row
+			if (key.indexOf("col_") == 0 && postdata[key].indexOf("|") != -1) {
+				postdata[key] = postdata[key].replace(/\|/g, "&#124;");
+			}
+		});
 
         if (postdata[id_in_postdata])
         {
@@ -608,7 +629,6 @@ var EDITOR = (function ($, parent) {
         // !!! the most important step: skip ajax request to the server
         this.processing = true;
         return {};
-
     },
 
     delRow = function(id,key,name, rowid){
@@ -968,17 +988,20 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
-								// makes sure deprecated / hidden page highlights aren't lost when page name is changed
-								if ($("#" + options.key + " .deprecatedImg").length > 0) {
-									thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
-									if ($("#" + options.key + " .hiddenImg").length > 0)
-									{
-										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+								
+								if (options.key != "treeroot") {
+									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
+									if ($("#" + options.key + " .deprecatedImg").length > 0) {
+										thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
+										if ($("#" + options.key + " .hiddenImg").length > 0)
+										{
+											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+										}
 									}
-								}
-								else if ($("#" + options.key + " .hiddenImg").length > 0)
-								{
-									thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+									else if ($("#" + options.key + " .hiddenImg").length > 0)
+									{
+										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+									}
 								}
 
                                 // Rename the node
@@ -1242,7 +1265,7 @@ var EDITOR = (function ($, parent) {
                     savekey: [true,13],
                     closeAfterEdit:true,
                     onclickSubmit: function(options, postdata){
-                        return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 };
                 addSettings = {
@@ -1252,7 +1275,7 @@ var EDITOR = (function ($, parent) {
                     closeOnEscape:true,
                     closeAfterAdd:true,
                     onclickSubmit:function(options, postdata){
-                       return onclickJqGridSubmitLocal(id, key, name, options, postdata);
+						return onclickJqGridSubmitLocal(id, key, name, options, postdata);
                     }
                 }
             }
@@ -1292,7 +1315,8 @@ var EDITOR = (function ($, parent) {
                 datatype: 'local',
                 data: rows,
                 height: "100%",
-                width: "100%",
+               // width: "100%",
+				autowidth: true,
                 colNames: headers,
                 colModel: colModel,
                 rowNum: 10,
@@ -1371,11 +1395,28 @@ var EDITOR = (function ($, parent) {
                 });
                 buttons.append($('<br>'));
             }
-            // Set Width
-            setTimeout(function() {
-                var gridWidth = $('#' + id).width();
-                $('#' + id + '_jqgrid').jqGrid('setGridWidth', gridWidth);
-            }, 100);
+			
+			// can't get jqGrid to be automatically responsive so listens to window resize to manually resize the grids
+			if (jqGridSetUp != true) {
+				$(window).resize(function() {
+					if (this.resizeTo) {
+						clearTimeout(this.resizeTo);
+					}
+					this.resizeTo = setTimeout(function() {
+						$(this).trigger("resizeEnd");
+					}, 200)
+				});
+				
+				$(window).on("resizeEnd", function() {
+					console.log("resize end");
+					$("#mainPanel .ui-jqgrid").hide();
+					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
+					$("#mainPanel .ui-jqgrid").show();
+					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+				});
+				
+				jqGridSetUp == true;
+			}
 
         });
     },
@@ -1738,21 +1779,23 @@ var EDITOR = (function ($, parent) {
                     page.push(pageID.found ? pageID.value : linkID.value);
                     pages.push(page);
 
-					// Now we do the children
-					var childNode = tree.get_node(key, false);
-					$.each(childNode.children, function(i, key){
-						var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-						var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-						var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-						if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-						{
-							var page = [];
-							// Also make sure we only take the text from the name, and not the full HTML
-							page.push(getTextFromHTML("&nbsp;- "+name.value));
-							page.push(pageID.found ? pageID.value : linkID.value);
-							pages.push(page);
-						}
-					});
+					// Now we do the children, only for Xerte template just now
+					if (moduleurlvariable == "modules/xerte/") {
+						var childNode = tree.get_node(key, false);
+						$.each(childNode.children, function(i, key){
+							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+							var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+							if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+							{
+								var page = [];
+								// Also make sure we only take the text from the name, and not the full HTML
+								page.push(getTextFromHTML("&nbsp;- "+name.value));
+								page.push(pageID.found ? pageID.value : linkID.value);
+								pages.push(page);
+							}
+						});
+					}
                 }
             });
             return pages;

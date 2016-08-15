@@ -31,7 +31,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			if (x_browserInfo.mobile == true) {
+				$("#pageContents").height($("#cardTopHolder").height());
+			}
 		}
 		
 		this.init = function() {
@@ -73,6 +75,10 @@
 				.hide();
 			
 			this.createCards();
+			
+			if (x_browserInfo.mobile == true) {
+				$("#pageContents").height($("#cardTopHolder").height());
+			}
 			
 			x_pageLoaded();
 		}
