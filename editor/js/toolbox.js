@@ -2302,8 +2302,7 @@ var EDITOR = (function ($, parent) {
                             .attr('id', id)
                             .addClass('inlinewysiwyg')
                             .attr('contenteditable', 'true')
-                            .append($('<p>')
-                                .append(value));
+							.append('<p>' + value + '</p>');
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
