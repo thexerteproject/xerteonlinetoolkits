@@ -40,8 +40,8 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			var $panel = $("#pageContents .qPanel");
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .qPanel");
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
 			}
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {

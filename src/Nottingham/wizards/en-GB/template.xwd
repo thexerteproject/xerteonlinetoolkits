@@ -73,7 +73,7 @@
 	  score="You scored {i} / {n}" 
 	  onCompletion="You can retake the quiz at any time"   
 	  restart="Restart"  
-	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
+	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
 	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" gapFillWrong="You have not filled any gaps correctly. Try again." gapFillWrongTracking="You have not filled any gaps correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
@@ -481,8 +481,9 @@
 	<text label="Intro Text" type="TextArea" height="100"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 	<firstStep label="First Step ID" type="TextInput"/>
+	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
 	
-	<copy label="Copy Overview Option" type="CheckBox" optional="true"/>
+	<copy label="Copy Overview Option" type="CheckBox" optional="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
@@ -512,7 +513,9 @@
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Question" type="TextArea" height="100"/>
 	<format label="Question Type" type="ComboBox" options="Radio buttons,Drop down menu" data="radio,menu" defaultValue="radio" width="200"/>
-	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 
 	<newNodes>
 		<mcqStepOption><![CDATA[<mcqStepOption name="Enter answer here" target="e.g. Q2"/>]]></mcqStepOption>
@@ -521,7 +524,9 @@
   </mcqStep><mcqStepOption icon="icBullet" remove="true" duplicate="true" menuItem="Option">
 	<name label="Answer Option" type="TextInput" wysiwyg="true"/>
 	<target label="Target ID" type="TextInput"/>
-	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </mcqStepOption><sliderStep icon="icComment" remove="true" duplicate="true" menuItem="Slider Question">
@@ -532,8 +537,10 @@
 	<max label="Maximum value" type="TextInput"/>
 	<step label="Increment" type="TextInput"/>
 	<value label="Initial value" type="TextInput"/>
-	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
-	<unitPos label="Unit position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
+	<unitPos label="Unit Position" type="ComboBox" options="Start,End" data="start,end" defaultValue="end" width="100" optional="true" tooltip="Should the unit of answer appear before (&#xA3;10) or after (10%) the number?"/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<newNodes>
 		<sliderStepOption><![CDATA[<sliderStepOption min="0" max="1" target="e.g. Q2"/>]]></sliderStepOption>
@@ -543,22 +550,28 @@
 	<min label="Range minimum" type="TextInput"/>
 	<max label="Range maximum" type="TextInput"/>
 	<target label="Target ID" type="TextInput"/>
-	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true"/>
+	<resultTxt label="Stored Result Text" type="TextArea" height="100" optional="true" tooltip="Stores text associated with this answer for use in the results. This text will only display on result steps where Compile Stored Results (optional property) is added."/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </sliderStepOption><infoStep icon="icPageWhiteInfo" remove="true" duplicate="true" menuItem="Information Step">
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	<target label="Target ID" type="TextInput"/>
-	<helpTxt label="More Information" type="TextArea" height="100" optional="true"/>
+	<helpTxt label="More Information" type="TextArea" height="100" optional="true" tooltip="Allows access to extra information via a button and popup dialog."/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<info><![CDATA[Make sure the Target ID matches the Unique ID of a question, result or information step.]]></info>
   </infoStep><resultStep icon="icLightbulb" remove="true" duplicate="true" menuItem="Result">
 	<name label="Unique ID" type="TextInput"/>
 	<text label="Text" type="TextArea" height="100"/>
 	
-	<collate label="Compile Stored Results" type="CheckBox" optional="true"/>
-	<destination label="Go to Page ID" type="TextInput" optional="true"/>
+	<collate label="Compile Stored Results" type="CheckBox" optional="true" tooltip="Include Stored Result Text (optional property) from steps in the result."/>
+	<destination label="Go to Page ID" type="TextInput" optional="true" tooltip="Adds a button link to a page of your choice."/>
+	<displayTxt label="Progress Text" type="TextArea" height="100" optional="true" tooltip="Adds extra text below the Intro Text. Any Progress Text will remain on screen throughout subsequent steps until Clear Progress Text (optional property) is used."/>
+	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<destinationBtn label="Go Button Label" type="TextInput" language="true"/>
   </resultStep><delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
