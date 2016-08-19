@@ -258,7 +258,7 @@
 				tempLabels.splice(labelNum, 1);
 			}
 			for (i=0; i<labels.length; i++) {
-				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '">' + labels[i].name + '</li>');
+				$("#initHolder").append('<li class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><p>' + labels[i].name + '</p></li>');
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("category", labels[i].correct);
                 $thisLabel.data("name", labels[i].name);
