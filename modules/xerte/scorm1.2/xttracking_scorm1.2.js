@@ -422,6 +422,17 @@ function ScormTrackingState()
                 res = setValue(interaction + 'time', this.formatTime(sit.start));
                 res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
 
+                var psit = this.findPage(sit.page_nr);
+                if (psit != null)
+                {
+                    var pweighting = psit.weighting;
+                    var nrinteractions = psit.nrinteractions;
+                }
+                else
+                {
+                    var pweighting = 1.0;
+                    var nrinteractions = 1.0;
+                }
                 switch (sit.ia_type)
                 {
                     case 'match':
@@ -450,22 +461,11 @@ function ScormTrackingState()
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'matching');
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', result);
+                        res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
                         break;
                     case 'multiplechoice':
-                        var psit = this.findPage(sit.page_nr);
-                        if (psit != null)
-                        {
-                            var pweighting = psit.weighting;
-                            var nrquestions = psit.nrinteractions;
-                        }
-                        else
-                        {
-                            var pweighting = 1.0;
-                            var nrquestions = 1.0;
-                        }
                         // We have an options as numbers, separated by ';'
                         // and we have corresponding answers strings separated by ';'
                         // Construct answers like a  (ignore answers, because we can't do anything with them in Scorm 1.2)
@@ -489,18 +489,19 @@ function ScormTrackingState()
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'choice');
                         res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrquestions*100)/100);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', scorm_lanswer);
                         res = setValue(interaction + 'result', (result ? 'correct' : 'wrong'));
                         break;
                     case 'numeric':
                         res = setValue(interaction + 'type', 'numeric');
                         res = setValue(interaction + 'correct_responses.0.pattern', '100');
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(sit.weighting*100)/100);
                         res = setValue(interaction + 'student_response', sit.score);
-                        res = setValue(interaction + 'result', sit.score);
+                        res = setValue(interaction + 'result', Math.round(sit.score*100)/100);
                         break;
                     case 'text':
+                    case 'fill-in':
                         // Hmmm is this the page or the interaction itself
                         if (ia_nr < 0)
                         {
@@ -513,9 +514,14 @@ function ScormTrackingState()
 
                         res = setValue(interaction + 'type', 'fill-in');
                         res = setValue(interaction + 'correct_responses.0.pattern', sit.correctanswer);
-                        res = setValue(interaction + 'weighting', sit.weighting);
+                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
                         res = setValue(interaction + 'student_response', sit.learneranswer);
-                        res = setValue(interaction + 'result', 'neutral');
+                        if (sit.ia_type=='text') {
+                            res = setValue(interaction + 'result', 'neutral');
+                        }
+                        else {
+                            res = setValue(interaction + 'result',(result ? 'correct' : 'wrong'));
+                        }
                         break;
                     case 'page':
                     default:
@@ -627,7 +633,12 @@ function ScormTrackingState()
                 }
                 totalscore = totalscore / totalweight;
             }
-            return totalscore;
+            else
+            {
+                // If the weight is 0.0, set the score to 100
+                totalscore = 100.0;    
+            }
+            return Math.round(totalscore*100/100);
         }
     }
 
@@ -888,7 +899,7 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
             sit.ia_type = page_type;
 
             sit.nrinteractions = nrinteractions;
-            sit.weighting = parseInt(weighting);
+            sit.weighting = parseFloat(weighting);
             if (page_type != 'page')
             {
                 state.lo_type = 'interactive';
@@ -957,31 +968,33 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (state.finished) return;
-    state.finished = true;
-
-    if (state.scormmode == 'normal' && (state.scoremode != 'first' || getValue('cmi.core.lesson_status') == "incomplete"))
+    if (state.scormmode == 'normal')
     {
-        var currentpageid = "";
-        if (state.currentid)
+        if (!state.finished)
         {
-            var sit = state.find(currentid);
-            // there is still an interaction open, close it
-            if (sit != null)
+            var currentpageid = "";
+            state.finished = true;
+            if (state.currentid)
             {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                var sit = state.find(currentid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
             }
-        }
-        if (state.currentpageid)
-        {
-            currentpageid = state.currentpageid;
-            var sit = state.find(currentpageid);
-            // there is still an interaction open, close it
-            if (sit != null)
+            if (state.currentpageid)
             {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                currentpageid = state.currentpageid;
+                var sit = state.find(currentpageid);
+                // there is still an interaction open, close it
+                if (sit != null)
+                {
+                    state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
+                }
+
             }
+            state.finishTracking(currentpageid, false);
         }
-        state.finishTracking(currentpageid);
     }
-    doLMSFinish();
-}
+    doLMSFinish();}
