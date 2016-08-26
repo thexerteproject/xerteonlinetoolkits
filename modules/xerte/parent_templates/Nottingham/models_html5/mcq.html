@@ -21,8 +21,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
-        var checked;
-		// function called every time the page is viewed after it has initially loaded
+        // function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.optionElements = $("#pageContents").data("optionElements");
 			

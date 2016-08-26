@@ -48,13 +48,7 @@
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <video label="Video" type="media"  optional="true"/>
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
-	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
       <question><![CDATA[<question  name="Question" prompt="Here is a prompt" type="Single Answer" />]]></question>

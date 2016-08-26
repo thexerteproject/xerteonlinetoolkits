@@ -192,10 +192,11 @@ Folder popup is the div that appears when creating a new folder
                 <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
                 echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname']; ?>
                <div style="display: inline-block"><?php display_language_selectionform("general"); ?></div>
-               <button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
+               <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
+               ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_button_c_no_width"
                         onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
                     <i class="fa fa-sign-out xerte-icon"></i><?PHP echo INDEX_BUTTON_LOGOUT; ?>
-                </button>
+                </button><?PHP } ?>
             </div>
             <div style="clear:both;"></div>
             <div class="separator"></div>

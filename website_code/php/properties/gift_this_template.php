@@ -166,14 +166,12 @@ if(is_numeric($_POST['tutorial_id'])){
         
         $row_currentdetails = db_query_one($query_for_currentdetails, $params); 
 
-        $new_template_id = get_maximum_template_number()+1;
+                $creation_query = "INSERT INTO {$prefix}templatedetails "
+        . "(creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
+        . " VALUES (?,?,?,?,?,?,?,?,?)";
+        $params = array($user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"Private",$row_currentdetails['extra_flags']);
 
-        $creation_query = "INSERT INTO {$prefix}templatedetails "
-        . "(template_id, creator_id, template_type_id,template_name,date_created,date_modified,date_accessed,number_of_uses,access_to_whom,extra_flags) "
-        . " VALUES (?,?,?,?,?,?,?,?,?,?)";
-        $params = array($new_template_id, $user_id, $row_currentdetails['template_type_id'], $row_currentdetails['actual_name'], date('Y-m-d'), date('Y-m-d'), date('Y-m-d'),0,"Private",$row_currentdetails['extra_flags']);
-
-        $ok = db_query($creation_query, $params);
+        $new_template_id = db_query($creation_query, $params);
         
         $query_for_currentrights = "select * from {$prefix}templaterights where template_id = ?";
         $params = array($tutorial_id);

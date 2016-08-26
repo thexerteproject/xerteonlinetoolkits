@@ -162,6 +162,7 @@ function template_toggle(tag){
     if((temp.style.display=="none")||(temp.style.display=="")){
         temp.style.display="block";	
 				butt.style.display="none";
+				temp.querySelector('input[name="filename"]').focus();
     }else{
         temp.style.display="none";
 				butt.style.display="";
@@ -482,12 +483,12 @@ function preview_window(admin){
 					if(size.length!=1){
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", scrollbars=yes,resizable=1" );
+						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=" + size[1] + ", width=" + size[0] + ", scrollbars=yes,resizable=yes" );
 						
 					}else{
 					
 
-						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=768,width=1024,scrollbars=yes,resizable=true");
+						var PreviewWindow = window.open(site_url + url_return("preview", node.xot_id), "previewwindow" + node.id, "height=768,width=1024,scrollbars=yes,resizable=yes");
 						
 					}
 
@@ -1222,6 +1223,7 @@ function open_created_node(template_id, folder_id)
             if (workspace.items[i].xot_id == template_id)
             {
                 node = workspace.items[i];
+                tree.deselect_all();
                 tree.select_node(node.id);
                 break;
             }

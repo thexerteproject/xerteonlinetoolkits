@@ -37,7 +37,9 @@
 		
 		this.init = function() {
 			var $pageContents = $("#pageContents");
-			$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
+			if (x_currentPageXML.childNodes[0].nodeValue != "" && x_currentPageXML.childNodes[0].nodeValue != undefined) {
+				$pageContents.html(x_currentPageXML.childNodes[0].nodeValue);
+			}
 			
 			if (x_params.responsive == "true" && x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) {
 				this.responsiveTitle();
@@ -178,9 +180,16 @@
 				});
 			
 			$x_background.append($pageBg);
-			$pageBg
-				.fadeIn()
-				.gray();
+			$pageBg.fadeIn();
+			
+			if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
+				$pageBg.gray();
+				if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+					$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
+					$pageBg = $("#pageBg");
+					$pageBg.css("visibility", "visible");
+				}
+			}
 			
 			$("#x_mainBg").hide(); // so it doesn't show through if title bg is transparent
 			

@@ -30,6 +30,8 @@ CKEDITOR.editorConfig = function( config ) {
     // we don't want too have in a basic editor. We remove them here.
     //config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
     config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,Anchor,PageBreak,CreateDiv';
+    
+    config.format_tags = 'p;h3;h4;h5;h6;pre;address;div';
 
     // Let's have it basic on dialogs as well.
     config.removeDialogTabs = 'link:advanced';

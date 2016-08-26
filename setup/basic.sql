@@ -163,7 +163,7 @@ CREATE TABLE `$syndicationlicenses` (
 insert  into `$syndicationlicenses`(`license_id`,`license_name`) values (6,'Creative Commons Attribution-ShareAlike'),(5,'Creative Commons Attribution-NonCommercial-ShareAlike'),(4,'Creative Commons Attribution-NonCommercial'),(3,'Creative Commons Attribution-NonCommercial-NoDerivs'),(2,'Creative Commons Attribution-NoDerivs');
 
 CREATE TABLE `$templatedetails` (
-  `template_id` bigint(20) NOT NULL,
+  `template_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `creator_id` bigint(20) DEFAULT NULL,
   `template_type_id` bigint(20) DEFAULT NULL,
   `template_name` char(255) DEFAULT NULL,

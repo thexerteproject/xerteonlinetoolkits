@@ -1,7 +1,7 @@
 Xerte Online Toolkits
 =====================
 
-Latest release : v3.1
+Latest release : v3.2 (released on April 11, 2016)
 
 Installation Instructions (Stable release, .zip)
 ------------------------------------------------

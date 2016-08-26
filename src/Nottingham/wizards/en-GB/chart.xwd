@@ -16,12 +16,6 @@
     <align label="Align Text" options="left,right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
 	
 	<alt label="Summary" type="TextInput" wysiwyg="true" defaultValue="Enter a Summary of the Chart's Contents for Accessibility" optional="true"/>
-
-    <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
-    <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" />
 	
     <newNodes>
       <series><![CDATA[<series name="Series Name" data="label|data" colour="0xFF0000"/>]]></series>

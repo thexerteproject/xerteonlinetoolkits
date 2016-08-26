@@ -19,7 +19,7 @@
 
 /* --JUMBOTRON-------------------------------------------------------------------- */
 .jumbotron {
-margin-top: 20px;
+//margin-top: 20px;
   position: relative;
   padding: 20px 0;
   color: #fff;
@@ -42,7 +42,7 @@ margin-top: 20px;
   font-weight: bold;
   letter-spacing: -1px;
   line-height: 1;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 .jumbotron p {
   font-size: 20px;
@@ -64,6 +64,10 @@ color: #6FD9D9;
 }
 .navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
 color: #6FD9D9;
+}
+
+.navbar-fixed-top {
+	position: static;
 }
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
@@ -180,8 +184,31 @@ section {
 
 /* --HEADER-------------------------------------------------------------- */
 
-#overview div.logo {
-    display: none;
+#overview div.logoR, #overview div.logoL {
+  //display:none;
+}
+#overview.logoR .logoR {
+  float:right; 
+  margin-top:20px;
+}
+#overview.logoR .titles {
+ float:left;
+ padding:20px 5px;
+ text-align:left;
+}
+#overview.logoL .logoL {
+  float:left; 
+  margin-top:20px;
+}
+#overview.logoL .titles {
+ float:left;
+ padding:20px 5px 20px 20px;
+ text-align:left;
+}
+#overview.logoL.logoR .titles {
+ float:none;
+ padding:20px 5px;
+ text-align:center;
 }
 
 /* --FOOTER-------------------------------------------------------------- */
@@ -241,6 +268,15 @@ section {
   .bs-docs-sidenav.affix {
     top: 0;
   }
+  #overview.logoR .titles, #overview.logoL .titles {
+    text-align: center;
+	float:right;
+	width: 100%;
+  }
+  #overview.logoR .logoR, #overview.logoL .logoL {
+    text-align:center;
+    float:none;
+  }
 }
 /* --TABLETS-------------------------------------------------------------- */
 @media (max-width: 767px) {
@@ -263,6 +299,15 @@ section {
     width: auto;
     top: 0;
   }
+  #overview.logoR .titles, #overview.logoL .titles {
+    text-align: center;
+	float:right;
+	width: 100%;
+  }
+  #overview.logoR .logoR, #overview.logoL .logoL {
+    text-align:center;
+    float:none;
+  }
 }
 
 /* --LANDSCAPE PHONES-------------------------------------------------------------- */
@@ -270,10 +315,13 @@ section {
   body {
     padding-top: 0;
   }
-  .jumbotron h1 {
-    font-size: 60px;
+  
+  #overview.logoR .titles, #overview.logoL .titles{
+    text-align: center;
+	float:right;
+	width: 100%;
   }
-  .jumbotron p {
-    font-size: 20px;
+  #overview.logoR .logoR, #overview.logoL .logoL {
+    float:none;
   }
 }

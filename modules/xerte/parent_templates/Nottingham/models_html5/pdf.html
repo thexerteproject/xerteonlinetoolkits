@@ -21,6 +21,8 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var pdf = new function() {		
+		var $pageContents;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			pdf.setUp();
@@ -36,6 +38,34 @@
 		}
 		
 		this.init = function() {
+			$pageContents = $("#pageContents");
+			
+			var textContents = x_addLineBreaks(x_currentPageXML.getAttribute("text")),
+				pdfWidth = x_currentPageXML.getAttribute("pdfWidth");
+			
+			// Full screen or not?
+			console.log([pdfWidth, textContents]);
+			if (pdfWidth == undefined || pdfWidth == "" || textContents == undefined || textContents == "") {
+				pdfWidth = "full";
+			}
+			console.log([pdfWidth, textContents]);
+
+			// Set the with of the pdf
+			if (pdfWidth == "full") {
+				$("#pageContents .panel").appendTo($pageContents);
+				$("#pageContents .splitScreen").remove();
+			}
+			else {
+				$("#textHolder").html(textContents);
+				if (pdfWidth == "small") {
+					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
+				} else if (pdfWidth == "large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				} 
+			}
+
 			pdf.setUp();
 			x_pageLoaded();
 		}
@@ -108,4 +138,21 @@
 	
 </style>
 
-<div id="pdfPage"></div>
+<div id="pageContents">
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left">
+			
+		</div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="pdfPage"></div>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>
+

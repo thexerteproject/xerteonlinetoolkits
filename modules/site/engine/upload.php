@@ -60,8 +60,6 @@ if ($_GET['BROWSER'] == 'firefox' || $_GET['BROWSER'] == 'safari') {
  */
 require_once("../../../config.php");
 
-require_once("../../../plugins.php");
-
 /**
  * 	Now we check that the session has a valid, logged in user
  */
@@ -69,14 +67,7 @@ if (!isset($_SESSION['toolkits_logon_username'])) {
     die("Not logged in; perhaps session has timed out?");
 }
 
-
-if (!empty($_FILES)) {
-    if(!apply_filters('editor_upload_file', $_FILES)) {
-        _debug("file upload for " . print_r($_FILES, true) . " failed. ");
-        die("File upload failed; check server logs.");
-    }
-}
-else {
+if (empty($_FILES)) {
     die("No file(s) uploaded");
 }
 
@@ -102,5 +93,3 @@ if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], $new_file_name)) {
     receive_message($_SESSION['toolkits_logon_username'], "UPLOAD", "CRITICAL", "Error saving file: " . $new_file_name, "Error saving file: " . error_get_last());
     die("Couldn't move uploaded file into place.");
 }
-
-apply_filters('editor_post_upload_file', $new_file_name);

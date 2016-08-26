@@ -141,6 +141,10 @@ function loadLibraries(){
 
 }
 
+function formatColour(col) {
+	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
+}
+
 function setup(){
 
 	//add all the pages to the pages menu: this links bak to the same page
@@ -163,11 +167,13 @@ function setup(){
 		var col = $(data).find('learningObject').attr('headerColour');
 		
 		//one or two?
-		if (col.substr(',') != -1){
+		if (col.indexOf(',') != -1){
 			col = col.split(',');
 		} else {
 			col = [col,col];
 		}
+		col[0] = formatColour(col[0]);
+		col[1] = formatColour(col[1]);
 		
 		$('#overview').css('background', col[0]);
 		$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
@@ -182,10 +188,48 @@ function setup(){
 	
 	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
 	
-		$('#overview').css('color', $(data).find('learningObject').attr('headerTextColour'));
+		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		
 	}
 	
+	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
+	$('#overview div.logoR, #overview div.logoL').hide();
+	
+	if ($(data).find('learningObject').attr('logoR') != undefined){
+		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+	}
+	
+	$.ajax({
+		url: $('#overview .logoR img').attr('src'),
+		success: function() {
+			$('#overview').addClass('logoR');
+			$('#overview div.logoR').show();
+		}
+	});
+	
+	if ($(data).find('learningObject').attr('logoL') != undefined){
+		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+	}
+	
+	$.ajax({
+		url: $('#overview .logoL img').attr('src'),
+		success: function() {
+			$('#overview').addClass('logoL');
+			$('#overview div.logoL').show();
+		}
+	});
+}
+
+
+// this is the format of links added through the wysiwyg editor button
+function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
+	var pages = $(data).find('page');
+	for (var i=0; i<pages.length; i++) {
+		if (pages[i].getAttribute("linkID") == pageInfo.ID) {
+			parseContent(i);
+			break;
+		}
+	}
 }
 	
 
@@ -391,6 +435,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
+	var iframeKaltura = [];
 	
 	node.children().each( function(index, value){
 	
@@ -408,11 +453,16 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			
 		}
 		
+		var i = index;
+		
 		$(this).children().each( function(index, value){
-				
 		
 			if (this.nodeName == 'text'){
 				tab.append( '<p>' + $(this).text() + '</p>');
+				
+				if ($(this).text().indexOf("<iframe") != -1 && $(this).text().indexOf("kaltura_player") != -1) {
+					iframeKaltura.push(i);
+				}
 			}
 			
 			if (this.nodeName == 'image'){
@@ -460,7 +510,28 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 	
 	section.append(tabDiv);
 	
-	setTimeout( function(){ $('#tab' + sectionIndex + '_' + itemIndex + ' a:first').tab('show'); }, 0);
+	setTimeout( function(){
+		var $first = $('#tab' + sectionIndex + '_' + itemIndex + ' a:first');
+		$first
+			.tab("show")
+			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
+		
+		// hacky fix for issue with UoN mediaspace videos embedded on navigators
+		var $iframeTabs = $();
+		
+		for (var i=0; i<iframeKaltura.length; i++) {
+			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
+		}
+		
+		$iframeTabs.on('shown.bs.tab', function (e) {
+			var iframeRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']");
+			if (iframeRefresh.data("refresh") != true) {
+				iframeRefresh[0].src = iframeRefresh[0].src;
+				iframeRefresh.data("refresh", true);
+			}
+		});
+		
+	}, 0);
 	
 }
 
