@@ -28,6 +28,12 @@
 	define("XERTE_EXPORT_SCORM_12_LINK","Get SCORM 1.2 package");
 
 	define("XERTE_EXPORT_SCORM_2004_LINK","Get SCORM 2004 3rd Ed package");
+	
+	define("XERTE_EXPORT_XAPI", "Export for xAPI (TinCan) deployment.");
+	
+	define("XERTE_EXPORT_XAPI_LINK","Get xAPI (TinCan) package");
 
+	
+	
 ?>
 

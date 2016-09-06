@@ -36,6 +36,7 @@ $zipfile = "";
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/archive.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm2004_library.php");
+require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xAPI/xAPI_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xmlInspector.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_size_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
@@ -70,11 +71,16 @@ $scorm_path = $xerte_toolkits_site->basic_template_path . $row['template_framewo
 $scorm_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm1.2/";
 $scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm2004.3rd/";
 $scorm2004_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm2004.3rd/";
+
+$xAPI_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/xAPI/";
+$xAPI_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/xAPI/";
+
 $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/js/";
 
 $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
+$xAPI = false;
 $offline_includes="";
 
 if (isset($_REQUEST['html5'])) {
@@ -104,6 +110,10 @@ if (isset($_REQUEST['offline']))
     $fullArchive = false;
 }
 
+if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
+{
+	$xAPI = true;
+}
 
 /*
  * Make the zip
@@ -308,6 +318,18 @@ if ($scorm == "true") {
     copy_extra_files();
 }
 
+if($xAPI)
+{	
+	export_folder_loop($xAPI_path, false, null, "/");
+	copy_extra_files();
+	if ($xml->getLanguage() != 'en-GB') {
+		export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $xAPI_language_relpath, false, null, "/languages/js/" . $xml->getLanguage() . "/");
+		copy_extra_files();
+	}
+	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
+	copy_extra_files();
+}
+
 $rlo_file = $row['template_name'] . ".rlt";
 /*
  * if used copy extra folders
@@ -378,7 +400,12 @@ if ($scorm == "true") {
     } else {
         scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
-} else {
+} else if($xAPI)
+	{
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+	}
+else {
+	
     if ($export_flash) {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
@@ -407,6 +434,8 @@ elseif ($scorm == "true")
 	$export_type = "_scorm_1_2";
 elseif ($scorm == "2004")
 	$export_type = "_scorm_2004";
+elseif ($xAPI)
+	$export_type = "_xAPI";
 else
 	$export_type = "_deployment";
 
