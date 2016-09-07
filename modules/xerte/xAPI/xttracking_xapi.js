@@ -1,8 +1,30 @@
 var scorm=false;
+var lrsInstance;
+var lrsUsername = "";
+var lrsPassword = "";
+var lrsEndpoint = "";
+
 
 function XTInitialise()
 {
-
+	if(lrsInstance == undefined){
+		try{
+			lrsInstance = new TinCan.LRS(
+				{
+		            endpoint: lrsEndpoint,
+		            username: lrsUsername,
+		            password: lrsPassword,
+		            allowFail: false
+		        }
+			);
+		}
+		catch(ex)
+		{
+			console.log("Failed lrs setup. Error: " + ex);
+		}	
+	}
+	
+	
 }
 
 function XTTrackingSystem()
@@ -37,7 +59,41 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-	alert("Set option");
+	//example from http://rusticisoftware.github.io/TinCanJS/
+	var statement = new TinCan.Statement(
+		    {
+		        actor: {
+		            mbox: "mailto:info@tincanapi.com"
+		        },
+		        verb: {
+		            id: "http://adlnet.gov/expapi/verbs/experienced"
+		        },
+		        target: {
+		            id: "http://rusticisoftware.github.com/TinCanJS"
+		        }
+		    }
+		);
+	lrsInstance.saveStatement(
+		    statement,
+		    {
+		        callback: function (err, xhr) {
+		            if (err !== null) {
+		                if (xhr !== null) {
+		                    console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+		                    // TODO: do something with error, didn't save statement
+		                    return;
+		                }
+
+		                console.log("Failed to save statement: " + err);
+		                // TODO: do something with error, didn't save statement
+		                return;
+		            }
+
+		            console.log("Statement saved");
+		            // TOOO: do something with success (possibly ignore)
+		        }
+		    }
+		);
 }
 
 function XTEnterPage(page_nr, page_name)
