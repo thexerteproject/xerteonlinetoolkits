@@ -407,6 +407,9 @@
 				
 				$submitBtn.button("disable");
 			}
+			
+			 // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 		}
 		
 		

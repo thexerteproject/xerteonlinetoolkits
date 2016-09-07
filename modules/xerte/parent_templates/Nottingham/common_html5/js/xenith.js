@@ -1653,7 +1653,7 @@ function x_getLangInfo(node, attribute, fallBack) {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
