@@ -384,7 +384,7 @@
                         });
             } else {
                 // labels are being reset - make sure targets will still accept them being dropped
-                if (interactivity == " Match") {
+                if (interactivity == "Match") {
                     $("#targetHolder .target")
                             .each(function () {
                                 var $this = $(this);
@@ -446,7 +446,7 @@
                         // now adjust for resized image
                         xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
 
-                        if (interactivity) {
+                        if (interactivity == "Match") {
                             // create target and position it
                             $('<div class="target transparent"></div>')
                                     .appendTo($targetHolder)
