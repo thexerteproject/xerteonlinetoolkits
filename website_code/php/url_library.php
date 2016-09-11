@@ -121,6 +121,13 @@
 						return $xerte_toolkits_site->php_library_path . "scorm/export.php?scorm=2004&template_id=" . $template_number;
 					}
 					break;
+					
+			case "xAPI":	if($xerte_toolkits_site->apache=="true"){
+						return $string . "_" . $template_number;
+					}else{
+						return $xerte_toolkits_site->php_library_path . "scorm/export.php?scorm=false&xAPI=true&template_id=" . $template_number;
+					}
+					break;
 
 			case "drawing":	if($xerte_toolkits_site->apache=="true"){
 							return $string . "_" . $template_number;
