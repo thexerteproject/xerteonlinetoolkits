@@ -73,6 +73,24 @@ function XTTrackingSystem()
 
 function XTLogin(login, passwd)
 {
+    var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/logged-in"
+                },
+                target: {
+                    id: "."
+                }
+            }
+        );
+    
+    SaveStatement(statement);
+    
+    // TODO: Compare the login and the password with credentials from the LRS.
+	
     return true;
 }
 
@@ -103,12 +121,40 @@ function XTSetOption(option, value)
 
 function XTEnterPage(page_nr, page_name)
 {
-    //alert("Opening page " + page_nr + ": " + page_name);
+    var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/initialized"
+                },
+                target: {
+                    id: "page " + page_nr + ": " + page_name + "."
+                }
+            }
+        );
+    
+    SaveStatement(statement);
 }
 
 function XTExitPage(page_nr)
 {
-    //alert("Leaving page " + page_nr + ": " + page_name);
+    var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/exited"
+                },
+                target: {
+                    id: "page " + page_nr + "."
+                }
+            }
+        );
+    
+    SaveStatement(statement);
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -158,7 +204,7 @@ function XTSetPageScore(page_nr, score)
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
 {
-
+	// TODO: Is there a statement needed here?
 }
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
