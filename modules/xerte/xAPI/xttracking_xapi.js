@@ -6,8 +6,18 @@ var scorm=false,
 	lrsEndpoint = "",
     userEMail;
 
+var trackingMode = "none",
+	mode = "none",
+	scoremode = "first",
+	nrpages,
+	lo_completed,
+	lo_passed;
+
 function XTInitialise()
 {
+	
+	
+	
 	if(lrsInstance == undefined){
 		try{
 			lrsInstance = new TinCan.LRS(
@@ -76,7 +86,7 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    return "normal";
+    return mode;
 }
 
 function XTStartPage()
@@ -96,7 +106,47 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-
+    switch (option)
+    {
+        case "nrpages":
+            nrpages = value;
+            break;
+        case "tracking-mode":
+            switch(value)
+            {
+                case 'full_first':
+                    trackingmode = 'full';
+                    scoremode = 'first';
+                    mode = "normal";
+                    break;
+                case 'minimal_first':
+                    trackingmode = 'minimal';
+                    scoremode = 'first';
+                    mode = "normal";
+                    break;
+                case 'full':
+                    trackingmode = 'full';
+                    scoremode = 'last';
+                    mode = "normal";
+                    break;
+                case 'minimal':
+                    trackingmode = 'minimal';
+                    scoremode = 'last';
+                    mode = "normal";
+                    break;
+                case 'none':
+                    trackingmode = 'none';
+                    mode = "no-tracking";
+                    break;
+            }
+            break;
+        case "completed":
+            lo_completed = value;
+            break;
+        case "objective_passed":
+        	lo_passed = Number(value);
+            break;
+    }
 }
 
 function XTEnterPage(page_nr, page_name)
