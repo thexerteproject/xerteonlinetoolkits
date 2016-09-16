@@ -42,27 +42,7 @@ function XTInitialise()
             }
         );
 
-        lrsInstance.saveStatement(
-            statement,
-            {
-                callback: function (err, xhr) {
-                    if (err !== null) {
-                        if (xhr !== null) {
-                            console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
-                            // TODO: do something with error, didn't save statement
-                            return;
-                        }
-
-                        console.log("Failed to save statement: " + err);
-                        // TODO: do something with error, didn't save statement
-                        return;
-                    }
-
-                    console.log("Statement saved");
-                    // TODO: do something with success (possibly ignore)
-                }
-            }
-        );
+        SaveStatement(statement);
     }
 }
 
@@ -179,27 +159,7 @@ function XTSetPageScore(page_nr, score)
         }
     );
 
-    lrsInstance.saveStatement(
-        statement,
-        {
-            callback: function (err, xhr) {
-                if (err !== null) {
-                    if (xhr !== null) {
-                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
-                        // TODO: do something with error, didn't save statement
-                        return;
-                    }
-
-                    console.log("Failed to save statement: " + err);
-                    // TODO: do something with error, didn't save statement
-                    return;
-                }
-
-                console.log("Statement saved");
-                // TODO: do something with success (possibly ignore)
-            }
-        }
-    );
+    SaveStatement(statement);
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
@@ -223,27 +183,7 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
         }
     );
 
-    lrsInstance.saveStatement(
-        statement,
-        {
-            callback: function (err, xhr) {
-                if (err !== null) {
-                    if (xhr !== null) {
-                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
-                        // TODO: do something with error, didn't save statement
-                        return;
-                    }
-
-                    console.log("Failed to save statement: " + err);
-                    // TODO: do something with error, didn't save statement
-                    return;
-                }
-
-                console.log("Statement saved");
-                // TODO: do something with success (possibly ignore)
-            }
-        }
-    );
+    SaveStatement(statement);
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
@@ -274,4 +214,29 @@ function XTTerminate()
 {
     window.opener.innerWidth+=2;
 	window.opener.innerWidth-=2;
+}
+
+function SaveStatement(statement)
+{
+    lrsInstance.saveStatement(
+        statement,
+        {
+            callback: function (err, xhr) {
+                if (err !== null) {
+                    if (xhr !== null) {
+                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                        // TODO: do something with error, didn't save statement
+                        return;
+                    }
+
+                    console.log("Failed to save statement: " + err);
+                    // TODO: do something with error, didn't save statement
+                    return;
+                }
+
+                console.log("Statement saved");
+                // TODO: do something with success (possibly ignore)
+            }
+        }
+    );
 }
