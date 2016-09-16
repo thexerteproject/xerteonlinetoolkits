@@ -1,9 +1,10 @@
-var scorm=false;
-var lrsInstance;
-var lrsUsername = "";
-var lrsPassword = "";
-var lrsEndpoint = "";
-
+//TODO: get user email, more verbs (passed/failed, completed, ect), define scormmode for xAPI
+var scorm=false,
+    lrsInstance,
+	lrsUsername = "",
+	lrsPassword = "",
+	lrsEndpoint = "",
+    userEMail;
 
 function XTInitialise()
 {
@@ -20,11 +21,49 @@ function XTInitialise()
 		}
 		catch(ex)
 		{
-			console.log("Failed lrs setup. Error: " + ex);
+			console.log("Failed LRS setup. Error: " + ex);
 		}	
 	}
-	
-	
+
+	if(lrsInstance != undefined)
+    {
+        var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/launched"
+                },
+                target: {
+                    id: " "
+                    //TODO: get the name for this activity
+                }
+            }
+        );
+
+        lrsInstance.saveStatement(
+            statement,
+            {
+                callback: function (err, xhr) {
+                    if (err !== null) {
+                        if (xhr !== null) {
+                            console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                            // TODO: do something with error, didn't save statement
+                            return;
+                        }
+
+                        console.log("Failed to save statement: " + err);
+                        // TODO: do something with error, didn't save statement
+                        return;
+                    }
+
+                    console.log("Statement saved");
+                    // TODO: do something with success (possibly ignore)
+                }
+            }
+        );
+    }
 }
 
 function XTTrackingSystem()
@@ -39,7 +78,7 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    return "";
+    return "normal";
 }
 
 function XTStartPage()
@@ -59,41 +98,7 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-	//example from http://rusticisoftware.github.io/TinCanJS/
-	var statement = new TinCan.Statement(
-		    {
-		        actor: {
-		            mbox: "mailto:info@tincanapi.com"
-		        },
-		        verb: {
-		            id: "http://adlnet.gov/expapi/verbs/experienced"
-		        },
-		        target: {
-		            id: "http://rusticisoftware.github.com/TinCanJS"
-		        }
-		    }
-		);
-	lrsInstance.saveStatement(
-		    statement,
-		    {
-		        callback: function (err, xhr) {
-		            if (err !== null) {
-		                if (xhr !== null) {
-		                    console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
-		                    // TODO: do something with error, didn't save statement
-		                    return;
-		                }
 
-		                console.log("Failed to save statement: " + err);
-		                // TODO: do something with error, didn't save statement
-		                return;
-		            }
-
-		            console.log("Statement saved");
-		            // TOOO: do something with success (possibly ignore)
-		        }
-		    }
-		);
 }
 
 function XTEnterPage(page_nr, page_name)
@@ -109,11 +114,46 @@ function XTExitPage(page_nr)
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 {
 
+
 }
 
 function XTSetPageScore(page_nr, score)
 {
+    var statement = new TinCan.Statement(
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/scored"
+            },
+            target: {
+                id: score + " on activity " + page_nr + "."
+            }
+        }
+    );
 
+    lrsInstance.saveStatement(
+        statement,
+        {
+            callback: function (err, xhr) {
+                if (err !== null) {
+                    if (xhr !== null) {
+                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                        // TODO: do something with error, didn't save statement
+                        return;
+                    }
+
+                    console.log("Failed to save statement: " + err);
+                    // TODO: do something with error, didn't save statement
+                    return;
+                }
+
+                console.log("Statement saved");
+                // TODO: do something with success (possibly ignore)
+            }
+        }
+    );
 }
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
@@ -123,7 +163,41 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
 {
+    var statement = new TinCan.Statement(
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/answered"
+            },
+            target: {
+                id: learneranswer + " on question " + ia_nr + "."
+            }
+        }
+    );
 
+    lrsInstance.saveStatement(
+        statement,
+        {
+            callback: function (err, xhr) {
+                if (err !== null) {
+                    if (xhr !== null) {
+                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                        // TODO: do something with error, didn't save statement
+                        return;
+                    }
+
+                    console.log("Failed to save statement: " + err);
+                    // TODO: do something with error, didn't save statement
+                    return;
+                }
+
+                console.log("Statement saved");
+                // TODO: do something with success (possibly ignore)
+            }
+        }
+    );
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
