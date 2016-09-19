@@ -21,7 +21,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 	
 	$tracking = "<script type=\"text/javascript\" src=\"xttracking_xapi.js\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_xapi.js\"></script>\n";
-	$tracking .= "<script type=\"text/javascript\" src=\"tincan-min.js\"></script>\n";
+	$tracking .= "<script type=\"text/javascript\" src=\"tincan.js\"></script>\n";
 	if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_xapi.js") && $language != "en-GB")
 	{
 		$tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_xapi.js\"></script>";
