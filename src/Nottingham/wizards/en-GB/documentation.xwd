@@ -1,0 +1,47 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here"
+	  />]]></documentation>      
+    </newNodes>
+  </pageWizard>
+
+  <!-- DOCUMENTATION=============================== -->  
+    <documentation menu="Interactivity" menuItem="Documentation" icon="icPageWhiteGear" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
+    <name label="Document Title" type="TextInput" wysiwyg="true" />
+    <text label="Document Text" type="textArea" height="120"/>
+
+    <newNodes>
+      <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>
+	</newNodes>
+	
+  </documentation>
+
+  <page menuItem="Page">
+    <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title" />
+	<text label="Page Text" type="textArea" height="120"/>
+		
+    <newNodes>
+      <section><![CDATA[<section name="Section Title" text="Enter text for the section here" />]]></section>
+    </newNodes>
+
+  </page>
+
+  <section menuItem="Section" icon="icBullet">
+    <name label="Section Title" type="TextInput" mandatory="true" defaultValue="Section"/>
+    <text label="Section Text" type="TextArea" height="100"/>
+
+    <newNodes>
+      <item><![CDATA[<item name="Item Title" text="Enter text for the item here"/>]]></item>
+    </newNodes>
+
+  </section>
+  
+  <item menuItem="Item" icon="icBullet">
+    <name label="Item Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Item Text" type="TextArea" height="100"/>
+    <size label="Input Field Size" type="NumericStepper" min="1" max="15" default="3" optional="true"/>
+    <required label="Required Field" type="Checkbox" optional="true"/>
+  </item>
+  
+</wizard>

@@ -1,0 +1,237 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	var documentation = new function() {
+		var currentPage = 0,
+			noPages,
+			docData = {'pages':[]};
+		
+		this.init = function() {
+			// Store number of pages
+			noPages=$(x_currentPageXML).children().length;
+			
+			// Process introductory page
+			docData.documentName = x_currentPageXML.getAttribute('name');
+			docData.documentText = x_currentPageXML.getAttribute('text');
+			var $page = $('<div>')
+				.attr('id', 'page0')
+				.attr('class', 'page');
+			$('<h2>')
+				.html(docData.documentName)
+				.appendTo($page);
+			$('<div>')
+				.html(docData.documentText)
+				.appendTo($page);
+			$('#pages')
+				.append($page);
+
+			// Loop through all pages
+			for (var page=0; page<noPages; page++) {
+				var pageXML = $(x_currentPageXML).children()[page];
+				var $pageXML = $(pageXML);
+				docData.pages[page] = {'sections':[]};
+
+				// Create the pages and hide them all
+				$page = $('<div>')
+					.attr('id', 'page' + (page+1))
+					.attr('class', 'page hidepage');
+				docData.pages[page].pageName = pageXML.getAttribute('name');
+				docData.pages[page].pageText = pageXML.getAttribute('text');
+				if (docData.pages[page].pageName.length > 0) {
+					$('<h2>')
+						.html(docData.pages[page].pageName)
+						.appendTo($page);
+				}
+				if (docData.pages[page].pageText.length > 0) {
+					$('<div>')
+						.html(docData.pages[page].pageText)
+						.appendTo($page);
+				}
+
+				// Create each section
+				for (var section=0, noSections=$pageXML.children().length; section<noSections; section++) {
+					var sectionXML = $pageXML.children()[section];
+					var $sectionXML = $(sectionXML);
+					docData.pages[page].sections[section] = {'items':[]};
+
+					// Create the sections
+					var $section = $('<div>')
+						.attr('class', 'section');
+					docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+					docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
+					if (docData.pages[page].sections[section].sectionName.length >0) {
+						$('<h2>')
+							.html(docData.pages[page].sections[section].sectionName)
+							.appendTo($page);
+					}
+					if (docData.pages[page].sections[section].sectionText.length >0) {
+						$('<div>')
+							.html(docData.pages[page].sections[section].sectionText)
+							.appendTo($page);
+					}
+
+					// Create each item
+					for (var item=0, noItems=$sectionXML.children().length; item<noItems; item++) {
+						var itemXML = $sectionXML.children()[item];
+						var $itemXML = $(itemXML);
+						docData.pages[page].sections[section].items[item] = {};
+
+						var $item = $('<div>')
+							.attr('class', 'item');
+						docData.pages[page].sections[section].items[item].itemName = itemXML.getAttribute('name');
+						docData.pages[page].sections[section].items[item].itemText = itemXML.getAttribute('text');
+						docData.pages[page].sections[section].items[item].itemValue = "";
+						if (docData.pages[page].sections[section].items[item].itemName.length >0) {
+							$('<h2>')
+								.html($sectionXML.children()[item].getAttribute('name'))
+								.appendTo($item);
+						}
+						if (docData.pages[page].sections[section].items[item].itemText.length >0) {
+							$('<div>')
+								.html($sectionXML.children()[item].getAttribute('text'))
+								.appendTo($item);
+						}
+						var $input = $('<input>')
+							.attr('type', 'text')
+							.attr('value', '');
+						(function (p, s, i) {
+							$input.on('change', function () {
+								documentation.updateData(p, s, i, $(this).val());
+							})
+						})(page, section, item);
+						$input.appendTo($item);
+
+						$section.append($item);
+					}
+					$page.append($section);
+				}
+				$('#pages').append($page);
+			}
+			
+			// Create the download page
+			$page = $('<div>')
+				.attr('id', 'page' + (noPages+1))
+				.attr('class', 'page hidepage');
+			$('<h2>')
+				.html(x_currentPageXML.getAttribute('name'))
+				.appendTo($page);
+			$('<div>')
+				.html(x_currentPageXML.getAttribute('text'))
+				.appendTo($page);
+			$page.append($('<br \>'));
+			$('<button>')
+				.html('Download')
+				.on('click', documentation.download)
+				.appendTo($page);
+			$('#pages')
+				.append($page);
+
+			// Wire up navigation buttons
+			$('#previous').on('click', documentation.previousPage);
+			$('#next').on('click', documentation.nextPage);
+			
+			$('#pagenumber').html(currentPage+1);
+console.log(docData);
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		};
+		
+		this.updateData = function (p, s, i, data) {
+			console.log(p+" "+s+" "+i+" "+data);
+			docData.pages[p].sections[s].items[i].itemValue = data;
+		};
+		
+		this.previousPage = function () {
+			console.log(docData);
+			if (currentPage > 0) {
+				$('#page' + currentPage).addClass('hidepage');
+				currentPage -= 1;
+				$('#page' + currentPage).removeClass('hidepage');
+			}
+			$('#pagenumber').html(currentPage+1);
+		};
+
+		this.nextPage = function () {
+			console.log(docData);
+			if (currentPage <= noPages) {
+				$('#page' + currentPage).addClass('hidepage');
+				currentPage += 1;
+				$('#page' + currentPage).removeClass('hidepage');
+			}
+			$('#pagenumber').html(currentPage+1);
+		};
+		
+		this.download = function () {
+    		//var getHtml = $('#pageContents').html();
+    		//getHtml = getHtml.replace(new RegExp('<input ', 'g'), '<div ');
+    		//getHtml = getHtml.replace(new RegExp('</input>', 'g'), '</div>');
+    		documentation.postData(docData);
+		};
+		
+		this.postData = function (data) {           
+			var form = document.createElement("form");
+			form.method = 'post';
+			form.action = '/download.php';
+			$('<input type="hidden">') // IE compatibility
+				.attr({
+					name: 'data',
+					value: JSON.stringify(data)
+				})
+				.appendTo(form);
+			document.body.appendChild(form);
+			form.submit();
+			document.body.removeChild(form);
+		};
+	}
+	
+	documentation.init();
+	
+</script>
+
+
+<style type="text/css">
+	.page {
+		display:block;
+		border:1pt black solid;
+		padding:15px
+	}
+	.section {
+		display:block;
+		border:1pt black dashed;
+		padding:15px
+	}
+	.item {
+		display:block;
+		border:1pt black dotted;
+		padding:15px
+	}
+	.hidepage {
+		display:none;
+	}
+	
+</style>
+
+<div id="pageContents">
+	<div id="navigation">
+		<button id="previous">&lt;</button><span id="pagenumber" />
+		<button id="next">&gt;</button>
+	</div>
+	<div id="pages"></div>
+</div>
