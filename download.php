@@ -21,6 +21,25 @@ echo "<style>";
 	h4 {
 		color: black;
 	}
+	p.item {
+		padding: 5px;
+		border:1pt black solid;
+	}
+	.page {
+		display:block;
+		border:1pt blue solid;
+		padding:15px
+	}
+	.section {
+		display:block;
+		border:1pt black dashed;
+		padding:15px
+	}
+	.item {
+		display:block;
+		border:1pt black dotted;
+		padding:15px
+	}
 <?PHP
 echo "</style>";
 echo "<body>";
@@ -31,17 +50,23 @@ echo "<p>".$data['documentText']."</p>";
 foreach ($data['pages'] as $pagekey => $pagevalue) {
 	echo "<h2>".$pagevalue['pageName']."</h2>";
 	echo "<p>".$pagevalue['pageText']."</p>";
+	echo "<div class=\"page\">";
 
 	foreach ($pagevalue['sections'] as $sectionkey => $sectionvalue) {
+		echo "<div class=\"section\">";
 		echo "<h3>".$sectionvalue['sectionName']."</h3>";
 		echo "<p>".$sectionvalue['sectionText']."</p>";
 
 		foreach ($sectionvalue["items"] as $itemkey => $itemvalue) {
+			echo "<div class=\"item\">";
 			echo "<h4>".$itemvalue['itemName']."</h4>";
 			echo "<p>".$itemvalue['itemText']."</p>";
-			echo "<p><i>".$itemvalue['itemValue']."</i></p>";
+			echo "<p class=\"item\"><i>".$itemvalue['itemValue']."</i></p>";
+			echo "</div>";
 		}
+		echo "</div>";
 	}
+	echo "</div>";
 }
 
 echo "</body>";
