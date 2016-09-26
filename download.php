@@ -5,8 +5,8 @@ $data = json_decode($_POST['data'], true);
 $filename = "file";
 if ($data["filename"]) $filename = $data["filename"];
 
-header("Content-type: application/vnd.ms-word");
-header("Content-Disposition: attachment;Filename=$filename.doc");
+header('Content-type: application/octet-stream');
+header('Content-Disposition: attachment; filename="' . $filename . '.DOC"');
 
 echo "<html>";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=Windows-1252\">";
