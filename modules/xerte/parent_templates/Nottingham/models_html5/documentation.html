@@ -283,7 +283,7 @@ console.log(page, section, item, xml);
 		this.postData = function (data) {
 			var form = document.createElement("form");
 			form.method = 'post';
-			form.action = '/download.php';
+			form.action = 'download.php';
 			$('<input type="hidden">') // IE compatibility
 				.attr({
 					name: 'data',
