@@ -340,10 +340,7 @@
     </newNodes>
 
   </category><item menuItem="Item" icon="icBullet">
-    <name label="Item Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Item Text" type="TextArea" height="100"/>
-    <size label="Input Field Size" type="NumericStepper" min="1" max="15" default="3" optional="true"/>
-    <required label="Required Field" type="Checkbox" optional="true"/>
+    <name label="Item Text" type="TextInput" wysiwyg="true"/>
   </item><chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -648,28 +645,65 @@
 
   </nestedDictation><documentation menu="Interactivity" menuItem="Documentation" icon="icPageWhiteGear" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
     <name label="Document Title" type="TextInput" wysiwyg="true"/>
-    <text label="Document Text" type="textArea" height="120"/>
+    <text label="Document Text" type="TextArea" height="120"/>
+
+    <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
 
     <newNodes>
       <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>
 	</newNodes>
 	
-  <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></documentation><page menuItem="Page">
+  <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></documentation><page menuItem="Page" icon="icPageWhite">
     <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title"/>
-	<text label="Page Text" type="textArea" height="120"/>
+	<text label="Page Text" type="TextArea" height="120"/>
 		
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text for the section here" />]]></section>
+      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text for the textbox here"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text for the textarea here"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text for the checkbox here"/>]]></checkbox>
+      <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
+      <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
+      <line><![CDATA[<line />]]></line>
     </newNodes>
+  </page><description menuItem="Description">
+    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Description Text" type="TextArea" height="100"/>
+  </description><line menuItem="Horizontal Rule"/><media menuItem="Media" icon="icPicture">
+    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Media Text" type="TextArea" height="100"/>
+    <url label="Media" type="media"/>
+  </media><checkbox menuItem="Checkbox" icon="icBullet">
+    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Checkbox Text" type="TextArea" height="100"/>
 
-  </page><section menuItem="Section" icon="icBullet">
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox" options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+  </checkbox><textarea menuItem="Textarea" icon="icBullet">
+    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textarea Text" type="TextArea" height="100"/>
+
+    <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
+    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+  </textarea><textbox menuItem="Textbox" icon="icBullet">
+    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textbox Text" type="TextArea" height="100"/>
+    
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <width label="Width" type="NumericStepper" min="1" max="255" defaultValue="25" optional="true"/>
+  </textbox><section menuItem="Section">
     <name label="Section Title" type="TextInput" mandatory="true" defaultValue="Section"/>
     <text label="Section Text" type="TextArea" height="100"/>
 
     <newNodes>
-      <item><![CDATA[<item name="Item Title" text="Enter text for the item here"/>]]></item>
+      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text for the textbox here"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text for the textarea here"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text for the checkbox here"/>]]></checkbox>
+      <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
+      <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
+      <line><![CDATA[<line />]]></line>
     </newNodes>
-
   </section><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>

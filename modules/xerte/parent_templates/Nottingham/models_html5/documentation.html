@@ -21,11 +21,22 @@
 	var documentation = new function() {
 		var currentPage = 0,
 			noPages,
-			docData = {'pages':[]};
+			docData = {
+				'filename': 'documentation',
+				'pages':[]
+			};
 		
 		this.init = function() {
 			// Store number of pages
 			noPages=$(x_currentPageXML).children().length;
+			
+			// Process filename
+			if (x_currentPageXML.getAttribute('filename')) {
+				var filename = x_currentPageXML.getAttribute('filename').trim();
+				if ( (filename.length > 0) && (filename != "Enter filename here") ) {
+					docData.filename = x_currentPageXML.getAttribute('filename').trim();
+				}
+			}
 			
 			// Process introductory page
 			docData.documentName = x_currentPageXML.getAttribute('name');
@@ -33,7 +44,7 @@
 			var $page = $('<div>')
 				.attr('id', 'page0')
 				.attr('class', 'page');
-			$('<h2>')
+			$('<h3>')
 				.html(docData.documentName)
 				.appendTo($page);
 			$('<div>')
@@ -45,7 +56,6 @@
 			// Loop through all pages
 			for (var page=0; page<noPages; page++) {
 				var pageXML = $(x_currentPageXML).children()[page];
-				var $pageXML = $(pageXML);
 				docData.pages[page] = {'sections':[]};
 
 				// Create the pages and hide them all
@@ -55,7 +65,7 @@
 				docData.pages[page].pageName = pageXML.getAttribute('name');
 				docData.pages[page].pageText = pageXML.getAttribute('text');
 				if (docData.pages[page].pageName.length > 0) {
-					$('<h2>')
+					$('<h3>')
 						.html(docData.pages[page].pageName)
 						.appendTo($page);
 				}
@@ -66,61 +76,43 @@
 				}
 
 				// Create each section
-				for (var section=0, noSections=$pageXML.children().length; section<noSections; section++) {
-					var sectionXML = $pageXML.children()[section];
-					var $sectionXML = $(sectionXML);
+				for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
+					var sectionXML = $(pageXML).children()[section];
 					docData.pages[page].sections[section] = {'items':[]};
 
-					// Create the sections
-					var $section = $('<div>')
-						.attr('class', 'section');
-					docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
-					docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
-					if (docData.pages[page].sections[section].sectionName.length >0) {
-						$('<h2>')
-							.html(docData.pages[page].sections[section].sectionName)
-							.appendTo($page);
-					}
-					if (docData.pages[page].sections[section].sectionText.length >0) {
-						$('<div>')
-							.html(docData.pages[page].sections[section].sectionText)
-							.appendTo($page);
-					}
+					if (sectionXML.nodeName == 'section') {
 
-					// Create each item
-					for (var item=0, noItems=$sectionXML.children().length; item<noItems; item++) {
-						var itemXML = $sectionXML.children()[item];
-						var $itemXML = $(itemXML);
-						docData.pages[page].sections[section].items[item] = {};
+						docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+						docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
 
-						var $item = $('<div>')
-							.attr('class', 'item');
-						docData.pages[page].sections[section].items[item].itemName = itemXML.getAttribute('name');
-						docData.pages[page].sections[section].items[item].itemText = itemXML.getAttribute('text');
-						docData.pages[page].sections[section].items[item].itemValue = "";
-						if (docData.pages[page].sections[section].items[item].itemName.length >0) {
-							$('<h2>')
-								.html($sectionXML.children()[item].getAttribute('name'))
-								.appendTo($item);
+						// Create the sections
+						var $section = $('<fieldset>')
+							.attr('class', 'section');
+
+						if (docData.pages[page].sections[section].sectionName.length >0) {
+							$('<legend>')
+								.html(docData.pages[page].sections[section].sectionName)
+								.appendTo($section);
 						}
-						if (docData.pages[page].sections[section].items[item].itemText.length >0) {
+						if (docData.pages[page].sections[section].sectionText.length >0) {
 							$('<div>')
-								.html($sectionXML.children()[item].getAttribute('text'))
-								.appendTo($item);
+								.html(docData.pages[page].sections[section].sectionText)
+								.appendTo($section);
 						}
-						var $input = $('<input>')
-							.attr('type', 'text')
-							.attr('value', '');
-						(function (p, s, i) {
-							$input.on('change', function () {
-								documentation.updateData(p, s, i, $(this).val());
-							})
-						})(page, section, item);
-						$input.appendTo($item);
 
-						$section.append($item);
+						// Create each item
+						for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
+							var itemXML = $(sectionXML).children()[item];
+							docData.pages[page].sections[section].items[item] = {};
+
+							documentation.processItem(page, section, item, itemXML).appendTo($section);
+						}
+						$page.append($section);
 					}
-					$page.append($section);
+					else {
+						docData.pages[page].sections[section].items[0] = {};
+						documentation.processItem(page, section, 0, sectionXML).appendTo($page);
+					}
 				}
 				$('#pages').append($page);
 			}
@@ -129,7 +121,7 @@
 			$page = $('<div>')
 				.attr('id', 'page' + (noPages+1))
 				.attr('class', 'page hidepage');
-			$('<h2>')
+			$('<h3>')
 				.html(x_currentPageXML.getAttribute('name'))
 				.appendTo($page);
 			$('<div>')
@@ -148,10 +140,118 @@
 			$('#next').on('click', documentation.nextPage);
 			
 			$('#pagenumber').html(currentPage+1);
-console.log(docData);
+
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
+		
+		this.processItem = function (page, section, item, xml) {
+			var $item = $('<div>')
+				.attr('class', 'item');
+			docData.pages[page].sections[section].items[item].itemName = xml.getAttribute('name');
+			docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
+			docData.pages[page].sections[section].items[item].itemValue = "";
+console.log(page, section, item, xml);
+			if (
+				docData.pages[page].sections[section].items[item].itemName &&
+				docData.pages[page].sections[section].items[item].itemName.length > 0
+			) {
+				$('<h4>')
+					.html(xml.getAttribute('name'))
+					.appendTo($item);
+			}
+
+			// Required?
+			if (xml.getAttribute('required') && xml.getAttribute('required') == 'true') {
+				$("<span>")
+					.html("* Required")
+					.addClass("required")
+					.appendTo($item);
+			}
+
+			if (
+				docData.pages[page].sections[section].items[item].itemText &&
+				docData.pages[page].sections[section].items[item].itemText.length > 0
+			) {
+				$('<div>')
+					.html(xml.getAttribute('text'))
+					.appendTo($item);
+			}
+
+			var $element;
+			switch (xml.nodeName) {
+				case 'textbox':
+					$element = $('<input>')
+						.attr('type', 'text')
+						.attr('value', '');
+					(function (p, s, i) {
+						$element.on('change', function () {
+							documentation.updateData(p, s, i, $(this).val());
+						})
+					})(page, section, item);
+					break;
+				case 'textarea':
+					var rows = 3, cols = 60;
+					if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
+					if (xml.getAttribute('cols')) cols = parseInt(xml.getAttribute('cols'));
+
+					$element = $('<textarea>')
+						.attr('rows', rows)
+						.attr('cols', cols);
+					(function (p, s, i) {
+						$element.on('change', function () {
+							documentation.updateData(p, s, i, $(this).val());
+						})
+					})(page, section, item);
+					break;
+				case 'checkbox':
+					var display = ['Checked', 'Unchecked'];
+					if (xml.getAttribute('display'))
+						display = xml.getAttribute('display').split('|');
+
+					$element = $('<input>')
+						.attr('type', 'checkbox');
+					(function (p, s, i, d) {
+						$element.on('change', function () {
+							documentation.updateData(p, s, i, d[$(this).prop('checked')?0:1]);
+						})
+					})(page, section, item, display);
+					break;
+				case 'media':
+					if (xml.getAttribute('url').substr(0,10) == "USER-FILES") {
+						$element = $('<img>')
+							.attr('src', xml.getAttribute('url'));
+					}
+					else {
+						$element = $('<div>')
+							.html("No image selected.");
+					}
+					break;
+				case 'description':
+					$element = $('<h4>')
+						.html(xml.getAttribute('name'));
+					$('<div>')
+						.html(xml.getAttribute('text'))
+						.appendTo($element)
+					break;
+				case 'line':
+					$element = $('<hr />');
+					break;
+				case 'textbox':
+				default:
+					$element = $('<input>')
+						.attr('type', 'text')
+						.attr('value', '');
+					(function (p, s, i) {
+						$element.on('change', function () {
+							documentation.updateData(p, s, i, $(this).val());
+						})
+					})(page, section, item);
+					break;
+			}
+			
+			return $item.append($element);
+		}
 		
 		this.updateData = function (p, s, i, data) {
 			console.log(p+" "+s+" "+i+" "+data);
@@ -159,33 +259,28 @@ console.log(docData);
 		};
 		
 		this.previousPage = function () {
-			console.log(docData);
 			if (currentPage > 0) {
 				$('#page' + currentPage).addClass('hidepage');
-				currentPage -= 1;
+				currentPage--;
 				$('#page' + currentPage).removeClass('hidepage');
 			}
 			$('#pagenumber').html(currentPage+1);
 		};
 
 		this.nextPage = function () {
-			console.log(docData);
 			if (currentPage <= noPages) {
 				$('#page' + currentPage).addClass('hidepage');
-				currentPage += 1;
+				currentPage++;
 				$('#page' + currentPage).removeClass('hidepage');
 			}
 			$('#pagenumber').html(currentPage+1);
 		};
 		
 		this.download = function () {
-    		//var getHtml = $('#pageContents').html();
-    		//getHtml = getHtml.replace(new RegExp('<input ', 'g'), '<div ');
-    		//getHtml = getHtml.replace(new RegExp('</input>', 'g'), '</div>');
     		documentation.postData(docData);
 		};
 		
-		this.postData = function (data) {           
+		this.postData = function (data) {
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.action = '/download.php';
@@ -208,19 +303,13 @@ console.log(docData);
 
 <style type="text/css">
 	.page {
-		display:block;
-		border:1pt black solid;
-		padding:15px
+
 	}
 	.section {
-		display:block;
-		border:1pt black dashed;
-		padding:15px
+
 	}
 	.item {
-		display:block;
-		border:1pt black dotted;
-		padding:15px
+
 	}
 	.hidepage {
 		display:none;

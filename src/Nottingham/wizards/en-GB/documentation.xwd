@@ -9,7 +9,9 @@
   <!-- DOCUMENTATION=============================== -->  
     <documentation menu="Interactivity" menuItem="Documentation" icon="icPageWhiteGear" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
     <name label="Document Title" type="TextInput" wysiwyg="true" />
-    <text label="Document Text" type="textArea" height="120"/>
+    <text label="Document Text" type="TextArea" height="120"/>
+
+    <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
 
     <newNodes>
       <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>
@@ -17,31 +19,109 @@
 	
   </documentation>
 
-  <page menuItem="Page">
+  <page menuItem="Page" icon="icPageWhite">
     <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title" />
-	<text label="Page Text" type="textArea" height="120"/>
+	<text label="Page Text" type="TextArea" height="120"/>
 		
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text for the section here" />]]></section>
+      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text for the textbox here"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text for the textarea here"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text for the checkbox here"/>]]></checkbox>
+      <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
+      <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
+      <line><![CDATA[<line />]]></line>
     </newNodes>
-
   </page>
 
-  <section menuItem="Section" icon="icBullet">
+  <description menuItem="Description">
+    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Description Text" type="TextArea" height="100"/>
+  </description>
+  
+  <line menuItem="Horizontal Rule"></line>
+
+  <media menuItem="Media" icon="icPicture">
+    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Media Text" type="TextArea" height="100"/>
+    <url label="Media" type="media"/>
+  </media>
+
+  <checkbox menuItem="Checkbox" icon="icBullet">
+    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Checkbox Text" type="TextArea" height="100"/>
+
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox"  options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+  </checkbox>
+
+  <textarea menuItem="Textarea" icon="icBullet">
+    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textarea Text" type="TextArea" height="100"/>
+
+    <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
+    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+  </textarea>
+
+  <textbox menuItem="Textbox" icon="icBullet">
+    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textbox Text" type="TextArea" height="100"/>
+    
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <width label="Width" type="NumericStepper" min="1" max="255" defaultValue="25" optional="true"/>
+  </textbox>
+
+  <section menuItem="Section">
     <name label="Section Title" type="TextInput" mandatory="true" defaultValue="Section"/>
     <text label="Section Text" type="TextArea" height="100"/>
 
     <newNodes>
-      <item><![CDATA[<item name="Item Title" text="Enter text for the item here"/>]]></item>
+      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text for the textbox here"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text for the textarea here"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text for the checkbox here"/>]]></checkbox>
+      <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
+      <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
+      <line><![CDATA[<line />]]></line>
     </newNodes>
-
   </section>
+
+  <description menuItem="Description">
+    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Description Text" type="TextArea" height="100"/>
+  </description>
   
-  <item menuItem="Item" icon="icBullet">
-    <name label="Item Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Item Text" type="TextArea" height="100"/>
-    <size label="Input Field Size" type="NumericStepper" min="1" max="15" default="3" optional="true"/>
-    <required label="Required Field" type="Checkbox" optional="true"/>
-  </item>
-  
+  <line menuItem="Horizontal Rule"></line>
+
+  <media menuItem="Media" icon="icPicture">
+    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Media Text" type="TextArea" height="100"/>
+    <url label="Media" type="media"/>
+  </media>
+
+  <checkbox menuItem="Checkbox" icon="icBullet">
+    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Checkbox Text" type="TextArea" height="100"/>
+
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox"  options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+  </checkbox>
+
+  <textarea menuItem="Textarea" icon="icBullet">
+    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textarea Text" type="TextArea" height="100"/>
+
+    <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
+    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+  </textarea>
+
+  <textbox menuItem="Textbox" icon="icBullet">
+    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textbox Text" type="TextArea" height="100"/>
+    
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <width label="Width" type="NumericStepper" min="1" max="255" defaultValue="25" optional="true"/>
+  </textbox>
+
 </wizard>

@@ -2,8 +2,11 @@
 
 $data = json_decode($_POST['data'], true);
 
+$filename = "file";
+if ($data["filename"]) $filename = $data["filename"];
+
 header("Content-type: application/vnd.ms-word");
-header("Content-Disposition: attachment;Filename=file.doc");
+header("Content-Disposition: attachment;Filename=$filename.doc");
 
 echo "<html>";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=Windows-1252\">";
@@ -23,21 +26,18 @@ echo "<style>";
 	}
 	p.item {
 		padding: 5px;
-		border:1pt black solid;
 	}
 	.page {
 		display:block;
-		border:1pt blue solid;
 		padding:15px
 	}
 	.section {
 		display:block;
-		border:1pt black dashed;
+		border: black 1px solid;
 		padding:15px
 	}
 	.item {
 		display:block;
-		border:1pt black dotted;
 		padding:15px
 	}
 <?PHP
@@ -48,23 +48,29 @@ echo "<h1>".$data['documentName']."</h1>";
 echo "<p>".$data['documentText']."</p>";
 
 foreach ($data['pages'] as $pagekey => $pagevalue) {
-	echo "<h2>".$pagevalue['pageName']."</h2>";
+	echo "<h1>".$pagevalue['pageName']."</h1>";
 	echo "<p>".$pagevalue['pageText']."</p>";
 	echo "<div class=\"page\">";
 
 	foreach ($pagevalue['sections'] as $sectionkey => $sectionvalue) {
-		echo "<div class=\"section\">";
-		echo "<h3>".$sectionvalue['sectionName']."</h3>";
-		echo "<p>".$sectionvalue['sectionText']."</p>";
-
-		foreach ($sectionvalue["items"] as $itemkey => $itemvalue) {
-			echo "<div class=\"item\">";
-			echo "<h4>".$itemvalue['itemName']."</h4>";
-			echo "<p>".$itemvalue['itemText']."</p>";
-			echo "<p class=\"item\"><i>".$itemvalue['itemValue']."</i></p>";
-			echo "</div>";
-		}
-		echo "</div>";
+			if (array_key_exists('sectionName', $sectionvalue)) {
+				echo "<div class=\"section\">";
+				echo "<h2>".$sectionvalue['sectionName']."</h2>";
+				echo "<p>".$sectionvalue['sectionText']."</p>";
+			}
+			foreach ($sectionvalue["items"] as $itemkey => $itemvalue) {
+				echo "<div class=\"item\">";
+				echo "<h3>".$itemvalue['itemName']."</h3>";
+				echo "<p>".$itemvalue['itemText']."</p>";
+				if (strlen($itemvalue['itemValue']) > 0)
+					echo "<p class=\"item\"><i>".$itemvalue['itemValue']."</i></p>";
+				else
+					echo "<p class=\"item\"><i>No answer given.</i></p>";
+				echo "</div>";
+			}
+			if (array_key_exists('sectionName', $sectionvalue)) {
+				echo "</div>";
+			}
 	}
 	echo "</div>";
 }
