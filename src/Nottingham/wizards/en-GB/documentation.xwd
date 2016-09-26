@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here"
+      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -10,7 +10,11 @@
     <documentation menu="Interactivity" menuItem="Documentation" icon="icPageWhiteGear" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
     <name label="Document Title" type="TextInput" wysiwyg="true" />
     <text label="Document Text" type="TextArea" height="120"/>
+	<display label="Display document info" data="first,all" type="ComboBox" options="On first page only,On all pages" defaultValue="first" width="120"/>
 
+	<download label="Show Download Button" data="last,extra" type="ComboBox" options="On last page,On additional page" defaultValue="last" width="120" optional="true"/>
+	<instructions label="Download Instructions" type="TextArea" height="120" optional="true"/>
+	<separate label="Separate document info page" type="Checkbox" optional="true"/>
     <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
 
     <newNodes>
