@@ -1,0 +1,214 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// functions for model should be in here to avoid conflicts
+	var wordsearch = new function () {
+		
+		var puzzle,
+			words,
+			hideSolveUntilTimer;
+		
+		// function called when timer reaches zero
+		this.onTimerZero = function () {
+			if (hideSolveUntilTimer) {
+				$('#solve').show();
+			}
+		}
+		
+		this.init = function () {
+			
+			// add colour styles that can be changed by optional properties
+			var colourStyles = "<style type='text/css'>",
+				colour;
+			
+			colour = x_currentPageXML.getAttribute("colour1") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour1")) : "#FFA500"; // default = orange
+			colourStyles += "#puzzle .selected { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+			
+			colour = x_currentPageXML.getAttribute("colour2") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour2")) : "#0000FF"; // blue
+			colourStyles += "#puzzle .found { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+			colourStyles += "#words .wordFound { color: " + colour + "; }";
+			
+			colour = x_currentPageXML.getAttribute("colour3") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour3")) : "#800080"; // purple
+			colourStyles += "#puzzle .solved { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+			
+			colour = x_currentPageXML.getAttribute("colour4") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour4")) : "#008000"; // green
+			colourStyles += "#puzzle .complete { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
+			colourStyles += "</style>";
+			
+			$("#pageContents").prepend(colourStyles);
+			
+			// Read optional parameters
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			// Hide the solve button completely?
+			var hideSolve = x_currentPageXML.getAttribute("hideSolve");
+			hideSolve = (hideSolve === 'true') ? true : false;
+			
+			// Hide the solve button until the timer counts down?
+			hideSolveUntilTimer = x_currentPageXML.getAttribute("hideSolveUntilTimer");
+			hideSolveUntilTimer = (hideSolveUntilTimer === 'true') ? true : false;
+			
+			var hasTimer = (x_currentPageXML.getAttribute("timer") != null && x_currentPageXML.getAttribute("timer") != "");
+			
+			// Read language parameters if available
+			solveBtnTxt = x_currentPageXML.getAttribute("solveBtnTxt");
+			solveBtnTxt = (solveBtnTxt == undefined) ? "Solve Puzzle" : solveBtnTxt;
+			retryBtnTxt = x_currentPageXML.getAttribute("retryBtnTxt");
+			retryBtnTxt = (retryBtnTxt == undefined) ? "Restart Puzzle" : retryBtnTxt;
+
+			// Load in the required scripts before we can begin
+			$script.path(x_templateLocation + 'common_html5/js/wordfind/');
+			$script(['wordfind.js', 'style.css'], function () {
+				$script('wordfindgame.js', function () {
+					wordsearch.begin();
+				})
+			});
+ 
+			// Add a solve button and hide it if required
+			$('<button>')
+				.attr('id', 'solve')
+				.click( function() {
+					wordfindgame.solve(puzzle, words);
+				})
+				.text(solveBtnTxt)
+				.toggle(!(hideSolve || hideSolveUntilTimer && hasTimer))
+				.appendTo('#btnHolder');
+
+			// Add a retry button
+			$('<button>')
+				.attr('id', 'retry')
+				.click( function() {
+					wordsearch.begin();
+				})
+				.text(retryBtnTxt)
+				.appendTo('#btnHolder');
+			
+			$("#btnHolder button").button();
+		}
+		
+		this.game = function () {
+
+			// Get words and sort if required
+			words = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
+			switch(x_currentPageXML.getAttribute("order")) {
+				case 'random':
+					var tempWords = [];
+					for (var i=0, len=words.length; i<len; i++) {
+						var choice = Math.floor(Math.random() * words.length);
+						tempWords.push(words[choice]);
+						words.splice(choice, 1);
+					}
+					words = tempWords;
+					break;
+
+				case 'alphabetical':
+					words.sort();
+					break;
+
+				default:
+					break;
+			}
+			
+			// start a word find game
+			puzzle = wordfindgame.create(words, "#puzzle", "#words");
+			
+			// makes sure word list height is no greater than wordsearch height
+			if ($("#words").height() > $("#puzzle").height()) {
+				var numCols = Math.ceil($("#words").height() / $("#puzzle").height()),
+					maxW = 0;
+				
+				$("#words ul li").each(function() {
+					if ($(this).width() > maxW) {
+						maxW = $(this).width();
+					}
+				});
+				maxW = (maxW / parseInt($("#puzzle").css("font-size"))) + 1;
+				
+				$("#words ul li").css({
+					width: maxW + "em",
+					float: "left"
+				});
+				
+				$("#words ul").width(maxW * numCols + "em");
+			}
+			
+			// set minimum width for wordsearch panel so lines don't start breaking up
+			var minW = 0;
+			$("#puzzle div:first button").each(function() {
+				minW += $(this).outerWidth();
+			});
+			minW += (parseInt($("#puzzle").css("padding-left")) + parseInt($("#puzzle").css("margin-left"))) * 2;
+			minW += Math.ceil($("#words").outerWidth(true));
+			
+			$("#infoHolder").css("min-width", minW);
+		}
+		
+		this.begin = function () {
+			wordsearch.game();
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+	wordsearch.init();
+	
+</script>
+
+<style type="text/css">
+	
+	#puzzle .selected {
+		cursor: pointer;
+	}
+	
+	#puzzle, #words {
+		float: left;
+	}
+	
+	#words {
+		padding: 0;
+		margin: 1em;
+		text-align:	center;
+	}
+	
+	#words ul {
+		margin: 0;
+		padding: 0;
+	}
+	
+	#btnHolder {
+		clear: both;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="infoHolder" class="panel x_floatRight">
+		<div id="puzzleHolder">
+			<div id="puzzle"></div>
+			<div id="words"></div>
+		</div>
+		<div id="btnHolder"></div>
+	</div>
+	
+	<div id="textHolder"></div>
+	
+</div>

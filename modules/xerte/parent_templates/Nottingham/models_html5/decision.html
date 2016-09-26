@@ -62,8 +62,8 @@
 			// set up the data that needs to be saved between page changes
 			$pageContents.data({
 				"allSteps": [], // array containing an object with details for each possible step
-				"decisionHistory": [],	// array containing ids & options selected
-				"storedResultTxt": [],	// array containing text stored until presented as a collated result (optional)
+				"decisionHistory": [], // ids & options selected
+				"storedResultTxt": [], // text stored until presented as a collated result (optional)
 				"currentStep": 0,
 				"currentStepInfo": 0
 			});
@@ -74,7 +74,10 @@
 				$("#pageContents .right div:first").appendTo($("#pageContents"));
 				$("#pageContents .splitScreen").remove();
 			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				// divs for every bit of display text are added to displayInfo div below as you go through steps - every div has class info* where * is step num that it goes with (so we can hide if we go backwards)
+				// divs will have class of clear if text from previous steps are to be hidden
+				$("#textHolder").html('<div id="intro">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div id="displayInfo"></div>');
+				
 				if (panelWidth == "Small") {
 					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so accordion on right is small
 				} else if (panelWidth == "Large") {
@@ -130,6 +133,7 @@
 								$fwdBtn.button("disable");
 							}
 						} else {
+							$("#displayInfo .info" + $pageContents.data("currentStep")).hide();
 							$pageContents.data("currentStep", $pageContents.data("currentStep") - 1);
 							decision.setUpStep($pageContents.data("decisionHistory")[$pageContents.data("currentStep")].id);
 						}
@@ -155,6 +159,7 @@
 							}
 						} else {
 							$pageContents.data("currentStep", $pageContents.data("currentStep") + 1);
+							$("#displayInfo .info" + $pageContents.data("currentStep")).show();
 							decision.setUpStep($pageContents.data("decisionHistory")[$pageContents.data("currentStep")].id);
 						}
 						$(".x_popupDialog").parent().detach();
@@ -183,6 +188,8 @@
 						if ($pageContents.data("currentStep") + 1 != $pageContents.data("decisionHistory").length) {
 							$pageContents.data("decisionHistory", $pageContents.data("decisionHistory").slice(0, $pageContents.data("currentStep") + 1));
 							$pageContents.data("storedResultTxt", $pageContents.data("storedResultTxt").slice(0, $pageContents.data("currentStep") + 1));
+							
+							$("#displayInfo div[class^='info']:hidden").remove(); // remove any historical hidden displayInfo divs that are no longer required
 						}
 						
 						currentStepInfo = $pageContents.data("currentStepInfo");
@@ -195,17 +202,31 @@
 							
 							if (currentStepInfo.format == "menu") {
 								answer = $step.find("select").prop("selectedIndex");
-								target = $step.find("select #opt" + answer).data("target");
+								var $selected = $step.find("select #opt" + answer);
+								target = $selected.data("target");
 								
 								// store resultTxt (optional) so it can be shown as collated result at the end
-								$pageContents.data("storedResultTxt").push($step.find("select #opt" + answer).data("resultTxt"));
+								$pageContents.data("storedResultTxt").push($selected.data("resultTxt"));
+								
+								// add text to left side
+								if ($selected.data("displayTxt") != undefined && $selected.data("displayTxt") != "") {
+									var clear = $selected.data("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
+									$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $selected.data("displayTxt") + '</div>');
+								}
 								
 							} else {
-								answer = $step.find("input").index($step.find("input:checked"))
-								target = $step.find("input:checked").data("target");
+								var $selected = $step.find("input:checked");
+								answer = $step.find("input").index($selected);
+								target = $selected.data("target");
 								
 								// store resultTxt (optional) so it can be shown as collated result at the end
-								$pageContents.data("storedResultTxt").push($step.find("input:checked").data("resultTxt"));
+								$pageContents.data("storedResultTxt").push($selected.data("resultTxt"));
+								
+								// add text to left side
+								if ($selected.data("displayTxt") != undefined && $selected.data("displayTxt") != "") {
+									var clear = $selected.data("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
+									$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $selected.data("displayTxt") + '</div>');
+								}
 							}
 							
 							$pageContents.data("decisionHistory")[$pageContents.data("decisionHistory").length-1].option = answer;
@@ -224,6 +245,12 @@
 								if ($slider.slider("value") >= $this.attr("min") && $slider.slider("value") <= $this.attr("max")) {
 									// store resultTxt associated with this answer (optional) so it can be shown as collated result at the end
 									$pageContents.data("storedResultTxt").push($this.attr("resultTxt"));
+									
+									// add text to left side
+									if ($this.attr("displayTxt") != undefined && $this.attr("displayTxt") != "") {
+										var clear = $this.attr("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
+										$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $this.attr("displayTxt") + '</div>');
+									}
 									
 									decision.setUpStep($this.attr("target"), true);
 									exists = true;
@@ -314,6 +341,8 @@
 			$pageContents.data("decisionHistory", []);
 			$pageContents.data("storedResultTxt", []);
 			
+			$("#textHolder #displayInfo").empty();
+			
 			$submitBtn.button("disable");
 			
 			// set up 1st step - use firstStep from xml if valid id, otherwise use first step in array
@@ -347,9 +376,9 @@
 				if (currentStepInfo.type == "mcqStep" || currentStepInfo.type == "sliderStep") {
 					this.setUpQ(isNew);
 				} else if (currentStepInfo.type == "infoStep") {
-					this.setUpI();
+					this.setUpI(isNew);
 				} else if (currentStepInfo.type == "resultStep") {
-					this.setUpR();
+					this.setUpR(isNew);
 				}
 				
 				// enable/disable fwd & bck history btns
@@ -365,6 +394,8 @@
 					$backBtn.button("enable");
 				}
 				
+				this.clearText();
+				
 			} else {
 				// step matching ID not found
 				var errorString = x_currentPageXML.getAttribute("errorString") ? x_currentPageXML.getAttribute("errorString") : "ERROR! Invalid ID";
@@ -376,6 +407,9 @@
 				
 				$submitBtn.button("disable");
 			}
+			
+			 // Queue reparsing of MathJax - fails if no network connection
+            try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 		}
 		
 		
@@ -426,6 +460,11 @@
 						$thisStep.find("#labelHolder #amount").val($slider.slider("value"));
 						
 						$submitBtn.button("enable");
+					}
+					
+					if (currentStepInfo.displayTxt != undefined && currentStepInfo.displayTxt != "") {
+						var clear = currentStepInfo.clear == "true" ? " clear" : ""; // class used when previous info is to be cleared
+						$("#textHolder #displayInfo").append('<div class="info' + $pageContents.data("currentStep") + clear + '">' + currentStepInfo.displayTxt + '</div>');
 					}
 				
 				// if part of history make sure it's showing the correct answer
@@ -518,7 +557,7 @@
 									$parent = $thisStep.find(".radioAnswers");
 								}
 								
-								$parent.append('<div class="optionGroup"><input type="radio" name="option" id="opt' + i + '" value="' + $this.attr("name") + '"/><label class="optionTxt" for="opt' + i + '">' + x_addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
+								$parent.append('<div class="optionGroup"><input type="radio" name="option" id="opt' + i + '"/><label class="optionTxt" for="opt' + i + '">' + x_addLineBreaks($this.attr("name")) + authorSupport + '</label></div>');
 								
 								if ($this.attr("selected") == "true") {
 									$thisStep.find("#opt" + i).prop("checked", true);
@@ -528,8 +567,10 @@
 							
 							// store destination in option data
 							$thisStep.find("#opt" + i).data({
-								"target":		 $this.attr("target"),
-								"resultTxt":	$this.attr("resultTxt")
+								"target":		$this.attr("target"),
+								"resultTxt":	$this.attr("resultTxt"),
+								"displayTxt":	$this.attr("displayTxt"),
+								"clear":		$this.attr("clear")
 							});
 						});
 						
@@ -637,6 +678,11 @@
 						$submitBtn.button("enable");
 					}
 					
+					if (currentStepInfo.displayTxt != undefined && currentStepInfo.displayTxt != "") {
+						var clear = currentStepInfo.clear == "true" ? " clear" : ""; // class used when previous info is to be cleared
+						$("#textHolder #displayInfo").append('<div class="info' + $pageContents.data("currentStep") + clear + '">' + currentStepInfo.displayTxt + '</div>');
+					}
+					
 					// save reference to this step so it can be reloaded later if needed
 					$pageContents.data("allSteps")[currentStepInfo.index].built = $thisStep;
 				}
@@ -651,7 +697,7 @@
 		
 		
 		// _____ BUILD INFORMATION STEP _____
-		this.setUpI = function() {
+		this.setUpI = function(isNew) {
 			if (currentStepInfo.built != false) {
 				
 				// _____ INFO ALREADY BUILT - RELOAD IT _____
@@ -677,6 +723,13 @@
 				$helpBtn.hide();
 			}
 			
+			if (isNew == true) {
+				if (currentStepInfo.displayTxt != undefined && currentStepInfo.displayTxt != "") {
+					var clear = currentStepInfo.clear == "true" ? " clear" : ""; // class used when previous info is to be cleared
+					$("#textHolder #displayInfo").append('<div class="info' + $pageContents.data("currentStep") + clear + '">' + currentStepInfo.displayTxt + '</div>');
+				}
+			}
+			
 			$submitBtn
 				.show()
 				.button("enable");
@@ -684,7 +737,7 @@
 		
 		
 		// _____ BUILD RESULT STEP _____
-		this.setUpR = function() {
+		this.setUpR = function(isNew) {
 			if (currentStepInfo.built != false && currentStepInfo.collate != "true") {
 				
 				// _____ RESULT ALREADY BUILT - RELOAD IT _____
@@ -705,20 +758,24 @@
 				var resultEndString = x_currentPageXML.getAttribute("resultEndString") ? '<p>' + x_currentPageXML.getAttribute("resultEndString") + '</p>' : "";
 				$stepHolder.prepend('<div class="step"><div class="result">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + decision.collateResult(currentStepInfo.collate, "html") + resultEndString + '</div>' + goBtn + '<button id="viewThisBtn" /></div>');
 				
-				// set up view overview & jump to page buttons
-				$("#viewThisBtn")
-					.button({
-						label:	x_currentPageXML.getAttribute("viewThisBtn") ? x_currentPageXML.getAttribute("viewThisBtn") : "Overview"
-					})
-					.click(function() {
-						$overviewHolder.find(".decisionInfo").parent().remove();
-						decision.showHideHolders($overviewHolder);
-						
-						// _____ DISPLAY STEPS TAKEN IN DECISION _____
-						$overviewHolder.append('<div id="dec">' + decision.createDecStr("html") + '</div>');
-						$(".x_popupDialog").parent().detach();
-						$overviewHolder.scrollTop(0);
-					});
+				if (x_currentPageXML.getAttribute("overview") != "false") {
+					// set up view overview & jump to page buttons
+					$("#viewThisBtn")
+						.button({
+							label:	x_currentPageXML.getAttribute("viewThisBtn") ? x_currentPageXML.getAttribute("viewThisBtn") : "Overview"
+						})
+						.click(function() {
+							$overviewHolder.find(".decisionInfo").parent().remove();
+							decision.showHideHolders($overviewHolder);
+							
+							// _____ DISPLAY STEPS TAKEN IN DECISION _____
+							$overviewHolder.append('<div id="dec">' + decision.createDecStr("html") + '</div>');
+							$(".x_popupDialog").parent().detach();
+							$overviewHolder.scrollTop(0);
+						});
+				} else {
+					$("#viewThisBtn").remove();
+				}
 				
 				$("#goBtn")
 					.button({
@@ -732,6 +789,13 @@
 				
 				// save reference to this step so it can be reloaded later if needed
 				$pageContents.data("allSteps")[currentStepInfo.index].built = $stepHolder.children(".step");
+			}
+			
+			if (isNew == true) {
+				if (currentStepInfo.displayTxt != undefined && currentStepInfo.displayTxt != "") {
+					var clear = currentStepInfo.clear == "true" ? " clear" : ""; // class used when previous info is to be cleared
+					$("#textHolder #displayInfo").append('<div class="info' + $pageContents.data("currentStep") + clear + '">' + currentStepInfo.displayTxt + '</div>');
+				}
 			}
 			
 			$helpBtn.hide();
@@ -883,6 +947,23 @@
 			$overviewHolder.is(":visible") && x_currentPageXML.getAttribute("copy") == "true" ? $("#copyBtn").show() : $("#copyBtn").hide();
 		}
 		
+		// _____ CLEARS / SHOWS DISPLAY TEXT AS REQUIRED _____
+		this.clearText = function() {
+			// called when going forwards through steps to make sure any display text is cleared when required - and then should reappear if going back
+			if ($("#textHolder #displayInfo div.clear").length > 0) {
+				var clear = false;
+				for (var i=0; i<$pageContents.data("currentStep") + 1; i++) {
+					if (clear == false) {
+						$("#textHolder #displayInfo div.info" + ($pageContents.data("currentStep") - i)).show();
+						if ($("#textHolder #displayInfo div.clear.info" + ($pageContents.data("currentStep") - i)).length > 0) {
+							clear = true;
+						}
+					} else {
+						$("#textHolder #displayInfo div.info" + ($pageContents.data("currentStep") - i)).hide();
+					}
+				}
+			}
+		}
 	}
 	
 	decision.init();

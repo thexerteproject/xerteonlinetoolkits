@@ -1,1 +1,1 @@
-3.01 - installed from github
+unstable - installed from github

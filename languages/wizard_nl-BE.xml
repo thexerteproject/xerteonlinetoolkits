@@ -1,4 +1,11 @@
 <language name="Vlaams" code="nl-BE">
+	<layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
+	<edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
+	<insertDialog label="Voeg {i} toe" preview="Voorbeeld">
+		<insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
+		<insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
+		<insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
+	</insertDialog>
 	<btnSaveXerte label="Opslaan" tooltip="Project Opslaan" description="Opslaan Knop"/>
 	<btnPublishXot label="Publiceer" tooltip="Publiceer Project" description="Publiceer Knop"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
@@ -16,6 +23,8 @@
 	</kblanguage>
 	<newLink label="{i} toevoegen" />
 	<helpLink tooltip="Klik voor Help"/>
+	<btnAddColumn label="Kolom toevoegen" tooltip="Kolom rechts toevoegen"/>
+	<btnDelColumn label="Kolom verwijderen" tooltip="Verwijder de geselecteerde tabel"/>
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
@@ -30,6 +39,7 @@
 	<optionalProp label="Extra eigenschappen:"/>
 	<chkShowLanguage label="Toon Taal Opties" />
 	<chkShowAdvanced label="Toon Geavanceerde Opties" />
+	<chkShowToolbar label="Toon Knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
 	<compMedia tooltip="Importeer Media"/>
 	<compPreview tooltip="Voorvertoning"/>
 	<filemenu title="Bestand">

@@ -89,7 +89,6 @@ if(is_numeric($_POST['template_id'])){
 
         $new_template_id = db_query($query_for_new_template, $params);
         if($new_template_id !== FALSE){
-
             $query_for_template_rights = "INSERT INTO {$prefix}templaterights (template_id,user_id,role, folder) VALUES (?,?,?,?)";
             $params = array($new_template_id, $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
 

@@ -21,6 +21,11 @@ body {
 
 body, p, div, a, button, input, h1, h2, h3, h4, i, span, * {font-family: "Open Sans", sans-serif;}
 
+/* allow over ride of ^^ for text inputs where style is changed in wysiwyg */
+div.cke_editable_inline * {
+	font-family: inherit;
+}
+
 #insert_subnodes {border-top: 1px solid #ccc!important; margin-top: 20px; padding-top: 20px;}
 
 #insert_subnodes hr {display: none;}
@@ -661,6 +666,11 @@ img.optional {
 span.deprecated {
     padding: 0 4px 0 4px;
     background: rgba(248, 103, 24, 0.33);
+}
+
+span.hidden {
+    padding: 0 4px 0 4px;
+    background: #e5e5e5;
 }
 
 td.wizarddeprecated {

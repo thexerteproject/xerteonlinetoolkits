@@ -39,7 +39,9 @@
 			tempTxt = "",
 			tempTxtPos = 0,
 			tempTag = -1,
-			openTagInfo = [];
+			openTagInfo = [],
+
+            checked = false;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -79,6 +81,14 @@
 		this.sizeChanged = function() {
 			
 		};
+
+        this.leavePage = function() {
+            var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
+            if (!interactiveText.checked && numQs > 0)
+            {
+                interactiveText.finishTracking();
+            }
+        };
 		
         this.init = function() {
 			$pageContents = $("#pageContents");
@@ -134,12 +144,9 @@
 					group.numSubGroups = 0;
 					groupInfo.push(group);
 					
-					var bgColour = x_getColour(group.bgColour),
-						rgbval = parseInt(bgColour.substr(1), 16),
-						brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114),
-						txtColour = (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
+					var bgColour = x_getColour(group.bgColour);
 					
-					groupStyles += " .group" + i + ".on {color:" + txtColour + "; background-color:" + bgColour + ";} ";
+					groupStyles += " .group" + i + ".on {color:" + x_blackOrWhite(bgColour) + "; background-color:" + bgColour + ";} ";
 					
 					if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("interactivity") != "mcq" && x_currentPageXML.getAttribute("interactivity") != "find") {
 						$pageContents.addClass("line");
@@ -625,6 +632,7 @@
 			// --- MCQ ---
 			// quiz asks what is highlighted
 			} else if (intType == "mcq") {
+
 				// get all fixed strings used in quiz
 				var phrases = {},
 					langOptions = ["mcqText", "mcqQuesCount", "mcqCorrect", "mcqWrong", "mcqFeedback", "mcqMore", "mcqScore", "mcqBtnTxt", "mcqBtnTxt2", "mcqBtnTxt3", "mcqDialogClose"],
@@ -668,7 +676,11 @@
 					.button()
 					.click(function() {
 						var mcqAnswers = $pageContents.data("mcqAnswers"),
-							mcqCurrentQ = $pageContents.data("mcqCurrentQ");
+							mcqCurrentQ = $pageContents.data("mcqCurrentQ"),
+                            correct,
+                            l_options = [],
+                            l_answer = [],
+                            l_feedback = [];
 						
 						$("#x_interactiveTextInfo").parent().detach();
 						if ($(this).data("state") == 0) { // check
@@ -676,12 +688,20 @@
 							
 							var $moreInfo = $("#more");
 							$moreInfo.remove();
-							
+
+                            l_options.push(parseInt($("#optionHolder input:checked").val()) + 1 + "");
+                            l_answer.push(mcqAnswerOptions[$("#optionHolder input:checked").val()]['text']);
+                            l_feedback.push($("#marking").text().trim());
+
+                            $("#optionHolder input").prop('disabled', true);
+
 							if (correctGroup == $("#optionHolder input:checked").val()) {
 								$("#marking").html('<p>' + $pageContents.data("phrases").mcqCorrect + '</p>');
 								$pageContents.data("mcqScore", $pageContents.data("mcqScore") + 1);
+                                correct = true;
 							} else {
 								$("#marking").html('<p>' + $pageContents.data("phrases").mcqWrong.replace("{i}", groupInfo[correctGroup].name) + '</p>');
+                                correct = false;
 							}
 							
 							$("#marking").children().last().append($moreInfo);
@@ -691,7 +711,9 @@
 							} else {
 								$("#more").hide();
 							}
-							
+
+                            XTExitInteraction(x_currentPage, mcqCurrentQ, correct, l_options, l_answer, l_feedback);
+
 							$(this)
 								.button({"label":$pageContents.data("phrases").mcqBtnTxt2})
 								.data("state", 1);
@@ -701,28 +723,39 @@
 								$("#passage .group")
 									.removeClass("on")
 									.removeAttr("title");
-								
+
 								$("#qText").hide();
 								$("#optionHolder").hide();
-								
+
 								var $moreInfo = $("#more");
 								$moreInfo.remove();
 								$("#marking")
 									.html('<p>' + $pageContents.data("phrases").mcqScore.replace("{i}", $pageContents.data("mcqScore")).replace("{n}", mcqAnswers.length) + '</p>' + (x_currentPageXML.getAttribute("mcqFB") != "" && x_currentPageXML.getAttribute("mcqFB") != undefined ? '<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("mcqFB")) + '</p>' : ""))
 									.children().last().append($moreInfo);
 								$("#more").hide();
-								
+
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
-								
+
 								$("#feedback").show();
-								
-								$(this)
-									.button({"label":$pageContents.data("phrases").mcqBtnTxt3})
-									.data("state", 2);
+
+								if (XTGetMode() == "normal")
+                                {
+                                    $(this)
+                                        .button("disable").hide()
+                                        .data("state", 2);
+                                }
+                                else {
+                                    $(this)
+                                        .button({"label": $pageContents.data("phrases").mcqBtnTxt3})
+                                        .data("state", 2);
+                                }
+
+                                interactiveText.finishTracking();
+
 							} else {
 								interactiveText.createQ();
 							}
-						} else { // restart
+						} else if (XTGetMode() != "normal") { // restart
 							interactiveText.createQuiz();
 						}
 					});
@@ -763,7 +796,7 @@
 			}
 			
 			$pageContents.data("currentGroup", currentGroup);
-		}
+		};
 		
 		// only used in find interactions - sets up arrays to hold found/complete data & create buttons
 		this.setUpFind = function(firstLoad) {
@@ -793,7 +826,7 @@
 				}
 			}
 			return count;
-		}
+		};
 		
 		// only used in find interaction - triggered when subgroup selected (with or without mouse)
 		this.clickFind = function($this) {
@@ -818,7 +851,7 @@
 			} else if (!$this.hasClass("on")) {
 				$this.removeAttr("title");
 			}
-		}
+		};
 		
 		// only used in mcq interaction - creates new quiz
 		this.createQuiz = function() {
@@ -853,7 +886,9 @@
 				"mcqAnswers": mcqAnswers,
 				"mcqScore"	: 0
 				});
-			
+
+			// start tracking
+			this.startTracking();
 			this.createQ();
 		};
 		
@@ -875,7 +910,11 @@
 			
 			// turn on highlight & set up answers - correct answer plus number of random incorrect wrong answers
 			var options = mcqAnswerOptions.slice(0),
-				correct;
+				correct,
+                name,
+                correctOptions = [],
+                correctAnswer = [],
+                correctFeedback = [];
 			
 			if (x_currentPageXML.getAttribute("mcqType") == "all") {
 				$("#passage .group" + mcqAnswers[mcqCurrentQ])
@@ -884,6 +923,7 @@
 				
 				correct = options[mcqAnswers[mcqCurrentQ]];
 				options.splice(mcqAnswers[mcqCurrentQ], 1);
+                name = mcqAnswerOptions[mcqAnswers[mcqCurrentQ]]['text'];
 			} else {
 				$("#passage .group[data-index='" + mcqAnswers[mcqCurrentQ] + "']")
 					.addClass("on")
@@ -891,7 +931,15 @@
 				
 				correct = options[subGroups[mcqAnswers[mcqCurrentQ]].ref];
 				options.splice(correct.index, 1);
+                name = $('#passage .on').html();
 			}
+
+            correctOptions.push(correct['index'] + 1 + "");
+            correctAnswer.push(correct['text']);
+            correctFeedback.push($pageContents.data("phrases").mcqCorrect);
+
+            XTEnterInteraction(x_currentPage, mcqCurrentQ, 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback);
+
 			x_shuffleArray(options);
 			
 			var numOptions = x_currentPageXML.getAttribute("mcqNumAs") == undefined ? 3 : x_currentPageXML.getAttribute("mcqNumAs") == "*" ? options.length + 1 : isNaN(x_currentPageXML.getAttribute("mcqNumAs")) ? 3 : Number(x_currentPageXML.getAttribute("mcqNumAs"));
@@ -931,8 +979,34 @@
 					.attr("for", "option" + i)
 					.html(options[i].text);
 			}
-		}
-	}
+		};
+
+        this.startTracking = function() {
+            var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs")),
+                weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+            XTSetPageType(x_currentPage, 'numeric', numQs, weighting);
+        };
+
+        this.finishTracking = function() {
+            var score = $pageContents.data("mcqScore"),
+                numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? mcqAnswers.length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? mcqAnswers.length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
+
+            if (numQs === 0)
+            {
+                XTSetPageScore(x_currentPage, score);
+            }
+            else
+            {
+                XTSetPageScore(x_currentPage, score * 100 / numQs);
+            }
+
+            interactiveText.checked = true;
+        };
+
+        this.showFeedBackandTrackResults = function() {
+            //
+        };
+	};
 
     interactiveText.init();
 

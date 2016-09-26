@@ -5,7 +5,6 @@ p {
   font-size: 3.0vmin;
 }
 body {
-	font-family:	Arial, sans-serif;
 	font-size: 3.0vmin;
 }
 body ul{
@@ -71,6 +70,12 @@ h3 {
 }
 #mainPanel .panel {
     font-size: 3.0vmin;
+}
+.panel #contentHolder {
+    font-size: 3.0vmin;
+}
+.panel #btnHolder {
+	font-size: 3.0vmin;
 }
 #infoHolder {
     font-size: 3.0vmin;

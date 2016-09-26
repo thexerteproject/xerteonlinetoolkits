@@ -15,3 +15,6 @@ USER-FILES/
 
 # ignore data.csv
 integration/data.csv
+
+# Ignore convert.log
+/build/convert.log

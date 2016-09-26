@@ -198,6 +198,7 @@
 		
 		// function called when page first loads
 		this.init = function() {
+			
 			if (!!document.createElement("canvas").getContext) {
 				// load popcorn library and plugins 
 				var loadFiles = true;
@@ -218,13 +219,40 @@
 				} else {
 					this.setUp();
 				}
+				this.initTracking();
 			} else {
 				$("#infoHolder, #panelHolder, #contentCover").remove();
 				$("#pageContents").append('<p class="alert">' + x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type") + '</p>');
 				x_pageLoaded();
+				
 			}
+			
 		}
 		
+		this.initTracking = function(){
+			questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+			
+			numOfQuestions = 0;
+			correctQuestions = 0;
+			$(questions).each(function(key, value){
+				if(value.getAttribute("enableTracking") == "true")
+				{
+					numOfQuestions++;	
+				}
+			});
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            window.questionsAnswerd = 0;
+
+            XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
+            window.questions = {};
+			questionNr = 0;
+			correctQuestions = 0;
+		}
+				
 		// function loads the popcorn files
 		this.loadJS = function() {
 			if (numLoaded == plugins.length + 1) {
@@ -550,6 +578,7 @@
 						.one("load", function() {
 							x_scaleImg(this, $holder.width(), $holder.height() - x_audioBarH, true, true);
 							$mediaHolder.width($(this).width());
+							mediaLesson.resizeMedia();
 						})
 						.attr("src", x_evalURL(mediaData.audioImage))
 						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
@@ -940,7 +969,7 @@
 	
 	.popcornMedia {
 		position:		relative;
-		overflow:		hidden;
+		/*overflow:		hidden;*/
 		margin-left:	auto;
 		margin-right:	auto;
 	}

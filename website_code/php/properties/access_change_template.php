@@ -75,10 +75,10 @@ if(isset($_POST['server_string'])){
 $params = array($access_to_whom, $_POST['template_id']);
 $ok = db_query($query, $params);
 
-if($ok) {
-    access_display($xerte_toolkits_site, true);
+if($ok === false) {
+    access_display_fail();
 
 }else {
 
-    access_display_fail();
+    access_display($xerte_toolkits_site, true);
 }

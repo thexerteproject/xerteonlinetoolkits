@@ -31,16 +31,27 @@ require_once(dirname(__FILE__) . '/../../config.php');
 function display_property_engines($change,$msgtype){
 
 	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</p>";
+	$template = strtolower(get_template_type($_POST['template_id']));
 
     if (get_default_engine($_POST['template_id']) == 'flash')
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    	echo "<p>";
+        if ($template != "xerte_rss") {
+        	echo "<img id=\"html5\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br />";
+		}
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOn.gif\"";
+        if ($template != "xerte_rss") {
+        	echo " onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\"";
+        }
+        echo "/> " . PROPERTIES_LIBRARY_DEFAULT_FLASH;
+		echo "</p>";
     }
     else
     {
-        echo "<p><img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br>";
-        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</p>";
+    	echo "<p>";
+        echo "<img id=\"html5\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:default_engine_toggle('html5', 'javascript', 'flash')\" /> " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br />";
+        echo "<img id=\"flash\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:default_engine_toggle('flash', 'flash', 'javascript')\" /> " . PROPERTIES_LIBRARY_DEFAULT_FLASH;
+		echo "</p>";
     }
     if($change && $msgtype=="engine"){
 

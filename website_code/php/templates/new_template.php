@@ -57,34 +57,35 @@ else
 
 $row_template_type = db_query_one("select template_type_id, template_name, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['tutorialid']));
 
+
 /*
  * create the new template record in the database
  */
 $extraflags = "";
 if ($row_template_type['template_framework'] == 'xerte')
 {
-    if ($row_template_type['template_name'] == 'Nottingham')
-    {
-        $extraflags = "engine=javascript";
-    }
-    else
+    if ( ($row_template_type['template_name'] == 'multipersp') ||
+        ($row_template_type['template_name'] == 'mediaInteractions') ||
+        ($row_template_type['template_name'] == 'Rss') )
     {
         $extraflags = "engine=flash";
     }
-
+    else
+    {
+        $extraflags = "engine=javascript";
+    }
 }
+
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d'), date('Y-m-d'), 0, "Private", str_replace(" ","_", $_POST['tutorialname']), $extraflags));
 
-// templatedetails doesn't have a AI field, so $lastid returns always 0, check explicitly for false
 if($lastid !== false) {
     _debug("Created new template entry in db");
     $query_for_template_rights = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templaterights (template_id, user_id, role, folder) VALUES (?,?,?,?)";
     $res = db_query($query_for_template_rights, array($lastid, $_SESSION['toolkits_logon_id'], "creator", "" . $folder_id));
 
-    // templaterights doesn't have a AI field, so $lastid returns always 0, check explicitly for false
-    if($res !==false) {
+    if($res !== false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";

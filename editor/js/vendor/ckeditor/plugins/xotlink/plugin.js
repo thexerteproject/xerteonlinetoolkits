@@ -11,28 +11,55 @@
  */
 
 // Register the plugin within the editor.
-CKEDITOR.plugins.add( 'xotlink', {
+CKEDITOR.plugins.add('xotlink', {
 
 	// Register the icons.
 	icons: 'xotlink',
 
 	// The plugin initialization logic goes inside this method.
-	init: function( editor ) {
+	init: function(editor) {
 
 		// Define an editor command that opens our dialog window.
-		editor.addCommand( 'xotlink', new CKEDITOR.dialogCommand( 'xotlinkDialog', {
+		editor.addCommand('xotlink', new CKEDITOR.dialogCommand( 'xotlinkDialog', {
 
-			// Allow the abbr tag with an optional title attribute.
+			// Allow the 'a' tag with an href attribute.
 			allowedContent: 'a[href]',
 
-			// Require the abbr tag to be allowed for the feature to work.
+			// Require the 'a' tag to be allowed for the feature to work
 			requiredContent: 'a'
-
-
 		} ) );
 
+		editor.on('selectionChange', function (evt) {
+			if (editor.readOnly) return;
+
+			var element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant('a', true);
+			var linkCommand = editor.getCommand('link');
+			var xotLinkCommand = editor.getCommand('xotlink');
+			if (element && element.getName() == 'a' && element.getAttribute('href') && element.getChildCount()) {
+				var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
+				if (attr && attr.indexOf('(')) {
+					if (attr.split('(')[0] == 'x_navigateToPage') {
+						linkCommand.setState(CKEDITOR.TRISTATE_DISABLED);
+						xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
+					}
+					else {
+						linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+						xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
+					}
+				}
+				else {
+					linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+					xotLinkCommand.setState(CKEDITOR.TRISTATE_DISABLED);
+				}
+			}
+			else {
+				linkCommand.setState(CKEDITOR.TRISTATE_OFF);
+				xotLinkCommand.setState(CKEDITOR.TRISTATE_OFF);
+			}
+		});
+
 		// Create a toolbar button that executes the above command.
-		editor.ui.addButton( 'xotlink', {
+		editor.ui.addButton('xotlink', {
 
 			// The text part of the button (if available) and the tooltip.
 			label: 'Xerte Page Link',
@@ -44,26 +71,48 @@ CKEDITOR.plugins.add( 'xotlink', {
 			toolbar: 'links'
 		});
 
-		if ( editor.contextMenu ) {
+		if (editor.contextMenu) {
 			
-			if ( editor.contextMenu ) {
-                editor.addMenuGroup( 'xotGroup' );
-                editor.addMenuItem( 'xotlinkItem', {
-                    label: 'Xerte Page link',
-                    icon: this.path + 'icons/xotlink.png',
-                    command: 'xotlink',
-                    group: 'xotGroup'
-                });
-            }
-            editor.contextMenu.addListener( function( element ) {
-                var selection = editor.getSelection();
-                //alert( selection.getType() );
-                if (selection.getSelectedText() != "")
-                    return { xotlinkItem: CKEDITOR.TRISTATE_OFF };
+			//editor.addMenuGroup( 'xotGroup' );
+			editor.addMenuItem('xotlinkItem', {
+				label: 'Xerte Page Link',
+				icon: this.path + 'icons/xotlink.png',
+				command: 'xotlink',
+				group: 'link',
+				order: -10
+			});
+
+            editor.contextMenu.addListener(function(element, selection, path) {
+            	if (!element || element.isReadOnly())
+					return null;
+
+				var element = selection.getStartElement();
+				if (element) {
+					element = element.getAscendant('a', true);
+				}
+
+				if (element) {
+					var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
+					if (attr && attr.indexOf("(")) {
+						if (attr.split('(')[0] == 'x_navigateToPage') {
+							this.label = 'Edit Xerte Page Link';
+							return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+						}
+						else {
+							this.label = 'Insert Xerte Page Link';
+						}
+					}
+					else {
+						this.label = 'Insert Xerte Page Link';
+					}
+				}
+				else {
+					return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+				}
             });
 		}
 
 		// Register our dialog file -- this.path is the plugin folder path.
-		CKEDITOR.dialog.add( 'xotlinkDialog', this.path + 'dialogs/xotlink.js' );
+		CKEDITOR.dialog.add('xotlinkDialog', this.path + 'dialogs/xotlink.js');
 	}
 });

@@ -1,496 +1,868 @@
 <script type="text/javascript">
-/**
- * Licensed to The Apereo Foundation under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
+    /**
+     * Licensed to The Apereo Foundation under one or more contributor license
+     * agreements. See the NOTICE file distributed with this work for
+     * additional information regarding copyright ownership.
 
- * The Apereo Foundation licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * The Apereo Foundation licenses this file to you under the Apache License,
+     * Version 2.0 (the "License"); you may not use this file except in
+     * compliance with the License. You may obtain a copy of the License at:
+     *
+     * http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
 
-	// pageChanged & sizeChanged functions are needed in every model file
-	// other functions for model should also be in here to avoid conflicts
-	var dragDropLabel = new function() {
-		var labelTxt1,
-			labelTxt2,
-			labelTxt3,
-			targetTxt1,
-			targetTxt2;
+    // pageChanged & sizeChanged functions are needed in every model file
+    // other functions for model should also be in here to avoid conflicts
+    var dragDropLabel = new function() {
+        var labelTxt1,
+                labelTxt2,
+                labelTxt3,
+                targetTxt1,
+                targetTxt2,
+                submitBtnTxt,
+                interactivity;
 
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-			var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && x_currentPageXML.getAttribute("labelPos") != "text" ? true : false;
-			this.createLabels();
-			if (resize) {
-				this.sizeChanged();
-			}
-		}
+        // function called every time the page is viewed after it has initially loaded
+        this.pageChanged = function() {
+            var resize = $("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length && x_currentPageXML.getAttribute("labelPos") != "text" ? true : false;
+            this.createLabels();
+            if (resize) {
+                this.sizeChanged();
+            }
+            submitBtnTxt = x_currentPageXML.getAttribute("submitText") != undefined && x_currentPageXML.getAttribute("submitText") != "" ? x_currentPageXML.getAttribute("submitText") : "Submit";
 
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function(firstLoad) {
-			$x_pageHolder.scrollTop(0);
-			var $panel = $("#mainPanel");
+        }
 
-			if (firstLoad == true) {
-				firstLoad = false;
-				this.createLabels();
-			} else {
-				// resize image to max that will fit space
-				var $image = $("#image"),
-					prevW = $image.width(),
-					labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
-					imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
-				
-				x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10);
-				$("#labelHolder").width($image.width());
+        // function called every time the size of the LO is changed
+        this.sizeChanged = function(firstLoad) {
+            $x_pageHolder.scrollTop(0);
+            var $panel = $("#mainPanel");
 
-				// adjust target sizes and positions
-				var scale = $image.width() / prevW;
-				$("#targetHolder .target").each(function() {
-					var $this = $(this);
-					$this.css({
-						"left"		:$this.position().left * scale,
-						"top"		:$this.position().top * scale,
-						"width"		:$this.width() * scale,
-						"height"	:$this.height() * scale
-					});
-				});
-				
-				// also adjust labels
-				$("#labelHolder .ui-draggable-disabled").each(function() {
-					var $this = $(this);
-					$this.css({
-						"left"		:$this.data("target").position().left + 2 + $panel.position().left,
-						"top"		:$this.data("target").position().top + 2 + $panel.position().top
-					});
-				});
-			}
-		}
+            if (firstLoad == true) {
+                firstLoad = false;
+                this.createLabels();
+            } else {
+                // resize image to max that will fit space
+                var $image = $("#image"),
+                        prevW = $image.width(),
+                        labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
+                        imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
 
-		this.init = function() {
-			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
-			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
-			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
-			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
-			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
-			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+                x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10);
+                $("#labelHolder").width($image.width());
 
-			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			
-			if (x_currentPageXML.getAttribute("labelPos") == "text") {
-				$("#mainText")
-					.after($("#labelHolder"))
-					.after('<hr/>');
-			}
+                // adjust target sizes and positions
+                var scale = $image.width() / prevW;
+                $("#targetHolder .target").each(function() {
+                    var $this = $(this);
+                    $this.css({
+                        "left"		:$this.position().left * scale,
+                        "top"		:$this.position().top * scale,
+                        "width"		:$this.width() * scale,
+                        "height"	:$this.height() * scale
+                    });
+                });
 
-			var tryTxt = x_currentPageXML.getAttribute("tryAgainTxt");
-			if (tryTxt == undefined || tryTxt == "") {
-				tryTxt = "Try again";
-			}
-			$("#pageContents").data("tryTxt", tryTxt);
+                // also adjust labels
+                $("#labelHolder .ui-draggable-disabled").each(function() {
+                    var $this = $(this);
+                    $this.css({
+                        "left"		:$this.data("target").position().left + 2 + $panel.position().left,
+                        "top"		:$this.data("target").position().top + 2 + $panel.position().top
+                    });
+                });
+            }
+        }
 
-			if (x_currentPageXML.getAttribute("align") == "Right") {
-				$("#dragDropHolderLabelling").addClass("x_floatLeft");
-			} else {
-				$("#dragDropHolderLabelling").addClass("x_floatRight");
-			}
+        this.leavePage = function() {
+            if ($(x_currentPageXML).children().length > 0) {
+                if (!this.checked) {
+                    this.showFeedBackandTrackResults();
+                }
+            }
+        }
 
-			this.sizeChanged(true);
-		}
+        this.init = function() {
+            // store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
+            labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
+            labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
+            labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
+            targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
+            targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
+            submitBtnTxt = x_currentPageXML.getAttribute("submitText") != undefined && x_currentPageXML.getAttribute("submitText") != "" ? x_currentPageXML.getAttribute("submitText") : "Submit";
+            interactivity = x_currentPageXML.getAttribute("interactivity") != undefined && x_currentPageXML.getAttribute("interactivity") != "" ? x_currentPageXML.getAttribute("interactivity") : "Describe";
 
-		this.createLabels = function() {
-			var	$labelHolder = $("#labelHolder"),
-				tempData = [];
 
-			$labelHolder.empty();
-			$("#infoHolder").html("");
-			$("#pageContents").data("selectedLabel", "");
+            $("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					tempData.push({name:this.getAttribute("name"), text:this.getAttribute("text"), correct:i});
-				});
+            if (x_currentPageXML.getAttribute("labelPos") == "text") {
+                $("#mainText")
+                        .after($("#labelHolder"))
+                        .after('<hr/>');
+            }
 
-			// randomise order and create labels
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var labelNum = Math.floor(Math.random() * tempData.length);
+            var tryTxt = x_currentPageXML.getAttribute("tryAgainTxt");
+            if (tryTxt == undefined || tryTxt == "") {
+                tryTxt = "Try again";
+            }
+            $("#pageContents").data("tryTxt", tryTxt);
 
-					$('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
-						.appendTo($labelHolder)
-						.data("correct", tempData[labelNum].correct);
+            if (x_currentPageXML.getAttribute("align") == "Right") {
+                $("#dragDropHolderLabelling").addClass("x_floatLeft");
+            } else {
+                $("#dragDropHolderLabelling").addClass("x_floatRight");
+            }
 
-					tempData.splice(labelNum, 1);
-				});
+            if (interactivity == "Match") {
+                $("#submitBtn")
+                        .button({
+                            label: submitBtnTxt
+                        })
+                        .click(function () {
+                            $x_pageHolder.scrollTop(0);
+                            $("#labelHolder .label").each(function () {
+                                var $this = $(this)
+                                        .off("keypress focusin focusout")
+                                        .click(function () {
+                                            $("#infoHolder").html($(this).data("infoTxt"));
+                                        })
+                                        .focusin(function () {
+                                            $(this).addClass("focus");
+                                            $("#infoHolder").html($(this).data("infoTxt"));
+                                        })
+                                        .focusout(function () {
+                                            $(this).removeClass("focus");
+                                            $("#infoHolder").html("");
+                                        })
+                                if (XTGetMode() == "normal")
+                                    $this.draggable("disable");
+                            });
 
-			// set up drag events (mouse and keyboard controlled)
-			$("#labelHolder .label")
-				.draggable({
-					containment:	"#x_pageHolder",
-					stack:			"#labelHolder .label", // item being dragged is always on top (z-index)
-					revert:			"invalid", // snap back to original position if not dropped on target
-					start:			function() {
-						// remove any focus/selection highlights made by tabbing to labels/targets
-						var $pageContents = $("#pageContents");
-						if ($("#labelHolder .label.focus").length > 0) {
-							$("#labelHolder .label.focus").attr("title", labelTxt1);
-						}
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel").attr("title", labelTxt1);
-							$pageContents.data("selectedLabel", "");
-						}
-						var targetInFocus = $("#targetHolder .target.highlight");
-						if (targetInFocus.length > 0) {
-							targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
-						}
-						$("#labelHolder .selected").removeClass("selected");
-						$("#labelHolder .focus").removeClass("focus");
-						$("#labelHolder .highlight").addClass("transparent").removeClass("highlight");
+                            $("#pageContents hr:eq(1)").remove();
+                            $("#pageContents").data("selectedLabel", "");
+                            dragDropLabel.showFeedBackandTrackResults();
+                            if (XTGetMode() == "normal") {
+                                $("#submitBtn").hide();
+                                $("#targetHolder .target").droppable("disable");
+                            }
+                        });
+                this.startTracking();
+            }
+            else
+            {
+                $("#submitBtn").hide();
+            }
+            this.sizeChanged(true);
+        };
 
-						$("#infoHolder").html("");
-					},
-					stop:			function() {
-						if ($(this).data("success") != true) {
-							$("#infoHolder").html($("#pageContents").data("tryTxt"));
-						}
-					}
-					})
-				// set up events used when keyboard rather than mouse is used
-				// these highlight selected labels / targets and set the title attr which the screen readers will use
-				.focusin(function() {
-					var $this = $(this);
-					if ($this.is($("#pageContents").data("selectedLabel")) == false) {
-						$this
-							.addClass("focus")
-							.attr("title", labelTxt1 + " - " + labelTxt3);
-					}
-					})
-				.focusout(function() {
-					var $this = $(this);
-					$this.removeClass("focus");
-					if ($this.is($("#pageContents").data("selectedLabel")) == false) {
-						$this.attr("title", labelTxt1);
-					}
-					})
-				.keypress(function(e) {
-					var charCode = e.charCode || e.keyCode;
-					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$pageContents.data("selectedLabel")
-								.removeClass("selected")
-								.attr("title", labelTxt1);
-						}
-						var $this = $(this);
-						$this
-							.removeClass("focus")
-							.addClass("selected")
-							.attr("title", labelTxt1 + ' - ' + labelTxt2);
-						$pageContents.data("selectedLabel", $this);
+        this.startTracking = function() {
+            var numHotspots = $(x_currentPageXML).children().length,
+                    weighting = (x_currentPageXML.getAttribute("trackingWeight") != undefined) ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+            XTSetPageType(x_currentPage, 'numeric', numHotspots, weighting);
+        };
 
-						$("#infoHolder").html("");
-					}
-					})
-				.disableSelection();
+        this.createLabels = function() {
+            var	$labelHolder = $("#labelHolder"),
+                    tempData = [];
 
-			if ($("#image").attr("src") == undefined) {
-				// image can load now as we know what its max dimensions are
-				$("#image")
-					.one("load", function() {
-						dragDropLabel.imgLoaded();
-					})
-					.attr({
-						"src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
-						"alt"	:x_currentPageXML.getAttribute("tip")
-					})
-					.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-						if (this.complete) {
-							$(this).trigger("load");
-						}
-					});
+            $labelHolder.empty();
+            $("#infoHolder").html("");
+            $("#pageContents").data("selectedLabel", "");
 
-			} else {
-				// labels are being reset - make sure targets will still accept them being dropped
-				$("#targetHolder .target")
-					.each(function() {
-						var $this = $(this);
-						$this.droppable({
-							tolerance: "pointer",
-							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == $this.index();})
-						});
-					})
-					.off("click");
-			}
-		}
+            $(x_currentPageXML).children()
+                    .each(function(i) {
+                        tempData.push({name:this.getAttribute("name"), text:this.getAttribute("text"), correct:i});
+                    });
 
-		this.imgLoaded = function() {
-			// labels have been created and image loaded - can now resize image to fit space and create targets on it
-			var $image = $("#image"),
-				labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
-				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
-			
-			x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10, true, true);
-			$("#labelHolder").width($image.width());
-			
-			var scale = $image.width() / $image.data("origSize")[0],
-				$targetHolder = $("#targetHolder");
-			
-			// create targets
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var xywh = [Number(this.getAttribute("x")), Number(this.getAttribute("y")), Number(this.getAttribute("w")), Number(this.getAttribute("h"))];
+            // randomise order and create labels
+            $(x_currentPageXML).children()
+                    .each(function(i) {
+                        var labelNum = Math.floor(Math.random() * tempData.length);
 
-					// adjust xywh so hotspots don't overlap image edges
-					if (xywh[0] < 0) {
-						xywh.splice(2, 1, xywh[2] + xywh[0]);
-						xywh.splice(0, 1, 0);
-					}
-					if (xywh[1] < 0) {
-						xywh.splice(3, 1, xywh[3] + xywh[1]);
-						xywh.splice(1, 1, 0);
-					}
-					if (xywh[0] + xywh[2] > $image.data("origSize")[0]) {
-						xywh.splice(2, 1, $image.data("origSize")[0] - xywh[0]);
-					}
-					if (xywh[1] + xywh[3] > $image.data("origSize")[1]) {
-						xywh.splice(3, 1, $image.data("origSize")[1] - xywh[1]);
-					}
+                        $('<div class="label panel" id="label' + i + '" tabindex="' + (i+3) + '" title="' + labelTxt1 + '">' + tempData[labelNum].name + '</div>')
+                                .appendTo($labelHolder)
+                                .data("correct", tempData[labelNum].correct);
 
-					// now adjust for resized image
-					xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
+                        if (interactivity == "Match") {
+                            var correctOptions = [],
+                                    correctAnswer = [],
+                                    correctFeedback = "";
 
-					// create target and position it
-					$('<div class="target transparent"></div>')
-						.appendTo($targetHolder)
-						.attr("title", targetTxt1 + " " + (i + 1))
-						.data("text", this.getAttribute("text"))
-						.css({
-							"left"		:xywh[0],
-							"top"		:xywh[1],
-							"width"		:xywh[2],
-							"height"	:xywh[3]
-						})
-						.droppable({
-							tolerance: "pointer",
-							// only correct label can be dropped on target
-							accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
-						});
-				});
+                            correctOptions.push({source: tempData[labelNum].name, target: tempData[labelNum].name});
 
-			var $targets = $("#targetHolder .target");
+                            XTEnterInteraction(x_currentPage, i, 'match', tempData[labelNum].name, correctOptions, correctAnswer, correctFeedback);
+                            dragDropLabel.checked = false;
+                        }
+                        tempData.splice(labelNum, 1);
+                    });
 
-			// add border to targets
-			if (x_currentPageXML.getAttribute("showHighlight") != "false") {
-				var highlightColour = "yellow";
-				if (x_currentPageXML.getAttribute("highlightColour") != undefined && x_currentPageXML.getAttribute("highlightColour") != "") {
-					highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightColour"));
-				}
-				$targets
-					.addClass("border")
-					.css("border-color", highlightColour);
-			}
+            // set up drag events (mouse and keyboard controlled)
+            if (interactivity == "Match") {
+                $("#labelHolder .label")
+                        .draggable({
+                            containment: "#x_pageHolder",
+                            stack: "#labelHolder .label", // item being dragged is always on top (z-index)
+                            revertDuration: 0,
+                            revert: function (event, ui) {
+                                if (!event) {
+                                    var $this = $(this);
+                                    if ($this.data("target") != undefined && $this.data("target") !== "")
+                                        $("#targetHolder .target").eq($this.data("target")).droppable("enable");
 
-			$targets
-				.droppable({
-					tolerance: "pointer",
-					drop:	function(event, ui) {
-						dragDropLabel.dropLabel($(this), ui.draggable); // target, label
-						ui.draggable.data("success", true);
-					}
-					})
-				.focusin(function(e) {
-					$(this)
-						.addClass("highlight")
-						.removeClass("transparent");
-					var $pageContents = $("#pageContents");
-					if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-						$(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
-					}
-					})
-				.focusout(function() {
-					var $pageContents = $("#pageContents");
-					$(this)
-						.addClass("transparent")
-						.removeClass("highlight")
-						.attr("title", targetTxt1 + " " + ($(this).index() + 1));
-					})
-				.keypress(function(e) {
-					var charCode = e.charCode || e.keyCode;
-					if (charCode == 32) {
-						var $pageContents = $("#pageContents");
-						var $selectedLabel = $pageContents.data("selectedLabel");
-						if ($selectedLabel != undefined && $selectedLabel != "") {
-							// only accept drops for correct answers
-							if ($selectedLabel.data("correct") == $(this).index()) {
-								dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
-							} else {
-								$(this).attr("title", targetTxt1 + " " + ($(this).index() + 1));
-								$selectedLabel
-									.removeClass("selected")
-									.attr("title", labelTxt1);
+                                    $this
+                                            .css({"position": "relative"})
+                                            .data("target", "")
+                                            .data("success", false)
+                                            .data("ui-draggable").originalPosition = {
+                                        top: 0,
+                                        left: 0
+                                    };
+                                }
+                                return !event;
+                            },
+                            start: function () {
+                                var $this = $(this);
+                                $("#infoHolder").html('<h3>' + $this.html() + '</h3>');
 
-								$("#infoHolder").html($pageContents.data("tryTxt"));
-								$pageContents.data("selectedLabel", "");
-							}
-						}
-					}
-				});
+                                // remove any focus/selection highlights made by tabbing to labels/targets
+                                var $pageContents = $("#pageContents");
+                                if ($("#labelHolder .label.focus").length > 0) {
+                                    $("#labelHolder .label.focus").attr("title", labelTxt1);
+                                }
+                                if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                                    $pageContents.data("selectedLabel").attr("title", labelTxt1);
+                                    $pageContents.data("selectedLabel", "");
+                                }
+                                var targetInFocus = $("#targetHolder .target.highlight");
+                                if (targetInFocus.length > 0) {
+                                    targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
+                                }
 
-			// set tab index for targets - leaving space between them for a label to be put on it
-			var tabIndex = 2;
-			tabIndex += $("#labelHolder .label").length;
-			$targets.each(function() {
-				tabIndex++;
-				var $this = $(this);
-				$this.attr("tabindex", tabIndex);
-				tabIndex++;
-			});
+                                $("#labelHolder .selected").removeClass("selected");
+                                $("#labelHolder .focus").removeClass("focus");
+                                $("#labelHolder .highlight").addClass("transparent").removeClass("highlight");
+                            },
+                            stop: function () {
+                                if ($(this).data("success") != true) {
+                                    $("#infoHolder").html($("#pageContents").data("tryTxt"));
+                                }
+                            }
+                        })
+                        // set up events used when keyboard rather than mouse is used
+                        // these highlight selected labels / targets and set the title attr which the screen readers will use
+                        .focusin(function () {
+                            var $this = $(this);
+                            $("#infoHolder").html('<h3>' + $this.html() + '</h3>');
+                            if ($this.is($("#pageContents").data("selectedLabel")) == false) {
+                                $this
+                                        .addClass("focus")
+                                        .attr("title", labelTxt1 + " - " + labelTxt3);
+                            }
+                        })
+                        .focusout(function () {
+                            var $this = $(this);
+                            $("#infoHolder").html("");
+                            $this.removeClass("focus");
+                            if ($this.is($("#pageContents").data("selectedLabel")) == false) {
+                                $this.attr("title", labelTxt1);
+                            }
+                        })
+                        .keypress(function (e) {
+                            var charCode = e.charCode || e.keyCode;
+                            if (charCode == 32) {
+                                var $pageContents = $("#pageContents");
+                                if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                                    $pageContents.data("selectedLabel")
+                                            .removeClass("selected")
+                                            .attr("title", labelTxt1);
+                                }
+                                var $this = $(this);
+                                $this
+                                        .removeClass("focus")
+                                        .addClass("selected")
+                                        .attr("title", labelTxt1 + ' - ' + labelTxt2);
+                                $pageContents.data("selectedLabel", $this);
 
-			x_pageLoaded();
-		}
+                                $("#infoHolder").html("");
+                            }
+                        })
+                        .disableSelection();
+            }
+            else
+            {
+                $("#labelHolder .label")
+                        .draggable({
+                            containment: "#x_pageHolder",
+                            stack: "#labelHolder .label", // item being dragged is always on top (z-index)
+                            revert: "invalid", // snap back to original position if not dropped on target
+                            start: function () {
+                                // remove any focus/selection highlights made by tabbing to labels/targets
+                                var $pageContents = $("#pageContents");
+                                if ($("#labelHolder .label.focus").length > 0) {
+                                    $("#labelHolder .label.focus").attr("title", labelTxt1);
+                                }
+                                if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                                    $pageContents.data("selectedLabel").attr("title", labelTxt1);
+                                    $pageContents.data("selectedLabel", "");
+                                }
+                                var targetInFocus = $("#targetHolder .target.highlight");
+                                if (targetInFocus.length > 0) {
+                                    targetInFocus.attr("title", targetTxt1 + " " + (targetInFocus.index() + 1));
+                                }
 
-		// function called when label dropped on target - by mouse or keyboard
-		this.dropLabel = function($thisTarget, $thisLabel) {
-			$x_pageHolder.scrollTop(0);
-			var $infoHolder = $("#infoHolder");
-			$infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
+                                $("#labelHolder .selected").removeClass("selected");
+                                $("#labelHolder .focus").removeClass("focus");
+                                $("#labelHolder .highlight").addClass("transparent").removeClass("highlight");
 
-			$thisLabel
-				.attr({
-					"title"		:labelTxt1,
-					"tabindex"	:$thisTarget.attr("tabindex") + 1,
-					"style"		:"cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
-				})
-				.data("infoTxt", $infoHolder.html())
-				.removeClass("selected")
-				.draggable("disable")
-				.css({
-					"opacity"	:1,
-					"position"	:"absolute",
-					"top"		:$thisTarget.position().top + 2 + $("#mainPanel").position().top,
-					"left"		:$thisTarget.position().left + 2 + $("#mainPanel").position().left
-				})
-				.off("keypress focusin focusout")
-				.click(function() {
-					$("#infoHolder").html($(this).data("infoTxt"));
-				})
-				.focusin(function() {
-					$(this).addClass("focus");
-					$("#infoHolder").html($(this).data("infoTxt"));
-				})
-				.focusout(function() {
-					$(this).removeClass("focus");
-					$("#infoHolder").html("");
-				})
-				.data("target", $thisTarget);
+                                $("#infoHolder").html("");
+                            },
+                            stop: function () {
+                                if ($(this).data("success") != true) {
+                                    $("#infoHolder").html($("#pageContents").data("tryTxt"));
+                                }
+                            }
+                        })
+                        // set up events used when keyboard rather than mouse is used
+                        // these highlight selected labels / targets and set the title attr which the screen readers will use
+                        .focusin(function () {
+                            var $this = $(this);
+                            if ($this.is($("#pageContents").data("selectedLabel")) == false) {
+                                $this
+                                        .addClass("focus")
+                                        .attr("title", labelTxt1 + " - " + labelTxt3);
+                            }
+                        })
+                        .focusout(function () {
+                            var $this = $(this);
+                            $this.removeClass("focus");
+                            if ($this.is($("#pageContents").data("selectedLabel")) == false) {
+                                $this.attr("title", labelTxt1);
+                            }
+                        })
+                        .keypress(function (e) {
+                            var charCode = e.charCode || e.keyCode;
+                            if (charCode == 32) {
+                                var $pageContents = $("#pageContents");
+                                if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                                    $pageContents.data("selectedLabel")
+                                            .removeClass("selected")
+                                            .attr("title", labelTxt1);
+                                }
+                                var $this = $(this);
+                                $this
+                                        .removeClass("focus")
+                                        .addClass("selected")
+                                        .attr("title", labelTxt1 + ' - ' + labelTxt2);
+                                $pageContents.data("selectedLabel", $this);
 
-			$thisTarget
-				.attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
-				.data("infoTxt", $infoHolder.html())
-				.css("cursor", "pointer")
-				.click(function() {
-					$("#infoHolder").html($(this).data("infoTxt"));
-				});
-			
-			if ($("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length) {
-				$("#pageContents hr:eq(1)").remove();
-			}
-			
-			$("#pageContents").data("selectedLabel", "");
-		}
-	}
+                                $("#infoHolder").html("");
+                            }
+                        })
+                        .disableSelection();
+            }
+            if ($("#image").attr("src") == undefined) {
+                // image can load now as we know what its max dimensions are
+                $("#image")
+                        .one("load", function() {
+                            dragDropLabel.imgLoaded();
+                        })
+                        .attr({
+                            "src"	:x_evalURL(x_currentPageXML.getAttribute("url")),
+                            "alt"	:x_currentPageXML.getAttribute("tip")
+                        })
+                        .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                            if (this.complete) {
+                                $(this).trigger("load");
+                            }
+                        });
+            } else {
+                // labels are being reset - make sure targets will still accept them being dropped
+                if (interactivity == "Match") {
+                    $("#targetHolder .target")
+                            .each(function () {
+                                var $this = $(this);
+                                $this.droppable({
+                                    tolerance: "pointer",
+                                    accept: $("#labelHolder .label")
+                                });
+                            })
+                            .off("click");
+                }
+                else
+                {
+                    $("#targetHolder .target")
+                            .each(function () {
+                                var $this = $(this);
+                                $this.droppable({
+                                    tolerance: "pointer",
+                                    accept: $("#labelHolder .label").filter(function() {return $(this).data("correct") == $this.index();})
+                                });
+                            })
+                            .off("click");
+                }
+            }
+        }
 
-	dragDropLabel.init();
+        this.imgLoaded = function() {
+            // labels have been created and image loaded - can now resize image to fit space and create targets on it
+            var $image = $("#image"),
+                    labelHolderH = x_currentPageXML.getAttribute("labelPos") != "text" ? $("#labelHolder").height() : 0,
+                    imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
+
+            x_scaleImg($image, $x_pageHolder.width() * imgSize, $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("#mainPanel").css("padding-top")) * 2) - labelHolderH - 10, true, true);
+            $("#labelHolder").width($image.width());
+
+            var scale = $image.width() / $image.data("origSize")[0],
+                    $targetHolder = $("#targetHolder");
+
+            // create targets
+            $(x_currentPageXML).children()
+                    .each(function(i) {
+                        var xywh = [Number(this.getAttribute("x")), Number(this.getAttribute("y")), Number(this.getAttribute("w")), Number(this.getAttribute("h"))];
+
+                        // adjust xywh so hotspots don't overlap image edges
+                        if (xywh[0] < 0) {
+                            xywh.splice(2, 1, xywh[2] + xywh[0]);
+                            xywh.splice(0, 1, 0);
+                        }
+                        if (xywh[1] < 0) {
+                            xywh.splice(3, 1, xywh[3] + xywh[1]);
+                            xywh.splice(1, 1, 0);
+                        }
+                        if (xywh[0] + xywh[2] > $image.data("origSize")[0]) {
+                            xywh.splice(2, 1, $image.data("origSize")[0] - xywh[0]);
+                        }
+                        if (xywh[1] + xywh[3] > $image.data("origSize")[1]) {
+                            xywh.splice(3, 1, $image.data("origSize")[1] - xywh[1]);
+                        }
+
+                        // now adjust for resized image
+                        xywh = [xywh[0] * scale, xywh[1] * scale, xywh[2] * scale, xywh[3] * scale];
+
+                        if (interactivity == "Match") {
+                            // create target and position it
+                            $('<div class="target transparent"></div>')
+                                    .appendTo($targetHolder)
+                                    .attr("title", targetTxt1 + " " + (i + 1))
+                                    .data("text", this.getAttribute("text"))
+                                    .css({
+                                        "left": xywh[0],
+                                        "top": xywh[1],
+                                        "width": xywh[2],
+                                        "height": xywh[3]
+                                    })
+                                    .droppable({
+                                        tolerance: "pointer",
+                                        accept: $("#labelHolder .label")
+                                    });
+                        }
+                        else
+                        {
+                            // create target and position it
+                            $('<div class="target transparent"></div>')
+                                    .appendTo($targetHolder)
+                                    .attr("title", targetTxt1 + " " + (i + 1))
+                                    .data("text", this.getAttribute("text"))
+                                    .css({
+                                        "left": xywh[0],
+                                        "top": xywh[1],
+                                        "width": xywh[2],
+                                        "height": xywh[3]
+                                    })
+                                    .droppable({
+                                        tolerance: "pointer",
+                                        // only correct label can be dropped on target
+                                        accept:	$("#labelHolder .label").filter(function() {return $(this).data("correct") == i;})
+                                    });}
+                    });
+
+            var $targets = $("#targetHolder .target");
+
+            // add border to targets
+            if (x_currentPageXML.getAttribute("showHighlight") != "false") {
+                var highlightColour = "yellow";
+                if (x_currentPageXML.getAttribute("highlightColour") != undefined && x_currentPageXML.getAttribute("highlightColour") != "") {
+                    highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightColour"));
+                }
+                $targets
+                        .addClass("border")
+                        .css("border-color", highlightColour);
+            }
+
+            $targets
+                    .droppable({
+                        tolerance: "pointer",
+                        drop:	function(event, ui) {
+                            dragDropLabel.dropLabel($(this), ui.draggable); // target, label
+                            ui.draggable.data("success", true);
+                        }
+                    })
+                    .focusin(function() {
+                        $(this)
+                                .addClass("highlight")
+                                .removeClass("transparent");
+                        var $pageContents = $("#pageContents");
+                        if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
+                            $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1) + " - " + targetTxt2);
+                        }
+                    })
+                    .focusout(function() {
+                        var $pageContents = $("#pageContents");
+                        $(this)
+                                .addClass("transparent")
+                                .removeClass("highlight")
+                                .attr("title", targetTxt1 + " " + ($(this).index() + 1));
+                    })
+                    .keypress(function(e) {
+                        var charCode = e.charCode || e.keyCode;
+                        if (charCode == 32) {
+                            var $pageContents = $("#pageContents");
+                            var $selectedLabel = $pageContents.data("selectedLabel");
+                            if ($selectedLabel != undefined && $selectedLabel != "") {
+                                if (interactivity == "Match") {
+                                    dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
+                                }
+                                else {
+                                    // only accept drops for correct answers
+                                    if ($selectedLabel.data("correct") == $(this).index()) {
+                                        dragDropLabel.dropLabel($(this), $selectedLabel); // target, label
+                                    } else {
+                                        $(this).attr("title", targetTxt1 + " " + ($(this).index() + 1));
+                                        $selectedLabel
+                                                .removeClass("selected")
+                                                .attr("title", labelTxt1);
+
+                                        $("#infoHolder").html($pageContents.data("tryTxt"));
+                                        $pageContents.data("selectedLabel", "");
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+            // set tab index for targets - leaving space between them for a label to be put on it
+            var tabIndex = 2;
+            tabIndex += $("#labelHolder .label").length;
+            $targets.each(function() {
+                tabIndex++;
+                var $this = $(this);
+                $this.attr("tabindex", tabIndex);
+                tabIndex++;
+            });
+
+            x_pageLoaded();
+        }
+
+        // function called when label dropped on target - by mouse or keyboard
+        this.dropLabel = function($thisTarget, $thisLabel) {
+            $x_pageHolder.scrollTop(0);
+            var $infoHolder = $("#infoHolder");
+            if (interactivity == "Match") {
+                $infoHolder.html('<h3>' + $thisLabel.html() + '</h3>');
+
+                if ($thisLabel.data("target") != undefined && $thisLabel.data("target") !== "")
+                    $("#targetHolder .target").eq($thisLabel.data("target")).droppable("enable");
+            }
+            else {
+                $infoHolder.html('<h3>' + $thisLabel.html() + '</h3><p>' + x_addLineBreaks($thisTarget.data("text")) + '</p>');
+            }
+
+
+            if (interactivity == "Match") {
+                var targetIndex = $thisTarget.index();
+                $thisLabel
+                        .attr({
+                            "title": labelTxt1,
+                            "tabindex": $thisTarget.attr("tabindex") + 1,
+                            "style": "cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
+                        })
+                        .data("infoTxt", $infoHolder.html())
+                        .removeClass("selected")
+                        .css({
+                            "opacity": 1,
+                            "position": "absolute",
+                            "top": $thisTarget.position().top + 2 + $("#mainPanel").position().top,
+                            "left": $thisTarget.position().left + 2 + $("#mainPanel").position().left
+                        })
+                        .click(function () {
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusin(function () {
+                            $(this).addClass("focus");
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusout(function () {
+                            $(this).removeClass("focus");
+                            $("#infoHolder").html("");
+                        })
+                        .data("target", targetIndex);
+                $thisTarget
+                        .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
+                        .data("infoTxt", $infoHolder.html())
+                        .css("cursor", "pointer")
+                        .click(function() {
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .droppable("disable");
+                $("#pageContents").data("selectedLabel", "");
+
+            }
+            else
+            {
+                $thisLabel
+                        .attr({
+                            "title": labelTxt1,
+                            "tabindex": $thisTarget.attr("tabindex") + 1,
+                            "style": "cursor: pointer !important;" // need to use !important as jQuery ui styles make cursor default !important - doing another !important is the only way to override it
+                        })
+                        .data("infoTxt", $infoHolder.html())
+                        .removeClass("selected")
+                        .draggable("disable")
+                        .css({
+                            "opacity": 1,
+                            "position": "absolute",
+                            "top": $thisTarget.position().top + 2 + $("#mainPanel").position().top,
+                            "left": $thisTarget.position().left + 2 + $("#mainPanel").position().left
+                        })
+                        .off("keypress focusin focusout")
+                        .click(function () {
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusin(function () {
+                            $(this).addClass("focus");
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        })
+                        .focusout(function () {
+                            $(this).removeClass("focus");
+                            $("#infoHolder").html("");
+                        })
+                        .data("target", $thisTarget);
+                $thisTarget
+                        .attr("title", targetTxt1 + " " + ($thisTarget.index() + 1))
+                        .data("infoTxt", $infoHolder.html())
+                        .css("cursor", "pointer")
+                        .click(function() {
+                            $("#infoHolder").html($(this).data("infoTxt"));
+                        });
+                if ($("#labelHolder .label").length == $("#labelHolder .label.ui-draggable-disabled").length) {
+                    $("#pageContents hr:eq(1)").remove();
+                }
+
+                $("#pageContents").data("selectedLabel", "");
+            }
+
+        }
+
+        this.showFeedBackandTrackResults = function() {
+            var result = "",
+                    numCorrect = 0,
+                    l_options = [],
+                    l_answer = [],
+                    l_feedback = [];
+
+            if (x_currentPageXML.getAttribute("judge") != "false" && interactivity=="Match") {
+                var labelHolderSpec = XTGetMode() != "normal" ? "#labelHolder .label" : "#labelHolder .ui-draggable-disabled";
+                $(labelHolderSpec).each(function(i) {
+                    var $this = $(this)
+                            .click(function() {
+                                $("#targetHolder .target")
+                                        .css({
+                                            "background" : "transparent"
+                                        });
+                                $("#targetHolder .target").eq($this.data("correct"))
+                                        .css({
+                                            "background" : "rgba(154,205,50,0.5)" //Yellowgreen with transparency when not run in SCORM
+                                        })
+                            })
+                            .focusin(function() {
+                                $("#targetHolder .target").eq($this.data("correct"))
+                                        .css({
+                                            "background" : "rgba(154,205,50,0.5)"
+                                        })
+                            })
+                            .focusout(function() {
+                                $("#targetHolder .target")
+                                        .css({
+                                            "background" : "transparent"
+                                        });
+                            });
+                    if ($this.data("correct") === $this.data("target")) {
+                        //make sure only one tick is added
+                        numCorrect++;
+                        if ($this.hasClass("correct") == false) {
+                            $this.addClass("correct");
+                            //add tick
+                            $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+                            //l_feedback = "The label for " + $this.html() + " was placed in the correct hotspot.";
+                            result = true;
+                        }
+                    }
+                    else {
+                        if (XTGetMode() != "normal") {
+                            $this
+                                    .attr({"tabindex": i + 3})
+                                    .removeAttr( 'style' )
+                                    .css({
+                                        "position": "relative",
+                                        "z-index": 0,
+                                        "top": "auto"
+                                    });
+
+                            if($this.data("target") !== undefined && $this.data("target") !== "") {
+                                $("#targetHolder .target").eq($this.data("target")).droppable('enable');
+                            }
+                        } else {
+                            $this.addClass("incorrect");
+                            // add cross
+                            $this.append('<img class="cross" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Cross") + '"></img>');
+                            //l_feedback = "The label for " + $this.html() + " was placed in the wrong hotspot.";
+                            result = false;
+                        }
+                    }
+
+                    l_options = [];
+                    if($this.data("target") === undefined || $this.data("target") === "")
+                    {
+                        l_options.push({source: $this.html(), target: " "});
+                    }
+                    else {
+                        l_options.push({source: $this.html(), target: $(x_currentPageXML).children()[$this.data("target")].getAttribute("name")});
+                    }
+
+                    // Track answer
+                    XTExitInteraction(x_currentPage, i, result, l_options, l_answer, l_feedback);
+                });
+
+                if ($(x_currentPageXML).children().length === 0) {
+                    XTSetPageScore(x_currentPage, 100);
+                }
+                else {
+                    XTSetPageScore(x_currentPage, numCorrect * 100 /  $(x_currentPageXML).children().length);
+                }
+                if (XTGetMode() != "normal") {
+                    if (numCorrect == $(x_currentPageXML).children().length) {
+                        $("#labelHolder .label").each(function() {
+                           var $this = $(this)
+                                   .draggable("disable")
+                        });
+                        $("#submitBtn").hide();
+                    }
+                }
+                dragDropLabel.checked = true;
+            }
+
+            // Queue reparsing of MathJax - fails if no network connection
+            try {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            } catch (e) {
+            }
+        };
+    };
+
+    dragDropLabel.init();
 
 </script>
 
 <style type="text/css">
 
-	#textHolder {
-		margin-bottom:	10px;
-	}
-	
-	.borderTop {
-		border-top:		1px solid gray;
-		margin-top:		20px;
-		padding-top:	20px;
-	}
+    #textHolder {
+        margin-bottom:	10px;
+    }
 
-	#mainPanel {
-		position:	relative;
-	}
+    .borderTop {
+        border-top:		1px solid gray;
+        margin-top:		20px;
+        padding-top:	20px;
+    }
 
-	#mainPanel #labelHolder {
-		margin-top:	10px;
-	}
-	
-	#dragDropHolderLabelling #labelHolder {
-		clear: both;
-		float:left;
-	}
+    #mainPanel {
+        position:	relative;
+    }
 
-	#labelHolder .label {
-		display:	inline-block;
-		cursor:		pointer;
-		padding:	5px;
-		margin:		10px;
-	}
+    #mainPanel #labelHolder {
+        margin-top:	10px;
+    }
 
-	#labelHolder .label.focus {
-		border:		2px solid yellow;
-	}
+    #dragDropHolderLabelling #labelHolder {
+        clear: both;
+        float: left;
+    }
 
-	#labelHolder .label.selected {
-		border:		2px solid green;
-	}
+    #labelHolder .label {
+        display:	inline-block;
+        cursor:		pointer;
+        padding:	5px;
+        margin:		10px;
+    }
 
-	#targetHolder {
-		position:	absolute;
-		margin:		10px;
-		top:		0;
-		left:		0;
-	}
+    #labelHolder .label.correct
 
-	#targetHolder .target {
-		position:	absolute;
-	}
+    #labelHolder .label.incorrect
 
-	#targetHolder .target.border {
-		border:	1px solid;
-	}
-	
-	#pageContents hr {
-		border: none;
-		background-color: #CCCCCC;
-		height: 1px;
-	}
+    #labelHolder .label.focus {
+        border:		2px solid yellow;
+    }
+
+    #labelHolder .label.selected {
+        border:		2px solid green;
+    }
+
+    #buttonHolder {
+        margin   : 10px;
+        float    : right;
+        position : absolute;
+        bottom   : 0;
+        right    : 0;
+    }
+
+    #targetHolder {
+        position:	absolute;
+        margin:		10px;
+        top:		0;
+        left:		0;
+    }
+
+    #targetHolder .target {
+        position:	absolute;
+    }
+
+    #targetHolder .target.border {
+        border:	1px solid;
+    }
+
+    #pageContents hr {
+        border: none;
+        background-color: #CCCCCC;
+        height: 1px;
+    }
 
 </style>
 
 <div id="pageContents">
-	
-	<div id="dragDropHolderLabelling">
-		<div id="mainPanel" class="panel">
-			<img id="image" />
-			<div id="targetHolder"></div>
-		</div>
-		<div id="labelHolder"></div>
-	</div>
-	
-	<div id="textHolder">
-		<div id="mainText" tabindex="1"></div>
-		<hr/>
-		<div id="infoHolder" tabindex="2"></div>
-	</div>
-	
+
+    <div id="dragDropHolderLabelling">
+        <div id="mainPanel" class="panel">
+            <img id="image" />
+            <div id="targetHolder"></div>
+        </div>
+        <div id="labelHolder"></div>
+        <div id="buttonHolder">
+            <button id="submitBtn"></button>
+        </div>
+
+    </div>
+
+    <div id="textHolder">
+        <div id="mainText" tabindex="1"></div>
+        <hr/>
+        <div id="infoHolder" tabindex="2"></div>
+    </div>
+
 </div>

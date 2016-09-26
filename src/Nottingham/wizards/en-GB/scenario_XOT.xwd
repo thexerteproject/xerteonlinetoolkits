@@ -40,15 +40,12 @@
     <notFoundMessage label="Not Found Message" type="TextInput" wysiwyg="true" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" wysiwyg="true" language="true"/>
 
-    <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="none" optional="true" />
     <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1"  optional="true"/>
     <url label="FLV, SWF or Image File" type="media" optional="true" />
     <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
     <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" />
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
-    <playNarration label="Auto-play narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media"  optional="true"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
 	<newNodes>

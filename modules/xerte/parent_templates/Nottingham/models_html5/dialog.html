@@ -21,6 +21,8 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dialog = new function() {
+		var casesensitive;	
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			// reset questions
@@ -51,7 +53,7 @@
 		}
 
 		this.init = function() {
-
+			casesensitive = x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1" ? false : true;
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
 			if (answerDelimeter == undefined) {
@@ -133,25 +135,40 @@
 							var qNo = $pageContents.data("currentQ"),
 								$thisInput = $("#pageContents .question:eq(" + qNo + ") input"),
 								isCorrect = false,
-								correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer").toLowerCase()).text();
-							
+								correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
+
 							if (correctAnswer.indexOf(answerDelimeter) != -1) {
 								var splitAnswers = correctAnswer.split(answerDelimeter);
 								for (var i=0; i<splitAnswers.length; i++) {
-									if ($.trim($thisInput.val().toLowerCase()) == $.trim(splitAnswers[i])) {
-										isCorrect = true;
-										break;
+									if (casesensitive) {
+										if ($.trim($thisInput.val()) == $.trim(splitAnswers[i])) {
+											isCorrect = true;
+											break;
+										}
+									}
+									else {
+										if ($.trim($thisInput.val().toLowerCase()) == $.trim(splitAnswers[i]).toLowerCase()) {
+											isCorrect = true;
+											break;
+										}
 									}
 								}
 							} else {
-								if ($.trim($thisInput.val().toLowerCase()) == correctAnswer) {
-									isCorrect = true;
-								}
+									if (casesensitive) {
+										if ($.trim($thisInput.val()) == correctAnswer) {
+											isCorrect = true;
+										}
+									}
+									else {
+										if ($.trim($thisInput.val().toLowerCase()) == correctAnswer.toLowerCase()) {
+											isCorrect = true;
+										}
+									}
 							}
 
 							if (isCorrect == true) { // correct
 								$thisInput
-									.val($.trim($thisInput.val().toLowerCase()))
+									.val($.trim($thisInput.val()))
 									.prop("readonly", true);
 								
 								$thisInput.parent().find(".result").removeClass("hidden");

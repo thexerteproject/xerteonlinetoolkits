@@ -26,7 +26,8 @@
 			labelTxt3,
 			targetTxt1,
 			targetTxt2,
-			$feedback;
+			$feedback,
+			tracked = false;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -82,6 +83,12 @@
 			});
 		}
 		
+		this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0 && tracked != true) {
+				this.finishTracking();
+			}
+        }
+		
 		this.init = function() {
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
 			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
@@ -109,26 +116,55 @@
 				.click(function() { // mark labels and show feedback
 					$("#dragDropHolder .tick").remove();
 					var correct = 0;
-					$("#labelHolder .label").each(function() {
-						var $this = $(this);
-						if ($this.data("target").is($this.data("currentTarget"))) {
-							correct++;
-							$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-						}
-					});
 					
-					if (correct == $("#labelHolder .label").length) {
+					var empty = false;
+					$("#labelHolder .label").each(function() {
+						if($(this).data("currentTarget") == "")
+							empty = true;
+					});
+					if(!empty){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								correct++;
+							}
+						});
+					}
+					if (empty){
+						$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					}	
+					else if (correct == $("#labelHolder .label").length) {
 						$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						timeline.finishTracking();
 					} else {
 						if (correct == 0) {
-							$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							if(XTGetMode() == "normal")  
+								$feedback.html(x_currentPageXML.getAttribute("allWrongTracking") != undefined ? x_currentPageXML.getAttribute("allWrongTracking") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							else
+								$feedback.html(x_currentPageXML.getAttribute("allWrong") != undefined ? x_currentPageXML.getAttribute("allWrong") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						} else {
-							$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							if(XTGetMode() == "normal")
+								$feedback.html(x_currentPageXML.getAttribute("scoreTracking") != undefined ? x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							else	
+								$feedback.html(x_currentPageXML.getAttribute("score") != undefined ? x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 						}
+						timeline.finishTracking();
 					}
-					
+					if(!empty){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}else{
+								$this.html($this.html() + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+							}
+						});
+					}
 					$("#feedback").show();
 				});
+				
+			
 			
 			// create targets
 			var $targetHolder = $("#targetHolder"),
@@ -147,6 +183,7 @@
 						.attr("title", targetTxt1 + " " + this.getAttribute("text"))
 						.find("h3").html(this.getAttribute("name"));
 					labels.push({text:this.getAttribute("text"), correct:$thisTarget});
+					$thisTarget.data("id", i);
 				});
 			
 			var $pageContents = $("#pageContents");
@@ -211,7 +248,7 @@
 			// set tab index for targets - leaving space between them for a label to be put on it
 			var tabIndex = 1;
 			tabIndex += $pageContents.data("labels").length;
-			$targetHolder.find(".target").each(function() {
+			$targetHolder.find(".target").each(function(i) {
 				tabIndex++;
 				var $this = $(this);
 				$this.attr({
@@ -229,9 +266,87 @@
 				$targetHolder.find(".target").css("background-image", "url('" + x_templateLocation + "common_html5/arrow.png')");
 			}
 			
+			this.initTracking();
+			
 			this.sizeChanged();
 			x_pageLoaded();
 		}
+		
+		this.finishTracking = function()
+		{
+			var tracked = true;
+			var l_options = [],
+            l_correct = 0,
+            l_total = 0,
+            correct = false;
+
+            $("#labelHolder .label").each(function(i) {
+            	
+				var $this = $(this);
+				
+				var tData = $this.data("currentTarget");
+        		var l_placeholder;
+        		if(tData != "")
+       			{
+        			l_placeholder = tData.text().trim(); 
+       			}else{
+       				l_placeholder = "";
+       			}
+				
+				
+        		var l_draglabel	= $this.text().trim();
+        		
+        		l_options = [];
+        		option = {source:l_draglabel, target:l_placeholder};
+        		l_answer = l_draglabel + "-->" + l_placeholder;
+        		l_options.push(option);
+        		correct = false;
+				if ($this.data("target").is($this.data("currentTarget"))) {
+					l_correct++;
+					correct = true;
+				}
+				
+				XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text());
+				l_total++;
+			});
+            
+                  
+            
+            if (XTGetMode() == "normal")
+            {
+                $("#dragDropHolder .label").draggable("disable");
+             	$("#button").hide();
+            }
+			
+         	XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+		}
+		
+		this.initTracking = function(){
+			
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            
+            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            $(x_currentPageXML).children().each(
+            	function(i)
+            	{
+            		var placeholder = this.getAttribute("name").trim(); 
+            		var draglabel	= $(this.getAttribute("text")).text().trim();
+					options = [];
+                    correctOption = {source:draglabel, target:placeholder};
+                    correctOptions = [];
+                    correctOptions.push(correctOption);
+                    correctAnswer = draglabel + "-->" + placeholder;
+                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, "Correct");
+            	}
+            );
+           
+		}
+		
+		
 		
 		this.createLabels = function() {
 			// randomise order and create labels

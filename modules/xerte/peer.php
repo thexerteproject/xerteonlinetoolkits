@@ -50,14 +50,12 @@ function show_peer_template($row, $retouremail)
     $body_pos = strpos($peer_template, "<body");
     $end_body_pos = strpos($peer_template, ">", $body_pos);
     $peer_page = substr($peer_template, 0, $end_body_pos);
-    $peer_page .= " style=\"#ffffff; font-family:verdana,tahoma,arial; font-size:80%;\">\n";
+    $peer_page .= " style=\"#ffffff;\">\n";
     $peer_page .= "   <div style=\"width:900px; margin:0 auto;\">\n";
-    $peer_page .= "   <div><p style=\"margin 0px; padding:0px\">\n";
-    $peer_page .= "   <h1>" . XERTE_PEER_DESCRIPTION . "</h1>" . XERTE_PEER_GUIDANCE . "</p></div><div>\n";
+    $peer_page .= "   <div style=\"font-family:verdana,tahoma,arial; font-size:11pt\"><div><h1 style=\"margin-top:1em;\">" . XERTE_PEER_DESCRIPTION . "</h1><p>" . XERTE_PEER_GUIDANCE . "</p></div>\n";
 
     $peer_page .=  "<div><a name=\"feedbackform\"><p style=\"color:red;\"  id=\"feedback\"></p></a>\n";
-    $peer_page .= "<br><form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div>";
-    $peer_page .= "</div><div>";
+    $peer_page .= "<form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div></div>";
 
     $peer_page .= substr($peer_template, $end_body_pos + 1);
 
@@ -80,17 +78,16 @@ function show_peer_template($row, $retouremail)
 function show_peer_login_form($mesg="")
 {
     echo "<html>\n";
-    echo "<body style=\"#ffffff; font-family:verdana,tahoma,arial; font-size:80%;\">\n";
-    echo "   <div style=\"width:900px; margin:0 auto;\">\n";
-    echo "   <div><p style=\"margin 0px; padding:0px\">\n";
-    echo "   <b>" . XERTE_PEER_DESCRIPTION . "</b><br>" . XERTE_PEER_GUIDANCE . "</p></div><div>\n";
-    echo "<center><p><form method=\"post\" action=\"\">\n";
-    echo "<p>" . XERTE_PEER_PASSWORD . " <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /></p><p><button type=\"submit\">" . XERTE_PEER_LOGIN_BUTTON . "</button></p>\n";
+    echo "<body style=\"#ffffff;\">\n";
+    echo "   <div style=\"width:900px; margin:0 auto; font-family:verdana,tahoma,arial; font-size:11pt\">\n";
+    echo "   <b>" . XERTE_PEER_DESCRIPTION . "</b><br>" . XERTE_PEER_GUIDANCE . "\n";
+    echo "<p><form method=\"post\" action=\"\">\n";
+    echo "<p>" . XERTE_PEER_PASSWORD . " <input type=\"password\" size=\"20\" maxlength=\"36\" name=\"password\" /> <button type=\"submit\">" . XERTE_PEER_LOGIN_BUTTON . "</button></p>\n";
     if (strlen($mesg)>0)
     {
         echo "<p>" . $mesg . "</p>";
     }
-    echo "</center></div></body></html>";
+    echo "</div></body></html>";
 }
 
 ?>

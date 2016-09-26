@@ -35,6 +35,7 @@ var x_languageData  = [],
     x_volume        = 1,
     x_audioBarH     = 30,
     x_mediaText     = [],
+    x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
 	x_responsive = []; // list of any responsivetext.css files in use
 
@@ -89,6 +90,10 @@ $(document).keydown(function(e) {
 });
 
 $(document).ready(function() {
+	// Load the script.js dependency loader
+	// TODO - we should move this to play/preview and let it kickstart the loading of all files
+	$.getScript(x_templateLocation + "common_html5/js/script.js");
+
     $x_mainHolder = $("#x_mainHolder");
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
@@ -161,19 +166,36 @@ x_projectDataLoaded = function(xmlData) {
     }
 
     x_pages = xmlData.children();
-    x_pages.each(function () {
-        var linkID = $(this)[0].getAttribute("linkID"),
-            pageID = $(this)[0].getAttribute("pageID"),
-            page = {type: $(this)[0].nodeName, built: false};
-        if (linkID != undefined) {
-            page.linkID = linkID;
-        }
-        if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
-            page.pageID = pageID;
-        }
-        x_pageInfo.push(page);
-    });
+	var pageToHide = [];
+    x_pages.each(function (i) {
+		if ($(this)[0].getAttribute("hidePage") != "true") {
+			var linkID = $(this)[0].getAttribute("linkID"),
+				pageID = $(this)[0].getAttribute("pageID"),
+				page = {type: $(this)[0].nodeName, built: false};
+			if (linkID != undefined) {
+				page.linkID = linkID;
+			}
+			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
+				page.pageID = pageID;
+			}
 
+			//Get child linkIDs for deeplinking
+			page.childIDs = [];
+			$(this).children().each(function () {
+				page.childIDs.push($(this)[0].getAttribute("linkID"));
+			});
+
+			x_pageInfo.push(page);
+		}
+		else {
+			pageToHide.push(i);
+		}
+    });
+	
+	// removes hidden pages from array
+	for (i=0; i<pageToHide.length; i++) {
+		x_pages.splice(pageToHide[i]-i,1);
+	}
 
     if (x_pages.length < 2) {
         // don't show navigation options if there's only one page
@@ -219,6 +241,11 @@ x_projectDataLoaded = function(xmlData) {
             }
         }
     }
+	
+	if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
+		x_params.displayMode = "default";
+		x_fillWindow = false;
+	}
 
     // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
     if (urlParams.hide != undefined) {
@@ -370,6 +397,16 @@ function x_setUp() {
 		
 		$x_body.css("font-size", Number(x_params.textSize) - 2 + "pt");
 		
+		
+		// author support should only work in preview mode (not play)
+		if (x_params.authorSupport == "true") {
+			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
+				x_authorSupport = "false";
+			} else {
+				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
+				$x_headerBlock.prepend('<div class="alert"><p>' + msg + '</p></div>');
+			}
+		}
 		
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
@@ -673,9 +710,14 @@ function x_continueSetUp() {
 			});
 	}
 	
+	// get icon position
+	var icPosition = "x_floatLeft";
+	if (x_params.icPosition != undefined && x_params.icPosition != "") {
+		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+	}
 	if (x_params.ic != undefined && x_params.ic != "") {
 		var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="x_floatLeft" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
@@ -914,6 +956,12 @@ function x_continueSetUp() {
 	);
 
 	XTInitialise(); // initialise here, because of XTStartPage in next function
+	
+	// script optional property added after all interface set up & before any pages load
+	if (x_params.script != undefined && x_params.script != "") {
+		$x_head.append('<script>' +  x_params.script + '</script>');
+	}
+	
 	x_navigateToPage(true, x_startPage);
 }
 
@@ -949,30 +997,52 @@ function x_dialog(text){
 
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
-    var page;
-    page = XTStartPage();
+    var page = XTStartPage();
     if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
         x_changePage(page);
     }
-    else
-    {
+    else {
+    	// Handle page scope deeplinking
+    	if ((pageInfo.ID).indexOf('|') >= 0) {
+    		x_deepLink = (pageInfo.ID).split('|')[1].trim();
+    		if ($.isNumeric(x_deepLink)) x_deepLink = parseInt(x_deepLink - 1);
+
+    		pageInfo.ID = (pageInfo.ID).split('|')[0].trim();
+    	}
+    	else {
+    		x_deepLink = '';
+    	}
+
         if (pageInfo.type == "resume" && (parseInt(pageInfo.ID) > 0)  && (parseInt(pageInfo.ID) <= x_pages.length)) {
             x_changePage(parseInt(pageInfo.ID) - 1);
 
-        } else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
+        }
+        else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
             page = x_lookupPage(pageInfo.type, pageInfo.ID);
-            if (page != null) {
-                x_changePage(page);
-            } else if (force == true) {
-                x_changePage(0);
+            if ($.isArray(page)) {
+            	x_deepLink = page[1];
+            	x_changePage(page[0]);
             }
-
-        } else {
+            else if (page != null) {
+                x_changePage(page);
+            }
+            else {
+            	x_deepLink = "";
+            	if (force == true) {
+                	x_changePage(0);
+                }
+            }
+        }
+        else {
             page = parseInt(pageInfo.ID);
             if (page > 0 && page <= x_pages.length) {
                 x_changePage(page-1);
-            } else if (force == true) {
-                x_changePage(0);
+            }
+            else {
+            	x_deepLink = "";
+            	if (force == true) {
+                	x_changePage(0);
+                }
             }
         }
     }
@@ -982,18 +1052,31 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 // function returns page no. of page with matching linkID / pageID
 function x_lookupPage(pageType, pageID) {
     for (var i=0, len = x_pageInfo.length; i<len; i++) {
-        if (    (pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
-        (pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
+        if (
+			(pageType == "linkID" && x_pageInfo[i].linkID && x_pageInfo[i].linkID == pageID) ||
+			(pageType == "pageID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID)
         ) {
-            break;
+            return i
         }
     }
 
-    if (i != len) {
-        return i;
-    } else {
-        return null;
-    }
+	// added this to catch any broken links because the HTML editor always creates links of linkID type even when there was a pageID (pageID is now deprecated)
+	for (var i=0, len = x_pageInfo.length; i<len; i++) {
+		if (
+			pageType == "linkID" && x_pageInfo[i].pageID && x_pageInfo[i].pageID == pageID
+		) {
+			return i;
+		}
+	}
+	
+	// Lastly we now need to check first children of each page
+	for (var j,i=0, len = x_pageInfo.length; i<len; i++) {
+		if ((j = x_pageInfo[i].childIDs.indexOf(pageID)) > -1) {
+			return [i, j];
+		}
+	}
+
+	return null;
 }
 
 
@@ -1093,33 +1176,35 @@ function x_changePage(x_gotoPage) {
 
         x_setUpPage();
 
-        // calls function in current page model which does anything needed to reset the page (if it needs to be reset)
-        if (x_pageInfo[x_currentPage].type == "text") {
-            simpleText.pageChanged(); // errors if you just call text.pageChanged()
-        } else {
-            eval(x_pageInfo[x_currentPage].type).pageChanged();
-        }
+        // get short page type var
+        var pt = x_pageInfo[x_currentPage].type;
+        if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+        
+        // calls function in current page model (if it exists) which does anything needed to reset the page (if it needs to be reset)
+        if (typeof window[pt].pageChanged === "function") window[pt].pageChanged();
+
         // calls function in any customHTML that's been loaded into page
         if ($(".customHTMLHolder").length > 0) {
-            try { customHTML.pageChanged(); } catch(e) {};
+                if (typeof customHTML.pageChanged === "function") {
+                	customHTML.pageChanged();
+                }
         }
 
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-            if (x_pageInfo[x_currentPage].type == "text") {
-                simpleText.sizeChanged();
-            } else {
-                eval(x_pageInfo[x_currentPage].type).sizeChanged();
-            }
+			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
+
             // calls function in any customHTML that's been loaded into page
             if ($(".customHTMLHolder").length > 0) {
-                try { customHTML.sizeChanged(); } catch(e) {};
+                if (typeof customHTML.sizeChanged === "function") {
+                	customHTML.sizeChanged();
+                }
             }
         }
-
     // x_currentPage hasn't been viewed previously - load model file
-    } else {
+    }
+    else {
         $x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
         $("#x_page" + x_currentPage).css("visibility", "hidden");
 
@@ -1143,6 +1228,8 @@ function x_changePage(x_gotoPage) {
 
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+
+	x_doDeepLink();
 
     x_updateHash();
 }
@@ -1177,10 +1264,21 @@ function x_loadPage(response, status, xhr) {
         x_pageLoaded();
     }
 
-        // Queue reparsing of MathJax - fails if no network connection
-        try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
+    // Queue reparsing of MathJax - fails if no network connection
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
     x_setUpPage();
+}
+
+
+// function to do deeplink
+function x_doDeepLink() {
+	if (x_deepLink !== "") {
+		if (window[x_pageInfo[x_currentPage].type] && (typeof window[x_pageInfo[x_currentPage].type].deepLink === "function")) {
+			window[x_pageInfo[x_currentPage].type].deepLink(decodeURIComponent(x_deepLink));
+			x_deepLink = "";
+		}
+	}
 }
 
 
@@ -1242,6 +1340,9 @@ function x_setUpPage() {
         $x_mainHolder.css("visibility", "visible");
 		if (x_params.backgroundGrey == "true") {
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
+			if ($("#x_mainBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+				$(".grayscale:not(#x_mainBg):not([id])").attr("id", "x_mainBg");
+			}
 		}
         x_firstLoad = false;
     }
@@ -1251,6 +1352,16 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
+    
+    // Rip out the glossary if required
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+			$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
+		}
+	}
+	
+	// Do deeplinking here so model has appropriate data at hand
+	x_doDeepLink();
 
     // Resolve all text box added <img> and <a> src/href tags to proper urls
     $("#x_page" + x_currentPage).find("img,a").each(function() {
@@ -1260,6 +1371,16 @@ function x_pageLoaded() {
 
         $this.attr(attr_name, x_evalURL(val));
     });
+	
+	// script & style optional properties for each page added after page is otherwise set up
+	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
+		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
+			$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+		}
+		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
+			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
+		}
+	}
 
     $("#x_page" + x_currentPage)
         .hide()
@@ -1292,9 +1413,16 @@ function x_addCountdownTimer() {
         if (x_countdownTimer > 0) {
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
 
-        } else {
+         	// If page model wants timer tick to know then pass value
+        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerTick === "function") window[x_pageInfo[x_currentPage].type].onTimerTick(x_countdownTimer);	
+        }
+        else {
             window.clearInterval(x_timer);
             $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[1]);
+
+        	// If page model wants to know then pass event
+        	if (typeof window[x_pageInfo[x_currentPage].type].onTimerZero === "function") window[x_pageInfo[x_currentPage].type].onTimerZero();
+
         }
     };
 
@@ -1525,7 +1653,7 @@ function x_getLangInfo(node, attribute, fallBack) {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
@@ -1830,6 +1958,15 @@ function x_selectText(element) {
 // function deals with hex values that might be abbreviated ones from the flash editor
 function x_getColour(colour) {
 	return colour.substring(0, 2) == '0x' ? '#' + Array(9-colour.length).join('0') + colour.substring(2) : colour;
+}
+
+
+// function returns black or white depending on which contrasts best with a given colour (e.g. for text over background colour)
+function x_blackOrWhite(colour) {
+	var rgbval = parseInt(colour.substr(1), 16),
+		brightness = ((rgbval >> 16) * 0.299) + (((rgbval & 65280) >> 8) * 0.587) + ((rgbval & 255) * 0.114);
+	
+	return (brightness > 160) ? "#000000" : "#FFFFFF"; // checks whether black or white text is best on bg colour
 }
 
 

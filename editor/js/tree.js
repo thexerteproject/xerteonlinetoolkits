@@ -460,8 +460,9 @@ var EDITOR = (function ($, parent) {
             return;
         }
 
-        // Get sibling node
-        var prev = tree.get_prev_dom(id);
+        // Get node to select after deleting
+        var nodeToSelect = (tree.get_next_dom(id).length > 0) ? tree.get_next_dom(id, true) : tree.get_prev_dom(id, true);
+        if (nodeToSelect == false) nodeToSelect = tree.get_prev_dom(id);
 
         // Delete from the tree
         tree.delete_node(id);
@@ -469,11 +470,8 @@ var EDITOR = (function ($, parent) {
         // Delete
         delete lo_data[id];
 
-        //console.log(lo_data[id]);
-        //tree.last_error();
-
         tree.deselect_all();
-        tree.select_node(prev);
+        tree.select_node(nodeToSelect);
 
         return true; // Successful
     },
@@ -867,6 +865,17 @@ var EDITOR = (function ($, parent) {
         toolbox.convertTextInputs();
         toolbox.convertColorPickers();
         toolbox.convertDataGrids();
+		
+		// make buttons appear disabled when the node can't be duplicated / deleted
+		$("#copy_button, #delete_button").removeClass("disabled");
+		
+		if (menu_options.duplicate == "false") {
+			$("#copy_button").addClass("disabled");
+		}
+		
+		if (menu_options.remove == "false") {
+			$("#delete_button").addClass("disabled");
+		}
 
         // And finally, scroll to the top
         setTimeout(function(){

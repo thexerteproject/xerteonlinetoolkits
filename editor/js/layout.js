@@ -45,8 +45,8 @@ var EDITOR = (function ($, parent) {
 
         var xerte_layout,
             xerte_editor_layout_settings = {
-                name: "xerte_editor_layout"
-            ,   panes: {
+                name: "xerte_editor_layout",
+				panes: {
                     size:                   "auto",
                     minSize:                50,
                     paneClass:              "pane",
@@ -116,7 +116,7 @@ var EDITOR = (function ($, parent) {
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
                     slideTrigger_open:      "click",
-                    initClosed:             true
+                    initClosed:             screen.width >= 1024 ? false : true
                     /*
                     fxName:                 "drop",
                     fxSpeed:                "normal",

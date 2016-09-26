@@ -26,7 +26,7 @@
 			targetTxt1,
 			targetTxt2,
 			numAttempts;
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			numAttempts = 0;
@@ -98,9 +98,14 @@
 			});
 		}
 		
+		this.leavePage = function() {
+			if ($(x_currentPageXML).children().length > 0 && this.tracked != true) {
+				this.finishTracking();
+			}
+        }
+		
 		this.init = function() {
 			$("#pageContents").data("audioW", 0);
-			
 			numAttempts = 0;
 			
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
@@ -135,7 +140,7 @@
 				.click(function() { // mark labels and show feedback
 					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
 						allCorrect = true;
-					numAttempts++;
+					
 					
 					$("#dragDropHolder .tick, #targetHolder .hint").remove();
 					$("#labelHolder .audioHolder").hide();
@@ -147,51 +152,112 @@
 							labelOffTarget = true;
 						}
 					});
+					if(!labelOffTarget)
+					{
+						numAttempts++;
+					}
+					if(XTGetMode() != "normal"){
+						$("#labelHolder .label").each(function() {
+							var $this = $(this);
+							if ($this.data("target").is($this.data("currentTarget"))) {
+								// correct - show tick
+								$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+								$this.find(".audioHolder").show();
+								
+							} else{							
+								// incorrect - remove label and show hint
+								if ($this.data("currentTarget") != "") {
+									var $prevTarget = $this.data("currentTarget");
+									
+									if (labelOffTarget == true) {
+										$this.hide();
+									} else {
+										labelOffTarget = true;
+									}
+									
+									$this
+										.css({
+											"top"	:"auto",
+											"left"	:"auto"
+											})
+										.data("currentTarget", "")
+										.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
+										.find(".audioHolder").hide();
+									
+									$prevTarget.data("currentLabel", "");
+									
+									if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
+										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
+									} else {
+										$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
+									}
+								}
+								allCorrect = false;
+							}
+						});
+						
+					}
+					else{
+						if (!labelOffTarget){
+							$("#labelHolder .label").each(function() {
+								var $this = $(this);
+								if ($this.data("target").is($this.data("currentTarget"))) {
+									// correct - show tick
+									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
+									$this.find(".audioHolder").show();								
+								} else{	
+									$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross") + '"></img>');	
+								}
+							});
+							textMatch.finishTracking();
+						}
+						else{					
+							$feedback.html(x_currentPageXML.getAttribute("incomplete") != undefined ? x_currentPageXML.getAttribute("incomplete") : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));	
+						}
+						$("#feedback").show();
+					}
+					
+					var correct = 0;
 					
 					$("#labelHolder .label").each(function() {
 						var $this = $(this);
 						if ($this.data("target").is($this.data("currentTarget"))) {
-							// correct - show tick
-							$this.find(".labelTxt").append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '"></img>');
-							$this.find(".audioHolder").show();
-							
-						} else {
-							// incorrect - remove label and show hint
-							if ($this.data("currentTarget") != "") {
-								var $prevTarget = $this.data("currentTarget");
-								
-								if (labelOffTarget == true) {
-									$this.hide();
-								} else {
-									labelOffTarget = true;
-								}
-								
-								$this
-									.css({
-										"top"	:"auto",
-										"left"	:"auto"
-										})
-									.data("currentTarget", "")
-									.attr("tabindex", Number($this.attr("id").replace("label","")) + 2)
-									.find(".audioHolder").hide();
-								
-								$prevTarget.data("currentLabel", "");
-								
-								if (numAttempts < maxAttempts && $prevTarget.data("hint") != "" && $prevTarget.data("hint") != undefined) {
-									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("hint")) + '</div>');
-								} else {
-									$prevTarget.prepend('<div class="hint">' + x_addLineBreaks($prevTarget.data("correct")) + '</div>');
-								}
-							}
-							allCorrect = false;
+							correct++;
+						} 
+					});			
+					
+					allCorrect = correct == $("#labelHolder .label").length;
+					
+					if(!labelOffTarget || XTGetMode() != "normal"){
+						
+						var wrongFeedback, scoreFeedback;
+						
+						if(XTGetMode() != "normal"){
+							wrongFeedback = x_currentPageXML.getAttribute("allWrong");
+							scoreFeedback = x_currentPageXML.getAttribute("score");
 						}
-					});
-					if (allCorrect == false && numAttempts >= maxAttempts) {
-						$("#feedback").show();
-					} else if (allCorrect == true) {
-						$(this).hide();
+						else{
+							wrongFeedback = x_currentPageXML.getAttribute("allWrongTracking");
+							scoreFeedback =	x_currentPageXML.getAttribute("scoreTracking");	
+							$(this).hide();
+						}
+							
+						
+						if (allCorrect == false && numAttempts >= maxAttempts) {
+							
+						} else if (allCorrect == true) {
+							$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							$(this).hide();
+						} else if (correct == 0){
+							$feedback.html(wrongFeedback != undefined ? wrongFeedback : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						} else {
+							$feedback.html(scoreFeedback != undefined ? scoreFeedback.replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) : x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						}
+						$("#feedback").show();						
 					}
+					
 				});
+				
 			
 			// create targets
 			var $targetHolder = $("#targetHolder"),
@@ -212,7 +278,8 @@
 						.data({
 							"hint"	:this.getAttribute("hint"),
 							"name"	:this.getAttribute("name"),
-							"correct":this.getAttribute("p2")
+							"correct":this.getAttribute("p2"),
+							"id"	:i
 							})
 						.find("h3").html(x_addLineBreaks(this.getAttribute("p1")));
 						
@@ -277,11 +344,92 @@
 			
 			this.createLabels();
 			this.sizeChanged();
+			this.initTracking();
 			x_pageLoaded();
+			
 		}
+		
+		
+		this.finishTracking = function()
+		{
+			var l_options = [],
+            l_correct = 0,
+            l_total = 0;
+			this.tracked = true;
+
+            $("#labelHolder .label").each(function(i) {
+            	l_options = []
+            	correct = false;
+				var $this = $(this);
+				l_total++;
+				var l_option={};
+				var l_placeholder, l_draglabel
+		
+				if($this.data("currentTarget") != "" && $this.data("currentTarget").text() != undefined)
+				{
+					l_placeholder = $this.data("currentTarget").text().trim();
+					
+				}else{
+					l_placeholder = "";
+				}
+        		var l_draglabel	= $this.find("div").text().trim(); 
+        		l_option.source = l_draglabel;
+        		l_option.target = l_placeholder;
+				l_answer = l_draglabel + "-->" + l_placeholder;
+				if ($this.data("target").is($this.data("currentTarget"))) {
+					l_correct++;
+					correct = true;
+				}
+        		l_options.push(l_option);
+        		XTExitInteraction(x_currentPage, $this.data("target").data("id"), correct, l_options, l_answer, $("#feedback").text());
+			});
+            
+            if(XTGetMode() == "normal"){
+	            $("#dragDropHolder .label")
+				.draggable("disable");
+            }
+            XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
+			
+		}
+
+		
+		this.initTracking = function(){
+			
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+            
+            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
+            correctOptions 		= [];
+            correctAnswer 		= [];
+            correctFeedback 	= [];
+           
+            $(x_currentPageXML).children().each(
+            	function(i)
+            	{
+            		
+            		correctOptions = []
+            		var correctOption={};
+            		var placeholder = $(this.getAttribute("p1")).text(); 
+            		var draglabel	= $(this.getAttribute("p2")).text();
+            		correctOption.source = draglabel;
+                    correctOption.target = placeholder;
+					correctAnswer = draglabel + "-->" + placeholder;
+					correctFeedback = "Correct"
+                    correctOptions.push(correctOption);
+                    XTEnterInteraction(x_currentPage, i, 'match', placeholder, correctOptions, correctAnswer, correctFeedback);
+            	}
+            );
+            
+		}
+		
 		
 		this.createLabels = function() {
 			// randomise order and create labels
+			
+			
 			var $pageContents = $("#pageContents"),
 				labels = [],
 				tempLabels = $pageContents.data("labels").slice(0),
@@ -294,6 +442,7 @@
 			}
 			for (i=0; i<labels.length; i++) {
 				$("#labelHolder").append('<div class="label panel" id="label' + i + '" tabindex="' + (i+2) + '" title="' + labelTxt1 + '"><div class="labelTxt">' + x_addLineBreaks(labels[i].text) + '</div></div>');
+				
 				var $thisLabel = $("#label" + i);
 				$thisLabel.data("target", labels[i].correct);
 				
@@ -450,99 +599,98 @@
 </script>
 
 <style type="text/css">
-	
-	#textHolder {
-		margin-bottom:	20px;
-	}
-	
-	#dragDropHolder {
-		overflow:		auto;
-		margin-bottom:	10px;
-	}
-	
-	#dragDropHolder .label {
-		cursor:		pointer;
-		padding:	5px;
-	}
-	
-	#dragDropHolder .label.focus {
-		border:		2px solid yellow;
-	}
-	
-	#dragDropHolder .label.selected {
-		border:		2px solid green;
-	}
-	
-	#dragDropHolder .labelTxt {
-		position:	relative;
-		float:		left;
-	}
-	
-	#dragDropHolder .audioHolder {
-		float:	left;
-	}
-	
-	#dragDropHolder .audioHolder .mejs-controls div:not(.mejs-playpause-button) {
-		display:	none;
-	}
-	
-	#dragDropHolder .tick {
-		position:	absolute;
-		top:		0.5em;
-		right:		0.5em;
-	}
-	
-	#labelHolder {
-		padding:		0px;
-		margin-bottom:	20px;
-		margin-right:	20px;
-		float:			right;
-	}
-	
-	#targetHolder {
-		clear:		right;
-	}
-	
-	#targetHolder .target {
-		padding:		1%;
-		margin-top:		10px;
-		margin-bottom:	10px;
-	}
-	
-	#targetHolder h3 {
-		width:	48%;
-	}
-	
-	#targetHolder .hint {
-		width:	50%;
-		float:	right;
-	}
-	
-	#button {
-		margin-bottom:	10px;
-		float:			right;
-	}
-	
+#textHolder {
+	margin-bottom: 20px;
+}
+
+#dragDropHolder {
+	overflow: auto;
+	margin-bottom: 10px;
+}
+
+#dragDropHolder .label {
+	cursor: pointer;
+	padding: 5px;
+}
+
+#dragDropHolder .label.focus {
+	border: 2px solid yellow;
+}
+
+#dragDropHolder .label.selected {
+	border: 2px solid green;
+}
+
+#dragDropHolder .labelTxt {
+	position: relative;
+	float: left;
+}
+
+#dragDropHolder .audioHolder {
+	float: left;
+}
+
+#dragDropHolder .audioHolder .mejs-controls div:not (.mejs-playpause-button
+	) {
+	display: none;
+}
+
+#dragDropHolder .tick {
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+}
+
+#labelHolder {
+	padding: 0px;
+	margin-bottom: 20px;
+	margin-right: 20px;
+	float: right;
+}
+
+#targetHolder {
+	clear: right;
+}
+
+#targetHolder .target {
+	padding: 1%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#targetHolder h3 {
+	width: 48%;
+}
+
+#targetHolder .hint {
+	width: 50%;
+	float: right;
+}
+
+#button {
+	margin-bottom: 10px;
+	float: right;
+}
 </style>
 
 <div id="pageContents">
-	
+
 	<div id="textHolder" tabindex="1"></div>
-	
+
 	<div id="dragDropHolder">
-		
+
 		<div id="labelHolder"></div>
-		
+
 		<div id="targetHolder">
 			<div class="target highlight">
 				<h3></h3>
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 	<button id="button"></button>
-	
+
 	<div id="feedback"></div>
-	
+
 </div>

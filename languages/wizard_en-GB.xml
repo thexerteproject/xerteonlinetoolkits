@@ -43,6 +43,7 @@
     <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview"/>
+	<hidePage tooltip="This page is hidden"/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>

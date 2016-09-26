@@ -114,8 +114,7 @@ if ($zipfile_tmpname === false)
     $zipfile_tmpname = tempnam('/tmp', 'xerteExport');
 }
 
-_debug("Temporary zip file is : ". $zipfile_tmpname);
-
+_debug("Temporary zip file is : $zipfile_tmpname");
 
 $options = array(
     'basedir' => $dir_path, 
@@ -387,6 +386,31 @@ if ($scorm == "true") {
         basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $export_offline, $offline_includes);
     }
 }
+
+
+/*
+ * Improve the naming of the exported zip file
+ */
+
+$export_engine = "";
+if ($export_flash && $export_html5)
+	$export_engine = "_flash_html5";
+elseif ($export_flash)
+	$export_engine = "_flashonly";
+	
+$export_type = "";
+if ($export_offline)
+	$export_type = "_offline";
+elseif ($fullArchive)
+	$export_type = "_archive";
+elseif ($scorm == "true")
+	$export_type = "_scorm_1_2";
+elseif ($scorm == "2004")
+	$export_type = "_scorm_2004";
+else
+	$export_type = "_deployment";
+
+$row['zipname'] .= $export_engine . $export_type;
 
 /*
  * Add the files to the zip file, create the archive, then send it to the user

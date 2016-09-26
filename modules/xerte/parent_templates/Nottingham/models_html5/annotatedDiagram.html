@@ -30,13 +30,23 @@
 			$pageContents,
 			padding;
 		
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-			
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			$('.listItem').each(function(i) {
+				if (
+					($.isNumeric(item) && i === parseInt(item))
+					|| (item.toLowerCase() === $(this).text().toLowerCase())
+				) {
+					$(this).click();
+					return false;
+				}
+			});
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			this.checkHeight();
+			
 			var $canvas = $("#canvas");
 			if ($canvas.length > 0 && $canvas[0].getContext) {
 				var context = $canvas[0].getContext("2d"),
@@ -231,6 +241,8 @@
 										annotatedDiagram.drawLine(context, $hs, $this, shape);
 									}
 								}
+								
+								annotatedDiagram.checkHeight();
 							}
 						})
 					
@@ -257,8 +269,22 @@
 			}
 			$hotspot.addClass("transparent");
 			
+			this.checkHeight();
+			
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
+		}
+		
+		this.checkHeight = function() {
+			if (x_browserInfo.mobile == true) {
+				var height = 0;
+				$("#pageContents *").each(function(){
+					if ($(this).height() > height ) {
+						height = $(this).outerHeight();
+					}
+				});
+				$("#pageContents").height(height);
+			}
 		}
 		
 		this.createHotspot = function(hsXML, $parent, $listItem, groupXML) {
