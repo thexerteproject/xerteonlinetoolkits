@@ -12,37 +12,10 @@ echo "<html>";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=Windows-1252\">";
 echo "<style>";
 ?>
-	h1 {
-		color: purple;
-	}
-	h2 {
-		color: blue;
-	}
-	h3 {
-		color: red;
-	}
-	h4 {
-		color: black;
-	}
-	p.item {
-		padding: 5px;
-	}
-	.page {
-		display:block;
-		padding:15px
-	}
-	.section {
-		display:block;
-		border: black 1px solid;
-		padding:15px
-	}
-	.item {
-		display:block;
-		padding:15px
-	}
+// Insert styles here
 <?PHP
 echo "</style>";
-echo "<body>";
+echo "<body style=\"font-family: Arial\">";
 
 echo "<h1>".$data['documentName']."</h1>";
 echo "<p>".$data['documentText']."</p>";
