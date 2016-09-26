@@ -139,7 +139,7 @@
 			$('#previous').on('click', documentation.previousPage);
 			$('#next').on('click', documentation.nextPage);
 			
-			$('#pagenumber').html(currentPage+1);
+			documentation.showPage(currentPage+1, noPages+2);
 
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -264,7 +264,7 @@ console.log(page, section, item, xml);
 				currentPage--;
 				$('#page' + currentPage).removeClass('hidepage');
 			}
-			$('#pagenumber').html(currentPage+1);
+			documentation.showPage(currentPage+1, noPages+2);
 		};
 
 		this.nextPage = function () {
@@ -273,11 +273,15 @@ console.log(page, section, item, xml);
 				currentPage++;
 				$('#page' + currentPage).removeClass('hidepage');
 			}
-			$('#pagenumber').html(currentPage+1);
+			documentation.showPage(currentPage+1, noPages+2);
 		};
 		
 		this.download = function () {
     		documentation.postData(docData);
+		};
+		
+		this.showPage = function (page, total)  {
+			$('#pagenumber').html('Page ' + page + " of " + total)
 		};
 		
 		this.postData = function (data) {
