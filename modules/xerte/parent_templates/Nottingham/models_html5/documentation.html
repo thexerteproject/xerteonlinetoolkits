@@ -227,7 +227,10 @@ console.log(page, section, item, xml);
 				case 'textbox':
 					$element = $('<input>')
 						.attr('type', 'text')
-						.attr('value', '');
+						.attr('value', ''); console.log(xml);
+					if (xml.getAttribute('width') && xml.getAttribute('width') != '')
+						$element.width(parseInt(xml.getAttribute('width')));
+
 					(function (p, s, i) {
 						$element.on('change', function () {
 							documentation.updateData(p, s, i, $(this).val());

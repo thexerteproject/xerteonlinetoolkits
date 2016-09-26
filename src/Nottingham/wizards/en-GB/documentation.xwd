@@ -73,7 +73,7 @@
     <text label="Textbox Text" type="TextArea" height="100"/>
     
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <width label="Width" type="NumericStepper" min="1" max="255" defaultValue="25" optional="true"/>
+    <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
   </textbox>
 
   <section menuItem="Section">
@@ -125,7 +125,7 @@
     <text label="Textbox Text" type="TextArea" height="100"/>
     
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <width label="Width" type="NumericStepper" min="1" max="255" defaultValue="25" optional="true"/>
+    <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
   </textbox>
 
 </wizard>
