@@ -4,7 +4,7 @@ var scorm=false,
 	lrsUsername = "",
 	lrsPassword = "",
 	lrsEndpoint = "",
-    userEMail;
+    userEMail = "";
 
 var trackingMode = "none",
 	mode = "none",
@@ -46,7 +46,7 @@ function XTInitialise()
                     id: "http://adlnet.gov/expapi/verbs/launched"
                 },
                 target: {
-                    id: " "
+                    id: "http://rusticisoftware.github.com/TinCanJS"
                     //TODO: get the name for this activity
                 }
             }
@@ -72,7 +72,7 @@ function XTLogin(login, passwd)
                     id: "http://adlnet.gov/expapi/verbs/logged-in"
                 },
                 target: {
-                    id: "."
+                    id: "http://rusticisoftware.github.com/TinCanJS"
                 }
             }
         );
@@ -160,7 +160,7 @@ function XTEnterPage(page_nr, page_name)
                     id: "http://adlnet.gov/expapi/verbs/initialized"
                 },
                 target: {
-                    id: "page " + page_nr + ": " + page_name + "."
+                    id: "http://rusticisoftware.github.com/TinCanJS"
                 }
             }
         );
@@ -179,7 +179,7 @@ function XTExitPage(page_nr)
                     id: "http://adlnet.gov/expapi/verbs/exited"
                 },
                 target: {
-                    id: "page " + page_nr + "."
+                    id: "http://rusticisoftware.github.com/TinCanJS"
                 }
             }
         );
@@ -204,8 +204,16 @@ function XTSetPageScore(page_nr, score)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: score + " on activity " + page_nr + "."
+                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+            },
+            result:{
+                "completion": true,
+	            "success": true,
+	            "score": {
+	              "scaled": score / 100
+	            }
             }
+            
         }
     );
 
@@ -228,7 +236,7 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
                 id: "http://adlnet.gov/expapi/verbs/answered"
             },
             target: {
-                id: learneranswer + " on question " + ia_nr + "."
+                id: "http://rusticisoftware.github.com/TinCanJS"
             }
         }
     );
