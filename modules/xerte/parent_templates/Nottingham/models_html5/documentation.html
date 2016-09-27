@@ -24,7 +24,9 @@
 			docData = {
 				'filename': 'documentation',
 				'pages':[]
-			};
+			}
+			noAnswerText = '',
+			required = [];
 		
 		this.init = function() {
 			var pageIndex = 0;
@@ -39,6 +41,9 @@
 					docData.filename = x_currentPageXML.getAttribute('filename').trim();
 				}
 			}
+			
+			// Store 'No answer' text
+			if (x_currentPageXML.getAttribute('noAnswer')) noAnswerText = x_currentPageXML.getAttribute('noAnswer');
 
 			// Process document details
 			docData.documentName = x_currentPageXML.getAttribute('name');
@@ -177,14 +182,14 @@
 
 			// Wire up navigation buttons or hide them
 			if ($('#pages').children().length > 1) {
-				$('#previous').on('click', documentation.previousPage);
+				$('#previous').on('click', documentation.previousPage).prop('disabled', true);
 				$('#next').on('click', documentation.nextPage);
 				documentation.showPage(currentPage+1);
 			}
 			else {
 				$('#navigation').hide();
 			}
-
+console.log(required);
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		};
@@ -195,7 +200,7 @@
 			docData.pages[page].sections[section].items[item].itemName = xml.getAttribute('name');
 			docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
 			docData.pages[page].sections[section].items[item].itemValue = "";
-console.log(page, section, item, xml);
+
 			if (
 				docData.pages[page].sections[section].items[item].itemName &&
 				docData.pages[page].sections[section].items[item].itemName.length > 0
@@ -206,11 +211,14 @@ console.log(page, section, item, xml);
 			}
 
 			// Required?
+			var requiredKey = '';
 			if (xml.getAttribute('required') && xml.getAttribute('required') == 'true') {
 				$("<span>")
 					.html("* Required")
 					.addClass("required")
 					.appendTo($item);
+				requiredKey = 'idP' + page + 'S' + section + 'I' + item;
+				required.push({'page' : page, 'section' : section, 'item': item, 'key': requiredKey});
 			}
 
 			if (
@@ -224,19 +232,6 @@ console.log(page, section, item, xml);
 
 			var $element;
 			switch (xml.nodeName) {
-				case 'textbox':
-					$element = $('<input>')
-						.attr('type', 'text')
-						.attr('value', ''); console.log(xml);
-					if (xml.getAttribute('width') && xml.getAttribute('width') != '')
-						$element.width(parseInt(xml.getAttribute('width')));
-
-					(function (p, s, i) {
-						$element.on('change', function () {
-							documentation.updateData(p, s, i, $(this).val());
-						})
-					})(page, section, item);
-					break;
 				case 'textarea':
 					var rows = 3, cols = 60;
 					if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
@@ -245,9 +240,13 @@ console.log(page, section, item, xml);
 					$element = $('<textarea>')
 						.attr('rows', rows)
 						.attr('cols', cols);
+
+					if (requiredKey.length > 0) $element.attr('id', requiredKey);
+
+					documentation.updateData(page, section, item, documentation.noAnswerText);
 					(function (p, s, i) {
 						$element.on('change', function () {
-							documentation.updateData(p, s, i, $(this).val());
+							documentation.updateData(p, s, i, $(this).val().length == 0 ? documentation.noAnswerText : $(this).val());
 						})
 					})(page, section, item);
 					break;
@@ -258,6 +257,9 @@ console.log(page, section, item, xml);
 
 					$element = $('<input>')
 						.attr('type', 'checkbox');
+
+					if (requiredKey.length > 0) $element.attr('id', requiredKey);
+
 					(function (p, s, i, d) {
 						$element.on('change', function () {
 							documentation.updateData(p, s, i, d[$(this).prop('checked')?0:1]);
@@ -289,9 +291,15 @@ console.log(page, section, item, xml);
 					$element = $('<input>')
 						.attr('type', 'text')
 						.attr('value', '');
+
+					if (requiredKey.length > 0) $element.attr('id', requiredKey);
+
+					if (xml.getAttribute('width') && xml.getAttribute('width') != '')
+						$element.width(parseInt(xml.getAttribute('width')));
+					documentation.updateData(page, section, item, documentation.noAnswerText);
 					(function (p, s, i) {
 						$element.on('change', function () {
-							documentation.updateData(p, s, i, $(this).val());
+							documentation.updateData(p, s, i, $(this).val().length == 0 ? documentation.noAnswerText : $(this).val());
 						})
 					})(page, section, item);
 					break;
@@ -306,29 +314,69 @@ console.log(page, section, item, xml);
 		};
 		
 		this.previousPage = function () {
-			if (currentPage > 0) {
-				$('#page' + currentPage).addClass('hidepage');
-				currentPage--;
-				$('#page' + currentPage).removeClass('hidepage');
-			}
-			documentation.showPage(currentPage+1);
+			//if (documentation.checkRequired(currentPage)) {
+				if (currentPage > 0) {
+					$('#page' + currentPage).addClass('hidepage');
+					currentPage--;
+					$('#page' + currentPage).removeClass('hidepage');
+					if (currentPage == 0) $('#previous').prop('disabled', true);
+				}
+				$('#next').prop('disabled', false);
+			
+				documentation.showPage(currentPage+1);
+			//}
 		};
 
 		this.nextPage = function () {
-			if (currentPage < $('#pages').children().length-1) {
-				$('#page' + currentPage).addClass('hidepage');
-				currentPage++;
-				$('#page' + currentPage).removeClass('hidepage');
+			if (documentation.checkRequired(currentPage)) {
+				if (currentPage < $('#pages').children().length-1) {
+					$('#page' + currentPage).addClass('hidepage');
+					currentPage++;
+					$('#page' + currentPage).removeClass('hidepage');
+					if (currentPage == $('#pages').children().length-1) $('#next').prop('disabled', true);
+				}
+				$('#previous').prop('disabled', false);
+			
+				documentation.showPage(currentPage+1);
 			}
-			documentation.showPage(currentPage+1);
+		};
+
+		this.checkRequired = function (page) { console.log(page);
+			var ok = true;
+
+			for(var i=0; i<required.length; i++) {
+				if (required[i].page == page) {console.log($('#'+required[i].key).attr('type'));
+					switch ($('#'+required[i].key).attr('type')) {
+						case 'checkbox':
+							if (! $('#'+required[i].key).prop('checked')) {
+								ok = false;
+							}
+							break;
+						case 'textarea':
+						case 'textbox':
+						default:
+							if ($('#'+required[i].key).val() == '') {
+								ok = false;
+							}
+							break;
+					}
+					if (! ok) break;
+				}
+			}
+			
+			if (! ok) { alert("Please fill in all required fields"); }
+
+			return ok;
 		};
 		
 		this.download = function () {
-    		documentation.postData(docData);
+			if (documentation.checkRequired(currentPage)) {
+    			documentation.postData(docData);
+    		}
 		};
 		
 		this.showPage = function (page) {
-			$('#pagenumber').html('Page ' + page + " of " + $('#pages').children().length)
+			$('#pagenumber').html(page + " / " + $('#pages').children().length);
 		};
 		
 		this.postData = function (data) {
@@ -365,13 +413,18 @@ console.log(page, section, item, xml);
 	.hidepage {
 		display:none;
 	}
+	#navigation {
+		float: right;
+		margin-bottom:10px;
+	}
 	
 </style>
 
 <div id="pageContents">
 	<div id="navigation">
-		<button id="previous">&lt;</button><span id="pagenumber" />
-		<button id="next">&gt;</button>
+		<a href="javascript:void(0);" id="previous" title="Previous"><i class="fa fa-chevron-circle-left fa-lg" aria-hidden="true"></i></a>
+		<span id="pagenumber" />
+		<a href="javascript:void(0);" id="next" title="Next"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></a></i>
 	</div>
 	<div id="pages"></div>
 </div>

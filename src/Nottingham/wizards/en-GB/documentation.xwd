@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first"
+      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first" noAnswer="No answer given"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -16,6 +16,8 @@
 	<instructions label="Download Instructions" type="TextArea" height="120" optional="true"/>
 	<separate label="Separate document info page" type="Checkbox" optional="true"/>
     <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
+    
+    <noAnswer label="No Answer Entered" type="TextInput" language="true"/>
 
     <newNodes>
       <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>

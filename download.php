@@ -35,10 +35,7 @@ foreach ($data['pages'] as $pagekey => $pagevalue) {
 				echo "<div class=\"item\">";
 				echo "<h3>".$itemvalue['itemName']."</h3>";
 				echo "<p>".$itemvalue['itemText']."</p>";
-				if (strlen($itemvalue['itemValue']) > 0)
-					echo "<p class=\"item\"><i>".$itemvalue['itemValue']."</i></p>";
-				else
-					echo "<p class=\"item\"><i>No answer given.</i></p>";
+				echo "<p class=\"item\"><i>".$itemvalue['itemValue']."</i></p>";
 				echo "</div>";
 			}
 			if (array_key_exists('sectionName', $sectionvalue)) {
