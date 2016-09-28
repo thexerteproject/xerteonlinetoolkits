@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first" noAnswer="No answer given"
+      <documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -17,7 +17,7 @@
 	<separate label="Separate document info page" type="Checkbox" optional="true"/>
     <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
     
-    <noAnswer label="No Answer Entered" type="TextInput" language="true"/>
+    <notAnswered label="Not answered default" type="TextInput" defaultValue="Not answered" optional="true"/>
 
     <newNodes>
       <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>
@@ -58,7 +58,8 @@
     <text label="Checkbox Text" type="TextArea" height="100"/>
 
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox"  options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+	<checked label="Checked" type="TextInput" defaultValue="Checked" optional="true"/>
+	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
   </checkbox>
 
   <textarea menuItem="Textarea" icon="icBullet">
@@ -67,6 +68,7 @@
 
     <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
     <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
   </textarea>
 
@@ -74,6 +76,7 @@
     <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
     <text label="Textbox Text" type="TextArea" height="100"/>
     
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
     <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
   </textbox>
@@ -110,7 +113,8 @@
     <text label="Checkbox Text" type="TextArea" height="100"/>
 
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox"  options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+	<checked label="Checked" type="TextInput" defaultValue="Checked" optional="true"/>
+	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
   </checkbox>
 
   <textarea menuItem="Textarea" icon="icBullet">
@@ -119,6 +123,7 @@
 
     <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
     <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
   </textarea>
 
@@ -126,6 +131,7 @@
     <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
     <text label="Textbox Text" type="TextArea" height="100"/>
     
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
     <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
   </textbox>

@@ -75,7 +75,7 @@
 	  restart="Restart"  
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first" noAnswer="No answer given"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Document Title" text="Enter document introductory text here" display="first"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flashcards><![CDATA[<flashcards name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" cardCount="Card {i} of {n}"/>]]></flashcards><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
@@ -653,7 +653,7 @@
 	<separate label="Separate document info page" type="Checkbox" optional="true"/>
     <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
     
-    <noAnswer label="No Answer Entered" type="TextInput" language="true"/>
+    <notAnswered label="Not answered default" type="TextInput" defaultValue="Not answered" optional="true"/>
 
     <newNodes>
       <page><![CDATA[<page name="Page Title" text="Enter text for the page here" />]]></page>
@@ -684,18 +684,21 @@
     <text label="Checkbox Text" type="TextArea" height="100"/>
 
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <display label="Display As" data="Checked|Unchecked,Yes|No,True|False,On|Off,Up|Down" type="ComboBox" options="Checked/Unchecked (default),Yes/No,True/False,On/Off,Up/Down" defaultValue="checked_unchecked" width="120" optional="true"/>
+	<checked label="Checked" type="TextInput" defaultValue="Checked" optional="true"/>
+	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
   </checkbox><textarea menuItem="Textarea" icon="icBullet">
     <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
     <text label="Textarea Text" type="TextArea" height="100"/>
 
     <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
     <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
   </textarea><textbox menuItem="Textbox" icon="icBullet">
     <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
     <text label="Textbox Text" type="TextArea" height="100"/>
     
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
     <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
   </textbox><section menuItem="Section">
