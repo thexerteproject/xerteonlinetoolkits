@@ -60,14 +60,34 @@ body{
             text-align: right;
         }
         
-.backtoworkspace{
+.backtoworkspace {
         	margin-left:150px;
         }
-        
+
+.tochangeowner{
+	margin-left:150px;
+}
+
+.tosharing{
+	margin-left:150px;
+}
+
+#change_owner {
+	margin-left:150px;
+}
+
+#teacher{
+	width: 200px;
+}
+
 input{
     padding: 4px;
 }
 
 select {
 	padding:4px;
+}
+
+.folder_list {
+	width: 800px;
 }

@@ -127,3 +127,19 @@ define("AUTOMATION_UNSHARE_TEACHER_MESG", "Remove access for teacher ");
 define("AUTOMATION_UNSHARE_MESG2", " - Unshare template\n");
 
 define("AUTOMATION_UNSHARE_FAILED_MESG", "Failed to remove access!\n");
+
+define("AUTOMATION_GET_SHAREDTEMPLATES_FAILED", "Failed to retrieve the shared templates.\n");
+
+define("AUTOMATION_GET_SHAREDTEMPLATEFOLDERS_FAILED", "Failed to retrive the shared folders.\n");
+
+define("AUTOMATION_CHANGEOWNERSHIP_NOTEACHER_FAILED", "The requested new owner is not a known teacher.");
+
+define("AUTOMATION_GET_SHAREDGROUPNAME_FAILED", "Could not retrieve folder name of shared folder: ");
+
+define("AUTOMATION_CHANGEOWNERSHIP_FAILED", "Failed to change owner!\n");
+
+define("AUTOMATION_CHANGEOWNERSHIP_CREATEFOLDER_FAILED", "Failed to create groupfolder in the new owner's workspace!\n");
+
+define ("AUTOMATION_CHANGEOWNERSHIP_TEMPLATE_SUCCEEDED", "Changed ownership of template {0} from user {1} to user {2}.\n");
+
+define ("AUTOMATION_CHANGEOWNERSHIP_SUCCEEDED", "Changing ownership of shared folder succeeded.\n");

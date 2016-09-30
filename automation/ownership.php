@@ -29,20 +29,20 @@ require_once(dirname(__FILE__) . "/../config.php");
 require_once(dirname(__FILE__) . "/automation.class.php");
 require_once(dirname(__FILE__) . "/../functions.php");
 
-_load_language_file("/automation/index.inc");
+_load_language_file("/automation/ownership.inc");
 
 $auto = new Automate();
 
-$courses = $auto->allowedCourses();
+$courses = $auto->allowedCourses(true);
 $templates = $auto->availableTemplates();
 
 ?><!DOCTYPE html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf" />
-    <title>Create group</title>
+    <title>Change ownership</title>
     <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="js/automation.js"></script>
+    <script src="js/ownership.js"></script>
     <link href="../website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet"/>
     <link href="automation.css" media="screen" type="text/css" rel="stylesheet"/>
 
@@ -61,19 +61,19 @@ $templates = $auto->availableTemplates();
 if (count($courses) > 0) {
     ?>
     <form action="">
-        <?php echo AUTOMATION_INTRO; ?>
+        <?php echo AUTOMATION_OWNERSHIP_INTRO; ?>
         <p>
         <div class="label">
             <label for="teacher"><?php echo AUTOMATION_LABEL_TEACHER ?></label>
         </div>
-        <input type="text" value="<?php echo $auto->getTeacherUserName() . " - " . $auto->getTeacherName(); ?>" ,
+        <input id="teacher" type="text" value="<?php echo $auto->getTeacherUserName() . " - " . $auto->getTeacherName(); ?>" ,
                readonly>
         </p>
         <p>
         <div id="courseDiv" class="label">
             <label for="group"><?php echo AUTOMATION_LABEL_COURSE; ?></label>
         </div>
-        <select name="course" id="course" onchange="updateGroupList();">
+        <select name="course" id="course" onchange="updateGroupList(true);">
             <?php
             foreach ($courses as $course) {
                 echo "<option value=\"" . $course['courseid'] . "\">" . $course['coursename'] . "</option>\n";
@@ -85,7 +85,7 @@ if (count($courses) > 0) {
         <div class="label">
             <label for="group"><?php echo AUTOMATION_LABEL_GROUP; ?></label></div>
         <div id="groupDiv">
-            <select name="group" id="group" onchange="clearResult();">
+            <select name="group" id="group" onchange="changeSelection(true);">
                 <?php
                 foreach ($groups as $group) {
                     echo "<option value=\"" . $group . "\">" . $group . "</option>\n";
@@ -99,7 +99,7 @@ if (count($courses) > 0) {
         <div class="label">
             <label for="template"><?php echo AUTOMATION_LABEL_TEMPLATE; ?></label>
         </div>
-        <select name="template" id="template" onchange="clearResult();">
+        <select name="template" id="template" onchange="changeSelection(true);">
             <?php
             foreach ($templates as $template) {
                 echo "<option value=\"" . $template['id'] . "\">" . $template['id'] . " - " . $template['name'] . "</option>\n";
@@ -109,22 +109,33 @@ if (count($courses) > 0) {
         </p>
 
         <p>
-        <div class="label"><label for="readonly"><?php echo AUTOMATION_LABEL_READONLY; ?></label></div>
-        <input name="readonly" type="checkbox" id="readonly"/></p>
-        <p>
-        <div class="label"><label for="unshare_teachers"><?php echo AUTOMATION_LABEL_UNSHARE_TEACHERS; ?></label></div>
-        <input name="unshare_teachers" type="checkbox" id="unshare_teachers"/></p>
-        <p>
-        <div class="practicelabel"><label for="practice"><?php echo AUTOMATION_LABEL_PRACTICE; ?></label></div>
-        <input name="practice" type="checkbox" id="practice" onchange="changePractice();"/>
-        <label for="attempt"><?php echo AUTOMATION_LABEL_ATTEMPT; ?></label><input name="attempt" id="attempt"
-                                                                                   type="text" value="1" disabled> </p>
-        <br>
-		<input name="Share" type="button" onClick="doShare();" value="<?php echo AUTOMATION_BUTTON_SHARE; ?>"
-               id="shareButton">
-        <input name="UnShare" type="button" onClick="doUnshare();" value="<?php echo AUTOMATION_BUTTON_UNSHARE; ?>"
-               id="unShareButton">
+        <div class="label">
+            <label for="shared_templatefolders"><?php echo AUTOMATION_LABEL_SHARED_TEMPLATES; ?></label>
+        </div>
+        <select class="folder_list" size="8" name="shared_templatefolders[]" id="shared_templatefolders">
+            <?php
+            //foreach ($shared_templates as $shared_template) {
+            //    echo "<option value=\"" . $shared_template['id'] . "\">" . $shared_template['teacher_name'] . ' - ' . $shared_template['id'] . " - " . $shared_template['name'] . "</option>\n";
+            //}
+            ?>
 
+        </select>
+        </p>
+
+        <p>
+        <div class="label">
+            <label for="new_owner"><?php echo AUTOMATION_LABEL_NEW_OWNER; ?></label>
+        </div>
+        <select name="new_owner" id="new_owner" >
+            <?php
+            //foreach ($teachers as $teacher) {
+            //    echo "<option value=\"" . $teacher['id'] . "\">" . $teacher['id'] . " - " . $teacher['name'] . "</option>\n";
+            //}
+            ?>
+        </select>
+        </p>
+        <p>
+        <input name="change_owner" type="button" onClick="doChangeOwner();" id="change_owner" value="<?php echo AUTOMATION_BUTTON_CHANGE_OWNER; ?>"></p>
 
     </form>
     <p>
@@ -142,18 +153,10 @@ else
 }
 ?>
 <br>
-<?php
-$course_leader = $auto->allowedCourses(true);
-if (count($course_leader) > 0)
-{
-    ?>
-    <form class="tochangeowner" action="ownership.php" method="POST">
-        <input name="Go to ownership" type="submit" value="<?php echo AUTOMATION_BUTTON_GOTO_OWNERSHIP;?>" id="ownership">
-    </form>
-    <br>
-    <?php
-}
-?>
+<form class="tosharing" action="index.php" method="POST">
+    <input name="Back to sharing" type="submit" value="<?php echo AUTOMATION_BUTTON_GOTO_SHARING;?>" id="sharing">
+</form>
+<br>
 <form class="backtoworkspace" action="../index.php" method="POST">
     <input name="Go to workspace" type="submit" value="<?php echo AUTOMATION_BUTTON_GOTO_WORKSPACE;?>" id="workspace">
 </form>

@@ -242,7 +242,7 @@ class Automate
         return $this->allowed;
     }
 
-    public function allowedCourses()
+    public function allowedCourses($courseleader=false)
     {
         global $automation_config;
 
@@ -251,9 +251,20 @@ class Automate
         {
             $result = array();
             foreach ($this->course_roles as $course) {
-                if (in_array($course['roleid'], $automation_config->groupMemberSharingRole) or in_array($course['roleid'], $automation_config->sharingRole)) {
-                    if ($course['nrgroups'] > 0) {
-                        $result[] = $course;
+                if ($courseleader)
+                {
+                    if (in_array($course['roleid'], $automation_config->sharingRole)) {
+                        if ($course['nrgroups'] > 0) {
+                            $result[] = $course;
+                        }
+                    }
+                }
+                else
+                {
+                    if (in_array($course['roleid'], $automation_config->groupMemberSharingRole) or in_array($course['roleid'], $automation_config->sharingRole)) {
+                        if ($course['nrgroups'] > 0) {
+                            $result[] = $course;
+                        }
                     }
                 }
             }
@@ -423,7 +434,7 @@ class Automate
      *
      * returns array($login_id, $root_folder_id)
      */
-    private function checkCreateLogin($username, $firstname, $surname)
+    public function checkCreateLogin($username, $firstname, $surname)
     {
         global $xerte_toolkits_site;
 
@@ -625,6 +636,21 @@ class Automate
         }
         return false;
     }
+
+    /*
+     * Special version of checkCreateOwnerFolder for change ownership
+     *
+     * returns folder_id
+     */
+
+    public function checkCreateOwnerFolderForChangeOwner($login_id, $user_name, $parent_folder_id, $foldername, $org_template)
+    {
+        $this->setOriginalTemplateId($org_template);
+        $this->group_name = $foldername;
+        return $this->checkCreateOwnerFolder($login_id, $user_name, $parent_folder_id, $foldername);
+    }
+
+
 
     /*
      * Look if a folder for user exists, and if not create it.
@@ -1196,7 +1222,7 @@ class Automate
         if ($rows !== false) {
 
             $sql = "insert into {$prefix}auto_sharing_log set date_created=?, action=?, template_id=?, group_id=?, group_name=?, user_id=?, user_name=?, readonly=?, unshare_teacher=?, practice=?, attempt=?, logmessage=?";
-            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly, $unshare_teacher, $practice, $attempt, $logmesg);
+            $params = array(date('Y-m-d H:i:s'), $action, $templateId, $group, $rows[0]['name'], $this->teacher_id, $this->teacher_username, $readonly=="true", $unshare_teacher=="true", $practice=="true", $attempt, $logmesg);
             $row = db_query($sql, $params);
 
             if ($row !== false)
@@ -1379,6 +1405,240 @@ class Automate
         }
     }
 
+    private function getSharedTemplates($group)
+    {
+        global  $xerte_toolkits_site;
+
+        $template_id = $this->org_template_id;
+
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $sql="select * from {$prefix}auto_template_group_folders where group_name=? and template_id=?";
+        $params = array($group, $template_id);
+        $rows = db_query($sql, $params);
+        $shared_templates=array();
+
+        if ($rows !== false)
+        {
+            // Only expect 1 folder, but loop anyway
+            foreach($rows as $row)
+            {
+                $sql="select * from {$prefix}auto_copied_templates at, {$prefix}templatedetails td, {$prefix}logindetails ld where at.copied_template_id=td.template_id and at.owner_id=ld.login_id and at.org_template_id=? and at.owner_folder_id=?";
+                $params = array($template_id, $row['folder_id']);
+                $templates = db_query($sql, $params);
+                if ($templates !== false && $templates != null) {
+                    foreach($templates as $template)
+                    {
+                        $template['template_name'] = str_replace('_', ' ', $template['template_name']);
+                        $shared_templates[] = $template;
+                    }
+                }
+            }
+            $this->status = true;
+            return $shared_templates;
+        }
+        else
+        {
+            $this->mesg .= AUTOMATION_GET_SHAREDTEMPLATES_FAILED . $group;
+            $this->status = false;
+            return array();
+        }
+    }
+
+    public function getSharedGroupName($folder_id)
+    {
+        global  $xerte_toolkits_site;
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $sql="select * from {$prefix}auto_template_group_folders at where at.id=?";
+        $params = array($folder_id);
+
+        $rec = db_query_one($sql, $params);
+        if ($rec == null)
+        {
+            $this->mesg .= AUTOMATION_GET_SHAREDGROUPNAME_FAILED . $folder_id;
+            $this->status = false;
+            return "";
+        }
+        return $rec['group_name'];
+    }
+
+    public function getSharedTemplatesFolders($group)
+    {
+        global  $xerte_toolkits_site;
+
+        $template_id = $this->org_template_id;
+        $practice_goups = AUTOMATION_PRACTICE_PREFIX . AUTOMATION_ATTEMPT_PREFIX . "% - " . $group;
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+        $sql="select * from {$prefix}auto_template_group_folders at, {$prefix}logindetails ld where (at.group_name=? or at.group_name like ?)and at.template_id=? and at.user_id=ld.login_id";
+        $params = array($group, $practice_goups, $template_id);
+        $rows = db_query($sql, $params);
+
+        if ($rows !== false)
+        {
+            $this->status = true;
+            return $rows;
+        }
+        else
+        {
+            $this->mesg .= AUTOMATION_GET_SHAREDTEMPLATEFOLDERS_FAILED . $group;
+            $this->status = false;
+            return array();
+        }
+    }
+
+    public function changeOwnerOfGroup($folder_id, $newowner_username, $course, $group)
+    {
+        global $xerte_toolkits_site;
+
+        $prefix = $xerte_toolkits_site->database_table_prefix;
+
+        // Get all the people in a group
+        $persons = $this->getGroupMembersAndRoles($course, $group);
+        $role = 'editor';
+
+        // First get list of persons with teacherAccessRole and build a list of teachers that need read-only access
+        $teachers = array();
+        $found = false;
+        foreach ($persons as $person)
+        {
+            if ($this->isGroupTeacherAccessRole($person['roleid'])) {
+                if ($person['username'] == $newowner_username)
+                {
+                    $newowner = $person;
+                    $found = true;
+                }
+            }
+        }
+
+        if (!$found)
+        {
+            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_NOTEACHER_FAILED . $newowner_username;
+            $this->status = false;
+            return false;
+        }
+
+        // Get Xerte user login details of newowner
+        $new_xerte_owner = $this->checkCreateLogin($newowner['username'], $newowner['firstname'], $newowner['lastname']);
+
+        $group_name = $this->getSharedGroupName($folder_id);
+        if ($this->getStatus() === false)
+        {
+            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+            $this->status = false;
+            return false;
+        }
+
+        // Make sure there is a folder called $group_name in folder $new_xerte_owner['root_folder_id']
+        $new_folder_id = $this->checkCreateFolder($new_xerte_owner['login_id'], $new_xerte_owner['root_folder_id'], $group_name);
+        if ($this->getStatus() === false)
+        {
+            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_CREATEFOLDER_FAILED;
+            $this->status = false;
+            return false;
+        }
+
+        // Get all the templates to move
+        $templates = $this->getSharedTemplates($group_name);
+        if ($this->getStatus() === false)
+        {
+            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+            $this->status = false;
+            return false;
+        }
+
+        // Get org details of folder
+        $sql = "select * from {$prefix}auto_template_group_folders where id=?";
+        $params = array($folder_id);
+        $org = db_query_one($sql, $params);
+
+        if ($org !== null) {
+
+            // change ownership of the folder in auto_template_group_folders
+            $sql = "update {$prefix}auto_template_group_folders set user_id=?, user_name=?, folder_id=? where id=?";
+            $params = array($new_xerte_owner['login_id'], $newowner['username'], $new_folder_id, $folder_id);
+            $ok = db_query($sql, $params);
+
+            if ($ok !== false) {
+                foreach ($templates as $template) {
+                    // 1. Change owner
+                    $sql = "update {$prefix}templatedetails set creator_id= ? WHERE template_id = ?";
+                    $params = array($new_xerte_owner['login_id'], $template['template_id']);
+                    $ok = db_query($sql, $params);
+
+                    if ($ok !== false) {
+                        // 2. Change templaterights
+                        $sql = "update {$prefix}templaterights SET user_id = ?, folder = ? WHERE template_id = ? AND role = ?";
+                        $params = array($new_xerte_owner['login_id'], $new_folder_id, $template['template_id'], 'creator');
+                        $ok = db_query($sql, $params);
+
+                        if ($ok !== false) {
+                            // 3. Remove illegal templaterights
+                            $sql = "delete from {$prefix}templaterights where user_id = ? and folder = ? and template_id = ? AND role != 'creator'";
+                            $params = array($new_xerte_owner['login_id'], $new_folder_id, $template['template_id']);
+                            $ok = db_query($sql, $params);
+
+                            if ($ok !== false) {
+                                // 4. Rename template folder
+                                // Get template_type_name
+                                $sql = "select * from {$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd where td.template_id=? and td.template_type_id=otd.template_type_id";
+                                $params = array($template['template_id']);
+                                $rec = db_query_one($sql, $params);
+                                if ($rec !== null) {
+                                    $oldfoldername = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $template['template_id'] . "-" . $org['user_name'] . "-" . $rec['template_name'] . "/";
+                                    $newfoldername = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $template['template_id'] . "-" . $newowner['username'] . "-" . $rec['template_name'] . "/";
+                                    rename($oldfoldername, $newfoldername);
+                                    // 5. Update auto_copied_templates
+                                    $sql = "update {$prefix}auto_copied_templates set owner_id=?, owner_user_name=?, owner_folder_id=? where copied_template_id=?";
+                                    $params = array($new_xerte_owner['login_id'], $newowner['username'], $new_folder_id, $template['template_id']);
+                                    $ok = db_query($sql, $params);
+                                    if ($ok === false)
+                                    {
+                                        $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                                        $this->status = false;
+                                        return false;
+                                    }
+                                } else {
+                                    $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                                    $this->status = false;
+                                    return false;
+                                }
+                            } else {
+                                $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                                $this->status = false;
+                                return false;
+                            }
+                        } else {
+                            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                            $this->status = false;
+                            return false;
+                        }
+                    } else {
+                        $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                        $this->status = false;
+                        return false;
+                    }
+                    $mesg = AUTOMATION_CHANGEOWNERSHIP_TEMPLATE_SUCCEEDED;
+                    $mesg = str_replace('{0}', $template['template_id'] . " - " . $template['template_name'], $mesg);
+                    $mesg = str_replace('{1}', $org['user_name'], $mesg);
+                    $mesg = str_replace('{2}', $newowner['username'], $mesg);
+                    $this->mesg .= $mesg;
+                }
+                $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_SUCCEEDED;
+                $this->status = true;
+                return true;
+
+            } else {
+                $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+                $this->status = false;
+                return false;
+            }
+        }
+        else {
+            $this->mesg .= AUTOMATION_CHANGEOWNERSHIP_FAILED;
+            $this->status = false;
+            return false;
+        }
+    }
+
     public function getTeacherId()
     {
         if ($this->status) {
@@ -1422,6 +1682,11 @@ class Automate
     public function getMesg()
     {
         return $this->mesg;
+    }
+
+    public function addMesg($mesg)
+    {
+        $this->mesg .= $mesg . "\n";
     }
 
     public function getStatus()

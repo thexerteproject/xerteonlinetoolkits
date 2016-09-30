@@ -35,3 +35,5 @@ define("AUTOMATION_BUTTON_UNSHARE", "Unshare now");
 define("AUTOMATION_ACCESS_DENIED_OR_NO_COURSES", "<h2>Access denied</h2><p>You do not have permission to use this automation page.</p>");
 
 define("AUTOMATION_BUTTON_GOTO_WORKSPACE", "Go back to Xerte Workspace");
+
+define("AUTOMATION_BUTTON_GOTO_OWNERSHIP", "Change ownership");
