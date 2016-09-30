@@ -465,13 +465,19 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
     global $file_array, $zipfile;
 
     _debug("Zipping up: " . $fullArchive);
+
+    $data = file_get_contents($dir_path . "data.xml");
+    // Decode all filenames in data
+    $data2 = rawurldecode($data);
+    $data3 = html_entity_decode($data2);
+
     while ($file = array_pop($file_array)) {
-        if (strpos($file[0], "data.xwd") === false && strpos($file[0], "data.xml") === false && strpos($file[0], "preview.xml") === false) {
+        if (strpos($file[0], "data.xwd") === false) {
             /* Check if this is a media file */
             if (!$fullArchive) {
                 $skipfile = false;
                 // Skip extra copies
-                if (!$skipfile && strpos($file[0], ".json") !== false)
+                if (strpos($file[0], ".json" ) !== false || strpos($file[0], "data.xml") !== false || strpos($file[0], "preview.xml") !== false)
                 {
                     $skipfile = true;
                 }
@@ -482,11 +488,6 @@ function xerte_zip_files($fullArchive = false, $dir_path) {
 
                 /* only add file if used */
                 $string = str_replace($dir_path, "", $file[0]);
-
-                $data = file_get_contents($dir_path . "data.xml");
-                // Decode all filenames in data
-                $data2 = rawurldecode($data);
-                $data3 = html_entity_decode($data2);
 
                 if (strpos($data3, $string) !== false) {
                     $zipfile->add_files($string);
