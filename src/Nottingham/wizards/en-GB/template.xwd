@@ -652,7 +652,7 @@
 	<instructions label="Download Instructions" type="TextArea" height="120" optional="true"/>
 	<separate label="Separate document info page" type="Checkbox" optional="true"/>
     <filename label="Filename (without extension)" type="TextInput" defaultValue="Enter filename here" optional="true"/>
-    
+    <email label="Enable email facility" type="Checkbox" defaultValue="true" optional="true"/>
     <notAnswered label="Not answered default" type="TextInput" defaultValue="Not answered" optional="true"/>
 
     <newNodes>
@@ -662,6 +662,8 @@
   <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></documentation><page menuItem="Page" icon="icPageWhite">
     <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title"/>
 	<text label="Page Text" type="TextArea" height="120"/>
+	
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 		
     <newNodes>
       <section><![CDATA[<section name="Section Title" text="Enter text for the section here" />]]></section>
@@ -671,37 +673,9 @@
       <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
       <line><![CDATA[<line />]]></line>
+      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text for the list here"/>]]></selectlist>
     </newNodes>
-  </page><description menuItem="Description">
-    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Description Text" type="TextArea" height="100"/>
-  </description><line menuItem="Horizontal Rule"/><media menuItem="Media" icon="icPicture">
-    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Media Text" type="TextArea" height="100"/>
-    <url label="Media" type="media"/>
-  </media><checkbox menuItem="Checkbox" icon="icBullet">
-    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Checkbox Text" type="TextArea" height="100"/>
-
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-	<checked label="Checked" type="TextInput" defaultValue="Checked" optional="true"/>
-	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
-  </checkbox><textarea menuItem="Textarea" icon="icBullet">
-    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Textarea Text" type="TextArea" height="100"/>
-
-    <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
-    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
-    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-  </textarea><textbox menuItem="Textbox" icon="icBullet">
-    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
-    <text label="Textbox Text" type="TextArea" height="100"/>
-    
-    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
-  </textbox><section menuItem="Section">
+  </page><section menuItem="Section">
     <name label="Section Title" type="TextInput" mandatory="true" defaultValue="Section"/>
     <text label="Section Text" type="TextArea" height="100"/>
 
@@ -712,8 +686,60 @@
       <media><![CDATA[<media name="Media Title" text="Enter text for the media here" url="Browse for media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text for the description here"/>]]></description>
       <line><![CDATA[<line />]]></line>
+      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text for the list here"/>]]></selectlist>
     </newNodes>
-  </section><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
+  </section><selectlist menuItem="List">
+    <name label="Option Name" type="TextInput" mandatory="true" defaultValue="Option Name"/>
+    
+    <type label="List Type" data="radio,checkbox" type="ComboBox" options="Radio button list,Checkbox list" defaultValue="radio" width="120" optional="true"/>
+	<display label="Display" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" width="120" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+
+    <newNodes>
+      <selectitem><![CDATA[<selectitem name="Option Title"/>]]></selectitem>
+    </newNodes>
+  </selectlist><selectitem menuItem="Option">
+    <name label="Option Title" type="TextInput" mandatory="true"/>
+    <value label="Option Value" type="TextInput" defaultValue="Option Value" optional="true"/>
+  </selectitem><description menuItem="Description">
+    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Description Text" type="TextArea" height="100"/>
+    
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </description><line menuItem="Horizontal Rule">
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </line><media menuItem="Media" icon="icPicture">
+    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Media Text" type="TextArea" height="100"/>
+    <url label="Media" type="media"/>
+
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </media><checkbox menuItem="Checkbox" icon="icBullet">
+    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Checkbox Text" type="TextArea" height="100"/>
+
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+	<checked label="Checked" type="TextInput" defaultValue="Checked" optional="true"/>
+	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </checkbox><textarea menuItem="Textarea" icon="icBullet">
+    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textarea Text" type="TextArea" height="100"/>
+
+    <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
+    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </textarea><textbox menuItem="Textbox" icon="icBullet">
+    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <text label="Textbox Text" type="TextArea" height="100"/>
+    
+    <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+    <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+  </textbox><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
