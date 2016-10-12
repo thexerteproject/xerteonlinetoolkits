@@ -53,7 +53,7 @@
 			var $docHeader = null;
 			$docHeader = $('<div>');
 			$docHeader.append(
-					$('<h3>')
+					$('<div>')
 					.html(docData.documentName))
 				.append(
 					$('<div>')
@@ -95,7 +95,7 @@
 				docData.pages[page].pageName = pageXML.getAttribute('name');
 				docData.pages[page].pageText = pageXML.getAttribute('text');
 				if (docData.pages[page].pageName.length > 0) {
-					$('<h3>')
+					$('<div>')
 						.html(docData.pages[page].pageName)
 						.appendTo($page);
 				}
@@ -219,7 +219,7 @@
 					xml.getAttribute('name') &&
 					xml.getAttribute('name').length > 0
 				) {
-					$('<h4>')
+					$('<div>')
 						.html(xml.getAttribute('name'))
 						.appendTo($item);
 				}
@@ -300,7 +300,7 @@
 						}
 						break;
 					case 'description':
-						$element = $('<h4>')
+						$element = $('<div>')
 							.html(xml.getAttribute('name'));
 						$('<div>')
 							.html(xml.getAttribute('text'))
@@ -481,7 +481,7 @@
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
-			form.action = 'download.php';
+			form.action = 'download2.php';
 			$('<input type="hidden">') // IE compatibility
 				.attr({
 					name: 'data',

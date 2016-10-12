@@ -662,7 +662,7 @@
 	</newNodes>
 	
   <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></documentation><page menuItem="Page" icon="icPageWhite">
-    <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title"/>
+    <name label="Page Title" type="TextInput" mandatory="true" defaultValue="Enter Page Title" wysiwyg="true"/>
 	<text label="Page Text" type="TextArea" height="120"/>
 	
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
@@ -678,7 +678,7 @@
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text for the list here"/>]]></selectlist>
     </newNodes>
   </page><section menuItem="Section">
-    <name label="Section Title" type="TextInput" mandatory="true" defaultValue="Section"/>
+    <name label="Section Title" type="TextInput" mandatory="true" wysiwyg="true" defaultValue="Section"/>
     <text label="Section Text" type="TextArea" height="100"/>
 
     <newNodes>
@@ -691,7 +691,8 @@
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text for the list here"/>]]></selectlist>
     </newNodes>
   </section><selectlist menuItem="List">
-    <name label="Option Name" type="TextInput" mandatory="true" defaultValue="Option Name"/>
+    <name label="List Name" type="TextInput" mandatory="true" wysiwyg="true"/>
+    <text label="List Text" type="TextArea" height="100"/>
     
     <type label="List Type" data="radio,checkbox" type="ComboBox" options="Radio button list,Checkbox list" defaultValue="radio" width="120" optional="true"/>
 	<display label="Display" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" width="120" optional="true"/>
@@ -700,23 +701,23 @@
       <selectitem><![CDATA[<selectitem name="Option Title"/>]]></selectitem>
     </newNodes>
   </selectlist><selectitem menuItem="Option">
-    <name label="Option Title" type="TextInput" mandatory="true"/>
+    <name label="Option Title" type="TextInput" wysiwyg="true" mandatory="true"/>
     <value label="Option Value" type="TextInput" defaultValue="Option Value" optional="true"/>
   </selectitem><description menuItem="Description">
-    <name label="Description Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <name label="Description Title" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Item"/>
     <text label="Description Text" type="TextArea" height="100"/>
     
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </description><line menuItem="Horizontal Rule">
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </line><media menuItem="Media" icon="icPicture">
-    <name label="Media Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <name label="Media Title" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Item"/>
     <text label="Media Text" type="TextArea" height="100"/>
     <url label="Media" type="media"/>
 
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </media><checkbox menuItem="Checkbox" icon="icBullet">
-    <name label="Checkbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <name label="Checkbox Title" type="TextInput" mandatory="true" wysiwyg="true" defaultValue="Item"/>
     <text label="Checkbox Text" type="TextArea" height="100"/>
 
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
@@ -724,7 +725,7 @@
 	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" optional="true"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </checkbox><textarea menuItem="Textarea" icon="icBullet">
-    <name label="Textarea Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <name label="Textarea Title" type="TextInput" mandatory="true" wysiwyg="true" defaultValue="Item"/>
     <text label="Textarea Text" type="TextArea" height="100"/>
 
     <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
@@ -733,7 +734,7 @@
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </textarea><textbox menuItem="Textbox" icon="icBullet">
-    <name label="Textbox Title" type="TextInput" mandatory="true" defaultValue="Item"/>
+    <name label="Textbox Title" type="TextInput" mandatory="true" wysiwyg="true" defaultValue="Item"/>
     <text label="Textbox Text" type="TextArea" height="100"/>
     
     <notAnswered label="Not answered response" type="TextInput" defaultValue="Not answered" optional="true"/>
