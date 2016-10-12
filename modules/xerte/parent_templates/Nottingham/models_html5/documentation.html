@@ -369,10 +369,14 @@
 										}
 									}
 
-									$('<label>')
+									var $label = $('<label>')
 										.append($input)
-										.append($(xml).children()[i].getAttribute('name'))
-										.appendTo($element);
+										.append($(xml).children()[i].getAttribute('name'));
+									
+									if (xml.getAttribute('display') === 'vertical')
+										$label.addClass('vertical');
+									
+									$label.appendTo($element);
 								}
 								break;
 							default:
@@ -515,6 +519,10 @@
 	#navigation {
 		float: right;
 		margin-bottom:10px;
+	}
+	
+	label.vertical {
+		display: block;
 	}
 	
 </style>
