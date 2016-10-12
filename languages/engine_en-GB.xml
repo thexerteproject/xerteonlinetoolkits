@@ -167,5 +167,22 @@
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
   </screenReaderInfo>
+  
+  <authorVars label="View variable data">
+	<item>Name</item>
+	<item>Fixed Value</item>
+	<item>Random</item>
+	<item>Min</item>
+	<item>Max</item>
+	<item>Step</item>
+	<item>Exclude</item>
+	<item>Default</item>
+	<item>Value</item>
+  </authorVars>
+  
+  <authorVarsInfo>
+	  <error unable="Unable to calculate" invalid="Invalid value" none="No variable data"/>
+	  <info undef="References an undefined variable" minMax="min > max" valueMin="value &lt; min" valueMax="value > max" exclude="{n} is excluded" circular="Circular variable reference" none="All possible values are excluded or fall outside the min &amp; max range" none2="{n} attempts have not returned an accepted value" attempts="{n} attempts to calculate a valid value" default="Fallback to default value"/>
+  </authorVarsInfo>
 
 </language>
