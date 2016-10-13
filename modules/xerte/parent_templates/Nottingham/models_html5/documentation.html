@@ -51,9 +51,9 @@
 
 			// Create a header for every page
 			var $docHeader = null;
-			$docHeader = $('<div>');
+			$docHeader = $('<div class="intro">');
 			$docHeader.append(
-					$('<div>')
+					$('<h3>')
 					.html(docData.documentName))
 				.append(
 					$('<div>')
@@ -94,15 +94,20 @@
 
 				docData.pages[page].pageName = pageXML.getAttribute('name');
 				docData.pages[page].pageText = pageXML.getAttribute('text');
+				
+				var $intro = $('<div class="intro">').appendTo($page);
 				if (docData.pages[page].pageName.length > 0) {
-					$('<div>')
+					$('<h3>')
 						.html(docData.pages[page].pageName)
-						.appendTo($page);
+						.appendTo($intro);
 				}
 				if (docData.pages[page].pageText.length > 0) {
 					$('<div>')
 						.html(docData.pages[page].pageText)
-						.appendTo($page);
+						.appendTo($intro);
+				}
+				if ($intro.children().length == 0) {
+					$intro.remove();
 				}
 
 				// Create any sections
@@ -127,7 +132,7 @@
 									.appendTo($section);
 							}
 							if (docData.pages[page].sections[section].sectionText.length >0) {
-								$('<div>')
+								$('<div class="intro">')
 									.html(docData.pages[page].sections[section].sectionText)
 									.appendTo($section);
 							}
@@ -219,7 +224,7 @@
 					xml.getAttribute('name') &&
 					xml.getAttribute('name').length > 0
 				) {
-					$('<div>')
+					$('<h3>')
 						.html(xml.getAttribute('name'))
 						.appendTo($item);
 				}
@@ -300,11 +305,11 @@
 						}
 						break;
 					case 'description':
-						$element = $('<div>')
+						/*$element = $('<h3>')
 							.html(xml.getAttribute('name'));
 						$('<div>')
 							.html(xml.getAttribute('text'))
-							.appendTo($element);
+							.appendTo($element);*/
 						break;
 					case 'line':
 						$element = $('<hr />');
@@ -510,8 +515,17 @@
 	.section {
 
 	}
-	.item {
-
+	#pages .intro {
+		
+	}
+	.item, .intro {
+		margin: 2em 0;
+	}
+	.section .item:last-child {
+		margin-bottom: 0;
+	}
+	.section .item:first-of-type, .intro:first-of-type {
+		margin-top: 0;
 	}
 	.hidepage {
 		display:none;
