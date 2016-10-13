@@ -6,7 +6,7 @@
     <textSize label="Default Text Size" options="10,12,14,16,18,24,36" type="ComboBox" data="10,12,14,16,18,24,36" width="100"/>
 
     <kblanguage label="Keyboard Language" options="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" type="ComboBox" data="Chinese,English,French,German,Italian,Japanese,Polish,Portuguese,Russian,Spanish" defaultValue="English" width="120"/>
-    <displayMode label="Display Mode" options="default,full screen,fill window" type="ComboBox" data="default,full screen,fill window" defaultValue="" width="100"/>
+    <displayMode label="Display Mode" options="Default,Full screen,Fill window" type="ComboBox" data="default,full screen,fill window" defaultValue="" width="100"/>
     <navigation type="ComboBox" options="Linear,Historic" data="Linear,Historic" label="Navigation" width="170"/>
 
     <mediaImage optional="true" type="media" label="Media Image"/>

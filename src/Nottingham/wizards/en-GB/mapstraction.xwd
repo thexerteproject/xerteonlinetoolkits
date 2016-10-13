@@ -9,7 +9,7 @@
   <mapstraction icon="icMap2" menu="Misc" menuItem="Mapstraction Map" remove="true" thumb="thumbs/googleMap.jpg" hint="Use maps with the mapstraction API." deprecated="This page is no longer supported">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <provider type="ComboBox" label="Map Type" options="google,yahoo,openlayers,microsoft" width="100"/>
+    <provider type="ComboBox" label="Map Type" options="Google,Yahoo,Openlayers,Microsoft" width="100"/>
     <lat type="TextInput" label="Latitude"/>
     <lng type="TextInput" label="Longitude"/>
     <zoom type="TextInput" label="Zoom"/>

@@ -12,7 +12,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>
     <term label="Search Term" type="textInput"/>
-    <search label="Search in" options="recent,popular,user" type="ComboBox" data="recent,popular,user" defaultValue="recent" width="100"/>
+    <search label="Search in" options="Recent,Popular,User" type="ComboBox" data="recent,popular,user" defaultValue="recent" width="100"/>
     <results label="Number of Results" type="NumericStepper" min="5" max="100" step="1" defaultValue="20"/>
 	
 	<headerTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true" />
