@@ -333,9 +333,8 @@
             $(x_currentPageXML).children().each(
             	function(i)
             	{
-            		var placeholder = this.getAttribute("name").trim(); 
-            		var draglabel	= $(this.getAttribute("text")).text().trim();
-					options = [];
+					var placeholder = $("<div/>").html(this.getAttribute("name")).text().trim();
+					var draglabel	= $("<div/>").html(this.getAttribute("text")).text().trim();					options = [];
                     correctOption = {source:draglabel, target:placeholder};
                     correctOptions = [];
                     correctOptions.push(correctOption);
