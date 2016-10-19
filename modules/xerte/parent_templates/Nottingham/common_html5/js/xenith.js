@@ -461,7 +461,7 @@ function x_setUp() {
 				for (i=0; i<toCalc.length; i++) {
 					thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
 					if (thisVar.ok == true) {
-						thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here incase we want to do something with this data at some point
+						thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here in case we want to do something with this data at some point
 						x_variables.push(thisVar);
 						toCalc.splice(i,1);
 						i--;
@@ -2031,9 +2031,10 @@ function x_showVariables() {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
-
+	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
+	
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
             x_insertText(pageXML.attributes[i], exclude);
