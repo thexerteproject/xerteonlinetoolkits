@@ -1293,7 +1293,12 @@ function x_changePage(x_gotoPage) {
         $("#x_page" + x_currentPage).css("visibility", "hidden");
 
         if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
-            x_findText(x_currentPageXML); // check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
+			} else {
+				x_findText(x_currentPageXML);
+			}
         }
 
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
@@ -1436,13 +1441,6 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
-    
-    // Rip out the glossary if required
-	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
-		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-			$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
-		}
-	}
 	
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
@@ -2032,29 +2030,29 @@ function x_showVariables() {
 
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
-function x_findText(pageXML) {
+function x_findText(pageXML, exclude) {
     var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
         i, j, len;
 
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
-            x_insertText(pageXML.attributes[i]);
+            x_insertText(pageXML.attributes[i], exclude);
         }
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
         if (pageXML.childNodes[i].nodeValue == null) {
-            x_findText(pageXML.childNodes[i]); // it's a child node of node - check through this too
+            x_findText(pageXML.childNodes[i], exclude); // it's a child node of node - check through this too
         } else {
             if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
-                x_insertText(pageXML.childNodes[i]);
+                x_insertText(pageXML.childNodes[i], exclude);
             }
         }
     }
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node) {
+function x_insertText(node, exclude) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
@@ -2062,8 +2060,10 @@ function x_insertText(node) {
 	temp.innerHTML=node.nodeValue;
 	var tempText = temp.innerHTML;
 	
+	exclude = exclude == undefined ? [] : exclude;
+	
 	// check text for variables - if found replace with variable value
-	if (x_variables.length > 0) {
+	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
         for (var k=0; k<x_variables.length; k++) {
 			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]', 'g');
 			tempText = tempText.replace(regExp, x_variables[k].value);
@@ -2071,7 +2071,7 @@ function x_insertText(node) {
     }
 	
     // check text for glossary words - if found replace with a link
-    if (x_glossary.length > 0) {
+    if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
