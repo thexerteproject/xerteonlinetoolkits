@@ -410,88 +410,8 @@ function x_setUp() {
 			}
 		}
 		
-		// calculates author set variables
-		if (x_params.variables != undefined) {
-			var i, j, k, temp, thisVar,
-				allVars = x_params.variables.split("||"),
-				toCalc = [],
-				lastLength, checkDefault;
-			
-			// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
-			for (i=0; i<allVars.length; i++) {
-				var temp = allVars[i].split("|");
-				thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, [exclude], default]
-				if (thisVar.name != "" && allVars.filter(function(a){ return a.name == thisVar.name }).length == 0) {
-					for (j=0; j<thisVar.data.length; j++) {
-						if (j == 1 || j == 5) { // convert data (random/exclude) to array
-							thisVar.data.splice(j, 1, thisVar.data[j].split(","));
-							for (k=0; k<thisVar.data[j].length; k++) {
-								temp = $.trim(thisVar.data[j][k]);
-								if (temp === "") {
-									thisVar.data[j].splice(k, 1);
-									k--;
-								} else {
-									thisVar.data[j].splice(k, 1, temp);
-								}
-							}
-						} else {
-							temp = $.trim(thisVar.data[j]);
-							if (temp === "") {
-								temp = undefined;
-							}
-							thisVar.data.splice(j, 1, temp);
-						}
-					}
-					
-					allVars.splice(i, 1, thisVar);
-					toCalc.push(i);
-					
-				} else {
-					allVars.splice(i, 1);
-					i--;
-				}
-			}
-			
-			// goes through all variables and attempts to calculate their value
-			// may loop several times if variables require other variable values to be ready before calculating their value
-			// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
-			while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
-				lastLength = toCalc.length;
-				
-				for (i=0; i<toCalc.length; i++) {
-					thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
-					if (thisVar.ok == true) {
-						thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here in case we want to do something with this data at some point
-						x_variables.push(thisVar);
-						toCalc.splice(i,1);
-						i--;
-						if (thisVar.default == true) {
-							checkDefault = false;
-						}
-					} else if (thisVar.ok == false) {
-						x_variableErrors.push(thisVar);
-						toCalc.splice(i,1);
-						i--;
-					}
-					
-					if (i + 1 == toCalc.length && toCalc.length == lastLength) {
-						checkDefault = checkDefault == true ? false : true;
-					}
-				}
-			}
-			
-			for (i=0; i<toCalc.length; i++) {
-				thisVar = allVars[toCalc[i]];
-				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
-				x_variableErrors.push(thisVar);
-				toCalc.splice(i,1);
-				i--;
-			}
-			
-			if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
-				$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
-			}
-		}
+		// calculate author set variables
+		x_newVariables();
 		
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
@@ -1733,6 +1653,99 @@ function x_getLangInfo(node, attribute, fallBack) {
 }
 
 
+// function starts the calculation of variables set by author via the variables optional property
+function x_newVariables() {
+	// clears arrays if they have previously been calculated
+	x_variables.splice(0, x_variables.length);
+	x_variableErrors.splice(0, x_variableErrors.length);
+	
+	if (x_params.variables != undefined) {
+		var i, j, k, temp, thisVar,
+			allVars = x_params.variables.split("||"),
+			toCalc = [],
+			lastLength, checkDefault;
+		
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<allVars.length; i++) {
+			var temp = allVars[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && allVars.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+				
+				allVars.splice(i, 1, thisVar);
+				toCalc.push(i);
+				
+			} else {
+				allVars.splice(i, 1);
+				i--;
+			}
+		}
+		
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+			
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here in case we want to do something with this data at some point
+					x_variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					x_variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+				
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+		
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = allVars[toCalc[i]];
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			x_variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+		
+		if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
+			$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
+		}
+	}
+	
+	console.log(x_variables);
+	console.log(x_variableErrors);
+}
+
+
 // function calculates the value of any author set variables
 function x_calcVariables(thisVar, recalc, checkDefault) {
 	thisVar.ok = undefined;
@@ -1760,8 +1773,8 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	}
 	
 	// calculate exclude values
-	if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[5].length > 0) {
-		exclude = thisVar.data[5].slice();
+	if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+		exclude = thisVar.data[8].slice();
 		// check for use of other variables & keep track of which are required
 		for (var i=0; i<exclude.length; i++) {
 			var info = x_getVarValues(exclude[i], thisVar.name);
@@ -1869,6 +1882,21 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 		
 	}
 	
+	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+		// to significant figure
+		if ($.isNumeric(Number(thisVar.data[6]))) {
+			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+		}
+		// to decimal place
+		if ($.isNumeric(Number(thisVar.data[5]))) {
+			thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+			if (thisVar.data[7] != "true") {
+				// remove trailing zeros
+				thisVar.value = Number(thisVar.value);
+			}
+		}
+	}
+	
 	// check value isn't one that should be excluded
 	if (thisVar.ok == true) {
 		for (var i=0; i<exclude.length; i++) {
@@ -1934,12 +1962,12 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 	}
 	
 	// fallback to default
-	if (thisVar.data[6] != undefined && (thisVar.ok == false || checkDefault == true)) {
+	if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
 		try {
-			var sum = eval(thisVar.data[6]);
+			var sum = eval(thisVar.data[9]);
 			thisVar.value = sum;
 		} catch (e) {
-			thisVar.value = thisVar.data[6];
+			thisVar.value = thisVar.data[9];
 		}
 		thisVar.requiredBy = [];
 		thisVar.default = true;
@@ -1993,7 +2021,7 @@ function x_getVarValues(thisValue, thisName) {
 
 // function displays author set variables in popup when in author support mode
 function x_showVariables() {
-	var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "Exclude", "Default"];
+	var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
 	var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
 		cells, temp, infoTxt;
 	

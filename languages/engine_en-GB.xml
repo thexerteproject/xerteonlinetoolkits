@@ -175,6 +175,9 @@
 	<item>Min</item>
 	<item>Max</item>
 	<item>Step</item>
+	<item>DP</item>
+	<item>SF</item>
+	<item>Trailing Zeros</item>
 	<item>Exclude</item>
 	<item>Default</item>
 	<item>Value</item>

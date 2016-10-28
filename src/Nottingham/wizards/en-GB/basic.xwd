@@ -48,7 +48,7 @@
     <trackingPassed optional="true" label="Tracking Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 	
-	<variables optional="true" label="Variables" type="DataGrid" columns="8" editable="1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,Exclude,Default" defaultValue=" | | | | | | | "/>
+	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 
     <newNodes>
     </newNodes>
