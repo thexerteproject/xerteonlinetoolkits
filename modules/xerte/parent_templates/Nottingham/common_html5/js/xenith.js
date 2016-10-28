@@ -1740,9 +1740,6 @@ function x_newVariables() {
 			$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
 		}
 	}
-	
-	console.log(x_variables);
-	console.log(x_variableErrors);
 }
 
 
