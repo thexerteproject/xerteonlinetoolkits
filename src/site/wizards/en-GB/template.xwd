@@ -96,12 +96,12 @@
 	</image><audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
 		<name type="TextInput" label="Name"/>
-		<url type="Media" label="Image File"/>
+		<url type="Media" label="Audio File"/>
 
 	</audio><video icon="icFilm" height="250" menuItem="Video" remove="true">
 
 		<name type="TextInput" label="Name"/>
-		<url type="Media" label="Image File"/>
+		<url type="Media" label="Video File"/>
 
 	</video><navigator icon="icPages" menuItem="Navigator" remove="true">
 
