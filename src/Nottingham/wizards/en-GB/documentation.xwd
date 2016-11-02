@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Enter Page Title" text="Enter introductory text here" display="first" download="last" notAnswered="Not answered"
+      <documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" notAnswered="Not answered" instructions="Click the download button to save a copy of your answers" panelWidth="Medium"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -9,16 +9,17 @@
   <!-- DOCUMENTATION=============================== -->  
     <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Introduction Text" type="TextArea" height="120"/>
-	<display label="Show Introduction Text" data="first,all" type="ComboBox" options="On first page only,On all pages" width="120"/>
+    <text label="Page Text" type="TextArea" height="120"/>
+	<intro label="Introduction Text" type="TextArea" height="120"/>
+	<display label="Show Introduction Text" data="separate,first,all" type="ComboBox" options="On additional page,On first page only,On all pages" width="120"/>
 	<download label="Show Download Button" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
-	<separate label="Separate Introduction Page" type="Checkbox" optional="true"/>
-	<instructions label="Download Instructions" type="TextArea" height="120" optional="true" defaultValue="Enter download instructions here" />
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
     <email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>
 	
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
+	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
 	
     <newNodes>
       <page><![CDATA[<page name="Enter title here" text="Enter text for the nested page here" />]]></page>
@@ -40,7 +41,7 @@
       <media><![CDATA[<media name="Media Title" text="Enter text here" url="Browse for media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
-      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here"/>]]></selectlist>
+      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
     </newNodes>
   </page>
 
@@ -55,27 +56,26 @@
       <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
-      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here"/>]]></selectlist>
+      <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
     </newNodes>
   </section>
   
   <selectlist menuItem="List" icon="icBullets">
     <name label="List Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
-    
-    <type label="List Type" data="radio,checkbox" type="ComboBox" options="Radio button list,Checkbox list" defaultValue="radio" width="120" optional="true"/>
-	<display label="Display Options" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" defaultValue="horizontal" width="120" optional="true"/>
+    <type label="Question Type" type="ComboBox" data="radio,checkbox" options="Single Answer,Multiple Answer" width="120"/>
+	<display label="Display Options" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" width="120"/>
+	
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 
     <newNodes>
-      <selectitem><![CDATA[<selectitem name="Option"/>]]></selectitem>
+      <selectitem><![CDATA[<selectitem name="Option" text="Enter text for this option here" />]]></selectitem>
     </newNodes>
   </selectlist>
   
-  
   <selectitem menuItem="Option" icon="icBullet">
-    <name label="Option" type="TextInput" wysiwyg="true"/>
-    <value label="Option Value" type="TextInput" defaultValue="Option Value" optional="true"/>
+    <name label="Label" type="TextInput" />
+    <text label="Option" type="TextArea" height="100"/>
   </selectitem>
 
   <description menuItem="Description" icon="icComment">

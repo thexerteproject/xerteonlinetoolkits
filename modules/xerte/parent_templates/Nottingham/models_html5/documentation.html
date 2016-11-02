@@ -20,7 +20,6 @@
  
 	var documentation = new function() {
 		var currentPage = 0,
-			noPages,
 			docData = {
 				'filename': 'documentation',
 				'pages':[]
@@ -28,177 +27,237 @@
 			notAnsweredDefault = '',
 			required = [];
 		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				var $panel = $("#pageContents .panel"),
+					$btnHolder = $("#btnHolder"),
+					$slideTxt = $("#slideTxt");
+				
+				var btnHolderH = $btnHolder.length > 0 ? $btnHolder.height() + parseInt($btnHolder.css("margin-top")) : 0,
+					slideTxtH = $slideTxt.length > 0 ? $slideTxt.height() + parseInt($slideTxt.css("margin-top")) + (parseInt($slideTxt.css("padding-top")) * 2) : 0;
+				var footerH = Math.max(btnHolderH, slideTxtH);
+				
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+				$("#pages").height($panel.height() - footerH);
+			}
+		}
+		
 		this.init = function() {
 			var pageIndex = 0;
-		
-			// Store number of pages
-			noPages=$(x_currentPageXML).children().length;
+			
+			// Set up main layout structure & add in all non-subpage text
+			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
+			
+			switch(x_currentPageXML.getAttribute("panelWidth")) {
+				case "Full":
+					$("#textHolder")
+						.unwrap()
+						.removeClass("left");
+					
+					$(".panel").unwrap();
+					
+					$("#textHolder").remove();
+					break;
+					
+				case "Small":
+					$("#pageContents .splitScreen").addClass("large");
+					break;
+					
+				case "Large":
+					$("#pageContents .splitScreen").addClass("small");
+					break;
+					
+				default:
+					$("#pageContents .splitScreen").addClass("medium");
+			}
+			
+			if (x_currentPageXML.getAttribute("intro") != "") {
+				$(".mainIntro").append(x_currentPageXML.getAttribute("intro"));
+			} else {
+				$(".mainIntro").remove();
+			}
+			
 			
 			// Process filename
 			if (x_currentPageXML.getAttribute('filename')) {
 				var filename = x_currentPageXML.getAttribute('filename').trim();
-				if ( (filename.length > 0) && (filename != "Enter filename here") ) {
-					docData.filename = x_currentPageXML.getAttribute('filename').trim();
+				if (filename.length > 0) {
+					docData.filename = filename;
 				}
 			}
+			
+			// Process document details
+			docData.documentName = x_currentPageXML.getAttribute('name');
+			docData.documentText = x_currentPageXML.getAttribute('text');
+			
 			
 			// Store 'No answer' text
 			if (x_currentPageXML.getAttribute('notAnswered')) notAnsweredDefault = x_currentPageXML.getAttribute('notAnswered');
-
-			// Process document details
-			docData.documentName = x_currentPageXML.getAttribute('name');
-			docData.documentText = x_currentPageXML.getAttribute('text');			
-
-			// Create a header for every page
-			var $docHeader = null;
-			$docHeader = $('<div class="intro">');
-			$docHeader.append(
-					$('<h3>')
-					.html(docData.documentName))
-				.append(
-					$('<div>')
-					.html(docData.documentText)
-			);
-
+			
 			// Introductory page
-			if (x_currentPageXML.getAttribute('separate') && x_currentPageXML.getAttribute('separate') == 'true') {
-				var $page = $('<div>')
-					.attr('id', 'page' + pageIndex++)
-					.attr('class', 'page')
-					.append($docHeader);
-				$('#pages')
-					.append($page);
+			if (x_currentPageXML.getAttribute('intro') != "" && x_currentPageXML.getAttribute('display') == 'separate') {
+				$(".mainIntro")
+					.attr("id", "page" + pageIndex++)
+					.addClass("page");
 			}
 
 			// Loop through all pages
-			for (var page=0; page<noPages; page++) {
+			for (var page=0; page < $(x_currentPageXML).children().length; page++) {
 				var pageXML = $(x_currentPageXML).children()[page];
-				docData.pages[page] = {};
+				
+				if ($(pageXML).children().length != 0 || pageXML.getAttribute('name') != "" || pageXML.getAttribute('text') != "") {
+					docData.pages[page] = {};
 
-				// Create the pages and hide them all
-				$page = $('<div>')
-					.attr('id', 'page' + pageIndex++);
+					// Create the pages and hide them all
+					$page = $('<div>')
+						.attr('id', 'page' + pageIndex++)
+						.addClass('page');
 					
-				if (
-					x_currentPageXML.getAttribute('display') && 
-					(
-						x_currentPageXML.getAttribute('display') == 'all' ||
-						( x_currentPageXML.getAttribute('display') == 'first' && pageIndex == 1 )
-					)
-				) {
-					$page.append($docHeader.clone());
-				}
-				
-				if (pageIndex > 1)
-					$page.attr('class', 'page hidepage');
+					if (pageIndex > 1)
+						$page.attr('class', 'page hidepage');
 
-				docData.pages[page].pageName = pageXML.getAttribute('name');
-				docData.pages[page].pageText = pageXML.getAttribute('text');
-				
-				var $intro = $('<div class="intro">').appendTo($page);
-				if (docData.pages[page].pageName.length > 0) {
-					$('<h3>')
-						.html(docData.pages[page].pageName)
-						.appendTo($intro);
-				}
-				if (docData.pages[page].pageText.length > 0) {
-					$('<div>')
-						.html(docData.pages[page].pageText)
-						.appendTo($intro);
-				}
-				if ($intro.children().length == 0) {
-					$intro.remove();
-				}
+					docData.pages[page].pageName = pageXML.getAttribute('name');
+					docData.pages[page].pageText = pageXML.getAttribute('text');
+					
+					var $intro = $('<div class="intro">').appendTo($page);
+					if (docData.pages[page].pageName.length > 0) {
+						$('<h3>')
+							.html(docData.pages[page].pageName)
+							.appendTo($intro);
+					}
+					if (docData.pages[page].pageText.length > 0) {
+						$('<div>')
+							.html(docData.pages[page].pageText)
+							.appendTo($intro);
+					}
+					if ($intro.children().length == 0) {
+						$intro.remove();
+					}
 
-				// Create any sections
-				if ($(pageXML).children().length > 0) {
-					docData.pages[page].sections = [];
-					for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
-						var sectionXML = $(pageXML).children()[section];
-						docData.pages[page].sections[section] = {'items':[]};
+					// Create any sections
+					if ($(pageXML).children().length > 0) {
+						docData.pages[page].sections = [];
+						for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
+							var sectionXML = $(pageXML).children()[section];
+							docData.pages[page].sections[section] = {'items':[]};
 
-						if (sectionXML.nodeName == 'section') {
+							if (sectionXML.nodeName == 'section') {
 
-							docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
-							docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
+								docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+								docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
 
-							// Create the sections
-							var $section = $('<fieldset>')
-								.attr('class', 'section');
+								// Create the sections
+								var $section = $('<fieldset>')
+									.attr('class', 'section');
 
-							if (docData.pages[page].sections[section].sectionName.length >0) {
-								$('<legend>')
-									.html(docData.pages[page].sections[section].sectionName)
-									.appendTo($section);
+								if (docData.pages[page].sections[section].sectionName.length >0) {
+									$('<legend>')
+										.html('<p>' + docData.pages[page].sections[section].sectionName + '</p>')
+										.appendTo($section);
+								}
+								if (docData.pages[page].sections[section].sectionText.length >0) {
+									$('<div class="intro">')
+										.html(docData.pages[page].sections[section].sectionText)
+										.appendTo($section);
+								}
+
+								// Create each item
+								for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
+									var itemXML = $(sectionXML).children()[item],
+										$newItem = documentation.processItem(page, section, item, itemXML);
+
+									if ($newItem !== null) $newItem.appendTo($section);
+								}
+								$page.append($section);
 							}
-							if (docData.pages[page].sections[section].sectionText.length >0) {
-								$('<div class="intro">')
-									.html(docData.pages[page].sections[section].sectionText)
-									.appendTo($section);
+							else {
+								docData.pages[page].sections[section].items[0] = {};
+								documentation.processItem(page, section, 0, sectionXML).appendTo($page);
 							}
-
-							// Create each item
-							for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
-								var itemXML = $(sectionXML).children()[item],
-									$newItem = documentation.processItem(page, section, item, itemXML);
-
-								if ($newItem !== null) $newItem.appendTo($section);
-							}
-							$page.append($section);
-						}
-						else {
-							docData.pages[page].sections[section].items[0] = {};
-							documentation.processItem(page, section, 0, sectionXML).appendTo($page);
 						}
 					}
+					
+					$('#pages').append($page);
 				}
-				$('#pages').append($page);
 			}
 			
 			// Add download button
+			var $downloadBtn = $('<button id="downloadBtn">');
+			var $downloadSection = $('<div class="item"/>');
+			$downloadBtn.appendTo($downloadSection);
 			if (x_currentPageXML.getAttribute('download') && x_currentPageXML.getAttribute('download') == 'extra') {
 				$page = $('<div>')
 					.attr('id', 'page' + pageIndex)
 					.attr('class', 'page hidepage');
-				/*$('<h3>')
-					.html(x_currentPageXML.getAttribute('name'))
-					.appendTo($page);*/
-				if (x_currentPageXML.getAttribute('instructions')) {
-					$('<div>')
-						.html(x_currentPageXML.getAttribute('instructions'))
-						.appendTo($page);
-				}
-				//$page.append($('<br \>'));
-				$('<button>')
-					.html('Download')
-					.on('click', documentation.download)
-					.appendTo($page);
-				$('#pages')
-					.append($page);
+				
+				$downloadSection.appendTo($page);
+				$('#pages').append($page);
 			}
 			else {
-				if (x_currentPageXML.getAttribute('instructions')) {
-					$('<div>')
-						.html(x_currentPageXML.getAttribute('instructions'))
-						.insertAfter($('#pages').children().last().children().last());
-				}
-				$('<button>')
-					.html('Download')
-					.on('click', documentation.download)
-					.insertAfter($('#pages').children().last().children().last());
+				$downloadSection.insertAfter($('#pages').children().last().children().last());
 			}
+			
+			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
+				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+			}
+			
+			$("#pageContents").data("numPages", $("#pages").children(".page").length);
+			
+			$downloadBtn.button({
+				icons: {
+					primary: "fa fa-download"
+				},
+				label:	"Download" // ** language
+			})
+			.click(function() {
+				documentation.download();
+			})
+			
 
 			// Wire up navigation buttons or hide them
-			if ($('#pages').children().length > 1) {
-				$('#previous').on('click', documentation.previousPage).prop('disabled', true);
-				$('#next').on('click', documentation.nextPage);
-				documentation.showPage(currentPage+1);
+			if ($('#pages').children(".page").length > 1) {
+				$("#prevBtn")
+					.button({
+						icons: {
+							primary: "fa fa-arrow-left"
+						},
+						label:	"Previous", // ** language
+						text:	false
+					})
+					.click(function() {
+						documentation.previousPage();
+						$("#pages").scrollTop(0);
+					})
+					.prop('disabled', true);
+				
+				$("#nextBtn")
+					.button({
+						icons: {
+							primary: "fa fa-arrow-right"
+						},
+						label:	"Next", // ** language
+						text:	false
+					})
+					.click(function() {
+						documentation.nextPage();
+						$("#pages").scrollTop(0);
+					})
+				
+				$("#slideTxt").html((currentPage + 1) + " / " + ($("#pageContents").data("numPages")));
+				
 			}
 			else {
-				$('#navigation').hide();
+				$('#btnHolder').remove();
 			}
-
-			// call this function in every model once everything's loaded
+			
+			this.sizeChanged();
+			
+			$("#pageContents").data("docData", docData);
+			
 			x_pageLoaded();
 		};
 		
@@ -283,6 +342,7 @@
 						if (xml.getAttribute('checked')) display[0] = xml.getAttribute('checked');
 						if (xml.getAttribute('unchecked')) display[1] = xml.getAttribute('unchecked');
 
+						$item.attr("id", "optionHolder");
 						$element = $('<input>')
 							.attr('type', 'checkbox');
 
@@ -296,48 +356,27 @@
 						break;
 					case 'media':
 						if (xml.getAttribute('url').substr(0,10) == "USER-FILES") {
-							$element = $('<img>')
+							$element = $('<img class="itemImg">')
 								.attr('src', xml.getAttribute('url'));
 						}
 						else {
 							$element = $('<div>')
-								.html("No image selected.");
+								.html("<p class='alert'>No image selected.</p>"); // ** language
 						}
 						break;
 					case 'description':
-						/*$element = $('<h3>')
-							.html(xml.getAttribute('name'));
-						$('<div>')
-							.html(xml.getAttribute('text'))
-							.appendTo($element);*/
 						break;
 					case 'line':
 						$element = $('<hr />');
 						break;
 					case 'selectlist': // radio,checkbox
+						$item.attr("id", "optionHolder");
+						
 						var $input, type = xml.getAttribute('type');
 						$element = $('<div>');
 
 						if (type === null) type = 'radio';
 						switch (type) {
-							/*case 'select':
-								var $select = $('<select>'),
-									$option,
-									$thisxml = $(xml).children();
-
-								for (var i=0; i<$(xml).children().length; i++) {
-									$option = $('<option>')
-										.html($(xml).children()[i].getAttribute('name'));
-
-									if ($thisxml[i].getAttribute('value'))
-										$option.attr('value', $thisxml[i].getAttribute('value'));
-									else
-										$option.attr('value', i);
-									
-									$option.appendTo($select);
-								}
-								$select.appendTo($element);
-								break;*/
 							case 'checkbox':
 							case 'radio':
 								$element = $('<div>');
@@ -385,7 +424,7 @@
 								}
 								break;
 							default:
-								$element = $('<div>').html('Not defined!');
+								$element = $('<div>').html('Not defined!'); // ** language
 								break;
 						}
 						break;
@@ -417,18 +456,22 @@
 		
 		this.updateData = function (p, s, i, data) {
 			console.log(p+" "+s+" "+i+" "+data);
-			docData.pages[p].sections[s].items[i].itemValue = data;
+			var temp = $("#pageContents").data("docData") == undefined ? docData : $("#pageContents").data("docData");
+			temp.pages[p].sections[s].items[i].itemValue = data;
+			$("#pageContents").data("docData", temp);
 		};
 		
 		this.previousPage = function () {
 			//if (documentation.checkRequired(currentPage)) {
 				if (currentPage > 0) {
 					$('#page' + currentPage).addClass('hidepage');
+					if ((currentPage == 1 && x_currentPageXML.getAttribute("display") != "all") || x_currentPageXML.getAttribute("display") == "all") $(".mainIntro").show();
 					currentPage--;
 					$('#page' + currentPage).removeClass('hidepage');
-					if (currentPage == 0) $('#previous').prop('disabled', true);
+					if (currentPage == 0) $('#prevBtn').prop('disabled', true);
 				}
-				$('#next').prop('disabled', false);
+				$('#nextBtn').prop('disabled', false);
+				$("#slideTxt").html((currentPage + 1) + " / " + ($("#pageContents").data("numPages")));
 			
 				documentation.showPage(currentPage+1);
 			//}
@@ -436,13 +479,15 @@
 
 		this.nextPage = function () {
 			if (documentation.checkRequired(currentPage)) {
-				if (currentPage < $('#pages').children().length-1) {
+				if (currentPage < $('#pages').children(".page").length-1) {
 					$('#page' + currentPage).addClass('hidepage');
+					if ((currentPage == 0 && x_currentPageXML.getAttribute("display") != "all") || (currentPage+1 == $('#pages').children(".page").length-1 && x_currentPageXML.getAttribute("download") == "extra")) $(".mainIntro").hide();
 					currentPage++;
 					$('#page' + currentPage).removeClass('hidepage');
-					if (currentPage == $('#pages').children().length-1) $('#next').prop('disabled', true);
+					if (currentPage == $('#pages').children(".page").length-1) $('#nextBtn').prop('disabled', true);
 				}
-				$('#previous').prop('disabled', false);
+				$('#prevBtn').prop('disabled', false);
+				$("#slideTxt").html((currentPage + 1) + " / " + ($("#pageContents").data("numPages")));
 			
 				documentation.showPage(currentPage+1);
 			}
@@ -471,14 +516,14 @@
 				}
 			}
 			
-			if (! ok) { alert("Please fill in all required fields"); }
+			if (! ok) { alert("Please fill in all required fields"); } // ** language
 
 			return ok;
 		};
 		
 		this.download = function () {
 			if (documentation.checkRequired(currentPage)) {
-    			documentation.postData(docData);
+				documentation.postData($("#pageContents").data("docData"));
     		}
 		};
 		
@@ -487,10 +532,11 @@
 		};
 		
 		this.postData = function (data) {
+			console.log("postData " + data);
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
-			form.action = 'download2.php';
+			form.action = 'download.php';
 			$('<input type="hidden">') // IE compatibility
 				.attr({
 					name: 'data',
@@ -509,30 +555,63 @@
 
 
 <style type="text/css">
-	.page {
-
+	
+	h3 {
+		padding: 4px;
 	}
-	.section {
-
+	
+	#pages {
+		overflow: auto;
 	}
-	#pages .intro {
-		
+	
+	#pages:not(:last-child) {
+		border-bottom: 1px solid #CCCCCC;
 	}
-	.item, .intro {
-		margin: 2em 0;
+	
+	#btnHolder {
+		float: right;
+		margin-top: 0.7em;
 	}
-	.section .item:last-child {
+	
+	#btnHolder .ui-icon {
+		width:	auto;
+		height:	auto;
+	}
+	
+	#downloadBtn .ui-icon {
+		width:	auto;
+		height:	auto;
+	}
+	
+	#slideTxt {
+		font-weight: bold;
+		margin: 0.7em 0.5em 0;
+	}
+	
+	.item, .intro, .section {
+		margin: 1.5em 0;
+	}
+	
+	.item .itemImg {
+		max-width: 100%;
+		display: block;
+		margin: auto;
+	}
+	
+	.section .item:last-child, .section .intro:last-child {
 		margin-bottom: 0;
 	}
+	
 	.section .item:first-of-type, .intro:first-of-type {
 		margin-top: 0;
 	}
+	
+	.section legend {
+		font-weight: bold;
+	}
+	
 	.hidepage {
 		display:none;
-	}
-	#navigation {
-		float: right;
-		margin-bottom:10px;
 	}
 	
 	label.vertical {
@@ -542,10 +621,24 @@
 </style>
 
 <div id="pageContents">
-	<div id="navigation">
-		<a href="javascript:void(0);" id="previous" title="Previous"><i class="fa fa-chevron-circle-left fa-lg" aria-hidden="true"></i></a>
-		<span id="pagenumber" />
-		<a href="javascript:void(0);" id="next" title="Next"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></a></i>
+	
+	<div class="splitScreen">
+		
+		<div id="textHolder" class="left"></div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="pages">
+					<div class="mainIntro intro"></div>
+				</div>
+				<div id="btnHolder">
+					<button id="prevBtn"></button>
+					<span id="slideTxt" aria-live="polite"></span>
+					<button id="nextBtn"></button>
+				</div>
+			</div>
+		</div>
+		
 	</div>
-	<div id="pages"></div>
+	
 </div>
