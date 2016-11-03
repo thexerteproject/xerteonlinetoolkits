@@ -93,6 +93,7 @@
 			// Process document details
 			docData.documentName = x_currentPageXML.getAttribute('name');
 			docData.documentText = x_currentPageXML.getAttribute('text');
+			docData.documentIntro = x_currentPageXML.getAttribute('intro');
 			
 			
 			// Store 'No answer' text
@@ -211,7 +212,7 @@
 				icons: {
 					primary: "fa fa-download"
 				},
-				label:	"Download" // ** language
+				label:	x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
 			})
 			.click(function() {
 				documentation.download();
@@ -225,7 +226,7 @@
 						icons: {
 							primary: "fa fa-arrow-left"
 						},
-						label:	"Previous", // ** language
+						label:	x_currentPageXML.getAttribute('prevTxt') != undefined ? x_currentPageXML.getAttribute('prevTxt') : "Previous",
 						text:	false
 					})
 					.click(function() {
@@ -239,7 +240,7 @@
 						icons: {
 							primary: "fa fa-arrow-right"
 						},
-						label:	"Next", // ** language
+						label:	x_currentPageXML.getAttribute('nextTxt') != undefined ? x_currentPageXML.getAttribute('nextTxt') : "Next",
 						text:	false
 					})
 					.click(function() {
@@ -320,48 +321,69 @@
 				var $element;
 				switch (xml.nodeName) {
 					case 'textarea':
-						var rows = 3, cols = 60;
+						var rows = 3, width;
 						if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
-						if (xml.getAttribute('cols')) cols = parseInt(xml.getAttribute('cols'));
+						
+						switch(xml.getAttribute("width")) {
+							case "Small":
+								width = "width40";
+								break;
+								
+							case "Large":
+								width = "width80";
+								break;
+								
+							default:
+								width = "width60";
+						}
+						
+						$textarea = $('<textarea class="' + width + '">')
+							.attr('rows', rows);
+						
+						if (xml.getAttribute('defaultTxt')) $textarea.attr('placeholder', xml.getAttribute('defaultTxt'));
 
-						$element = $('<textarea>')
-							.attr('rows', rows)
-							.attr('cols', cols);
-
-						if (requiredKey.length > 0) $element.attr('id', requiredKey);
+						if (requiredKey.length > 0) $textarea.attr('id', requiredKey);
 
 						documentation.updateData(page, section, item, notAnsweredText);
 						(function (p, s, i) {
-							$element.on('change', function () {
+							$textarea.on('change', function () {
 								documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : $(this).val());
 							})
 						})(page, section, item);
+						
+						$element = $('<div class="question"/>').append($textarea);
 						break;
 					case 'checkbox':
 						var display = ['Checked', 'Unchecked'];
 						if (xml.getAttribute('checked')) display[0] = xml.getAttribute('checked');
 						if (xml.getAttribute('unchecked')) display[1] = xml.getAttribute('unchecked');
-
+						var label = xml.getAttribute("label") == undefined ? "" : '<label class="optionTxt">' + xml.getAttribute("label") + '</label>';
+						
 						$item.attr("id", "optionHolder");
-						$element = $('<input>')
+						$input = $('<input>')
 							.attr('type', 'checkbox');
+						
+						if (xml.getAttribute("default") == "true") $input.prop('checked', true);
 
-						if (requiredKey.length > 0) $element.attr('id', requiredKey);
-
+						if (requiredKey.length > 0) $input.attr('id', requiredKey);
+						
+						documentation.updateData(page, section, item, display[$input.prop('checked')?0:1]);
 						(function (p, s, i, d) {
-							$element.on('change', function () {
+							$input.on('change', function () {
 								documentation.updateData(p, s, i, d[$(this).prop('checked')?0:1]);
 							})
 						})(page, section, item, display);
+						
+						$element = $('<div class="question optionGroup"/>').append($input).append(label);
 						break;
-					case 'media':
+					case 'media': // ** should work for audio / video too
 						if (xml.getAttribute('url').substr(0,10) == "USER-FILES") {
 							$element = $('<img class="itemImg">')
 								.attr('src', xml.getAttribute('url'));
 						}
 						else {
 							$element = $('<div>')
-								.html("<p class='alert'>No image selected.</p>"); // ** language
+								.html("<p class='alert'>" + (x_currentPageXML.getAttribute('mediaError') != undefined ? x_currentPageXML.getAttribute('mediaError') : "No media selected") + "</p>");
 						}
 						break;
 					case 'description':
@@ -374,21 +396,20 @@
 						
 						var $input, type = xml.getAttribute('type');
 						$element = $('<div>');
-
+						
 						if (type === null) type = 'radio';
 						switch (type) {
 							case 'checkbox':
 							case 'radio':
-								$element = $('<div>');
+								$element = $('<div class="question">');
 								for (var i=0; i<$(xml).children().length; i++) {
 									$input = $('<input>')
 										.attr('type', type)
-										.attr('value', (
-															$(xml).children()[i].getAttribute('value') === null)
-															? $(xml).children()[i].getAttribute('name')
-															: $(xml).children()[i].getAttribute('value')
-														)
-										.attr('name', 'idP' + page + 'S' + section + 'I' + item);
+										.attr('value', $(xml).children()[i].getAttribute('text'))
+										.attr({
+											'name': 'idP' + page + 'S' + section + 'I' + item,
+											'id': 'idP' + page + 'S' + section + 'I' + item + '_' + i,
+										});
 
 									if (exclude != 'doc') {
 										documentation.updateData(page, section, item, notAnsweredText);
@@ -400,7 +421,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join('||') : notAnsweredText);
+														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;
@@ -412,15 +433,17 @@
 												})(page, section, item, display);
 										}
 									}
-
-									var $label = $('<label>')
-										.append($input)
-										.append($(xml).children()[i].getAttribute('name'));
 									
-									if (xml.getAttribute('display') === 'vertical')
-										$label.addClass('vertical');
+									var $label = $('<label class="optionTxt" for="' + $input.attr("id") + '">')
+											.append($(xml).children()[i].getAttribute('text'));
 									
-									$label.appendTo($element);
+									var $optHolder = $('<div class="optionGroup"/>')
+											.append($input)
+											.append($label)
+											.appendTo($element);
+									
+									if (xml.getAttribute('display') === 'horizontal')
+										$optHolder.addClass('horizontal');
 								}
 								break;
 							default:
@@ -430,20 +453,37 @@
 						break;
 					case 'textbox':
 					default:
-						$element = $('<input>')
+						$input = $('<input>')
 							.attr('type', 'text')
 							.attr('value', '');
-
-						if (requiredKey.length > 0) $element.attr('id', requiredKey);
-
-						if (xml.getAttribute('width') && xml.getAttribute('width') != '')
-							$element.width(parseInt(xml.getAttribute('width')));
+						
+						if (xml.getAttribute('defaultTxt')) $input.attr('placeholder', xml.getAttribute('defaultTxt'));
+						
+						if (requiredKey.length > 0) $input.attr('id', requiredKey);
+						
+						var width;
+						switch(xml.getAttribute("width")) {
+							case "Small":
+								width = "width40";
+								break;
+								
+							case "Large":
+								width = "width80";
+								break;
+								
+							default:
+								width = "width60";
+						}
+						$input.addClass(width);
+						
 						documentation.updateData(page, section, item, notAnsweredText);
 						(function (p, s, i) {
-							$element.on('change', function () {
+							$input.on('change', function () {
 								documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : $(this).val());
 							})
 						})(page, section, item);
+						
+						$element = $('<div class="question"/>').append($input);
 						break;
 				}
 			
@@ -455,7 +495,7 @@
 		}
 		
 		this.updateData = function (p, s, i, data) {
-			console.log(p+" "+s+" "+i+" "+data);
+			console.log([p,s,i,data]);
 			var temp = $("#pageContents").data("docData") == undefined ? docData : $("#pageContents").data("docData");
 			temp.pages[p].sections[s].items[i].itemValue = data;
 			$("#pageContents").data("docData", temp);
@@ -516,8 +556,8 @@
 				}
 			}
 			
-			if (! ok) { alert("Please fill in all required fields"); } // ** language
-
+			if (! ok) { alert(x_currentPageXML.getAttribute('requiredTxt') != undefined ? x_currentPageXML.getAttribute('requiredTxt') : "Please complete all required fields") }
+			
 			return ok;
 		};
 		
@@ -590,6 +630,7 @@
 	
 	.item, .intro, .section {
 		margin: 1.5em 0;
+		overflow: auto;
 	}
 	
 	.item .itemImg {
@@ -614,8 +655,38 @@
 		display:none;
 	}
 	
-	label.vertical {
+	.question {
+		margin-top: 1em;
+	}
+	
+	.optionGroup input {
+		float: left;
 		display: block;
+	}
+
+	.optionGroup {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+	
+	.optionTxt {
+		cursor: pointer;
+		position: relative;
+		margin-left: 2em;
+		display: block;
+	}
+	
+	.optionGroup.horizontal {
+		display: inline;
+		float: left;
+	}
+	
+	.optionGroup.horizontal:not(:first-of-type) input {
+		margin-left: 1.5em;
+	}
+
+	.optionGroup.horizontal:not(:first-of-type) .optionTxt {
+		margin-left: 3.5em;
 	}
 	
 </style>

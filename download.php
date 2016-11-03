@@ -19,6 +19,7 @@ echo "<body style=\"font-family: Arial\">";
 
 echo "<h1>".$data['documentName']."</h1>";
 echo "<p>".$data['documentText']."</p>";
+echo "<p>".$data['documentIntro']."</p>";
 
 foreach ($data['pages'] as $pagekey => $pagevalue) {
 	echo "<h1>".$pagevalue['pageName']."</h1>";

@@ -77,7 +77,7 @@
 	  restart="Restart"  
 	  >CDATA</customHotspots>]]></customHotspots><decision><![CDATA[<decision name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" firstStep="e.g. Q1" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" closeBtn="Close" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20"
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" notAnswered="Not answered" instructions="Click the download button to save a copy of your answers" panelWidth="Medium"
+	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="Enter text for the page here" intro="Enter introductory text here" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No media selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="Enter text for the page here" imgWidth="Medium" url="Select an Image" interactivity="Describe" submitText="Submit" tip="Enter a Description for Accessibility" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src="Enter HTML or a URL"/>]]></embedDiv><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong."/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="Enter text for the page here" feedback="Enter feedback here" data="1|2|3" constrain="none" style="row" align="left" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="Enter Page text" words="Enter words here, placing each on a new line"
 	  nextBtnTxt="Next"
 	  quesCount="Exercise {i} of {n}"
@@ -656,8 +656,13 @@
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
     <email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>
 	
-    <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true"/>
+    <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
+	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
+	<mediaError label="No Media Error Text" type="TextInput" language="true"/>
+	<downloadTxt label="Download Button Label" type="TextInput" language="true"/>
+	<nextTxt label="Next Button Label" type="TextInput" language="true"/>
+	<prevTxt label="Previous Button Label" type="TextInput" language="true"/>
 	
     <newNodes>
       <page><![CDATA[<page name="Enter title here" text="Enter text for the nested page here" />]]></page>
@@ -670,23 +675,23 @@
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 	
     <newNodes>
-      <section><![CDATA[<section name="Section Title" text="Enter text here" />]]></section>
-      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text here"/>]]></textbox>
-      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text here"/>]]></textarea>
-      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here"/>]]></checkbox>
-      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Browse for media"/>]]></media>
+      <section><![CDATA[<section name="Section Title" text="Enter text here"/>]]></section>
+      <textbox><![CDATA[<textbox name="Text Box Title" text="Enter text here" notAnswered="Not answered"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Text Area Title" text="Enter text here" notAnswered="Not answered"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here" label="Enter label text here" checked="Checked" unchecked="Unchecked"/>]]></checkbox>
+      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
     </newNodes>
   </page><section menuItem="Section">
     <name label="Section Title" type="TextInput" wysiwyg="true"/>
-    <text label="Section Text" type="TextArea" height="100"/>
+    <text label="Text" type="TextArea" height="100"/>
 
     <newNodes>
-      <textbox><![CDATA[<textbox name="Textbox Title" text="Enter text here"/>]]></textbox>
-      <textarea><![CDATA[<textarea name="Textarea Title" text="Enter text here" notAnswered="Not answered"/>]]></textarea>
-      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here" checked="Checked" unchecked="Unchecked"/>]]></checkbox>
+      <textbox><![CDATA[<textbox name="Text Box Title" text="Enter text here" notAnswered="Not answered"/>]]></textbox>
+      <textarea><![CDATA[<textarea name="Text Area Title" text="Enter text here" notAnswered="Not answered"/>]]></textarea>
+      <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here" label="Enter label text here" checked="Checked" unchecked="Unchecked"/>]]></checkbox>
       <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
@@ -722,28 +727,32 @@
   </media><checkbox menuItem="Checkbox" icon="icCheckbox">
     <name label="Checkbox Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
-
+	<label label="Label" type="TextInput" wysiwyg="true"/>
+	
+	<default label="Default State" type="Checkbox" defaultValue="false" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 	
-	<checked label="Checked" type="TextInput" defaultValue="Checked" language="true"/>
-	<unchecked label="Unchecked" type="TextInput" defaultValue="Unchecked" language="true"/>
-  </checkbox><textarea menuItem="Textarea" icon="icTextArea">
-    <name label="Textarea Title" type="TextInput" wysiwyg="true"/>
+	<checked label="Checked" type="TextInput" language="true"/>
+	<unchecked label="Unchecked" type="TextInput" language="true"/>
+  </checkbox><textarea menuItem="Text Area" icon="icTextArea">
+    <name label="Text Area Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
 
     <rows label="Rows" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
-    <cols label="Columns" type="NumericStepper" min="1" max="255" defaultValue="60" optional="true"/>
+	<width label="Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
+	<defaultTxt label="Placeholder Text" type="TextInput" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
-  </textarea><textbox menuItem="Textbox" icon="icTextEntry">
-    <name label="Textbox Title" type="TextInput" wysiwyg="true"/>
+  </textarea><textbox menuItem="Text Box" icon="icTextEntry">
+    <name label="Text Box Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
     
+	<width label="Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
+	<defaultTxt label="Placeholder Text" type="TextInput" optional="true"/>
     <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <width label="Width (pixels)" type="NumericStepper" min="10" max="800" defaultValue="200" optional="true"/>
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
