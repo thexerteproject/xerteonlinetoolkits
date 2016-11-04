@@ -414,7 +414,7 @@
 						
 						$element = $('<div class="question optionGroup"/>').append($input).append(label);
 						break;
-					case 'media': // ** should work for audio / video too
+					case 'media':
 						if (xml.getAttribute('url').substr(0,10) == "USER-FILES") {
 							$element = $('<img class="itemImg">')
 								.attr('src', xml.getAttribute('url'));
@@ -427,6 +427,9 @@
 					case 'description':
 						break;
 					case 'line':
+						if (exclude != 'doc') {
+							docData.pages[page].sections[section].items[item].itemText = '<hr/>';
+						}
 						$element = $('<hr />');
 						break;
 					case 'selectlist': // radio,checkbox
@@ -572,6 +575,7 @@
 		};
 
 		this.checkRequired = function (page) {
+			$(".alertBorder").removeClass('alertBorder');
 			var ok = true;
 
 			for(var i=0; i<required.length; i++) {
@@ -580,6 +584,7 @@
 						case 'checkbox':
 							if (! $('#'+required[i].key).prop('checked')) {
 								ok = false;
+								$('#'+required[i].key).closest('.item').addClass('alertBorder');
 							}
 							break;
 						case 'textarea':
@@ -587,10 +592,10 @@
 						default:
 							if ($('#'+required[i].key).val() == '') {
 								ok = false;
+								$('#'+required[i].key).closest('.item').addClass('alertBorder');
 							}
 							break;
 					}
-					if (! ok) break;
 				}
 			}
 			

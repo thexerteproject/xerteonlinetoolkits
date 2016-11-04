@@ -30,8 +30,6 @@ p {
     margin: 0;
 }
 
-
-
 #x_mainHolder {
 	width:		800px;
 	height:		600px;
@@ -379,6 +377,10 @@ audio {
 .alert {
 	font-weight:	bold;
 	color:			red;
+}
+
+.alertBorder {
+	border: 1px solid red;
 }
 
 fieldset.noStyle {
