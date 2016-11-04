@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 	var documentation = new function() {
 		var currentPage = 0,
 			docData = {
@@ -145,25 +145,51 @@
 						for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
 							var sectionXML = $(pageXML).children()[section];
 							docData.pages[page].sections[section] = {'items':[]};
-
+							
+							// Create the sections
 							if (sectionXML.nodeName == 'section') {
-
-								docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
-								docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
-
-								// Create the sections
-								var $section = $('<fieldset>')
-									.attr('class', 'section');
-
-								if (docData.pages[page].sections[section].sectionName.length >0) {
-									$('<legend>')
-										.html('<p>' + docData.pages[page].sections[section].sectionName + '</p>')
-										.appendTo($section);
+								if (sectionXML.getAttribute('exclude') != 'doc') {
+									docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+									docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
 								}
-								if (docData.pages[page].sections[section].sectionText.length >0) {
-									$('<div class="intro">')
-										.html(docData.pages[page].sections[section].sectionText)
-										.appendTo($section);
+								
+								var $section = $('<fieldset>').attr('class', 'section'),
+									checkChildren = false;
+								
+								if (sectionXML.getAttribute('exclude') != 'lo') {
+									if (sectionXML.getAttribute('exclude') == 'doc') {
+										checkChildren = 'doc';
+									}
+									
+									if (sectionXML.getAttribute('name').length >0) {
+										$('<legend>')
+											.html('<p>' + sectionXML.getAttribute('name') + '</p>')
+											.appendTo($section);
+									}
+									if (sectionXML.getAttribute('text').length >0) {
+										$('<div class="intro">')
+											.html(sectionXML.getAttribute('text'))
+											.appendTo($section);
+									}
+									
+								} else {
+									checkChildren = 'lo';
+								}
+								
+								 // section is excluded from either LO or documentation so exclude all its children from same too
+								if (checkChildren != false) {
+									for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
+										var itemXML = $(sectionXML).children()[item],
+											otherExclude = checkChildren == 'lo' ? 'doc' : 'lo';
+										if (itemXML.getAttribute('exclude') == otherExclude) {
+											// item is excluded from LO & documentation so remove altogether
+											itemXML.remove();
+											item--;
+											noItems--;
+										} else {
+											itemXML.setAttribute('exclude', checkChildren);
+										}
+									}
 								}
 
 								// Create each item
@@ -173,11 +199,15 @@
 
 									if ($newItem !== null) $newItem.appendTo($section);
 								}
-								$page.append($section);
+								
+								if (sectionXML.getAttribute('exclude') != 'lo') {
+									$page.append($section);
+								}
 							}
 							else {
 								docData.pages[page].sections[section].items[0] = {};
-								documentation.processItem(page, section, 0, sectionXML).appendTo($page);
+								var $newItem = documentation.processItem(page, section, 0, sectionXML);
+								if ($newItem !== null) $newItem.appendTo($page);
 							}
 						}
 					}
@@ -275,7 +305,7 @@
 				docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
 				docData.pages[page].sections[section].items[item].itemValue = "";
 			}
-
+			
 			if (exclude != 'lo') {
 				var $item = $('<div>')
 					.attr('class', 'item');
@@ -292,7 +322,6 @@
 				// Required?
 				var requiredKey = '';
 				if (
-					exclude != 'lo' &&
 					xml.getAttribute('required') &&
 					xml.getAttribute('required') == 'true'
 				) {
@@ -305,7 +334,6 @@
 				}
 
 				if (
-					exclude != 'lo' &&
 					xml.getAttribute('text') &&
 					xml.getAttribute('text').length > 0
 				) {
@@ -344,35 +372,45 @@
 
 						if (requiredKey.length > 0) $textarea.attr('id', requiredKey);
 
-						documentation.updateData(page, section, item, notAnsweredText);
-						(function (p, s, i) {
-							$textarea.on('change', function () {
-								documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : $(this).val());
-							})
-						})(page, section, item);
+						if (exclude != 'doc') {
+							documentation.updateData(page, section, item, notAnsweredText);
+							(function (p, s, i) {
+								$textarea.on('change', function () {
+									var temp = $(this).val().replace(/\r?\n/g, '<br>');
+									documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : temp);
+								})
+							})(page, section, item);
+						}
 						
 						$element = $('<div class="question"/>').append($textarea);
 						break;
 					case 'checkbox':
-						var display = ['Checked', 'Unchecked'];
+						var display = ['Checked', 'Unchecked'],
+							thisId = 'idP' + page + 'S' + section + 'I' + item;
+						
 						if (xml.getAttribute('checked')) display[0] = xml.getAttribute('checked');
 						if (xml.getAttribute('unchecked')) display[1] = xml.getAttribute('unchecked');
-						var label = xml.getAttribute("label") == undefined ? "" : '<label class="optionTxt">' + xml.getAttribute("label") + '</label>';
+						var label = xml.getAttribute("label") == undefined ? "" : '<label class="optionTxt" for="' + thisId +'">' + xml.getAttribute("label") + '</label>';
 						
 						$item.attr("id", "optionHolder");
 						$input = $('<input>')
-							.attr('type', 'checkbox');
+							.attr({
+								'id': thisId,
+								'type': 'checkbox'
+								});
 						
 						if (xml.getAttribute("default") == "true") $input.prop('checked', true);
 
 						if (requiredKey.length > 0) $input.attr('id', requiredKey);
 						
-						documentation.updateData(page, section, item, display[$input.prop('checked')?0:1]);
-						(function (p, s, i, d) {
-							$input.on('change', function () {
-								documentation.updateData(p, s, i, d[$(this).prop('checked')?0:1]);
-							})
-						})(page, section, item, display);
+						if (exclude != 'doc') {
+							documentation.updateData(page, section, item, display[$input.prop('checked')?0:1]);
+							(function (p, s, i, d) {
+								$input.on('change', function () {
+									documentation.updateData(p, s, i, d[$(this).prop('checked')?0:1]);
+								})
+							})(page, section, item, display);
+						}
 						
 						$element = $('<div class="question optionGroup"/>').append($input).append(label);
 						break;
@@ -447,7 +485,6 @@
 								}
 								break;
 							default:
-								$element = $('<div>').html('Not defined!'); // ** language
 								break;
 						}
 						break;
@@ -476,12 +513,14 @@
 						}
 						$input.addClass(width);
 						
-						documentation.updateData(page, section, item, notAnsweredText);
-						(function (p, s, i) {
-							$input.on('change', function () {
-								documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : $(this).val());
-							})
-						})(page, section, item);
+						if (exclude != 'doc') {
+							documentation.updateData(page, section, item, notAnsweredText);
+							(function (p, s, i) {
+								$input.on('change', function () {
+									documentation.updateData(p, s, i, $(this).val().length == 0 ? notAnsweredText : $(this).val());
+								})
+							})(page, section, item);
+						}
 						
 						$element = $('<div class="question"/>').append($input);
 						break;
@@ -495,7 +534,6 @@
 		}
 		
 		this.updateData = function (p, s, i, data) {
-			console.log([p,s,i,data]);
 			var temp = $("#pageContents").data("docData") == undefined ? docData : $("#pageContents").data("docData");
 			temp.pages[p].sections[s].items[i].itemValue = data;
 			$("#pageContents").data("docData", temp);
@@ -533,11 +571,11 @@
 			}
 		};
 
-		this.checkRequired = function (page) { console.log(page);
+		this.checkRequired = function (page) {
 			var ok = true;
 
 			for(var i=0; i<required.length; i++) {
-				if (required[i].page == page) {console.log($('#'+required[i].key).attr('type'));
+				if (required[i].page == page) {
 					switch ($('#'+required[i].key).attr('type')) {
 						case 'checkbox':
 							if (! $('#'+required[i].key).prop('checked')) {
@@ -572,7 +610,20 @@
 		};
 		
 		this.postData = function (data) {
-			console.log("postData " + data);
+			// remove anything that's excluded from document
+			var temp = jQuery.extend(true, {}, data),
+				i, j, k;
+			
+			for (i=0; i<temp.pages.length; i++) {
+				for (j=0; j<temp.pages[i].sections.length; j++) {
+					for (k=0; k<temp.pages[i].sections[j].items.length; k++) {
+						if (jQuery.isEmptyObject(temp.pages[i].sections[j].items[k])) {
+							temp.pages[i].sections[j].items.splice(k, 1);
+						}
+					}
+				}
+			}
+			
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
@@ -580,7 +631,7 @@
 			$('<input type="hidden">') // IE compatibility
 				.attr({
 					name: 'data',
-					value: JSON.stringify(data)
+					value: JSON.stringify(temp)
 				})
 				.appendTo(form);
 			document.body.appendChild(form);
@@ -643,7 +694,7 @@
 		margin-bottom: 0;
 	}
 	
-	.section .item:first-of-type, .intro:first-of-type {
+	.item:first-of-type, .intro:first-of-type {
 		margin-top: 0;
 	}
 	
@@ -687,6 +738,10 @@
 
 	.optionGroup.horizontal:not(:first-of-type) .optionTxt {
 		margin-left: 3.5em;
+	}
+	
+	#downloadBtn {
+		margin-top: 0.5em;
 	}
 	
 </style>
