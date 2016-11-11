@@ -30,6 +30,10 @@ p {
     margin: 0;
 }
 
+.optionTxt p {
+	padding-top: 0;
+}
+
 #x_mainHolder {
 	width:		800px;
 	height:		600px;
