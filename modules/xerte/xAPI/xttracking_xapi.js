@@ -31,7 +31,7 @@ function XTInitialise()
 		}
 		catch(ex)
 		{
-			console.log("Failed LRS setup. Error: " + ex);
+			alert("Failed LRS setup. Error: " + ex);
 		}	
 	}
 
@@ -282,18 +282,16 @@ function SaveStatement(statement)
             callback: function (err, xhr) {
                 if (err !== null) {
                     if (xhr !== null) {
-                        console.log("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
-                        // TODO: do something with error, didn't save statement
+                        alert("Failed to save statement: " + xhr.responseText + " (" + xhr.status + ")");
+                        // TODO: handle error accordingly when needed
                         return;
                     }
 
-                    console.log("Failed to save statement: " + err);
-                    // TODO: do something with error, didn't save statement
+                    alert("Failed to save statement: " + err);
+                    // TODO: handle error accordingly when needed
                     return;
                 }
 
-                console.log("Statement saved");
-                // TODO: do something with success (possibly ignore)
             }
         }
     );
