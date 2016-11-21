@@ -4,7 +4,7 @@ var scorm=false,
 	lrsUsername = "",
 	lrsPassword = "",
 	lrsEndpoint = "",
-    userEMail = "";
+    userEMail = "mailto:email@test.com";
 
 var trackingMode = "none",
 	mode = "none",
@@ -16,8 +16,6 @@ var trackingMode = "none",
 function XTInitialise()
 {
 	
-	
-	
 	if(lrsInstance == undefined){
 		try{
 			lrsInstance = new TinCan.LRS(
@@ -25,9 +23,11 @@ function XTInitialise()
 		            endpoint: lrsEndpoint,
 		            username: lrsUsername,
 		            password: lrsPassword,
-		            allowFail: false
+		            allowFail: false,
+		            version: "1.0.1"
 		        }
 			);
+			
 		}
 		catch(ex)
 		{
@@ -276,7 +276,8 @@ function XTTerminate()
 
 function SaveStatement(statement)
 {
-    lrsInstance.saveStatement(
+	statement.id = null;
+	lrsInstance.saveStatement(
         statement,
         {
             callback: function (err, xhr) {
