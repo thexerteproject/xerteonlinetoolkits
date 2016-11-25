@@ -1,9 +1,6 @@
 //TODO: get user email, more verbs (passed/failed, completed, ect), define scormmode for xAPI
 var scorm=false,
     lrsInstance,
-	lrsUsername = "",
-	lrsPassword = "",
-	lrsEndpoint = "",
     userEMail = "mailto:email@test.com";
 
 var trackingMode = "none",

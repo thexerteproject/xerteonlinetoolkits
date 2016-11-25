@@ -18,10 +18,14 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $xapi_html_page_content);
 	
+    $endpoint = $xerte_toolkits_site->LRS_Endpoint;
+    $secret = $xerte_toolkits_site->LRS_Secret;
+    $key = $xerte_toolkits_site->LRS_Key;
 	
 	$tracking = "<script type=\"text/javascript\" src=\"xttracking_xapi.js\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_xapi.js\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"tincan.js\"></script>\n";
+	$tracking .= "<script>var lrsEndpoint=$endpoint;var lrsPassword=$secret; var lrsUsername=$key;</script>";
 	if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_xapi.js") && $language != "en-GB")
 	{
 		$tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_xapi.js\"></script>";

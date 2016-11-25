@@ -479,7 +479,7 @@ function upgrade_9()
     }
     else
     {
-        return "authentication_method field already present - ok ? true";
+        return "LRS Endpoint settings fields already present - ok ? true";
     }
 
 
