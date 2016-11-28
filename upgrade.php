@@ -448,8 +448,6 @@ function upgrade_8()
 
 function upgrade_9()
 {
-    global $xerte_toolkits_site;
-
     if (! _db_field_exists('sitedetails', 'LRS_Endpoint')) {
         $error1 = _db_add_field('sitedetails', 'LRS_Endpoint', 'char(255)', '', 'feedback_list');
         $error1_returned = true;
@@ -481,9 +479,5 @@ function upgrade_9()
     {
         return "LRS Endpoint settings fields already present - ok ? true";
     }
-
-
 }
-
-
 ?>
