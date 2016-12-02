@@ -7,7 +7,7 @@
   </pageWizard>
 
   <!-- DOCUMENTATION=============================== -->  
-    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" hint="We need to enter some text description in here to describe the page..">
+    <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" hint="A form based interaction where the user downloads a copy of their responses.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="120"/>
 	<intro label="Introduction Text" type="TextArea" height="120"/>
@@ -16,7 +16,7 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	
     <filename label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
-    <email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>
+    <!--<email label="Enable Email Facility" type="Checkbox" defaultValue="true" optional="true"/>-->
 	
 	<instructions label="Download Instructions" type="TextArea" height="120" language="true" />
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
@@ -41,7 +41,7 @@
       <textbox><![CDATA[<textbox name="Text Box Title" text="Enter text here" notAnswered="Not answered"/>]]></textbox>
       <textarea><![CDATA[<textarea name="Text Area Title" text="Enter text here" notAnswered="Not answered"/>]]></textarea>
       <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here" label="Enter label text here" checked="Checked" unchecked="Unchecked"/>]]></checkbox>
-      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media"/>]]></media>
+      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
@@ -58,7 +58,7 @@
       <textbox><![CDATA[<textbox name="Text Box Title" text="Enter text here" notAnswered="Not answered"/>]]></textbox>
       <textarea><![CDATA[<textarea name="Text Area Title" text="Enter text here" notAnswered="Not answered"/>]]></textarea>
       <checkbox><![CDATA[<checkbox name="Checkbox Title" text="Enter text here" label="Enter label text here" checked="Checked" unchecked="Unchecked"/>]]></checkbox>
-      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media"/>]]></media>
+      <media><![CDATA[<media name="Media Title" text="Enter text here" url="Select media" tip="Enter a Description for Accessibility"/>]]></media>
       <description><![CDATA[<description name="Description Title" text="Enter text here"/>]]></description>
       <line><![CDATA[<line />]]></line>
       <selectlist><![CDATA[<selectlist name="List Title" text="Enter text here" type="radio" display="vertical"/>]]></selectlist>
@@ -98,6 +98,7 @@
     <name label="Media Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100"/>
     <url label="Media" type="media"/>
+	<tip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility"/>
 
     <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
   </media>
