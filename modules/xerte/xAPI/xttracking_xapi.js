@@ -119,27 +119,27 @@ function XTSetOption(option, value)
             switch(value)
             {
                 case 'full_first':
-                    trackingmode = 'full';
-                    scoremode = 'first';
+                    trackingmode = "full";
+                    scoremode = "first";
                     mode = "normal";
                     break;
                 case 'minimal_first':
-                    trackingmode = 'minimal';
-                    scoremode = 'first';
+                    trackingmode = "minimal";
+                    scoremode = "first";
                     mode = "normal";
                     break;
                 case 'full':
-                    trackingmode = 'full';
-                    scoremode = 'last';
+                    trackingmode = "full";
+                    scoremode = "last";
                     mode = "normal";
                     break;
                 case 'minimal':
-                    trackingmode = 'minimal';
-                    scoremode = 'last';
+                    trackingmode = "minimal";
+                    scoremode = "last";
                     mode = "normal";
                     break;
                 case 'none':
-                    trackingmode = 'none';
+                    trackingmode = "none";
                     mode = "no-tracking";
                     break;
             }
@@ -238,6 +238,8 @@ function XTSetPageScore(page_nr, score)
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
 {
+    this.enterInteractionStamp = new Date();
+
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -249,14 +251,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
             target: {
                 id: "http://xerte.org.uk/xapi/questions/" + page_nr
             },
-            result:{
-                "page_nr": page_nr,
-                "ia_nr": ia_nr,
-                "ia_type": ia_type,
-                "ia_name": ia_name,
-                "correctanswer": correctanswer,
-                "feedback": feedback
-            }
+            timestamp : this.enterInteractionStamp
         }
     );
 
@@ -265,7 +260,10 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
 {
-    if ($.inArray([page_nr, ia_nr] , answeredQs) != -1) {
+    if (($.inArray([page_nr, ia_nr] , answeredQs) == -1 && scoremode == "first") || scoremode == "last") {
+
+        this.exitInteractionStamp = new Date();
+
         var statement = new TinCan.Statement(
             {
                 actor: {
@@ -278,13 +276,9 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
                     id: "http://xerte.org.uk/xapi/questions/" + page_nr
                 },
                 result: {
-                    "page_nr": page_nr,
-                    "ia_nr": ia_nr,
-                    "ia_type": ia_type,
-                    "result": result,
-                    "learneranswer": learneranswer,
-                    "feedback": feedback
-                }
+                    "response": result + ""
+                },
+                timestamp : this.exitInteractionStamp
             }
         );
 
