@@ -3,12 +3,13 @@ var scorm=false,
     lrsInstance,
     userEMail = "mailto:email@test.com";
 
-var trackingMode = "none",
+var trackingmode = "none",
 	mode = "none",
 	scoremode = "first",
 	nrpages,
 	lo_completed,
-	lo_passed;
+	lo_passed,
+    answeredQs = [];
 
 function XTInitialise()
 {
@@ -219,26 +220,59 @@ function XTSetPageScore(page_nr, score)
 
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
 {
-	// TODO: Is there a statement needed here?
-}
-
-function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
-{
     var statement = new TinCan.Statement(
         {
             actor: {
                 mbox: userEMail
             },
             verb: {
-                id: "http://adlnet.gov/expapi/verbs/answered"
+                id: "http://adlnet.gov/expapi/verbs/attempted"
             },
             target: {
-                id: "http://rusticisoftware.github.com/TinCanJS"
+                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+            },
+            result:{
+                "page_nr": page_nr,
+                "ia_nr": ia_nr,
+                "ia_type": ia_type,
+                "ia_name": ia_name,
+                "correctanswer": correctanswer,
+                "feedback": feedback
             }
         }
     );
 
     SaveStatement(statement);
+}
+
+function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
+{
+    if ($.inArray([page_nr, ia_nr] , answeredQs) != -1) {
+        var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://adlnet.gov/expapi/verbs/answered"
+                },
+                target: {
+                    id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                },
+                result: {
+                    "page_nr": page_nr,
+                    "ia_nr": ia_nr,
+                    "ia_type": ia_type,
+                    "result": result,
+                    "learneranswer": learneranswer,
+                    "feedback": feedback
+                }
+            }
+        );
+
+        answeredQs.push([page_nr, ia_nr]);
+        SaveStatement(statement);
+    }
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)

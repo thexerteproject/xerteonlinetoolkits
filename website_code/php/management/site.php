@@ -229,6 +229,17 @@ if(is_user_admin()){
     echo "</div>";
     echo "</div>";
 
+    echo "<div class=\"template\" id=\"xapidetails\"><p>" . MANAGEMENT_SITE_XAPI . " <button type=\"button\" class=\"xerte_button\" id=\"xapidetails_btn\" onclick=\"javascript:templates_display('xapidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"xapidetails_child\">";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_ENDPOINT . "<form><textarea id=\"site_xapi_endpoint\">" . $row['LRS_Endpoint'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_KEY . "<form><textarea id=\"site_xapi_key\">" . $row['LRS_Key'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_XAPI_SECRET . "<form><textarea id=\"site_xapi_secret\">" . $row['LRS_Secret'] . "</textarea></form></p>";
+
+    echo "</div>";
+
+
   echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
 
 
@@ -293,25 +304,9 @@ if(!isset($lti)) {
 
   }
     echo "</div>";
-    
-    
-    
-    echo "</div>";
-
-
 
     echo "</div>";
-    
-    echo "<div class=\"template\" id=\"xapidetails\"><p>" . MANAGEMENT_SITE_XAPI . " <button type=\"button\" class=\"xerte_button\" id=\"xapidetails_btn\" onclick=\"javascript:templates_display('xapidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"xapidetails_child\">";
-    
-    echo "<p>" . MANAGEMENT_SITE_XAPI_ENDPOINT . "<form><textarea id=\"site_xapi_endpoint\">" . $row['LRS_Endpoint'] . "</textarea></form></p>";
-    
-    echo "<p>" . MANAGEMENT_SITE_XAPI_KEY . "<form><textarea id=\"site_xapi_key\">" . $row['LRS_Key'] . "</textarea></form></p>";
-    
-    echo "<p>" . MANAGEMENT_SITE_XAPI_SECRET . "<form><textarea id=\"site_xapi_secret\">" . $row['LRS_Secret'] . "</textarea></form></p>";
-    
-   
-    
+
     echo "</div>";
 
 }else{
