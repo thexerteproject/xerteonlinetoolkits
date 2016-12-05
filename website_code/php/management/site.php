@@ -309,7 +309,6 @@ if(!isset($lti)) {
     echo "<p>" . MANAGEMENT_SITE_XAPI_KEY . "<form><textarea id=\"site_xapi_key\">" . $row['LRS_Key'] . "</textarea></form></p>";
     
     echo "<p>" . MANAGEMENT_SITE_XAPI_SECRET . "<form><textarea id=\"site_xapi_secret\">" . $row['LRS_Secret'] . "</textarea></form></p>";
-    
    
     
     echo "</div>";
