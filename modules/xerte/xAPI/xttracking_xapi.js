@@ -34,6 +34,8 @@ function XTInitialise()
 
 	if(lrsInstance != undefined)
     {
+		this.initStamp = new Date();
+		
         var statement = new TinCan.Statement(
             {
                 actor: {
@@ -45,7 +47,8 @@ function XTInitialise()
                 target: {
                     id: "http://rusticisoftware.github.com/TinCanJS"
                     //TODO: get the name for this activity
-                }
+                },
+                timestamp: this.initStamp
             }
         );
 
@@ -60,6 +63,8 @@ function XTTrackingSystem()
 
 function XTLogin(login, passwd)
 {
+	this.loginStamp = new Date();
+	
     var statement = new TinCan.Statement(
             {
                 actor: {
@@ -70,7 +75,8 @@ function XTLogin(login, passwd)
                 },
                 target: {
                     id: "http://rusticisoftware.github.com/TinCanJS"
-                }
+                },
+                timestamp: this.loginStamp
             }
         );
     
@@ -148,6 +154,8 @@ function XTSetOption(option, value)
 
 function XTEnterPage(page_nr, page_name)
 {
+	this.pageStart = new Date();
+	
     var statement = new TinCan.Statement(
             {
                 actor: {
@@ -158,7 +166,9 @@ function XTEnterPage(page_nr, page_name)
                 },
                 target: {
                     id: "http://rusticisoftware.github.com/TinCanJS"
-                }
+                },
+                timestamp: this.pageStart              	
+                
             }
         );
     
@@ -167,6 +177,8 @@ function XTEnterPage(page_nr, page_name)
 
 function XTExitPage(page_nr)
 {
+	this.exitPageStamp = new Date();
+	
     var statement = new TinCan.Statement(
             {
                 actor: {
@@ -177,7 +189,8 @@ function XTExitPage(page_nr)
                 },
                 target: {
                     id: "http://rusticisoftware.github.com/TinCanJS"
-                }
+                },
+                timestamp: this.exitPageStamp
             }
         );
     
@@ -192,6 +205,9 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 
 function XTSetPageScore(page_nr, score)
 {
+	this.pageEnd = new Date();
+	var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
+	
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -205,11 +221,13 @@ function XTSetPageScore(page_nr, score)
             },
             result:{
                 "completion": true,
-	            "success": true,
+	            "success": score >= lo_passed,
 	            "score": {
 	              "scaled": score / 100
-	            }
-            }
+	            },
+            	"duration": pageDuration
+            },
+            timestamp: this.pageEnd
             
         }
     );
