@@ -149,8 +149,13 @@ function setup(){
 
 	//add all the pages to the pages menu: this links bak to the same page
 	$(data).find('page').each( function(index, value){
-	
-		$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
+		
+		
+		if ($(this).attr('hidePage') != 'true') {
+			
+			$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
+			
+		}
 		
 	});
 	
@@ -238,180 +243,214 @@ function parseContent(pageIndex){
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
+	
+	// check if pageIndex exists & is unhidden
+	var pageFound = true;
+	
+	if ($(data).find('page').length > 0) {
+		if (pageIndex > $(data).find('page').length - 1) {
+			pageIndex = 0;
+		}
+		
+	} else {
+		// project contains no pages
+		pageFound = false;
+	}
+	
+	var count = 0;
+	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && count != $(data).find('page').length) {
+		// page is hidden
+		pageIndex = pageIndex == $(data).find('page').length - 1 ? 0 : pageIndex + 1;
+		count++;
+	}
+	
+	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true') {
+		pageFound = false;
+	}
+	
+	if (pageFound == true) {
+	
+		//which page is this from the document?
+		var page = $(data).find('page').eq(pageIndex);
+		
+		//set the main page title and subtitle			
+		$('#pageTitle').text( page.attr('name') );
+		$('#pageSubTitle').text( page.attr('subtitle') );
+		
+		//create the sections
+		page.find('section').each( function(index, value){
+			
+			if ($(this).attr('hidePage') != 'true') {
+				
+				var sectionIndex = index;	
+				
+				//add a TOC entry
+				$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
+				
+				//add the section header
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
 
-	//which page is this from the document?
-	var page = $(data).find('page').eq(pageIndex);
-	
-	//set the main page title and subtitle			
-	$('#pageTitle').text( page.attr('name') );
-	$('#pageSubTitle').text( page.attr('subtitle') );
-	
-	//create the sections
-	page.find('section').each( function(index, value){
-	
-		var sectionIndex = index;	
+				//add the section contents
+				$(this).children().each( function(index, value){
 				
-		//add a TOC entry
-		$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
-		
-		//add the section header
-		var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
-
-		//add the section contents
-		$(this).children().each( function(index, value){
-		
-			var itemIndex = index;
-		
-			if (this.nodeName == 'text'){
-				section.append( '<p>' + $(this).text() + '</p>');
-			}
-			
-			if (this.nodeName == 'script'){
-			
-				section.append( '<script>' + $(this).text() + '</script>');
-			}
-			
-			if (this.nodeName == 'markup'){
-			
-				if ( $(this).attr('url') != undefined ){
+					var itemIndex = index;
 				
-					section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
-				
-				} else {
-				
-					section.append( $(this).text() );
-				}
-				
-			}
-			
-			if (this.nodeName == 'link'){
-			
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
-				
-				section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
-				
-			}
-			
-			if (this.nodeName == 'canvas'){
-			
-				var style;
-				
-				if ( $(this).attr('style') != undefined){
-				
-					style = ' style="' + $(this).attr('style') + '" ';
-				
-				} else {
-				
-					style = '';
+					if (this.nodeName == 'text'){
+						section.append( '<p>' + $(this).text() + '</p>');
+					}
 					
-				}
-				
-				var cls;
-				
-				if ( $(this).attr('class') != undefined){
-				
-					cls = ' class="' + $(this).attr('class') + '" ';
-				
-				} else {
-				
-					cls = '';
+					if (this.nodeName == 'script'){
 					
-				}
-				
-				section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
-				
-			}
-			
-			if (this.nodeName == 'image'){
-				section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
-			}
-			
-			if (this.nodeName == 'audio'){
-				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-			}
-			
-			if (this.nodeName == 'video'){
-				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
-			}
-			
-			if (this.nodeName == 'pdf'){
-				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
-			}
-			
-			if (this.nodeName == 'navigator'){
-			
-				if ($(this).attr('type') == 'Tabs'){
-					makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
-				}
-				
-				if ($(this).attr('type') == 'Accordion'){
-					makeAccordion( $(this), section, sectionIndex, itemIndex );
-				}
-				
-				if ($(this).attr('type') == 'Pills'){
-					makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
-				}
-				
-				if ($(this).attr('type') == 'Carousel'){
-					makeCarousel(  $(this), section, sectionIndex, itemIndex );
-				}
-			}
+						section.append( '<script>' + $(this).text() + '</script>');
+					}
+					
+					if (this.nodeName == 'markup'){
+					
+						if ( $(this).attr('url') != undefined ){
+						
+							section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+						
+						} else {
+						
+							section.append( $(this).text() );
+						}
+						
+					}
+					
+					if (this.nodeName == 'link'){
+					
+						var url = $(this).attr('url');
+						var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+						var options = '';
+						options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+						options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+						options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+						options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+						options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+						options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+						options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+						options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+						
+						section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+						
+					}
+					
+					if (this.nodeName == 'canvas'){
+					
+						var style;
+						
+						if ( $(this).attr('style') != undefined){
+						
+							style = ' style="' + $(this).attr('style') + '" ';
+						
+						} else {
+						
+							style = '';
+							
+						}
+						
+						var cls;
+						
+						if ( $(this).attr('class') != undefined){
+						
+							cls = ' class="' + $(this).attr('class') + '" ';
+						
+						} else {
+						
+							cls = '';
+							
+						}
+						
+						section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+						
+					}
+					
+					if (this.nodeName == 'image'){
+						section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+					}
+					
+					if (this.nodeName == 'audio'){
+						section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+					}
+					
+					if (this.nodeName == 'video'){
+						section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+					}
+					
+					if (this.nodeName == 'pdf'){
+						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+					}
+					
+					if (this.nodeName == 'navigator'){
+					
+						if ($(this).attr('type') == 'Tabs'){
+							makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
+						}
+						
+						if ($(this).attr('type') == 'Accordion'){
+							makeAccordion( $(this), section, sectionIndex, itemIndex );
+						}
+						
+						if ($(this).attr('type') == 'Pills'){
+							makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
+						}
+						
+						if ($(this).attr('type') == 'Carousel'){
+							makeCarousel(  $(this), section, sectionIndex, itemIndex );
+						}
+					}
 
+				});
+				
+				//a return to top button
+				section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
+
+				//add the section to the document
+				$('#mainContent').append(section);
+				
+				// Resolve all text box added <img> and <a> src/href tags to proper urls
+				$('#mainContent').find('img,a').each(function() {
+					var $this = $(this),
+						val = $this.attr('src') || $this.attr('href'),
+						attr_name = $this.attr('src') ? 'src' : 'href';
+
+					if (val.substring(0, 16) == "FileLocation + '") {
+						$this.attr(attr_name, eval(val));
+					}
+				});
+				
+			}
 		});
 		
-		//a return to top button
-		section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
-
-		//add the section to the document
-		$('#mainContent').append(section);
+		//finish initialising the piece now we have the content loaded
+		initMedia();
 		
-		// Resolve all text box added <img> and <a> src/href tags to proper urls
-		$('#mainContent').find('img,a').each(function() {
-			var $this = $(this),
-				val = $this.attr('src') || $this.attr('href'),
-				attr_name = $this.attr('src') ? 'src' : 'href';
+		initSidebar();
+		
+		if (startHash == "")
+			window.scroll(0,0);
+		else
+			location.href = startHash;
 
-			if (val.substring(0, 16) == "FileLocation + '") {
-				$this.attr(attr_name, eval(val));
-			}
-		});
-	});
-	
-	//finish initialising the piece now we have the content loaded
-	initMedia();
-	
-	initSidebar();
-	
-	if (startHash == "")
-		window.scroll(0,0);
-	else
-		location.href = startHash;
+		// Queue reparsing of MathJax - fails if no network connection
+		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-    // Queue reparsing of MathJax - fails if no network connection
-    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-	//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
-	$('#toc a:first').tab('show');
-	
-	//an event for user defined code to know when loading is done
-	$(document).trigger('contentLoaded');
-	
-	//force facebook / twitter objects to initialise
-	twttr.widgets.load();
-	
-	FB.XFBML.parse(); 
-	
-	
+		//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
+		$('#toc a:first').tab('show');
+		
+		//an event for user defined code to know when loading is done
+		$(document).trigger('contentLoaded');
+		
+		//force facebook / twitter objects to initialise
+		twttr.widgets.load();
+		
+		FB.XFBML.parse(); 
+		
+	} else {
+		
+		console.log("project contains no (unhidden) pages");
+		
+	}
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){

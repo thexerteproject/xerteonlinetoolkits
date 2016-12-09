@@ -1,2 +1,3 @@
 <commonNodes>
+	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 </commonNodes>

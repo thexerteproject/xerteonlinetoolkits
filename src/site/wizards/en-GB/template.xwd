@@ -26,9 +26,11 @@
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
 
-	</page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title"/>
+		
+		<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
 
 		<newNodes>
 			<pdf><![CDATA[<pdf name="Name" url="Select File" width="500" height="350"/>]]></pdf>
