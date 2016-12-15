@@ -51,6 +51,8 @@
   
   <authorSupport label="Author Support is ON: text shown in red will not appear in live projects."/>
   
+  <hiddenPage label="This page will be hidden in live projects"/>
+  
   <tick label="Tick"/>
   
   <cross label="Cross"/>

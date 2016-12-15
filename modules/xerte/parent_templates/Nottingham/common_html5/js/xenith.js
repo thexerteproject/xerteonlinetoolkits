@@ -170,7 +170,7 @@ x_projectDataLoaded = function(xmlData) {
     x_pages = xmlData.children();
 	var pageToHide = [];
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true") {
+		if ($(this)[0].getAttribute("hidePage") != "true" || x_params.authorSupport == "true") {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
@@ -403,7 +403,7 @@ function x_setUp() {
 		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
 			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
-				x_authorSupport = "false";
+				x_params.authorSupport = "false";
 			} else {
 				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
 				$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
@@ -1163,7 +1163,10 @@ function x_changePage(x_gotoPage) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
 		}
     }
-    $("#x_headerBlock h2").html(pageTitle);
+	
+	var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+	
+    $("#x_headerBlock h2").html(pageTitle + extraTitle);
 
     x_updateCss(false);
 
@@ -1876,7 +1879,6 @@ function x_calcVariables(thisVar, recalc, checkDefault) {
 			thisVar.ok = false;
 			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
 		}
-		
 	}
 	
 	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
@@ -2136,7 +2138,7 @@ function x_insertText(node, exclude) {
 
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
-	 x_fillWindow = true;
+	x_fillWindow = true;
 	 
     if (x_params.responsive == "true") {
         for (var i = 0; i < x_responsive.length; i++) {
