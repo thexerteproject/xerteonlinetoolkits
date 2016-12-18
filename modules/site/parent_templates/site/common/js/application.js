@@ -79,7 +79,7 @@ function loadContent(){
 	
 	if (startHash.substring(1,5) == "page") {
 	
-		startPage = parseInt(startHash.substring(5, 6), 10) - 1;
+		startPage = parseInt(startHash.substring(5), 10) - 1;
 		
 	}
 	
