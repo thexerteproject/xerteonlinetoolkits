@@ -11,6 +11,7 @@
 		<styles type="script" height="200" optional="true" label="Styles"/>
 		<logoR type="Media" optional="true" label="Header Logo (Right)"/>
 		<logoL type="Media" optional="true" label="Header Logo (Left)"/>
+		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
 		
 		<newNodes>
 		</newNodes>

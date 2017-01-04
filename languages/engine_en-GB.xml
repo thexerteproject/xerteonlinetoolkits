@@ -53,6 +53,8 @@
   
   <hiddenPage label="This page will be hidden in live projects"/>
   
+  <hiddenSection label="This section will be hidden in live projects"/>
+  
   <tick label="Tick"/>
   
   <cross label="Cross"/>

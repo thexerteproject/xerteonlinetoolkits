@@ -19,11 +19,13 @@
 $(document).ready(init);
 
 var data;
+var languageData;
 var startPage = 0;
 var startHash = "";
+var authorSupport = false;
 
-function init(){	
-
+function init(){
+	
 	loadContent();
 };
 
@@ -70,7 +72,7 @@ function loadContent(){
 			
 			//step one - libraries?
 			loadLibraries();
-						
+			
 		}
 	
 	});
@@ -103,6 +105,8 @@ function loadLibraries(){
 		$('head').append('<style type="text/css">' +  $(data).find('learningObject').attr('styles') + '</style>');
 	
 	}
+	
+	var lang = $(data).find('learningObject').attr('language');
 
 	if ( $(data).find('learningObject').attr('libs') != undefined){
 	
@@ -120,9 +124,7 @@ function loadLibraries(){
 				if (loaded == libs.length){
 					
 					//step two
-					setup();
-					//step three
-					parseContent(startPage);
+					getLangData(lang)
 					
 				}
 				
@@ -132,13 +134,48 @@ function loadLibraries(){
 		
 	} else {
 		
-		setup();
-
-		parseContent(startPage);
+		getLangData(lang)
 		
 	}
 	
 
+}
+
+function getLangData(lang) {
+	
+	if (lang == undefined || lang == "undefined" || lang == "") {
+		lang = "en-GB";
+	}
+	
+	$.ajax({
+		type: "GET",
+		url: "languages/engine_" + lang + ".xml",
+		dataType: "xml",
+		
+		success: function (xml) {
+			
+			languageData = $(xml).find("language");
+			
+			//step three
+			setup();
+			
+			// step four
+			parseContent(startPage);
+			
+		},
+		
+		error: function () {
+			
+			if (lang != "en-GB") { // no language file found - try default GB one
+				getLangData("en-GB");
+			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
+				languageData = $("");
+				setup();
+				parseContent(startPage);
+			}
+			
+		}
+	});
 }
 
 function formatColour(col) {
@@ -146,12 +183,17 @@ function formatColour(col) {
 }
 
 function setup(){
+	
+	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
+		
+		authorSupport = true;
+		
+	}
 
 	//add all the pages to the pages menu: this links bak to the same page
 	$(data).find('page').each( function(index, value){
 		
-		
-		if ($(this).attr('hidePage') != 'true') {
+		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
 			
 			$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
 			
@@ -258,13 +300,13 @@ function parseContent(pageIndex){
 	}
 	
 	var count = 0;
-	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && count != $(data).find('page').length) {
+	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false && count != $(data).find('page').length) {
 		// page is hidden
 		pageIndex = pageIndex == $(data).find('page').length - 1 ? 0 : pageIndex + 1;
 		count++;
 	}
 	
-	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true') {
+	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
 		pageFound = false;
 	}
 	
@@ -274,13 +316,17 @@ function parseContent(pageIndex){
 		var page = $(data).find('page').eq(pageIndex);
 		
 		//set the main page title and subtitle			
-		$('#pageTitle').text( page.attr('name') );
-		$('#pageSubTitle').text( page.attr('subtitle') );
+		$('#pageTitle').text( page.attr('name'));
+		
+		var msg = languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
+		var extraTitle = page.attr('hidePage') == 'true' ? ' (' + msg + ')' : '';
+		
+		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
 		//create the sections
 		page.find('section').each( function(index, value){
 			
-			if ($(this).attr('hidePage') != 'true') {
+			if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
 				
 				var sectionIndex = index;	
 				
@@ -288,7 +334,10 @@ function parseContent(pageIndex){
 				$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
 				
 				//add the section header
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
+				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
+				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p>' + msg + '</p>' : '';
+				
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + '</div></section>');
 
 				//add the section contents
 				$(this).children().each( function(index, value){
