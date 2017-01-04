@@ -170,7 +170,7 @@ x_projectDataLoaded = function(xmlData) {
     x_pages = xmlData.children();
 	var pageToHide = [];
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true" || x_params.authorSupport == "true") {
+		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
