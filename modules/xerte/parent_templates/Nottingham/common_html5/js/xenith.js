@@ -1162,11 +1162,13 @@ function x_changePage(x_gotoPage) {
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
 		}
+		
+		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+		
+		pageTitle = pageTitle + extraTitle;
     }
 	
-	var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
-	
-    $("#x_headerBlock h2").html(pageTitle + extraTitle);
+    $("#x_headerBlock h2").html(pageTitle);
 
     x_updateCss(false);
 
