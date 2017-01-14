@@ -1,0 +1,17 @@
+<wizard menus="Login">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <login><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></login> 
+	</newNodes>  
+  </pageWizard>
+  
+  <!-- TEXT PAGE=============================================== -->
+  <login label="Page Text" type="text"  height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true" />
+
+    <textWidth label="Text Width" options="Small,Medium,Large,Full" type="comboBox" data="300,450,600,760" defaultValue="300" width="100" optional="true"/>
+    <subSuper label="Superscript Support" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated. Sub/Superscripts now work by default."/>
+    
+  </login>  
+</wizard>

@@ -173,7 +173,11 @@ class XerteXMLInspector
         // Convert HTML entities to single characters
         $name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
         $this->name = $name;
+        
+        
         $this->models = array();
+        $this->addModel("login");
+        
         $nodes = $this->xml->xpath('/*/*');
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
