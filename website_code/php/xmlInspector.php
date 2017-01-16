@@ -120,7 +120,7 @@ class XerteXMLInspector
         return $ok;
     }
 
-    public function loadTemplateXML($name)
+    public function loadTemplateXML($name, $resultPage)
     {
         _debug("Trying to simplexml_load_file : $name");
         $this->fname = $name;
@@ -175,10 +175,13 @@ class XerteXMLInspector
         $this->name = $name;
 
         $this->models = array();
-        $this->addModel("login");
-        
+        //$this->addModel("login");
+        if($resultPage){		
+       		$this->xml->xpath('/*')[0]->addChild('results');
+       		$this->xml->asXML($this->fname);
+        }
         $nodes = $this->xml->xpath('/*/*');
-       
+       	
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
         }
@@ -200,9 +203,9 @@ class XerteXMLInspector
             libxml_disable_entity_loader($original_el_setting);
         }
         libxml_use_internal_errors($orig_error_setting);
-
+		/*
         $updatedXML = new SimpleXMLElement($this->xml->asXML());
-        $oldNodes = $updatedXML->xpath('/*/*');
+        $oldNodes = $updatedXML->xpath('/* /*');
 
         foreach ($oldNodes as $node)
         {
@@ -217,6 +220,7 @@ class XerteXMLInspector
         }
 
         $updatedXML->asXML($this->fname);
+        */
     }
 
     public function getUsedModels()

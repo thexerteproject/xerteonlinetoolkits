@@ -136,14 +136,14 @@ $options = array(
 
 
 $zipfile = Xerte_Zip_Factory::factory($zipfile_tmpname, $options);
-
+$scorm = $_GET['scorm'];
 
 /*
  * Copy the core files over from the parent folder
  */
 copy($dir_path . "data.xml", $dir_path . "template.xml");
 $xml = new XerteXMLInspector();
-$xml->loadTemplateXML($dir_path . 'template.xml');
+$xml->loadTemplateXML($dir_path . 'template.xml', $scorm == '2004');
 
 if ($fullArchive) {
     _debug("Full archive");
