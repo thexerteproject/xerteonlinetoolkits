@@ -179,6 +179,9 @@ class XerteXMLInspector
         $this->addModel("login");
         
         $nodes = $this->xml->xpath('/*/*');
+
+        $this->xml->xpath('/*')[0]->addChild('login');
+       
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
         }
@@ -200,6 +203,10 @@ class XerteXMLInspector
             libxml_disable_entity_loader($original_el_setting);
         }
         libxml_use_internal_errors($orig_error_setting);
+        $this->xml->asXML($this->fname);
+        _debug($this->xml->asXML());
+        _debug(print_r($this->xml, true));
+
     }
 
     public function getUsedModels()
