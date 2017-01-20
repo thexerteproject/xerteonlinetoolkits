@@ -179,6 +179,7 @@ color: #6FD9D9;
 }
 
 section {
+	clear: both;
 	margin-bottom: 20px;
 }
 
