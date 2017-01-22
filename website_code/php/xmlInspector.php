@@ -176,12 +176,17 @@ class XerteXMLInspector
 
         $this->models = array();
         //$this->addModel("login");
-        if($resultPage){		
+
+        //Gets the value of resultpage (true/false)
+        $resultpageEnabled = (string)($this->xml->xpath('/*')[0]->attributes()->resultpage);
+
+        //Shows the resultpage
+        if($resultpageEnabled === "true" && $resultPage){
        		$this->xml->xpath('/*')[0]->addChild('results');
        		$this->xml->asXML($this->fname);
         }
         $nodes = $this->xml->xpath('/*/*');
-       	
+
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
         }
