@@ -50,7 +50,7 @@
 			$("#startTime").html(results.start);
 			results.interactions.forEach(function(x)
 			{
-				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td></tr>");		
+				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td>" + x.weighting + "</td></tr>");		
 			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -109,10 +109,10 @@
 	<h2>Results</h2>
 	<br>
 	Average: <span id="averageScore"></span><br>
-	Start: <span id="startTime"></span><br>
+	Start time: <span id="startTime"></span><br>
 	Duration: <span id="totalDuration"></span><br>
 	<table id="questionScores">
-	<tr><th>Name</th><th>Score</th><th>Duration</th></tr>
+	<tr><th>Name</th><th>Score</th><th>Duration</th><th>Weighting</th></tr>
 	
 	</table>
 </div>
