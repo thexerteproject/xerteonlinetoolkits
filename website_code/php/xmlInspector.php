@@ -173,7 +173,8 @@ class XerteXMLInspector
         // Convert HTML entities to single characters
         $name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
         $this->name = $name;
-
+        
+        
         $this->models = array();
         //$this->addModel("login");
 
@@ -187,45 +188,8 @@ class XerteXMLInspector
         }
         $nodes = $this->xml->xpath('/*/*');
 
-        foreach ($nodes as $node) {
-            $this->addModel($node->getName());
-        }
-        $this->mediaIsUsed = false;
-        $str = (string)$this->xml['media'];
-        if (strlen($str) > 0) {
-            $this->mediaIsUsed = true;
-        }
-        if (strlen((string)$this->xml['theme'])>0)
-        {
-            $this->theme=(string)$this->xml['theme'];
-        }
-        else
-        {
-            $this->theme = "default";
-        }
-        if (function_exists('libxml_disable_entity_loader'))
-        {
-            libxml_disable_entity_loader($original_el_setting);
-        }
-        libxml_use_internal_errors($orig_error_setting);
-		/*
-        $updatedXML = new SimpleXMLElement($this->xml->asXML());
-        $oldNodes = $updatedXML->xpath('/* /*');
+        $this->xml->asXML($this->fname);
 
-        foreach ($oldNodes as $node)
-        {
-            unset($node[0]);
-        }
-
-        $updatedXML->xpath('/*')[0]->addChild('login');
-
-        foreach ($nodes as $node)
-        {
-            $updatedXML->xpath('/*')[0]->addChild($node->getName(), $node->asXML());
-        }
-
-        $updatedXML->asXML($this->fname);
-        */
     }
 
     public function getUsedModels()
