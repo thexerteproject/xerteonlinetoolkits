@@ -183,6 +183,10 @@ section {
 	margin-bottom: 20px;
 }
 
+.sectionSubLinks.vlist .subLink {
+	display: block;
+}
+
 /* --HEADER-------------------------------------------------------------- */
 
 #overview div.logoR, #overview div.logoL {
@@ -325,4 +329,9 @@ section {
   #overview.logoR .logoR, #overview.logoL .logoL {
     float:none;
   }
+}
+
+
+.alertMsg {
+	color: red;
 }

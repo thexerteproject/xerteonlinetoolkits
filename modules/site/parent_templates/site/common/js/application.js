@@ -25,7 +25,6 @@ var startHash = "";
 var authorSupport = false;
 
 function init(){
-	
 	loadContent();
 };
 
@@ -319,7 +318,7 @@ function parseContent(pageIndex){
 		$('#pageTitle').text( page.attr('name'));
 		
 		var msg = languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
-		var extraTitle = page.attr('hidePage') == 'true' ? ' (' + msg + ')' : '';
+		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
 		
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
@@ -335,15 +334,30 @@ function parseContent(pageIndex){
 				
 				//add the section header
 				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
-				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p>' + msg + '</p>' : '';
+				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
 				
-				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + '</div></section>');
+				var links = '';
+				
+				if ($(this).attr('links') != undefined && $(this).attr('links') != "none") {
+					links = '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>';
+				}
+				
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + links + '</div></section>');
 
 				//add the section contents
 				$(this).children().each( function(index, value){
-				
+					
+					if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+						
+						if ($(this).attr('showTitle') == 'true') {
+							section.find('.sectionSubLinks').append('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</a> </span>');
+						}
+						
+						section.append( '<h2 id="page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
+					}
+					
 					var itemIndex = index;
-				
+					
 					if (this.nodeName == 'text'){
 						section.append( '<p>' + $(this).text() + '</p>');
 					}
@@ -419,11 +433,13 @@ function parseContent(pageIndex){
 					}
 					
 					if (this.nodeName == 'audio'){
-						section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 					}
 					
 					if (this.nodeName == 'video'){
-						section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+						section.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 					}
 					
 					if (this.nodeName == 'pdf'){
@@ -450,6 +466,12 @@ function parseContent(pageIndex){
 					}
 
 				});
+				
+				if (section.find('.sectionSubLinks a').length == 0) {
+					
+					section.find('.sectionSubLinks').remove();
+					
+				}
 				
 				//a return to top button
 				section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
@@ -544,7 +566,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var i = index;
 		
 		$(this).children().each( function(index, value){
-		
+			
+			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
+			}
+			
 			if (this.nodeName == 'text'){
 				tab.append( '<p>' + $(this).text() + '</p>');
 				
@@ -558,11 +584,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				tab.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 			}
 			
 			if (this.nodeName == 'link'){

@@ -32,28 +32,29 @@
 		<name type="TextInput" label="Section Title"/>
 		
 		<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
+		
+		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 
 		<newNodes>
-			<pdf><![CDATA[<pdf name="Name" url="Select File" width="500" height="350"/>]]></pdf>
-			<markup><![CDATA[<markup name="Name">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
-			<canvas><![CDATA[<canvas name="Name" id="EnterID" width="500" height="350"/>]]></canvas>
-			<script><![CDATA[<script name="Name">//javascript</script>]]></script>
-			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
-			<navigator><![CDATA[<navigator name="Name" type="Tabs"/>]]></navigator>
-			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
-			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
-			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text"/>]]></image>
-			<text><![CDATA[<text name="Name">Enter Text Here</text>]]></text>
+			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select File" width="500" height="350"/>]]></pdf>
+			<markup><![CDATA[<markup name="Title" showTitle="true">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
+			<canvas><![CDATA[<canvas name="Title" showTitle="true" id="EnterID" width="500" height="350"/>]]></canvas>
+			<script><![CDATA[<script name="Title">//javascript</script>]]></script>
+			<link><![CDATA[<link name="Title" url="Enter URL..."/>]]></link>
+			<navigator><![CDATA[<navigator name="Title" showTitle="true" type="Tabs"/>]]></navigator>
+			<video><![CDATA[<video name="Title" showTitle="true" url="Select File..."/>]]></video>
+			<audio><![CDATA[<audio name="Title" showTitle="true" url="Select File..."/>]]></audio>
+			<image><![CDATA[<image name="Title" showTitle="true" url="Select File..." alt="Alt Text"/>]]></image>
+			<text><![CDATA[<text name="Title" showTitle="true">Enter Text Here</text>]]></text>
 		</newNodes>
 
 	</section><link icon="icLink" menuItem="Link" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<url type="TextInput" label="URL"/>
-
+		
 		<width label="Width" type="textInput" optional="true" default="800"/>
 		<height label="Height" type="textInput" optional="true" default="600"/>
-
 		<scrollbars type="ComboBox" width="80" options="yes,no" data="yes,no" label="Scrollbars" optional="true"/>
 		<location type="ComboBox" width="80" options="yes,no" data="yes,no" label="Location" optional="true"/>
 		<status type="ComboBox" width="80" options="yes,no" data="yes,no" label="Status" optional="true"/>
@@ -65,51 +66,61 @@
 
 	</link><markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
 		<url type="Media" label="HTML File" optional="true" default="Select HTML File..."/>
 
 	</markup><text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</text><pdf icon="icPDF" menuItem="PDF Document" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<url type="Media" label="PDF Document File"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</pdf><canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<id type="TextInput" label="ID"/>
 		<width type="TextInput" label="Width"/>
 		<height type="TextInput" label="Height"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
 		<class type="TextInput" label="Class" optional="true"/>
 		<style type="TextInput" label="Style" optional="true"/>
 
 	</canvas><script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" divider="true" advanced="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 
 	</script><image icon="icImage" height="250" menuItem="Image" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<url type="Media" label="Image File"/>
 		<alt type="TextInput" label="Alt Text"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</image><audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<url type="Media" label="Audio File"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</audio><video icon="icFilm" height="250" menuItem="Video" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<url type="Media" label="Video File"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</video><navigator icon="icPages" menuItem="Navigator" remove="true">
 
-		<name type="TextInput" label="Name"/>
+		<name type="TextInput" label="Title"/>
 		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" width="120"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 		<newNodes>
 
@@ -123,12 +134,12 @@
 
 		<newNodes>
 			
-			<pdf><![CDATA[<pdf name="Name" url="Select File" width="500" height="350"/>]]></pdf>
-			<link><![CDATA[<link name="Name" url="Enter URL..."/>]]></link>
-			<video><![CDATA[<video name="Name" url="Select File..."/>]]></video>
-			<audio><![CDATA[<audio name="Name" url="Select File..."/>]]></audio>
-			<image><![CDATA[<image name="Name" url="Select File..." alt="Alt Text"/>]]></image>
-			<text><![CDATA[<text name="Name">Enter Text Here</text>]]></text>
+			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select File" width="500" height="350"/>]]></pdf>
+			<link><![CDATA[<link name="Title" url="Enter URL..."/>]]></link>
+			<video><![CDATA[<video name="Title" showTitle="true" url="Select File..."/>]]></video>
+			<audio><![CDATA[<audio name="Title" showTitle="true" url="Select File..."/>]]></audio>
+			<image><![CDATA[<image name="Title" showTitle="true" url="Select File..." alt="Alt Text"/>]]></image>
+			<text><![CDATA[<text name="Title" showTitle="true">Enter Text Here</text>]]></text>
 
 		</newNodes>
 	</pane></wizard>
