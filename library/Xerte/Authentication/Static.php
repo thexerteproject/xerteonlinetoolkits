@@ -49,6 +49,14 @@ class Xerte_Authentication_Static extends Xerte_Authentication_Abstract
         return $this->_record['surname'];
     }
 
+    public function getEmail()
+    {
+        if (isset($this->_record['email'])) {
+            return $this->_record['email'];
+        }
+        return null;
+    }
+
     public function check()
     {
         return true;

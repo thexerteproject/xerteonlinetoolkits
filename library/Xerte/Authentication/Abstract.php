@@ -67,6 +67,11 @@ abstract class Xerte_Authentication_Abstract
     abstract public function getSurname();
 
     /**
+     * @return string user's e-mail (if set, null otherwise)
+     */
+    abstract public function getEmail();
+
+    /**
      * @param StdClass $xerte_toolkits_site
      */
     public function __construct($xerte_toolkits_site)

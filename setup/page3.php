@@ -177,6 +177,7 @@ echo "<select name=\"authentication_method\" style=\"padding: 0.4em 0.15em; \">
     		<option value=\"Static\">Static</option>
     		<option value=\"Moodle\">Moodle</option>
     		<option value=\"Saml2\">Saml2</option>
+    		<option value=\"OAuth2\">OAuth2</option>
   		</select>";
 
 echo "<br><br>";
