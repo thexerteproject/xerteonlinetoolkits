@@ -63,11 +63,25 @@ function access($attr, $path, $data, $volume) {
 		:  null;                                    // else elFinder decide it itself
 }
 
+function sanitizeName($cmd, $result, $args, $elfinder)
+{
+    $files = $result['added'];
+    foreach ($files as $file) {
+        $filename = str_replace(' ', '_' , $file[' name']);
+        $arg = array('target' => $file['hash'], 'name' => $filename);
+        $elfinder->exec('rename', $arg);
+    }
+
+    return true;
+}
 
 // Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
 $opts = array(
 	// 'debug' => true,
+    'bind' => array(
+        'mkdir mkfile rename duplicate upload rm paste' => 'sanitizeName'
+    ),
 	'roots' => array(
 		array(
 			'driver'        => 'LocalFileSystem',   // driver for accessing file system (REQUIRED)
