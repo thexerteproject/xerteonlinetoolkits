@@ -363,11 +363,11 @@
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-				var l_placeholder, l_draglabel
+				var l_placeholder;
 		
-				if($this.data("currentTarget") != "" && $("<div/>").html($this.data("currentTarget")).text() != undefined)
+				if($this.data("currentTarget") != "" && $this.data("currentTarget").text() != undefined)
 				{
-					l_placeholder = $("<div/>").html($this.data("currentTarget")).text().trim();
+					l_placeholder = $this.data("currentTarget").text().trim();
 					
 				}else{
 					l_placeholder = "";
@@ -410,7 +410,7 @@
             	function(i)
             	{
             		
-            		correctOptions = []
+            		correctOptions = [];
             		var correctOption={};
             		var placeholder = $("<div/>").html(this.getAttribute("p1")).text();
             		var draglabel	= $("<div/>").html(this.getAttribute("p2")).text();
