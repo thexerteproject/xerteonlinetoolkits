@@ -222,7 +222,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
-    $version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
+    $version = getVersion();
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $buffer = str_replace("%VERSION%", $version , $buffer);
@@ -271,7 +271,7 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
-    $version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
+    $version = getVersion();
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
     $scorm_html_page_content = str_replace("%VERSION%", $version , $scorm_html_page_content);

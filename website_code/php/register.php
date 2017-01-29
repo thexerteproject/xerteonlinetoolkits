@@ -52,7 +52,7 @@ if ($_SESSION['toolkits_logon_id'] == "site_administrator")
     {
         $uuid = $res['uuid'];
     }
-    $version=file($xerte_toolkits_site->root_file_path . "version.txt");
+    $version = getVersion();
     header("Location: http://www.xerte.org.uk/index.php?option=com_chronoforms5&chronoform=XerteRegistrationForm&xot_uid=" . $uuid . "&version=" . urlencode($version[0]) . "&site=" . $xerte_toolkits_site->site_url . "&name=" . $xerte_toolkits_site->site_name);
 }
 else

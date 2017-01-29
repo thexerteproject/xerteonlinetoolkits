@@ -110,7 +110,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
 
-    $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+    $version = getVersion();
 
     //$edit_site_logo = $xerte_toolkits_site->site_logo;
     //$pos = strrpos($edit_site_logo, '/') + 1;
