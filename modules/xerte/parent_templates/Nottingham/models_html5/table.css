@@ -1,0 +1,16 @@
+/* table.html */
+
+	#table {
+		width:	100%;
+	}
+	
+	#tableName {
+		text-align:		center;
+		font-weight:	bold;
+		margin-bottom:	10px;
+	}
+	
+	#footnote {
+		margin-top:	10px;
+	}
+	

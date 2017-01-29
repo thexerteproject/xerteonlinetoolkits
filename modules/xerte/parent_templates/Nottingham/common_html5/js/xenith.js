@@ -1125,6 +1125,8 @@ function x_changePage(x_gotoPage) {
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
+        $("#page_model_css").remove();
+        $("#page_theme_css").remove();
 		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
@@ -1349,6 +1351,11 @@ function x_setUpPage() {
         }
     }
 
+    var modelfile = x_pageInfo[x_currentPage].type;
+    x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", undefined, false, "page_model_css");
+    if (x_params.theme != 'default') {
+        x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', undefined, false, "page_theme_css");
+    }
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
@@ -2165,11 +2172,15 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable) {
+function x_insertCSS(href, func, disable, id) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
+    if (id != undefined)
+	{
+		css.id = id;
+	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {

@@ -1,0 +1,26 @@
+/* buttonNav.html */
+	
+	#pageContents .panel {
+		padding-bottom:	5px;
+	}
+	
+	#infoHolder {
+		overflow:	auto;
+	}
+	
+	#pageContents .pageImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#infoHolder .pageImg img {
+		opacity:	0;
+		filter:		alpha(opacity=0);
+	}
+	
+	#btnHolder {
+		text-align:		center;
+		margin-bottom:		10px;
+		margin-right:	0px; /* over-ride ui style */
+	}
+	

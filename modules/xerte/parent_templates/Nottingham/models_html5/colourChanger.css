@@ -1,0 +1,11 @@
+/* colourChanger.html */
+
+	#colourChangerHolder {
+		padding: 0 5px 0 5px;
+	}
+
+	#colourChangerOptions {
+		display:		block;
+		text-align:		left;
+	}
+

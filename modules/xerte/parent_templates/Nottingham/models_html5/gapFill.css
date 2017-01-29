@@ -1,0 +1,90 @@
+/* gapFill.html */
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#textHolder {
+		margin-bottom:	10px;
+	}
+	
+	#targetHolder .target {
+		display:		inline-block;
+		text-align:		center;
+		vertical-align:	middle;
+		padding:		5px;
+		margin:			3px 0 5px 0;
+	}
+	
+	#targetHolder input {
+		margin:		5px 0;
+		text-align:	center;
+	}
+	
+	
+	#targetHolder input[readonly], #targetHolder .target.correct {
+		color:			green;
+		border-color:	transparent;
+	}
+
+	#targetHolder .target.incorrect {
+		color:			red;
+		border-color:	transparent;
+	}
+
+	
+	#targetHolder input[incorrect]{
+		color: 			red;
+		border-color:	transparent;
+	}
+	
+	#targetHolder input[correct]{
+		color: 			green;
+		border-color:	transparent;
+	}
+		
+	
+	#targetHolder select {
+		margin:	5px 0;
+	}
+	
+	#targetHolder select[disabled] {
+		color:	green;
+	}
+	
+	#labelHolder {
+		margin-top:	10px;
+	}
+	
+	#labelHolder .label {
+		display:	inline-block;
+		cursor:		pointer;
+		padding:	7px;
+		margin:		10px;
+		border:		2px solid white;
+	}
+	
+	#labelHolder .label.focus {
+		border:		2px solid yellow;
+	}
+	
+	#labelHolder .label.selected {
+		border:		2px solid green;
+	}
+	
+	#feedbackTxt {
+		margin-top:		20px;
+		padding-top:	20px;
+		border-top:		1px solid gray;
+		clear:			both;
+	}
+	
+	#feedbackTxt #audioHolder {
+		margin-top:	20px;
+	}
+	
+	#submitBtn {
+		float:	right;
+		margin-bottom:	10px;
+	}
+	

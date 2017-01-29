@@ -1,0 +1,31 @@
+/* textGraphics.html */
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	.noBorder {
+		display:	inline-block;
+		margin:		0px;
+	}
+	
+	#transcriptHolder {
+		margin-top:	10px;
+		text-align:	right;
+	}
+	
+	#transcript {
+		text-align:		left;
+	}
+	
+	#imgCaption {
+		padding-top:	5px;
+		font-weight:	bold;
+		text-align:		right;
+	}
+	
+	#imgCaption.transcript {
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	10px;
+	}
+	

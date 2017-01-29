@@ -1,0 +1,32 @@
+/* modelAnswer.html */
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+	#answer {
+		margin-top:	10px;
+	}
+	
+	#pageContents .panelImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#answerTxt {
+		display:	block;
+		width:		100%;
+		resize:		vertical;
+		margin-top:	10px;
+	}
+	
+	#copyTxt {
+		color:		red;
+		font-size:	0.8em;
+	}
+	

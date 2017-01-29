@@ -1,0 +1,16 @@
+/* tabNav.html */
+	
+	#pageContents .paneImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#infoHolder .paneImg img {
+		opacity:	0;
+		filter:		alpha(opacity=0);
+	}
+	
+	#paneHolder {
+		overflow:	auto;
+	}
+	
