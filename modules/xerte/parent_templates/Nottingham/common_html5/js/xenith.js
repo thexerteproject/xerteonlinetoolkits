@@ -1087,9 +1087,32 @@ function x_lookupPage(pageType, pageID) {
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
-    var prevPage = x_currentPage;
 
-    // End page tracking of x_currentPage
+	// Setup css correctly
+	$("#page_model_css").remove();
+	$("#page_theme_css").remove();
+	var modelfile = x_pageInfo[x_gotoPage].type;
+	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+		x_changePageStep2(x_gotoPage);
+	}, false, "page_model_css");
+}
+
+function x_changePageStep2(x_gotoPage) {
+	if (x_params.theme != 'default') {
+		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
+			x_changePageStep3(x_gotoPage);
+		}, false, "page_theme_css");
+	}
+	else
+    {
+        x_changePageStep3(x_gotoPage);
+    }
+}
+
+function x_changePageStep3(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+	// End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -1125,8 +1148,6 @@ function x_changePage(x_gotoPage) {
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
         $(".x_popupDialog").parent().detach();
         $("#x_pageTimer").remove();
-        $("#page_model_css").remove();
-        $("#page_theme_css").remove();
 		$x_helperText.empty();
         $(document).add($x_pageHolder).off(".pageEvent"); // any events in page models added to document or pageHolder should have this namespace so they can be removed on page change - see hangman.html for example
 
@@ -1351,11 +1372,6 @@ function x_setUpPage() {
         }
     }
 
-    var modelfile = x_pageInfo[x_currentPage].type;
-    x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", undefined, false, "page_model_css");
-    if (x_params.theme != 'default') {
-        x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', undefined, false, "page_theme_css");
-    }
 
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
