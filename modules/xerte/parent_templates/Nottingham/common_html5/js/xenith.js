@@ -1099,6 +1099,7 @@ function x_changePage(x_gotoPage) {
 
 function x_changePageStep2(x_gotoPage) {
 	if (x_params.theme != 'default') {
+        var modelfile = x_pageInfo[x_gotoPage].type;
 		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
 			x_changePageStep3(x_gotoPage);
 		}, false, "page_theme_css");
