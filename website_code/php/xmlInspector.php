@@ -178,7 +178,13 @@ class XerteXMLInspector
 
         //Gets the value of resultpage (true/false)
         $resultpageEnabled = (string)($this->xml->xpath('/*')[0]->attributes()->resultpage);
-
+        $hasResultPage = ($this->xml->xpath('/*')[0]->children());
+        
+        if(isset($hasResultPage->results))
+        {
+        	unset($this->xml->xpath('/*')[0]->children()->results);
+        }
+	
         //Shows the resultpage
         if($resultpageEnabled === "true" && $resultPage){
        		$this->xml->xpath('/*')[0]->addChild('results');

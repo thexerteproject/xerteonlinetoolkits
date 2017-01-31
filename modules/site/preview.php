@@ -31,7 +31,7 @@ function show_preview_code($row)
     $xmlfile = $string_for_flash . "preview.xml";
 
     $xmlFixer = new XerteXMLInspector();
-    $xmlFixer->loadTemplateXML($xmlfile);
+    $xmlFixer->loadTemplateXML($xmlfile, true);
 
     if (strlen($xmlFixer->getName()) > 0)
     {

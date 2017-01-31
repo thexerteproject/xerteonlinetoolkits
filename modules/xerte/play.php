@@ -52,7 +52,7 @@ function show_template_page($row, $datafile="")
     }
 
     $xmlFixer = new XerteXMLInspector();
-    $xmlFixer->loadTemplateXML($xmlfile);
+    $xmlFixer->loadTemplateXML($xmlfile, true);
 
     if (strlen($xmlFixer->getName()) > 0)
     {

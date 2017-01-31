@@ -143,7 +143,7 @@ $scorm = $_GET['scorm'];
  */
 copy($dir_path . "data.xml", $dir_path . "template.xml");
 $xml = new XerteXMLInspector();
-$xml->loadTemplateXML($dir_path . 'template.xml', $scorm == '2004'|| $scorm == 'true' || $xAPI);
+$xml->loadTemplateXML($dir_path . 'template.xml', $scorm == '2004'|| $scorm == 'true' || $xAPI || $export_offline);
 
 if ($fullArchive) {
     _debug("Full archive");
