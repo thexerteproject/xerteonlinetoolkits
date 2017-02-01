@@ -67,9 +67,11 @@ function sanitizeName($cmd, $result, $args, $elfinder)
 {
     $files = $result['added'];
     foreach ($files as $file) {
-        $filename = str_replace(' ', '_' , $file[' name']);
-        $arg = array('target' => $file['hash'], 'name' => $filename);
-        $elfinder->exec('rename', $arg);
+        $filename = str_replace(' ', '_' , $file['name']);
+        if ($filename != $file['name']) {
+            $arg = array('target' => $file['hash'], 'name' => $filename);
+            $elfinder->exec('rename', $arg);
+        }
     }
 
     return true;
