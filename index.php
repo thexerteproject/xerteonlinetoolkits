@@ -40,12 +40,6 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 
-if (isset($_GET['altauth']))
-{
-    $xerte_toolkits_site->authentication_method = 'OAuth2';
-    $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-}
-
 login_processing();
 login_processing2();
 
