@@ -188,6 +188,7 @@ class XerteXMLInspector
         //Shows the resultpage
         if($resultpageEnabled === "true" && $resultPage){
        		$this->xml->xpath('/*')[0]->addChild('results');
+       		$this->xml->xpath('/*/results')[0]->addAttribute("name", "Results");
        		$this->xml->asXML($this->fname);
         }
         $nodes = $this->xml->xpath('/*/*');

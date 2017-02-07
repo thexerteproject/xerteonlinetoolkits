@@ -50,7 +50,7 @@
 			$("#startTime").html(results.start);
 			results.interactions.forEach(function(x)
 			{
-				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td>" + x.weighting + "</td></tr>");		
+				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");		
 			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -61,59 +61,87 @@
  
  	results.init();
 	
- 	$("#debug").click(function(e)
-	{
- 		debugger;
-	});
+ 	
  	
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
 <script>
-	function demoFromHTML() {
+	function pdfDownload() {
 		var pdf = new jsPDF('p', 'pt', 'letter');
 
-		source = $('#pageContents')[0];
-
+		source = $('#pdfContent').clone();
+		
+		source.find("#general_summary").prepend("<tr><th>ABC</th><th>DEF</th></tr>");
 		margins = {
 			top: 80,
 			bottom: 60,
 			left: 40,
 			width: 522
 		};
-
+		debugger;
 		pdf.fromHTML(
-				source, // HTML string or DOM elem ref.
+				source.html(), // HTML string or DOM elem ref.
 				margins.left, // x coord
 				margins.top, { // y coord
 					'width': margins.width// max width of content on PDF
 				},
 
 				function (dispose) {
-
-					pdf.save('Test.pdf');
+					name = x_params.name + "_" + XTResults().start
+					pdf.save(name.replace(/ /g, "_"));
+					
 				}, margins
 		);
 	}
 </script>
 
 <style type="text/css">
-	
-	#pageContents p:first-child {
-		margin-top: 0px;
+	h2{
+		padding: 8px;
 	}
+	
+	td, th{
+		padding-left: 20px !important;
+		padding-right: 20px !important;
+	}
+	
+	.td-center{
+		text-align:center;
+	}
+
 	
 </style>
 
 <div id="pageContents">
-	<h2>Results</h2>
+	<div id="pdfContent">
+		<h2>General Results</h2>
+		<table id="general_summary" rules="rows">
+			<tr>
+				<td>Average: </td>
+				<td><span id="averageScore"></span></td>
+			</tr>
+			<tr>
+				<td>Start time: </td>
+				<td><span id="startTime"></span></td>
+			</tr>
+			<tr>
+				<td>Duration: </td>
+				<td><span id="totalDuration"></span></td>
+			</tr>
+		</table>
+		<h2>Question results</h2>
+		<table id="questionScores" rules="rows">
+			<tr>
+				<th>Name</th>
+				<th>Score</th>
+				<th>Duration</th>
+				<th>Weighting</th>
+			</tr>
+		</table>
+	</div>
 	<br>
-	Average: <span id="averageScore"></span><br>
-	Start time: <span id="startTime"></span><br>
-	Duration: <span id="totalDuration"></span><br>
-	<table id="questionScores">
-	<tr><th>Name</th><th>Score</th><th>Duration</th><th>Weighting</th></tr>
-	
-	</table>
+	<div>
+		<center><button onClick="pdfDownload()" id="button">Download PDF file</button></center>
+	</div>
 </div>
-<a href="javascript:demoFromHTML()" class="button">Download PDF</a>
