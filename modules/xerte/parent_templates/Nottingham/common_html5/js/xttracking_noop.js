@@ -81,12 +81,16 @@ function NoopTrackingState()
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
     	interaction = new NoopTracking(page_nr, ia_nr, ia_type, ia_name);
+    	interaction.enterInteraction(correctanswer);
         this.interactions.push(interaction);
     }
     
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
     	var sit = this.findInteraction(page_nr, ia_nr);
+    	if(ia_nr != -1){
+    		interaction.exitInteraction(learneranswer);
+    	}
     	sit.exit();
     }
     
@@ -189,8 +193,12 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.correctAnswers = []
+    this.learnerAnswers = []
     
     this.exit = exit;
+    this.enterInteraction = enterInteraction;
+    this.exitInteraction = exitInteraction;
     
     function exit()
     {
@@ -207,6 +215,17 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
             return false;
         }
 
+    }
+    
+    function enterInteraction(correctAnswers)
+    {
+    	this.correctAnswers = correctAnswers;
+    }
+    
+    function exitInteraction(learnerAnswers)
+    {
+    	this.learnerAnswers = learnerAnswers;
+    	
     }
     
 }
@@ -361,13 +380,15 @@ function XTTerminate()
 function XTResults()
 {
 	results = {};
+	results.mode = x_currentPageXML.getAttribute("mode");
+	
 	score = 0;
 	nrofquestions = 0;
 	totalWeight = 0;
 	totalDuration = 0;
 	results.interactions = Array();
 
-	for(i = 0; i < state.interactions.length; i++){
+	for(i = 0; i < state.interactions.length-1; i++){
 		score += state.interactions[i].score * state.interactions[i].weighting ;
 		if(state.interactions[i].nrinteractions > 0)
 		{
@@ -376,11 +397,24 @@ function XTResults()
 			interaction.title = state.interactions[i].ia_name;
 			interaction.duration = Math.round(state.interactions[i].duration / 1000);
 			interaction.weighting = state.interactions[i].weighting;
+			interaction.subinteractions = Array();
 			results.interactions[nrofquestions] = interaction;
 			totalDuration += state.interactions[i].duration;
 			nrofquestions++;
 			totalWeight += state.interactions[i].weighting;
+			
+		}else if(results.mode == "full-results")
+		{
+			subinteraction = {}
+		
+			subinteraction.question = state.interactions[i].ia_name;
+			subinteraction.learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+			subinteraction.correntAnswer = state.interactions[i].correctAnswers.join(", ");
+			results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+			console.log(state.interactions[i]);
+		
 		}
+		
 	}
 	if(state.interactions.length == 0)
 	{
@@ -391,6 +425,6 @@ function XTResults()
 	results.averageScore = Math.round(score / totalWeight);
 	results.totalDuration = Math.round(totalDuration / 1000);
 	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
-	
+
 	return results;
 }

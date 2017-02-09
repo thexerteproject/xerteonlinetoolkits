@@ -47,7 +47,8 @@
     <trackingMode optional="true" label="Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
     <trackingPassed optional="true" label="Tracking Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
-    <resultpage label="Enable Results Page" type="CheckBox" defaultValue="false" optional="true"/>
+    <resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
+
 
     <newNodes>
     </newNodes>

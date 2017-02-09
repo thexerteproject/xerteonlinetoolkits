@@ -186,9 +186,10 @@ class XerteXMLInspector
         }
 	
         //Shows the resultpage
-        if($resultpageEnabled === "true" && $resultPage){
+        if($resultpageEnabled !== "no-results" && $resultPage){
        		$this->xml->xpath('/*')[0]->addChild('results');
        		$this->xml->xpath('/*/results')[0]->addAttribute("name", "Results");
+       		$this->xml->xpath('/*/results')[0]->addAttribute("mode", $resultpageEnabled);
        		$this->xml->asXML($this->fname);
         }
         $nodes = $this->xml->xpath('/*/*');
