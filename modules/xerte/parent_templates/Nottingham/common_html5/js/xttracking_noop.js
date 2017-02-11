@@ -409,10 +409,8 @@ function XTResults()
 		
 			subinteraction.question = state.interactions[i].ia_name;
 			subinteraction.learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-			subinteraction.correntAnswer = state.interactions[i].correctAnswers.join(", ");
+			subinteraction.correctAnswer = state.interactions[i].correctAnswers.join(", ");
 			results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
-			console.log(state.interactions[i]);
-		
 		}
 		
 	}
@@ -425,6 +423,7 @@ function XTResults()
 	results.averageScore = Math.round(score / totalWeight);
 	results.totalDuration = Math.round(totalDuration / 1000);
 	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+    console.log(results.interactions[0].subinteractions[0].correctAnswer);
 
 	return results;
 }

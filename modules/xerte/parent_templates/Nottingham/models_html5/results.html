@@ -48,9 +48,34 @@
 			$("#averageScore").html(results.averageScore + "%");
 			$("#totalDuration").html(results.totalDuration + " seconds");
 			$("#startTime").html(results.start);
+
 			results.interactions.forEach(function(x)
 			{
-				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");		
+				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");
+				$("#fullResults").append("<tr><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+				count = 1;
+				x.subinteractions.forEach(function(y)
+				{
+					learnerAnswer = y.learnerAnswer;
+					correctAnswer = y.correctAnswer;
+					if (learnerAnswer == correctAnswer) {
+						if (count == x.subinteractions.length) {
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + learnerAnswer + "</td><<td class=\"last\">" + correctAnswer + "</td></tr>");
+						}
+						else {
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '">' + "</td><td class=\"notLast\">" + learnerAnswer + "</td><<td class=\"notLast\">" + correctAnswer + "</td></tr>");
+						}
+					}
+					else {
+						if (count == x.subinteractions.length) {
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+						}
+						else {
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+						}
+					}
+					count++;
+				});
 			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
@@ -97,7 +122,7 @@
 </script>
 
 <style type="text/css">
-	h2{
+	h2, h3{
 		padding: 8px;
 	}
 	
@@ -108,6 +133,9 @@
 	
 	.td-center{
 		text-align:center;
+	}
+	.notLast{
+		border-bottom: 1px solid black !important;
 	}
 
 	
@@ -131,6 +159,8 @@
 			</tr>
 		</table>
 		<h2>Question results</h2>
+		<br />
+		<h3>Global Results</h3>
 		<table id="questionScores" rules="rows">
 			<tr>
 				<th>Name</th>
@@ -139,6 +169,12 @@
 				<th>Weighting</th>
 			</tr>
 		</table>
+		<br />
+		<h3>Specific Results</h3>
+		<br />
+		<table id="fullResults">
+		</table>
+		<br />
 	</div>
 	<br>
 	<div>
