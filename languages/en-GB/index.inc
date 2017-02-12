@@ -85,6 +85,3 @@ define("INDEX_BUTTON_PUBLISH", "Publish");
 define("INDEX_BUTTON_CANCEL", "Cancel");
 
 define("INDEX_BUTTON_SAVE", "Save");
-
-
-?>
