@@ -595,8 +595,8 @@ function x_continueSetUp() {
 			}
 		}
 		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort alphabetically
-				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
@@ -2102,7 +2102,7 @@ function x_insertText(node, exclude) {
 	
     // check text for glossary words - if found replace with a link
     if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
-        for (var k=x_glossary.length-1; k>=0; k--) {
+        for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
         }
