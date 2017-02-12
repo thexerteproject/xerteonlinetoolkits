@@ -136,8 +136,8 @@ function recycle_bin() {
     if(sizeof($res)==0){
 
         $query = "insert into {$xerte_toolkits_site->database_table_prefix}folderdetails 
-            (login_id,folder_parent,folder_name) VALUES (?,?,?)";
-        $res = db_query($query, array($_SESSION['toolkits_logon_id'], "0", "recyclebin") );
+            (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+        $res = db_query($query, array($_SESSION['toolkits_logon_id'], "0", "recyclebin", date('Y-m-d')) );
 
         if($res) {
 
@@ -192,8 +192,8 @@ function create_a_virtual_root_folder(){
 
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
     
-    $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name) VALUES (?,?,?)";
-    $params = array($_SESSION['toolkits_logon_id'], "0", $_SESSION['toolkits_logon_username']);
+    $query = "insert into {$prefix}folderdetails (login_id,folder_parent,folder_name,date_created) values  (?,?,?,?)";
+    $params = array($_SESSION['toolkits_logon_id'], "0", $_SESSION['toolkits_logon_username'], date('Y-m-d'));
 
     if(db_query($query, $params) !== false){
 
