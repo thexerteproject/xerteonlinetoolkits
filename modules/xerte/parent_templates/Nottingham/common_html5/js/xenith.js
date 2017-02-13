@@ -1022,20 +1022,41 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
         }
         else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-            page = x_lookupPage(pageInfo.type, pageInfo.ID);
-            if ($.isArray(page)) {
-            	x_deepLink = page[1];
-            	x_changePage(page[0]);
-            }
-            else if (page != null) {
-                x_changePage(page);
-            }
-            else {
-            	x_deepLink = "";
-            	if (force == true) {
-                	x_changePage(0);
-                }
-            }
+        	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+        		console.log((pageInfo.ID).substring(1, pageInfo.ID.length-1));
+				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+					case "next":
+						if (x_currentPage < x_pages.length)
+							x_changePage(x_currentPage + 1);
+						break;
+					case "previous":
+						if (x_currentPage > 0)
+							x_changePage(x_currentPage - 1);
+						break;
+					case "first":
+						x_changePage(0);
+						break;
+					case "last":
+						x_changePage(x_pages.length-1);
+						break;
+				}
+        	}
+        	else {
+				page = x_lookupPage(pageInfo.type, pageInfo.ID);
+				if ($.isArray(page)) {
+					x_deepLink = page[1];
+					x_changePage(page[0]);
+				}
+				else if (page != null) {
+					x_changePage(page);
+				}
+				else {
+					x_deepLink = "";
+					if (force == true) {
+						x_changePage(0);
+					}
+				}
+			}
         }
         else {
             page = parseInt(pageInfo.ID);

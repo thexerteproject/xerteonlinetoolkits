@@ -74,12 +74,20 @@ CKEDITOR.plugins.add('xotlink', {
 		if (editor.contextMenu) {
 			
 			//editor.addMenuGroup( 'xotGroup' );
-			editor.addMenuItem('xotlinkItem', {
-				label: 'Xerte Page Link',
+			editor.addMenuItem('addXotLinkItem', {
+				label: 'Insert Xerte Page Link',
 				icon: this.path + 'icons/xotlink.png',
 				command: 'xotlink',
 				group: 'link',
 				order: -10
+			});
+			
+			editor.addMenuItem('editXotLinkItem', {
+				label: 'Edit Xerte Page Link',
+				icon: this.path + 'icons/xotlink.png',
+				command: 'xotlink',
+				group: 'link',
+				order: -11
 			});
 
             editor.contextMenu.addListener(function(element, selection, path) {
@@ -87,6 +95,7 @@ CKEDITOR.plugins.add('xotlink', {
 					return null;
 
 				var element = selection.getStartElement();
+
 				if (element) {
 					element = element.getAscendant('a', true);
 				}
@@ -95,20 +104,17 @@ CKEDITOR.plugins.add('xotlink', {
 					var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
 					if (attr && attr.indexOf("(")) {
 						if (attr.split('(')[0] == 'x_navigateToPage') {
-							this.label = 'Edit Xerte Page Link';
-							return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+							// Xerte Page Link clicked
+							return {editXotLinkItem: CKEDITOR.TRISTATE_OFF};
 						}
-						else {
-							this.label = 'Insert Xerte Page Link';
-						}
-					}
-					else {
-						this.label = 'Insert Xerte Page Link';
 					}
 				}
 				else {
-					return {xotlinkItem: CKEDITOR.TRISTATE_OFF};
+					// No link clicked
+					return {addXotLinkItem: CKEDITOR.TRISTATE_OFF};
 				}
+
+				return null;
             });
 		}
 

@@ -65,11 +65,17 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 					{
 						type: 'select',
 						id: 'pagelink',
-                        items: EDITOR.toolbox.getPageList(),
+                        items: [
+                        	['* first page *','[first]'],
+                        	['* last page *','[last]'],
+                        	['* previous page *','[previous]'],
+                        	['* next page *','[next]']
+                        ].concat(EDITOR.toolbox.getPageList()),
+
 						onChange: pageLinkChanged,
 
 						// Called by the main setupContent method call on dialog initialization
-						setup: function(element) {
+						setup: function(element) { console.log(element);
 							if (element) {
 								var attr = element.getAttribute('onclick') ? element.getAttribute('onclick') : element.getAttribute('data-cke-pa-onclick');
 								if (attr && attr.indexOf('(')) {
