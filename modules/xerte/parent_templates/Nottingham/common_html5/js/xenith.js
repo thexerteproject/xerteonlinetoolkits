@@ -417,8 +417,10 @@ function x_setUp() {
 		if (x_params.hideHeader == "true") {
 			$x_headerBlock.hide().height(0);
 		}
-		if (x_params.hideFooter == "true") {
-			$x_footerBlock.hide().height(0);
+		if (x_params.hideFooter == "true") { // More complex since narration is in here
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
 			$x_mainHolder.css("border", "none");
