@@ -339,7 +339,7 @@ function upgrade_5_step1()
       `base64encoded`smallint(1) DEFAULT 0,
       PRIMARY KEY (`config_key`) ) ");
 
-    return "Creating lti tables - ok ? " . ( $error1 ? 'true' : 'false' );
+    return "Creating configdetails tables - ok ? " . ( $error1 ? 'true' : 'false' );
 }
 
 function upgrade_5_step2()
