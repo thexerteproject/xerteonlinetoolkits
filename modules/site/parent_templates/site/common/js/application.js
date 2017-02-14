@@ -21,8 +21,10 @@ $(document).ready(init);
 var data;
 var languageData;
 var startPage = 0;
-var startHash = "";
+var pageLink = "";
 var authorSupport = false;
+var deepLink = "";
+var currentPage = 0;
 
 function init(){
 	loadContent();
@@ -73,20 +75,16 @@ function loadContent(){
 			loadLibraries();
 			
 		}
-	
 	});
 	
-	startHash = window.location.hash;
-	
-	if (startHash.substring(1,5) == "page") {
-	
-		startPage = parseInt(startHash.substring(5), 10) - 1;
-		
+	// If we have a start page/section then extract it and clear the url
+	if (window.location.hash.length > 0) {
+		pageLink = window.location.hash.substring(1);
+		if (pageLink.substring(0,4) == "page") {
+			startPage = parseInt(pageLink.substring(4), 10) - 1;
+		}
 	}
-	
-	console.log(startPage);
-	
-	console.log(startHash);
+
 }
 
 function loadLibraries(){
@@ -270,14 +268,39 @@ function setup(){
 // this is the format of links added through the wysiwyg editor button
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	var pages = $(data).find('page');
-	for (var i=0; i<pages.length; i++) {
-		if (pages[i].getAttribute("linkID") == pageInfo.ID) {
-			parseContent(i);
-			break;
+
+	var links = ['[first]', '[last]', '[previous]', '[next]'];
+	var linkLocations = [0, pages.length-1, Math.max(0,currentPage-1), Math.min(currentPage+1,pages.length-1)];
+
+	// First look for the fixed links
+	if ($.inArray(pageInfo.ID, links) > -1) {
+		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
+		goToSection('top');
+	}
+	else { // Then look them up by ID
+		for (var i=0; i<pages.length; i++) {
+			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
+				parseContent(i);
+				goToSection('top');
+				break;
+			}
+			if (pages[i].childNodes.length > 0) {
+				for (var j=0; j<pages[i].childNodes.length; j++) {
+					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
+						parseContent(i);
+						goToSection('page' + (i+1) + 'section' + (j+1));
+						break;
+					}
+				}
+			}
 		}
 	}
 }
-	
+
+function goToSection(pageId) {
+	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
+	document.location = '#' + pageId;
+}
 
 function parseContent(pageIndex){
 
@@ -310,6 +333,8 @@ function parseContent(pageIndex){
 	}
 	
 	if (pageFound == true) {
+		// store current page
+		currentPage = pageIndex;
 	
 		//which page is this from the document?
 		var page = $(data).find('page').eq(pageIndex);
@@ -330,7 +355,7 @@ function parseContent(pageIndex){
 				var sectionIndex = index;	
 				
 				//add a TOC entry
-				$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
+				$('#toc').append('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
 				
 				//add the section header
 				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
@@ -497,11 +522,6 @@ function parseContent(pageIndex){
 		initMedia();
 		
 		initSidebar();
-		
-		if (startHash == "")
-			window.scroll(0,0);
-		else
-			location.href = startHash;
 
 		// Queue reparsing of MathJax - fails if no network connection
 		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
@@ -513,9 +533,9 @@ function parseContent(pageIndex){
 		$(document).trigger('contentLoaded');
 		
 		//force facebook / twitter objects to initialise
-		twttr.widgets.load();
+		//twttr.widgets.load(); // REMOVED??
 		
-		FB.XFBML.parse(); 
+		//FB.XFBML.parse(); // REMOVED??
 		
 	} else {
 		

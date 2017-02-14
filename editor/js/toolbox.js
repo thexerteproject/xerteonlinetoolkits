@@ -1779,8 +1779,8 @@ var EDITOR = (function ($, parent) {
                     page.push(pageID.found ? pageID.value : linkID.value);
                     pages.push(page);
 
-					// Now we do the children, only for Xerte template just now
-					if (moduleurlvariable == "modules/xerte/") {
+					// Now we do the children
+					if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
 						var childNode = tree.get_node(key, false);
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
@@ -1798,6 +1798,7 @@ var EDITOR = (function ($, parent) {
 					}
                 }
             });
+            
             return pages;
         },
 
