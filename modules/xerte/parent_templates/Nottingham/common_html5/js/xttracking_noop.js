@@ -81,7 +81,7 @@ function NoopTrackingState()
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
     	interaction = new NoopTracking(page_nr, ia_nr, ia_type, ia_name);
-    	interaction.enterInteraction(correctanswer);
+    	interaction.enterInteraction(correctanswer, correctoptions);
         this.interactions.push(interaction);
     }
     
@@ -89,7 +89,7 @@ function NoopTrackingState()
     {
     	var sit = this.findInteraction(page_nr, ia_nr);
     	if(ia_nr != -1){
-    		interaction.exitInteraction(learneranswer);
+    		sit.exitInteraction(learneranswer, learneroptions);
     	}
     	sit.exit();
     }
@@ -193,8 +193,9 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
-    this.correctAnswers = []
-    this.learnerAnswers = []
+    this.correctAnswers = [];
+    this.learnerAnswers = [];
+    this.learnerOptions = [];
     
     this.exit = exit;
     this.enterInteraction = enterInteraction;
@@ -217,14 +218,16 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
 
     }
     
-    function enterInteraction(correctAnswers)
+    function enterInteraction(correctAnswers, correctOptions)
     {
     	this.correctAnswers = correctAnswers;
+        this.correctOptions = correctOptions;
     }
     
-    function exitInteraction(learnerAnswers)
+    function exitInteraction(learnerAnswers, learnerOptions)
     {
     	this.learnerAnswers = learnerAnswers;
+        this.learnerOptions = learnerOptions;
     	
     }
     
@@ -406,10 +409,22 @@ function XTResults()
 		}else if(results.mode == "full-results")
 		{
 			subinteraction = {}
-		
+
+            var learnerAnswer, correctAnswer;
+            switch (state.interactions[i].ia_type){
+                case "match":
+                    learnerAnswer = state.interactions[i].learnerOptions[0].target;
+                    correctAnswer = state.interactions[i].correctOptions[0].target;
+                    break;
+                case "text":
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    break;
+            }
+            debugger;
 			subinteraction.question = state.interactions[i].ia_name;
-			subinteraction.learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-			subinteraction.correctAnswer = state.interactions[i].correctAnswers.join(", ");
+			subinteraction.learnerAnswer = learnerAnswer;
+			subinteraction.correctAnswer = correctAnswer;
 			results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
 		}
 		
