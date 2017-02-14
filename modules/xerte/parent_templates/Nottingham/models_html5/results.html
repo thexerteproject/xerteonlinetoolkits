@@ -52,26 +52,27 @@
 			results.interactions.forEach(function(x)
 			{
 				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");
-				$("#fullResults").append("<tr><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+				$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
 				count = 1;
 				x.subinteractions.forEach(function(y)
 				{
+					question = y.question;
 					learnerAnswer = y.learnerAnswer;
 					correctAnswer = y.correctAnswer;
 					if (learnerAnswer == correctAnswer) {
 						if (count == x.subinteractions.length) {
-							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + learnerAnswer + "</td><<td class=\"last\">" + correctAnswer + "</td></tr>");
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
 						}
 						else {
-							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '">' + "</td><td class=\"notLast\">" + learnerAnswer + "</td><<td class=\"notLast\">" + correctAnswer + "</td></tr>");
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
 						}
 					}
 					else {
 						if (count == x.subinteractions.length) {
-							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
 						}
 						else {
-							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '">' + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
 						}
 					}
 					count++;
