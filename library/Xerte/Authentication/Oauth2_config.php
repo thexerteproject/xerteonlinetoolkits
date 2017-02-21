@@ -22,7 +22,7 @@ global $oauth2config;
 
 $oauth2config = array(
     'CLIENT_ID'              => '',
-    'CLIENT_SECRET'          => '^6byPC',
+    'CLIENT_SECRET'          => '',
     'REDIRECT_URI'           => 'library/Xerte/Authentication/OAuth2/response.php',
     'AUTHORIZATION_ENDPOINT' => '',
     'TOKEN_ENDPOINT'         => '',
