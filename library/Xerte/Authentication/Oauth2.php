@@ -86,7 +86,6 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
     {
         global $xerte_toolkits_site;
 
-        //$client = new OAuth2\Client($this->_oauth2config['CLIENT_ID'], $this->_oauth2config['CLIENT_SECRET'], OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
         $provider = new \fkooman\OAuth\Client\Provider(
             $this->_oauth2config['CLIENT_ID'],
             $this->_oauth2config['CLIENT_SECRET'],
@@ -99,8 +98,6 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
         );
 
         if (!isset($_SESSION['oauth2session'])) {
-            //$client->setCurlOption(CURLOPT_USERAGENT,$userAgent);
-            //$authUrl = $client->getAuthenticationUrl($this->_oauth2config['AUTHORIZATION_ENDPOINT'], $xerte_toolkits_site->site_url . $this->_oauth2config['REDIRECT_URI'], array("scope" => "name email", "state" => "11d64a23-be01-456e-96f9-71d2d564e76a"));
             $authUrl = $client->getAuthorizationRequestUri(
                 'name email',                # the requested OAuth scope
                 $xerte_toolkits_site->site_url . $this->_oauth2config['REDIRECT_URI'] # the redirect URI the OAuth service
@@ -119,9 +116,8 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
                 //$client->setAccessToken($accessTokenResult->access_token);
                 //$client->setAccessTokenType($this->_oauth2config['ACCESS_TOKENTYPE']);
 
-                //$result = $client->fetch("https://www.klascement.net/api/users/" . $accessTokenResult->user_id . "?access_token=" . $accessTokenResult->access_token);
-
-                $channel = curl_init("https://www.klascement.net/api/users/" . $accessTokenResult->user_id . "?access_token=" . $accessTokenResult->access_token);
+                // API call to get user name etc.
+                $channel = curl_init("<url>?access_token=" . $accessTokenResult->access_token)$channel = curl_init("<url>?access_token=" . $accessTokenResult->access_token);
 
                 $optionsSet = curl_setopt_array(
                     $channel,

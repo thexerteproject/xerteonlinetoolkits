@@ -21,10 +21,10 @@
 global $oauth2config;
 
 $oauth2config = array(
-    'CLIENT_ID'              => 'tollnet',
-    'CLIENT_SECRET'          => '16u05K^6byPC',
+    'CLIENT_ID'              => '',
+    'CLIENT_SECRET'          => '^6byPC',
     'REDIRECT_URI'           => 'library/Xerte/Authentication/OAuth2/response.php',
-    'AUTHORIZATION_ENDPOINT' => 'https://www.klascement.net/oauth/authorize',
-    'TOKEN_ENDPOINT'         => 'https://www.klascement.net/oauth/token',
+    'AUTHORIZATION_ENDPOINT' => '',
+    'TOKEN_ENDPOINT'         => '',
 //    'ACCESS_TOKENTYPE'       => OAuth2\Client::ACCESS_TOKEN_BEARER,
 );
