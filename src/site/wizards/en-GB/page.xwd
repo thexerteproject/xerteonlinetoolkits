@@ -9,8 +9,8 @@
   <!--- PAGE PAGE==================================================== -->
 	<page menu="website" hint="A new page" icon="icLayoutContent" remove="true" duplicate="true" menuItem="Page">
 
-		<name type="TextInput" label="Page Title"/>
-		<subtitle type="TextInput" label="Page Subtitle"/>
+		<name type="TextInput" label="Page Title" wysiwyg="true"/>
+		<subtitle type="TextInput" label="Page Subtitle" wysiwyg="true"/>
 
 		<newNodes>
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
@@ -20,7 +20,7 @@
 
     <section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
-		<name type="TextInput" label="Section Title"/>
+		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
 		<hidePage label="Hide Section" type="CheckBox" defaultValue="false" optional="true"/>
 		
@@ -43,7 +43,7 @@
 
 	<link icon="icLink" menuItem="Link" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="TextInput" label="URL"/>
 		
 		<width label="Width" type="textInput" optional="true" default="800"/>
@@ -61,7 +61,7 @@
 
 	<markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 		
 		<url type="Media" label="HTML File" optional="true" default="Select HTML File..."/>
@@ -70,14 +70,14 @@
 
 	<text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
 	</text>
 	
 	<pdf icon="icPDF" menuItem="PDF Document" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="PDF Document File"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
@@ -85,7 +85,7 @@
 
 	<canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<id type="TextInput" label="ID"/>
 		<width type="TextInput" label="Width"/>
 		<height type="TextInput" label="Height"/>
@@ -104,7 +104,7 @@
 
 	<image icon="icImage" height="250" menuItem="Image" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="Image File"/>
 		<alt type="TextInput" label="Alt Text"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
@@ -113,7 +113,7 @@
 
 	<audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="Audio File"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
@@ -121,7 +121,7 @@
 
 	<video icon="icFilm" height="250" menuItem="Video" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<url type="Media" label="Video File"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
@@ -129,7 +129,7 @@
 
 	<navigator icon="icPages" menuItem="Navigator" remove="true">
 
-		<name type="TextInput" label="Title"/>
+		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<type type="ComboBox" label="Type" options="Accordion,Carousel,Pills,Tabs" width="120"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
 
@@ -143,7 +143,7 @@
 
 	<pane icon="icPageWhite" remove="true" duplicate="true" menuItem="Pane">
 
-		<name type="TextInput" label="Pane Title"/>
+		<name type="TextInput" label="Pane Title" wysiwyg="true"/>
 
 		<newNodes>
 			

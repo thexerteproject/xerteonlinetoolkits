@@ -192,7 +192,18 @@ function setup(){
 		
 		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
 			
-			$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
+			var name = $(this).attr('name');
+			
+			// remove size & background color styles from links on nav bar
+			if ($('<p>' + name + '</p>').children().length > 0) {
+				name = $(name);
+				name.css({ 'font-size': '', 'background-color': 'transparent' });
+				name.find('[style*="font-size"]').css('font-size', '');
+				name.find('[style*="background-color"]').css('background-color', 'transparent');
+			}
+			
+			var $link = $('<li class=""><a href="javascript:parseContent(' + index + ')"></a></li>').appendTo('#nav');
+			$link.find('a').append(name);
 			
 		}
 		
@@ -339,8 +350,8 @@ function parseContent(pageIndex){
 		//which page is this from the document?
 		var page = $(data).find('page').eq(pageIndex);
 		
-		//set the main page title and subtitle			
-		$('#pageTitle').text( page.attr('name'));
+		//set the main page title and subtitle
+		$('#pageTitle').html(page.attr('name'));
 		
 		var msg = languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
 		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
@@ -355,7 +366,18 @@ function parseContent(pageIndex){
 				var sectionIndex = index;	
 				
 				//add a TOC entry
-				$('#toc').append('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
+				var tocName = $(this).attr('name');
+			
+				// remove size & background color styles from links on toc
+				if ($('<p>' + tocName + '</p>').children().length > 0) {
+					tocName = $(tocName);
+					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+					tocName.find('[style*="font-size"]').css('font-size', '');
+					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
+				}
+				
+				var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+				$link.find('a').append(tocName);
 				
 				//add the section header
 				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
@@ -375,7 +397,19 @@ function parseContent(pageIndex){
 					if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
 						
 						if ($(this).attr('showTitle') == 'true') {
-							section.find('.sectionSubLinks').append('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</a> </span>');
+							var subLinkName = $(this).attr('name');
+							
+							// remove size & background color styles from links on toc
+							if ($('<p>' + subLinkName + '</p>').children().length > 0) {
+								subLinkName = $(subLinkName);
+								subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
+								subLinkName.find('[style*="font-size"]').css('font-size', '');
+								subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+							}
+							
+							var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+							$link.find('a').append(subLinkName);
+							
 						}
 						
 						section.append( '<h2 id="page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
