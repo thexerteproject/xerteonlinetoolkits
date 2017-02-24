@@ -72,7 +72,7 @@ p {
 	z-index:	-10;
 }
 
-#x_background img {
+#x_background img, #x_mainBgDarken  {
 	width:		100%;
 	height:		100%;
 	position:	absolute;

@@ -39,6 +39,7 @@
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Opacity"/>
+	<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Darkness"/>
 	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>

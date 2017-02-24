@@ -945,6 +945,13 @@ function x_continueSetUp() {
 				"filter"	:"alpha(opacity=" + alpha + ")"
 			});
 		}
+		if (x_params.backgroundDark != undefined) {
+			$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
+			$("#x_mainBgDarken").css({
+				"opacity"	:Number(x_params.backgroundDark/100),
+				"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
+			});
+		}
 	}
 	
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
@@ -1142,7 +1149,7 @@ function x_changePage(x_gotoPage) {
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
-        $("#pageBg").remove();
+        $("#pageBg, #pageBgDarken").remove();
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
