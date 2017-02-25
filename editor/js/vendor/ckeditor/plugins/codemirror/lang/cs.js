@@ -4,9 +4,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'codemirror', 'cs', {
 	toolbar: 'Zdroj',
-	searchCode: 'Search Source',
-	autoFormat: 'Format Selection',
-	commentSelectedRange: 'Comment Selection',
-	uncommentSelectedRange: 'Uncomment Selection',
-	autoCompleteToggle: 'Enable/Disable HTML Tag Autocomplete'
+	searchCode: 'Prohledat zdroj',
+	autoFormat: 'Formátovat výběr',
+	commentSelectedRange: 'Zakomentovat výběr',
+	uncommentSelectedRange: 'Odkomentovat výběr',
+	autoCompleteToggle: 'Povolit/zakázat automatické doplňování HTML tagů'
 });

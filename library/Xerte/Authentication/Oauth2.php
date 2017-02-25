@@ -99,7 +99,7 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
 
         if (!isset($_SESSION['oauth2session'])) {
             $authUrl = $client->getAuthorizationRequestUri(
-                'name email',                # the requested OAuth scope
+                '',                # the requested OAuth scope
                 $xerte_toolkits_site->site_url . $this->_oauth2config['REDIRECT_URI'] # the redirect URI the OAuth service
             # redirects you back to, must usually
             # be registered at the OAuth provider
@@ -117,7 +117,7 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
                 //$client->setAccessTokenType($this->_oauth2config['ACCESS_TOKENTYPE']);
 
                 // API call to get user name etc.
-                $channel = curl_init("<url>?access_token=" . $accessTokenResult->access_token)$channel = curl_init("<url>?access_token=" . $accessTokenResult->access_token);
+                $channel = curl_init("https://h5p.webleren.be?oauth=me&access_token=" . $accessTokenResult->access_token);
 
                 $optionsSet = curl_setopt_array(
                     $channel,
@@ -159,10 +159,10 @@ class Xerte_Authentication_OAuth2 extends Xerte_Authentication_Abstract
                 }
                 $this->_record = new stdClass();
                 $this->_record->result = $result;
-                $this->_record->username = $result['result']['content']['objects'][0]['id'];
-                $this->_record->firstname = $result['result']['content']['objects'][0]['first_name'];
-                $this->_record->lastname = $result['result']['content']['objects'][0]['surname'];
-                $this->_record->email = $result['result']['content']['objects'][0]['email'];
+                $this->_record->username = $result['result']['user_login'];
+                $this->_record->firstname = $result['result']['user_firstname'];
+                $this->_record->lastname = $result['result']['user_lastname'];
+                $this->_record->email = $result['result']['user_email'];
                 $_SESSION['oauth2authorized'] = json_encode($this->_record);
             }
             else
