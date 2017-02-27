@@ -105,10 +105,17 @@ if (isset($_FILES['upload']['error']) && $_FILES['upload']['error'] != 0)
 switch($_FILES['upload']['type'])
 {
     case "image/png":
+        $paste_ext = ".png";
+        break;
     case "image/jpg":
     case "image/jpeg":
+        $paste_ext = ".jpg";
+        break;
     case "image/gif":
+        $paste_ext = ".gif";
+        break;
     case "image/bmp":
+        $paste_ext = ".bmp";
         break;
     default:
         $response->uploaded = 0;
@@ -120,13 +127,24 @@ switch($_FILES['upload']['type'])
 
 $filename = sanitizeName($_FILES['upload']['name']);
 // Add path to the $filename
+$paste = "image";
+// Check if pasted filename already exists, if so add a count until we find a name that is available
+if ($filename == $paste . $paste_ext) {
+    $final = $paste . $paste_ext;
+    $count = 1;
+    while (file_exists($_REQUEST['uploadPath'] . "media/" . $final)) {
+        $final =  $paste . "(" . $count . ")" . $paste_ext;
+        $count++;
+    }
+    $filename = $final;
+}
 
 $response->uploaded = 1;
 $response->url = $_REQUEST['uploadURL'] . "/media/" . $filename;
-$response->fileName = $_REQUEST['uploadPath'] . "/media/" . $filename;
+$response->fileName = $_REQUEST['uploadPath'] . "media/" . $filename;
 
 // Move file to the correct location
-move_uploaded_file($_FILES['upload']['tmp_name'], $response->fileName);
+$res = move_uploaded_file($_FILES['upload']['tmp_name'], $response->fileName);
 //_debug("upload: " . print_r($_POST, true));
 
 // _debug("File uploaded: " . print_r($response, true|));
