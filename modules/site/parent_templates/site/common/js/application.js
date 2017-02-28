@@ -358,6 +358,8 @@ function parseContent(pageIndex){
 		
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
 		
+		$('#overview').removeClass('hide');// show the header
+		
 		//create the sections
 		page.find('section').each( function(index, value){
 			
