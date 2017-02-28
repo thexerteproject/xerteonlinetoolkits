@@ -308,6 +308,10 @@ if ($scorm == "true") {
     copy_extra_files();
 }
 
+// Copy the favicon file
+copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
+array_push($delete_file_array, $dir_path . "favicon.ico");
+
 $rlo_file = $row['template_name'] . ".rlt";
 /*
  * if used copy extra folders

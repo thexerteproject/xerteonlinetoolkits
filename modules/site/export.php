@@ -88,7 +88,13 @@ export_folder_loop($parent_template_path);
 copy_parent_files();
 
 
+// Copy the favicon file
+copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
+array_push($delete_file_array, $dir_path . "favicon.ico");
+
+
 export_folder_loop($dir_path);
+
 
 /*
  * Get the name of the learning object

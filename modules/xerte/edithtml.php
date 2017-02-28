@@ -180,6 +180,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Xerte Online Toolkits Editor</title>
+    
+		<link rel="icon" href="favicon_edit.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="favicon_edit.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="editor/css/jquery-ui.css?version=<?php echo $version;?>">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
