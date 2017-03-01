@@ -90,14 +90,14 @@ h3 {
     border-color: #D4CB43 !important;
 }
 
-#menuItems .menuItem div.visited {
-    background-image: url(tick.png);
+#menuItems .menuItem i {
+		display: none;
+}
+
+#menuItems .menuItem i.visited {
     display: block;
     float: right;
-    margin-right: -8px;
-    margin-top: 2px;
-    width: 16px;
-    height: 16px;
+    margin: 2px -8px 0 0;
 }
 
 .ui-dialog #menuItems .ui-state-default {
