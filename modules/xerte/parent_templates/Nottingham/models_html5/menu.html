@@ -53,7 +53,7 @@
 				}
 				var pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ") ";
 				$thisItem.html(pageNum + x_pages[i+numOffset].getAttribute("name"));
-				$thisItem.append('<i class="fa fa-check-circle" aria-hidden="true"></i>');
+				$thisItem.append(' <i class="fa fa-check-circle" aria-hidden="true"></i>');
 			}
 			
 			$("#menuItems .menuItem")
