@@ -53,7 +53,7 @@
 				}
 				var pageNum = x_params.tocNumbers == "false" ? "" : (i+1) + ") ";
 				$thisItem.html(pageNum + x_pages[i+numOffset].getAttribute("name"));
-				$thisItem.append(' <i class="fa fa-check-circle" aria-hidden="true"></i>');
+				$thisItem.append(' <i class="fa fa-check-circle notvisited" aria-hidden="true"></i>');
 			}
 			
 			$("#menuItems .menuItem")
@@ -128,7 +128,7 @@
 			}
 
 			$("#menuItems .menuItem").each(function(i) {
-				if (x_pageInfo[i].built) $(this).find('i').addClass('visited');
+				if (x_pageInfo[i].built) $(this).find('i').removeClass('notvisited');
 			});
 		}
 		
@@ -165,6 +165,10 @@
 		display:		block;
 		margin-bottom:	5px;
 		text-align:		left;
+	}
+	
+	#menuItems .menuItem .notvisited {
+		display: none;
 	}
 
 	#menuItems {

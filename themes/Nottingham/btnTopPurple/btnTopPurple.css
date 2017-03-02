@@ -90,16 +90,6 @@ h3 {
     border-color: #D4CB43 !important;
 }
 
-#menuItems .menuItem i {
-		display: none;
-}
-
-#menuItems .menuItem i.visited {
-    display: block;
-    float: right;
-    margin: 2px -8px 0 0;
-}
-
 .ui-dialog #menuItems .ui-state-default {
 	background:	none;
 	color:	black;
