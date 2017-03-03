@@ -1025,7 +1025,8 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
-                        [ 'Sourcedialog' ]
+                        [ 'Sourcedialog' ],
+                        [ 'FontAwesome']
                     ],
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
@@ -1033,7 +1034,7 @@ var EDITOR = (function ($, parent) {
                     uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog',
+                    extraPlugins : 'sourcedialog,image3,fontawesome',
                     language : language.$code.substr(0,2)
                 });
             }
