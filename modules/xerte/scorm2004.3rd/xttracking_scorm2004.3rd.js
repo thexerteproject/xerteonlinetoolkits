@@ -145,6 +145,8 @@ function ScormTrackingState()
     this.trackingmode = "full";
     this.scoremode = 'first';
     this.nrpages = 0;
+    this.toCompletePages = new Array();
+    this.completedPages = new Array();
     this.pages_visited=0;
     this.start = new Date();
     this.duration_previous_attempts = 0;
@@ -154,6 +156,8 @@ function ScormTrackingState()
     this.finished = false;
     this.interactions = new Array();
 
+
+    this.pageCompleted = pageCompleted;
     this.setVars = setVars;
     this.find = find;
     this.findcreate = findcreate;
@@ -180,6 +184,29 @@ function ScormTrackingState()
     this.scorm_nr_interactions = scorm_nr_interactions;
     this.id_to_interactionidx = id_to_interactionidx;
     this.initTracking = initTracking;
+
+    function pageCompleted(page_nr)
+    {
+        var sit = state.findPage(page_nr);
+        if (sit != null)
+        {
+            for (i=0; i<sit.nrinteractions; i++)
+            {
+                var sit2 = state.findInteraction(page_nr, i);
+                if (sit2 == null || sit2.duration < 1000)
+                {
+                    return false;
+                }
+            }
+            if (sit.duration < 1000)
+            {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     function setVars(jsonStr)
     {
@@ -529,13 +556,26 @@ function ScormTrackingState()
 
     function getCompletionStatus()
     {
-        if (this.lo_completed == 'unknown')
+        var completed = true;
+        for(var i = 0; i<state.completedPages.length; i++)
         {
-            if (this.nrpages <= this.pages_visited)
+            if(state.completedPages[i] == false)
+            {
+                completed = false;
+                break;
+            }
+            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
+            //{
+            //completed = true;
+            //
+        }
+
+            if (completed)
             {
                 return "completed";
+
             }
-            else if(this.pages_visited)
+            else if(!completed)
             {
                 return 'incomplete';
             }
@@ -543,11 +583,6 @@ function ScormTrackingState()
             {
                 return "unknown"
             }
-        }
-        else
-        {
-            return this.lo_completed;
-        }
     }
 
     function getSuccessStatus()
@@ -805,6 +840,14 @@ function XTSetOption(option, value)
         case "nrpages":
             state.nrpages = value;
             break;
+        case "toComplete":
+            state.toCompletePages = value;
+            //completedPages = new Array(length(toCompletePages));
+            for(i = 0; i< state.toCompletePages.length;i++)
+            {
+                state.completedPages[i] = "false";
+            }
+            break;
         case "tracking-mode":
             switch(value)
             {
@@ -864,8 +907,24 @@ function XTEnterPage(page_nr, page_name)
 
 
 
-function XTExitPage(page_nr)
+function XTExitPage(page_nr, pageName)
 {
+    var temp = false;
+    var i = 0;
+    for(i; i<state.toCompletePages.length;i++)
+    {
+        var currentPageNr = state.toCompletePages[i];
+        if(currentPageNr == page_nr)
+        {
+            temp = true;
+            break;
+        }
+    }
+    if(temp)
+    {
+        state.completedPages[i] = state.pageCompleted(page_nr);
+    }
+
     if (state.scormmode == 'normal')
     {
         return state.exitInteraction(page_nr, -1, false, "", "", "", false);
@@ -987,38 +1046,74 @@ function XTTerminate()
 
 function XTResults()
 {
-	results = {};
-	score = 0;
-	nrofquestions = 0;
-	totalWeight = 0;
-	totalDuration = 0;
-	results.interactions = Array();
+    var completion = 0;
+    var counter;
+    for(var i = 0; i< state.completedPages.length;i++)
+    {
+        if(state.completedPages[i] == true)
+        {
+            counter++;
+        }
+    }
+    completion = (counter/state.completedPages.length)*100;
 
-	for(i = 0; i < state.interactions.length; i++){
-		score += state.interactions[i].score * state.interactions[i].weighting ;
-		if(state.interactions[i].nrinteractions > 0)
-		{
-			interaction = {};
-			interaction.score = Math.round(state.interactions[i].score);
-			interaction.title = state.interactions[i].ia_name;
-			interaction.duration = Math.round(state.interactions[i].duration / 1000);
-			interaction.weighting = state.interactions[i].weighting;
-			results.interactions[nrofquestions] = interaction;
-			totalDuration += state.interactions[i].duration;
-			nrofquestions++;
-			totalWeight += state.interactions[i].weighting;
-		}
-	}
-	if(state.interactions.length == 0)
-	{
-		$("#questionScores").hide()
-	}
-	results.score = score;
-	results.nrofquestions = nrofquestions;
-	results.averageScore = Math.round(score / totalWeight);
-	results.totalDuration = Math.round(totalDuration / 1000);
-	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
-	
-	
-	return results;
+    results = {};
+    results.mode = x_currentPageXML.getAttribute("mode");
+
+    score = 0;
+    nrofquestions = 0;
+    totalWeight = 0;
+    totalDuration = 0;
+    results.interactions = Array();
+
+    for(i = 0; i < state.interactions.length-1; i++){
+        score += state.interactions[i].score * state.interactions[i].weighting ;
+        if(state.interactions[i].nrinteractions > 0)
+        {
+            interaction = {};
+            interaction.score = Math.round(state.interactions[i].score);
+            interaction.title = state.interactions[i].ia_name;
+            interaction.duration = Math.round(state.interactions[i].duration / 1000);
+            interaction.weighting = state.interactions[i].weighting;
+            interaction.subinteractions = Array();
+            results.interactions[nrofquestions] = interaction;
+            totalDuration += state.interactions[i].duration;
+            nrofquestions++;
+            totalWeight += state.interactions[i].weighting;
+
+        }else if(results.mode == "full-results")
+        {
+            subinteraction = {}
+
+            var learnerAnswer, correctAnswer;
+            switch (state.interactions[i].ia_type){
+                case "match":
+                    learnerAnswer = state.interactions[i].learnerOptions[0].target;
+                    correctAnswer = state.interactions[i].correctOptions[0].target;
+                    break;
+                case "text":
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    break;
+            }
+            debugger;
+            subinteraction.question = state.interactions[i].ia_name;
+            subinteraction.learnerAnswer = learnerAnswer;
+            subinteraction.correctAnswer = correctAnswer;
+            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+        }
+
+    }
+    if(state.interactions.length == 0)
+    {
+        $("#questionScores").hide()
+    }
+    results.completion = completion;
+    results.score = score;
+    results.nrofquestions = nrofquestions;
+    results.averageScore = Math.round(score / totalWeight);
+    results.totalDuration = Math.round(totalDuration / 1000);
+    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+
+    return results;
 }

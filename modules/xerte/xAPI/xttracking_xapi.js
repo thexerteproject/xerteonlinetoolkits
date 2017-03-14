@@ -31,25 +31,50 @@ function XApiTrackingState()
     this.mode = "normal";
     this.scoremode = 'first';
     this.nrpages = 0;
+    this.toCompletePages = new Array();
+    this.completedPages = new Array();
     this.start = new Date();
     this.interactions = new Array();
     this.lo_completed = 0;
-    this.lo_passed = 0
+    this.lo_passed = 0;
 
     
     this.initialise = initialise;
+    this.pageCompleted = pageCompleted;
     this.setPageType = setPageType;
     this.setPageScore = setPageScore;
-    this.enterInteraction = enterInteraction
+    this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
-    this.enterPage = enterPage
+    this.enterPage = enterPage;
     
     function initialise()
     {
     	
+    }
+
+    function pageCompleted(page_nr)
+    {
+        var sit = state.findPage(page_nr);
+        if (sit != null)
+        {
+            for (i=0; i<sit.nrinteractions; i++)
+            {
+                var sit2 = state.findInteraction(page_nr, i);
+                if (sit2 == null || sit2.duration < 1000)
+                {
+                    return false;
+                }
+            }
+            if (sit.duration < 1000)
+            {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
     
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
@@ -303,6 +328,15 @@ function XTSetOption(option, value)
         case "nrpages":
             state.nrpages = value;
             break;
+        case "toComplete":
+            state.toCompletePages = value;
+            //completedPages = new Array(length(toCompletePages));
+            for(i = 0; i< length(toCompletePages);i++)
+            {
+                completedPages[i] = "false";
+            }
+
+            break;
         case "tracking-mode":
             switch(value)
             {
@@ -365,7 +399,7 @@ function XTEnterPage(page_nr, page_name)
     SaveStatement(statement);
 }
 
-function XTExitPage(page_nr)
+function XTExitPage(page_nr, page_name)
 {
     
 	this.exitPageStamp = new Date();
@@ -384,9 +418,27 @@ function XTExitPage(page_nr)
                 timestamp: this.exitPageStamp
             }
         );
+
+    var temp = false;
+    var i = 0;
+    for(i; i<state.toCompletePages.length;i++)
+    {
+        var currentPageNr = toCompletePages[i];
+        if(currentPageNr == page_nr)
+        {
+            temp = true;
+            break;
+        }
+    }
+    if(temp)
+    {
+        state.completedPages[i] = state.pageCompleted(page_nr);
+    }
+
     
     SaveStatement(statement);
     return state.exitInteraction(page_nr, -1, false, "", "", "", false);
+
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -537,37 +589,62 @@ function SaveStatement(statement)
 
 function XTResults()
 {
-	results = {};
-	score = 0;
-	nrofquestions = 0;
-	totalWeight = 0;
-	totalDuration = 0;
-	results.interactions = Array();
+    results = {};
+    results.mode = x_currentPageXML.getAttribute("mode");
 
-	for(i = 0; i < state.interactions.length; i++){
-		score += state.interactions[i].score * state.interactions[i].weighting ;
-		if(state.interactions[i].nrinteractions > 0)
-		{
-			interaction = {};
-			interaction.score = Math.round(state.interactions[i].score);
-			interaction.title = state.interactions[i].ia_name;
-			interaction.duration = Math.round(state.interactions[i].duration / 1000);
-			interaction.weighting = state.interactions[i].weighting;
-			results.interactions[nrofquestions] = interaction;
-			totalDuration += state.interactions[i].duration;
-			nrofquestions++;
-			totalWeight += state.interactions[i].weighting;
-		}
-	}
-	if(state.interactions.length == 0)
-	{
-		$("#questionScores").hide()
-	}
-	results.score = score;
-	results.nrofquestions = nrofquestions;
-	results.averageScore = Math.round(score / totalWeight);
-	results.totalDuration = Math.round(totalDuration / 1000);
-	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
-	
-	return results;
+    score = 0;
+    nrofquestions = 0;
+    totalWeight = 0;
+    totalDuration = 0;
+    results.interactions = Array();
+
+    for(i = 0; i < state.interactions.length-1; i++){
+        score += state.interactions[i].score * state.interactions[i].weighting ;
+        if(state.interactions[i].nrinteractions > 0)
+        {
+            interaction = {};
+            interaction.score = Math.round(state.interactions[i].score);
+            interaction.title = state.interactions[i].ia_name;
+            interaction.duration = Math.round(state.interactions[i].duration / 1000);
+            interaction.weighting = state.interactions[i].weighting;
+            interaction.subinteractions = Array();
+            results.interactions[nrofquestions] = interaction;
+            totalDuration += state.interactions[i].duration;
+            nrofquestions++;
+            totalWeight += state.interactions[i].weighting;
+
+        }else if(results.mode == "full-results")
+        {
+            subinteraction = {}
+
+            var learnerAnswer, correctAnswer;
+            switch (state.interactions[i].ia_type){
+                case "match":
+                    learnerAnswer = state.interactions[i].learnerOptions[0].target;
+                    correctAnswer = state.interactions[i].correctOptions[0].target;
+                    break;
+                case "text":
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    break;
+            }
+            debugger;
+            subinteraction.question = state.interactions[i].ia_name;
+            subinteraction.learnerAnswer = learnerAnswer;
+            subinteraction.correctAnswer = correctAnswer;
+            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+        }
+
+    }
+    if(state.interactions.length == 0)
+    {
+        $("#questionScores").hide()
+    }
+    results.score = score;
+    results.nrofquestions = nrofquestions;
+    results.averageScore = Math.round(score / totalWeight);
+    results.totalDuration = Math.round(totalDuration / 1000);
+    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+
+    return results;
 }

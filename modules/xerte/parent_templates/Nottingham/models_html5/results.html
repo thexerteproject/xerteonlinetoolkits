@@ -46,6 +46,7 @@
 			results = XTResults();
 			
 			$("#averageScore").html(results.averageScore + "%");
+			$("#completion").html(results.completion + "%");
 			$("#totalDuration").html(results.totalDuration + " seconds");
 			$("#startTime").html(results.start);
 
@@ -149,6 +150,10 @@
 			<tr>
 				<td>Average: </td>
 				<td><span id="averageScore"></span></td>
+			</tr>
+			<tr>
+				<td>Completion: </td>
+				<td><span id = "completion"></span></td>
 			</tr>
 			<tr>
 				<td>Start time: </td>

@@ -57,25 +57,50 @@ function NoopTrackingState()
     this.mode = "normal";
     this.scoremode = 'first';
     this.nrpages = 0;
+    this.toCompletePages = new Array();
+    this.completedPages = new Array();
     this.start = new Date();
     this.interactions = new Array();
     this.lo_completed = 0;
-    this.lo_passed = 0
+    this.lo_passed = 0;
 
     
     this.initialise = initialise;
+    this.pageCompleted = pageCompleted;
     this.setPageType = setPageType;
     this.setPageScore = setPageScore;
-    this.enterInteraction = enterInteraction
+    this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
     this.findPage = findPage;
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
-    this.enterPage = enterPage
+    this.enterPage = enterPage;
     
     function initialise()
     {
     	
+    }
+
+    function pageCompleted(page_nr)
+    {
+        var sit = state.findPage(page_nr);
+        if (sit != null)
+        {
+            for (i=0; i<sit.nrinteractions; i++)
+            {
+                var sit2 = state.findInteraction(page_nr, i);
+                if (sit2 == null || sit2.duration < 1000)
+                {
+                    return false;
+                }
+            }
+            if (sit.duration < 1000)
+            {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
     
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
@@ -282,6 +307,9 @@ function XTSetOption(option, value)
         case "nrpages":
             state.nrpages = value;
             break;
+        case "toComplete":
+            state.toCompletePages = value;
+            break;
         case "tracking-mode":
             switch(value)
             {
@@ -325,8 +353,26 @@ function XTEnterPage(page_nr, page_name)
 	state.enterPage(page_nr, -1, "page", page_name);
 }
 
-function XTExitPage(page_nr)
+function XTExitPage(page_nr, pageName)
 {
+    var temp = false;
+    var i = 0;
+    for(i; i<state.toCompletePages.length;i++)
+    {
+        var currentPageNr = state.toCompletePages[i];
+        if(currentPageNr == page_nr)
+        {
+            temp = true;
+            break;
+        }
+    }
+    if(temp)
+    {
+
+        state.completedPages[i] = state.pageCompleted(page_nr);
+    }
+
+
 	return state.exitInteraction(page_nr, -1, false, "", "", "", false);
 }
 
