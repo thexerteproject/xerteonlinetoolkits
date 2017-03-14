@@ -179,7 +179,12 @@ color: #6FD9D9;
 }
 
 section {
+	clear: both;
 	margin-bottom: 20px;
+}
+
+.sectionSubLinks.vlist .subLink {
+	display: block;
 }
 
 /* --HEADER-------------------------------------------------------------- */
@@ -324,4 +329,9 @@ section {
   #overview.logoR .logoR, #overview.logoL .logoL {
     float:none;
   }
+}
+
+
+.alertMsg {
+	color: red;
 }

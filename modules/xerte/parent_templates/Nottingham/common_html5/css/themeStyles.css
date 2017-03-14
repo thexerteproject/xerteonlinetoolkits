@@ -78,6 +78,10 @@ h3 {
 	border-color: orange;
 }
 
+.bgDarken {
+	background-color: black;
+}
+
 /* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
 /* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
 
@@ -135,3 +139,35 @@ h3 {
 .ui-button.ui-state-hover .ui-icon.x_prev_hist {	background-position: -44px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_prev_hist {	background-position: -44px 0px; }
 .ui-button.ui-state-active .ui-icon.x_prev_hist {	background-position: -88px 0px; }
+
+
+/* only used on flashCards page at the moment but could be used elsewhere too to better style buttons that only have font awesome icon on (no text) */
+.circleBtn.ui-button .ui-button-text, .circleBtn.ui-button .ui-button-icon-primary, .circleBtn.ui-button .ui-button-icon-secondary {
+	color: white;
+}
+
+.circleBtn.ui-button {
+	border-radius: 100%;
+}
+
+.flatRBtn.ui-button {
+	border-radius: 100% 0 0 100%;
+}
+
+.flatLBtn.ui-button {
+	border-radius: 0 100% 100% 0;
+}
+
+.circleBtn.ui-button {
+	background: #555;
+	border-color: #555;
+}
+
+.circleBtn.ui-button.ui-state-hover, .circleBtn.ui-button.ui-state-focus, .circleBtn.ui-button.ui-state-active {
+	background: #FF9900;
+	border-color: #FF9900;
+}
+
+.circleBtn.ui-button-icon-only {
+	height: 2.4em;
+}

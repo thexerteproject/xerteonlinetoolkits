@@ -667,7 +667,7 @@
                     l_answer = [],
                     l_feedback = [];
 
-            if (x_currentPageXML.getAttribute("judge") != "false") {
+            if (x_currentPageXML.getAttribute("judge") != "false" && interactivity=="Match") {
                 var labelHolderSpec = XTGetMode() != "normal" ? "#labelHolder .label" : "#labelHolder .ui-draggable-disabled";
                 $(labelHolderSpec).each(function(i) {
                     var $this = $(this)

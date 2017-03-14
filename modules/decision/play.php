@@ -47,7 +47,7 @@ function show_template($row_play)
 
     _load_language_file("/modules/decision/preview.inc");
 
-    $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+    $version = getVersion();
 
     // $engine is assumed to be html5 if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player_html5/rloObject.htm");

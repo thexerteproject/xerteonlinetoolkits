@@ -363,7 +363,7 @@
 				var $this = $(this);
 				l_total++;
 				var l_option={};
-				var l_placeholder, l_draglabel
+				var l_placeholder;
 		
 				if($this.data("currentTarget") != "" && $this.data("currentTarget").text() != undefined)
 				{
@@ -410,10 +410,10 @@
             	function(i)
             	{
             		
-            		correctOptions = []
+            		correctOptions = [];
             		var correctOption={};
-            		var placeholder = $(this.getAttribute("p1")).text(); 
-            		var draglabel	= $(this.getAttribute("p2")).text();
+            		var placeholder = $("<div/>").html(this.getAttribute("p1")).text();
+            		var draglabel	= $("<div/>").html(this.getAttribute("p2")).text();
             		correctOption.source = draglabel;
                     correctOption.target = placeholder;
 					correctAnswer = draglabel + "-->" + placeholder;

@@ -60,6 +60,14 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         return null;
     }
 
+    public function getEmail()
+    {
+        if (isset($this->_record['email'])) {
+            return $this->_record['email'];
+        }
+        return null;
+    }
+
     public function check()
     {
         global $xerte_toolkits_site;

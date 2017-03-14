@@ -42,6 +42,14 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
         return $this->_record->lastname;
     }
 
+    public function getEmail()
+    {
+        if (isset($this->_record->email)) {
+            return $this->_record->email;
+        }
+        return null;
+    }
+
     public function check()
     {
         return true;
@@ -65,7 +73,14 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
 
         if (!isset($_SESSION['saml2session'])) {
             $_SESSION['saml2reqid'] = base64_encode(openssl_random_pseudo_bytes(10));
-            $url = $this->_saml2config['ssourl'] . "?site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
+            if (strpos($this->_saml2config['ssourl'], '?') === false)
+            {
+                $url = $this->_saml2config['ssourl'] . "?site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
+            }
+            else
+            {
+                $url = $this->_saml2config['ssourl'] . "&site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
+            }
             header("Location: " . $url);
             exit;
         }

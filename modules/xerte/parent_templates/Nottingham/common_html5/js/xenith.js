@@ -25,6 +25,8 @@ var x_languageData  = [],
     x_currentPage   = -1,
     x_currentPageXML,
     x_glossary      = [],
+	x_variables		= [],
+	x_variableErrors= [],
     x_specialChars  = [],
     x_inputFocus    = false,
     x_dialogInfo    = [], // (type, built)
@@ -168,7 +170,7 @@ x_projectDataLoaded = function(xmlData) {
     x_pages = xmlData.children();
 	var pageToHide = [];
     x_pages.each(function (i) {
-		if ($(this)[0].getAttribute("hidePage") != "true") {
+		if ($(this)[0].getAttribute("hidePage") != "true" || (x_params.authorSupport == "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1)) {
 			var linkID = $(this)[0].getAttribute("linkID"),
 				pageID = $(this)[0].getAttribute("pageID"),
 				page = {type: $(this)[0].nodeName, built: false};
@@ -401,19 +403,24 @@ function x_setUp() {
 		// author support should only work in preview mode (not play)
 		if (x_params.authorSupport == "true") {
 			if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("play") != -1) {
-				x_authorSupport = "false";
+				x_params.authorSupport = "false";
 			} else {
 				var msg = x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("authorSupport")[0], "label", "") : "Author Support is ON: text shown in red will not appear in live projects.";
-				$x_headerBlock.prepend('<div class="alert"><p>' + msg + '</p></div>');
+				$x_headerBlock.prepend('<div id="x_authorSupportMsg" class="alert"><p>' + msg + '</p></div>');
 			}
 		}
+		
+		// calculate author set variables
+		x_newVariables();
 		
 		// hides header/footer if set in url
 		if (x_params.hideHeader == "true") {
 			$x_headerBlock.hide().height(0);
 		}
-		if (x_params.hideFooter == "true") {
-			$x_footerBlock.hide().height(0);
+		if (x_params.hideFooter == "true") { // More complex since narration is in here
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
 			$x_mainHolder.css("border", "none");
@@ -590,8 +597,8 @@ function x_continueSetUp() {
 			}
 		}
 		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort alphabetically
-				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
@@ -687,7 +694,6 @@ function x_continueSetUp() {
 				});
 		}
 	}
-	
 	
 	if (x_params.media != undefined) {
 		$x_footerL.prepend('<button id="x_mediaBtn"></button>');
@@ -939,6 +945,13 @@ function x_continueSetUp() {
 				"filter"	:"alpha(opacity=" + alpha + ")"
 			});
 		}
+		if (x_params.backgroundDark != undefined) {
+			$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
+			$("#x_mainBgDarken").css({
+				"opacity"	:Number(x_params.backgroundDark/100),
+				"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
+			});
+		}
 	}
 	
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
@@ -1018,20 +1031,41 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
         }
         else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-            page = x_lookupPage(pageInfo.type, pageInfo.ID);
-            if ($.isArray(page)) {
-            	x_deepLink = page[1];
-            	x_changePage(page[0]);
-            }
-            else if (page != null) {
-                x_changePage(page);
-            }
-            else {
-            	x_deepLink = "";
-            	if (force == true) {
-                	x_changePage(0);
-                }
-            }
+        	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+        		console.log((pageInfo.ID).substring(1, pageInfo.ID.length-1));
+				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+					case "next":
+						if (x_currentPage < x_pages.length)
+							x_changePage(x_currentPage + 1);
+						break;
+					case "previous":
+						if (x_currentPage > 0)
+							x_changePage(x_currentPage - 1);
+						break;
+					case "first":
+						x_changePage(0);
+						break;
+					case "last":
+						x_changePage(x_pages.length-1);
+						break;
+				}
+        	}
+        	else {
+				page = x_lookupPage(pageInfo.type, pageInfo.ID);
+				if ($.isArray(page)) {
+					x_deepLink = page[1];
+					x_changePage(page[0]);
+				}
+				else if (page != null) {
+					x_changePage(page);
+				}
+				else {
+					x_deepLink = "";
+					if (force == true) {
+						x_changePage(0);
+					}
+				}
+			}
         }
         else {
             page = parseInt(pageInfo.ID);
@@ -1115,7 +1149,7 @@ function x_changePage(x_gotoPage) {
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
-        $("#pageBg").remove();
+        $("#pageBg, #pageBgDarken").remove();
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
@@ -1158,7 +1192,12 @@ function x_changePage(x_gotoPage) {
 		if (x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", undefined) != undefined) {
 			$x_helperText.html('<h3>' + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "label", "Screen Reader Information") + ':</h3><p>' + x_getLangInfo(x_languageData.find("screenReaderInfo").find(x_pageInfo[x_currentPage].type)[0], "description", "") + '</p>');
 		}
+		
+		var extraTitle = x_currentPageXML.getAttribute("hidePage") == "true" ? ' <span class="alert">' + (x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != "" && x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") != null ? x_getLangInfo(x_languageData.find("hiddenPage")[0], "label", "") : "This page will be hidden in live projects") + '</span>' : '';
+		
+		pageTitle = pageTitle + extraTitle;
     }
+	
     $("#x_headerBlock h2").html(pageTitle);
 
     x_updateCss(false);
@@ -1209,7 +1248,12 @@ function x_changePage(x_gotoPage) {
         $("#x_page" + x_currentPage).css("visibility", "hidden");
 
         if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
-            x_findText(x_currentPageXML); // check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+				x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
+			} else {
+				x_findText(x_currentPageXML);
+			}
         }
 
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
@@ -1352,13 +1396,6 @@ function x_setUpPage() {
 // function called from each model when fully loaded to trigger fadeIn
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
-    
-    // Rip out the glossary if required
-	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
-		if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-			$("#x_page" + x_currentPage).find("a.x_glossary").contents().unwrap();
-		}
-	}
 	
 	// Do deeplinking here so model has appropriate data at hand
 	x_doDeepLink();
@@ -1651,39 +1688,450 @@ function x_getLangInfo(node, attribute, fallBack) {
 }
 
 
-// function finds attributes/nodeValues where text may need replacing for things like links / glossary words
-function x_findText(pageXML) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
-        i, j, len;
+// function starts the calculation of variables set by author via the variables optional property
+function x_newVariables() {
+	// clears arrays if they have previously been calculated
+	x_variables.splice(0, x_variables.length);
+	x_variableErrors.splice(0, x_variableErrors.length);
+	
+	if (x_params.variables != undefined) {
+		var i, j, k, temp, thisVar,
+			allVars = x_params.variables.split("||"),
+			toCalc = [],
+			lastLength, checkDefault;
+		
+		// get array of data for all uniquely named variables & sort them so empty strings etc. become undefined
+		for (i=0; i<allVars.length; i++) {
+			var temp = allVars[i].split("|");
+			thisVar = {name:$.trim(temp[0]), data:temp.slice(1), requires:[]}; // data = [fixed value, [random], min, max, step, decimal place, significant figure, trailing zero, [exclude], default]
+			if (thisVar.name != "" && allVars.filter(function(a){ return a.name == thisVar.name }).length == 0) {
+				for (j=0; j<thisVar.data.length; j++) {
+					if (j == 1 || j == 8) { // convert data (random/exclude) to array
+						thisVar.data.splice(j, 1, thisVar.data[j].split(","));
+						for (k=0; k<thisVar.data[j].length; k++) {
+							temp = $.trim(thisVar.data[j][k]);
+							if (temp === "") {
+								thisVar.data[j].splice(k, 1);
+								k--;
+							} else {
+								thisVar.data[j].splice(k, 1, temp);
+							}
+						}
+					} else {
+						temp = $.trim(thisVar.data[j]);
+						if (temp === "") {
+							temp = undefined;
+						}
+						thisVar.data.splice(j, 1, temp);
+					}
+				}
+				
+				allVars.splice(i, 1, thisVar);
+				toCalc.push(i);
+				
+			} else {
+				allVars.splice(i, 1);
+				i--;
+			}
+		}
+		
+		// goes through all variables and attempts to calculate their value
+		// may loop several times if variables require other variable values to be ready before calculating their value
+		// stops when no. var values calculated is no longer increasing - either all done or some vars can't be calculated (circular calculations or referencing non-existant vars)
+		while (toCalc.length > 0 && (toCalc.length != lastLength || checkDefault == true)) {
+			lastLength = toCalc.length;
+			
+			for (i=0; i<toCalc.length; i++) {
+				thisVar = x_calcVariables(allVars[toCalc[i]], false, checkDefault);
+				if (thisVar.ok == true) {
+					thisVar.requiredBy = []; // requires & requiredBy not used at the moment but I've left here in case we want to do something with this data at some point
+					x_variables.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+					if (thisVar.default == true) {
+						checkDefault = false;
+					}
+				} else if (thisVar.ok == false) {
+					x_variableErrors.push(thisVar);
+					toCalc.splice(i,1);
+					i--;
+				}
+				
+				if (i + 1 == toCalc.length && toCalc.length == lastLength) {
+					checkDefault = checkDefault == true ? false : true;
+				}
+			}
+		}
+		
+		for (i=0; i<toCalc.length; i++) {
+			thisVar = allVars[toCalc[i]];
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "undef", "References an undefined variable");
+			x_variableErrors.push(thisVar);
+			toCalc.splice(i,1);
+			i--;
+		}
+		
+		if ($("#x_authorSupportMsg").length > 0 && (x_variables.length > 0 || x_variableErrors.length > 0)) {
+			$("#x_authorSupportMsg p").append('</br>' + '<a onclick="x_showVariables()" href="javascript:void(0)" style="color:red">' + x_getLangInfo(x_languageData.find("authorVars")[0], "label", "View variable data") + '</a>');
+		}
+	}
+}
 
+
+// function calculates the value of any author set variables
+function x_calcVariables(thisVar, recalc, checkDefault) {
+	thisVar.ok = undefined;
+	
+	// calculate min / max / step values
+	var data = {min:thisVar.data[2], max:thisVar.data[3], step:thisVar.data[4]},
+		exclude = [], index;
+	
+	for (var key in data) {
+		if (Object.prototype.hasOwnProperty.call(data, key)) {
+			// check for use of other variables & keep track of which are required
+			if (data[key] != undefined && ((thisVar.data[0] == undefined && thisVar.data[1].length == 0) || key != "step")) {
+				var info = x_getVarValues(data[key], thisVar.name);
+				data[key] = info[0];
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+				
+				thisVar.ok = info[2];
+				if (thisVar.ok != true) { // a variable needed doesn't exist / hasn't been calculated yet
+					break;
+				} else {
+					data[key] = Number(data[key]);
+				}
+			}
+		}
+	}
+	
+	// calculate exclude values
+	if ((thisVar.ok == true || thisVar.ok == undefined) && thisVar.data[8].length > 0) {
+		exclude = thisVar.data[8].slice();
+		// check for use of other variables & keep track of which are required
+		for (var i=0; i<exclude.length; i++) {
+			var info = x_getVarValues(exclude[i], thisVar.name);
+			exclude.splice(i, 1, info[0]);
+			if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+			
+			thisVar.ok = info[2];
+			if (info[2] != true) {  // a variable needed doesn't exist / hasn't been calculated yet
+				break;
+				
+			} else if (typeof exclude[i] === "string" && exclude[i].indexOf("&&") != -1) {
+				// it's a range e.g. -2<&&<2 or -2<=&&<=2
+				var temp = exclude[i].split("&&").filter(function (a) { return a.indexOf("<") > -1 || a.indexOf(">") > -1; });
+				if (temp.length == 2) {
+					temp.splice(0, 1, temp[0] + "[" + thisVar.name + "]");
+					temp.splice(1, 1, "[" + thisVar.name + "]" + temp[1]);
+					exclude.splice(i, 1, temp);
+				}
+			}
+		}
+	}
+	
+	// no missing dependancies so far
+	if (thisVar.ok == true || thisVar.ok == undefined) {
+		
+		if (data.min != undefined && data.max != undefined && data.min > data.max) {
+			// fail because min > max
+			thisVar.ok = false;
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "minMax", "min > max") + " (" + data.min + " > " + data.max + ")";
+			
+		} else if (thisVar.data[0] != undefined || thisVar.data[1].length > 0) {
+			if (thisVar.data[0] != undefined) {
+				// FIXED VALUE
+				thisVar.type = "fixed";
+				thisVar.value = thisVar.data[0];
+				
+				// check for use of other variables & keep track of which are required
+				var info = x_getVarValues(thisVar.value, thisVar.name);
+				thisVar.value = info[0];
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+				thisVar.ok = info[2];
+				
+			} else if (thisVar.data[1].length > 0) {
+				// RANDOM FROM LIST
+				thisVar.type = "random";
+				
+				index = Math.floor(Math.random()*thisVar.data[1].length);
+				thisVar.value = thisVar.data[1][index];
+				
+				// check for use of other variables & keep track of which are required
+				var info = x_getVarValues(thisVar.value, thisVar.name);
+				thisVar.value = info[0];
+				if (info[1].length > 0) { thisVar.requires = thisVar.requires.concat(info[1].filter(function (item) { return thisVar.requires.indexOf(item) < 0; })); }
+				thisVar.ok = info[2];
+				
+			}
+			
+			if (thisVar.ok == true) {
+				if (data.min != undefined && data.min > thisVar.value) {
+					// fail because value < min
+					if (thisVar.type == "random") {
+						thisVar.ok = "retry";
+					} else {
+						thisVar.ok = false;
+					}
+					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMin", "value < min") + " (" + thisVar.value + " < " + data.min + ")";
+						
+				} else if (data.max != undefined && data.max < thisVar.value) {
+					// fail because value > max
+					if (thisVar.type == "random") {
+						thisVar.ok = "retry";
+					} else {
+						thisVar.ok = false;
+					}
+					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "valueMax", "value > max") + " (" + thisVar.value + " > " + data.max + ")";
+				}
+			}
+			
+		} else if (data.min != undefined || data.max != undefined) { // from max & min
+			// RANDOM BETWEEN MIN & MAX VALUES
+			thisVar.type = "minMax";
+			
+			// uses defaults of min=0 & max=100 if only min or max are set
+			if (data.min == undefined) {
+				data.min  = 0;
+			} else if (data.max == undefined) {
+				data.max = 100;
+			}
+			
+			// use default of 1 for step
+			if (data.step == undefined) {
+				data.step = 1;
+			}
+			
+			var maxDecimal = Math.max(Math.floor(data.min) === data.min ? 0 : data.min.toString().split(".")[1].length || 0, Math.floor(data.step) === data.step ? 0 : data.step.toString().split(".")[1].length || 0);
+			thisVar.value = Math.floor(Math.random()*(((data.max - data.min) / data.step) + 1)) * data.step + data.min;
+			if (thisVar.value > data.max) { thisVar.value = thisVar.value - data.step; } // can be over max if step doesn't take to exact max number - adjust for this
+			thisVar.value = thisVar.value.toFixed(maxDecimal); // forces correct decimal num - should work without this but occasionally it ends up with e.g. 1.1999999999999.... instead of 1.2
+			thisVar.ok = true;
+			
+		} else if (thisVar.type == undefined) {
+			thisVar.ok = false;
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "none", "No variable data");
+		}
+	}
+	
+	if (thisVar.ok == true && $.isNumeric(Number(thisVar.value))) {
+		// to significant figure
+		if ($.isNumeric(Number(thisVar.data[6]))) {
+			thisVar.value = Number(thisVar.value).toPrecision(Number(thisVar.data[6]));
+		}
+		// to decimal place
+		if ($.isNumeric(Number(thisVar.data[5]))) {
+			thisVar.value = Number(thisVar.value).toFixed(Number(thisVar.data[5]));
+			if (thisVar.data[7] != "true") {
+				// remove trailing zeros
+				thisVar.value = Number(thisVar.value);
+			}
+		}
+	}
+	
+	// check value isn't one that should be excluded
+	if (thisVar.ok == true) {
+		for (var i=0; i<exclude.length; i++) {
+			var clash = false;
+			if (typeof exclude[i] == "number") {
+				if (exclude[i] == thisVar.value) {
+					clash = true;
+				}
+			
+			// it's an exclude range
+			} else if (typeof exclude[i] == "object") {
+				for (var j=0; j<exclude[i].length; j++) {
+					exclude[i].splice(j, 1, exclude[i][j].replace("[" + thisVar.name + "]", thisVar.value));
+				}
+				if (eval(exclude[i][0]) && eval(exclude[i][1])) {
+					clash = true;
+				}
+			}
+			
+			if (clash == true) {
+				if (thisVar.type == "fixed") {
+					thisVar.ok = false;
+					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+				} else {
+					thisVar.ok = "retry";
+					thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "invalid", "Invalid value") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "exclude", "{n} is excluded").replace("{n}", thisVar.value);
+				}
+				break;
+			}
+		}
+		
+	} else if (thisVar.ok == false && thisVar.info == undefined) {
+		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("error")[0], "unable", "Unable to calculate") + ": " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "circular", "Circular variable reference");
+	}
+	
+	// only retry random if there's a value that hasn't already failed
+	if (thisVar.ok == "retry" && thisVar.type == "random") {
+		thisVar.data[1].splice(index, 1);
+		if (thisVar.data[1].length == 0) {
+			thisVar.ok = false;
+			thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none", "All possible values are excluded or fall outside the min & max range");
+		}
+	}
+	
+	// retry multiple times to see if we can get a valid value
+	if (thisVar.ok == "retry") {
+		var attempts = 100;
+		
+		if (recalc != true) {
+			var counter = 0;
+			do {
+				thisVar = x_calcVariables(thisVar, true);
+				counter++;
+			} while (counter < attempts && thisVar.ok == "retry");
+			
+			if (thisVar.ok == "retry") {
+				thisVar.ok = false;
+				thisVar.info = " " + x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "none2", "{n} attempts have not returned an accepted value").replace("{n}", attempts);
+			} else if (thisVar.ok == true) {
+				thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "attempts", "{n} attempts to calculate a valid value").replace("{n}", (counter + 1));
+			}
+		}
+	}
+	
+	// fallback to default
+	if (thisVar.data[9] != undefined && (thisVar.ok == false || checkDefault == true)) {
+		try {
+			var sum = eval(thisVar.data[9]);
+			thisVar.value = sum;
+		} catch (e) {
+			thisVar.value = thisVar.data[9];
+		}
+		thisVar.requiredBy = [];
+		thisVar.default = true;
+		thisVar.ok = true;
+		thisVar.info = x_getLangInfo(x_languageData.find("authorVarsInfo").find("info")[0], "default", "Fallback to default value");
+	}
+	
+	return thisVar;
+}
+
+
+// function gets values of other variables needed for calculation and evals the value when everything's ready
+function x_getVarValues(thisValue, thisName) {
+	var requires = [];
+	
+	if (thisValue.indexOf("[" + thisName + "]") != -1) {
+		return [thisValue, requires, false];
+	}
+	
+	if (String(thisValue).indexOf("[") != -1) {
+		for (var i=0; i<x_variables.length; i++) {
+			if (thisValue.indexOf("[" + x_variables[i].name + "]") != -1) {
+				// keeps track of what other variables reference this so they can be recalculated together if needed
+				if (x_variables[i].requiredBy.indexOf(thisName) == -1) {
+					x_variables[i].requiredBy.push(thisName);
+				}
+				requires.push(x_variables[i].name);
+				
+				RegExp.esc = function(str) {
+					return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+				};
+				var regExp = new RegExp(RegExp.esc("[" + x_variables[i].name + "]"), "g");
+				thisValue = thisValue.replace(regExp, x_variables[i].value);
+				if (thisValue.indexOf("[") == -1) { break; }
+			}
+		}
+	}
+	
+	try {
+		var sum = eval(thisValue);
+		return [sum, requires, true];
+	} catch (e) {
+		if (thisValue.indexOf("[") == -1) {
+			return [thisValue, requires, true]; // string
+		} else {
+			return [thisValue, requires, "variable"];
+		}
+	}
+}
+
+
+// function displays author set variables in popup when in author support mode
+function x_showVariables() {
+	var varHeadings = ["Name", "Fixed Value", "Random", "Min", "Max", "Step", "DP", "SF", "Trailing Zeros", "Exclude", "Default"];
+	var pageText = '<html><body><style>table, tr, td, th { border: 1px solid black; text-align: left; } th { background-color: LightGray; } table { border-collapse: collapse; min-width: 100%; } th, td { padding: 1em; width: ' + (100/(varHeadings.length+1)) + '%; } .alert { color: red; } td:nth-child(1), td:nth-child(2) { font-weight: bold; } </style><table>',
+		cells, temp, infoTxt;
+	
+	for (var i=0; i<varHeadings.length; i++) {
+		pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[i], false, varHeadings[i]) + '</th>';
+		if (i == 0) {
+			pageText += '<th>' + x_getLangInfo(x_languageData.find("authorVars").find("item")[varHeadings.length], false, "Value") + '</th>';
+		}
+	}
+	
+	for (var i=0; i<x_variables.length; i++) {
+		cells = "";
+		for (var j=0; j<x_variables[i].data.length; j++) {
+			temp = x_variables[i].data[j] === undefined ? "" : x_variables[i].data[j];
+			cells += '<td>' + temp + '</td>';
+		}
+		infoTxt = x_variables[i].info == undefined ? "" : '<br/><span class="alert">' + x_variables[i].info + '</span>';
+		pageText += '<tr><td>' + x_variables[i].name + '</td><td>' + x_variables[i].value + infoTxt + '</td>' + cells + '</tr>';
+	}
+	
+	for (var i=0; i<x_variableErrors.length; i++) {
+		cells = "";
+		for (var j=0; j<x_variableErrors[i].data.length; j++) {
+			temp = x_variableErrors[i].data[j] === undefined ? "" : x_variableErrors[i].data[j];
+			cells += '<td>' + temp + '</td>';
+		}
+		pageText += '<tr style="background-color: LightGray;"><td>' + x_variableErrors[i].name + '</td><td>' + x_variableErrors[i].info + '</td>' + cells + '</tr>';
+	}
+	
+	pageText += '</table></body></html>';
+	
+	window.open('','','width=300,height=450').document.write('<p style="font-family:sans-serif; font-size:12">' + pageText + '</p>');
+}
+
+
+// function finds attributes/nodeValues where text may need replacing for things like links / glossary words
+function x_findText(pageXML, exclude) {
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt"],
+        i, j, len;
+	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
+	
     for (i=0, len = pageXML.attributes.length; i<len; i++) {
         if ($.inArray(pageXML.attributes[i].name, attrToCheck) > -1) {
-            x_insertText(pageXML.attributes[i]);
+            x_insertText(pageXML.attributes[i], exclude);
         }
     }
 
     for (i=0, len=pageXML.childNodes.length; i<len; i++) {
         if (pageXML.childNodes[i].nodeValue == null) {
-            x_findText(pageXML.childNodes[i]); // it's a child node of node - check through this too
+            x_findText(pageXML.childNodes[i], exclude); // it's a child node of node - check through this too
         } else {
             if (pageXML.childNodes[i].nodeValue.replace(/^\s+|\s+$/g, "") != "") { // not blank
-                x_insertText(pageXML.childNodes[i]);
+                x_insertText(pageXML.childNodes[i], exclude);
             }
         }
     }
 }
 
 // function adds glossary links, LaTeX, page links to text found in x_findText function
-function x_insertText(node) {
+function x_insertText(node, exclude) {
 	// Decode node.value in order to make sure it works for for foreign characters like é
 	// But keep html tags, so use textarea
 	// cf. http://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it (3rd answer)
 	var temp=document.createElement("pre");
 	temp.innerHTML=node.nodeValue;
 	var tempText = temp.innerHTML;
-
+	
+	exclude = exclude == undefined ? [] : exclude;
+	
+	// check text for variables - if found replace with variable value
+	if (x_variables.length > 0 && exclude.indexOf("variables") == -1) {
+        for (var k=0; k<x_variables.length; k++) {
+			var regExp = new RegExp('\\[' + x_variables[k].name + '\\]', 'g');
+			tempText = tempText.replace(regExp, x_variables[k].value);
+        }
+    }
+	
     // check text for glossary words - if found replace with a link
-    if (x_glossary.length > 0) {
+    if (x_glossary.length > 0 && exclude.indexOf("glossary") == -1) {
         for (var k=0, len=x_glossary.length; k<len; k++) {
 			var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + x_glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
 			tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
@@ -1722,7 +2170,7 @@ function x_insertText(node) {
 
 // function maximises LO size to fit window
 function x_setFillWindow(updatePage) {
-	 x_fillWindow = true;
+	x_fillWindow = true;
 	 
     if (x_params.responsive == "true") {
         for (var i = 0; i < x_responsive.length; i++) {

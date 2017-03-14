@@ -329,6 +329,9 @@ if($xAPI)
 	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
 	copy_extra_files();
 }
+// Copy the favicon file
+copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
+array_push($delete_file_array, $dir_path . "favicon.ico");
 
 $rlo_file = $row['template_name'] . ".rlt";
 /*

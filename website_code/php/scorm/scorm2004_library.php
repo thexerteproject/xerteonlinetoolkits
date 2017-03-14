@@ -184,7 +184,7 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language)
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
-	$version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
+    $version = getVersion();
 
 	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 

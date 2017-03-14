@@ -157,7 +157,7 @@ input.media
 .pane-center {margin-left: 25px; background: #fff}
 .pane-east {margin-right: 15px}
 
-.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px;}
+.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px; overflow-x: auto;}
 
 /* inner divs inside Outer East/West panes */
 .header {
@@ -786,7 +786,7 @@ td.flashonly, td.deprecated{
 }
 
 .hotspotLightboxImg {
-    width:400px;
+    width:100%;
 }
 
 

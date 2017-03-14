@@ -1,0 +1,526 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var flashCards = new function () {
+		var $pageContents;
+		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $('#pageContents');
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			if (x_browserInfo.mobile == false) {
+				
+				// reset heights/widths initially...
+				$('.mediaHolder').hide();
+				$pageContents.add('.card, #cards').css({ 'width': 'auto', 'height': 'auto' });
+				$('.cardInner').css('height', 'auto');
+				
+				// ...then recalculate the best sizes...
+				$pageContents
+					.height($x_pageHolder.height() - parseInt($x_pageDiv.css('padding-top')) * 2 - 2)
+					.width($x_pageHolder.width() - parseInt($x_pageDiv.css('padding-left')) * 2 - 2);
+				
+				$('.card, #cards')
+					.height($('#cardCtrls').height() - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom)
+					.width(Math.min(($('#cardCtrls').height() * 1.3) - $pageContents.data('boxShadow').top - $pageContents.data('boxShadow').bottom, $('#cardHolder').width() - ($('.btnHolder button').width() * 2)) - $pageContents.data('boxShadow').right - $pageContents.data('boxShadow').left);
+				
+				$('.cardInner')
+					.height($('#cards').height() - $('.flipBtnHolder').data('height') - parseInt($('.cardInner').css('padding-top')) * 2 - 10);
+				
+				$('.mediaHolder').show();
+				
+			} else {
+				// ** mobile layout
+			}
+			
+			flashCards.resizeMedia();
+		}
+		
+		// function resizes media controls
+		this.resizeMedia = function(deal) {
+			// resize if the media is now the wrong size for its holder
+			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
+			var triggerResize = true;
+			
+			$('.cardVideo video').each(function(i) {
+				var	$this = $(this),
+					$cardVideo = $this.closest('.cardVideo');
+				
+				var tempW = $cardVideo.data('max-width'), tempH = $cardVideo.data('max-height');
+				if (tempW > $cardVideo.closest('.panel').width()) {
+					var scale = $cardVideo.closest('.panel').width() / tempW;
+					tempW = $cardVideo.closest('.panel').width();
+					tempH = Math.floor(tempH * scale);
+				}
+				if (tempH > $cardVideo.closest('.panel').height()) {
+					var scale = $cardVideo.closest('.panel').height() / tempH;
+					tempH = $cardVideo.closest('.panel').height();
+					tempW = Math.floor(tempW * scale);
+				}
+				
+				$cardVideo.css({
+						'max-width'	:tempW,
+						'max-height':tempH
+					});
+				
+				if ($this.is(':visible') && $this.width() != $cardVideo.width() && triggerResize == true) {
+					triggerResize = false;
+					$x_window.resize();
+					return false;
+				}
+			});
+			
+			$('.cardAudio audio').each(function(i) {
+				var audioBarW = 0,
+					$this = $(this);
+				var $cardAudio = $this.closest('.cardAudio');
+				
+				$this.closest('.mejs-inner').find('.mejs-controls').children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+				
+				if ($cardAudio.is(':visible') && (audioBarW <= $cardAudio.width() - 10 || audioBarW > $cardAudio.width()) && triggerResize == true) {
+					triggerResize = false;
+					$x_window.resize();
+					return false;
+				}
+			});
+		}
+		
+		this.init = function () {
+			if (x_currentPageXML.getAttribute('interactivity') == 'flip') {
+				// Load in the required scripts before we can begin
+				$script.path(x_templateLocation + 'common_html5/js/');
+				$script('jquery.flip.min.js', function () {
+					flashCards.setUp();
+				});
+			} else {
+				this.setUp();
+			}
+		}
+		
+		this.setUp = function() {
+			$pageContents = $('#pageContents');
+			$pageContents.data('currentCard', 0);
+			
+			// these are used later for sizing / layout:
+			var boxShadow = $('.panel').css('box-shadow'),
+				h, v, b, s,
+				top = 0, right = 0, bottom = 0, left = 0;
+			
+			if (boxShadow) {
+				boxShadow = $.trim(boxShadow.split(')')[1]).split(' ');
+				h = parseInt(boxShadow[0]); v = parseInt(boxShadow[1]); b = parseInt(boxShadow[2]); s = parseInt(boxShadow[3]);
+				top = s + b - v + 2;
+				right = s + b + h + 2;
+				bottom = s + b + v + 2;
+				left = s + b - h + 2;
+			}
+			
+			$pageContents.data('boxShadow', { top: top, right: right, bottom: bottom, left: left });
+			
+			
+			var $textHolder	= $('#textHolder');
+			if (x_currentPageXML.getAttribute('text') != '') {
+				$textHolder.html(x_currentPageXML.getAttribute('text'));
+				
+			} else {
+				$textHolder.remove();
+				$('#cardHolder').addClass('full');
+			}
+			
+			var $card = $('.card'),
+				$cards = $('#cards'),
+				$thisCard, $thisFront, $thisBack;
+			
+			$(x_currentPageXML).children().each(function(i){
+				var thisInfo = this;
+				
+				if (i == 0) {
+					$thisCard = $card;
+				} else {
+					$thisCard = $card.clone().appendTo($cards);
+				}
+				$thisCard.attr('id', 'card' + i);
+				$thisFront = $thisCard.find('.front').empty();
+				$thisBack = $thisCard.find('.back').empty();
+				
+				$thisFront.add($thisBack).each(function(j) {
+					var $this = $(this),
+						index = j + 1;
+					
+					if (thisInfo.getAttribute('name') != '') {
+						$this.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
+					}
+					
+					if (thisInfo.getAttribute('side' + index) != '') {
+						$this.append(thisInfo.getAttribute('side' + index));
+					}
+					
+					// media on card...
+					var url = thisInfo.getAttribute('media' + index),
+						tip = thisInfo.getAttribute('tip' + index);
+					
+					if (url != undefined && url != '') {
+						var $mediaHolder = $('<div class="mediaHolder"></div>'),
+							$media;
+						
+						if (url.split('.').pop() == 'mp4') {
+							// video
+							$media = $('<div class="cardVideo">')
+										.appendTo($mediaHolder);
+							
+							if (tip != undefined && tip != '') { $media.attr('title', tip); };
+							
+							$media.mediaPlayer({
+								width: '100%',
+								height: '100%',
+								type: 'video',
+								source: url
+							});
+							
+						} else if (url.split('.').pop() == 'mp3') {
+							// audio
+							$media = $('<div class="cardAudio">')
+										.appendTo($mediaHolder);
+							
+							if (tip != undefined && tip != '') { $media.attr('title', tip); };
+								
+							$media.mediaPlayer({
+								type: 'audio',
+								source: url,
+								width: '100%'
+							});
+							
+						} else {
+							// image
+							$media = $('<img class="cardImg">')
+										.attr('src', url)
+										.appendTo($mediaHolder);
+							
+							if (tip != undefined && tip != '') { $media.attr('alt', tip); };
+						}
+						
+						if (thisInfo.getAttribute('align' + index) == 'Top') {
+							if (thisInfo.getAttribute('name') != '') {
+								$mediaHolder.insertAfter($this.find('h3')[0]);
+							} else {
+								$this.prepend($mediaHolder);
+							}
+						} else {
+							$this.append($mediaHolder);
+						}
+					}
+					
+					$this.wrapInner('<div class="cardInner"></div>');
+					
+					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div>');
+				});
+				
+				$thisCard.flip({ trigger: 'manual' });
+			});
+			
+			if ($('.card').length < 2) {
+				$('#prevBtn, #nextBtn, #cardNoTxt').remove();
+				
+			} else {
+				$('#prevBtn')
+					.button({
+						icons: {
+							primary: 'fa fa-arrow-left'
+						},
+						label:	x_currentPageXML.getAttribute('prevTxt'),
+						text:	false
+					})
+					.click(function() {
+						flashCards.newCard(false);
+					});
+				
+				$('#nextBtn')
+					.button({
+						icons: {
+							primary: 'fa fa-arrow-right'
+						},
+						label:	x_currentPageXML.getAttribute('nextTxt'),
+						text:	false
+					})
+					.click(function() {
+						flashCards.newCard(true);
+					});
+			}
+			
+			$('.flipBtn')
+				.button({
+					icons: {
+						primary: 'fa fa-refresh'
+					},
+					label:	x_currentPageXML.getAttribute('flipTxt'),
+					text:	false
+				})
+				.click(function() {
+					$(this).closest('.card').flip('toggle');
+				})
+			
+			$('.flipBtnHolder').data('height', $('.flipBtnHolder').height() + parseInt($('.flipBtnHolder').css('margin-bottom')) * 2);
+			
+			if ($('.card').length < 2) {
+				$('#btnHolder').remove();
+			}
+			
+			$('.card').hide();
+			
+			this.sizeChanged();
+			
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+			
+			this.dealCard();
+		}
+		
+		this.dealCard = function(next) {
+			if (next == true) {
+				this.toggleBtn($('#prevBtn'), 'enable');
+				if ($pageContents.data('currentCard') + 1 == $('#cards .card').length) {
+					this.toggleBtn($('#nextBtn'), 'disable');
+				} else {
+					this.toggleBtn($('#nextBtn'), 'enable');
+				}
+			} else {
+				this.toggleBtn($('#nextBtn'), 'enable');
+				if ($pageContents.data('currentCard') == 0) {
+					this.toggleBtn($('#prevBtn'), 'disable');
+				} else {
+					this.toggleBtn($('#prevBtn'), 'enable');
+				}
+			}
+			
+			var $thisCard = $('#card' + $pageContents.data('currentCard'));
+			
+			$thisCard.flip(false);
+			$('#cards').addClass('hideOverflow');
+			
+			$thisCard.effect('slide', {direction:(next != false ? 'right' : 'left'), mode: 'show'}, 500, flashCards.callback(false));
+			
+			if ($thisCard.find('.mediaHolder video, .mediaHolder audio').length > 0) {
+				this.resizeMedia(true);
+			}
+			
+			$('#cardNoTxt')
+				.html('<p>' + x_currentPageXML.getAttribute('cardNoTxt').replace('{i}', $pageContents.data('currentCard') + 1).replace('{n}', $('#cards .card').length) + '</p>')
+				.fadeIn();
+		}
+		
+		this.newCard = function(next) {
+			this.toggleBtn($('#prevBtn'), 'disable');
+			this.toggleBtn($('#nextBtn'), 'disable');
+			
+			$pageContents.data('next', next);
+			
+			$('#cards').addClass('hideOverflow');
+			$('#card' + $pageContents.data('currentCard')).effect('slide', {direction:(next == true ? 'left' : 'right'), mode: 'hide'}, 500, flashCards.callback(true));
+			
+			$('#cardNoTxt').html('<p>&nbsp;</p>')
+			
+			if (next == true) {
+				$pageContents.data('currentCard', $pageContents.data('currentCard') + 1);
+			} else {
+				$pageContents.data('currentCard', $pageContents.data('currentCard') - 1);
+			}
+		}
+		
+		this.toggleBtn = function($btn, state) {
+			$btn.button(state);
+		}
+		
+		this.callback = function(deal) {
+			return function(e) {
+				$('#cards').removeClass('hideOverflow');
+				if (deal == true) {
+					flashCards.dealCard($pageContents.data('next'));
+				}
+			};
+		}
+		
+		// function receives dimensions of video from mediaPlayer.js to set its max dimensions
+		this.mediaMetadata = function($video, dimensions) {
+			$video.closest('.cardVideo')
+				.css({
+					'max-width'	:dimensions[0],
+					'max-height':dimensions[1]
+				})
+				.data({
+					'max-width'	:dimensions[0],
+					'max-height':dimensions[1]
+				});
+			
+			this.resizeMedia();
+		}
+	}
+	
+	flashCards.init();
+	
+</script>
+
+<style type="text/css">
+	
+	h3 {
+		padding: 4px; /* ** ideally put elsewhere */
+	}
+	
+	#x_pageDiv {
+		overflow: hidden;
+	}
+	
+	#textHolder {
+		overflow: auto;
+		margin-bottom: 2%;
+		max-height: 20%;
+	}
+	
+	#cardHolder, #cardCtrls {
+		display: table;
+	}
+	
+	#cardHolder {
+		width: 100%;
+		height: 1px;
+		min-height: 78%;
+	}
+	
+	#cardHolder.full {
+		min-height: 100%;
+	}
+	
+	#cardCtrls {
+		width: 100%;
+		height: 100%;
+	}
+	
+	.btnHolder, #cards {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	#leftBtn {
+		text-align: right;
+	}
+	
+	#rightBtn {
+		text-align: left;
+	}
+	
+	#prevBtn, #nextBtn {
+		margin: 1em;
+	}
+	
+	.card .panel {
+		padding: 0px;
+		text-align: left;
+	}
+	
+	.cardInner {
+		overflow: auto;
+		padding: 1em;
+	}
+	
+	.flipBtnHolder {
+		width: 100%;
+		text-align: center;
+		margin: 1em 0;
+	}
+	
+	#cardNoHolder {
+		display: table-row;
+		height: 1px;
+		vertical-align: middle;
+		text-align: center;
+	}
+	
+	#cardNoTxt {
+		display: table-cell;
+		vertical-align: middle;
+		padding: 1em;
+		font-weight: bold;
+	}
+	
+	.mediaHolder {
+		text-align: center;
+	}
+	
+	.cardVideo {
+		margin: 0 auto;
+	}
+	
+	.cardVideo, .cardAudio {
+		overflow: hidden;
+	}
+	
+	.mediaHolder .cardImg {
+		max-width: 95%;
+		max-height: 95%;
+	}
+	
+	.ui-effects-wrapper {
+		overflow: visible !important;
+	}
+	
+	#cards.hideOverflow, #cards.hideOverflow .cardInner {
+		overflow: hidden;
+	}
+	
+</style>
+
+<div id="pageContents">
+	
+	<div id="textHolder"></div>
+	
+	<div id="cardHolder">
+		
+		<div id="cardCtrls">
+		
+			<div id="leftBtn" class="btnHolder">
+				<button id="prevBtn" class="circleBtn flatRBtn"></button>
+			</div>
+			
+			<div id="cards">
+				<div class="card">
+					<div class="front panel"></div>
+					<div class="back panel"></div>
+				</div>
+			</div>
+			
+			<div id="rightBtn" class="btnHolder">
+				<button id="nextBtn" class="circleBtn flatLBtn"></button>
+			</div>
+		
+		</div>
+		
+		<div id="cardNoHolder">
+			<span id="cardNoTxt"><p>&nbsp;</p></span>
+		</div>
+		
+	</div>
+	
+</div>

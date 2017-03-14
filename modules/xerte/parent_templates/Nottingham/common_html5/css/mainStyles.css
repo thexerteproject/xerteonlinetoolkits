@@ -30,7 +30,9 @@ p {
     margin: 0;
 }
 
-
+.optionTxt p {
+	padding-top: 0;
+}
 
 #x_mainHolder {
 	width:		800px;
@@ -70,7 +72,7 @@ p {
 	z-index:	-10;
 }
 
-#x_background img {
+#x_background img, #x_mainBgDarken  {
 	width:		100%;
 	height:		100%;
 	position:	absolute;
@@ -379,6 +381,10 @@ audio {
 .alert {
 	font-weight:	bold;
 	color:			red;
+}
+
+.alertBorder {
+	border: 1px solid red;
 }
 
 fieldset.noStyle {

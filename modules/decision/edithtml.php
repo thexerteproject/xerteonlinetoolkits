@@ -110,7 +110,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
 
-    $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+    $version = getVersion();
 
     //$edit_site_logo = $xerte_toolkits_site->site_logo;
     //$pos = strrpos($edit_site_logo, '/') + 1;
@@ -132,6 +132,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?php echo DECISION_EDIT_TITLE ?></title>
+
+		<link rel="icon" href="favicon_edit.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="favicon_edit.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="editor/css/jquery-ui.css?version=<?php echo $version;?>">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />

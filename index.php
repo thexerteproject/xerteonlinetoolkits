@@ -40,7 +40,6 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 
-
 login_processing();
 login_processing2();
 
@@ -51,7 +50,7 @@ require_once(dirname(__FILE__) . "/moodle_restrictions.php");
 
 recycle_bin();
 
-$version = file_get_contents(dirname(__FILE__) . "/version.txt");
+$version = getVersion();
 
 /*
  * Output the main page, including the user's and blank templates

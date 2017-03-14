@@ -135,7 +135,7 @@ function show_template_page($row, $datafile="")
     }
     else
     {
-        $version = file_get_contents(dirname(__FILE__) . "/../../version.txt");
+        $version = getVersion();
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
         $page_content = str_replace("%VERSION%", $version , $page_content);

@@ -42,6 +42,11 @@ class Xerte_Authentication_Guest extends Xerte_Authentication_Abstract
         return "User"; 
     }
 
+    public function getEmail()
+    {
+        return "";
+    }
+
     public function check()
     {
         return true;

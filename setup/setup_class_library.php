@@ -158,7 +158,8 @@ class SetupDatabase {
         $this->settings->database_type     = "mysql";
 
         if (isset($post['host'])) {
-            // why?
+            // On windows connecting to a MySQL server through localhost is extremely slow, as IPv6 is tried first
+            // That connection times out, and then IPv4 is used, so use 127.0.0.1 instead of localhost
             if ($post['host'] == 'localhost') {
                 $this->settings->database_host = '127.0.0.1';
             } else {

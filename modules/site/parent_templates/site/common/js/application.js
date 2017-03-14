@@ -19,11 +19,14 @@
 $(document).ready(init);
 
 var data;
+var languageData;
 var startPage = 0;
-var startHash = "";
+var pageLink = "";
+var authorSupport = false;
+var deepLink = "";
+var currentPage = 0;
 
-function init(){	
-
+function init(){
 	loadContent();
 };
 
@@ -70,22 +73,18 @@ function loadContent(){
 			
 			//step one - libraries?
 			loadLibraries();
-						
+			
 		}
-	
 	});
 	
-	startHash = window.location.hash;
-	
-	if (startHash.substring(1,5) == "page") {
-	
-		startPage = parseInt(startHash.substring(5, 6), 10) - 1;
-		
+	// If we have a start page/section then extract it and clear the url
+	if (window.location.hash.length > 0) {
+		pageLink = window.location.hash.substring(1);
+		if (pageLink.substring(0,4) == "page") {
+			startPage = parseInt(pageLink.substring(4), 10) - 1;
+		}
 	}
-	
-	console.log(startPage);
-	
-	console.log(startHash);
+
 }
 
 function loadLibraries(){
@@ -103,6 +102,8 @@ function loadLibraries(){
 		$('head').append('<style type="text/css">' +  $(data).find('learningObject').attr('styles') + '</style>');
 	
 	}
+	
+	var lang = $(data).find('learningObject').attr('language');
 
 	if ( $(data).find('learningObject').attr('libs') != undefined){
 	
@@ -120,9 +121,7 @@ function loadLibraries(){
 				if (loaded == libs.length){
 					
 					//step two
-					setup();
-					//step three
-					parseContent(startPage);
+					getLangData(lang)
 					
 				}
 				
@@ -132,13 +131,48 @@ function loadLibraries(){
 		
 	} else {
 		
-		setup();
-
-		parseContent(startPage);
+		getLangData(lang)
 		
 	}
 	
 
+}
+
+function getLangData(lang) {
+	
+	if (lang == undefined || lang == "undefined" || lang == "") {
+		lang = "en-GB";
+	}
+	
+	$.ajax({
+		type: "GET",
+		url: "languages/engine_" + lang + ".xml",
+		dataType: "xml",
+		
+		success: function (xml) {
+			
+			languageData = $(xml).find("language");
+			
+			//step three
+			setup();
+			
+			// step four
+			parseContent(startPage);
+			
+		},
+		
+		error: function () {
+			
+			if (lang != "en-GB") { // no language file found - try default GB one
+				getLangData("en-GB");
+			} else { // hasn't found GB language file - set up anyway, will use fallback text in code
+				languageData = $("");
+				setup();
+				parseContent(startPage);
+			}
+			
+		}
+	});
 }
 
 function formatColour(col) {
@@ -146,11 +180,32 @@ function formatColour(col) {
 }
 
 function setup(){
+	
+	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
+		
+		authorSupport = true;
+		
+	}
 
 	//add all the pages to the pages menu: this links bak to the same page
 	$(data).find('page').each( function(index, value){
-	
-		$('#nav').append('<li class=""><a href="javascript:parseContent(' + index + ')">' + $(this).attr('name') + '</a></li>');
+		
+		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
+			
+			var name = $(this).attr('name');
+			
+			// remove size & background color styles from links on nav bar
+			if ($('<p>' + name + '</p>').children().length > 0) {
+				name = $(name);
+				name.css({ 'font-size': '', 'background-color': 'transparent' });
+				name.find('[style*="font-size"]').css('font-size', '');
+				name.find('[style*="background-color"]').css('background-color', 'transparent');
+			}
+			
+			var $link = $('<li class=""><a href="javascript:parseContent(' + index + ')"></a></li>').appendTo('#nav');
+			$link.find('a').append(name);
+			
+		}
 		
 	});
 	
@@ -224,194 +279,306 @@ function setup(){
 // this is the format of links added through the wysiwyg editor button
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 	var pages = $(data).find('page');
-	for (var i=0; i<pages.length; i++) {
-		if (pages[i].getAttribute("linkID") == pageInfo.ID) {
-			parseContent(i);
-			break;
+
+	var links = ['[first]', '[last]', '[previous]', '[next]'];
+	var linkLocations = [0, pages.length-1, Math.max(0,currentPage-1), Math.min(currentPage+1,pages.length-1)];
+
+	// First look for the fixed links
+	if ($.inArray(pageInfo.ID, links) > -1) {
+		parseContent(linkLocations[$.inArray(pageInfo.ID, links)]);
+		goToSection('top');
+	}
+	else { // Then look them up by ID
+		for (var i=0; i<pages.length; i++) {
+			if (pages[i].getAttribute("linkID") == pageInfo.ID) {
+				parseContent(i);
+				goToSection('top');
+				break;
+			}
+			if (pages[i].childNodes.length > 0) {
+				for (var j=0; j<pages[i].childNodes.length; j++) {
+					if (pages[i].childNodes[j].getAttribute && pages[i].childNodes[j].getAttribute("linkID") == pageInfo.ID) {
+						parseContent(i);
+						goToSection('page' + (i+1) + 'section' + (j+1));
+						break;
+					}
+				}
+			}
 		}
 	}
 }
-	
+
+function goToSection(pageId) {
+	if (document.getElementById(pageId) == null || document.getElementById(pageId) == undefined) return;
+	document.location = '#' + pageId;
+}
 
 function parseContent(pageIndex){
 
 	//clear out existing content
 	$('#mainContent').empty();
 	$('#toc').empty();
-
-	//which page is this from the document?
-	var page = $(data).find('page').eq(pageIndex);
 	
-	//set the main page title and subtitle			
-	$('#pageTitle').text( page.attr('name') );
-	$('#pageSubTitle').text( page.attr('subtitle') );
+	// check if pageIndex exists & is unhidden
+	var pageFound = true;
 	
-	//create the sections
-	page.find('section').each( function(index, value){
+	if ($(data).find('page').length > 0) {
+		if (pageIndex > $(data).find('page').length - 1) {
+			pageIndex = 0;
+		}
+		
+	} else {
+		// project contains no pages
+		pageFound = false;
+	}
 	
-		var sectionIndex = index;	
-				
-		//add a TOC entry
-		$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
+	var count = 0;
+	while ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false && count != $(data).find('page').length) {
+		// page is hidden
+		pageIndex = pageIndex == $(data).find('page').length - 1 ? 0 : pageIndex + 1;
+		count++;
+	}
+	
+	if ($(data).find('page').eq(pageIndex).attr('hidePage') == 'true' && authorSupport == false) {
+		pageFound = false;
+	}
+	
+	if (pageFound == true) {
+		// store current page
+		currentPage = pageIndex;
+	
+		//which page is this from the document?
+		var page = $(data).find('page').eq(pageIndex);
 		
-		//add the section header
-		var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1></div></section>');
-
-		//add the section contents
-		$(this).children().each( function(index, value){
+		//set the main page title and subtitle
+		$('#pageTitle').html(page.attr('name'));
 		
-			var itemIndex = index;
+		var msg = languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
+		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
 		
-			if (this.nodeName == 'text'){
-				section.append( '<p>' + $(this).text() + '</p>');
-			}
+		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
+		
+		$('#overview').removeClass('hide');// show the header
+        $('#topnav').removeClass('hide');// show the topnavbar
+		
+		//create the sections
+		page.find('section').each( function(index, value){
 			
-			if (this.nodeName == 'script'){
-			
-				section.append( '<script>' + $(this).text() + '</script>');
-			}
-			
-			if (this.nodeName == 'markup'){
-			
-				if ( $(this).attr('url') != undefined ){
+			if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
 				
-					section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+				var sectionIndex = index;	
 				
-				} else {
-				
-					section.append( $(this).text() );
+				//add a TOC entry
+				var tocName = $(this).attr('name');
+			
+				// remove size & background color styles from links on toc
+				if ($('<p>' + tocName + '</p>').children().length > 0) {
+					tocName = $(tocName);
+					tocName.css({ 'font-size': '', 'background-color': 'transparent' });
+					tocName.find('[style*="font-size"]').css('font-size', '');
+					tocName.find('[style*="background-color"]').css('background-color', 'transparent');
 				}
 				
-			}
-			
-			if (this.nodeName == 'link'){
-			
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+				var $link = $('<li' + (index==0?' class="active"':'') +'><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '"></a></li>').appendTo('#toc');
+				$link.find('a').append(tocName);
 				
-				section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+				//add the section header
+				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
+				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
 				
-			}
-			
-			if (this.nodeName == 'canvas'){
-			
-				var style;
+				var links = '';
 				
-				if ( $(this).attr('style') != undefined){
+				if ($(this).attr('links') != undefined && $(this).attr('links') != "none") {
+					links = '<div class="sectionSubLinks ' + $(this).attr('links') + '"></div>';
+				}
 				
-					style = ' style="' + $(this).attr('style') + '" ';
+				var section = $('<section id="page' + (pageIndex+1) + 'section' + (index+1) + '"><div class="page-header"><h1>' + $(this).attr('name') + '</h1>' + extraTitle + links + '</div></section>');
+
+				//add the section contents
+				$(this).children().each( function(index, value){
+					
+					if (($(this).attr('name') != '' && $(this).attr('name') != undefined && $(this).attr('showTitle') == 'true') || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+						
+						if ($(this).attr('showTitle') == 'true') {
+							var subLinkName = $(this).attr('name');
+							
+							// remove size & background color styles from links on toc
+							if ($('<p>' + subLinkName + '</p>').children().length > 0) {
+								subLinkName = $(subLinkName);
+								subLinkName.css({ 'font-size': '', 'background-color': 'transparent' });
+								subLinkName.find('[style*="font-size"]').css('font-size', '');
+								subLinkName.find('[style*="background-color"]').css('background-color', 'transparent');
+							}
+							
+							var $link = $('<span class="subLink"> ' + (section.find('.sectionSubLinks .subLink').length > 0 && section.find('.sectionSubLinks').hasClass('hlist') ? '| ' : '') + '<a href="#page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '"></a> </span>').appendTo(section.find('.sectionSubLinks'));
+							$link.find('a').append(subLinkName);
+							
+						}
+						
+						section.append( '<h2 id="page' + (pageIndex+1) + 'section' + (index+1) + 'content' + index + '">' + $(this).attr('name') + '</h2>');
+					}
+					
+					var itemIndex = index;
+					
+					if (this.nodeName == 'text'){
+						section.append( '<p>' + $(this).text() + '</p>');
+					}
+					
+					if (this.nodeName == 'script'){
+					
+						section.append( '<script>' + $(this).text() + '</script>');
+					}
+					
+					if (this.nodeName == 'markup'){
+					
+						if ( $(this).attr('url') != undefined ){
+						
+							section.append( $('<div/>').load( eval( $(this).attr('url') ) ));
+						
+						} else {
+						
+							section.append( $(this).text() );
+						}
+						
+					}
+					
+					if (this.nodeName == 'link'){
+					
+						var url = $(this).attr('url');
+						var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
+						var options = '';
+						options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
+						options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
+						options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
+						options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
+						options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
+						options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
+						options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
+						options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+						
+						section.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+						
+					}
+					
+					if (this.nodeName == 'canvas'){
+					
+						var style;
+						
+						if ( $(this).attr('style') != undefined){
+						
+							style = ' style="' + $(this).attr('style') + '" ';
+						
+						} else {
+						
+							style = '';
+							
+						}
+						
+						var cls;
+						
+						if ( $(this).attr('class') != undefined){
+						
+							cls = ' class="' + $(this).attr('class') + '" ';
+						
+						} else {
+						
+							cls = '';
+							
+						}
+						
+						section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
+						
+					}
+					
+					if (this.nodeName == 'image'){
+						section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
+					}
+					
+					if (this.nodeName == 'audio'){
+						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+						section.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+					}
+					
+					if (this.nodeName == 'video'){
+						//section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+						section.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+					}
+					
+					if (this.nodeName == 'pdf'){
+						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+					}
+					
+					if (this.nodeName == 'navigator'){
+					
+						if ($(this).attr('type') == 'Tabs'){
+							makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
+						}
+						
+						if ($(this).attr('type') == 'Accordion'){
+							makeAccordion( $(this), section, sectionIndex, itemIndex );
+						}
+						
+						if ($(this).attr('type') == 'Pills'){
+							makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
+						}
+						
+						if ($(this).attr('type') == 'Carousel'){
+							makeCarousel(  $(this), section, sectionIndex, itemIndex );
+						}
+					}
+
+				});
 				
-				} else {
-				
-					style = '';
+				if (section.find('.sectionSubLinks a').length == 0) {
+					
+					section.find('.sectionSubLinks').remove();
 					
 				}
 				
-				var cls;
-				
-				if ( $(this).attr('class') != undefined){
-				
-					cls = ' class="' + $(this).attr('class') + '" ';
-				
-				} else {
-				
-					cls = '';
-					
-				}
-				
-				section.append( '<p><canvas id="' + $(this).attr('id') + '" width="' + $(this).attr('width') + '" height="' + $(this).attr('height') + '"' + style + cls + '/></p>');
-				
-			}
-			
-			if (this.nodeName == 'image'){
-				section.append('<p><img class="img-polaroid" src="' + eval( $(this).attr('url')) + '" title="' + $(this).attr('alt') + '" alt="' + $(this).attr('alt') + '"/></p>');
-			}
-			
-			if (this.nodeName == 'audio'){
-				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
-			}
-			
-			if (this.nodeName == 'video'){
-				section.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
-			}
-			
-			if (this.nodeName == 'pdf'){
-				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
-			}
-			
-			if (this.nodeName == 'navigator'){
-			
-				if ($(this).attr('type') == 'Tabs'){
-					makeNav( $(this), section, 'tabs', sectionIndex, itemIndex );
-				}
-				
-				if ($(this).attr('type') == 'Accordion'){
-					makeAccordion( $(this), section, sectionIndex, itemIndex );
-				}
-				
-				if ($(this).attr('type') == 'Pills'){
-					makeNav( $(this), section, 'pills', sectionIndex, itemIndex);
-				}
-				
-				if ($(this).attr('type') == 'Carousel'){
-					makeCarousel(  $(this), section, sectionIndex, itemIndex );
-				}
-			}
+				//a return to top button
+				section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
 
+				//add the section to the document
+				$('#mainContent').append(section);
+				
+				// Resolve all text box added <img> and <a> src/href tags to proper urls
+				$('#mainContent').find('img,a').each(function() {
+					var $this = $(this),
+						val = $this.attr('src') || $this.attr('href'),
+						attr_name = $this.attr('src') ? 'src' : 'href';
+
+					if (val.substring(0, 16) == "FileLocation + '") {
+						$this.attr(attr_name, eval(val));
+					}
+				});
+				
+			}
 		});
 		
-		//a return to top button
-		section.append( $('<p><br><a class="btn btn-mini pull-right" href="#">Top</a></p>'));
-
-		//add the section to the document
-		$('#mainContent').append(section);
+		//finish initialising the piece now we have the content loaded
+		initMedia();
 		
-		// Resolve all text box added <img> and <a> src/href tags to proper urls
-		$('#mainContent').find('img,a').each(function() {
-			var $this = $(this),
-				val = $this.attr('src') || $this.attr('href'),
-				attr_name = $this.attr('src') ? 'src' : 'href';
+		initSidebar();
 
-			if (val.substring(0, 16) == "FileLocation + '") {
-				$this.attr(attr_name, eval(val));
-			}
-		});
-	});
-	
-	//finish initialising the piece now we have the content loaded
-	initMedia();
-	
-	initSidebar();
-	
-	if (startHash == "")
-		window.scroll(0,0);
-	else
-		location.href = startHash;
+		// Queue reparsing of MathJax - fails if no network connection
+		try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-    // Queue reparsing of MathJax - fails if no network connection
-    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
-
-	//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
-	$('#toc a:first').tab('show');
-	
-	//an event for user defined code to know when loading is done
-	$(document).trigger('contentLoaded');
-	
-	//force facebook / twitter objects to initialise
-	twttr.widgets.load();
-	
-	FB.XFBML.parse(); 
-	
-	
+		//$('body').scrollSpy('refresh'); //seems to cause a bunch of errors with tabs
+		$('#toc a:first').tab('show');
+		
+		//an event for user defined code to know when loading is done
+		$(document).trigger('contentLoaded');
+		
+		//force facebook / twitter objects to initialise
+		//twttr.widgets.load(); // REMOVED??
+		
+		//FB.XFBML.parse(); // REMOVED??
+		
+	} else {
+		
+		console.log("project contains no (unhidden) pages");
+		
+	}
 }
 
 function makeNav(node,section,type, sectionIndex, itemIndex){
@@ -456,7 +623,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		var i = index;
 		
 		$(this).children().each( function(index, value){
-		
+			
+			if ($(this).attr('showTitle') == 'true' || ($(this).attr('showTitle') == undefined && (this.nodeName == 'audio' || this.nodeName == 'video'))) {
+				tab.append('<p><b>' + $(this).attr('name') + '</b></p>');
+			}
+			
 			if (this.nodeName == 'text'){
 				tab.append( '<p>' + $(this).text() + '</p>');
 				
@@ -470,11 +641,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
+				tab.append('<p><audio src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none" width="100%"></audio></p>')
 			}
 			
 			if (this.nodeName == 'video'){
-				tab.append('<p><b>' + $(this).attr('name') + '</b></p><p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
+				tab.append('<p><video style="max-width: 100%" class="fullPageVideo" src="' + eval( $(this).attr('url') ) + '" type="video/mp4" id="player1" controls="controls" preload="none"></video></p>');
 			}
 			
 			if (this.nodeName == 'link'){

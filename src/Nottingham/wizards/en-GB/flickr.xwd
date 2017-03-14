@@ -10,8 +10,8 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput"/>
-    <content label="Content for" options="all use,non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
-    <deriv label="Reuse" options="unrestricted,non-derivative,share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
+    <content label="Content for" options="All use,Non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
+    <deriv label="Reuse" options="Unrestricted,Non-derivative,Share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
 
 	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	

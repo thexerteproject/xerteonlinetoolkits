@@ -259,3 +259,9 @@ function uid()
 
     return uniqid($prefix);
 }
+
+function getVersion()
+{
+    $version = file(dirname(__FILE__) . "/version.txt", FILE_IGNORE_NEW_LINES);
+    return $version[0];
+}

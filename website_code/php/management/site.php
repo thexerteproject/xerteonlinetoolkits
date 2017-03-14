@@ -167,6 +167,7 @@ if(is_user_admin()){
               <option value=\"Static\">Static</option>
               <option value=\"Moodle\">Moodle</option>
               <option value=\"Saml2\">Saml2</option>
+              <option value=\"OAuth2\">OAuth2</option>
             </select>";
 
         echo "</form></p>"; 

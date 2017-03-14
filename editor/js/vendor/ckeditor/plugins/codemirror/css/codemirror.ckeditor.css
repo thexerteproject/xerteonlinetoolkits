@@ -49,7 +49,7 @@
 
 /* Fixes for the sourceDialog */
 .cke_reset_all .CodeMirror-scroll * {
-	white-space: normal;
+	white-space: pre;
 }
 
 .cke_reset_all .cm-s-cobalt *,
@@ -139,40 +139,6 @@
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
 	background-position: bottom;
 	background-repeat: repeat-x;
-}
-
-/* Dialog Addon */
-.CodeMirror-dialog {
-  position: absolute;
-  left: 0; right: 0;
-  background: white;
-  z-index: 15;
-  padding: .1em .8em;
-  overflow: hidden;
-  color: #333;
-}
-
-.CodeMirror-dialog-top {
-  border-bottom: 1px solid #eee;
-  top: 0;
-}
-
-.CodeMirror-dialog-bottom {
-  border-top: 1px solid #eee;
-  bottom: 0;
-}
-
-.CodeMirror-dialog input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 20em;
-  color: inherit;
-  font-family: monospace;
-}
-
-.CodeMirror-dialog button {
-  font-size: 70%;
 }
 
 .CodeMirror-hints {
