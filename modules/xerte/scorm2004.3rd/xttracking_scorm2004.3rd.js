@@ -984,3 +984,41 @@ function XTTerminate()
     }
     terminateCommunication();
 }
+
+function XTResults()
+{
+	results = {};
+	score = 0;
+	nrofquestions = 0;
+	totalWeight = 0;
+	totalDuration = 0;
+	results.interactions = Array();
+
+	for(i = 0; i < state.interactions.length; i++){
+		score += state.interactions[i].score * state.interactions[i].weighting ;
+		if(state.interactions[i].nrinteractions > 0)
+		{
+			interaction = {};
+			interaction.score = Math.round(state.interactions[i].score);
+			interaction.title = state.interactions[i].ia_name;
+			interaction.duration = Math.round(state.interactions[i].duration / 1000);
+			interaction.weighting = state.interactions[i].weighting;
+			results.interactions[nrofquestions] = interaction;
+			totalDuration += state.interactions[i].duration;
+			nrofquestions++;
+			totalWeight += state.interactions[i].weighting;
+		}
+	}
+	if(state.interactions.length == 0)
+	{
+		$("#questionScores").hide()
+	}
+	results.score = score;
+	results.nrofquestions = nrofquestions;
+	results.averageScore = Math.round(score / totalWeight);
+	results.totalDuration = Math.round(totalDuration / 1000);
+	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+	
+	
+	return results;
+}

@@ -149,6 +149,14 @@
   define("MANAGEMENT_SITE_AUTH_METHOD", "The authentication method to use");
 
   define("MANAGEMENT_SITE_LTI","LTI settings");
+  
+  define("MANAGEMENT_SITE_XAPI", "xAPI settings");
+  
+  define("MANAGEMENT_SITE_XAPI_ENDPOINT", "xAPI endpoint (url)");
+  
+  define("MANAGEMENT_SITE_XAPI_KEY", "xAPI key (username)");
+  
+  define("MANAGEMENT_SITE_XAPI_SECRET", "xAPI secret (password)");
 
 define("LTI_TOGGLE","View");
 
