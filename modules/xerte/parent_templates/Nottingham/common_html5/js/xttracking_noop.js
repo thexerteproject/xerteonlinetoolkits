@@ -357,7 +357,10 @@ function XTExitPage(page_nr, pageName)
 {
     var temp = false;
     var i = 0;
-    for(i; i<state.toCompletePages.length;i++)
+
+    state.exitInteraction(page_nr, -1, false, "", "", "", false);
+
+    for(i=0; i<state.toCompletePages.length;i++)
     {
         var currentPageNr = state.toCompletePages[i];
         if(currentPageNr == page_nr)
@@ -368,12 +371,8 @@ function XTExitPage(page_nr, pageName)
     }
     if(temp)
     {
-
         state.completedPages[i] = state.pageCompleted(page_nr);
     }
-
-
-	return state.exitInteraction(page_nr, -1, false, "", "", "", false);
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
@@ -428,33 +427,44 @@ function XTTerminate()
 
 function XTResults()
 {
-	results = {};
-	results.mode = x_currentPageXML.getAttribute("mode");
-	
-	score = 0;
-	nrofquestions = 0;
-	totalWeight = 0;
-	totalDuration = 0;
-	results.interactions = Array();
+    var completion = 0;
+    var counter = 0;
+    for(var i = 0; i< state.completedPages.length;i++)
+    {
+        if(state.completedPages[i] == true)
+        {
+            counter++;
+        }
+    }
+    completion = (counter/state.completedPages.length)*100;
 
-	for(i = 0; i < state.interactions.length-1; i++){
-		score += state.interactions[i].score * state.interactions[i].weighting ;
-		if(state.interactions[i].nrinteractions > 0)
-		{
-			interaction = {};
-			interaction.score = Math.round(state.interactions[i].score);
-			interaction.title = state.interactions[i].ia_name;
-			interaction.duration = Math.round(state.interactions[i].duration / 1000);
-			interaction.weighting = state.interactions[i].weighting;
-			interaction.subinteractions = Array();
-			results.interactions[nrofquestions] = interaction;
-			totalDuration += state.interactions[i].duration;
-			nrofquestions++;
-			totalWeight += state.interactions[i].weighting;
-			
-		}else if(results.mode == "full-results")
-		{
-			subinteraction = {}
+    results = {};
+    results.mode = x_currentPageXML.getAttribute("mode");
+
+    score = 0;
+    nrofquestions = 0;
+    totalWeight = 0;
+    totalDuration = 0;
+    results.interactions = Array();
+
+    for(i = 0; i < state.interactions.length-1; i++){
+        score += state.interactions[i].score * state.interactions[i].weighting ;
+        if(state.interactions[i].nrinteractions > 0)
+        {
+            interaction = {};
+            interaction.score = Math.round(state.interactions[i].score);
+            interaction.title = state.interactions[i].ia_name;
+            interaction.duration = Math.round(state.interactions[i].duration / 1000);
+            interaction.weighting = state.interactions[i].weighting;
+            interaction.subinteractions = Array();
+            results.interactions[nrofquestions] = interaction;
+            totalDuration += state.interactions[i].duration;
+            nrofquestions++;
+            totalWeight += state.interactions[i].weighting;
+
+        }else if(results.mode == "full-results")
+        {
+            subinteraction = {}
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
@@ -467,23 +477,23 @@ function XTResults()
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
             }
-            debugger;
-			subinteraction.question = state.interactions[i].ia_name;
-			subinteraction.learnerAnswer = learnerAnswer;
-			subinteraction.correctAnswer = correctAnswer;
-			results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
-		}
-		
-	}
-	if(state.interactions.length == 0)
-	{
-		$("#questionScores").hide()
-	}
-	results.score = score;
-	results.nrofquestions = nrofquestions;
-	results.averageScore = Math.round(score / totalWeight);
-	results.totalDuration = Math.round(totalDuration / 1000);
-	results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+            subinteraction.question = state.interactions[i].ia_name;
+            subinteraction.learnerAnswer = learnerAnswer;
+            subinteraction.correctAnswer = correctAnswer;
+            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+        }
 
-	return results;
+    }
+    if(state.interactions.length == 0)
+    {
+        $("#questionScores").hide()
+    }
+    results.completion = completion;
+    results.score = score;
+    results.nrofquestions = nrofquestions;
+    results.averageScore = Math.round(score / totalWeight);
+    results.totalDuration = Math.round(totalDuration / 1000);
+    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+
+    return results;
 }

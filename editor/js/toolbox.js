@@ -1008,7 +1008,11 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
-								
+
+                                var tree = $.jstree.reference("#treeview");
+                                var node = tree.get_node(options.key, false);
+                                var parent_id = tree.get_parent(node);
+
 								if (options.key != "treeroot") {
 									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
 									if ($("#" + options.key + " .deprecatedImg").length > 0) {
@@ -1017,7 +1021,7 @@ var EDITOR = (function ($, parent) {
                                         {
                                             thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">' + thisText;
                                         }
-                                        if ($("#" + options.key + " .hiddenImg").length > 0)
+                                        if (parent_id == "treeroot" && $("#" + options.key + " .hiddenImg").length > 0)
 										{
 											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
 
@@ -1029,7 +1033,7 @@ var EDITOR = (function ($, parent) {
                                         {
                                             thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
                                         }
-                                        if ($("#" + options.key + " .markCompletionImg").length > 0)
+                                        if (parent_id == "treeroot" && $("#" + options.key + " .markCompletionImg").length > 0)
                                         {
                                             thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;<span class="marked">' + thisText + '</span>';
                                         }
@@ -1037,8 +1041,7 @@ var EDITOR = (function ($, parent) {
 								}
 
                                 // Rename the node
-                                var tree = $.jstree.reference("#treeview");
-                                tree.rename_node(tree.get_node(options.key, false), thisText);
+                                tree.rename_node(node, thisText);
 
                                 if ($('#mainleveltitle'))
                                 {
@@ -1459,8 +1462,7 @@ var EDITOR = (function ($, parent) {
     {
         // console.log([key, names, values]);
         // Get the node name
-		
-		if (names == "hidePage") {
+       if (names[0] == "hidePage") {
 			if (values[0] == "true") {
 				if ($("#" + key + " .deprecated").length == 0) {
 					$("#" + key + " .jstree-anchor").each(function(i,v) {
@@ -1480,10 +1482,10 @@ var EDITOR = (function ($, parent) {
 			}
 		}
 
-        if (names == "markForCompletion") {
+        if (names[0] == "markForCompletion") {
             if (values[0] == "true") {
                 if ($("#" + key + " .deprecated").length == 0) {
-                    $("#" + key + " .jstree-anchor").each(function(i,v) {
+                    $("#" + key + " .jstree-anchor.jstree-clicked").each(function(i,v) {
                         $(v).contents().eq($(v).contents().length - 1).wrap('<span class="marked"/>');
                     });
                     $("#" + key + " .jstree-anchor .marked").before('<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;');

@@ -922,26 +922,29 @@ function XTEnterPage(page_nr, page_name)
 
 function XTExitPage(page_nr, page_name)
 {
-    var temp = false;
-    var i = 0;
-    for(i; i<state.toCompletePages.length;i++)
-    {
-        var currentPageNr = toCompletePages[i];
-        if(currentPageNr == page_nr)
-        {
-            temp = true;
-            break;
-        }
-    }
-    if(temp)
-    {
-        state.completedPages[i] = state.pageCompleted(page_nr);
-    }
-
 
     if (state.scormmode == 'normal')
     {
-        return state.exitInteraction(page_nr, -1, false, "", "", "", false);
+        var temp = false;
+        var i = 0;
+
+        state.exitInteraction(page_nr, -1, false, "", "", "", false);
+
+        for(i=0; i<state.toCompletePages.length;i++)
+        {
+            var currentPageNr = toCompletePages[i];
+            if(currentPageNr == page_nr)
+            {
+                temp = true;
+                break;
+            }
+        }
+        if(temp)
+        {
+            state.completedPages[i] = state.pageCompleted(page_nr);
+        }
+
+
     }
 }
 
@@ -1057,6 +1060,17 @@ function XTTerminate()
 
 function XTResults()
 {
+    var completion = 0;
+    var counter = 0;
+    for(var i = 0; i< state.completedPages.length;i++)
+    {
+        if(state.completedPages[i] == true)
+        {
+            counter++;
+        }
+    }
+    completion = (counter/state.completedPages.length)*100;
+
     results = {};
     results.mode = x_currentPageXML.getAttribute("mode");
 
@@ -1096,7 +1110,6 @@ function XTResults()
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
             }
-            debugger;
             subinteraction.question = state.interactions[i].ia_name;
             subinteraction.learnerAnswer = learnerAnswer;
             subinteraction.correctAnswer = correctAnswer;
@@ -1108,6 +1121,7 @@ function XTResults()
     {
         $("#questionScores").hide()
     }
+    results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
     results.averageScore = Math.round(score / totalWeight);
