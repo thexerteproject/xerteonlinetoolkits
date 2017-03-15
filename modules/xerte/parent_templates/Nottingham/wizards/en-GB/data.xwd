@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,Import">
 
   <learningObject icon="icPackage" remove="false" duplicate="false">
 
@@ -145,6 +145,21 @@
 	  resultsTxt="YouTube results for term"/>]]></youtuberss></newNodes>
 
   </learningObject>
+  
+  <Import menu="Import" menuItem="Import" hint="Import pages from other objects" label="Page Text" id="Import" type="text" height="300" remove="true">
+
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <url label="URL" type="TextInput"/>
+    <tip label="Import Description" type="TextInput"/>
+
+    <sound label="Sound" type="media" optional="true"/>
+	
+    <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
+    
+  <narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/><playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/><narration label="Narration" type="media" optional="true"/><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/><script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/><styles label="Styles" type="script" height="200" optional="true"/></Import>
+  
+  
+  
 
 <QRcode menu="Misc" menuItem="QR Code" hint="A page for generating and presenting QR codes. You can also add an optional sound to this page." label="Page Text" icon="icQRCode" thumb="thumbs/QRcode.jpg" type="text" height="300" remove="true">
 

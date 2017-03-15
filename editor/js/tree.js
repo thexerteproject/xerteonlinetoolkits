@@ -219,6 +219,7 @@ var EDITOR = (function ($, parent) {
 
 
     publish = function () {
+    	if(merged == true){return;}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -255,6 +256,7 @@ var EDITOR = (function ($, parent) {
     },
 
     savepreviewasync = function (async) {
+    	if(merged == true){return;}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -498,7 +500,7 @@ var EDITOR = (function ($, parent) {
 
     // Refresh the page when a new node is selected
     buildPage = function (key) {
-
+		
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -557,7 +559,6 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {

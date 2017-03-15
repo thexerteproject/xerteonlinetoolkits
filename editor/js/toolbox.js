@@ -29,15 +29,17 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {},
         jqGrGridData = {},
 		jqGridSetUp = false,
+		workspace,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
-                html: itemData.name
+                html: itemData.name,
+                class: itemData.name
             };
-			
+            
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
@@ -81,6 +83,7 @@ var EDITOR = (function ($, parent) {
         var $menu = $("<ul>", {
             id: 'menu'
         });
+        
         $.each(menu_data.menu, function () {
             if (!this.deprecated) {
                 $menu.append(
@@ -110,15 +113,25 @@ var EDITOR = (function ($, parent) {
 		
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
-				if (e.type == "click" && e.target.id != "insert_button") {
+				//Checks if the import page is selected
+				if (e.type == "click" && e.currentTarget.parentNode != null && e.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[0].classList[0] == "Import")
+				{
+					e.stopPropagation();
+					loadEditHTMLphp();
 					$("#insert_menu").hide();
                     $("#shadow").hide();
-				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
-					$("#insert_menu").hide();
-                    $("#shadow").hide();
-					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
 				}
-				return this._super();
+				else {
+					if (e.type == "click" && e.target.id != "insert_button") {
+						$("#insert_menu").hide();
+                    	$("#shadow").hide();
+					} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
+						$("#insert_menu").hide();
+               	     	$("#shadow").hide();
+						parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
+					}
+					return this._super();
+				}
 			},
 			_open: function(submenu) {
 				// make sure the menus fit on screen and scroll when needed
@@ -132,11 +145,25 @@ var EDITOR = (function ($, parent) {
 				}
 			}
 		});
-		
         $("#insert_menu").append($menu.menu());
-		
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
+    
+    //Loads the data into the import screen
+	loadEditHTMLphp = function() {
+
+		refresh_workspaceMerge()
+		
+	}
+	
+	function refresh_workspaceMerge(){
+        var url="import-choose.php?id="+template_id;
+        $.get(url, function(data){
+        	$("#mainPanel").html(data);
+        });
+
+	}
+    
 	
 	add_page = function(e) {
 		$("#insert_menu #menu").menu("collapseAll", e, true);
@@ -1820,6 +1847,7 @@ var EDITOR = (function ($, parent) {
      */
         getPageList = function()
         {
+        	
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];
