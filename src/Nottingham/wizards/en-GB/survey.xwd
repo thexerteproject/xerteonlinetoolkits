@@ -1,0 +1,72 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <survey><![CDATA[<survey name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
+	  onCompletion="You have completed the exercise" score="You answered {i} / {n}" 
+	  submitBtnText="Submit" 
+	  nextBtnText="Next" 
+	  restartBtnText="Restart" 
+	  />]]></survey>      
+    </newNodes>
+  </pageWizard>
+
+  <!-- SURVEY=============================== -->  
+    <survey menu="Interactivity" menuItem="Survey" icon="icPageWhiteGear" remove="true" thumb="thumbs/survey.jpg" hint="Create a survey with question that can be answered on a selectable scale.">
+    <name label="Survey Title" type="TextInput" wysiwyg="true" />
+	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+    <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
+    <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
+    <instructions label="Instructions" type="textArea"  height="120"/>
+    <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
+	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
+    <feedback label="Feedback" type="textArea"  height="120"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
+	
+    <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
+    <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
+    <score label="You answered {i} out of {n} questions." type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+    <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+    <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
+    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
+
+	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+
+    <newNodes>
+      <surveyQuestion><![CDATA[<surveyQuestion  name="Question" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></surveyQuestion>
+	</newNodes>
+	
+  </survey>
+
+  <surveyQuestion menuItem="Question">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
+
+    <prompt label="Prompt" type="TextArea"  height="100"/>
+    <image label="Image" type="Media" optional="true"/>
+    <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+    <scale label="Reverse scale" type="CheckBox" />  
+    <sound label="Sound" type="Media" optional="true"/>
+		
+    <newNodes>
+      <surveyOption><![CDATA[<surveyOption name="Option" text="Here is an option" feedback="Feedback for this option" />]]></surveyOption>
+    </newNodes>
+
+  </surveyQuestion>
+
+  <surveyOption menuItem="Option" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
+    <feedback label="Feedback" type="TextArea"  height="100" optional="true" defaultValue=""/>
+	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
+  </surveyOption>
+  
+</wizard>

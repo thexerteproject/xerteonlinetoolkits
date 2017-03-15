@@ -15,3 +15,5 @@ USER-FILES/
 
 # Ignore convert.log
 /build/convert.log
+.buildpath
+*.project

@@ -1,0 +1,673 @@
+<script type="text/javascript">
+	var survey = new function()
+	{
+		var currentQuestion,
+			resultShown,
+			checked,			
+			questionNumberText;
+		
+		this.sizeChanged = function()
+		{
+			var $panel = $("#pageContents .qPanel");
+			
+			if (x_browserInfo.mobile == false)
+			{
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+			
+			var resized = false;
+			
+			if ($("#questionAudio").children().length > 0)
+			{
+				if (resized == false)
+				{
+					var audioBarW = 0;
+					$("#questionAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW < $("#questionAudio").width() - 5 || audioBarW > $("#questionAudio").width() + 5)
+					{
+						resized = true;
+						$x_window.resize();
+					}
+				}
+			}
+			
+			if ($("#pageContents .audioHolder").length > 0)
+			{
+				if (resized == false)
+				{
+					var audioBarW = 0;
+					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					
+					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2)
+					{
+						resized = true;
+						$x_window.resize();
+					}
+				}
+			}
+			
+			$("#qTxt").width($panel.width());
+		}
+		
+		this.loadAudio = function(soundFile)
+		{
+			if (soundFile != undefined && soundFile != "")
+			{
+				$("#questionAudio").mediaPlayer({
+					type	:"audio",
+					source	:soundFile,
+					width	:"100%"
+				});
+			}
+		}
+		
+		this.startQuestions = function()
+		{
+			// If the language attricute is not defined in the xml, fall back to English.
+			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
+			
+			if (this.questionNumberText == undefined)
+			{
+				this.questionNumberText = "Question {i} of {n}";
+			}
+			
+            this.showfeedback = false;
+            
+            if (x_currentPageXML.getAttribute("showfeedback") != undefined)
+            {
+                this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
+            }
+
+            $("#sliderHolder").show();
+			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
+			
+			this.currentQuestion = 0;
+			this.questions = []; // array of questions to use (index)
+			this.myProgress = []; // array of whether each question was answered correctly
+			var numberOfQuestions = $(x_currentPageXML).children().length; // Can't be 0
+			
+			if (x_currentPageXML.getAttribute("order") == "random")
+			{
+				var questionNumbers = [];
+				
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					questionNumbers.push(i);
+				}
+				
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					var questionNumber = Math.floor(Math.random() * questionNumbers.length);
+					this.questions.push(questionNumbers[questionNumber]);
+					questionNumbers.splice(questionNumber, 1);
+					this.myProgress.push("");
+				}
+			}
+			else
+			{
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					this.questions.push(i);
+					this.myProgress.push("");
+				}
+			}
+			
+			this.weighting =  x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") != undefined : 1.0; 
+
+            XTSetPageType(x_currentPage, 'numeric', numberOfQuestions, this.weighting);
+
+			this.loadQuestion();
+			
+            // Queue reparsing of MathJax - fails if no network connection
+            try
+            {
+            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
+            catch (e) {}			
+		}
+		
+		this.loadQuestion = function()
+		{
+			if ($(x_currentPageXML).children().length == 0)
+			{
+				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
+			}
+			else
+			{
+				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQuestion]];
+
+				$("#qNo").html(this.questionNumberText.replace("{i}", this.currentQuestion + 1).replace("{n}", this.questions.length));
+
+				var infoString = $thisQ.getAttribute("prompt");
+				
+				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
+					survey.loadAudio($thisQ.getAttribute("sound"));
+				}
+				else
+				{
+					$("#questionAudio").empty();
+				}
+				
+				var url = $thisQ.getAttribute("image");
+				
+				if (url != undefined && url != "") {
+					var newString = "";
+					newString += '<img src="' + x_evalURL(url) + '" class="surveyImg"';
+					
+					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
+					{
+						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+					}
+					
+					newString += ' />';
+					infoString = newString + infoString;
+				}
+				
+				$("#qTxt").html(x_addLineBreaks(infoString));
+
+				$("#feedback").html("");
+				
+				if ($($thisQ).children().length == 0)
+				{
+					$("#sliderHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+				}
+				else
+				{
+					var $barHolder = $("#barHolder");
+					var $optionHolder = $("#optionHolder");
+					
+					$optionHolder.html('<div class="optionGroup"> <label class="optionTxt" /> <input type="radio" name="sliderInput" /> </div> ');
+					var $optionGroup = $optionHolder.find(".optionGroup"),
+						$checkBtn = $("#checkBtn"),
+						$feedback = $("#feedback"),
+						correctOptions = [],
+						correctAnswer = [],
+						correctFeedback = [];
+					
+					$checkBtn.button("enable");
+
+					$.each($($thisQ).children(), function(index, value)
+					{
+						var $thisOptionGroup, $thisOption, $thisOptionText;
+						if (index != 0)
+						{
+							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
+							$thisOptionGroup.after(" ");
+						}
+						else
+						{
+							$thisOptionGroup = $optionGroup;
+						}
+						
+						$thisOption = $thisOptionGroup.find("input");
+						$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
+						
+						$thisOption
+							.attr({
+								"value"	:value.getAttribute("name"),
+								"id"	:"option" + index
+								})
+							.change(function() {
+								$feedback.html("");
+								var $selected = $("#optionHolder input:checked");
+								
+								if ($selected.length > 0)
+								{
+									$checkBtn.button("enable");
+								} else
+								{
+									$checkBtn.button("disable");
+								}
+								
+								$("#nextBtn").button("disable");								if ($selected)
+								{
+									var barLength = calcPercentage(index, $($thisQ).children().length);
+									$barHolder.css("width", barLength + "%");	
+								}
+							})
+							.focusin(function() {
+								$thisOptionGroup.addClass("highlight");
+							})
+							.focusout(function() {
+								$thisOptionGroup.removeClass("highlight");
+							});
+
+						$thisOptionTxt
+							.attr("for", "option" + index)
+							.data("option", $thisOption)
+							.html(x_addLineBreaks(value.getAttribute("name")));
+							
+						correctOptions.push(index + 1 + "");
+						correctAnswer.push(value.getAttribute("name"));
+					});
+					
+					//TODO fix feedback == null
+					//fix next button disabled after change after submit
+					
+					var name = $thisQ.getAttribute("prompt");
+					
+					if ($thisQ.getAttribute("name"))
+					{
+						name = $thisQ.getAttribute("name");
+					}
+
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, correctFeedback);
+					survey.checked = false;
+				}
+			}
+		}
+		
+		this.pageChanged = function()
+		{
+			if ($(x_currentPageXML).children().length > 0)
+			{
+				this.startQuestions();
+			}
+		}
+		
+		this.leavePage = function()
+		{
+			if ($(x_currentPageXML).children().length > 0)
+			{
+				if (!this.checked)
+				{
+					this.trackQuestion();
+				}
+				
+				if (!this.resultShown)
+				{
+					this.trackSurvey();
+				}
+			}
+		}
+		
+		this.trackQuestion = function()
+		{
+			var currentQ = $(x_currentPageXML).children()[survey.questions[survey.currentQuestion]];
+
+            var selected = $("#sliderHolder input:checked"),
+				optionFeedback = "",
+				generalFeedback = "",
+				correct = true,
+				l_options = [],
+				l_answer = [],
+				l_feedback = [],
+				currentQuestionValue = 0;
+            
+            if (selected.length > 0 && $(selected[0]).parent()[0].childElementCount > 0)
+           	{
+                for (var i = 0; i < $(selected[0]).parent()[0].childElementCount; i++)
+               	{
+               		l_options.push(i + "");
+               	}
+            	
+            	var choice = $(selected[0]).parent().index();
+            	var count = $(selected[0]).parent()[0].childElementCount;
+           
+            	currentQuestionValue = calcPercentage(choice, count);
+            	
+            	if (x_currentPageXML.getAttribute("scale") == "true")
+           		{
+           			currentQuestionValue = 100 - currentQuestionValue;           		
+           		}            	
+           	}
+
+			if (selected.length == 0)
+			{
+				correct = false;
+			}
+			else
+			{
+                l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+                l_feedback.push("");
+                optionFeedback += "<p>" + x_addLineBreaks(selected[0].getAttribute("feedback"))  + "</p>";
+                
+                if (selected[0].getAttribute("audioFB") != undefined && selected[0].getAttribute("audioFB") != "")
+                {
+					optionFeedback += '<div class="audioHolder" data-audio="' + selected[0].getAttribute("audioFB") + '"></div>';
+				}
+			}
+			
+			generalFeedback += optionFeedback;
+			
+			XTExitInteraction(x_currentPage, survey.questions[survey.currentQuestion], correct, l_options, l_answer, l_feedback);
+            survey.myProgress.splice(survey.currentQuestion, 1, correct);
+            
+            var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
+            
+            if (survey.showfeedback)
+            {
+                $("#feedback")
+					.html(answerFeedback)
+					.find(".audioHolder").each(function() {
+						$(this).mediaPlayer({
+							type	:"audio",
+							source	:$(this).data("audio"),
+							width	:"100%"
+						});
+					});
+
+                $("#nextBtn").button("enable");
+				$("#checkBtn").button("disable");
+
+                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+            }
+            else
+            {
+                // Continue to next question
+                survey.currentQuestion++;
+                
+             	// If last question has been answered - show results, else continue
+                if (survey.currentQuestion == survey.questions.length)
+                {
+                    survey.trackSurvey();
+                }
+                else
+                {
+                    survey.loadQuestion();
+                }
+            }
+            
+            // Queue reparsing of MathJax - fails if no network connection
+            try
+            {
+            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
+            catch (e) {}
+		}
+		
+		this.trackSurvey = function()
+		{
+			 // Last question answered - show results
+            var $pageContents = $("#pageContents");
+            $("#qNo").html($pageContents.data("onCompletionText"));
+            var feedbackText = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+
+            var myScore = 0;
+            
+            for (var i = 0; i < survey.myProgress.length; i++)
+            {
+                if (survey.myProgress[i] == true)
+                {
+                    myScore++;
+                }
+            }
+            
+            if (x_currentPageXML.getAttribute("judge") != "false") {
+                feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", survey.questions.length) + "</p>";
+            }
+
+            $("#feedback").html(feedbackText);
+			$("#questionAudio").empty();
+			
+            $("#sliderHolder").hide();
+			$("#nextBtn, #checkBtn").button("disable");
+			
+            if (XTGetMode() != "normal")
+            {
+                $("#restartBtn").button("enable");
+            }
+            
+            $("#qTxt").html("");
+
+            var scormScore = Math.ceil(myScore / survey.questions.length * 100);
+            
+            XTSetPageScore(x_currentPage, scormScore);
+		}
+		
+		function calcPercentage(index, count)
+		{
+		 	var value;
+		 	
+			if (index == 0)
+       		{
+        		value = 0;
+       		}
+        	else if (index == count - 1)
+       		{
+       			value = 100;
+       		}
+        	else
+       		{
+       			value = index / (count - 1) * 100;
+       		}
+			
+			return value;
+		}
+		
+		this.init = function()
+		{
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder = $("#textHolder");
+			
+			if (panelWidth == "Full")
+			{
+				$("#infoHolder .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			}
+			else
+			{
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+				var textAlign = x_currentPageXML.getAttribute("align");
+				
+				if (textAlign != "right")
+				{
+					if (panelWidth == "Small")
+					{
+						$splitScreen.addClass("large");
+					}
+					else if (panelWidth == "Large")
+					{
+						$splitScreen.addClass("small");
+					}
+					else
+					{
+						$splitScreen.addClass("medium");
+					}
+				}
+				else
+				{
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small")
+					{
+						$splitScreen.addClass("medium");
+					}
+					else if (panelWidth == "Large")
+					{
+						$splitScreen.addClass("xlarge");
+					}
+					else
+					{
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+			
+			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "")
+			{
+				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
+						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
+				$textHolder.append('<img class="surveyImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+			}
+			
+			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
+			if (submitBtnText == undefined)
+			{
+				submitBtnText = "Submit";
+			}
+			
+			var nextBtnText = x_currentPageXML.getAttribute("nextBtnText");
+			if (nextBtnText == undefined)
+			{
+				nextBtnText = "Next";
+			}
+			
+			var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
+			if (restartBtnText == undefined)
+			{
+				restartBtnText = "Restart";
+			}
+			
+			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
+			if (onCompletionText == undefined)
+			{
+				onCompletionText = "You have completed the exercise";
+			}
+
+            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+            if (feedbackLabel == undefined)
+            {
+                feedbackLabel = "Feedback";
+            }
+            
+            var scoreText = x_currentPageXML.getAttribute("score");
+			if (scoreText == undefined) {
+				scoreText = "You answered {i} / {n}";
+			}
+			
+            $("#pageContents").data({
+				"feedbackLabel"		:feedbackLabel,				
+				"onCompletionText"	:onCompletionText,
+				"scoreText"			:scoreText
+			});
+            
+            // submit button
+            $("#checkBtn")
+			.button({
+				label: submitBtnText
+				})
+			.click(function() {
+				    survey.trackQuestion();                    
+                });
+
+			$("#nextBtn")
+				.button({
+					label: nextBtnText
+					})
+				.click(function() {
+					$(this).button("disable");
+					
+					survey.currentQuestion++;
+					if (survey.currentQuestion == survey.questions.length) {
+	                    // last question answered - show results
+	                    survey.trackSurvey();
+	                    survey.resultShown = true;
+					}
+					else
+					{
+						survey.loadQuestions();
+					}
+	                // Queue reparsing of MathJax - fails if no network connection
+	                try
+	                {
+	                	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	                }
+	                catch (e) {}
+				});
+	
+			$("#restartBtn")
+				.button({
+					label: restartBtnText
+					})
+				.click(function() {
+					survey.startQuestions();
+				});
+	
+			this.startQuestions();
+			this.sizeChanged();
+			x_pageLoaded();			
+		}
+	}
+
+	survey.init();
+</script>
+
+<style>
+
+#optionHolder
+{
+	text-align: justify;
+}
+
+#optionHolder .optionGroup
+{
+	display: inline-block;
+}
+
+#optionHolder label
+{
+	display: block;
+	text-align: center;
+	margin: 0 0.2em;
+}
+
+#optionHolder input[type="radio"] {
+	display: block;
+	margin: 0.5em auto;
+}
+
+#optionHolder:after {
+	content: '';
+    width: 100%;
+    display: inline-block;
+}
+
+#sliderHolder #barHolder
+{
+	background-color: blue;
+	height: 20px;
+	width : 0;
+}
+
+</style>
+
+<div id="pageContents">
+
+	<div class="splitScreen">
+
+		<div id="textHolder" class="left"></div>
+
+		<div id="infoHolder" class="right">
+		
+			<div id="mainPanel" class="panel qPanel">
+			
+				<h3 id="qNo" aria-live="polite"></h3>
+								
+				<fieldset class="noStyle">
+				
+					<legend id="qTxt"></legend>
+				
+					<div id="questionAudio"></div>
+					<div id="sliderHolder">
+						<div id="optionHolder"></div>
+						<div id="barHolder"></div>
+					</div>
+					
+					<div id="buttonHolder">
+						<button id="checkBtn"></button>
+						<button id="nextBtn"></button>
+						<button id="restartBtn"></button>
+					</div>
+					
+					<div id="feedback" aria-live="polite"></div>
+					
+				</fieldset>
+				
+			</div>
+			
+		</div>
+
+	</div>
+
+</div>
