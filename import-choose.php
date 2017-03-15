@@ -40,11 +40,18 @@ foreach($workspace->items as $item)
 		{
 			
 			$child = $children->item($i);	
-			$iconChild = $xmlNottingham->documentElement->getElementsByTagName($child->tagName)->item(1);
-			
+			$j = 0;
+			$iconChild = $xmlNottingham->documentElement->getElementsByTagName($child->tagName)->item($j);
+			while($iconChild != null && !$iconChild->hasAttribute("icon"))
+			{
+				$j++;
+				$iconChild = $xmlNottingham->documentElement->getElementsByTagName($child->tagName)->item($j);
+			}
 			$y = new stdClass();
 			$y->name = $child->getAttribute("name");
-			$y->icon = $iconChild->getAttribute("icon");
+			if(iconChild != null){
+				$y->icon = $iconChild->getAttribute("icon");
+			}
 			$y->type = $child->tagName;
 			$y->index = $i;
 			array_push($x->pages, $y);
@@ -82,8 +89,8 @@ foreach($workspace->items as $item)
 			sourceProject = id;
 			data = jsonData[id];
 			html = "";
-			$.each(data.pages, function(x){
-				html += "<input type=\"checkbox\" id=\""+this.index+"\">" + this.name + "<br>";
+			$.each(data.pages, function(x){			
+				html += "<input type=\"checkbox\" id=\""+this.index+"\">" + '<img src="modules/xerte/icons/'+this.icon+'.png">' + this.name + "<br>";
 			});
 			$("#merge").show();
 
@@ -108,7 +115,7 @@ foreach($workspace->items as $item)
 			{
 				source_page = source_pages.join();
 				source_project = sourceProject;
-				target_insert = 0;
+				target_insert = $(".jstree-children li").length;
 				target_project = currentProject;
 				url = "merge.php?source_project="+source_project+"&target_project="+target_project+"&target_page_position="+target_insert+"&source_pages="+source_page;
 				$.ajax(url).done(function(data)
@@ -122,10 +129,22 @@ foreach($workspace->items as $item)
 		);
 	});
 </script>
+<style>
+
+	#importPagesPanel, #importPagesPanel
+	{
+		position: relative;
+		width: 45%;
+	}
+	#importPanel{
+		width: 100%;
+		position: relative;
+	}
+</style>
 </head>
 <body>
-<table>
-	<tr>
+<table id="importPanel">
+	<tr >
 		<td id="importProjectsPanel">
 			<h2>Projects</h2>
 			<ul>
