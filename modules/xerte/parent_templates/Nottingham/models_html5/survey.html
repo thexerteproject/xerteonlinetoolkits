@@ -5,6 +5,7 @@
 			resultShown,
 			checked,			
 			questionNumberText;
+		var	answeredValues = {};
 		
 		this.sizeChanged = function()
 		{
@@ -188,7 +189,8 @@
 						correctAnswer = [],
 						correctFeedback = [];
 					
-					$checkBtn.button("enable");
+					$checkBtn.button("disable");
+					$barHolder.css("width", "0%");
 
 					$.each($($thisQ).children(), function(index, value)
 					{
@@ -211,19 +213,23 @@
 								"value"	:value.getAttribute("name"),
 								"id"	:"option" + index
 								})
-							.change(function() {
+							.change(function()
+							{
 								$feedback.html("");
 								var $selected = $("#optionHolder input:checked");
 								
 								if ($selected.length > 0)
 								{
 									$checkBtn.button("enable");
-								} else
+								}
+								else
 								{
 									$checkBtn.button("disable");
 								}
 								
-								$("#nextBtn").button("disable");								if ($selected)
+								$("#nextBtn").button("disable");
+								
+								if ($selected)
 								{
 									var barLength = calcPercentage(index, $($thisQ).children().length);
 									$barHolder.css("width", barLength + "%");	
@@ -306,7 +312,7 @@
                	}
             	
             	var choice = $(selected[0]).parent().index();
-            	var count = $(selected[0]).parent()[0].childElementCount;
+            	var count = $(selected[0]).parent().parent()[0].childElementCount;
            
             	currentQuestionValue = calcPercentage(choice, count);
             	
@@ -332,7 +338,10 @@
 				}
 			}
 			
-			generalFeedback += optionFeedback;
+			generalFeedback += optionFeedback;			
+            
+            var currentQuestionString = survey.currentQuestion + "";
+            answeredValues[currentQuestionString] = currentQuestionValue;
 			
 			XTExitInteraction(x_currentPage, survey.questions[survey.currentQuestion], correct, l_options, l_answer, l_feedback);
             survey.myProgress.splice(survey.currentQuestion, 1, correct);
@@ -389,16 +398,15 @@
 
             var myScore = 0;
             
-            for (var i = 0; i < survey.myProgress.length; i++)
+            for (var key in answeredValues)
             {
-                if (survey.myProgress[i] == true)
-                {
-                    myScore++;
-                }
+            	myScore += answeredValues[key];
             }
             
+            myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
+            
             if (x_currentPageXML.getAttribute("judge") != "false") {
-                feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", survey.questions.length) + "</p>";
+                feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", survey.questions.length) + "</p>";
             }
 
             $("#feedback").html(feedbackText);
@@ -414,9 +422,7 @@
             
             $("#qTxt").html("");
 
-            var scormScore = Math.ceil(myScore / survey.questions.length * 100);
-            
-            XTSetPageScore(x_currentPage, scormScore);
+            XTSetPageScore(x_currentPage, myScore);
 		}
 		
 		function calcPercentage(index, count)
