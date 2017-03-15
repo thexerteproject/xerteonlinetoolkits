@@ -875,7 +875,15 @@
 		
 		//Stopping the tracking
 		this.finishTracking = function() {
-			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+			if(total != 0)
+			{
+				XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total));
+			}
+			else
+			{
+				XTSetPageScore(x_currentPage, 0.0);
+			}
+
 		}
 		
 		

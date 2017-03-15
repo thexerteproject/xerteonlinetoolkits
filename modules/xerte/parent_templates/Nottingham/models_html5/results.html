@@ -49,11 +49,28 @@
 			$("#completion").html(results.completion + "%");
 			$("#totalDuration").html(results.totalDuration + " seconds");
 			$("#startTime").html(results.start);
-
 			results.interactions.forEach(function(x)
 			{
-				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");
-				$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+				debugger;
+				var completedToken;
+				if(x.completed == "true")
+				{
+					completedToken = '<img src="' + x_templateLocation + 'common_html5/tick.png"/>';
+				}
+				else if (x.completed == "false")
+				{
+					completedToken = '<img src="' + x_templateLocation + 'common_html5/cross.png"/>';
+				}
+				else {
+					completedToken = '-';
+				}
+				if(results.mode == 'full-results') {
+					$("#specific").show();
+					$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
+					if (x.subinteractions.length > 0) {
+						$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+					}
+				}
 				count = 1;
 				x.subinteractions.forEach(function(y)
 				{
@@ -83,10 +100,7 @@
 			x_pageLoaded();
 		}
 	}
-	
- 	
- 
- 	results.init();
+results.init();
 	
  	
  	
@@ -139,6 +153,9 @@
 	.notLast{
 		border-bottom: 1px solid black !important;
 	}
+	#specific{
+		display:none;
+	}
 
 	
 </style>
@@ -164,7 +181,8 @@
 				<td><span id="totalDuration"></span></td>
 			</tr>
 		</table>
-		<h2>Question results</h2>
+		<div id ="specific">
+		<h2>Interactivity results</h2>
 		<br />
 		<h3>Global Results</h3>
 		<table id="questionScores" rules="rows">
@@ -173,6 +191,7 @@
 				<th>Score</th>
 				<th>Duration</th>
 				<th>Weighting</th>
+				<th>Completed</th>
 			</tr>
 		</table>
 		<br />
@@ -181,6 +200,7 @@
 		<table id="fullResults">
 		</table>
 		<br />
+	</div>
 	</div>
 	<br>
 	<div>
