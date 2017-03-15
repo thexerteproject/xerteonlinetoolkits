@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <survey><![CDATA[<survey name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+      <survey><![CDATA[<survey name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"  
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  onCompletion="You have completed the exercise" score="You answered {i} / {n}" 
 	  submitBtnText="Submit" 
@@ -19,7 +19,6 @@
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
     <instructions label="Instructions" type="textArea"  height="120"/>
-    <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
@@ -58,14 +57,14 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <surveyOption><![CDATA[<surveyOption name="Option" text="Here is an option" feedback="Feedback for this option" />]]></surveyOption>
+      <surveyOption><![CDATA[<surveyOption name="Option" text="Here is an option" />]]></surveyOption>
     </newNodes>
 
   </surveyQuestion>
 
   <surveyOption menuItem="Option" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
-    <feedback label="Feedback" type="TextArea"  height="100" optional="true" defaultValue=""/>
+    <feedback label="Feedback" type="TextArea"  height="100" optional="true" />
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
   </surveyOption>
   

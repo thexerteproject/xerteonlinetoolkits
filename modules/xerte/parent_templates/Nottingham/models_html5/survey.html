@@ -405,9 +405,7 @@
             
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
             
-            if (x_currentPageXML.getAttribute("judge") != "false") {
-                feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", survey.questions.length) + "</p>";
-            }
+            feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", survey.questions.length) + "</p>";
 
             $("#feedback").html(feedbackText);
 			$("#questionAudio").empty();
@@ -606,8 +604,10 @@
 	text-align: justify;
 }
 
+
 #optionHolder .optionGroup
 {
+	width: 5em;
 	display: inline-block;
 }
 
@@ -631,7 +631,9 @@
 
 #sliderHolder #barHolder
 {
+ 	margin-bottom: 2em;
 	background-color: blue;
+	border-radius: 2em;
 	height: 20px;
 	width : 0;
 }
