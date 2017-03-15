@@ -26,6 +26,7 @@
     <btnAddColumn label="Add Column" tooltip="Add a column to the right of the grid"/>
     <btnDelColumn label="Delete Column" tooltip="Delete the selected column"/>
 	<btnInsert label="Insert" tooltip="Insert"/>
+	<btnMerge label="Merge" tooltip="Merge"/>
 	<btnAddChild tooltip="add some children"/>
 	<btnDuplicate label="Copy" tooltip="Duplicate"/>
 	<btnDelete label="Delete" tooltip="Delete"/>

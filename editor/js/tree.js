@@ -43,6 +43,20 @@ var EDITOR = (function ($, parent) {
         bunload();
 
     }
+    //Loads the data into the import screen
+	 function loadEditHTMLphp() {
+
+		refresh_workspaceMerge()
+		
+	}
+	
+	function refresh_workspaceMerge(){
+        var url="import-choose.php?id="+template_id;
+        $.get(url, function(data){
+        	$("#mainPanel").html(data);
+        });
+
+	}
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
@@ -63,6 +77,10 @@ var EDITOR = (function ($, parent) {
                 }, 20);
         },
 
+		merge_page = function() {
+            loadEditHTMLphp();
+        },
+        
         delete_page = function() {
             deleteSelectedNodes();
         },
@@ -74,6 +92,7 @@ var EDITOR = (function ($, parent) {
         buttons = $('<div />').attr('id', 'top_buttons');
         $([
             {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+            {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, icon:'fa-plus-circle', id:'merge_button', click:merge_page},
             {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
             {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
         ])
