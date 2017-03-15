@@ -1,0 +1,18 @@
+<wizard menus="Misc">
+    <pageWizard remove="true" duplicate="false">
+        <newNodes>
+            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results"/>]]></results>
+        </newNodes>
+    </pageWizard>
+
+    <!-- RESULTS PAGE ============================== -->
+    <results menu="Misc" menuItem="Results Page"
+             hint="A page displaying a summary of the results of the interactions." icon="icResults"
+             thumb="thumbs/results.jpg" remove="true">
+
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Full Results"
+                    data="minimal-results,full-results"/>
+        <exportpdf label="Enable export to PDF" type="Checkbox" optional="true" defaultValue="true" />
+    </results>
+</wizard>
