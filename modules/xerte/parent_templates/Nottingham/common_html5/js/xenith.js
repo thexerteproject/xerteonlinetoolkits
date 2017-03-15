@@ -162,7 +162,7 @@ $(document).ready(function() {
 
 x_projectDataLoaded = function(xmlData) {
     var i, len;
-
+	var markedPages = new Array();
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
@@ -191,6 +191,10 @@ x_projectDataLoaded = function(xmlData) {
 		}
 		else {
 			pageToHide.push(i);
+		}
+		if($(this)[0].getAttribute("markForCompletion") === "true")
+		{
+			markedPages.push(i);
 		}
     });
 	
@@ -270,9 +274,13 @@ x_projectDataLoaded = function(xmlData) {
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
+	XTSetOption('toComplete', markedPages);
+
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
+
+
 	if (x_params.trackingPassed != undefined)
 	{
 		// Get value, and try to convert to decimal between 0 and 1

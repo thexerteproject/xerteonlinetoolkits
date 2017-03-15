@@ -44,6 +44,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview"/>
 	<hidePage tooltip="This page is hidden"/>
+	<markForCompletion tooltip="This page will be marked"/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>

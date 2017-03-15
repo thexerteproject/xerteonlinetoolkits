@@ -64,15 +64,21 @@ function XTNeedsLogin()
 
 function XTSetOption(option, value)
 {
-
+    switch(option)
+    {
+        case "toComplete":
+            state.toCompletePages = value;
+            break;
+    }
 }
+
 
 function XTEnterPage(page_nr, page_name)
 {
     //alert("Opening page " + page_nr + ": " + page_name);
 }
 
-function XTExitPage(page_nr)
+function XTExitPage(page_nr, pageName)
 {
     //alert("Leaving page " + page_nr + ": " + page_name);
 }
