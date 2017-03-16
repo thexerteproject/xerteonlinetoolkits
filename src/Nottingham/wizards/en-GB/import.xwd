@@ -1,7 +1,7 @@
 <wizard menus="Import">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <import><![CDATA[<import name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility">Enter text for the page here</QRcode>]]></import>
+            <import><![CDATA[<import name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility">Enter text for the page here</import>]]></import>
         </newNodes>
     </pageWizard>
 
