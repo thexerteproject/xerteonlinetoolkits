@@ -161,6 +161,14 @@ echo "<p>The site's proxy port is <textarea name=\"port1\"></textarea></p>";
 
 echo "<p>By directly editing the rss proxy.php file (in the root folder), you can add up to 4 proxies and ports should you wish.</p>";
 
+echo "<br><br><h3 style=\"clear:left\">XAPI LRS Endpoint Settings - settings to manage which LRS the XAPI statements are sent to.</h3>";
+
+echo "<p>The LRS endpoint (URL) is  <textarea name=\"LRS_Endpoint\"></textarea></p>";
+
+echo "<p>The username (key) for the endpoint is <textarea name=\"LRS_Key\"></textarea></p>";
+
+echo "<p>The password (secret) for the endpoint is <textarea name=\"LRS_Secret\"></textarea></p>";
+
 // Authentication method
 echo "<br><h3 style=\"clear:left\">Authentication Method</h3>";
 

@@ -120,7 +120,7 @@ class XerteXMLInspector
         return $ok;
     }
 
-    public function loadTemplateXML($name)
+    public function loadTemplateXML($name, $resultPage)
     {
         _debug("Trying to simplexml_load_file : $name");
         $this->fname = $name;
@@ -173,8 +173,15 @@ class XerteXMLInspector
         // Convert HTML entities to single characters
         $name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
         $this->name = $name;
+
         $this->models = array();
+
+        //Gets the value of resultpage (true/false)
+        $this->resultpageEnabled = (string)($this->xml->xpath('/*')[0]->attributes()->resultpage);
+        $this->hasResultPage = ($this->xml->xpath('/*')[0]->children());
+        
         $nodes = $this->xml->xpath('/*/*');
+
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
         }

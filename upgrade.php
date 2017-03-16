@@ -446,5 +446,38 @@ function upgrade_8()
     }
 }
 
+function upgrade_9()
+{
+    if (! _db_field_exists('sitedetails', 'LRS_Endpoint')) {
+        $error1 = _db_add_field('sitedetails', 'LRS_Endpoint', 'char(255)', '', 'feedback_list');
+        $error1_returned = true;
 
+        $error2 = _db_add_field('sitedetails', 'LRS_Key', 'char(255)', '', 'LRS_Endpoint');
+        $error2_returned = true;
+
+        $error3 = _db_add_field('sitedetails', 'LRS_Secret', 'char(255)', '', 'LRS_Key');
+        $error3_returned = true;
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Endpoint field FAILED";
+        }
+
+        if (($error2 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Key field FAILED";
+        }
+
+        if (($error3 === false)) {
+            $error1_returned = false;
+            // echo "creating LRS_Secret field FAILED";
+        }
+
+        return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned && $error3_returned? 'true' : 'false');
+    }
+    else
+    {
+        return "LRS Endpoint settings fields already present - ok ? true";
+    }
+}
 ?>

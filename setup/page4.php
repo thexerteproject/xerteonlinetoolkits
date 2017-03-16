@@ -70,7 +70,7 @@ foreach(array('site_url', 'apache', 'mimetypes', 'LDAP_preference', 'LDAP_filter
     'synd_publisher', 'synd_rights', 'synd_license', 'demonstration_page', 'form_string', 'peer_form_string', 'module_path', 'website_code_path', 'users_file_area_short', 
     'php_library_path', 'error_log_path', 'email_error_list', 'error_log_message', 'max_error_size', 'max_error_size', 'error_email_message', 'authentication_method',
     'ldap_host', 'ldap_port', 'bind_pwd', 'basedn', 'bind_dn', 'flash_save_path', 'flash_upload_path', 'flash_preview_check_path', 'flash_flv_skin',
-    'site_email_account', 'headers', 'email_to_add_to_username', 'proxy1', 'port1', 'feedback_list', 'play_edit_preview_query' ) as $field) {
+    'site_email_account', 'headers', 'email_to_add_to_username', 'proxy1', 'port1', 'feedback_list', 'play_edit_preview_query', 'LRS_Endpoint', 'LRS_Key', 'LRS_Secret' ) as $field) {
 
     $res = db_query("UPDATE {$xerte_toolkits_site->database_table_prefix}sitedetails SET $field = ? WHERE site_id = ?", array($_POST[$field], '1'));
     if($res===false) {

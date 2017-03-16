@@ -452,7 +452,10 @@ function update_site(){
 					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
 					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
 					 '&admin_username=' + document.getElementById("admin_username").value + 
-					 '&admin_password=' + document.getElementById("admin_password").value);
+					 '&admin_password=' + document.getElementById("admin_password").value +
+					 '&site_xapi_endpoint=' + document.getElementById("site_xapi_endpoint").value +
+					 '&site_xapi_key=' + document.getElementById("site_xapi_key").value +
+					 '&site_xapi_secret=' + document.getElementById("site_xapi_secret").value);
 
 	}
 

@@ -1,0 +1,184 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var results = new function() {		
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+
+			// ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
+			
+			if (x_currentPageXML.getAttribute("textWidth") == "300") {
+				$pageContents.addClass("width40");
+			} else if (x_currentPageXML.getAttribute("textWidth") == "450") {
+				$pageContents.addClass("width60");
+			} else if (x_currentPageXML.getAttribute("textWidth") == "600") {
+				$pageContents.addClass("width80");
+			}
+			
+			results = XTResults();
+			
+			$("#averageScore").html(results.averageScore + "%");
+			$("#totalDuration").html(results.totalDuration + " seconds");
+			$("#startTime").html(results.start);
+
+			results.interactions.forEach(function(x)
+			{
+				$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td></tr>");
+				$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+				count = 1;
+				x.subinteractions.forEach(function(y)
+				{
+					question = y.question;
+					learnerAnswer = y.learnerAnswer;
+					correctAnswer = y.correctAnswer;
+					if (learnerAnswer == correctAnswer) {
+						if (count == x.subinteractions.length) {
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+						}
+						else {
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+						}
+					}
+					else {
+						if (count == x.subinteractions.length) {
+							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+						}
+						else {
+							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+						}
+					}
+					count++;
+				});
+			});
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	}
+	
+ 	
+ 
+ 	results.init();
+	
+ 	
+ 	
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+<script>
+	function pdfDownload() {
+		var pdf = new jsPDF('p', 'pt', 'letter');
+
+		source = $('#pdfContent').clone();
+		
+		source.find("#general_summary").prepend("<tr><th>ABC</th><th>DEF</th></tr>");
+		margins = {
+			top: 80,
+			bottom: 60,
+			left: 40,
+			width: 522
+		};
+		debugger;
+		pdf.fromHTML(
+				source.html(), // HTML string or DOM elem ref.
+				margins.left, // x coord
+				margins.top, { // y coord
+					'width': margins.width// max width of content on PDF
+				},
+
+				function (dispose) {
+					name = x_params.name + "_" + XTResults().start
+					pdf.save(name.replace(/ /g, "_"));
+					
+				}, margins
+		);
+	}
+</script>
+
+<style type="text/css">
+	h2, h3{
+		padding: 8px;
+	}
+	
+	td, th{
+		padding-left: 25px !important;
+		padding-right: 25px !important;
+	}
+	
+	.td-center{
+		text-align:center;
+	}
+	.notLast{
+		border-bottom: 1px solid black !important;
+	}
+
+	
+</style>
+
+<div id="pageContents">
+	<div id="pdfContent">
+		<h2>General Results</h2>
+		<table id="general_summary" rules="rows">
+			<tr>
+				<td>Average: </td>
+				<td><span id="averageScore"></span></td>
+			</tr>
+			<tr>
+				<td>Start time: </td>
+				<td><span id="startTime"></span></td>
+			</tr>
+			<tr>
+				<td>Duration: </td>
+				<td><span id="totalDuration"></span></td>
+			</tr>
+		</table>
+		<h2>Question results</h2>
+		<br />
+		<h3>Global Results</h3>
+		<table id="questionScores" rules="rows">
+			<tr>
+				<th>Name</th>
+				<th>Score</th>
+				<th>Duration</th>
+				<th>Weighting</th>
+			</tr>
+		</table>
+		<br />
+		<h3>Specific Results</h3>
+		<br />
+		<table id="fullResults">
+		</table>
+		<br />
+	</div>
+	<br>
+	<div>
+		<center><button onClick="pdfDownload()" id="button">Download PDF file</button></center>
+	</div>
+</div>

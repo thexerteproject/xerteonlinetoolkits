@@ -919,8 +919,8 @@ var EDITOR = (function ($, parent) {
             if (options.options.type != 'script')
             {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
+                    // Editor is ready, attach change event
+                    this.on('change', function(){
                         inputChanged(options.id, options.key, options.name, this.getData(), this);
                     });
                 }, ckoptions);
@@ -931,7 +931,7 @@ var EDITOR = (function ($, parent) {
                 codemirroroptions['mode'] = "javascript";
                 var textArea = document.getElementById(options.id);
                 var codemirror = CodeMirror.fromTextArea(textArea, codemirroroptions);
-                codemirror.on("blur", function(){
+                codemirror.on("change", function(){
                     inputChanged(options.id, options.key, options.name, codemirror.getValue(), codemirror);
                 });
                 if (options.options.height)
@@ -976,8 +976,8 @@ var EDITOR = (function ($, parent) {
         $.each(textinputs_options, function (i, options) {
             if (options) {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
+                    // Editor is ready, attach onchange event
+                    this.on('change', function(){
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
                         inputChanged(options.id, options.key, options.name, thisValue, this);
@@ -1050,7 +1050,7 @@ var EDITOR = (function ($, parent) {
         {
 
             var textinput = textinputs_options[i];
-            $('#' + textinput.id).blur();
+            $('#' + textinput.id).change();
             if ($('#cke_' + textinput.id).is(':visible'))
             {
                 $('#cke_' + textinput.id).hide();
@@ -1427,7 +1427,7 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        console.log([key, names, values]);
+        // console.log([key, names, values]);
         // Get the node name
 		
 		if (names == "hidePage") {
@@ -1455,7 +1455,7 @@ var EDITOR = (function ($, parent) {
         var node_options = wizard_data[node_name].node_options;
 
         $.each(names, function(i, name){
-            console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
+            // console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
             if (node_options['cdata'] && node_options['cdata_name'] == name)
             {
                 lo_data[key]['data'] = values[i];
@@ -1552,7 +1552,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        // console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
