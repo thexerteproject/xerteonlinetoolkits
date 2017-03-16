@@ -716,6 +716,38 @@ function x_continueSetUp() {
 			});
 	}
 	
+	//add optional progress bar
+    if (x_params.progressBar != undefined && x_params.progressBar != "") {
+	//add a div for the progress bar
+	$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
+	//add the progress bar
+	$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
+	//progress bar styling
+	$("*").css({"box-sizing":"border-box"});
+	$(".pbContainer").css({"width": "50%", "background-color":"#ddd", "height":"6px", "margin":"auto","margin-top":"15px"});
+	$(".pbPercent").css({"text-align":"right", "padding-right":"2px", "line-height":"6px", "color":"#ffffff"});
+	$(".pbBar").css({"width":"10%", "background-color":"#2196F3", "font-size":"8px"});
+	$(".pbTxt").css({"font-size": "10px",  "text-align":"center"});
+	if (x_params.progressBar =="pBarNoCounter") {
+	//remove page counter if that option selected
+	$("#x_pageNo").remove();
+    }
+	//detect page loaded change and update progress bar
+	var    x_PL = x_pageLoaded,
+    x_pageLoaded = function() {
+          x_PL();
+          doPercentage();
+    },
+    doPercentage = function () {
+        var totalpages=x_pageInfo.length;
+        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
+        var progress=Math.round((pagesviewed*100)/totalpages);
+        $(".pbBar").css({"width": progress+"%"});
+        $('.pbTxt').html(progress+"% COMPLETE");
+    };
+	doPercentage();
+	} 
+	
 	// get icon position
 	var icPosition = "x_floatLeft";
 	if (x_params.icPosition != undefined && x_params.icPosition != "") {
