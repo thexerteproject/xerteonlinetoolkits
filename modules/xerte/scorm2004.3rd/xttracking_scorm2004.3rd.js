@@ -795,10 +795,7 @@ function XTGetMode()
             var sit=state.find(state.currentpageid);
             if (sit != null)
             {
-                if (sit.weighting > 0)
-                    return "normal";
-                else
-                    return "not-tracking";
+               return "normal";
             }
         }
         return "tracking";
