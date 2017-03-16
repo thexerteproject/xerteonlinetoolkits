@@ -641,7 +641,7 @@ select, input, textarea
 {
     width: 100%;
 }
-table.wizard{
+table.wizard, table.wizardgroup_table{
     vertical-align: middle;
     width: 100%;
 }
@@ -654,6 +654,29 @@ td.wizardlabel {
 }
 
 td.wizardvalue {
+}
+
+fieldset.wizardgroup {
+	border: 1px solid #ccc;
+}
+
+fieldset.wizardgroup.collapsed {
+	border-color: transparent;
+	border-top-color: #ccc;
+}
+
+fieldset.wizardgroup legend {
+	margin-left: -17px;
+	padding-right: 10px;
+	cursor: pointer;
+}
+
+fieldset.wizardgroup legend i {
+	padding-bottom: 10px;
+}
+
+fieldset.wizardgroup legend span, fieldset.wizardgroup legend span i.fa {
+	padding-left: 6px;
 }
 
 #parameter_checkboxes span {
@@ -857,6 +880,10 @@ div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
 #bottom_buttons i {color: white;}
 
 div.wizardvalue_inner {width: 95%}
+
+.wizardgroup_table div.wizardvalue_inner {
+	margin-right: 1em;
+}
 
 .media_browse {
     cursor: pointer;

@@ -498,7 +498,7 @@ var EDITOR = (function ($, parent) {
 
     // Refresh the page when a new node is selected
     buildPage = function (key) {
-
+		
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -630,23 +630,68 @@ var EDITOR = (function ($, parent) {
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
-
+		
+		var optGroups = [];
+		
+		// get all optional property groups...
+		for (var i=0; i<node_options['optional'].length; i++) {
+			if (node_options['optional'][i].value.type == "group") {
+				node_options['optional'][i].value.children = node_options['optional'][i].value.children == undefined ? [] : node_options['optional'][i].value.children;
+				optGroups.push(node_options['optional'][i]);
+				node_options['optional'].splice(i,1);
+				i--;
+			}
+		}
+		
+		// ...find all optional properties that belong to them
+		if (optGroups.length > 0 && optGroups[0].value.children.length == 0) {
+			for (var i=0; i<node_options['optional'].length; i++) {
+				var index = $.map(optGroups, function(obj, index) { if (obj.name == node_options['optional'][i].value.group) { return index; } });
+				
+				if (index.length > 0) {
+					optGroups[index[0]].value.children.push(node_options['optional'][i]);
+					node_options['optional'].splice(i,1);
+					i--;
+				}
+			}
+			
+			// ignore groups with no children
+			for (var i=0; i<optGroups.length; i++) {
+				if (optGroups[i].value.children.length == 0) {
+					optGroups.splice(i,1);
+					i--;
+				}
+			}
+		}
+		
+		node_options['optional'] = node_options['optional'].concat(optGroups);
+		
 		// Sort into alphabetical order
 		node_options['optional'].sort(function(a,b) {
 			var aN = a.value.label.toLowerCase();
 			var bN = b.value.label.toLowerCase(); 
 			return (aN < bN) ? -1 : ((aN > bN) ? 1 : 0);
 		});
-
+		
         for (var i=0; i<node_options['optional'].length; i++)
         {
-            attribute_name = node_options['optional'][i].name;
+			// is optional property (or any children of group) already in project?
+			var found = [];
+			if (node_options['optional'][i].value.type == 'group') {
+				var groupChildren = node_options['optional'][i].value.children;
+				for (var j=0; j<groupChildren.length; j++) {
+					var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
+					found.push(child_value.found);
+				}
+			}
+			
+			attribute_name = node_options['optional'][i].name;
             attribute_label = node_options['optional'][i].value.label;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
 
             if (!node_options['optional'][i].value.deprecated) {
                 // Create button for right panel
-                var label = attribute_label;
+                var label = attribute_label + (node_options['optional'][i].value.type == 'group' ? '...' : '');
                 var button = $('<button>')
                     .attr('id', 'insert_opt_' + attribute_name)
                     .addClass('btnInsertOptParam')
@@ -654,10 +699,20 @@ var EDITOR = (function ($, parent) {
                     .click({
                         key: key,
                         attribute: attribute_name,
-                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")
+                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : ""),
+						children: node_options['optional'][i].value.children
                     },
                     function (event) {
-                        parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+						if (event.data.children != undefined) {
+							// it's a group so add all children too
+							for (var j=0; j<event.data.children.length; j++) {
+								if (!event.data.children[j].value.deprecated) {
+									parent.toolbox.insertOptionalProperty(event.data.key, event.data.children[j].name, (event.data.children[j].value.defaultValue ? event.data.children[j].value.defaultValue : ""), j < event.data.children.length-1 ? false : true);
+								}
+							}
+						} else {
+							parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+						}
                     })
                     .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
                 if (node_options['optional'][i].value.flashonly) {
@@ -668,12 +723,13 @@ var EDITOR = (function ($, parent) {
                 {
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-                if (attribute_value.found) {
+				
+                if (attribute_value.found || $.inArray(true, found) > -1) {
                     // Add disabled button to right panel
                     button.prop('disabled', true)
                         .addClass('disabled');
-                }
-                else {
+					
+				} else {
                     // Add enabled button to the right panel
                     button.prop('disabled', false)
                         .addClass('enabled');
@@ -682,10 +738,24 @@ var EDITOR = (function ($, parent) {
                     .append($('<td>')
                         .append(button));
                 table.append(tablerow);
+				
             }
-            if (attribute_value.found) {
-                // Add paramter to the wizard
-                toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
+			
+            if (attribute_value.found || $.inArray(true, found) > -1) {
+                // Add parameter to the wizard
+				if (node_options['optional'][i].value.type != 'group') {
+					toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
+				} else {
+					toolbox.displayGroup('#mainPanel .wizard', node_options['optional'][i].name, node_options['optional'][i].value, key);
+					
+					// group children aren't sorted into alphabetical order - they appear in order taken from xml
+					var groupChildren = node_options['optional'][i].value.children;
+					for (var j=0; j<groupChildren.length; j++) {
+						if (found[j] == true || !groupChildren[j].value.deprecated) {
+							toolbox.displayParameter('#mainPanel .wizard #groupTable_' + node_options['optional'][i].name, groupChildren, groupChildren[j].name, toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value, key);
+						}
+					}
+				}
             }
         }
         html.append(table);
