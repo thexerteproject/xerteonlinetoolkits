@@ -696,24 +696,28 @@ function x_continueSetUp() {
 	}
 	
 	if (x_params.media != undefined) {
-		$x_footerL.prepend('<button id="x_mediaBtn"></button>');
-		$("#x_mediaBtn")
-			.button({
-				icons: {
-					primary: "x_media"
-				},
-				label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-				text:	false
-			})
-			.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
-			.click(function() {
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-				
-				x_openMediaWindow();
-			});
+		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
+			if (mediaExists) {
+				$x_footerL.prepend('<button id="x_mediaBtn"></button>');
+				$("#x_mediaBtn")
+					.button({
+						icons: {
+							primary: "x_media"
+						},
+						label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+						text:	false
+					})
+					.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
+					.click(function() {
+						$(this)
+							.blur()
+							.removeClass("ui-state-focus")
+							.removeClass("ui-state-hover");
+						
+						x_openMediaWindow();
+					});
+			}
+		});
 	}
 	
 	//add optional progress bar
@@ -742,8 +746,12 @@ function x_continueSetUp() {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
 	if (x_params.ic != undefined && x_params.ic != "") {
-		var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+		x_checkMediaExists(x_evalURL(x_params.ic), function(mediaExists) {
+			if (mediaExists) {
+				var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
+				$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+			}
+		});
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
@@ -944,34 +952,38 @@ function x_continueSetUp() {
 	}
 	
 	if (x_params.background != undefined && x_params.background != "") {
-		var alpha = 30;
-		if (x_params.backgroundopacity != undefined) {
-			alpha = x_params.backgroundopacity;
-		}
-		if (x_params.backgroundGrey == "true") {
-			// uses a jquery plugin as just css way won't work in all browsers
-			x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
-				$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
-				$("#x_mainBg").css({
-					"opacity"	:Number(alpha/100),
-					"filter"	:"alpha(opacity=" + alpha + ")"
-				});
-				// grey function called on image when unhidden later as it won't work properly otherwise
-			});
-		} else {
-			$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-			$("#x_mainBg").css({
-				"opacity"	:Number(alpha/100),
-				"filter"	:"alpha(opacity=" + alpha + ")"
-			});
-		}
-		if (x_params.backgroundDark != undefined) {
-			$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
-			$("#x_mainBgDarken").css({
-				"opacity"	:Number(x_params.backgroundDark/100),
-				"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
-			});
-		}
+		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
+			if (mediaExists) {
+				var alpha = 30;
+				if (x_params.backgroundopacity != undefined) {
+					alpha = x_params.backgroundopacity;
+				}
+				if (x_params.backgroundGrey == "true") {
+					// uses a jquery plugin as just css way won't work in all browsers
+					x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
+						$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+						$("#x_mainBg").css({
+							"opacity"	:Number(alpha/100),
+							"filter"	:"alpha(opacity=" + alpha + ")"
+						});
+						// grey function called on image when unhidden later as it won't work properly otherwise
+					});
+				} else {
+					$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
+					$("#x_mainBg").css({
+						"opacity"	:Number(alpha/100),
+						"filter"	:"alpha(opacity=" + alpha + ")"
+					});
+				}
+				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "0") {
+					$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
+					$("#x_mainBgDarken").css({
+						"opacity"	:Number(x_params.backgroundDark/100),
+						"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
+					});
+				}
+			}
+		});
 	}
 	
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
@@ -996,6 +1008,13 @@ function x_continueSetUp() {
 	}
 	
 	x_navigateToPage(true, x_startPage);
+}
+
+// function checks whether a media file exists
+function x_checkMediaExists(src, callback) {
+	$.get(src)
+		.done(function() { callback(true); })
+		.fail(function() { callback(false); });
 }
 
 function x_charmapLoaded(xml)
@@ -1484,14 +1503,18 @@ function x_pageLoaded() {
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-        $("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
-        $("#x_footerBlock #x_pageNarration").mediaPlayer({
-            type        :"audio",
-            source      :x_currentPageXML.getAttribute("narration"),
-            width       :"100%",
-            autoPlay    :x_currentPageXML.getAttribute("playNarration"),
-            autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
-        });
+        x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
+			if (mediaExists) {
+				$("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
+				$("#x_footerBlock #x_pageNarration").mediaPlayer({
+					type        :"audio",
+					source      :x_currentPageXML.getAttribute("narration"),
+					width       :"100%",
+					autoPlay    :x_currentPageXML.getAttribute("playNarration"),
+					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
+				});
+			}
+		});
     }
 }
 
