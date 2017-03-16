@@ -1,0 +1,25 @@
+/* wordsearch.html */
+	
+	#puzzle .selected {
+		cursor: pointer;
+	}
+	
+	#puzzle, #words {
+		float: left;
+	}
+	
+	#words {
+		padding: 0;
+		margin: 1em;
+		text-align:	center;
+	}
+	
+	#words ul {
+		margin: 0;
+		padding: 0;
+	}
+	
+	#btnHolder {
+		clear: both;
+	}
+	

@@ -1,0 +1,15 @@
+/* buttonQuestion.html */
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+	#answer {
+		margin-top:	10px;
+	}
+	
