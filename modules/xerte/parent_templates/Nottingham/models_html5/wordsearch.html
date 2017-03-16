@@ -129,8 +129,11 @@
 			// start a word find game
 			puzzle = wordfindgame.create(words, "#puzzle", "#words");
 			
-			// makes sure word list height is no greater than wordsearch height
-			if ($("#words").height() > $("#puzzle").height()) {
+			// hide word list or make sure word list height is no greater than wordsearch height
+			if (x_currentPageXML.getAttribute('hideWords') == 'true') {
+				$('#words').hide();
+			}
+			else if ($("#words").height() > $("#puzzle").height()) {
 				var numCols = Math.ceil($("#words").height() / $("#puzzle").height()),
 					maxW = 0;
 				

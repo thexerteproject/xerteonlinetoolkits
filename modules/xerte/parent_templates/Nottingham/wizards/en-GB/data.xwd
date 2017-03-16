@@ -2164,6 +2164,7 @@
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
 	<hideSolve label="Hide Solve Button" hint="Hide the solve button completely" type="CheckBox" optional="true"/>
 	<hideSolveUntilTimer label="Hide Solve Until Timer" hint="Hide the solve button until the timer expires" type="CheckBox" optional="true"/>
+	<hideWords label="Hide Words" hint="Hide the words to make the puzzle harder" type="CheckBox" optional="true"/>
 	
 	<solveBtnTxt label="Solve Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<retryBtnTxt label="Retry Button Label" type="TextInput" wysiwyg="true" language="true"/>
