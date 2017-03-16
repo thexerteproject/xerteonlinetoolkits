@@ -1,0 +1,56 @@
+/* memory.html */
+	
+	#pageContents .card {
+		width:		92px;
+		height:		126px;
+		float:		left;
+		margin:		10px;
+		padding:	5px;
+	}
+	
+	#cardTopHolder, #cardBottomHolder {
+		position:	absolute;
+	}
+	
+	#cardTopHolder .card {
+		border:		1px solid transparent;
+		background-size:	100% 100%;
+		cursor:		pointer;
+	}
+	
+	#cardTopHolder .card.focus {
+		border:		1px solid yellow;
+	}
+
+	#cardBottomHolder {
+		z-index:	-1;
+	}
+
+	#cardBottomHolder .card {
+		background-color:	white;
+		border:				1px solid black;
+		background-size:	100% 100%;
+		text-align:			center;
+	}
+	
+	#cardBottomHolder .card .label {
+		background-color:	white;
+		border:				1px solid black;
+		width:				82px;
+		padding:			5px;
+	}
+	
+	#cardBottomHolder .card .imgLabel {
+		border:				1px solid black;
+		background-size:	100% 100%;
+		width:				92px;
+		height:				126px;
+		padding:			5px;
+	}
+	
+	#button {
+		position:	absolute;
+		right:		10px;
+		bottom:		10px;
+	}
+	

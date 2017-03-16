@@ -1117,9 +1117,33 @@ function x_lookupPage(pageType, pageID) {
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
-    var prevPage = x_currentPage;
 
-    // End page tracking of x_currentPage
+	// Setup css correctly
+	$("#page_model_css").remove();
+	$("#page_theme_css").remove();
+	var modelfile = x_pageInfo[x_gotoPage].type;
+	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+		x_changePageStep2(x_gotoPage);
+	}, false, "page_model_css");
+}
+
+function x_changePageStep2(x_gotoPage) {
+	if (x_params.theme != 'default') {
+        var modelfile = x_pageInfo[x_gotoPage].type;
+		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
+			x_changePageStep3(x_gotoPage);
+		}, false, "page_theme_css");
+	}
+	else
+    {
+        x_changePageStep3(x_gotoPage);
+    }
+}
+
+function x_changePageStep3(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+	// End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -2195,11 +2219,15 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable) {
+function x_insertCSS(href, func, disable, id) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
+    if (id != undefined)
+	{
+		css.id = id;
+	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {

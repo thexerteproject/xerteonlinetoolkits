@@ -1,0 +1,140 @@
+/* thumbnailViewer.html */
+	
+	#thumbBar {
+		position:	absolute;
+		top:		10px;
+		left:		0px;
+		width:		100%;
+		height:		110px;
+		background:	#434343;
+	}
+	
+	#thumbOverlayLeft, #thumbOverlayRight {
+		position:		absolute;
+		width:			40px;
+		height:			100%;
+	}
+	
+	#thumbOverlayLeft {
+		background:	#434343; /* for non-css3 browsers */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#010101', endColorstr='#00010101',GradientType=1 ); /* IE */
+		background: -moz-linear-gradient(left,  rgba(1,1,1,1) 0%, rgba(1,1,1,1) 20%, rgba(1,1,1,0) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,1)), color-stop(20%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,0))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* IE10+ */
+		background: linear-gradient(to right,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* W3C */
+	}
+	
+	#thumbOverlayRight {
+		right:	0;
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00010101', endColorstr='#010101',GradientType=1 ); /* IE */
+		background:	#434343; /* for non-css3 browsers */
+		background: -moz-linear-gradient(left,  rgba(1,1,1,0) 0%, rgba(1,1,1,1) 80%, rgba(1,1,1,1) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,0)), color-stop(80%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,1))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* IE10+ */
+		background: linear-gradient(to right,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* W3C */
+	}
+	
+	#thumbHolder {
+		position:			absolute;
+		width:				100%;
+		height:				100%;
+		overflow:			hidden;
+		white-space:		nowrap;
+	}
+	
+	#thumbHolder .thumbBox {
+		display:			inline-block;
+		width:				90px;
+		height:				90px;
+		margin-top:			5px;
+		padding:			3px;
+		border:				2px solid transparent;
+		text-decoration:	none;
+	}
+	
+	#thumbHolder .thumbBox.selected {
+		border-color:	yellow;
+	}
+	
+	#thumbHolder .thumbBox img {
+		border-width:	0px; /* IE8 fix */
+		position:		absolute;
+		top:			50%;
+	}
+	
+	
+	#prevBtn {
+		float:		left;
+		z-index:	5;
+	}
+	
+	#nextBtn {
+		float:	right;
+	}
+	
+	/* over ride default jquery button styles */
+	#thumbBar button {
+		background:		none;
+		border:			none;
+		width:			40px;
+		height:			100%;
+		margin-right:	0;
+	}
+	
+	#thumbBar button .ui-icon {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+		top:		0;
+		left:		0;
+		margin:		0px;
+		background-position:	0px 0px;
+	}
+	
+	#thumbBar button.ui-state-hover .ui-icon, #thumbBar button.ui-state-focus .ui-icon, #thumbBar button.ui-state-active .ui-icon {
+		background-position: -40px 0px;
+	}
+	
+	
+	#mainInfoHolder, #mainTxt {
+		margin-top:	130px;
+	}
+	
+	#mainInfoHolder {
+		position:	absolute;
+		top:		10px;
+		left:		0px;
+		width:		100%;
+		visibility:	hidden;
+		text-align:	center;
+	}
+	
+	#panelLink img {
+		border-style:	none;
+	}
+	
+	#panelTxt {
+		position:	absolute;
+		top:		10px;
+		overflow:	auto;
+	}
+	
+	#panelTxt div {
+		position:			absolute;
+		top:				0px;
+		padding:			6px;
+		margin:				0px;
+		background-color:	#010101;
+		color:				white;
+		text-align:			left;
+	}
+	
+	#panelTxt.bottom p {
+		top:	auto;
+		bottom:	0px;
+	}
+	

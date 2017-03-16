@@ -1,0 +1,37 @@
+/* annotatedDiagram.html */
+	
+	#imageHolder, #canvas, #hsHolder {
+		position:	absolute;
+		margin:		0;
+	}
+	
+	#pageContents .hotspot {
+		position:	absolute;
+		cursor:		pointer;
+	}
+	
+	#pageContents .oval {
+		-moz-border-radius:	50% 50%;
+		border-radius:		50% 50%;
+	}
+	
+	#hsHolder a.selected, #hsHolder .hsGroup.selected a {
+		border:		2px solid;
+	}
+	
+	#textContents {
+		position: 	absolute;
+		top:		0;
+		left:		0;
+	}
+	
+	#textContents div {
+		padding:	10px;
+	}
+	
+	.listItem {
+		font-weight:	bold;
+		display:		block;
+		padding:		5px;
+	}
+	
