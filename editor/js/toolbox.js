@@ -1791,6 +1791,20 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
+	
+	previewFile = function(label, src)
+	{
+		// ** currently only previews images - need to allow other file types too
+		var $preview = $('<img class="previewFile"/>')
+				.on("error", function() {
+						$('.featherlight .previewFile')
+							.after('<p>' + language.compPreview.$error + '</p>')
+							.remove();
+					})
+				.attr("src", rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1))
+		
+		$.featherlight($preview);
+	},
 
     makeAbsolute = function(html){
         var temp = html;
@@ -2342,7 +2356,7 @@ var EDITOR = (function ($, parent) {
                     }
                     else
                     {
-                        html.append("select image first");
+                        html.append("select image first"); // ** shouldn't this be translated?
                     }
 
                     break;
@@ -2361,17 +2375,29 @@ var EDITOR = (function ($, parent) {
                             })
                             .attr('value', value));
 					
-					var td2 = $('<td>')
-                        .append($('<button>')
-                            .attr('id', 'browse_' + id)
-                            .attr('title', language.compMedia.$tooltip)
-                            .addClass("xerte_button")
-                            .addClass("media_browse")
-                            .click({id:id, key:key, name:name}, function(event)
-                            {
-                                browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'browse_' + id)
+						.attr('title', language.compMedia.$tooltip)
+						.addClass("xerte_button")
+						.addClass("media_browse")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
+					
+					btnHolder.append($('<button>')
+						.attr('id', 'preview_' + id)
+						.attr('title', language.compPreview.$tooltip)
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							previewFile(options.label, $(this).closest('tr').find('input')[0].value);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
+							
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');

@@ -879,7 +879,10 @@ div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
 
 #bottom_buttons i {color: white;}
 
-div.wizardvalue_inner {width: 95%}
+div.wizardvalue_inner {
+/*	width: 95%*/
+	margin-right: 2em;
+}
 
 .wizardgroup_table div.wizardvalue_inner {
 	margin-right: 1em;
@@ -892,6 +895,15 @@ div.wizardvalue_inner {width: 95%}
 .ui-jqgrid td
 {
     height: auto!important;
+}
+
+.featherlight-content {
+	min-width: 0 !important;
+}
+
+.previewFile {
+	max-width: 100%;
+	max-height: 100%;
 }
 
 /* start of xertecss.css
