@@ -251,9 +251,6 @@
 						correctAnswer.push(value.getAttribute("name"));
 					});
 					
-					//TODO fix feedback == null
-					//fix next button disabled after change after submit
-					
 					var name = $thisQ.getAttribute("prompt");
 					
 					if ($thisQ.getAttribute("name"))
@@ -374,6 +371,7 @@
                 if (survey.currentQuestion == survey.questions.length)
                 {
                     survey.trackSurvey();
+                    survey.resultShown = true;
                 }
                 else
                 {
@@ -421,6 +419,7 @@
             $("#qTxt").html("");
 
             XTSetPageScore(x_currentPage, myScore);
+            survey.checked = true;
 		}
 		
 		function calcPercentage(index, count)
@@ -570,7 +569,7 @@
 					}
 					else
 					{
-						survey.loadQuestions();
+						survey.loadQuestion();
 					}
 	                // Queue reparsing of MathJax - fails if no network connection
 	                try
