@@ -18,7 +18,7 @@
  */
 
 // Tree : Add the tree object to the editor
-var merged = false;
+
 var EDITOR = (function ($, parent) {
 
     // Create the tree object and refer locally to it as 'my'
@@ -239,7 +239,9 @@ var EDITOR = (function ($, parent) {
 
 
     publish = function () {
-    	if(merged == true){return;}
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -276,7 +278,9 @@ var EDITOR = (function ($, parent) {
     },
 
     savepreviewasync = function (async) {
-    	if(merged == true){return;}
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
