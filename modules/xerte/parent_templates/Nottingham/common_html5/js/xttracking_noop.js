@@ -613,6 +613,28 @@ function XTResults()
                     learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
+                case "multiplechoice":
+                    learnerAnswer = state.interactions[i].learnerAnswers[0];
+                    for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
+                    {
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
+                    }
+                    correctAnswer = state.interactions[i].correctAnswers[0];
+                    for(var j = 1; j < state.interactions[i].correctAnswers.length; j++)
+                    {
+                        correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
+                    }
+                    break;
+                case "numeric":
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = "Nvt";
+                    //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
+                    break;
+                case "fill-in":
+
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
+                    break;
             }
             subinteraction.question = state.interactions[i].ia_name;
             subinteraction.learnerAnswer = learnerAnswer;
