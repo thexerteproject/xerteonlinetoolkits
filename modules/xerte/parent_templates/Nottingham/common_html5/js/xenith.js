@@ -732,20 +732,8 @@ function x_continueSetUp() {
 	//remove page counter if that option selected
 	$("#x_pageNo").remove();
     }
-	//detect page loaded change and update progress bar
-	var    x_PL = x_pageLoaded,
-    x_pageLoaded = function() {
-          x_PL();
-          doPercentage();
-    },
-    doPercentage = function () {
-        var totalpages=x_pageInfo.length;
-        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
-        var progress=Math.round((pagesviewed*100)/totalpages);
-        $(".pbBar").css({"width": progress+"%"});
-        $('.pbTxt').html(progress+"% COMPLETE");
-    };
-	doPercentage();
+
+	
 	} 
 	
 	// get icon position
@@ -1479,8 +1467,19 @@ function x_pageLoaded() {
         .hide()
         .css("visibility", "visible")
         .fadeIn();
+
+	doPercentage();
 }
 
+	//detect page loaded change and update progress bar
+
+    function  doPercentage() {
+        var totalpages=x_pageInfo.length;
+        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
+        var progress=Math.round((pagesviewed*100)/totalpages);
+        $(".pbBar").css({"width": progress+"%"});
+        $('.pbTxt').html(progress+"% COMPLETE");
+    };
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
