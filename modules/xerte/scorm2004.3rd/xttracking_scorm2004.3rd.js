@@ -597,7 +597,7 @@ function ScormTrackingState()
     {
         if (this.lo_type != "pages only")
         {
-            if (this.getScaledScore() > this.lo_passed)
+            if (state.getScaledScore() > this.lo_passed)
             {
                 return "passed";
             }
@@ -1058,6 +1058,7 @@ function XTResults()
 {
     var completion = 0;
     var counter = 0;
+    var completed;
     for(var i = 0; i< state.completedPages.length;i++)
     {
         if(state.completedPages[i] == true)
@@ -1065,10 +1066,10 @@ function XTResults()
             counter++;
         }
     }
-    completion = (counter/state.completedPages.length)*100;
+    completion = Math.round((counter/state.completedPages.length)*100);
 
     results = {};
-    results.mode = x_currentPageXML.getAttribute("mode");
+    results.mode = x_currentPageXML.getAttribute("resultmode");
 
     score = 0;
     nrofquestions = 0;
@@ -1077,33 +1078,79 @@ function XTResults()
     results.interactions = Array();
 
     for(i = 0; i < state.interactions.length-1; i++){
-        score += state.interactions[i].score * state.interactions[i].weighting ;
-        if(state.interactions[i].nrinteractions > 0)
-        {
+        score += state.interactions[i].score * state.interactions[i].weighting;
+        if(state.interactions[i].ia_nr < 0) {
+
             interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
+
+            var j = 0;
+            for (j; j < state.toCompletePages.length; j++) {
+                var currentPageNr = state.toCompletePages[j];
+                if (currentPageNr == state.interactions[i].page_nr) {
+                    if (state.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!state.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
+                    }
+                }
+            }
+
             results.interactions[nrofquestions] = interaction;
             totalDuration += state.interactions[i].duration;
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 
-        }else if(results.mode == "full-results")
+        }
+        else if(results.mode == "full-results")
         {
             subinteraction = {}
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
                 case "match":
-                    learnerAnswer = state.interactions[i].learnerOptions[0].target;
-                    correctAnswer = state.interactions[i].correctOptions[0].target;
+                    if (state.interactions[i].learneroptions[0] == null)
+                    {
+                        learnerAnswer = "";
+                    }
+                    else
+                    {
+                        learnerAnswer = state.interactions[i].learneroptions[0].source;
+                    }
+                    correctAnswer = state.interactions[i].correctoptions[0].source;
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
-                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    learnerAnswer = state.interactions[i].learneranswer.join(", ");
+                    correctAnswer = state.interactions[i].correctanswer.join(", ");
+                    break;
+                case "multiplechoice":
+                    learnerAnswer = state.interactions[i].learneranswer[0];
+                    for(var j = 1; j < state.interactions[i].learneranswer.length; j++)
+                    {
+                        learnerAnswer += "\n" + state.interactions[i].learneranswer[j];
+                    }
+                    correctAnswer = state.interactions[i].correctanswer[0];
+                    for(var j = 1; j < state.interactions[i].correctanswer.length; j++)
+                    {
+                        correctAnswer += "\n" + state.interactions[i].correctanswer[j];
+                    }
+                    break;
+                case "numeric":
+                    learnerAnswer = state.interactions[i].learneranswer;
+                    correctAnswer = "Nvt";
+                    //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
+                    break;
+                case "fill-in":
+                    learnerAnswer = state.interactions[i].learneranswer;
+                    correctAnswer = state.interactions[i].correctanswer;
                     break;
             }
             subinteraction.question = state.interactions[i].ia_name;
@@ -1111,18 +1158,14 @@ function XTResults()
             subinteraction.correctAnswer = correctAnswer;
             results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
         }
-
-    }
-    if(state.interactions.length == 0)
-    {
-        $("#questionScores").hide()
     }
     results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = Math.round(score / totalWeight);
+    results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
 
     return results;
 }
+

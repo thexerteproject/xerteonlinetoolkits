@@ -539,7 +539,6 @@ function XTResults()
     var completed;
     for(var i = 0; i< state.completedPages.length;i++)
     {
-
         if(state.completedPages[i] == true)
         {
             counter++;
@@ -557,9 +556,8 @@ function XTResults()
     results.interactions = Array();
 
     for(i = 0; i < state.interactions.length-1; i++){
-            score += state.interactions[i].score * state.interactions[i].weighting;
-        if(state.interactions[i].ia_nr<0)
-        {
+        score += state.interactions[i].score * state.interactions[i].weighting;
+        if(state.interactions[i].ia_nr < 0) {
 
             interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
@@ -567,32 +565,30 @@ function XTResults()
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
-
-            if(state.interactions[i].ia_nr < 0) {
-                var j = 0;
-                for (j; j < state.toCompletePages.length; j++) {
-                    var currentPageNr = state.toCompletePages[j];
-                    if (currentPageNr == state.interactions[i].page_nr) {
-                        if (state.completedPages[j]) {
-                            interaction.completed = "true";
-                        }
-                        else if (!state.completedPages[j]) {
-                            interaction.completed = "false";
-                        }
-                        else {
-                            interaction.completed = "unknown";
-                        }
+            
+            var j = 0;
+            for (j; j < state.toCompletePages.length; j++) {
+                var currentPageNr = state.toCompletePages[j];
+                if (currentPageNr == state.interactions[i].page_nr) {
+                    if (state.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!state.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
                     }
                 }
             }
-
-
+            
             results.interactions[nrofquestions] = interaction;
             totalDuration += state.interactions[i].duration;
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 
-        }else if(results.mode == "full-results")
+        }
+        else if(results.mode == "full-results")
         {
             subinteraction = {}
 
@@ -631,7 +627,6 @@ function XTResults()
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":
-
                     learnerAnswer = state.interactions[i].learnerAnswers;
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
@@ -641,7 +636,6 @@ function XTResults()
             subinteraction.correctAnswer = correctAnswer;
             results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
         }
-
     }
     results.completion = completion;
     results.score = score;
