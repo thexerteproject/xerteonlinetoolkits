@@ -180,6 +180,15 @@
 				});
 			
 			$x_background.append($pageBg);
+			
+			if (x_currentPageXML.getAttribute("bgImageDark") != undefined) {
+				$x_background.append('<div id="pageBgDarken" class="bgDarken" />');
+				$("#pageBgDarken").css({
+					"opacity"	:Number(x_currentPageXML.getAttribute("bgImageDark")/100),
+					"filter"	:"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
+				});
+			}
+			
 			$pageBg.fadeIn();
 			
 			if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
@@ -203,6 +212,21 @@
 	
 </script>
 
+<style type="text/css">
+	
+	#pageContents {
+		position:		absolute;
+		width:			100%;
+		margin-left:	-10px;
+	}
+	
+	#pageBgDarken  {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+	}
+	
+</style>
 
 <div id="pageContents" class="titlePageTxt">
 

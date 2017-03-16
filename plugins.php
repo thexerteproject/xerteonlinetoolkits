@@ -62,6 +62,7 @@ do_action("plugins_loaded");
  */
 function plugins_get_context() {
     global $authmech;
+    global $xerte_toolkits_site;
     if (!$authmech) {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }

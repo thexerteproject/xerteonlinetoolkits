@@ -31,7 +31,7 @@ function show_template($row_play)
     $xmlfile = $string_for_flash . "data.xml";
 
     $xmlFixer = new XerteXMLInspector();
-    $xmlFixer->loadTemplateXML($xmlfile);
+    $xmlFixer->loadTemplateXML($xmlfile, true);
 
     if (strlen($xmlFixer->getName()) > 0) {
         $title = $xmlFixer->getName();

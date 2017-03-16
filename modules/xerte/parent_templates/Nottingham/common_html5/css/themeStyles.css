@@ -78,6 +78,10 @@ h3 {
 	border-color: orange;
 }
 
+.bgDarken {
+	background-color: black;
+}
+
 /* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
 /* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
 

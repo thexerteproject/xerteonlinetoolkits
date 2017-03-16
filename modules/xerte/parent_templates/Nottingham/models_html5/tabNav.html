@@ -37,7 +37,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
+			if (x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
 				var $infoHolder = $("#infoHolder"),
 					$paneHolder = $("#paneHolder");
 				
@@ -79,8 +79,8 @@
 			}
 			
 			
-			var $tabHeader =	$("#pageContents .tabHeader"),
-				$paneInfo =		$("#pageContents .paneInfo");
+			var $tabHeader = $("#pageContents .tabHeader"),
+				$paneInfo = $("#pageContents .paneInfo");
 			
 			// set up tabs and panel contents
 			$(x_currentPageXML).children().each(function(i) {

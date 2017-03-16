@@ -97,6 +97,10 @@ export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '
 copy_extra_files();
 
 
+// Copy the favicon file
+copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
+array_push($delete_file_array, $dir_path . "favicon.ico");
+
 
 export_folder_loop($dir_path);
 

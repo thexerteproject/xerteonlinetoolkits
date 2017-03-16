@@ -37,7 +37,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
+			if (x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
 				$("#infoHolder")
 					.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
 					.accordion("refresh");
@@ -162,10 +162,10 @@
 					});
 				}
 			});
-
+			
 			$infoHolder.accordion({
 				fillSpace:	true,
-				heightStyle: "fill",
+				heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" ? "fill" : "content",
 				activate:	function(e, ui) {
 					if ($("#pageContents").data("clickTxt") != "" && $("#pageContents").data("clickTxt") != null) {
 						ui.oldHeader.attr("aria-label", ui.oldHeader.data("name") + $("#pageContents").data("clickTxt"));

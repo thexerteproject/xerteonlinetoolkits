@@ -278,7 +278,22 @@
                     l_feedback = [];
 
             var generalFeedback = "";
-
+            var correctCounter = 0;
+            var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+            var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
+            for(i = 0; i < currentQuestionsChildren.length; i++)
+           	{
+            	
+            	if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
+            	{
+            		correctCounter++;
+            	}
+           	}
+            
+			if(selected.length == 0 && correctCounter != 0)
+			{
+				correct = false;	
+			}
             // get feedback for selected options and check if they are correct
             for (var i=0; i<selected.length; i++) {
                 var optionIndex = $(selected[i]).parent().index(),
@@ -326,6 +341,7 @@
                     }
                 }
                 // Track answer
+                
                 XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback);
                 quiz.myProgress.splice(quiz.currentQ, 1, correct);
             }

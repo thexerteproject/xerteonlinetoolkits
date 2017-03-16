@@ -39,6 +39,7 @@
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
     <background optional="true" type="media" label="Background Image"/>
     <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Opacity"/>
+	<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Darkness"/>
 	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
     <stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
@@ -47,7 +48,7 @@
     <trackingMode optional="true" label="Tracking Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
     <trackingPassed optional="true" label="Tracking Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
-	
+    <resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
 	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 
     <newNodes>

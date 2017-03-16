@@ -262,6 +262,6 @@ function uid()
 
 function getVersion()
 {
-    $version = file(dirname(__FILE__) . "/version.txt", FILE_IGNORE_NEW_LINES)[0];
-    return $version;
+    $version = file(dirname(__FILE__) . "/version.txt", FILE_IGNORE_NEW_LINES);
+    return $version[0];
 }

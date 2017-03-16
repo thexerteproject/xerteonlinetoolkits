@@ -133,6 +133,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?php echo DECISION_EDIT_TITLE ?></title>
 
+		<link rel="icon" href="favicon_edit.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="favicon_edit.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="editor/css/jquery-ui.css?version=<?php echo $version;?>">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />

@@ -417,8 +417,10 @@ function x_setUp() {
 		if (x_params.hideHeader == "true") {
 			$x_headerBlock.hide().height(0);
 		}
-		if (x_params.hideFooter == "true") {
-			$x_footerBlock.hide().height(0);
+		if (x_params.hideFooter == "true") { // More complex since narration is in here
+			$('#x_footerBlock > div').each(function () {
+				$(this).hide().height(0);
+			});
 		}
 		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
 			$x_mainHolder.css("border", "none");
@@ -595,8 +597,8 @@ function x_continueSetUp() {
 			}
 		}
 		if (x_glossary.length > 0) {
-			x_glossary.sort(function(a, b){ // sort alphabetically
-				return a.word.toLowerCase() < b.word.toLowerCase() ? -1 : 1;
+			x_glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
 			});
 			
 			$x_footerL.prepend('<button id="x_glossaryBtn"></button>');
@@ -943,6 +945,13 @@ function x_continueSetUp() {
 				"filter"	:"alpha(opacity=" + alpha + ")"
 			});
 		}
+		if (x_params.backgroundDark != undefined) {
+			$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
+			$("#x_mainBgDarken").css({
+				"opacity"	:Number(x_params.backgroundDark/100),
+				"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
+			});
+		}
 	}
 	
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
@@ -1022,20 +1031,41 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
 
         }
         else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
-            page = x_lookupPage(pageInfo.type, pageInfo.ID);
-            if ($.isArray(page)) {
-            	x_deepLink = page[1];
-            	x_changePage(page[0]);
-            }
-            else if (page != null) {
-                x_changePage(page);
-            }
-            else {
-            	x_deepLink = "";
-            	if (force == true) {
-                	x_changePage(0);
-                }
-            }
+        	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
+        		console.log((pageInfo.ID).substring(1, pageInfo.ID.length-1));
+				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
+					case "next":
+						if (x_currentPage < x_pages.length)
+							x_changePage(x_currentPage + 1);
+						break;
+					case "previous":
+						if (x_currentPage > 0)
+							x_changePage(x_currentPage - 1);
+						break;
+					case "first":
+						x_changePage(0);
+						break;
+					case "last":
+						x_changePage(x_pages.length-1);
+						break;
+				}
+        	}
+        	else {
+				page = x_lookupPage(pageInfo.type, pageInfo.ID);
+				if ($.isArray(page)) {
+					x_deepLink = page[1];
+					x_changePage(page[0]);
+				}
+				else if (page != null) {
+					x_changePage(page);
+				}
+				else {
+					x_deepLink = "";
+					if (force == true) {
+						x_changePage(0);
+					}
+				}
+			}
         }
         else {
             page = parseInt(pageInfo.ID);
@@ -1143,7 +1173,7 @@ function x_changePageStep3(x_gotoPage) {
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
-        $("#pageBg").remove();
+        $("#pageBg, #pageBgDarken").remove();
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();

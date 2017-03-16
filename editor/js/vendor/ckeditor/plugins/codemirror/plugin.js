@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  The "codemirror" plugin. It's indented to enhance the
 *  "sourcearea" editing mode, which displays the xhtml source code with
 *  syntax highlight and line numbers.
@@ -8,9 +8,9 @@
 
 (function() {
     CKEDITOR.plugins.add('codemirror', {
-        icons: 'searchcode,autoformat,commentselectedrange,uncommentselectedrange,autocomplete',
+        icons: 'searchcode,autoformat,commentselectedrange,uncommentselectedrange,autocomplete', // %REMOVE_LINE_CORE%
         lang: 'af,ar,bg,bn,bs,ca,cs,cy,da,de,el,en-au,en-ca,en-gb,en,eo,es,et,eu,fa,fi,fo,fr-ca,fr,gl,gu,he,hi,hr,hu,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,pl,pt-br,pt,ro,ru,sk,sl,sr-latn,sr,sv,th,tr,ug,uk,vi,zh-cn,zh', // %REMOVE_LINE_CORE%
-        version: 1.12,
+        version: 1.15,
         init: function (editor) {
             var rootPath = this.path,
                 defaultConfig = {
@@ -22,7 +22,6 @@
                     enableCodeFolding: true,
                     enableCodeFormatting: true,
                     enableSearchTools: true,
-                    highlightActiveLine: true,
                     highlightMatches: true,
                     indentWithTabs: false,
                     lineNumbers: true,
@@ -36,14 +35,15 @@
                     showSearchButton: true,
                     showTrailingSpace: true,
                     showUncommentButton: true,
+                    styleActiveLine: true,
                     theme: 'default',
                     useBeautify: false
                 };
-            
+
             // Get Config & Lang
             var config = CKEDITOR.tools.extend(defaultConfig, editor.config.codemirror || {}, true),
                 lang = editor.lang.codemirror;
-            
+
             // check for old config settings for legacy support
             if (editor.config.codemirror_theme) {
                 config.theme = editor.config.codemirror_theme;
@@ -59,7 +59,7 @@
 
             // Source mode isn't available in inline mode yet.
             if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE || editor.plugins.sourcedialog) {
-                
+
                 // Override Source Dialog
                 CKEDITOR.dialog.add('sourcedialog', function (editor) {
                     var size = CKEDITOR.document.getWindow().getViewPaneSize(),
@@ -74,38 +74,29 @@
                             matchTags: config.matchTags,
                             workDelay: 300,
                             workTime: 35,
-                            readOnly: editor.config.readOnly,
+                            readOnly: editor.readOnly,
                             lineNumbers: config.lineNumbers,
                             lineWrapping: config.lineWrapping,
                             autoCloseTags: config.autoCloseTags,
                             autoCloseBrackets: config.autoCloseBrackets,
-                            highligctionMatches: config.highlightMatches,
+                            highlightSelectionMatches: config.highlightMatches,
                             continueComments: config.continueComments,
                             indentWithTabs: config.indentWithTabs,
                             theme: config.theme,
                             showTrailingSpace: config.showTrailingSpace,
                             showCursorWhenSelecting: true,
+                            styleActiveLine: config.styleActiveLine,
                             viewportMargin: Infinity,
                             //extraKeys: {"Ctrl-Space": "autocomplete"},
-                            extraKeys: { "Ctrl-Q": function (codeMirror_Editor) { window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line); } },
-                            onKeyEvent: function (codeMirror_Editor, evt) {
-                                if (config.enableCodeFormatting) {
-                                    var range = getSelectedRange();
-                                    if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && !evt.altKey) {
-                                        window["codemirror_" + editor.id].commentRange(true, range.from, range.to);
-                                    } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && evt.shiftKey && !evt.altKey) {
-                                        window["codemirror_" + editor.id].commentRange(false, range.from, range.to);
-                                        if (config.autoFormatOnUncomment) {
-                                            window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
-                                        }
-                                    } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && evt.altKey) {
-                                        window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
+                            extraKeys: {
+                                "Ctrl-Q": function (codeMirror_Editor) {
+                                    if (config.enableCodeFolding) {
+                                        window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line);
                                     }
-                                    /*else if (evt.type === "keydown") {
-                                        CodeMirror.commands.newlineAndIndentContinueMarkdownList(window["codemirror_" + editor.id]);
-                                    }*/
                                 }
-                            }
+                            },
+                            foldGutter: true,
+                            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
                         });
 
                         var holderHeight = height + 'px';
@@ -113,12 +104,12 @@
 
                         // Store config so we can access it within commands etc.
                         window["codemirror_" + editor.id].config = config;
-                        
+
                         if (config.autoFormatOnStart) {
                             if (config.useBeautify) {
                                 var indent_size = 4,
                                     indent_char = ' ',
-                                    brace_style = 'collapse'; //collapse, expand, end-expand 
+                                    brace_style = 'collapse'; //collapse, expand, end-expand
 
                                 var source = window["codemirror_" + editor.id].getValue();
 
@@ -152,18 +143,6 @@
                         if (config.lineNumbers && config.enableCodeFolding) {
                             window["codemirror_" + editor.id].on("gutterClick", window["foldFunc_" + editor.id]);
                         }
-                        // Highlight Active Line
-                        if (config.highlightActiveLine) {
-                            window["codemirror_" + editor.id].hlLine = window["codemirror_" + editor.id].addLineClass(0, "background", "activeline");
-                            window["codemirror_" + editor.id].on("cursorActivity", function () {
-                                var cur = window["codemirror_" + editor.id].getLineHandle(window["codemirror_" + editor.id].getCursor().line);
-                                if (cur != window["codemirror_" + editor.id].hlLine) {
-                                    window["codemirror_" + editor.id].removeLineClass(window["codemirror_" + editor.id].hlLine, "background", "activeline");
-                                    window["codemirror_" + editor.id].hlLine = window["codemirror_" + editor.id].addLineClass(cur, "background", "activeline");
-                                }
-                            });
-                        }
-
                         // Run config.onLoad callback, if present.
                         if (typeof config.onLoad === 'function') {
                             config.onLoad(window["codemirror_" + editor.id], editor);
@@ -173,7 +152,26 @@
                         window["codemirror_" + editor.id].on("blur", function () {
                             editor.fire('blur', this);
                         });
+
+                        window["codemirror_" + editor.id].on("keypress", function (codeMirror_Editor, evt) {
+                            if (config.enableCodeFormatting) {
+                                var range = getSelectedRange();
+                                if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && !evt.altKey) {
+                                    window["codemirror_" + editor.id].commentRange(true, range.from, range.to);
+                                } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && evt.shiftKey && !evt.altKey) {
+                                    window["codemirror_" + editor.id].commentRange(false, range.from, range.to);
+                                    if (config.autoFormatOnUncomment) {
+                                        window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
+                                    }
+                                } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && evt.altKey) {
+                                    window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
+                                }/* else if (evt.type === "keydown") {
+                                CodeMirror.commands.newlineAndIndentContinueMarkdownList(window["codemirror_" + editor.id]);
+                            }*/
+                            }
+                        });
                     }
+
 
                     return {
                         title: editor.lang.sourcedialog.title,
@@ -184,19 +182,21 @@
                             // Set Elements
                             this.getContentElement('main', 'data').focus();
                             this.getContentElement('main', 'AutoComplete').setValue(config.autoCloseTags, true);
-                            
+
                             var textArea = this.getContentElement('main', 'data').getInputElement().$;
-                            
+
                             // Load the content
                             this.setValueOf('main', 'data', oldData = editor.getData());
 
-                            if (typeof (CodeMirror) == 'undefined') {
-
+                            if (!IsStyleSheetAlreadyLoaded(rootPath + 'css/codemirror.min.css')) {
                                 CKEDITOR.document.appendStyleSheet(rootPath + 'css/codemirror.min.css');
+                            }
 
-                                if (config.theme.length && config.theme != 'default') {
-                                    CKEDITOR.document.appendStyleSheet(rootPath + 'theme/' + config.theme + '.css');
-                                }
+                            if (config.theme.length && config.theme != 'default' && !IsStyleSheetAlreadyLoaded(rootPath + 'theme/' + config.theme + '.css')) {
+                                CKEDITOR.document.appendStyleSheet(rootPath + 'theme/' + config.theme + '.css');
+                            }
+
+                            if (typeof (CodeMirror) == 'undefined') {
 
                                 CKEDITOR.scriptLoader.load(rootPath + 'js/codemirror.min.js', function() {
 
@@ -224,6 +224,9 @@
 
                                 // Free Memory
                                 window["codemirror_" + editor.id] = null;
+
+                                editor.fire('blur', this);
+                                editor.fire('focus', this);
                             }
                         },
                         onOk: (function () {
@@ -257,6 +260,9 @@
 
                                 // Set data asynchronously to avoid errors in IE.
                                 CKEDITOR.env.ie ? CKEDITOR.tools.setTimeout(setData, 0, this, newData) : setData.call(this, newData);
+
+                                editor.fire('blur', this);
+                                editor.fire('focus', this);
 
                                 // Don't let the dialog close before setData is over.
                                 return false;
@@ -350,7 +356,7 @@
 
                // return;
             }
-            
+
             /*
             // Override Copy Button
             if (editor.commands.copy) {
@@ -397,7 +403,7 @@
                     }
                 };
             }
-            
+
             // Override Replace Button
             if (editor.commands.replace) {
                 editor.commands.replace.modes = {
@@ -413,9 +419,9 @@
                     }
                 };
             }
-            
+
             var sourcearea = CKEDITOR.plugins.sourcearea;
-            
+
             // check if sourcearea plugin is overrriden
             if (!sourcearea.commands.searchCode) {
 
@@ -522,14 +528,16 @@
                 };
             }
 
-            editor.addMode('source', function(callback) {
-                if (typeof (CodeMirror) == 'undefined') {
-
+            editor.addMode('source', function (callback) {
+                if (!IsStyleSheetAlreadyLoaded(rootPath + 'css/codemirror.min.css')) {
                     CKEDITOR.document.appendStyleSheet(rootPath + 'css/codemirror.min.css');
+                }
 
-                    if (config.theme.length && config.theme != 'default') {
-                        CKEDITOR.document.appendStyleSheet(rootPath + 'theme/' + config.theme + '.css');
-                    }
+                if (config.theme.length && config.theme != 'default' && !IsStyleSheetAlreadyLoaded(rootPath + 'theme/' + config.theme + '.css')) {
+                    CKEDITOR.document.appendStyleSheet(rootPath + 'theme/' + config.theme + '.css');
+                }
+
+                if (typeof (CodeMirror) == 'undefined') {
 
                     CKEDITOR.scriptLoader.load(rootPath + 'js/codemirror.min.js', function() {
 
@@ -627,7 +635,9 @@
                     'role': 'textbox',
                     'aria-label': ariaLabel
                 });
-                textarea.addClass('cke_source cke_reset cke_enable_context_menu');
+                textarea.addClass('cke_source');
+                textarea.addClass('cke_reset');
+                textarea.addClass('cke_enable_context_menu');
                 editor.ui.space('contents').append(textarea);
                 window["editable_" + editor.id] = editor.editable(new sourceEditable(editor, textarea));
                 // Fill the textarea with the current editor data.
@@ -683,8 +693,10 @@
                 }
 
                 var extraKeys = {
-                    "Ctrl-Q": function (codeMirror_Editor) {
-                        window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line);
+                    "Ctrl-Q": function(codeMirror_Editor) {
+                        if (config.enableCodeFolding) {
+                            window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line);
+                        }
                     }
                 };
 
@@ -696,9 +708,9 @@
                     matchTags: config.matchTags,
                     workDelay: 300,
                     workTime: 35,
-                    readOnly: editor.config.readOnly,
+                    readOnly: editor.readOnly,
                     lineNumbers: config.lineNumbers,
-                    lineWrapping: config.lineWrapping,
+                    lineWrapping: true,
                     autoCloseTags: config.autoCloseTags,
                     autoCloseBrackets: config.autoCloseBrackets,
                     highlightSelectionMatches: config.highlightMatches,
@@ -707,26 +719,11 @@
                     theme: config.theme,
                     showTrailingSpace: config.showTrailingSpace,
                     showCursorWhenSelecting: true,
+                    styleActiveLine: config.styleActiveLine,
                     //extraKeys: {"Ctrl-Space": "autocomplete"},
                     extraKeys: extraKeys,
-                    onKeyEvent: function (codeMirror_Editor, evt) {
-                        
-                        if (config.enableCodeFormatting) {
-                            var range = getSelectedRange();
-                            if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && !evt.altKey) {
-                                window["codemirror_" + editor.id].commentRange(true, range.from, range.to);
-                            } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && evt.shiftKey && !evt.altKey) {
-                                window["codemirror_" + editor.id].commentRange(false, range.from, range.to);
-                                if (config.autoFormatOnUncomment) {
-                                    window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
-                                }
-                            } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && evt.altKey) {
-                                window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
-                            }/* else if (evt.type === "keydown") {
-                                CodeMirror.commands.newlineAndIndentContinueMarkdownList(window["codemirror_" + editor.id]);
-                            }*/
-                        }
-                    }
+                    foldGutter: true,
+                    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
                 });
 
                 var holderHeight = holderElement.$.clientHeight == 0 ? editor.ui.space('contents').getStyle('height') : holderElement.$.clientHeight + 'px';
@@ -738,7 +735,7 @@
                     if (config.useBeautify) {
                         var indent_size = 4;
                         var indent_char = ' ';
-                        var brace_style = 'collapse'; //collapse, expand, end-expand 
+                        var brace_style = 'collapse'; //collapse, expand, end-expand
 
                         var source = window["codemirror_" + editor.id].getValue();
 
@@ -767,28 +764,10 @@
                 });
 
                 window["codemirror_" + editor.id].setSize(null, holderHeight);
-                
+
                 // Enable Code Folding (Requires 'lineNumbers' to be set to 'true')
                 if (config.lineNumbers && config.enableCodeFolding) {
                     window["codemirror_" + editor.id].on("gutterClick", window["foldFunc_" + editor.id]);
-                }
-                // Highlight Active Line
-                if (config.highlightActiveLine) {
-                    window["codemirror_" + editor.id].hlLine = window["codemirror_" + editor.id].addLineClass(0, "background", "activeline");
-                    window["codemirror_" + editor.id].on("cursorActivity", function () {
-                        try {
-                            var cur = window["codemirror_" + editor.id].getLineHandle(window["codemirror_" + editor.id].getCursor().line);
-                        } catch(e) {
-                            cur = null;
-                        } finally {
-                            if (cur != null) {
-                                if (cur != window["codemirror_" + editor.id].hlLine) {
-                                    window["codemirror_" + editor.id].removeLineClass(window["codemirror_" + editor.id].hlLine, "background", "activeline");
-                                    window["codemirror_" + editor.id].hlLine = window["codemirror_" + editor.id].addLineClass(cur, "background", "activeline");
-                                }
-                            }
-                        }
-                    });
                 }
 
                 // Run config.onLoad callback, if present.
@@ -799,6 +778,24 @@
                 // inherit blur event
                 window["codemirror_" + editor.id].on("blur", function () {
                     editor.fire('blur', this);
+                });
+
+                window["codemirror_" + editor.id].on("keypress", function (codeMirror_Editor, evt) {
+                    if (config.enableCodeFormatting) {
+                        var range = getSelectedRange();
+                        if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && !evt.altKey) {
+                            window["codemirror_" + editor.id].commentRange(true, range.from, range.to);
+                        } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && evt.shiftKey && !evt.altKey) {
+                            window["codemirror_" + editor.id].commentRange(false, range.from, range.to);
+                            if (config.autoFormatOnUncomment) {
+                                window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
+                            }
+                        } else if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && evt.altKey) {
+                            window["codemirror_" + editor.id].autoFormatRange(range.from, range.to);
+                        }/* else if (evt.type === "keydown") {
+                                CodeMirror.commands.newlineAndIndentContinueMarkdownList(window["codemirror_" + editor.id]);
+                            }*/
+                    }
                 });
             }
 
@@ -821,13 +818,13 @@
                     if (config.showFormatButton || config.showCommentButton || config.showUncommentButton || config.showSearchButton) {
                         editor.ui.add('-', CKEDITOR.UI_SEPARATOR, { toolbar: 'mode,30' });
                     }
-                    /*if (config.showSearchButton && config.enableSearchTools) {
+                    if (config.showSearchButton && config.enableSearchTools) {
                         editor.ui.addButton('searchCode', {
                             label: lang.searchCode,
                             command: 'searchCode',
                             toolbar: 'mode,40'
                         });
-                    }*/
+                    }
                     if (config.showFormatButton) {
                         editor.ui.addButton('autoFormat', {
                             label: lang.autoFormat,
@@ -858,7 +855,7 @@
                     }
                 }
             }
-            
+
             editor.on('beforeModeUnload', function (evt) {
                 if (editor.mode === 'source' && editor.plugins.textselection) {
 
@@ -867,10 +864,14 @@
                     range.startOffset = LineChannelToOffSet(window["codemirror_" + editor.id], window["codemirror_" + editor.id].getCursor(true));
                     range.endOffset = LineChannelToOffSet(window["codemirror_" + editor.id], window["codemirror_" + editor.id].getCursor(false));
 
-                    // Fly the range when create bookmark. 
+                    // Fly the range when create bookmark.
                     delete range.element;
                     range.createBookmark(editor);
                     sourceBookmark = true;
+
+                    if (editor.undoManager) {
+                        editor.undoManager.unlock();
+                    }
 
                     evt.data = range.content;
                 }
@@ -910,14 +911,18 @@
                     window["codemirror_" + editor.id].setSize(holderWidth, holderHeight);
                 }
             });
-            
+
             editor.on('readOnly', function () {
                 if (window["editable_" + editor.id] && editor.mode === 'source') {
                     window["codemirror_" + editor.id].setOption("readOnly", this.readOnly);
                 }
             });
-            
-            editor.on('instanceReady', function () {
+
+            editor.on('instanceReady', function (evt) {
+
+                // Fix native context menu
+                editor.container.getPrivate().events.contextmenu.listeners.splice(0, 1);
+
                 var selectAllCommand = editor.commands.selectAll;
 
                 // Replace Complete SelectAll command from the plugin, otherwise it will not work in IE10
@@ -955,9 +960,10 @@
                 });
             }
 
-            editor.on('setData', function (data) {
-                if (window["editable_" + editor.id] && editor.mode === 'source') {
-                    window["codemirror_" + editor.id].setValue(data.data.dataValue);
+            editor.on('setData', function(data) {
+
+                if (window["editable_" + data.editor.id] && data.editor.mode === 'source') {
+                    window["codemirror_" + data.editor.id].setValue(data.data.dataValue);
                 }
             });
         }
@@ -965,11 +971,12 @@
     var sourceEditable = CKEDITOR.tools.createClass({
         base: CKEDITOR.editable,
         proto: {
-            setData: function(data) {
+            setData: function (data) {
+
                 this.setValue(data);
 
-                if (this.codeMirror != null) {
-                    this.codeMirror.setValue(data);
+                if (window["editable_" + this.editor.id] && this.editor.mode === 'source') {
+                    window["codemirror_" + this.editor.id].setValue(data);
                 }
 
                 this.editor.fire('dataReady');
@@ -991,13 +998,13 @@
             editorID: null,
             detach: function() {
                 window["codemirror_" + this.editorID].toTextArea();
-                
+
                 // Free Memory on destroy
                 window["editable_" + this.editorID] = null;
                 window["codemirror_" + this.editorID] = null;
 
                 sourceEditable.baseProto.detach.call(this);
-                
+
                 this.clearCustomData();
                 this.remove();
             }
@@ -1041,7 +1048,7 @@ CKEDITOR.plugins.sourcearea = {
                 source: 1
             },
             editorFocus: false,
-            readOnly: 1,
+            readOnly: 0,
             exec: function (editor) {
                 var range = {
                     from: window["codemirror_" + editor.id].getCursor(true),
@@ -1057,7 +1064,7 @@ CKEDITOR.plugins.sourcearea = {
                 source: 1
             },
             editorFocus: false,
-            readOnly: 1,
+            readOnly: 0,
             exec: function (editor) {
                 var range = {
                     from: window["codemirror_" + editor.id].getCursor(true),
@@ -1073,7 +1080,7 @@ CKEDITOR.plugins.sourcearea = {
                 source: 1
             },
             editorFocus: false,
-            readOnly: 1,
+            readOnly: 0,
             exec: function(editor) {
                 var range = {
                     from: window["codemirror_" + editor.id].getCursor(true),
@@ -1124,7 +1131,7 @@ function OffSetToLineChannel(ed, n) {
     for (i = 0; i < ed.lineCount() ; i++) {
         len = (ed.getLine(i)).length;
         if (n < index + len) {
-            
+
             line = i;
             ch = n - index;
             return { line: line, ch: ch };
@@ -1133,4 +1140,16 @@ function OffSetToLineChannel(ed, n) {
         index += len;
     }
     return { line: line, ch: ch };
+}
+
+function IsStyleSheetAlreadyLoaded(href) {
+    var links = CKEDITOR.document.getHead().find('link');
+
+    for (var i = 0; i < links.count() ; i++) {
+        if (links.getItem(i).$.href === href) {
+            return true;
+        }
+    }
+
+    return false;
 }

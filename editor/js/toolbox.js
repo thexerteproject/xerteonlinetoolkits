@@ -739,6 +739,7 @@ var EDITOR = (function ($, parent) {
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+            uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
             mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
@@ -896,6 +897,7 @@ var EDITOR = (function ($, parent) {
                 filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
@@ -917,8 +919,8 @@ var EDITOR = (function ($, parent) {
             if (options.options.type != 'script')
             {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
+                    // Editor is ready, attach change event
+                    this.on('change', function(){
                         inputChanged(options.id, options.key, options.name, this.getData(), this);
                     });
                 }, ckoptions);
@@ -929,7 +931,7 @@ var EDITOR = (function ($, parent) {
                 codemirroroptions['mode'] = "javascript";
                 var textArea = document.getElementById(options.id);
                 var codemirror = CodeMirror.fromTextArea(textArea, codemirroroptions);
-                codemirror.on("blur", function(){
+                codemirror.on("change", function(){
                     inputChanged(options.id, options.key, options.name, codemirror.getValue(), codemirror);
                 });
                 if (options.options.height)
@@ -974,8 +976,8 @@ var EDITOR = (function ($, parent) {
         $.each(textinputs_options, function (i, options) {
             if (options) {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
+                    // Editor is ready, attach onchange event
+                    this.on('change', function(){
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
                         inputChanged(options.id, options.key, options.name, thisValue, this);
@@ -1023,14 +1025,16 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
-                        [ 'Sourcedialog' ]
+                        [ 'Sourcedialog' ],
+                        [ 'FontAwesome']
                     ],
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                    uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog',
+                    extraPlugins : 'sourcedialog,image3,fontawesome',
                     language : language.$code.substr(0,2)
                 });
             }
@@ -1046,7 +1050,7 @@ var EDITOR = (function ($, parent) {
         {
 
             var textinput = textinputs_options[i];
-            $('#' + textinput.id).blur();
+            $('#' + textinput.id).change();
             if ($('#cke_' + textinput.id).is(':visible'))
             {
                 $('#cke_' + textinput.id).hide();
@@ -1423,7 +1427,7 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        console.log([key, names, values]);
+        // console.log([key, names, values]);
         // Get the node name
 		
 		if (names == "hidePage") {
@@ -1451,7 +1455,7 @@ var EDITOR = (function ($, parent) {
         var node_options = wizard_data[node_name].node_options;
 
         $.each(names, function(i, name){
-            console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
+            // console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
             if (node_options['cdata'] && node_options['cdata_name'] == name)
             {
                 lo_data[key]['data'] = values[i];
@@ -1548,7 +1552,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        // console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -1779,8 +1783,8 @@ var EDITOR = (function ($, parent) {
                     page.push(pageID.found ? pageID.value : linkID.value);
                     pages.push(page);
 
-					// Now we do the children, only for Xerte template just now
-					if (moduleurlvariable == "modules/xerte/") {
+					// Now we do the children
+					if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
 						var childNode = tree.get_node(key, false);
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
@@ -1798,6 +1802,7 @@ var EDITOR = (function ($, parent) {
 					}
                 }
             });
+            
             return pages;
         },
 
