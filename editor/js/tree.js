@@ -18,6 +18,7 @@
  */
 
 // Tree : Add the tree object to the editor
+var merged = false;
 var EDITOR = (function ($, parent) {
 
     // Create the tree object and refer locally to it as 'my'

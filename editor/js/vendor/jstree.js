@@ -1,4 +1,5 @@
 /*globals jQuery, define, exports, require, window, document */
+var merged = false;
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
