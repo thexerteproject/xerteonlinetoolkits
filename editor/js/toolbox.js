@@ -20,6 +20,8 @@
 // *******************
 // *     Toolbox    *
 // *******************
+
+var merged = false;
 var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
