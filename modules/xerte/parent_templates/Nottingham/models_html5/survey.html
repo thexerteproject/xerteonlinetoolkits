@@ -178,11 +178,12 @@
 				}
 				else
 				{
-					var $barHolder = $("#barHolder");
-					var $optionHolder = $("#optionHolder");
+					var $sliderHolder = $("#sliderHolder"),
+						$labelHolder = $("#labelHolder"),
+						$rangeHolder = $("#rangeHolder");
 					
-					$optionHolder.html('<div class="optionGroup"> <label class="optionTxt" /> <input type="radio" name="sliderInput" /> </div> ');
-					var $optionGroup = $optionHolder.find(".optionGroup"),
+					$labelHolder.html('<label class="optionTxt" /> ');
+					var $optionTxt = $labelHolder.find(".optionTxt"),
 						$checkBtn = $("#checkBtn"),
 						$feedback = $("#feedback"),
 						correctOptions = [],
@@ -190,57 +191,24 @@
 						correctFeedback = [];
 					
 					$checkBtn.button("disable");
-					$barHolder.css("width", "0%");
+					var max = $($thisQ).children().length - 1;
+					$rangeHolder.html('<form oninput="sliderOutput.value = slider1.valueAsNumber" > <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
 
 					$.each($($thisQ).children(), function(index, value)
 					{
-						var $thisOptionGroup, $thisOption, $thisOptionText;
+						var $thisOptionTxt, $thisOption, $thisOptionText;
 						if (index != 0)
 						{
-							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
-							$thisOptionGroup.after(" ");
+							$thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
+							$thisOptionTxt.after(" ");
 						}
 						else
 						{
-							$thisOptionGroup = $optionGroup;
+							$thisOptionTxt = $optionTxt;
 						}
 						
-						$thisOption = $thisOptionGroup.find("input");
-						$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
-						
-						$thisOption
-							.attr({
-								"value"	:value.getAttribute("name"),
-								"id"	:"option" + index
-								})
-							.change(function()
-							{
-								$feedback.html("");
-								var $selected = $("#optionHolder input:checked");
-								
-								if ($selected.length > 0)
-								{
-									$checkBtn.button("enable");
-								}
-								else
-								{
-									$checkBtn.button("disable");
-								}
-								
-								$("#nextBtn").button("disable");
-								
-								if ($selected)
-								{
-									var barLength = calcPercentage(index, $($thisQ).children().length);
-									$barHolder.css("width", barLength + "%");	
-								}
-							})
-							.focusin(function() {
-								$thisOptionGroup.addClass("highlight");
-							})
-							.focusout(function() {
-								$thisOptionGroup.removeClass("highlight");
-							});
+						$checkBtn.button("enable");
+						$("#nextBtn").button("disable");
 
 						$thisOptionTxt
 							.attr("for", "option" + index)
@@ -250,6 +218,19 @@
 						correctOptions.push(index + 1 + "");
 						correctAnswer.push(value.getAttribute("name"));
 					});
+					
+					if ($labelHolder[0].childElementCount * $labelHolder[0].children[0].clientWidth > $labelHolder[0].clientWidth)
+					{
+						var numberOfOptions = $labelHolder[0].childElementCount;
+						for (var i = 1; i < numberOfOptions - 1; i++)
+						{
+							$labelHolder[0].children[i].style.display = "none";
+						}
+						
+						$labelHolder[0].children[0].className += " leftLabel";
+						$labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
+						$("#slider1").after('<output name="sliderOutput" for="slider1" /> ');
+					}
 					
 					var name = $thisQ.getAttribute("prompt");
 					
@@ -292,7 +273,8 @@
 		{
 			var currentQ = $(x_currentPageXML).children()[survey.questions[survey.currentQuestion]];
 
-            var selected = $("#sliderHolder input:checked"),
+            var selected = $('#slider1')[0].valueAsNumber,
+            	options = $(x_currentPageXML).children().children();
 				optionFeedback = "",
 				generalFeedback = "",
 				correct = true,
@@ -301,49 +283,36 @@
 				l_feedback = [],
 				currentQuestionValue = 0;
             
-            if (selected.length > 0 && $(selected[0]).parent()[0].childElementCount > 0)
+            for (var i = 0; i < options.length; i++)
            	{
-                for (var i = 0; i < $(selected[0]).parent()[0].childElementCount; i++)
-               	{
-               		l_options.push(i + "");
-               	}
-            	
-            	var choice = $(selected[0]).parent().index();
-            	var count = $(selected[0]).parent().parent()[0].childElementCount;
-           
-            	currentQuestionValue = calcPercentage(choice, count);
-            	
-            	if (x_currentPageXML.getAttribute("scale") == "true")
-           		{
-           			currentQuestionValue = 100 - currentQuestionValue;           		
-           		}            	
+           		l_options.push(i + "");
            	}
-
-			if (selected.length == 0)
-			{
-				correct = false;
-			}
-			else
-			{
-                l_answer.push(Math.round(currentQuestionValue * 10) / 10);
-                l_feedback.push("");
-                
-                if(selected[0].getAttribute("feedback") == null || selected[0].getAttribute("feedback") == undefined)
-                {
-                	optionFeedback = "";
-                }
-                else
-                {
-              	    optionFeedback += "<p>" + x_addLineBreaks(selected[0].getAttribute("feedback"))  + "</p>";
-                }
-                
-                if (selected[0].getAttribute("audioFB") != undefined && selected[0].getAttribute("audioFB") != "")
-                {
-					optionFeedback += '<div class="audioHolder" data-audio="' + selected[0].getAttribute("audioFB") + '"></div>';
-				}
+       
+        	currentQuestionValue = calcPercentage(selected, options.length);
+        	
+        	if (x_currentPageXML.getAttribute("scale") == "true")
+       		{
+       			currentQuestionValue = 100 - currentQuestionValue;           		
+       		}
+			
+            l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+            
+            if (options[selected].getAttribute("feedback") == null || options[selected].getAttribute("feedback") == undefined)
+            {
+            	optionFeedback = "";
+            }
+            else
+            {
+          	    optionFeedback += "<p>" + x_addLineBreaks(options[selected].getAttribute("feedback"))  + "</p>";
+            }
+            
+            if (options[selected].getAttribute("audioFB") != undefined && options[selected].getAttribute("audioFB") != "")
+            {
+				optionFeedback += '<div class="audioHolder" data-audio="' + options[selected].getAttribute("audioFB") + '"></div>';
 			}
 			
-			generalFeedback += optionFeedback;			
+			generalFeedback += optionFeedback;	
+			l_feedback.push(options[selected].getAttribute("feedback"));			
             
             var currentQuestionString = survey.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
@@ -607,43 +576,55 @@
 
 <style>
 
-#optionHolder
+#sliderHolder #labelHolder
 {
 	text-align: justify;
 }
 
 
-#optionHolder .optionGroup
+#sliderHolder #inputHolder
 {
-	width: 5em;
-	display: inline-block;
+	width: 100%;
 }
 
-#optionHolder label
+#sliderHolder #rangeHolder #slider1
 {
-	display: block;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#sliderHolder #labelHolder label
+{
+	display: inline-block;
 	text-align: center;
 	margin: 0 0.2em;
+	width: 4em;
 }
 
-#optionHolder input[type="radio"] {
-	display: block;
-	margin: 0.5em auto;
+#sliderHolder #labelHolder .leftLabel
+{
+	text-align: left;
 }
 
-#optionHolder:after {
+#sliderHolder #labelHolder .rightLabel
+{
+	text-align: right;
+}
+
+
+#sliderHolder #labelHolder:after {
 	content: '';
     width: 100%;
     display: inline-block;
 }
 
-#sliderHolder #barHolder
+#sliderHolder #rangeHolder
 {
  	margin-bottom: 2em;
-	background-color: blue;
+	background-color: #d3d3d3;
 	border-radius: 2em;
 	height: 20px;
-	width : 0;
 }
 
 </style>
@@ -666,8 +647,8 @@
 				
 					<div id="questionAudio"></div>
 					<div id="sliderHolder">
-						<div id="optionHolder"></div>
-						<div id="barHolder"></div>
+						<div id="labelHolder"></div>
+						<div id="rangeHolder"></div>
 					</div>
 					
 					<div id="buttonHolder">
