@@ -192,7 +192,7 @@
 					
 					$checkBtn.button("disable");
 					var max = $($thisQ).children().length - 1;
-					$rangeHolder.html('<form oninput="sliderOutput.value = slider1.valueAsNumber" > <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
+					$rangeHolder.html('<form oninput="sliderOutput.value = slider1.valueAsNumber"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
 
 					$.each($($thisQ).children(), function(index, value)
 					{
@@ -274,7 +274,7 @@
 			var currentQ = $(x_currentPageXML).children()[survey.questions[survey.currentQuestion]];
 
             var selected = $('#slider1')[0].valueAsNumber,
-            	options = $(x_currentPageXML).children().children();
+            	options = currentQ.children;
 				optionFeedback = "",
 				generalFeedback = "",
 				correct = true,
@@ -287,7 +287,7 @@
            	{
            		l_options.push(i + "");
            	}
-       
+
         	currentQuestionValue = calcPercentage(selected, options.length);
         	
         	if (x_currentPageXML.getAttribute("scale") == "true")
@@ -316,7 +316,7 @@
             
             var currentQuestionString = survey.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
-			
+			debugger;
 			XTExitInteraction(x_currentPage, survey.questions[survey.currentQuestion], correct, l_options, l_answer, l_feedback);
             survey.myProgress.splice(survey.currentQuestion, 1, correct);
             
@@ -402,7 +402,7 @@
 		
 		function calcPercentage(index, count)
 		{
-		 	var value;
+			var value;
 		 	
 			if (index == 0)
        		{
