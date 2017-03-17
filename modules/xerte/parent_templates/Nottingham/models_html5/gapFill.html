@@ -85,7 +85,7 @@
 			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 			$pageContents.data("score", 0);
 			
-			this.initTracking();			
+			this.initTracking();
 			if(XTGetMode() == "normal")
 			{
 				isTracked = true;
@@ -314,8 +314,11 @@
 					$(this).data("index", $targetHolder.find("input").index($(this))); // stored here as using .index() won't return result needed as there are other elements (line breaks etc.) in $targetHolder
 				});
 				
-			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !isTracked) {
-				$("#submitBtn").remove();
+			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
+
+					//$("#submitBtn").remove();
+
+
 
 				$targetHolder.find("input").on("keypress", function() {
 					var $this = $(this);
@@ -511,8 +514,8 @@
 					.button({
 						label:	x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check"
 					});
-			if(!isTracked)
-			$("#submitBtn").hide();
+
+			//$("#submitBtn").hide();
 			
 			// store strings used to give titles to labels and targets when keyboard is being used (for screen readers)
 			labelTxt1 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "name", "Draggable Item");
@@ -625,7 +628,8 @@
 			
 			for (i=0; i<$("#targetHolder .target").length; i++) {
 				$("#targetHolder .target:eq(" + i + ")").droppable({
-					accept:	(x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !isTracked ?
+					//Maybe?
+					accept:	(x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") ?
 						$("#labelHolder .label").filter(function() {
 							return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
 						}) : $("#labelHolder .label")
@@ -667,8 +671,8 @@
 			$pageContents.data("selectedLabel", "");
 
 			labelAnswers[$thisTarget.data("answer")]= $thisLabel.data("answer");
-
-			if ($targetHolder.find(".target.highlight").length == 0 && !isTracked) {
+			//
+			if ($targetHolder.find(".target.highlight").length == 0 && isTracked) {
 				if (x_currentPageXML.getAttribute("markEnd") == "true") {
 					$("#targetHolder .target").filter(function() { return $(this).data("correct") == true; })
 						.addClass("correct");
@@ -686,7 +690,7 @@
 							$feedbackTxt.fadeIn();
 						}
 
-						if(!isTracked) {
+
 							var $targets = $("#targetHolder .target").filter(function () {
 								return $(this).data("correct") != true;
 							});
@@ -713,7 +717,7 @@
 									});
 
 							this.setUpLabelListeners($labels);
-						}
+
 					}
 				} else {
 					$("#labelHolder").hide();
@@ -752,7 +756,7 @@
 										$feedbackTxt.fadeIn();
 									}
 								}
-								$("#submitBtn").hide();
+								//$("#submitBtn").hide();
 								//TODO: input veranderen.
 								for (var interactionNumber = 0; interactionNumber < answerData.length; interactionNumber++) {
 									var correctAnswer = answerData[interactionNumber][0];

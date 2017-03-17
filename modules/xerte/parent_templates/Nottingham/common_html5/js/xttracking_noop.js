@@ -389,7 +389,7 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    return state.mode;
+    return "";
 }
 
 function XTStartPage()
@@ -423,26 +423,26 @@ function XTSetOption(option, value)
                 case 'full_first':
                     state.trackingmode = "full";
                     state.scoremode = "first";
-                    state.mode = "normal";
+                    //state.mode = "normal";
                     break;
                 case 'minimal_first':
                 	state.trackingmode = "minimal";
                 	state.scoremode = "first";
-                	state.mode = "normal";
+                	//state.mode = "normal";
                     break;
                 case 'full':
                 	state.trackingmode = "full";
                 	state.scoremode = "last";
-                	state.mode = "normal";
+                	//state.mode = "normal";
                     break;
                 case 'minimal':
                 	state.trackingmode = "minimal";
                 	state.scoremode = "last";
-                	state.mode = "normal";
+                	//state.mode = "normal";
                     break;
                 case 'none':
                 	state.trackingmode = "none";
-                	state.mode = "no-tracking";
+                	//state.mode = "no-tracking";
                     break;
             }
             break;
@@ -557,7 +557,7 @@ function XTResults()
 
     for(i = 0; i < state.interactions.length-1; i++){
         score += state.interactions[i].score * state.interactions[i].weighting;
-        if(state.interactions[i].ia_nr < 0) {
+        if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
             interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
@@ -623,6 +623,7 @@ function XTResults()
                     }
                     break;
                 case "numeric":
+
                     learnerAnswer = state.interactions[i].learnerAnswers;
                     correctAnswer = "Nvt";
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
@@ -639,6 +640,7 @@ function XTResults()
             results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
         }
     }
+    results.completion = completion;
     results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
