@@ -95,8 +95,7 @@ var EDITOR = (function ($, parent) {
         });
 		
 		// create insert buttons above the page hints / thumbs
-        debugger;
-        if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value != "import") {
+        //if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value != "import") {
             $([
 
                 {
@@ -135,32 +134,32 @@ var EDITOR = (function ($, parent) {
 
                 $menu.find(".insert_buttons").append(button);
             });
-        }
-        else {
-            $([
+        //}
+        //else {
+        //    $([
 
-                {
-                    name: language.insertDialog.insertMerge.$label,
-                    icon: 'editor/img/insert-end.png',
-                    tooltip: language.insertDialog.insertMerge.$tooltip,
-                    id: 'insert_button_merge',
-                    btnvalue: "merge"
-                }
+        //        {
+        //            name: language.insertDialog.insertMerge.$label,
+        //            icon: 'editor/img/insert-end.png',
+        //            tooltip: language.insertDialog.insertMerge.$tooltip,
+         //           id: 'insert_button_merge',
+         //           btnvalue: "merge"
+        //        }
 
-            ]).each(function (index, value) {
-                var button = $('<button>')
-                    .attr('id', value.id)
-                    .attr('title', value.tooltip)
-                    .attr('value', value.btnvalue)
-                    .attr('tabindex', index + 3)
-                    .addClass("insert_button")
-                    .click(loadEditHTMLphp)
-                    .append($('<img>').attr('src', value.icon).height(14))
-                    .append(value.name);
+        //    ]).each(function (index, value) {
+        //        var button = $('<button>')
+        //            .attr('id', value.id)
+         //           .attr('title', value.tooltip)
+        //            .attr('value', value.btnvalue)
+        //            .attr('tabindex', index + 3)
+        //            .addClass("insert_button")
+        //            .click(loadEditHTMLphp)
+        //            .append($('<img>').attr('src', value.icon).height(14))
+        //            .append(value.name);
 
-                $menu.find(".insert_buttons").append(button);
-            });
-        }
+        //        $menu.find(".insert_buttons").append(button);
+        //    });
+       // }
 		
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
