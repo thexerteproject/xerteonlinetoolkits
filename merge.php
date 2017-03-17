@@ -9,7 +9,7 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
 
 
 	
-function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location)
+function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location, $merge_glossary)
 {
 	global $xerte_toolkits_site;
 	
@@ -40,6 +40,22 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$xmlSource->load($source_file);
 	$nodes = array();
 	$i = 0;
+	if($merge_glossary)
+	{
+		$str_glossary = $xmlSource->documentElement->getAttribute("glossary");
+		$orig_glossary = "";
+		if($xmlTarget->documentElement->hasAttribute("glossary"))
+		{
+			$orig_glossary = $xmlTarget->documentElement->getAttribute("glossary");
+		}
+		if($orig_glossary != "")
+		{
+			$orig_glossary .= "||";
+		}
+		$orig_glossary .= $str_glossary;
+		$xmlTarget->documentElement->setAttribute("glossary", $orig_glossary);
+	}
+	
 	
 	foreach($source_pages as $page)
 	{
@@ -55,6 +71,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 			
 
 	}
+	
 	$xmlTarget->save($target_folder . "/preview.xml");
 	$xmlTarget->save($target_file);
 
@@ -89,10 +106,15 @@ function addNode($index, $node, $root)
 
 $source_project = $_GET["source_project"];
 $source_pages = explode(",", $_GET["source_pages"]);
+if($_GET["source_pages"] == "")
+{
+	$source_pages = array();
+}
 $target_project = $_GET["target_project"];
 $target_insert_page_position = $_GET["target_page_position"];
-merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position);
-	
+$merge_glossary= $_GET["merge_glossary"];
+merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary);
+header("Location: edithtml.php?template_id=".$target_project);	
 
 
 ?>

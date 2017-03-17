@@ -678,7 +678,7 @@ function create_node_type(nodetype, children) {
  * Initialise tree from workspace (a json structure that contains all the info to build the tree)
  * information is in global variable workspace
  */
-function init_workspace()
+function init_workspace(merge = false)
 {
     // build Types structure for the types plugin
     var node_types = {};
@@ -719,7 +719,7 @@ function init_workspace()
         tree.refresh();
     }
     else {
-        $("#workspace").jstree({
+        $workspace = $("#workspace").jstree({
             "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types", "search", "state"] : ["types", "dnd", "search", "state"],
             "core": {
                 "data": workspace.items,
@@ -736,22 +736,61 @@ function init_workspace()
                     "threshold": /Android|AppleWebKit|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 50 : 5
                 }
             }
-        })
-            .bind('select_node.jstree', function (event, data) {
-                button_check();
-                showInformationAndSetStatus(data.node);
+        });
+        if(!merge){
+            $workspace.bind('select_node.jstree', function (event, data) {
+                
+                	button_check();
+                	showInformationAndSetStatus(data.node);
+                
             })
 			.bind('deselect_node.jstree', function (event, data) {
-                button_check();
-                showInformationAndSetStatus();
+				
+					button_check();
+                	showInformationAndSetStatus();
+				
             })
             .bind('move_node.jstree',function(event,data)
             {
-                console.log(event);
-                console.log(data);
-                copy_to_folder(data);
+            	
+	                console.log(event);
+	                console.log(data);
+	                copy_to_folder(data);
+            	
             });
-
+            
+        }else{
+        	$("#workspace li").click(function(e)
+			{
+        		
+        		var tree = $.jstree.reference("#workspace");
+        		node_id = e.currentTarget.closest("li").id;
+        		node = tree.get_node(node_id, false)
+        		xot_id = node.original.xot_id;
+        		
+        		data = jsonData[xot_id];
+        		if(data != undefined){
+        			e.stopPropagation();
+        			sourceProject = xot_id;
+        			if(data.glossary)
+    				{
+        				$("#mergeGlossary").show();
+    				}else{
+    					$("#mergeGlossaryCheck").prop("checked", false);
+    					$("#mergeGlossary").hide();
+    				}
+	        		html = "";
+	    			$.each(data.pages, function(x){			
+	    				html += "<input class=\"pageCheckbox\" type=\"checkbox\" id=\""+this.index+"\">" + '<img src="modules/xerte/icons/'+this.icon+'.png">' + this.name + "<br>";
+	    			});
+	    			$("#merge").show();
+	
+	    			
+	    			$("#pages").html(html);
+        		}
+			});
+        	
+        }
         /*
          .bind("copy_node.jstree", function (event, data) {
          var new_id = generate_lo_key(),

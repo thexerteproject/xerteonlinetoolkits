@@ -3,6 +3,27 @@ require_once("config.php");
 require_once("website_code/php/language_library.php");
 require_once("website_code/php/display_library.php");
 require_once("website_code/php/user_library.php");
+_include_javascript_file("website_code/scripts/file_system.js?version=" . $version);
+_include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
+_include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
+_include_javascript_file("website_code/scripts/folders.js?version=" . $version);
+_include_javascript_file("website_code/scripts/template_management.js?version" . $version);
+_include_javascript_file("website_code/scripts/logout.js?version=" . $version);
+_include_javascript_file("website_code/scripts/import.js?version=" . $version);
+_include_javascript_file("editor/js/vendor/jstree.min.js");
+_include_javascript_file("editor/js/vendor/jstree.js");
+_include_javascript_file("https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js");
+
+_include_javascript_file("editor/js/vendor/jquery.ui-1.10.4.js");
+_include_javascript_file("editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js");
+_include_javascript_file("editor/js/vendor/jquery.ui.touch-punch.min.js");
+_include_javascript_file("editor/js/vendor/modernizr-latest.js");
+_include_javascript_file("editor/js/vendor/jstree.js");
+
+
+
+
+
 
 if(empty($_SESSION['toolkits_logon_id'])) {
 	die("Please login");
@@ -34,8 +55,10 @@ foreach($workspace->items as $item)
 		$x = new stdClass();
 		$x->name = $item->text;
 		$x->id = $item->xot_id;
+		
 		$x->pages = array();
 		$children = $templateXml->documentElement->childNodes;
+		$x->glossary = $templateXml->documentElement->hasAttribute("glossary");
 		for($i = 0; $i < $children->length; $i++)
 		{
 			
@@ -53,6 +76,7 @@ foreach($workspace->items as $item)
 				$y->icon = $iconChild->getAttribute("icon");
 			}
 			$y->type = $child->tagName;
+			
 			$y->index = $i;
 			array_push($x->pages, $y);
 		}
@@ -71,39 +95,39 @@ foreach($workspace->items as $item)
 ?>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
 <script>
+	<?php
+		echo "var jsonData = " . json_encode($items) . ";";
+	?>;
 	$(function(){
-		<?php
-			echo "jsonData = " . json_encode($items) . ";";
-		?>;
+
+		initWorkspace = function()
+		{
+			$.get("website_code/php/templates/get_templates_sorted.php", function(data)
+			{
+				workspace = JSON.parse(data);
+				
+				init_workspace(true);
+				
+			});
+			
+		}
+
+		
+		
 		var merged = false;
 		currentProject = template_id;
 		sourceProject = -1;
 		$("#merge").hide();
-		$(".page-link").click(function(e)
-		{
-			
-			e.stopPropagation();
-			id = e.currentTarget.id;
-			sourceProject = id;
-			data = jsonData[id];
-			html = "";
-			$.each(data.pages, function(x){			
-				html += "<input type=\"checkbox\" id=\""+this.index+"\">" + '<img src="modules/xerte/icons/'+this.icon+'.png">' + this.name + "<br>";
-			});
-			$("#merge").show();
-
-			
-			$("#pages").html(html);
-		
-		});
+		initWorkspace()
 
 		$("#merge").click(function(e)
 		{
 			merged = true;
 			source_pages = [];
-			$("input:checkbox").each(function(){
+			$(".pageCheckbox").each(function(){
 			    var $this = $(this);
 
 			    if($this.is(":checked")){
@@ -111,17 +135,17 @@ foreach($workspace->items as $item)
 			    }
 			    
 			});
-			if(source_pages.length > 0)
+			merge_glossary = $("#mergeGlossaryCheck").is(":checked");
+			if(source_pages.length > 0 || merge_glossary)
 			{
 				source_page = source_pages.join();
 				source_project = sourceProject;
 				target_insert = $(".jstree-children li").length;
 				target_project = currentProject;
-				url = "merge.php?source_project="+source_project+"&target_project="+target_project+"&target_page_position="+target_insert+"&source_pages="+source_page;
-				$.ajax(url).done(function(data)
-				{
-					window.location.href = "edithtml.php?template_id=" + target_project;
-				});
+				
+				window.location.href = "merge.php?source_project="+source_project+"&target_project="+target_project+
+					"&target_page_position="+target_insert+"&source_pages="+source_page + "&merge_glossary=" + merge_glossary;
+				
 			}else{
 				alert("No pages selected");
 			}
@@ -146,19 +170,12 @@ foreach($workspace->items as $item)
 <table id="importPanel">
 	<tr >
 		<td id="importProjectsPanel">
-			<h2>Projects</h2>
-			<ul>
-			<?php
-			foreach($items as $item)
-			{
-				echo "<li>";
-				echo "<a class=\"page-link\" id=\"$item->id\" href=\"#\">$item->name</a>\r\n";		
-				echo "</li>";
-			}
-			?>
-			</ul>
+			<div id="workspace">
+			</div>
+		
 		</td>
 		<td id="importPagesPanel">
+			<div id="mergeGlossary"><input type="checkbox" id="mergeGlossaryCheck"></input>Merge glossary</div>
 			<h2>Pages</h2>
 			<div id="pages">
 			
@@ -169,5 +186,6 @@ foreach($workspace->items as $item)
 		</td>
 	</tr>
 </table>
+	
 </body>
 </html>
