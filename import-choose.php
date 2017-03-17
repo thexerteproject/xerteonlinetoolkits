@@ -97,9 +97,21 @@ foreach($workspace->items as $item)
 
 
 <script>
+	function CheckAll() {
+		if($(".allCheck")[0].checked) {
+			$(".checkAll").each(function (i) {
+				$(this).prop("checked", true);
+			});
+		}
+		else {
+			$(".checkAll").each(function(i){
+				$(this).prop("checked", false);
+			});
+		}
+	}
 	<?php
 		echo "var jsonData = " . json_encode($items) . ";";
-	?>;
+	?>
 	$(function(){
 
 		initWorkspace = function()
