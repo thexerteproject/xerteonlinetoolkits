@@ -737,7 +737,32 @@ function x_continueSetUp() {
 	$("#x_pageNo").remove();
     }
 
-	
+	//add show/hide footer tools
+    if (x_params.footerTools != undefined && x_params.footerTools != "") {
+	var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
+	var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+	//add a div for the show/hide chevron
+	$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
+	$('#x_footerChevron').prop('title', hideMsg);
+    }
+	//chevron to show/hide function
+	$('#x_footerChevron').click(function(){
+        $('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+                if($(this).is(':visible')){
+                    $('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+                    $('#x_footerChevron').prop('title', hideMsg);
+                }else{
+                    $('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+                    $('#x_footerChevron').prop('title', showMsg);
+                }
+            });
+        return(false);
+    });
+	if (x_params.footerTools =="hideFooterTools") {
+	$('#x_footerBlock .x_floatLeft').hide();
+	$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+	$('#x_footerChevron').prop('title', showMsg);
+	}
 	} 
 	
 	// get icon position

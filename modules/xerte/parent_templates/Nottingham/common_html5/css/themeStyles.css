@@ -171,3 +171,14 @@ h3 {
 .circleBtn.ui-button-icon-only {
 	height: 2.4em;
 }
+
+/*styling for optional show/hider footer tools*/
+#x_footerChevron{
+    color: grey;
+    cursor: pointer;
+}
+#x_footerShowHide{
+    padding-left: 8px; 
+    padding-top: 15px;
+    float:left;
+}
