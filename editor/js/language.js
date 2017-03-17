@@ -125,10 +125,26 @@ var EDITOR = (function ($, parent) {
                 //console.log("   sub node: " + $(this)[0].nodeName);
                 var node_params = {};
                 for (var j=0, a=$(this)[0].attributes; j<a.length; j++) {
-                    //console.log("      attr: " + a[j].name + ":" + a[j].value);
                     node_params[a[j].name] = a[j].value;
                 }
                 all_options.push({name: $(this)[0].nodeName, value: node_params});
+				
+				// include the children of property groups
+				if (node_params.type == "group" && $(this).children().length > 0) {
+					for (var k=0; k<$(this).children().length; k++) {
+						var child_node_params = {};
+						for (var j=0, a=$(this).children()[k].attributes; j<a.length; j++) {
+							child_node_params[a[j].name] = a[j].value;
+						}
+						child_node_params.group = $(this)[0].nodeName;
+						
+						if (node_params.optional == "true") {
+							child_node_params.optional = node_params.optional;
+						}
+						
+						all_options.push({name: $(this).children()[k].nodeName, value: child_node_params});
+					}
+				}
             });
 
             // search attribute name and put that as the first one
