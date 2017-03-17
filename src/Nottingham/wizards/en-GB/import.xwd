@@ -1,20 +1,13 @@
 <wizard menus="Import">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <import><![CDATA[<import name="Enter Page Title" url="Type or paste a URL" tip="Enter a Description for Accessibility">Enter text for the page here</import>]]></import>
+            <import><![CDATA[<import/>]]></import>
         </newNodes>
     </pageWizard>
 
     <!-- Import PAGE========================== -->
     <import menu="Import" menuItem="Import" hint="Import pages from other objects" label="Page Text" id="Import" type="text" height="300" remove="true">
 
-        <name label="Page Title" type="TextInput" wysiwyg="true" />
-        <url label="URL" type="TextInput"/>
-        <tip label="Import Description" type="TextInput"/>
-
-        <sound label="Sound" type="media" optional="true"/>
-
-        <align label="Align Text" options="Left,Right,Hide Text" type="ComboBox" data="Left,Right,Hide text" width="100" defaultValue="Hide text" optional="true"/>
 
     </import>
 

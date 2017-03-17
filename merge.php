@@ -9,7 +9,7 @@ require $xerte_toolkits_site->php_library_path . "user_library.php";
 
 
 	
-function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location)
+function merge_pages_to_project($source_project_id, $source_pages, $target_project, $target_page_location, $merge_glossary)
 {
 	global $xerte_toolkits_site;
 	
@@ -31,8 +31,6 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$source_file = $source_folder . "/data.xml";
 	$target_file = $target_folder . "/data.xml";
 	
-	$source_xml = simplexml_load_file($source_file);
-	$target_xml = simplexml_load_file($target_file);
 	
 	$xmlTarget = new DOMDocument();
 	$xmlTarget->load($target_file);
@@ -40,13 +38,74 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$xmlSource->load($source_file);
 	$nodes = array();
 	$i = 0;
+	if($merge_glossary)
+	{
+		$str_glossary = $xmlSource->documentElement->getAttribute("glossary");
+		$orig_glossary = "";
+		if($xmlTarget->documentElement->hasAttribute("glossary"))
+		{
+			$orig_glossary = $xmlTarget->documentElement->getAttribute("glossary");
+		}
+		if($orig_glossary != "")
+		{
+			$orig_glossary .= "||";
+		}
+		$orig_glossary .= $str_glossary;
+		$xmlTarget->documentElement->setAttribute("glossary", $orig_glossary);
+	}
+	$bannedLinkIDs = array();
+	$xBannedPaths = new DOMXPath($xmlTarget);
+	$bannedLinkIDsPath = $xBannedPaths->query("*[@linkID]");
+	foreach($bannedLinkIDsPath as $id)
+	{
+		$attr = $id->getAttribute("linkID");
+		if(!in_array($attr, $bannedLinkIDs)){
+			array_push($bannedLinkIDs, $attr);
+		}
+	}
+	
+	$newlinkIDs = array();
+	$xPath = new DOMXPath($xmlSource);
+	$linkIDs = $xPath->evaluate("*[@linkID]");
+	foreach($linkIDs as $id)
+	{
+		$attr = $id->getAttribute("linkID");
+		if(!in_array($attr, $newlinkIDs)){
+			array_push($newlinkIDs, $attr);
+		}
+	}
+	$mapping = array();
+	foreach($newlinkIDs as $newId)
+	{
+		$oldId = $newId;
+		if(in_array($newId, $bannedLinkIDs))
+		{
+			while(in_array($newId, $bannedLinkIDs) || in_array($newId, $newlinkIDs))
+			{
+				$newId = "PG" . (substr($newId, 2)+1);
+			}
+			array_push($newId, $bannedLinkIDs);
+			$mapping[$oldId] = $newId;
+				
+		}else{
+			$mapping[$newId] = $newId;
+		}
+	}
+	foreach($linkIDs as $id)
+	{
+		
+		$attr = $id->getAttribute("linkID");
+		
+		$id->setAttribute("linkID", $mapping[$attr]);
+		$xmlSource = $id->ownerDocument;	
+	}
 	
 	foreach($source_pages as $page)
 	{
 
-			$root = $xmlTarget->getElementsByTagName("learningObject")->item(0);
+			$root = $xmlTarget->documentElement;
 			
-			$node = $xmlSource->getElementsByTagName("learningObject")->item(0)->childNodes->item($page);
+			$node = $xmlSource->documentElement->childNodes->item($page);
 			
 			$node = $xmlTarget->importNode($node, true);
 			
@@ -55,6 +114,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 			
 
 	}
+	
 	$xmlTarget->save($target_folder . "/preview.xml");
 	$xmlTarget->save($target_file);
 
@@ -64,6 +124,8 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	
 
 }
+
+
 
 function addNode($index, $node, $root)
 {
@@ -89,10 +151,15 @@ function addNode($index, $node, $root)
 
 $source_project = $_GET["source_project"];
 $source_pages = explode(",", $_GET["source_pages"]);
+if($_GET["source_pages"] == "")
+{
+	$source_pages = array();
+}
 $target_project = $_GET["target_project"];
 $target_insert_page_position = $_GET["target_page_position"];
-merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position);
-	
+$merge_glossary= $_GET["merge_glossary"];
+merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary);
+header("Location: edithtml.php?template_id=".$target_project);	
 
 
 ?>

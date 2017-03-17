@@ -95,45 +95,84 @@ var EDITOR = (function ($, parent) {
         });
 		
 		// create insert buttons above the page hints / thumbs
-		$([
-            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before"},
-            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after"},
-            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end"}
-        ]).each(function(index, value) {
-			var button = $('<button>')
-				.attr('id', value.id)
-				.attr('title', value.tooltip)
-				.attr('value', value.btnvalue)
-				.attr('tabindex', index + 3)
-				.addClass("insert_button")
-				.click(add_page)
-				.append($('<img>').attr('src', value.icon).height(14))
-				.append(value.name);
-			
-			$menu.find(".insert_buttons").append(button);
-		});
-		
+            $([
+
+                {
+                    name: language.insertDialog.insertBefore.$label,
+                    icon: 'editor/img/insert-before.png',
+                    tooltip: language.insertDialog.insertBefore.$tooltip,
+                    id: 'insert_button_before',
+                    btnvalue: "before"
+                },
+                {
+                    name: language.insertDialog.insertAfter.$label,
+                    icon: 'editor/img/insert-after.png',
+                    tooltip: language.insertDialog.insertAfter.$tooltip,
+                    id: 'insert_button_after',
+                    btnvalue: "after"
+                },
+                {
+                    name: language.insertDialog.insertAtEnd.$label,
+                    icon: 'editor/img/insert-end.png',
+                    tooltip: language.insertDialog.insertAtEnd.$tooltip,
+                    id: 'insert_button_at_end',
+                    btnvalue: "end"
+                }
+
+            ]).each(function (index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .attr('value', value.btnvalue)
+                    .attr('tabindex', index + 3)
+                    .addClass("insert_button")
+                    .click(add_page)
+                    .append($('<img>').attr('src', value.icon).height(14))
+                    .append(value.name);
+
+                    $menu.find(".insert_buttons").append(button);
+                    if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
+                        $menu.find(".insert_buttons").last()[0].childNodes[1].remove();
+                    }
+
+            });
+            $([
+
+                {
+                    name: language.insertDialog.insertMerge.$label,
+                    icon: 'editor/img/insert-end.png',
+                    tooltip: language.insertDialog.insertMerge.$tooltip,
+                    id: 'insert_button_merge',
+                    btnvalue: "merge"
+                }
+
+            ]).each(function (index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .attr('value', value.btnvalue)
+                    .attr('tabindex', index + 3)
+                    .addClass("insert_button")
+                    .click(loadEditHTMLphp)
+                    .append($('<img>').attr('src', value.icon).height(14))
+                    .append(value.name);
+
+                if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
+                    $menu.find(".insert_buttons").last().append(button);
+                }
+            });
+
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
-				//Checks if the import page is selected
-				if (e.type == "click" && e.currentTarget.parentNode != null && e.currentTarget.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[0].classList[0] == "Import")
-				{
-					e.stopPropagation();
-					loadEditHTMLphp();
+				if (e.type == "click" && e.target.id != "insert_button") {
 					$("#insert_menu").hide();
-                    $("#shadow").hide();
+                   	$("#shadow").hide();
+				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
+					$("#insert_menu").hide();
+               	   	$("#shadow").hide();
+					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
 				}
-				else {
-					if (e.type == "click" && e.target.id != "insert_button") {
-						$("#insert_menu").hide();
-                    	$("#shadow").hide();
-					} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
-						$("#insert_menu").hide();
-               	     	$("#shadow").hide();
-						parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
-					}
-					return this._super();
-				}
+                return this._super();
 			},
 			_open: function(submenu) {
 				// make sure the menus fit on screen and scroll when needed
@@ -161,7 +200,8 @@ var EDITOR = (function ($, parent) {
 	function refresh_workspaceMerge(){
         var url="import-choose.php?id="+template_id;
         $.get(url, function(data){
-        	$("#mainPanel").html(data);
+        	$("#content").html(data);
+        	
         });
 
 	}
