@@ -133,7 +133,7 @@ foreach($workspace->items as $item)
 		currentProject = template_id;
 		sourceProject = -1;
 		$("#merge").hide();
-		
+		$("#pagetype").html("Import");
 		$(".optButtonContainer").hide();
 		initWorkspace()
 		$('#workspace').bind("DOMSubtreeModified",function(){
@@ -142,6 +142,7 @@ foreach($workspace->items as $item)
 		
 		$("#merge").click(function(e)
 		{
+			publish();
 			merged = true;
 			source_pages = [];
 			$(".pageCheckbox").each(function(){
