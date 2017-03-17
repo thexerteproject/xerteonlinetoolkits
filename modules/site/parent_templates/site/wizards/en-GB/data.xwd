@@ -13,6 +13,7 @@
 		<logoR type="Media" optional="true" label="Header Logo (Right)"/>
 		<logoL type="Media" optional="true" label="Header Logo (Left)"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+		<glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
