@@ -787,9 +787,11 @@ function init_workspace(merge = false)
     					$("#mergeGlossaryCheck").prop("checked", false);
     					$("#mergeGlossary").hide();
     				}
+
 	        		html = "";
+                    html += "<input class=\"allCheck\" type=\"checkbox\" id=\"select-all\"  onClick=\"CheckAll()\"/> Select/Deselect All<br/>"
 	    			$.each(data.pages, function(x){			
-	    				html += "<input class=\"pageCheckbox\" type=\"checkbox\" id=\""+this.index+"\">" + '<img src="modules/xerte/icons/'+this.icon+'.png">' + this.name + "<br>";
+	    				html += "<input class=\"pageCheckbox checkAll\" type=\"checkbox\" id=\""+this.index+"\"'>" + '<img src="modules/xerte/icons/'+this.icon+'.png">' + this.name + "<br>";
 	    			});
 	    			$("#merge").show();
 	
@@ -805,6 +807,7 @@ function init_workspace(merge = false)
         	
         	
         }
+
         /*
          .bind("copy_node.jstree", function (event, data) {
          var new_id = generate_lo_key(),
