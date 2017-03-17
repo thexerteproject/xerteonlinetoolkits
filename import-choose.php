@@ -10,15 +10,14 @@ _include_javascript_file("website_code/scripts/folders.js?version=" . $version);
 _include_javascript_file("website_code/scripts/template_management.js?version" . $version);
 _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
 _include_javascript_file("website_code/scripts/import.js?version=" . $version);
-_include_javascript_file("editor/js/vendor/jstree.min.js");
-_include_javascript_file("editor/js/vendor/jstree.js");
-_include_javascript_file("https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js");
+
 
 _include_javascript_file("editor/js/vendor/jquery.ui-1.10.4.js");
 _include_javascript_file("editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js");
 _include_javascript_file("editor/js/vendor/jquery.ui.touch-punch.min.js");
 _include_javascript_file("editor/js/vendor/modernizr-latest.js");
 _include_javascript_file("editor/js/vendor/jstree.js");
+_include_javascript_file("editor/js/tree.js");
 
 
 
@@ -121,6 +120,7 @@ foreach($workspace->items as $item)
 		currentProject = template_id;
 		sourceProject = -1;
 		$("#merge").hide();
+		$(".optButtonContainer").hide();
 		initWorkspace()
 
 		$("#merge").click(function(e)

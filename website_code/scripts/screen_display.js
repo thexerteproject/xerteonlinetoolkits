@@ -674,6 +674,8 @@ function create_node_type(nodetype, children) {
 };
 
 
+var lastTreeItemTimestamp = undefined;
+
 /**
  * Initialise tree from workspace (a json structure that contains all the info to build the tree)
  * information is in global variable workspace
@@ -711,7 +713,7 @@ function init_workspace(merge = false)
 
     console.log(node_types);
     console.log(workspace.items);
-
+    
     var tree = $.jstree.reference("#workspace");
     if (tree)
     {
@@ -762,6 +764,12 @@ function init_workspace(merge = false)
         }else{
         	$("#workspace li").click(function(e)
 			{
+        		//debugger;
+        		if(lastTreeItemTimestamp == e.timeStamp)
+    			{
+        			return;
+    			}
+        		lastTreeItemTimestamp = e.timeStamp
         		
         		var tree = $.jstree.reference("#workspace");
         		node_id = e.currentTarget.closest("li").id;
@@ -770,7 +778,7 @@ function init_workspace(merge = false)
         		
         		data = jsonData[xot_id];
         		if(data != undefined){
-        			e.stopPropagation();
+        			
         			sourceProject = xot_id;
         			if(data.glossary)
     				{
@@ -787,8 +795,14 @@ function init_workspace(merge = false)
 	
 	    			
 	    			$("#pages").html(html);
+        		}else{
+        			$("#mergeGlossaryCheck").prop("checked", false);
+					$("#mergeGlossary").hide();
+					$("#pages").html("");
+					$("#merge").hide();
         		}
 			});
+        	
         	
         }
         /*

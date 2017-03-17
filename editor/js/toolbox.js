@@ -121,7 +121,7 @@ var EDITOR = (function ($, parent) {
                 }
 
             ]).each(function (index, value) {
-                debugger;
+            
                 var button = $('<button>')
                     .attr('id', value.id)
                     .attr('title', value.tooltip)
@@ -199,7 +199,8 @@ var EDITOR = (function ($, parent) {
 	function refresh_workspaceMerge(){
         var url="import-choose.php?id="+template_id;
         $.get(url, function(data){
-        	$("#mainPanel").html(data);
+        	$("#content").html(data);
+        	
         });
 
 	}
