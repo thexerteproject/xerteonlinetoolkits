@@ -110,6 +110,7 @@ foreach($workspace->items as $item)
 				
 				init_workspace(true);
 				
+				
 			});
 			
 		}
@@ -120,9 +121,13 @@ foreach($workspace->items as $item)
 		currentProject = template_id;
 		sourceProject = -1;
 		$("#merge").hide();
+		
 		$(".optButtonContainer").hide();
 		initWorkspace()
-
+		$('#workspace').bind("DOMSubtreeModified",function(){
+		 	$("#workspace .jstree-clicked").removeClass("jstree-clicked");	
+		});
+		
 		$("#merge").click(function(e)
 		{
 			merged = true;
@@ -152,6 +157,7 @@ foreach($workspace->items as $item)
 		}
 		);
 	});
+	
 </script>
 <style>
 

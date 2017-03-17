@@ -156,7 +156,6 @@ var EDITOR = (function ($, parent) {
                     .click(loadEditHTMLphp)
                     .append($('<img>').attr('src', value.icon).height(14))
                     .append(value.name);
-                debugger;
                 if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
                     $menu.find(".insert_buttons").last().append(button);
                 }
