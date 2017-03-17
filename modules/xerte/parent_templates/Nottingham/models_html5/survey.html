@@ -192,6 +192,7 @@
 					
 					$checkBtn.button("disable");
 					var max = $($thisQ).children().length - 1;
+					//TODO get the name of the label instead of the index as slideroutput
 					$rangeHolder.html('<form oninput="sliderOutput.value = slider1.valueAsNumber"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
 
 					$.each($($thisQ).children(), function(index, value)
@@ -206,6 +207,8 @@
 						{
 							$thisOptionTxt = $optionTxt;
 						}
+						
+						//TODO add href to label div and update slider when pressed
 						
 						$checkBtn.button("enable");
 						$("#nextBtn").button("disable");
@@ -316,7 +319,7 @@
             
             var currentQuestionString = survey.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
-			debugger;
+            
 			XTExitInteraction(x_currentPage, survey.questions[survey.currentQuestion], correct, l_options, l_answer, l_feedback);
             survey.myProgress.splice(survey.currentQuestion, 1, correct);
             
