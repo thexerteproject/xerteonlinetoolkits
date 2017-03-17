@@ -625,7 +625,7 @@ function XTResults()
                 case "numeric":
 
                     learnerAnswer = state.interactions[i].learnerAnswers;
-                    correctAnswer = "Nvt";
+                    correctAnswer = "There is no correct answer";
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":

@@ -76,7 +76,7 @@
 					question = y.question;
 					learnerAnswer = y.learnerAnswer;
 					correctAnswer = y.correctAnswer;
-					if (learnerAnswer == correctAnswer) {
+					if (learnerAnswer == correctAnswer ||y.correct) {
 						if (count == x.subinteractions.length) {
 							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
 						}
