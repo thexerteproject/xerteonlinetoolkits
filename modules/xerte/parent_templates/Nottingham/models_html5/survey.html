@@ -327,7 +327,15 @@
 			{
                 l_answer.push(Math.round(currentQuestionValue * 10) / 10);
                 l_feedback.push("");
-                optionFeedback += "<p>" + x_addLineBreaks(selected[0].getAttribute("feedback"))  + "</p>";
+                
+                if(selected[0].getAttribute("feedback") == null || selected[0].getAttribute("feedback") == undefined)
+                {
+                	optionFeedback = "";
+                }
+                else
+                {
+              	    optionFeedback += "<p>" + x_addLineBreaks(selected[0].getAttribute("feedback"))  + "</p>";
+                }
                 
                 if (selected[0].getAttribute("audioFB") != undefined && selected[0].getAttribute("audioFB") != "")
                 {
@@ -392,6 +400,7 @@
 			 // Last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
+            
             var feedbackText = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
 
             var myScore = 0;

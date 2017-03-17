@@ -5,6 +5,7 @@
         <insertBefore label="Before" tooltip="Insert before selected page"/>
         <insertAfter label="After" tooltip="Insert after selected page"/>
         <insertAtEnd label="At end" tooltip="Insert as last page"/>
+		<insertMerge label="Merge" tooltip="Merge at the end"/>
     </insertDialog>
     <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>

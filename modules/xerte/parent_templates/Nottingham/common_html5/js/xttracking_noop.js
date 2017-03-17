@@ -562,6 +562,7 @@ function XTResults()
             interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
+            interaction.correct = state.interactions[i].result;
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
@@ -632,6 +633,7 @@ function XTResults()
                     break;
             }
             subinteraction.question = state.interactions[i].ia_name;
+            subinteraction.correct = state.interactions[i].result;
             subinteraction.learnerAnswer = learnerAnswer;
             subinteraction.correctAnswer = correctAnswer;
             results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
