@@ -1478,7 +1478,8 @@ function x_pageLoaded() {
         var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
         var progress=Math.round((pagesviewed*100)/totalpages);
         $(".pbBar").css({"width": progress+"%"});
-        $('.pbTxt').html(progress+"% COMPLETE");
+		var pBarText=x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+        $('.pbTxt').html(progress+"% "+pBarText);
     };
 
 // function adds / reloads narration bar above main controls on interface
