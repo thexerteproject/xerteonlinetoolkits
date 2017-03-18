@@ -611,7 +611,7 @@ function XTResults()
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0];
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
                     for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
                     {
                         learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
