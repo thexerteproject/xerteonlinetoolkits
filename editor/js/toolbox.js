@@ -1032,10 +1032,20 @@ var EDITOR = (function ($, parent) {
             if (options.options.type != 'script')
             {
                 $('#'+options.id).ckeditor(function(){
+                		var self = this;
                     // Editor is ready, attach change event
                     this.on('change', function(){
-                        inputChanged(options.id, options.key, options.name, this.getData(), this);
+                        inputChanged(options.id, options.key, options.name, self.getData(), self);
                     });
+										this.on('fileUploadResponse', function(e) {
+											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
+												e.removeListener();
+												inputChanged(options.id, options.key, options.name, self.getData(), self);	
+											});*/
+											setTimeout(function () {
+														self.fire('change');
+													}, 1500);
+										});
                 }, ckoptions);
             }
             else
