@@ -177,8 +177,10 @@ class XerteXMLInspector
         $this->models = array();
 
         //Gets the value of resultpage (true/false)
-        $this->resultpageEnabled = (string)($this->xml->xpath('/*')[0]->attributes()->resultpage);
-        $this->hasResultPage = ($this->xml->xpath('/*')[0]->children());
+        $rPath = $this->xml->xpath('/*');
+        $rElmnt = $rPath[0];
+        $this->resultpageEnabled = (string)($rElmnt->attributes()->resultpage);
+        $this->hasResultPage = ($rElmnt->children());
         
         $nodes = $this->xml->xpath('/*/*');
 
