@@ -1358,7 +1358,6 @@
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
     <feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
     <newNodes>
       <option><![CDATA[<option name="Option" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
