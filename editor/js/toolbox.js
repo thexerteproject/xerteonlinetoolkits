@@ -2054,6 +2054,10 @@ var EDITOR = (function ($, parent) {
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
+					
+					if (value == '')
+						html.append($('<option>').attr('value', '').prop('selected', true));
+					
                     for (var i=0; i<s_options.length; i++) {
                         var option = $('<option>')
                             .attr('value', s_data[i]);
@@ -2061,6 +2065,8 @@ var EDITOR = (function ($, parent) {
                             option.prop('selected', true);
                         option.append(s_options[i]);
                         html.append(option);
+						if (html.find('option:selected').index() > 0)
+							html.find(option).eq(0).remove();
                     }
 
                     break;
