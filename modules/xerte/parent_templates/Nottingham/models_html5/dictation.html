@@ -26,7 +26,9 @@
 				nextBtnTxt,
 				restartBtnTxt,
 				correctText,
-				incorrectText;
+				incorrectText,
+				captionInfo = new Array();
+		
 		//The number of correct answers
 		var correct_answers = 0;
 
@@ -73,65 +75,73 @@
 		}
 
 		this.init = function() {
-            var captionInfo = new Array();
-
             $pageContents = $("#pageContents");
 
             // uses data from timedText file if there is one - otherwise use nested page info
             if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {
-                $.ajax({
-                    type: "GET",
-                    url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
-                    dataType: "xml",
-                    success: function (xml) {
-                        $(xml).find("P, p").each(function () {
-                            var $this = $(this);
-                            captionInfo.push({
-                                prompt: "",
-                                answer: $this.text().replace(/(\n|\r|\r\n)/g, "<br />"),
-                                start: $this.attr("begin"),
-                                end: $this.attr("end")
-                            });
-                            // replace from x_addLineBreaks function done here directly as text from timed text file won't be changed correctly otherwise
-                        });
+				
+				x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("timedText")), function(mediaExists) {
+					if (mediaExists) {
+						x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("sound")), function(mediaExists) {
+							if (mediaExists) {
+								// both timedText & sound files exist
+								dictation.ttCaptions();
+							} else {
+								dictation.xmlCaptions();
+							}
+						});
+					} else {
+						dictation.xmlCaptions();
+					}
+				});
+			} else {
+				dictation.xmlCaptions();
+			}
+		}
+		
+		this.ttCaptions = function() {
+			$.ajax({
+				type: "GET",
+				url: x_evalURL(x_currentPageXML.getAttribute("timedText")),
+				dataType: "xml",
+				success: function (xml) {
+					$(xml).find("P, p").each(function () {
+						var $this = $(this);
+						captionInfo.push({
+							prompt: "",
+							answer: $this.text().replace(/(\n|\r|\r\n)/g, "<br />"),
+							start: $this.attr("begin"),
+							end: $this.attr("end")
+						});
+						// replace from x_addLineBreaks function done here directly as text from timed text file won't be changed correctly otherwise
+					});
 
-                        $pageContents.data({
-                            "captionInfo": captionInfo,
-                            "audioSrc": "timedTxt"
-                        });
-                        dictation.setup();
-                    },
+					$pageContents.data({
+						"captionInfo": captionInfo,
+						"audioSrc": "timedTxt"
+					});
+					dictation.setup();
+				},
 
-                    error: function () {
-                        // see if there are any captions in xml to use instead
-                        $(x_currentPageXML).children().each(function () {
-                            var $this = $(this);
-                            captionInfo.push({
-                                prompt: $this.attr("prompt"),
-                                answer: $this.attr("answer"),
-                                audio: $this.attr("audio")
-                            });
-                        });
+				error: function () {
+					dictation.xmlCaptions();
+				}
+			});
+		}
+		
+		this.xmlCaptions = function() {
+			$(x_currentPageXML).children().each(function () {
+				var $this = $(this);
+				captionInfo.push({
+					prompt: $this.attr("prompt"),
+					name: $this.attr("name"),
+					answer: $this.attr("answer"),
+					audio: $this.attr("audio")
+				});
+			});
 
-                        $pageContents.data("captionInfo", captionInfo);
-                        dictation.setup();
-                    }
-                });
-
-            } else {
-                $(x_currentPageXML).children().each(function () {
-                    var $this = $(this);
-                    captionInfo.push({
-                        prompt: $this.attr("prompt"),
-                        name: $this.attr("name"),
-                        answer: $this.attr("answer"),
-                        audio: $this.attr("audio")
-                    });
-                });
-
-                $pageContents.data("captionInfo", captionInfo);
-                dictation.setup();
-            }
+			$pageContents.data("captionInfo", captionInfo);
+			dictation.setup();
         }
 
         this.setup =function() {
@@ -150,9 +160,7 @@
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
 			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
 			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
-
-
-
+			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
@@ -254,9 +262,14 @@
                 $("#restartBtn").hide();
             }
 
-
-            dictation.sortCaptions();
+			if ($pageContents.data("captionInfo").length == 0) {
+				$("#answerTxt, #btnHolder").remove();
+				x_pageLoaded();
+			} else {
+				this.sortCaptions();
+			}
 		}
+		
 		this.sortCaptions = function() {
 			$pageContents.data({
 				"captionInfo" : x_currentPageXML.getAttribute("randomise") == "true" ? x_shuffleArray($pageContents.data("captionInfo")) : $pageContents.data("captionInfo"),

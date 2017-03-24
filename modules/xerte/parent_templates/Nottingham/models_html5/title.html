@@ -126,7 +126,7 @@
 				.one("load", function() {
 					var $this = $(this);
 					setTimeout(function(){
-						if (vConstrain != undefined || hConstrain != undefined) {
+						if ((vConstrain != undefined && vConstrain != "") || (hConstrain != undefined && hConstrain != "")) {
 							var imgMaxW = 800,
 								imgMaxH = 500;
 							

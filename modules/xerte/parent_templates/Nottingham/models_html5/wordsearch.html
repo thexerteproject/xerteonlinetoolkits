@@ -38,17 +38,25 @@
 			var colourStyles = "<style type='text/css'>",
 				colour;
 			
-			colour = x_currentPageXML.getAttribute("colour1") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour1")) : "#FFA500"; // default = orange
+			function checkColour(colour) {
+				if (colour == undefined || colour == "" || colour == "0x") {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			colour = checkColour(x_currentPageXML.getAttribute("colour1")) ? x_getColour(x_currentPageXML.getAttribute("colour1")) : "#FFA500"; // default = orange
 			colourStyles += "#puzzle .selected { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
 			
-			colour = x_currentPageXML.getAttribute("colour2") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour2")) : "#0000FF"; // blue
+			colour = checkColour(x_currentPageXML.getAttribute("colour2")) ? x_getColour(x_currentPageXML.getAttribute("colour2")) : "#0000FF"; // blue
 			colourStyles += "#puzzle .found { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
 			colourStyles += "#words .wordFound { color: " + colour + "; }";
 			
-			colour = x_currentPageXML.getAttribute("colour3") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour3")) : "#800080"; // purple
+			colour = checkColour(x_currentPageXML.getAttribute("colour3")) ? x_getColour(x_currentPageXML.getAttribute("colour3")) : "#800080"; // purple
 			colourStyles += "#puzzle .solved { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
 			
-			colour = x_currentPageXML.getAttribute("colour4") != undefined ? x_getColour(x_currentPageXML.getAttribute("colour4")) : "#008000"; // green
+			colour = checkColour(x_currentPageXML.getAttribute("colour4")) ? x_getColour(x_currentPageXML.getAttribute("colour4")) : "#008000"; // green
 			colourStyles += "#puzzle .complete { background-color: " + colour + "; color: " + x_blackOrWhite(colour) + "; }";
 			colourStyles += "</style>";
 			
