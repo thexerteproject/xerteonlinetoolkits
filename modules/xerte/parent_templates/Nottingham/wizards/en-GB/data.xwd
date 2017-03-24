@@ -25,7 +25,8 @@
 	<stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-    <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
+	
+	<authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
 	
 	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 	<resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
@@ -196,8 +197,11 @@
     <text label="Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
-    <url label="Image" type="media" optional="true"/>
-    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
     <initObject label="Init Object" type="TextInput" optional="true" flashonly="true" deprecated="This property is deprecated"/>
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
@@ -273,9 +277,12 @@
     <url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput"/>
 
-    <linktarget label="Link Target" type="textInput" width="70" defaultValue="e.g. _blank" optional="true"/>
-    <link label="Link URL" type="textInput" optional="true"/>
-	<linkIntro label="Link Description" type="textInput" optional="true"/>	
+	<linkInfo type="group" label="Link" optional="true">
+		<link label="URL" type="textInput" optional="true" defaultValue="Enter Link Address"/>
+		<linkIntro label="Description" type="textInput" optional="true" defaultValue="Enter Link Description"/>	
+		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true"/>
+	</linkInfo>
+	
     <sound label="Sound" type="media" optional="true"/>
     <magnifier label="Magnifier" type="checkBox" defaultValue="false" optional="true"/>
     <addmargin label="Image Margin" type="Checkbox" defaultValue="false" optional="true"/>
@@ -728,13 +735,15 @@
 	<trackedShowText label="Show Button Text when tracked" type="TextInput" wysiwyg="true" language="true"/>
 	<correctText label="Correct text" type="TextInput" wysiwyg="true" language="true"/>
 	<incorrectText label="Incorrect text" type="TextInput" wysiwyg="true" language="true"/>
-	<showCorrectness label="Mark Answers" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
+	<showCorrectness label="Show correctness" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
 	<nextText label="Next Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<restartText label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<countText label="Clip {i} of {n}" type="TextInput" wysiwyg="true" language="true"/>
 
-	<timedText label="Timed Text File" type="Media" optional="true"/>
-	<sound label="Timed Text Audio File" type="Media" defaultValue="Select an Audio File" optional="true"/>
+	<tt type="group" label="Timed Text" optional="true">
+		<timedText label="File" type="Media" defaultValue="Select a Timed Text File" optional="true"/>
+		<sound label="Audio File" type="Media" defaultValue="Select an Audio File" optional="true"/>
+	</tt>
 
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
@@ -914,7 +923,7 @@
 	
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
-    <random label="Randomise Cards" type="Checkbox" optional="true"/>
+	<random label="Randomise Cards" type="Checkbox" optional="true"/>
     <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true"/>
 	<!--<interactivity label="Interactivity" type="ComboBox" options="Flip,Reveal,None" data="flip,reveal,none" width="100"/>-->
 	
@@ -936,12 +945,18 @@
 	<side1 label="Side 1 Text" type="TextArea" height="120"/>
 	<side2 label="Side 2 Text" type="TextArea" height="120"/>
 	
-	<media1 label="Side 1 Media File" type="Media" optional="true"/>
-	<media2 label="Side 2 Media File" type="Media" optional="true"/>
-	<tip1 label="Side 1 Media Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<tip2 label="Side 2 Media Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<align1 label="Side 1 Media Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
-	<align2 label="Side 2 Media Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
+	<side1Media type="group" label="Side 1 Media" optional="true">
+		<media1 label="File" type="Media" optional="true" defaultValue="Select an Image"/>
+		<tip1 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<align1 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
+	</side1Media>
+	
+	<side2Media type="group" label="Side 2 Media" optional="true">
+		<media2 label="File" type="Media" optional="true" defaultValue="Select an Image"/>
+		<tip2 label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+		<align2 label="Position" options="Top,Bottom" type="ComboBox" optional="true" data="Top,Bottom" defaultValue="Bottom" width="100"/>
+	</side2Media>
+	
   </card><flashPaper menu="Media" menuItem="Flash Paper" hint="A page for incorporating Flash Paper swfs. Flash Paper provides a convenient way of displaying Word or Powerpoint files in your presentation." icon="icPageWhite" thumb="thumbs/flashPaper.jpg" remove="true" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -984,12 +999,15 @@
 	<gapFillWrongTracking label="Gap Fill All Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillPartWrongTracking label="Gap Fill Part Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	
+	<delimiters type="group" label="Delimiters" optional="true">
+		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
+		<answerDelimiter label="Correct Answer" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
+		<noiseDelimiter label="Distractor" type="textInput" defaultValue=" " optional="true" tooltip="The character used to separate distractors"/>
+		<dropDownDelimiter label="Drop Down Menu Option" type="textInput" defaultValue="/" optional="true" tooltip="The character separating the options that will appear within a drop down menu, e.g. |England/Scotland/Wales|, where the first in the list is the correct answer"/>
+	</delimiters>
+	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <noise label="Distractors" type="script" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
-	<mainDelimiter label="Marked Word Delimiter" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
-	<answerDelimiter label="Correct Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
-	<noiseDelimiter label="Distractor Delimiter" type="textInput" defaultValue=" " optional="true" tooltip="The character used to separate distractors"/>
-	<dropDownDelimiter label="Drop Down Menu Option Delimiter" type="textInput" defaultValue="/" optional="true" tooltip="The character separating the options that will appear within a drop down menu, e.g. |England/Scotland/Wales|, where the first in the list is the correct answer"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
@@ -1024,12 +1042,18 @@
 	<drag label="Drop Label Action" type="ComboBox" options="Insert,Replace" data="insert,replace"/>
 	
 	<url label="CSV File" type="Media" optional="true"/>
-	<fixedRows label="Fixed Rows" type="TextInput" defaultValue="Enter numbers of any fixed rows here (e.g. 1,3)" optional="true"/>
-	<fixedCols label="Fixed Columns" type="TextInput" defaultValue="Enter numbers of any fixed columns here (e.g. 1,3)" optional="true"/>
-	<fixedCells label="Fixed Labels" type="TextInput" defaultValue="Enter reference to fixed individual cells here (e.g. 1,3|2,5)" optional="true"/>
-	<header label="Header Row/Column" options="None,First Row,First Column,First Row and Column" type="ComboBox" data="none,row,col,both" defaultValue="none" optional="true"/>
-    <shadeHeader label="Shade Header Row/Column" type="Checkbox" defaultValue="true" optional="true"/>
-    <shade label="Shade Alternate Rows" type="Checkbox" defaultValue="true" optional="true"/>
+	
+	<fix type="group" label="Fixed Cells" optional="true">
+		<fixedRows label="Rows" type="TextInput" defaultValue="Enter numbers of any fixed rows here (e.g. 1,3)" optional="true"/>
+		<fixedCols label="Columns" type="TextInput" defaultValue="Enter numbers of any fixed columns here (e.g. 1,3)" optional="true"/>
+		<fixedCells label="Cells" type="TextInput" defaultValue="Enter reference to fixed individual cells here (e.g. 1,3|2,5)" optional="true"/>
+	</fix>
+	
+	<display type="group" label="Table Appearance" optional="true">
+		<header label="Header Row/Column" options="None,First Row,First Column,First Row and Column" type="ComboBox" data="none,row,col,both" defaultValue="none" optional="true"/>
+		<shadeHeader label="Shade Header Row/Column" type="Checkbox" defaultValue="false" optional="true"/>
+		<shade label="Shade Alternate Rows" type="Checkbox" defaultValue="false" optional="true"/>
+	</display>
 	
 	<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -1116,10 +1140,12 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 	
-	<mcqType label="MCQ Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
-	<mcqFB label="MCQ Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
-	<mcqNumQs label="MCQ Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
-	<mcqNumAs label="MCQ Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	<mcqOptions type="group" label="MCQ" optional="true">
+		<mcqType label="Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
+		<mcqFB label="Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
+		<mcqNumQs label="Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+		<mcqNumAs label="Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	</mcqOptions>
 	
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt2 label="Show Me Instructions" type="TextInput" wysiwyg="true" language="true"/>
@@ -1200,8 +1226,10 @@
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
 
-    <image label="Image" type="Media" optional="true"/>
-	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<image label="Image" type="Media" optional="true" defaultValue="Select an Image"/>
+		<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
 
     <newNodes>
       <invOption><![CDATA[<invOption name="Option" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
@@ -1297,9 +1325,11 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" deprecated="This property is deprecated."/>
-	  
-    <url label="Image" type="media" optional="true"/>
-    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<imgInfo type="group" label="Image" optional="true">
+		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
 	
   </listItem><map icon="icMap" menu="Misc" menuItem="Google Map" hint="Use the map to include an interactive map in the presentation. You can add optional layers of KML data to the map." thumb="thumbs/googleMap.jpg" remove="true" deprecated="This page is no longer supported">
 
@@ -1399,11 +1429,14 @@
 		<tip label="Media Description" type="TextInput"/>
 		<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		
-		<audioImage label="Image (Audio only)" type="media" optional="true"/>
-		<audioImageTip label="Image Description (Audio only)" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<audioImg type="group" label="Image (Audio only)" optional="true">
+			<audioImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</audioImg>
+		
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-		<audioPosition label="Media Position (Audio only)" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
+		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
@@ -1492,9 +1525,12 @@
 		<url label="Image" type="media"/>
 		<synchStart label="Synch Point" type="TextInput"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<caption label="Caption" type="TextInput" wysiwyg="true" optional="true"/>
-		<captionPosV label="Caption Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
-		<captionPosH label="Caption Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
+		
+		<captionOptions type="group" label="Caption" optional="true">
+			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
+			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
+			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
+		</captionOptions>
 		
 	</synchSlide><synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
 		
@@ -1506,8 +1542,10 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		
-		<audioImage label="Image (Audio only)" type="media" optional="true"/>
-		<audioImageTip label="Image Description (Audio only)" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		<audioImg type="group" label="Image (Audio only)" optional="true">
+			<audioImage label="Image" type="media" optional="true"/>
+			<audioImageTip label="Description" type="textInput" defaultValue="Enter a Description for Accessibility" optional="true"/>
+		</audioImg>
 		
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
@@ -1626,8 +1664,10 @@
 		<lng label="Longitude" type="TextInput"/>
 		<location label="Location" type="TextInput"/>
 		
-		<heading label="Orientation: Horizontal (Street view only)" type="TextInput" defaultValue="0" optional="true"/>
-		<pitch label="Orientation: Vertical (Street view only)" type="TextInput" defaultValue="1" optional="true"/>
+		<orientation type="group" label="Orientation (Street view only)" optional="true">
+			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
+			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
+		</orientation>
 		
 		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
 		
@@ -1650,8 +1690,11 @@
 		<lng label="Longitude" type="TextInput"/>
 		<location label="Location" type="TextInput"/>
 		
-		<heading label="Horizontal Orientation (Street view only)" type="TextInput" defaultValue="0" optional="true"/>
-		<pitch label="Vertical Orientation (Street view only)" type="TextInput" defaultValue="1" optional="true"/>
+		<orientation type="group" label="Orientation (Street view only)" optional="true">
+			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
+			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
+		</orientation>
+		
 		<tween label="Tween (Street view only)" type="CheckBox" defaultValue="false" optional="true"/>
 		<interval label="Tween Interval (Street view only)" type="TextInput" defaultValue="1000" optional="true"/>
 		
@@ -1705,8 +1748,12 @@
     <copypasteinfo label="Copy and Paste Info (Flash)" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required"/>
 	<copypasteinfo2 label="Copy and Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
-    <image label="Image" type="media" optional="true"/>	
-    <tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<imgInfo type="group" label="Image" optional="true">
+		<image label="Image" type="media" optional="true" defaultValue="Select an Image"/>	
+		<tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
   <narrate type="group" label="Narration" optional="true">
@@ -1835,26 +1882,36 @@
 	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<img label="Image" type="media" optional="true"/>
     <tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<useVidThumb label="1st Frame as Thumbnail" type="Checkbox" optional="true"/>
-	<pageLink label="Page Link" type="pageList" defaultValue="" optional="true"/>
-	<pageLinkTxt label="Page Link Text" type="textInput" wysiwyg="true" optional="true"/>
+	<useVidThumb label="1st Frame as Thumbnail" type="Checkbox" defaultValue="true" optional="true"/>
+	
+	<linkInfo type="group" label="Page Link" optional="true">
+		<pageLink label="Page" type="pageList" optional="true"/>
+		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
+	</linkInfo>
   </movie><sound menuItem="Sound" icon="icSound" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Sound" type="media"/>
 	
-    <img label="Image" type="media" optional="true"/>
-    <tooltip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-	<pageLink label="Page Link" type="pageList" defaultValue="" optional="true"/>
-	<pageLinkTxt label="Page Link Text" type="textInput" wysiwyg="true" optional="true"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<img label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
+	<linkInfo type="group" label="Page Link" optional="true">
+		<pageLink label="Page" type="pageList" optional="true"/>
+		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
+	</linkInfo>
   </sound><image menuItem="Image" icon="icImage" duplicate="true" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Image File" type="media"/>
     <tooltip label="Image Description" type="TextInput"/>
 	
-	<pageLink label="Page Link" type="pageList" defaultValue="" optional="true"/>	
-	<pageLinkTxt label="Page Link Text" type="textInput" wysiwyg="true" optional="true"/>
+	<linkInfo type="group" label="Page Link" optional="true">
+		<pageLink label="Page" type="pageList" optional="true"/>
+		<pageLinkTxt label="Text" type="textInput" wysiwyg="true" defaultValue="Enter Text for Link" optional="true"/>
+	</linkInfo>
   </image><quiz menu="Interactivity" menuItem="Quiz" icon="icPageWhiteGear" remove="true" thumb="thumbs/quiz.jpg" hint="Present a formative assessment comprising a series of questions with multiple answer options. Each question can have one or more correct answers.">
     <name label="Quiz Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
@@ -1885,10 +1942,16 @@
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
-	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
-	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <video label="Video" type="media" optional="true"/>
-	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
+	<videoInfo type="group" label="Video" optional="true">
+		<video label="Video" type="media" defaultValue="Select a Video" optional="true"/>
+		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
+	</videoInfo>
+	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
@@ -1905,8 +1968,12 @@
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-    <image label="Image" type="Media" optional="true"/>
-    <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<imgInfo type="group" label="Image" optional="true">
+		<image label="Image" type="Media" defaultValue="Select an Image" optional="true"/>
+		<tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
@@ -2387,16 +2454,22 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <size label="Text Size" options="20,24,30,36,40,48,70" type="ComboBox" data="20,24,30,36,40,48,70" defaultValue="30" width="100"/> 
 	
-    <bgImage label="Background Image" type="media" optional="true"/>
-    <bgImageAlpha label="Background Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="50" optional="true"/>
-	<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Darkness"/>
-	<bgImageGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
-    <bgImageVAlign label="Background Vert Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
-    <bgImageHAlign label="Background Horiz Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,centre,right" defaultValue="centre" optional="true"/>
-    <bgImageVConstrain label="Background Max Height" type="NumericStepper" min="10" max="500" step="10" defaultValue="500" optional="true"/>
-    <bgImageHConstrain label="Background Max Width" type="NumericStepper" min="10" max="800" step="10" defaultValue="800" optional="true"/>
-    <titleVAlign label="Title Vertical Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
-    <titleHAlign label="Title Horizontal Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
+	<background type="group" label="Background" optional="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="100" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+		<bgImageVAlign label="Vert Align" options="Top,Middle,Bottom" type="ComboBox" width="120" data="top,middle,bottom" defaultValue="middle" optional="true"/>
+		<bgImageHAlign label="Horiz Align" options="Left,Centre,Right" type="ComboBox" width="120" data="left,centre,right" defaultValue="centre" optional="true"/>
+		<bgImageVConstrain label="Max Height" type="NumericStepper" min="10" max="500" step="10" defaultValue="" optional="true"/>
+		<bgImageHConstrain label="Max Width" type="NumericStepper" min="10" max="800" step="10" defaultValue="" optional="true"/>
+	</background>
+	
+	<align type="group" label="Title Alignment" optional="true">
+		<titleVAlign label="Vertical" options="Top,Middle,Bottom" type="ComboBox" width="120" data="20,200,400" defaultValue="200" optional="true"/>
+		<titleHAlign label="Horizontal" options="Left,Centre,Right" type="ComboBox" width="120" data="left,center,right" defaultValue="center" optional="true"/>
+	</align>
+	
     <titleTextColour label="Title Text Colour" type="ColourPicker" defaultValue="0x016A71" optional="true" deprecated="This property is deprecated. You can change the title's colour in the text toolbar."/>
 
   <narrate type="group" label="Narration" optional="true">
@@ -2449,11 +2522,12 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
-	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
-    <link label="Specified URL" type="textInput"/>
-	  
-    <url label="Image" type="media" optional="true"/>
-    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<imgInfo type="group" label="Image" optional="true">
+		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
 	<synch label="Synch Point" type="TextInput"/>
     
   </videoSynchPoint><wiki menuItem="Wikipedia Article" menu="Misc" hint="Include Wikipedia articles in your presentation." thumb="thumbs/wiki.jpg" icon="icGreenFeed" remove="true" deprecated="This page is no longer supported">
@@ -2472,10 +2546,12 @@
     <text label="Instructions" type="TextArea" height="100"/>
     <words label="Words" type="script" height="100"/>
 	
-	<colour1 label="Select Colour" type="ColourPicker" defaultValue="0xFFA500" optional="true"/>
-	<colour2 label="Found Colour" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
-	<colour3 label="Complete Colour" type="ColourPicker" defaultValue="0x800080" optional="true"/>
-	<colour4 label="Solved Colour" type="ColourPicker" defaultValue="0x008000" optional="true"/>
+	<colours type="group" label="Colours" optional="true">
+		<colour1 label="Select" type="ColourPicker" defaultValue="0xFFA500" optional="true"/>
+		<colour2 label="Found" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
+		<colour3 label="Complete" type="ColourPicker" defaultValue="0x800080" optional="true"/>
+		<colour4 label="Solved" type="ColourPicker" defaultValue="0x008000" optional="true"/>
+	</colours>
 	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
