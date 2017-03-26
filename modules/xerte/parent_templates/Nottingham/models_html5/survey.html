@@ -18,15 +18,17 @@
 			
 			var resized = false;
 			
-			if ($("#questionAudio").children().length > 0)
+			var questionAudio = $("#questionAudio");
+
+			if (questionAudio.children().length > 0)
 			{
 				if (resized == false)
 				{
 					var audioBarW = 0;
-					$("#questionAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
+					questionAudio.find(".mejs-inner").find(".mejs-controls").children().each(function() {
 						audioBarW += $(this).outerWidth();
 					});
-					if (audioBarW < $("#questionAudio").width() - 5 || audioBarW > $("#questionAudio").width() + 5)
+					if (audioBarW < questionAudio.width() - 5 || audioBarW > questionAudio.width() + 5)
 					{
 						resized = true;
 						$x_window.resize();
@@ -34,7 +36,9 @@
 				}
 			}
 			
-			if ($("#pageContents .audioHolder").length > 0)
+			var audioHolder = $("#pageContents .audioHolder");
+
+			if (audioHolder.length > 0)
 			{
 				if (resized == false)
 				{
@@ -43,7 +47,7 @@
 						audioBarW += $(this).outerWidth();
 					});
 					
-					if (audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() < -2 || audioBarW - $("#pageContents .audioHolder").parents("#mainPanel").width() > 2)
+					if (audioBarW - audioHolder.parents("#mainPanel").width() < -2 || audioBarW - audioHolder.parents("#mainPanel").width() > 2)
 					{
 						resized = true;
 						$x_window.resize();
@@ -52,7 +56,7 @@
 			}
 			
 			$("#qTxt").width($panel.width());
-		}
+		};
 		
 		this.loadAudio = function(soundFile)
 		{
@@ -64,7 +68,7 @@
 					width	:"100%"
 				});
 			}
-		}
+		};
 		
 		this.startQuestions = function()
 		{
@@ -129,7 +133,7 @@
             	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }
             catch (e) {}			
-		}
+		};
 		
 		this.loadQuestion = function()
 		{
@@ -181,8 +185,8 @@
 					var $sliderHolder = $("#sliderHolder"),
 						$labelHolder = $("#labelHolder"),
 						$rangeHolder = $("#rangeHolder");
-					
-					$labelHolder.html('<label class="optionTxt" /> ');
+
+					$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
 					var $optionTxt = $labelHolder.find(".optionTxt"),
 						$checkBtn = $("#checkBtn"),
 						$feedback = $("#feedback"),
@@ -193,11 +197,12 @@
 					$checkBtn.button("disable");
 					var max = $($thisQ).children().length - 1;
 					//TODO get the name of the label instead of the index as slideroutput
-					$rangeHolder.html('<form oninput="sliderOutput.value = slider1.valueAsNumber"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
+					$rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
 
 					$.each($($thisQ).children(), function(index, value)
 					{
-						var $thisOptionTxt, $thisOption, $thisOptionText;
+						var $thisOptionTxt;
+
 						if (index != 0)
 						{
 							$thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
@@ -207,21 +212,29 @@
 						{
 							$thisOptionTxt = $optionTxt;
 						}
-						
-						//TODO add href to label div and update slider when pressed
-						
+
 						$checkBtn.button("enable");
 						$("#nextBtn").button("disable");
 
 						$thisOptionTxt
 							.attr("for", "option" + index)
-							.data("option", $thisOption)
 							.html(x_addLineBreaks(value.getAttribute("name")));
-							
+
+						$thisOptionTxt[0].onclick = function()
+						{
+						    $("#slider1")[0].value = index;
+						    if (labelsHidden)
+							{
+							    updateBubble();
+							}
+						};
+
 						correctOptions.push(index + 1 + "");
 						correctAnswer.push(value.getAttribute("name"));
 					});
 					
+					var labelsHidden = false;
+
 					if ($labelHolder[0].childElementCount * $labelHolder[0].children[0].clientWidth > $labelHolder[0].clientWidth)
 					{
 						var numberOfOptions = $labelHolder[0].childElementCount;
@@ -229,10 +242,24 @@
 						{
 							$labelHolder[0].children[i].style.display = "none";
 						}
+						labelsHidden = true;
 						
 						$labelHolder[0].children[0].className += " leftLabel";
 						$labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
-						$("#slider1").after('<output name="sliderOutput" for="slider1" /> ');
+                        $("#slider1").after('<output id="sliderOutput1" for="slider1" /> ');
+						$rangeHolder.find("#form1")[0].oninput = function()
+						{
+						    updateBubble();
+						};
+					}
+
+					function updateBubble()
+					{
+                        var index = $("#slider1")[0].valueAsNumber,
+							sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
+
+                        sliderOutput.value = $labelHolder[0].children[index].innerHTML;
+                        sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
 					}
 					
 					var name = $thisQ.getAttribute("prompt");
@@ -242,11 +269,16 @@
 						name = $thisQ.getAttribute("name");
 					}
 
+					if (labelsHidden)
+					{
+					    updateBubble();
+                    }
+
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, correctFeedback);
 					survey.checked = false;
 				}
 			}
-		}
+		};
 		
 		this.pageChanged = function()
 		{
@@ -254,7 +286,7 @@
 			{
 				this.startQuestions();
 			}
-		}
+		};
 		
 		this.leavePage = function()
 		{
@@ -270,7 +302,7 @@
 					this.trackSurvey();
 				}
 			}
-		}
+		};
 		
 		this.trackQuestion = function()
 		{
@@ -365,7 +397,7 @@
             	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }
             catch (e) {}
-		}
+		};
 		
 		this.trackSurvey = function()
 		{
@@ -401,7 +433,7 @@
 
             XTSetPageScore(x_currentPage, myScore);
             survey.checked = true;
-		}
+		};
 		
 		function calcPercentage(index, count)
 		{
@@ -572,7 +604,7 @@
 			this.sizeChanged();
 			x_pageLoaded();			
 		}
-	}
+	};
 
 	survey.init();
 </script>
@@ -597,12 +629,13 @@
 	margin: 0;
 }
 
-#sliderHolder #labelHolder label
+#sliderHolder #labelHolder a
 {
 	display: inline-block;
 	text-align: center;
 	margin: 0 0.2em;
 	width: 4em;
+	text-decoration: none;
 }
 
 #sliderHolder #labelHolder .leftLabel
@@ -614,7 +647,6 @@
 {
 	text-align: right;
 }
-
 
 #sliderHolder #labelHolder:after {
 	content: '';
@@ -628,6 +660,11 @@
 	background-color: #d3d3d3;
 	border-radius: 2em;
 	height: 20px;
+}
+
+#sliderHolder #rangeHolder output
+{
+	position: relative;
 }
 
 </style>
