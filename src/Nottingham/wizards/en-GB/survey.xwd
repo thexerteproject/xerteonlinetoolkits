@@ -12,7 +12,7 @@
   </pageWizard>
 
   <!-- SURVEY=============================== -->  
-    <survey menu="Interactivity" menuItem="Survey" icon="icPageWhiteGear" remove="true" thumb="thumbs/survey.jpg" hint="Create a survey with question that can be answered on a selectable scale.">
+    <survey menu="Interactivity" menuItem="Survey" icon="icOpinion" remove="true" thumb="thumbs/survey.jpg" hint="Create a survey with question that can be answered on a selectable scale.">
     <name label="Survey Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
