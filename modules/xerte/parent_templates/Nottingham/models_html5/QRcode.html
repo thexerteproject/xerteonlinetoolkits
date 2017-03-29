@@ -33,6 +33,14 @@
 		}
 		
 		this.init = function() {
+			// Load in the required scripts before we can begin
+			$script.path(x_templateLocation + 'common_html5/js/qrcode/');
+			$script(['qrcode.min.js'], function () {
+				QRcode.begin();
+			});
+		}
+		
+		this.begin = function () {
 			var pastedurl	= encodeURIComponent(x_currentPageXML.getAttribute("url")),
 				shorturl = "rss_proxy.php?rss=https://is.gd/api.php?longurl=" + pastedurl;
 			
@@ -55,33 +63,36 @@
 					$("#pageContents .panel").addClass("x_floatRight");
 				}
 			}
+
+			// Work out the correct sizes
+			var size = {
+				width : 400, // desktop / tablet
+				height : 400
+			};
+			if (x_browserInfo.mobile == true) {
+				size = {
+					width : 250,
+					height : 250
+				}
+			}
+			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
+				size.height -= x_audioBarH;
+			}
 			
-			
-			$("#pageImg")
-				.one("load", function() {
-					// image scaling
-					var imgMaxW = 500, // desktop / tablet
-						imgMaxH = 400;
-					if (x_browserInfo.mobile == true) {
-						imgMaxW = 250; // mobile
-						imgMaxH = 250;
-					}
-					if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
-						imgMaxH -= x_audioBarH;
-					}
-					
-					x_scaleImg(this, imgMaxW, imgMaxH, true, true);
-					QRcode.loadAudio(true);
-				})
+			// Create the QRcode
+			var qrcode = new QRCode(document.getElementById("qrcode"), size);
+			qrcode.makeCode(x_currentPageXML.getAttribute("url"));
+			QRcode.loadAudio(true);
+
+			$('#qrcode img')
 				.attr({
-					"src":	"http://splashurl.net/qr.png?q=" + pastedurl + "&s=12",
 					"alt":	x_currentPageXML.getAttribute("tip")
-				})
-				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-					if (this.complete) {
-						$(this).trigger("load");
-					}
 				});
+			$('#qrcode')
+				.attr({
+					"title":	x_currentPageXML.getAttribute("tip")
+				});
+
 		}
 		
 		this.loadAudio = function(firstLoad) {
@@ -109,7 +120,7 @@
 	<div id="imgHolder" class="mobileAlign">
 		<div class="panel inline">
             <div id="shorturltodisplay"></div>
-			<img id="pageImg" style="visibility: hidden" />
+			<div id="qrcode"></div>
 			<div id="pageAudio"></div>
 		</div>
 	</div>
