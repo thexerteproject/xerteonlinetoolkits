@@ -39,7 +39,8 @@ var x_languageData  = [],
     x_mediaText     = [],
     x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
-	x_responsive = []; // list of any responsivetext.css files in use
+	x_responsive = [], // list of any responsivetext.css files in use
+	x_cssFiles = [];
 
 if (typeof modelfilestrs == 'undefined')
 {
@@ -2312,13 +2313,16 @@ function x_insertCSS(href, func, disable, id) {
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
 		css.onload = function() {
-			if (href.indexOf("responsivetext.css") >= 0) {
-				x_responsive.push(this);
-				if (disable == true) {
-					$(this).prop("disabled", true);
+			if (x_cssFiles.indexOf(this) == -1) {
+				x_cssFiles.push(this);
+				if (href.indexOf("responsivetext.css") >= 0) {
+					x_responsive.push(this);
+					if (disable == true) {
+						$(this).prop("disabled", true);
+					}
 				}
+				func();
 			}
-			func();
 		};
 		
 		css.onerror = function(){
