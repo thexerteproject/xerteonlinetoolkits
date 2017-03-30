@@ -1267,7 +1267,9 @@ function x_lookupPage(pageType, pageID) {
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
 
-	// Setup css correctly
+	// Prevent content from behaving weird as we remove css files
+    $("#pageContents").html("");
+    // Setup css correctly
 	$("#page_model_css").remove();
 	$("#page_theme_css").remove();
 	var modelfile = x_pageInfo[x_gotoPage].type;
