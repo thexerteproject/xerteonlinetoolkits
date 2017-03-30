@@ -18,4 +18,7 @@
 		border: 2px solid #FF9900;
 		font-weight: bold;
 	}
-	
+
+	#menuItems .menuItem .notvisited {
+		display: none;
+	}
