@@ -101,6 +101,13 @@ $(document).ready(function() {
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
         x_browserInfo.iOS = true;
+		if (navigator.userAgent.match(/iPad/i) != null) {
+			x_browserInfo.Device = "iPad";
+		}
+		else
+		{
+			x_browserInfo.Device = "iPhone";
+		}
     }
     if (navigator.userAgent.match(/Android/i) != null)
     {
@@ -108,7 +115,7 @@ $(document).ready(function() {
     }
 
     x_browserInfo.touchScreen = !!("ontouchstart" in window);
-    if (x_browserInfo.touchScreen == true) {
+    if (x_mobileDevice()) {
         x_fillWindow = true;
         if (window.orientation == 0 || window.orientation == 180) {
             x_browserInfo.orientation = "portrait";
@@ -160,6 +167,11 @@ $(document).ready(function() {
     }
 
 });
+
+x_mobileDevice = function()
+{
+	return x_browserInfo.touchScreen == true && x_browserInfo.Android && (x_browserInfo.iOS && x_browserInfo.Device != "iPad");
+}
 
 x_projectDataLoaded = function(xmlData) {
     var i, len;
@@ -445,7 +457,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_browserInfo.touchScreen == false) {
+	if (!x_mobileDevice()) {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
