@@ -1268,7 +1268,7 @@ function x_lookupPage(pageType, pageID) {
 function x_changePage(x_gotoPage) {
 
 	// Prevent content from behaving weird as we remove css files
-    $("#pageContents").html("");
+    $("#x_pageDiv").hide();
     // Setup css correctly
 	$("#page_model_css").remove();
 	$("#page_theme_css").remove();
@@ -1451,6 +1451,8 @@ function x_changePageStep3(x_gotoPage) {
 	x_doDeepLink();
 
     x_updateHash();
+
+    $("#x_pageDiv").show();
 }
 
 
