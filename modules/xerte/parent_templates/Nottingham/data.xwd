@@ -2737,7 +2737,7 @@
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 
     <newNodes>
-      <thumbnailImage><![CDATA[<thumbnailImage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link=""/>]]></thumbnailImage>
+      <thumbnailImage><![CDATA[<thumbnailImage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link="" tip="Enter a Description for Accessibility"/>]]></thumbnailImage>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true">
@@ -2758,7 +2758,7 @@
     <link label="Specified URL" type="textInput"/>
 	  
     <url label="Image" type="media"/>
-    <tip label="Image Description" type="textInput" optional="true" defaltValue="Enter a Description for Accessibility"/>
+    <tip label="Image Description" type="TextInput"/>
 
   </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
