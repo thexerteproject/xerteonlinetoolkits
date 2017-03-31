@@ -518,7 +518,7 @@ function x_desktopSetUp() {
 }
 
 function x_cssSetUp(param) {
-    param = (typeof param !== 'undefined') ?  param : "menu";
+	param = (typeof param !== 'undefined') ?  param : "menu";
 
 	switch(param) {
         case "menu":
@@ -602,7 +602,7 @@ function x_cssSetUp(param) {
             break;
         case "theme2":
             if (x_params.responsive == "true") {
-                // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
                 if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
                     x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
                         x_cssSetUp("stylesheet")
@@ -618,15 +618,15 @@ function x_cssSetUp(param) {
             break;
         case "stylesheet":
             if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp);
+                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp1);
             } else {
-                x_continueSetUp();
+                x_continueSetUp1();
             }
             break;
     }
 }
 
-function x_continueSetUp() {
+function x_continueSetUp1() {
 	if (x_params.styles != undefined){
 		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
 	}
@@ -1085,17 +1085,23 @@ function x_continueSetUp() {
 						"filter"	:"alpha(opacity=" + alpha + ")"
 					});
 				}
-				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "0") {
-					$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
-					$("#x_mainBgDarken").css({
-						"opacity"	:Number(x_params.backgroundDark/100),
-						"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
+				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+					$x_background.append('<div id="x_bgDarken" />');
+					$("#x_bgDarken").css({
+						"opacity" :Number(x_params.backgroundDark/100),
+						"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
 					});
 				}
+				
+				x_continueSetUp2();
+			} else {
+				x_continueSetUp2();
 			}
 		});
 	}
-	
+}
+
+function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
 	
@@ -1181,7 +1187,6 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
         }
         else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
         	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
-        		console.log((pageInfo.ID).substring(1, pageInfo.ID.length-1));
 				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
 					case "next":
 						if (x_currentPage < x_pages.length)
@@ -1266,7 +1271,6 @@ function x_lookupPage(pageType, pageID) {
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
-
 	// Prevent content from behaving weird as we remove css files
     $("#x_pageDiv").hide();
     // Setup css correctly
@@ -1324,7 +1328,19 @@ function x_changePageStep3(x_gotoPage) {
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
-        $("#pageBg, #pageBgDarken").remove();
+        $(".pageBg").hide();
+		
+		if ($("#x_mainBg").length > 0 && $("#x_bgDarken").length > 0 && x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+			$("#x_bgDarken")
+				.css({
+					"opacity" :Number(x_params.backgroundDark/100),
+					"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
+				})
+				.show();
+		} else {
+			$("#x_bgDarken").hide();
+		}
+		
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
@@ -1387,6 +1403,25 @@ function x_changePageStep3(x_gotoPage) {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
+		
+		// show page background & hide main background
+		if ($(".pageBg#page" + x_currentPage).length > 0) {
+			$(".pageBg#page" + x_currentPage).show();
+			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+				$("#x_bgDarken")
+					.css({
+						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
+						"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
+					})
+					.show();
+			} else {
+				$("#x_bgDarken").hide();
+			}
+			
+			if ($("#x_mainBg").length > 0 && $(".pageBg#page" + x_currentPage).length > 0) {
+				$("#x_mainBg").hide();
+			}
+		}
 
         x_setUpPage();
 
@@ -1416,33 +1451,59 @@ function x_changePageStep3(x_gotoPage) {
                 }
             }
         }
+		
     // x_currentPage hasn't been viewed previously - load model file
-    }
-    else {
-        $x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
-        $("#x_page" + x_currentPage).css("visibility", "hidden");
+    } else {
+		function loadModel() {
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-        if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
-			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
-			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
-			} else {
-				x_findText(x_currentPageXML);
+			if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
+				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+					x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
+				} else {
+					x_findText(x_currentPageXML);
+				}
 			}
-        }
 
-        // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-        XTEnterPage(x_currentPage, pageTitle);
+			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
+			XTEnterPage(x_currentPage, pageTitle);
 
-        var modelfile = x_pageInfo[x_currentPage].type;
-        if (typeof modelfilestrs[modelfile] != 'undefined')
-        {
-            $("#x_page" + x_currentPage).html(modelfilestrs[modelfile]);
-            x_loadPage("", "success", "");
-        }
-        else {
-            $("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
-        }
+			var modelfile = x_pageInfo[x_currentPage].type;
+			if (typeof modelfilestrs[modelfile] != 'undefined')
+			{
+				$("#x_page" + x_currentPage).html(modelfilestrs[modelfile]);
+				x_loadPage("", "success", "");
+			}
+			else {
+				$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
+			}
+		}
+		
+		// show page background & hide main background
+		if (x_currentPageXML.getAttribute("bgImage") != undefined) {
+			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
+				if (mediaExists) {
+					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
+						// load css for jquery greyscale plugin if not already loaded
+						if (!$("link[href='" + x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css']").length) {
+							x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", x_loadPageBg(loadModel));
+						} else {
+							// css required will already be loaded (either already loaded for this title page or already loaded for LO bg image)
+							x_loadPageBg(loadModel);
+						}
+					} else {
+						x_loadPageBg(loadModel);
+					}
+				} else {
+					loadModel();
+				}
+			});
+			
+		} else {
+			loadModel();
+		}
     }
 
     // Queue reparsing of MathJax - fails if no network connection
@@ -1680,6 +1741,110 @@ function x_addCountdownTimer() {
         $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
         x_timer = setInterval(x_countdownTicker, 1000);
     }
+}
+
+
+// function adds individual page backgrounds & sets up all the attributes of it (opacity, size etc.)
+function x_loadPageBg(loadModel) {
+	// vertical/horizontal align & max/min height optional properties are only in title page xwd
+	var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain"),
+		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
+		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
+	
+	var $pageBg = $('<img id="page' + x_currentPage + '" class="pageBg"/>');
+	$pageBg
+		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
+		.css({
+			"opacity"		:Number(alpha/100),
+			"filter"		:"alpha(opacity=" + alpha + ")",
+			"visibility"	:"hidden"
+		})
+		.addClass(x_currentPageXML.getAttribute("bgImageGrey") == "true" ? "grayscale" :"")
+		.one("load", function() {
+			var $this = $(this);
+			setTimeout(function(){
+				if ((vConstrain != undefined && vConstrain != "" && vConstrain != "0") || (hConstrain != undefined && hConstrain != "" && hConstrain != "0")) {
+					var imgMaxW = 800,
+						imgMaxH = 500;
+					
+					if (hConstrain != undefined && hConstrain != "" && hConstrain != "0") {
+						imgMaxW = Number(hConstrain);
+					}
+					if (vConstrain != undefined && vConstrain != "" && vConstrain != "0") {
+						imgMaxH = Number(vConstrain);
+					}
+					
+					x_scaleImg($this[0], imgMaxW, imgMaxH, true, false, true);
+					
+					var vAlign = x_currentPageXML.getAttribute("bgImageVAlign") != undefined ? x_currentPageXML.getAttribute("bgImageVAlign") : "middle",
+						hAlign = x_currentPageXML.getAttribute("bgImageHAlign") != undefined ? x_currentPageXML.getAttribute("bgImageHAlign") : "centre";
+					
+					if (vAlign == "middle" || vAlign == "bottom") {
+						var topValue = "50%",
+							topMargin = 0 - Math.round($this.height() / 2);
+						
+						if (vAlign == "bottom") {
+							topValue = "100%"
+							topMargin = 0 - $this.height();
+						}
+						$this.css({
+							"top"			:topValue,
+							"margin-top"	:topMargin
+						})
+					}
+					if (hAlign == "centre" || hAlign == "right") {
+						var leftValue = "50%",
+							leftMargin = 0 - Math.round($this.width() / 2);
+						
+						if (hAlign == "right") {
+							leftValue = "100%"
+							leftMargin = 0 - $this.width();
+						}
+						$this.css({
+							"left"			:leftValue,
+							"margin-left"	:leftMargin
+						})
+					}
+				} else {
+					$this.css("visibility", "visible");
+				}
+			}, 0);
+			
+			if (loadModel != undefined) { loadModel() };
+		})
+		.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+			if (this.complete) {
+				$(this).trigger("load");
+			}
+		});
+	
+	$x_background.prepend($pageBg);
+	
+	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);
+		
+		$bgDarken
+			.css({
+				"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
+				"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
+			})
+			.show();
+	} else {
+		$("#x_bgDarken").hide();
+	}
+	
+	$pageBg.fadeIn();
+	
+	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
+		$pageBg.gray();
+		if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+			$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
+			$pageBg = $("#pageBg");
+			$pageBg.css("visibility", "visible");
+		}
+	}
+	
+	$("#x_mainBg").hide();
 }
 
 

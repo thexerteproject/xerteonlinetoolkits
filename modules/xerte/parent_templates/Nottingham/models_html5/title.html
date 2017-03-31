@@ -23,7 +23,7 @@
 	var title = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			this.setUpBg();
+			
 		}
 		
 		// function called every time the size of the LO is changed
@@ -77,7 +77,7 @@
 				}
 			}
 			
-			title.setUpBg(true);
+			x_pageLoaded();
 		}
 		
 		this.responsiveTitle = function() {
@@ -85,125 +85,6 @@
 				$(".titlePageTxt").css("font-size", "");
 			} else {
 				$(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");
-			}
-		}
-		
-		this.setUpBg = function(firstLoad) {
-			// bg image needs loading
-			if (x_currentPageXML.getAttribute("bgImage") != undefined) {
-				if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
-					// uses a jquery plugin as just css way won't work in all browsers
-					if ((x_params.backgroundgrey == "true" && x_params.background != undefined && x_params.background != "") || firstLoad != true) {
-						// css required will already be loaded (either already loaded for this title page or already loaded for LO bg image)
-						this.loadBg(firstLoad);
-					} else {
-						x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", title.loadBg(firstLoad));
-					}
-				} else {
-					this.loadBg(firstLoad);
-				}
-				
-			// no bg image - 1st load
-			} else if (firstLoad == true) {
-				x_pageLoaded();
-			}
-		}
-		
-		this.loadBg = function(firstLoad) {
-			var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain"),
-				hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
-				alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
-				
-			var $pageBg = $('<img id="pageBg"/>');
-			$pageBg
-				.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
-				.css({
-					"opacity"		:Number(alpha/100),
-					"filter"		:"alpha(opacity=" + alpha + ")",
-					"visibility"	:"hidden"
-				})
-				.addClass(x_currentPageXML.getAttribute("bgImageGrey") == "true" ? "grayscale" :"")
-				.one("load", function() {
-					var $this = $(this);
-					setTimeout(function(){
-						if ((vConstrain != undefined && vConstrain != "") || (hConstrain != undefined && hConstrain != "")) {
-							var imgMaxW = 800,
-								imgMaxH = 500;
-							
-							if (hConstrain != undefined) {
-								imgMaxW = Number(hConstrain);
-							}
-							if (vConstrain != undefined) {
-								imgMaxH = Number(vConstrain);
-							}
-							
-							x_scaleImg($this[0], imgMaxW, imgMaxH, true, false, true);
-							
-							var vAlign = x_currentPageXML.getAttribute("bgImageVAlign") != undefined ? x_currentPageXML.getAttribute("bgImageVAlign") : "middle",
-								hAlign = x_currentPageXML.getAttribute("bgImageHAlign") != undefined ? x_currentPageXML.getAttribute("bgImageHAlign") : "centre";
-							
-							if (vAlign == "middle" || vAlign == "bottom") {
-								var topValue = "50%",
-									topMargin = 0 - Math.round($this.height() / 2);
-								
-								if (vAlign == "bottom") {
-									topValue = "100%"
-									topMargin = 0 - $this.height();
-								}
-								$this.css({
-									"top"			:topValue,
-									"margin-top"	:topMargin
-								})
-							}
-							if (hAlign == "centre" || hAlign == "right") {
-								var leftValue = "50%",
-									leftMargin = 0 - Math.round($this.width() / 2);
-								
-								if (hAlign == "right") {
-									leftValue = "100%"
-									leftMargin = 0 - $this.width();
-								}
-								$this.css({
-									"left"			:leftValue,
-									"margin-left"	:leftMargin
-								})
-							}
-						} else {
-							$this.css("visibility", "visible");
-						}
-					}, 0);
-				})
-				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-					if (this.complete) {
-						$(this).trigger("load");
-					}
-				});
-			
-			$x_background.append($pageBg);
-			
-			if (x_currentPageXML.getAttribute("bgImageDark") != undefined) {
-				$x_background.append('<div id="pageBgDarken" class="bgDarken" />');
-				$("#pageBgDarken").css({
-					"opacity"	:Number(x_currentPageXML.getAttribute("bgImageDark")/100),
-					"filter"	:"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
-				});
-			}
-			
-			$pageBg.fadeIn();
-			
-			if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
-				$pageBg.gray();
-				if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-					$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
-					$pageBg = $("#pageBg");
-					$pageBg.css("visibility", "visible");
-				}
-			}
-			
-			$("#x_mainBg").hide(); // so it doesn't show through if title bg is transparent
-			
-			if (firstLoad == true) {
-				x_pageLoaded();
 			}
 		}
 	}
