@@ -1098,6 +1098,8 @@ function x_continueSetUp1() {
 				x_continueSetUp2();
 			}
 		});
+	} else {
+		x_continueSetUp2();
 	}
 }
 
