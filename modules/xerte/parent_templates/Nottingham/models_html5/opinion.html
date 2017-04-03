@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	var survey = new function()
+	var opinion = new function()
 	{
 		var currentQuestion,
 			resultShown,
@@ -150,7 +150,7 @@
 				var infoString = $thisQ.getAttribute("prompt");
 				
 				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-					survey.loadAudio($thisQ.getAttribute("sound"));
+					opinion.loadAudio($thisQ.getAttribute("sound"));
 				}
 				else
 				{
@@ -161,7 +161,7 @@
 				
 				if (url != undefined && url != "") {
 					var newString = "";
-					newString += '<img src="' + x_evalURL(url) + '" class="surveyImg"';
+					newString += '<img src="' + x_evalURL(url) + '" class="opinionImg"';
 					
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
 					{
@@ -275,7 +275,7 @@
                     }
 
 					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, correctFeedback);
-					survey.checked = false;
+					opinion.checked = false;
 				}
 			}
 		};
@@ -299,14 +299,14 @@
 				
 				if (!this.resultShown)
 				{
-					this.trackSurvey();
+					this.trackOpinion();
 				}
 			}
 		};
 		
 		this.trackQuestion = function()
 		{
-			var currentQ = $(x_currentPageXML).children()[survey.questions[survey.currentQuestion]];
+			var currentQ = $(x_currentPageXML).children()[opinion.questions[opinion.currentQuestion]];
 
             var selected = $('#slider1')[0].valueAsNumber,
             	options = currentQ.children;
@@ -349,15 +349,15 @@
 			generalFeedback += optionFeedback;	
 			l_feedback.push(options[selected].getAttribute("feedback"));			
             
-            var currentQuestionString = survey.currentQuestion + "";
+            var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
             
-			XTExitInteraction(x_currentPage, survey.questions[survey.currentQuestion], correct, l_options, l_answer, l_feedback);
-            survey.myProgress.splice(survey.currentQuestion, 1, correct);
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, l_feedback);
+            opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
             var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
             
-            if (survey.showfeedback)
+            if (opinion.showfeedback)
             {
                 $("#feedback")
 					.html(answerFeedback)
@@ -377,17 +377,17 @@
             else
             {
                 // Continue to next question
-                survey.currentQuestion++;
+                opinion.currentQuestion++;
                 
              	// If last question has been answered - show results, else continue
-                if (survey.currentQuestion == survey.questions.length)
+                if (opinion.currentQuestion == opinion.questions.length)
                 {
-                    survey.trackSurvey();
-                    survey.resultShown = true;
+                    opinion.trackOpinion();
+                    opinion.resultShown = true;
                 }
                 else
                 {
-                    survey.loadQuestion();
+                    opinion.loadQuestion();
                 }
             }
             
@@ -399,7 +399,7 @@
             catch (e) {}
 		};
 		
-		this.trackSurvey = function()
+		this.trackOpinion = function()
 		{
 			 // Last question answered - show results
             var $pageContents = $("#pageContents");
@@ -416,7 +416,7 @@
             
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
             
-            feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", survey.questions.length) + "</p>";
+            feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", opinion.questions.length) + "</p>";
 
             $("#feedback").html(feedbackText);
 			$("#questionAudio").empty();
@@ -432,7 +432,7 @@
             $("#qTxt").html("");
 
             XTSetPageScore(x_currentPage, myScore);
-            survey.checked = true;
+            opinion.checked = true;
 		};
 		
 		function calcPercentage(index, count)
@@ -514,7 +514,7 @@
 			{
 				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
 						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
-				$textHolder.append('<img class="surveyImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
 			}
 			
 			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
@@ -564,7 +564,7 @@
 				label: submitBtnText
 				})
 			.click(function() {
-				    survey.trackQuestion();                    
+				    opinion.trackQuestion();
                 });
 
 			$("#nextBtn")
@@ -574,15 +574,15 @@
 				.click(function() {
 					$(this).button("disable");
 					
-					survey.currentQuestion++;
-					if (survey.currentQuestion == survey.questions.length) {
+					opinion.currentQuestion++;
+					if (opinion.currentQuestion == opinion.questions.length) {
 	                    // last question answered - show results
-	                    survey.trackSurvey();
-	                    survey.resultShown = true;
+	                    opinion.trackOpinion();
+	                    opinion.resultShown = true;
 					}
 					else
 					{
-						survey.loadQuestion();
+						opinion.loadQuestion();
 					}
 	                // Queue reparsing of MathJax - fails if no network connection
 	                try
@@ -597,7 +597,7 @@
 					label: restartBtnText
 					})
 				.click(function() {
-					survey.startQuestions();
+					opinion.startQuestions();
 				});
 	
 			this.startQuestions();
@@ -606,7 +606,7 @@
 		}
 	};
 
-	survey.init();
+	opinion.init();
 </script>
 
 <style>

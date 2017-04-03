@@ -1,19 +1,19 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <survey><![CDATA[<survey name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"  
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  onCompletion="You have completed the exercise" score="You answered {i} / {n}" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></survey>      
+	  />]]></opinion>
     </newNodes>
   </pageWizard>
 
-  <!-- SURVEY=============================== -->  
-    <survey menu="Interactivity" menuItem="Survey" icon="icPageWhiteGear" remove="true" thumb="thumbs/survey.jpg" hint="Create a survey with question that can be answered on a selectable scale.">
-    <name label="Survey Title" type="TextInput" wysiwyg="true" />
+  <!-- OPINION=============================== -->
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icPageWhiteGear" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+    <name label="Opinion Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
@@ -42,12 +42,12 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <surveyQuestion><![CDATA[<surveyQuestion  name="Question" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></surveyQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
 	</newNodes>
 	
-  </survey>
+  </opinion>
 
-  <surveyQuestion menuItem="Question">
+  <opinionQuestion menuItem="Question">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
 
     <prompt label="Prompt" type="TextArea"  height="100"/>
@@ -57,15 +57,15 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <surveyOption><![CDATA[<surveyOption name="Option" text="Here is an option" />]]></surveyOption>
+      <opinionOption><![CDATA[<opinionOption name="Option" text="Here is an option" />]]></opinionOption>
     </newNodes>
 
-  </surveyQuestion>
+  </opinionQuestion>
 
-  <surveyOption menuItem="Option" icon="icBullet">
+  <opinionOption menuItem="Option" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
     <feedback label="Feedback" type="TextArea"  height="100" optional="true" />
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
-  </surveyOption>
+  </opinionOption>
   
 </wizard>
