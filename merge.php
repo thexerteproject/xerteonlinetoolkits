@@ -31,7 +31,6 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	$source_file = $source_folder . "/data.xml";
 	$target_file = $target_folder . "/data.xml";
 	
-	
 	$xmlTarget = new DOMDocument();
 	$xmlTarget->load($target_file);
 	$xmlSource = new DOMDocument();
@@ -99,7 +98,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 		$id->setAttribute("linkID", $mapping[$attr]);
 		$xmlSource = $id->ownerDocument;	
 	}
-	
+	copyMediaFolder($xmlSource, $source_folder . "/media/", $xmlTarget, $target_folder . "/media/", $source_pages);
 	foreach($source_pages as $page)
 	{
 
@@ -115,6 +114,8 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 
 	}
 	
+	
+	
 	$xmlTarget->save($target_folder . "/preview.xml");
 	$xmlTarget->save($target_file);
 
@@ -123,6 +124,95 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	file_put_contents($target_folder . "/preview.json.1", json_decode($xml));
 	
 
+}
+
+function copyMediaFolder($sourceXml, $source_media_folder, $targetXml, $target_media_folder, $source_pages)
+{
+	
+	$source_files = scandir($source_media_folder);
+	$target_files = scandir($target_media_folder);
+	$sourceXmlPath = new DOMXPath($sourceXml);
+	$files = array();
+	foreach($source_files as $file)
+	{
+		
+		if($file != '..' && $file != '.'){
+			$result = $sourceXmlPath->query("//*[@*[contains(.,'$file')]]");
+			
+			if($result->length >= 1) {
+				$files[$file] = array();
+				foreach($result as $res)
+				{
+					$x = $res;
+					while($x->parentNode->tagName != "learningObject")
+					{						
+						$x = $x->parentNode;
+					}
+					if(in_array(indexOf($x->parentNode->childNodes, $x), $source_pages)){
+						array_push($files[$file], $x);
+					}
+				}
+			}
+			
+		}		
+	}
+	foreach($files as $key => $file)
+	{
+		if(count($file) == 0)
+		{
+			unset($files[$key]);
+		}
+	}
+
+	$mappings = array();
+	foreach($files as $file => $nodes)
+	{
+		if(in_array($file, $target_files))
+		{
+			$new_file = $file;
+			while(in_array($new_file, $target_files) || in_array($new_file, $mappings) || isset($files[$new_file]))
+			{
+				$new_file_parts = explode("-", $new_file);
+				if(is_numeric($new_file_parts[0]))
+				{
+					$new_file_parts[0]++;
+					$new_file = implode("-", $new_file_parts);
+				}else{
+					$new_file = "1-" . $new_file;
+				}
+			}
+			$mappings[$file] = $new_file;
+			
+		}else{
+			$mappings[$file] = $file;
+		}
+	}
+
+	foreach($files as $file => $nodes)
+	{
+		$results = $sourceXmlPath->query("//@*[contains(.,'$file')]");
+		foreach($results as $result)
+		{
+			$result->value = str_replace($file, $mappings[$file], $result->value);
+		}	
+
+		copy($source_media_folder . $file, $target_media_folder . $mappings[$file]);
+	}
+		
+}
+
+function indexOf($nodes, $node)
+{
+	$index = 0;
+	foreach($nodes as $x)
+	{
+		if($x === $node)
+		{
+			return $index;
+		}
+		$index++;
+	}
+	return -1;
 }
 
 
@@ -148,6 +238,7 @@ function addNode($index, $node, $root)
 			$root->insertBefore($node, $item);
 		}
 }
+
 
 $source_project = $_GET["source_project"];
 $source_pages = explode(",", $_GET["source_pages"]);
