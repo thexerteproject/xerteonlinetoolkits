@@ -20,6 +20,10 @@
   
   <continueButton label="Continue" description="Continue Button"/>
   
+  <progressBar label="COMPLETE"/>
+  
+  <footerTools hide="Hide footer tools" show="Show footer tools"/>
+  
   <toc label="Table of Contents" description="Table of contents. Use the arrow keys to select a page. Press space to go to that page." htmlDescription="Use the tab key to select a page. Press space to go to that page.">
 	  <contentsList label="" description=""/>
 	  <closeButton label="" description="Close Table of Contents"/>

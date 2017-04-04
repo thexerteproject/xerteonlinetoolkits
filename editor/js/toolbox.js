@@ -394,16 +394,17 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-
+	
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
-        var deprecated = false;
+        var deprecated = false,
+			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
+		
         if (options != null)
         {
-            //var output_string;
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
@@ -417,7 +418,7 @@ var EDITOR = (function ($, parent) {
                         .attr('src', 'editor/img/deprecated.png')
                         .attr('title', options.deprecated)
                         .addClass("deprecated"));
-                if (options.optional == 'true') {
+                if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
                         .addClass('fa-trash')
@@ -438,7 +439,7 @@ var EDITOR = (function ($, parent) {
                     .append(td);
                 deprecated = true;
             }
-            else if (options.optional == 'true') {
+            else if (options.optional == 'true' && groupChild == false) {
                 var td = $('<td>')
                     .addClass("wizardoptional")
                     .append($('<i>')
@@ -485,14 +486,111 @@ var EDITOR = (function ($, parent) {
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
+			
             $(id).append(tr);
-            if (options.optional == 'true') {
+            if (options.optional == 'true' && groupChild == false) {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
                 });
             }
         }
+    },
+	
+	
+	displayGroup = function (id, name, options, key)
+    {
+		var tr = $('<tr><td colspan="3"/></tr>');
+		var group = $('<fieldset class="wizardgroup"></fieldset>').appendTo(tr.find('td'));
+		var legend = $('<legend></legend>').appendTo(group);
+		
+		if (options.deprecated) {
+			group.addClass("wizarddeprecated");
+			
+			legend
+				.append($('<img>')
+				.attr('id', 'deprbtn_' + name)
+				.attr('src', 'editor/img/deprecated.png')
+				.attr('title', options.deprecated)
+				.addClass("deprecated"));
+			
+			if (options.optional == 'true') {
+				legend.prepend($('<i>')
+					.attr('id', 'optbtn_' + name)
+					.addClass('fa')
+					.addClass('fa-trash')
+					.addClass("xerte-icon")
+					.height(14)
+					.addClass("optional"));
+			}
+			
+			legend.append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute")
+				.addClass("wizarddeprecated")
+			
+		} else if (options.optional == 'true') {
+			group.addClass("wizardoptional")
+			
+			legend
+				.append($('<i>')
+				.attr('id', 'optbtn_' + name)
+				.addClass('fa')
+				.addClass('fa-trash')
+				.addClass("xerte-icon")
+				.height(14)
+				.addClass("optional"));
+			
+			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute")
+			
+		} else {
+			group.addClass("wizardparameter");
+			
+			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute");
+		}
+		
+		$('<i class="fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		
+		legend.find('.legend_label').click(function() {
+			var $icon = $(this).find('i.fa');
+			var $fieldset = $(this).parents('fieldset');
+			
+			if ($fieldset.find('.table_holder').is(':visible')) {
+				$fieldset.find('.table_holder').slideUp(400, function() {
+					$icon
+						.removeClass('fa-caret-up')
+						.addClass('fa-caret-down');
+					
+					$fieldset.addClass('collapsed');
+				});
+				
+			} else {
+				$fieldset.find('.table_holder').slideDown(400);
+				
+				$icon
+					.removeClass('fa-caret-down')
+					.addClass('fa-caret-up');
+				
+				$fieldset.removeClass('collapsed');
+			}
+		});
+		
+		group.append('<div class="table_holder"><table id="groupTable_' + name + '" class="wizardgroup_table"/></div>');
+		
+		$(id).append(tr);
+		
+		if (options.optional == 'true') {
+			$("#optbtn_" + name).on("click", function () {
+				removeOptionalProperty(name, options.children);
+			});
+		}
     },
 
 
@@ -516,39 +614,51 @@ var EDITOR = (function ($, parent) {
 
     },
 
-    removeOptionalProperty = function (name) {
+    removeOptionalProperty = function (name, children) {
         if (!confirm('Are you sure?')) {
             return;
         }
 		
+		var toDelete = [];
+		
+		// if it's a group being deleted then remove all of its children
+		if (children) {
+			for (var i=0; i<children.length; i++) {
+				toDelete.push(children[i].name);
+			}
+		} else {
+			toDelete.push(name);
+		}
+		
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
 		
-		if (name == "hidePage") {
-			$("#" + key + " .hiddenImg").remove();
-			$("#" + key + " .hidden").contents().unwrap();
-			$("#" + key).each(function() {
-				var $this = $(this);
-				$this.html($this.html().replace(/&nbsp;/, ""));
-			});
+		for (var i=0; i<toDelete.length; i++) {
+			if (toDelete[i] == "hidePage") {
+				$("#" + key + " .hiddenImg").remove();
+				$("#" + key + " .hidden").contents().unwrap();
+				$("#" + key).each(function() {
+					var $this = $(this);
+					$this.html($this.html().replace(/&nbsp;/, ""));
+				});
+			}
+            if (toDelete[i] == "markForCompletion"){
+                $("#" + key + " .markCompletionImg").remove();
+                $("#" + key + " .hidden").contents().unwrap();
+                $("#" + key).each(function() {
+                    var $this = $(this);
+                    $this.html($this.html().replace(/&nbsp;/, ""));
+                });
+            }
+
+			if (toDelete[i] in lo_data[key]["attributes"])
+			{
+				delete lo_data[key]["attributes"][toDelete[i]];
+			};
 		}
-        if (name == "markForCompletion"){
-            $("#" + key + " .markCompletionImg").remove();
-            $("#" + key + " .hidden").contents().unwrap();
-            $("#" + key).each(function() {
-                var $this = $(this);
-                $this.html($this.html().replace(/&nbsp;/, ""));
-            });
-        }
-
-
-        if (name in lo_data[key]["attributes"])
-        {
-            delete lo_data[key]["attributes"][name];
-        };
-
-        console.log(lo_data[key]["attributes"]);
-
+		
+		console.log(lo_data[key]["attributes"]);
+		
         /**
          * TOR 20150614
          *
@@ -570,17 +680,19 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key);
     },
 
-    insertOptionalProperty = function (key, name, defaultvalue)
+    insertOptionalProperty = function (key, name, defaultvalue, load)
     {
-        // Place attribute
-        lo_data[key]['attributes'][name] = defaultvalue;
+		// Place attribute
+		lo_data[key]['attributes'][name] = defaultvalue;
 
-        // Enable the optional parameter button
-        $('#insert_opt_' + name)
-            .switchClass('enabled', 'disabled')
-            .prop('disabled', true);
-
-        parent.tree.showNodeData(key);
+		// Enable the optional parameter button
+		$('#insert_opt_' + name)
+			.switchClass('enabled', 'disabled')
+			.prop('disabled', true);
+		
+		if (load != false) {
+			parent.tree.showNodeData(key);
+		}
     },
 
     showToolBar = function(show){
@@ -1006,10 +1118,20 @@ var EDITOR = (function ($, parent) {
             if (options.options.type != 'script')
             {
                 $('#'+options.id).ckeditor(function(){
+                		var self = this;
                     // Editor is ready, attach change event
                     this.on('change', function(){
-                        inputChanged(options.id, options.key, options.name, this.getData(), this);
+                        inputChanged(options.id, options.key, options.name, self.getData(), self);
                     });
+										this.on('fileUploadResponse', function(e) {
+											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
+												e.removeListener();
+												inputChanged(options.id, options.key, options.name, self.getData(), self);	
+											});*/
+											setTimeout(function () {
+														self.fire('change');
+													}, 1500);
+										});
                 }, ckoptions);
             }
             else
@@ -1529,7 +1651,7 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        // console.log([key, names, values]);
+        //console.log([key, names, values]);
         // Get the node name
        if (names[0] == "hidePage") {
 			if (values[0] == "true") {
@@ -1576,7 +1698,7 @@ var EDITOR = (function ($, parent) {
         var node_options = wizard_data[node_name].node_options;
 
         $.each(names, function(i, name){
-            // console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
+            //console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
             if (node_options['cdata'] && node_options['cdata_name'] == name)
             {
                 lo_data[key]['data'] = values[i];
@@ -1673,7 +1795,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        // console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -1799,6 +1921,20 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
+	
+	previewFile = function(label, src)
+	{
+		// ** currently only previews images - need to allow other file types too
+		var $preview = $('<img class="previewFile"/>')
+				.on("error", function() {
+						$('.featherlight .previewFile')
+							.after('<p>' + language.compPreview.$error + '</p>')
+							.remove();
+					})
+				.attr("src", rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1))
+		
+		$.featherlight($preview);
+	},
 
     makeAbsolute = function(html){
         var temp = html;
@@ -1893,37 +2029,45 @@ var EDITOR = (function ($, parent) {
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];
-            $.each(lo_node.children, function(i, key){
-                var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-                var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-                var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-                {
-                    var page = [];
-                    // Also make sure we only take the text from the name, and not the full HTML
-                    page.push(getTextFromHTML(name.value));
-                    page.push(pageID.found ? pageID.value : linkID.value);
-                    pages.push(page);
+            
+            if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+            	pages = [
+            						['* first page *','[first]'],
+            						['* last page *','[last]'],
+            						['* previous page *','[previous]'],
+            						['* next page *','[next]']
+            					];
+							$.each(lo_node.children, function(i, key){
+									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+									{
+											var page = [];
+											// Also make sure we only take the text from the name, and not the full HTML
+											page.push(getTextFromHTML(name.value));
+											page.push(pageID.found ? pageID.value : linkID.value);
+											pages.push(page);
 
-					// Now we do the children
-					if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
-						var childNode = tree.get_node(key, false);
-						$.each(childNode.children, function(i, key){
-							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-							var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-							{
-								var page = [];
-								// Also make sure we only take the text from the name, and not the full HTML
-								page.push(getTextFromHTML("&nbsp;- "+name.value));
-								page.push(pageID.found ? pageID.value : linkID.value);
-								pages.push(page);
-							}
-						});
-					}
-                }
-            });
+											// Now we do the children
+											var childNode = tree.get_node(key, false);
+											$.each(childNode.children, function(i, key){
+												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+												{
+													var page = [];
+													// Also make sure we only take the text from the name, and not the full HTML
+													page.push(getTextFromHTML("&nbsp;- "+name.value));
+													page.push(pageID.found ? pageID.value : linkID.value);
+													pages.push(page);
+												}
+											});
+										
+									}
+							});
+						}
             
             return pages;
         },
@@ -2031,13 +2175,22 @@ var EDITOR = (function ($, parent) {
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
+					
+					if (value == '') {
+						html.append($('<option>').attr('value', '').prop('selected', true));
+					}
+					
                     for (var i=0; i<s_options.length; i++) {
                         var option = $('<option>')
                             .attr('value', s_data[i]);
-                        if (s_data[i]==value)
+                        if (s_data[i]==value) {
                             option.prop('selected', true);
+						}
                         option.append(s_options[i]);
                         html.append(option);
+						if (value == '' && html.find('option:selected').index() > 0) {
+							html.find(option).eq(0).remove();
+						}
                     }
 
                     break;
@@ -2273,7 +2426,7 @@ var EDITOR = (function ($, parent) {
 
                                 })
                         );
-
+						
 						// Ok, now create the content to be shown in the lightbox
 						var editdiv = $('<div>')
 							.attr('id', 'edit_' + id)
@@ -2351,7 +2504,7 @@ var EDITOR = (function ($, parent) {
                     }
                     else
                     {
-                        html.append("select image first");
+                        html.append("select image first"); // ** shouldn't this be translated?
                     }
 
                     break;
@@ -2369,17 +2522,30 @@ var EDITOR = (function ($, parent) {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
                             .attr('value', value));
-                    var td2 = $('<td>')
-                        .append($('<button>')
-                            .attr('id', 'browse_' + id)
-                            .attr('title', language.compMedia.$tooltip)
-                            .addClass("xerte_button")
-                            .addClass("media_browse")
-                            .click({id:id, key:key, name:name}, function(event)
-                            {
-                                browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
+					
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'browse_' + id)
+						.attr('title', language.compMedia.$tooltip)
+						.addClass("xerte_button")
+						.addClass("media_browse")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
+					
+					btnHolder.append($('<button>')
+						.attr('id', 'preview_' + id)
+						.attr('title', language.compPreview.$tooltip)
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							previewFile(options.label, $(this).closest('tr').find('input')[0].value);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
+							
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
@@ -2473,6 +2639,7 @@ var EDITOR = (function ($, parent) {
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
     my.displayParameter = displayParameter;
+	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;

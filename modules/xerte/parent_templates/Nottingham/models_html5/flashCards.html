@@ -26,6 +26,10 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $('#pageContents');
+			
+			if (x_currentPageXML.getAttribute('random') && x_currentPageXML.getAttribute('random') == 'true') {
+				this.setUp();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -151,18 +155,53 @@
 				$('#cardHolder').addClass('full');
 			}
 			
-			var $card = $('.card'),
-				$cards = $('#cards'),
+			var $cards = $('#cards'),
 				$thisCard, $thisFront, $thisBack;
-			
-			$(x_currentPageXML).children().each(function(i){
-				var thisInfo = this;
 				
-				if (i == 0) {
-					$thisCard = $card;
-				} else {
-					$thisCard = $card.clone().appendTo($cards);
+			// Store an array of the cards
+			var cardArray = [];
+			$(x_currentPageXML).children().each(function(){
+				cardArray.push(this);
+			});
+
+			// Randomise cards if required
+			if (x_currentPageXML.getAttribute('random') && x_currentPageXML.getAttribute('random') == 'true') {
+				var j, x, i = cardArray.length; 
+				while (i) {
+					 j = parseInt(Math.random() * i);
+					 x = cardArray[--i];
+					 cardArray[i] = cardArray[j];
+					 cardArray[j] = x;
 				}
+			}
+
+			// Create subset if required
+			if (x_currentPageXML.getAttribute('amountToShow') && x_currentPageXML.getAttribute('amountToShow') != '') {
+				var amount = parseInt(x_currentPageXML.getAttribute('amountToShow'), 10);
+				if ($.isNumeric(amount) && amount < cardArray.length) {
+					cardArray = cardArray.slice(0, amount);
+				}
+			}
+			
+			// Empty cards collection first
+			$cards.empty();
+			
+			// Now loop through new cards array and rebuild
+			$(cardArray).each(function(i){
+				var thisInfo = this;
+
+				$thisCard = $('<div>')
+											.addClass('card')
+											.append(
+												$('<div>')
+													.addClass('front panel')
+											)
+											.append(
+												$('<div>')
+													.addClass('back panel')
+											)
+				$thisCard.appendTo($cards);
+
 				$thisCard.attr('id', 'card' + i);
 				$thisFront = $thisCard.find('.front').empty();
 				$thisBack = $thisCard.find('.back').empty();
@@ -383,114 +422,6 @@
 	
 </script>
 
-<style type="text/css">
-	
-	h3 {
-		padding: 4px; /* ** ideally put elsewhere */
-	}
-	
-	#x_pageDiv {
-		overflow: hidden;
-	}
-	
-	#textHolder {
-		overflow: auto;
-		margin-bottom: 2%;
-		max-height: 20%;
-	}
-	
-	#cardHolder, #cardCtrls {
-		display: table;
-	}
-	
-	#cardHolder {
-		width: 100%;
-		height: 1px;
-		min-height: 78%;
-	}
-	
-	#cardHolder.full {
-		min-height: 100%;
-	}
-	
-	#cardCtrls {
-		width: 100%;
-		height: 100%;
-	}
-	
-	.btnHolder, #cards {
-		display: table-cell;
-		vertical-align: middle;
-	}
-	
-	#leftBtn {
-		text-align: right;
-	}
-	
-	#rightBtn {
-		text-align: left;
-	}
-	
-	#prevBtn, #nextBtn {
-		margin: 1em;
-	}
-	
-	.card .panel {
-		padding: 0px;
-		text-align: left;
-	}
-	
-	.cardInner {
-		overflow: auto;
-		padding: 1em;
-	}
-	
-	.flipBtnHolder {
-		width: 100%;
-		text-align: center;
-		margin: 1em 0;
-	}
-	
-	#cardNoHolder {
-		display: table-row;
-		height: 1px;
-		vertical-align: middle;
-		text-align: center;
-	}
-	
-	#cardNoTxt {
-		display: table-cell;
-		vertical-align: middle;
-		padding: 1em;
-		font-weight: bold;
-	}
-	
-	.mediaHolder {
-		text-align: center;
-	}
-	
-	.cardVideo {
-		margin: 0 auto;
-	}
-	
-	.cardVideo, .cardAudio {
-		overflow: hidden;
-	}
-	
-	.mediaHolder .cardImg {
-		max-width: 95%;
-		max-height: 95%;
-	}
-	
-	.ui-effects-wrapper {
-		overflow: visible !important;
-	}
-	
-	#cards.hideOverflow, #cards.hideOverflow .cardInner {
-		overflow: hidden;
-	}
-	
-</style>
 
 <div id="pageContents">
 	
@@ -505,10 +436,6 @@
 			</div>
 			
 			<div id="cards">
-				<div class="card">
-					<div class="front panel"></div>
-					<div class="back panel"></div>
-				</div>
 			</div>
 			
 			<div id="rightBtn" class="btnHolder">

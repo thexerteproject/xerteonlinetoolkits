@@ -1,7 +1,10 @@
 <commonNodes>
-	<narrationNavigate label="Navigate on Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
+	<narrate type="group" label="Narration" optional="true">
+		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
+	</narrate>
+	
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true"/>
     <pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated"/>
 	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
@@ -9,4 +12,12 @@
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
+	
+	<background type="group" label="Background" optional="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</background>
+	
 </commonNodes>

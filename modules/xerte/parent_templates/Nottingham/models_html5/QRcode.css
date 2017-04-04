@@ -1,0 +1,16 @@
+/* QRcode.html */
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	#qrcode {
+		margin-top: 13px;
+	}
+	
+	#shorturltodisplay {
+		font-size:		2em;
+		font-weight:	bold;
+		text-align:		center;
+	}
+	

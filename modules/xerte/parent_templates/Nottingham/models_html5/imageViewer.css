@@ -1,0 +1,76 @@
+/* imageViewer.html */
+	
+	#cropImg {
+		position:	relative;
+		overflow:	hidden;
+	}
+	
+	#pageImg {
+		position:	absolute;
+	}
+	
+	#pageImg.move {
+		cursor:	move;
+	}
+	
+	#controlPanel {
+		display:	inline-block;
+		padding:	5px;
+		top:		5px;
+		left:		5px;
+		cursor:		move;
+	}
+	
+	#imgCover {
+		width:		100%;
+		height:		100%;
+		position:	absolute;
+		top:		0px;
+		left:		0px;
+	}
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	#selectBox {
+		border:		2px solid yellow;
+	}
+	
+	#imgHolder.fullScreen {
+		width:		100%;
+		height:		100%;
+	}
+	
+	/* override jquery ui default button styles */
+	#controlPanel button.ui-button-icon-only, #controlPanel .ui-icon {
+		width:		24px;
+		height:		24px;
+	}
+	
+	#controlPanel label.ui-button-icon-only { /* for some reason buttons made from input/label appear 2px larger than proper button ones - adjust this here */
+		width:		22px;
+		height:		22px;
+	}
+	
+	#controlPanel .ui-icon {
+		margin-left:	-15px;
+		margin-top:		-15px;
+	}
+	
+	#controlPanel * { /* all children of controlPanel */
+		float:			left;
+		margin-right:	5px;
+	}
+	
+	#controlPanel label:last-child {
+		margin-right:	0px;
+	}
+	
+	#zoomIn .ui-icon.x_zoomIn {				background-position: -30px 0px;  }
+	#zoomOut .ui-icon.x_zoomOut {			background-position: -60px 0px;  }
+	#resetImage .ui-icon.x_resetImage {		background-position: -120px 0px; }
+	#controlPanel label[for=move] .ui-icon.x_move {					background-position: 0px 0px;    }
+	#controlPanel label[for=selectArea] .ui-icon.x_selectArea {		background-position: -90px 0px;  }
+	#controlPanel label[for=toggleScreen] .ui-icon.x_toggleScreen {	background-position: -150px 0px; }
+	

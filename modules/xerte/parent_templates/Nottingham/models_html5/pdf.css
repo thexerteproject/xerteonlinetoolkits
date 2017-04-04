@@ -1,0 +1,26 @@
+/* pdf.html */
+
+	#pdfCover {
+		background-color:	rgba(255,0,0,0);
+		position:	absolute;
+	}
+	
+	#pdfDoc {
+		border:	2px solid transparent;
+	}
+	
+	#pdfDoc.focus {
+		border-color:	orange;
+	}
+	
+	#pdfLink {
+		font-size:		1.5em;
+		font-weight:	bold;
+	}
+	
+	#pdfPage hr {
+		border: none;
+		background-color: #CCCCCC;
+		height: 1px;
+	}
+	

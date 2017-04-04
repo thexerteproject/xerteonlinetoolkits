@@ -16,32 +16,12 @@
     <displayMode type="ComboBox" options="Default,Fill Window" data="default,fill window" label="Display Mode" width="100"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
     <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size"  defaultValue="24"/>
-	<tocNumbers type="CheckBox" label="Page Numbering (Table of Contents)" defaultValue="true" optional="true"/>
 	
-	<media optional="true" type="media" label="Media File" defaultValue="Select an Audio or Video File"/>
-	<mediaImage optional="true" type="media" label="Media Image (Audio only)" defaultValue="Select an Image"/>
-	<mediaImageTip optional="true" label="Media Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
-    <mediaTranscript optional="true" type="media" label="Media Transcript" defaultValue="Select a Timed Text Transcript File"/>
-	<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Media Caption Timing" defaultValue="current" width="175"/>
-	<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Media Caption Position" defaultValue="below" width="175"/>
-	<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Media Caption Align" defaultValue="left" width="100"/>
-	<mediaColour optional="true" type="ColourPicker" label="Media Caption Colour" defaultValue="0x000000"/>
-	<mediaHighlight optional="true" type="CheckBox" label="Media Caption Highlight" defaultValue="true"/>
-	<mediaHighlightColour optional="true" type="ColourPicker" label="Media Caption Highlight Colour" defaultValue="0xFFFF00"/>
-	
-    <menuImageProperties optional="true" type="ComboBox" label="Menu Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100"/>
-    <menuImage optional="true" type="media" label="Menu Page Image"/>
-    <ic optional="true" type="media" label="Icon"/>
-	<icTip optional="true" type="TextInput" label="Icon Description" defaultValue="Enter a Description for Accessibility"/>
-	<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Icon Position" defaultValue="left" width="100"/>
-    <nfo optional="true" label="Help File" type="media"/>
+	<nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
     <controller optional="true" label="Custom Interface" type="media" flashonly="true"/>
-    <background optional="true" type="media" label="Background Image"/>
-    <backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Opacity"/>
-	<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="50" label="Background Darkness"/>
-	<backgroundGrey optional="true" type="CheckBox" label="Background Greyscale" defaultValue="true"/>
-    <stylesheet optional="true" type="Media" label="Stylesheet"/>
+	
+	<stylesheet optional="true" type="Media" label="Stylesheet"/>
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
@@ -49,7 +29,50 @@
     <trackingPassed optional="true" label="Tracking Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
     <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
-
+	<resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
+	
+	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress bar" defaultValue="pBar" width="100"/>
+	
+	<footerTools optional="true" type="ComboBox" options="Hide/Show footer tools - hide by default,Show/Hide footer tools - show by default" data="hideFooterTools,showFooterTools" label="Enable Hide/Show footer tools" defaultValue="showFooterTools" width="100"/>
+	
+	<toc type="group" label="Table of Contents" optional="true">
+		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
+		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
+		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
+	</toc>
+	
+	<mediaFile type="group" label="Media" optional="true">
+		<media optional="true" type="media" label="File" defaultValue="Select an Audio or Video File"/>
+		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
+		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="Enter a Description for Accessibility"/>
+		<mediaTranscript optional="true" type="media" label="Transcript" defaultValue="Select a Timed Text Transcript File"/>
+		<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Caption Timing" defaultValue="current" width="175"/>
+		<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Caption Position" defaultValue="below" width="175"/>
+		<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Caption Align" defaultValue="left" width="100"/>
+		<mediaColour optional="true" type="ColourPicker" label="Caption Colour" defaultValue="0x000000"/>
+		<mediaHighlight optional="true" type="CheckBox" label="Caption Highlight" defaultValue="true"/>
+		<mediaHighlightColour optional="true" type="ColourPicker" label="Caption Highlight Colour" defaultValue="0xFFFF00"/>
+	</mediaFile>
+	
+	<icon type="group" label="Icon" optional="true">
+		<ic optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<icTip optional="true" type="TextInput" label="Description" defaultValue="Enter a Description for Accessibility"/>
+		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" label="Position" defaultValue="left" width="100"/>
+	</icon>
+	
+	<bg type="group" label="Background" optional="true">
+		<background optional="true" type="media" label="Image" defaultValue="Select an Image"/>
+		<backgroundopacity optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="30" label="Opacity"/>
+		<backgroundDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
+		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	</bg>
+	
+	<tracking type="group" label="Tracking" optional="true">
+		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
+		<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
+	</tracking>
+	
     <newNodes>
     </newNodes>
 

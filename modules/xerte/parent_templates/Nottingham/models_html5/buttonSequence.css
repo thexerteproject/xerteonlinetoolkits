@@ -1,0 +1,16 @@
+/* buttonSequence.html */
+	
+	#myPanel {
+		overflow:	auto;
+	}
+	
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+	
+	.infoGroup > p {
+		padding-left:	4px;
+		padding-right:	4px;
+	}
+	

@@ -14,9 +14,12 @@
     <url label="Image" type="media" />
     <tip label="Image Description" type="TextInput" />
 
-    <linktarget label="Link Target" type="textInput" width="70" defaultValue="e.g. _blank" optional="true" />
-    <link label="Link URL" type="textInput"  optional="true"/>
-	<linkIntro label="Link Description" type="textInput"  optional="true"/>	
+	<linkInfo type="group" label="Link" optional="true">
+		<link label="URL" type="textInput" optional="true" defaultValue="Enter Link Address"/>
+		<linkIntro label="Description" type="textInput" optional="true" defaultValue="Enter Link Description"/>	
+		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true" />
+	</linkInfo>
+	
     <sound label="Sound" type="media" optional="true"/>
     <magnifier label="Magnifier"  type="checkBox" defaultValue="false" optional="true"/>
     <addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>

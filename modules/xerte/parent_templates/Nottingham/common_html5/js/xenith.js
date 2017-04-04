@@ -39,7 +39,8 @@ var x_languageData  = [],
     x_mediaText     = [],
     x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
-	x_responsive = []; // list of any responsivetext.css files in use
+	x_responsive = [], // list of any responsivetext.css files in use
+	x_cssFiles = [];
 
 if (typeof modelfilestrs == 'undefined')
 {
@@ -100,6 +101,13 @@ $(document).ready(function() {
 
     if (navigator.userAgent.match(/iPhone/i) != null || navigator.userAgent.match(/iPod/i) != null || navigator.userAgent.match(/iPad/i) != null) {
         x_browserInfo.iOS = true;
+		if (navigator.userAgent.match(/iPad/i) != null) {
+			x_browserInfo.Device = "iPad";
+		}
+		else
+		{
+			x_browserInfo.Device = "iPhone";
+		}
     }
     if (navigator.userAgent.match(/Android/i) != null)
     {
@@ -107,7 +115,7 @@ $(document).ready(function() {
     }
 
     x_browserInfo.touchScreen = !!("ontouchstart" in window);
-    if (x_browserInfo.touchScreen == true) {
+    if (x_mobileDevice()) {
         x_fillWindow = true;
         if (window.orientation == 0 || window.orientation == 180) {
             x_browserInfo.orientation = "portrait";
@@ -159,6 +167,11 @@ $(document).ready(function() {
     }
 
 });
+
+x_mobileDevice = function()
+{
+	return x_browserInfo.touchScreen == true && x_browserInfo.Android && (x_browserInfo.iOS && x_browserInfo.Device != "iPad");
+}
 
 x_projectDataLoaded = function(xmlData) {
     var i, len;
@@ -444,7 +457,7 @@ function x_setUp() {
 		
 		if (screen.width <= 550) {
 			x_browserInfo.mobile = true;
-			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp("theme")});
+			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp()});
 		} else {
 			x_insertCSS(x_templateLocation + "common_html5/css/desktopStyles.css", x_desktopSetUp);
 		}
@@ -452,7 +465,7 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (x_browserInfo.touchScreen == false) {
+	if (!x_mobileDevice()) {
 		$x_footerL.prepend('<button id="x_cssBtn"></button>');
 		$("#x_cssBtn")
 			.button({
@@ -509,47 +522,119 @@ function x_desktopSetUp() {
 		x_setFillWindow(false);
 	}
 	
-	x_cssSetUp("theme");
+	x_cssSetUp();
 }
 
 function x_cssSetUp(param) {
-	if (param == "theme") {
-		if (x_params.theme != undefined && x_params.theme != "default") {
-			$.getScript(x_themePath + x_params.theme + '/' + x_params.theme +  '.js'); // most themes won't have this js file
-			x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme +  '.css', function() {x_cssSetUp("theme2")});
-		} else {
+	param = (typeof param !== 'undefined') ?  param : "menu";
+
+	switch(param) {
+        case "menu":
+        	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("menu2")});
+            break;
+        case "menu2":
+            if (x_params.theme != 'default') {
+                x_insertCSS(x_themePath + x_params.theme + "css/menu.css", function () {
+                    x_cssSetUp("language")
+                });
+            }
+            else
+			{
+                x_cssSetUp("language");
+			}
+            break;
+        case "language":
+            x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+            break;
+        case "language2":
+            if (x_params.theme != 'default') {
+                x_insertCSS(x_themePath + x_params.theme + "css/language.css", function () {
+                    x_cssSetUp("glossary")
+                });
+            }
+            else
+            {
+                x_cssSetUp("glossary");
+            }
+            break;
+        case "glossary":
+            x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+            break;
+        case "glossary2":
+            if (x_params.theme != 'default') {
+                x_insertCSS(x_themePath + x_params.theme + "css/glossary.css", function () {
+                    x_cssSetUp("colourChanger")
+                });
+            }
+            else
+            {
+                x_cssSetUp("colourChanger");
+            }
+            break;
+        case "colourChanger":
+            x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("colourChanger2")});
+            break;
+        case "colourChanger2":
+            if (x_params.theme != 'default') {
+                x_insertCSS(x_themePath + x_params.theme + "css/colourChanger.css", function () {
+                    x_cssSetUp("theme")
+                });
+            }
+            else
+            {
+                x_cssSetUp("theme");
+            }
+            break;
+        case "theme":
+            if (x_params.theme != undefined && x_params.theme != "default") {
+                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+                x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
+                    x_cssSetUp("theme2")
+                });
+            } else {
+                if (x_params.responsive == "true") {
+                    // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
+                    if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+                        x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {
+                            x_cssSetUp("stylesheet")
+                        }, true);
+                    } else {
+                        x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {
+                            x_cssSetUp("stylesheet")
+                        });
+                    }
+                } else {
+                    x_cssSetUp("stylesheet");
+                }
+            }
+            break;
+        case "theme2":
             if (x_params.responsive == "true") {
 				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet")}, true);
-				} else {
-					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () { x_cssSetUp("stylesheet") });
-				}
+                if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                        x_cssSetUp("stylesheet")
+                    }, true);
+                } else {
+                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
+                        x_cssSetUp("stylesheet")
+                    });
+                }
             } else {
                 x_cssSetUp("stylesheet");
             }
-		}
-	} else if (param == "theme2") {
-		if (x_params.responsive == "true") {
-			// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-			if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function() {x_cssSetUp("stylesheet")}, true);
-			} else {
-				x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function() {x_cssSetUp("stylesheet")});
-			}
-		} else {
-			x_cssSetUp("stylesheet");
-		}
-	} else if (param == "stylesheet") {
-		if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
-			x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp);
-		} else {
-			x_continueSetUp();
-		}
-	}
+            break;
+        case "stylesheet":
+            if (x_params.stylesheet != undefined && x_params.stylesheet != "") {
+                x_insertCSS(x_evalURL(x_params.stylesheet), x_continueSetUp1);
+            } else {
+                x_continueSetUp1();
+            }
+            break;
+    }
 }
 
-function x_continueSetUp() {
+function x_continueSetUp1() {
 	if (x_params.styles != undefined){
 		$x_head.append('<style type="text/css">' +  x_params.styles + '</style>');
 	}
@@ -704,25 +789,74 @@ function x_continueSetUp() {
 	}
 	
 	if (x_params.media != undefined) {
-		$x_footerL.prepend('<button id="x_mediaBtn"></button>');
-		$("#x_mediaBtn")
-			.button({
-				icons: {
-					primary: "x_media"
-				},
-				label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
-				text:	false
-			})
-			.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
-			.click(function() {
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-				
-				x_openMediaWindow();
-			});
+		x_checkMediaExists(x_evalURL(x_params.media), function(mediaExists) {
+			if (mediaExists) {
+				$x_footerL.prepend('<button id="x_mediaBtn"></button>');
+				$("#x_mediaBtn")
+					.button({
+						icons: {
+							primary: "x_media"
+						},
+						label:	x_getLangInfo(x_languageData.find("mediaButton")[0], "label", "Media"),
+						text:	false
+					})
+					.attr("aria-label", $("#x_mediaBtn").attr("title") + " " + x_params.newWindowTxt)
+					.click(function() {
+						$(this)
+							.blur()
+							.removeClass("ui-state-focus")
+							.removeClass("ui-state-hover");
+						
+						x_openMediaWindow();
+					});
+			}
+		});
 	}
+	
+	//add optional progress bar
+    if (x_params.progressBar != undefined && x_params.progressBar != "") {
+	//add a div for the progress bar
+	$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
+	//add the progress bar
+	$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
+	//progress bar styling
+	$("*").css({"box-sizing":"border-box"});
+	$(".pbContainer").css({"width": "50%", "background-color":"#ddd", "height":"6px", "margin":"auto","margin-top":"15px"});
+	$(".pbPercent").css({"text-align":"right", "padding-right":"2px", "line-height":"6px", "color":"#ffffff"});
+	$(".pbBar").css({"width":"10%", "background-color":"#2196F3", "font-size":"8px"});
+	$(".pbTxt").css({"font-size": "10px",  "text-align":"center"});
+	if (x_params.progressBar =="pBarNoCounter") {
+	//remove page counter if that option selected
+	$("#x_pageNo").remove();
+    }
+
+	//add show/hide footer tools
+    if (x_params.footerTools != undefined && x_params.footerTools != "") {
+	var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
+	var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+	//add a div for the show/hide chevron
+	$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
+	$('#x_footerChevron').prop('title', hideMsg);
+    }
+	//chevron to show/hide function
+	$('#x_footerChevron').click(function(){
+        $('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+                if($(this).is(':visible')){
+                    $('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+                    $('#x_footerChevron').prop('title', hideMsg);
+                }else{
+                    $('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+                    $('#x_footerChevron').prop('title', showMsg);
+                }
+            });
+        return(false);
+    });
+	if (x_params.footerTools =="hideFooterTools") {
+	$('#x_footerBlock .x_floatLeft').hide();
+	$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+	$('#x_footerChevron').prop('title', showMsg);
+	}
+	} 
 	
 	// get icon position
 	var icPosition = "x_floatLeft";
@@ -730,8 +864,12 @@ function x_continueSetUp() {
 		icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
 	}
 	if (x_params.ic != undefined && x_params.ic != "") {
-		var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
-		$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+		x_checkMediaExists(x_evalURL(x_params.ic), function(mediaExists) {
+			if (mediaExists) {
+				var icTip = x_params.icTip != undefined && x_params.icTip != "" ? 'alt="' + x_params.icTip + '"' : 'aria-hidden="true"';
+				$x_headerBlock.prepend('<img src="' + x_evalURL(x_params.ic) + '" class="' + icPosition + '" onload="if (x_firstLoad == false) {x_updateCss();}" ' + icTip + '/>');
+			}
+		});
 	}
 	
 	// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
@@ -932,36 +1070,48 @@ function x_continueSetUp() {
 	}
 	
 	if (x_params.background != undefined && x_params.background != "") {
-		var alpha = 30;
-		if (x_params.backgroundopacity != undefined) {
-			alpha = x_params.backgroundopacity;
-		}
-		if (x_params.backgroundGrey == "true") {
-			// uses a jquery plugin as just css way won't work in all browsers
-			x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
-				$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
-				$("#x_mainBg").css({
-					"opacity"	:Number(alpha/100),
-					"filter"	:"alpha(opacity=" + alpha + ")"
-				});
-				// grey function called on image when unhidden later as it won't work properly otherwise
-			});
-		} else {
-			$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
-			$("#x_mainBg").css({
-				"opacity"	:Number(alpha/100),
-				"filter"	:"alpha(opacity=" + alpha + ")"
-			});
-		}
-		if (x_params.backgroundDark != undefined) {
-			$x_background.append('<div id="x_mainBgDarken" class="bgDarken" />');
-			$("#x_mainBgDarken").css({
-				"opacity"	:Number(x_params.backgroundDark/100),
-				"filter"	:"alpha(opacity=" + x_params.backgroundDark + ")"
-			});
-		}
+		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
+			if (mediaExists) {
+				var alpha = 30;
+				if (x_params.backgroundopacity != undefined) {
+					alpha = x_params.backgroundopacity;
+				}
+				if (x_params.backgroundGrey == "true") {
+					// uses a jquery plugin as just css way won't work in all browsers
+					x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", function() {
+						$x_background.append('<img id="x_mainBg" class="grayscale" src="' + x_evalURL(x_params.background) + '"/>');
+						$("#x_mainBg").css({
+							"opacity"	:Number(alpha/100),
+							"filter"	:"alpha(opacity=" + alpha + ")"
+						});
+						// grey function called on image when unhidden later as it won't work properly otherwise
+					});
+				} else {
+					$x_background.append('<img id="x_mainBg" src="' + x_evalURL(x_params.background) + '"/>');
+					$("#x_mainBg").css({
+						"opacity"	:Number(alpha/100),
+						"filter"	:"alpha(opacity=" + alpha + ")"
+					});
+				}
+				if (x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+					$x_background.append('<div id="x_bgDarken" />');
+					$("#x_bgDarken").css({
+						"opacity" :Number(x_params.backgroundDark/100),
+						"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
+					});
+				}
+				
+				x_continueSetUp2();
+			} else {
+				x_continueSetUp2();
+			}
+		});
+	} else {
+		x_continueSetUp2();
 	}
-	
+}
+
+function x_continueSetUp2() {
 	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
 	var mediaElementText = [{name:"stopButton", label:"Stop", description:"Stop Media Button"},{name:"playPauseButton", label:"Play/Pause", description:"Play/Pause Media Button"},{name:"muteButton", label:"Mute Toggle", description:"Toggle Mute Button"},{name:"fullscreenButton", label:"Fullscreen", description:"Fullscreen Movie Button"},{name:"captionsButton", label:"Captions/Subtitles", description:"Show/Hide Captions Button"}];
 	
@@ -984,6 +1134,13 @@ function x_continueSetUp() {
 	}
 	
 	x_navigateToPage(true, x_startPage);
+}
+
+// function checks whether a media file exists
+function x_checkMediaExists(src, callback) {
+	$.get(src)
+		.done(function() { callback(true); })
+		.fail(function() { callback(false); });
 }
 
 function x_charmapLoaded(xml)
@@ -1040,7 +1197,6 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
         }
         else if (pageInfo.type == "linkID" || pageInfo.type == "pageID") {
         	if ((pageInfo.ID).indexOf('[') > -1 && (pageInfo.ID).indexOf(']') > -1) {
-        		console.log((pageInfo.ID).substring(1, pageInfo.ID.length-1));
 				switch ((pageInfo.ID).substring(1, pageInfo.ID.length-1)) {
 					case "next":
 						if (x_currentPage < x_pages.length)
@@ -1125,9 +1281,34 @@ function x_lookupPage(pageType, pageID) {
 // function called on page change to remove old page and load new page model
 // If x_currentPage == -1, than do not try to exit tracking of the page
 function x_changePage(x_gotoPage) {
-    var prevPage = x_currentPage;
+	// Prevent content from behaving weird as we remove css files
+    $("#x_pageDiv").hide();
+    // Setup css correctly
+	$("#page_model_css").remove();
+	$("#page_theme_css").remove();
+	var modelfile = x_pageInfo[x_gotoPage].type;
+	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
+		x_changePageStep2(x_gotoPage);
+	}, false, "page_model_css");
+}
 
-    // End page tracking of x_currentPage
+function x_changePageStep2(x_gotoPage) {
+	if (x_params.theme != 'default') {
+        var modelfile = x_pageInfo[x_gotoPage].type;
+		x_insertCSS(x_themePath + x_params.theme + '/css/' + modelfile + '.css', function () {
+			x_changePageStep3(x_gotoPage);
+		}, false, "page_theme_css");
+	}
+	else
+    {
+        x_changePageStep3(x_gotoPage);
+    }
+}
+
+function x_changePageStep3(x_gotoPage) {
+	var prevPage = x_currentPage;
+
+	// End page tracking of x_currentPage
     if (x_currentPage != -1 &&  (x_currentPage != 0 || x_pageInfo[0].type != "menu") && x_currentPage != x_gotoPage)
     {
         var pageObj;
@@ -1157,7 +1338,19 @@ function x_changePage(x_gotoPage) {
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
-        $("#pageBg, #pageBgDarken").remove();
+        $(".pageBg").hide();
+		
+		if ($("#x_mainBg").length > 0 && $("#x_bgDarken").length > 0 && x_params.backgroundDark != undefined && x_params.backgroundDark != "" && x_params.backgroundDark != "0") {
+			$("#x_bgDarken")
+				.css({
+					"opacity" :Number(x_params.backgroundDark/100),
+					"filter" :"alpha(opacity=" + x_params.backgroundDark + ")"
+				})
+				.show();
+		} else {
+			$("#x_bgDarken").hide();
+		}
+		
 		$("#x_mainBg").show();
         $(".x_pageNarration").remove(); // narration flash / html5 audio player
         $("body div.me-plugin:not(#x_pageHolder div.me-plugin)").remove();
@@ -1220,6 +1413,25 @@ function x_changePage(x_gotoPage) {
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
+		
+		// show page background & hide main background
+		if ($(".pageBg#page" + x_currentPage).length > 0) {
+			$(".pageBg#page" + x_currentPage).show();
+			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+				$("#x_bgDarken")
+					.css({
+						"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
+						"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
+					})
+					.show();
+			} else {
+				$("#x_bgDarken").hide();
+			}
+			
+			if ($("#x_mainBg").length > 0 && $(".pageBg#page" + x_currentPage).length > 0) {
+				$("#x_mainBg").hide();
+			}
+		}
 
         x_setUpPage();
 
@@ -1249,33 +1461,59 @@ function x_changePage(x_gotoPage) {
                 }
             }
         }
+		
     // x_currentPage hasn't been viewed previously - load model file
-    }
-    else {
-        $x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
-        $("#x_page" + x_currentPage).css("visibility", "hidden");
+    } else {
+		function loadModel() {
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
-        if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
-			// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
-			if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
-				x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
-			} else {
-				x_findText(x_currentPageXML);
+			if (x_currentPage != 0 || x_pageInfo[0].type != "menu") {
+				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
+				if (x_currentPageXML.getAttribute("disableGlossary") == "true") {
+					x_findText(x_currentPageXML, ["glossary"]); // exclude glossary
+				} else {
+					x_findText(x_currentPageXML);
+				}
 			}
-        }
 
-        // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-        XTEnterPage(x_currentPage, pageTitle);
+			// Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
+			XTEnterPage(x_currentPage, pageTitle);
 
-        var modelfile = x_pageInfo[x_currentPage].type;
-        if (typeof modelfilestrs[modelfile] != 'undefined')
-        {
-            $("#x_page" + x_currentPage).html(modelfilestrs[modelfile]);
-            x_loadPage("", "success", "");
-        }
-        else {
-            $("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
-        }
+			var modelfile = x_pageInfo[x_currentPage].type;
+			if (typeof modelfilestrs[modelfile] != 'undefined')
+			{
+				$("#x_page" + x_currentPage).html(modelfilestrs[modelfile]);
+				x_loadPage("", "success", "");
+			}
+			else {
+				$("#x_page" + x_currentPage).load(x_templateLocation + "models_html5/" + modelfile + ".html", x_loadPage);
+			}
+		}
+		
+		// show page background & hide main background
+		if (x_currentPageXML.getAttribute("bgImage") != undefined) {
+			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
+				if (mediaExists) {
+					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
+						// load css for jquery greyscale plugin if not already loaded
+						if (!$("link[href='" + x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css']").length) {
+							x_insertCSS(x_templateLocation + "common_html5/js/gray-gh-pages/css/gray.css", x_loadPageBg(loadModel));
+						} else {
+							// css required will already be loaded (either already loaded for this title page or already loaded for LO bg image)
+							x_loadPageBg(loadModel);
+						}
+					} else {
+						x_loadPageBg(loadModel);
+					}
+				} else {
+					loadModel();
+				}
+			});
+			
+		} else {
+			loadModel();
+		}
     }
 
     // Queue reparsing of MathJax - fails if no network connection
@@ -1284,6 +1522,8 @@ function x_changePage(x_gotoPage) {
 	x_doDeepLink();
 
     x_updateHash();
+
+    $("#x_pageDiv").show();
 }
 
 
@@ -1431,20 +1671,36 @@ function x_pageLoaded() {
         .hide()
         .css("visibility", "visible")
         .fadeIn();
+
+	doPercentage();
 }
 
+	//detect page loaded change and update progress bar
+
+    function  doPercentage() {
+        var totalpages=x_pageInfo.length;
+        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
+        var progress=Math.round((pagesviewed*100)/totalpages);
+        $(".pbBar").css({"width": progress+"%"});
+		var pBarText=x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+        $('.pbTxt').html(progress+"% "+pBarText);
+    };
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
     if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-        $("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
-        $("#x_footerBlock #x_pageNarration").mediaPlayer({
-            type        :"audio",
-            source      :x_currentPageXML.getAttribute("narration"),
-            width       :"100%",
-            autoPlay    :x_currentPageXML.getAttribute("playNarration"),
-            autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
-        });
+        x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
+			if (mediaExists) {
+				$("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
+				$("#x_footerBlock #x_pageNarration").mediaPlayer({
+					type        :"audio",
+					source      :x_currentPageXML.getAttribute("narration"),
+					width       :"100%",
+					autoPlay    :x_currentPageXML.getAttribute("playNarration"),
+					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
+				});
+			}
+		});
     }
 }
 
@@ -1495,6 +1751,110 @@ function x_addCountdownTimer() {
         $("#x_footerBlock #x_pageTimer").html(x_timerLangInfo[0] + ": " + x_formatCountdownTimer());
         x_timer = setInterval(x_countdownTicker, 1000);
     }
+}
+
+
+// function adds individual page backgrounds & sets up all the attributes of it (opacity, size etc.)
+function x_loadPageBg(loadModel) {
+	// vertical/horizontal align & max/min height optional properties are only in title page xwd
+	var vConstrain = x_currentPageXML.getAttribute("bgImageVConstrain"),
+		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
+		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
+	
+	var $pageBg = $('<img id="page' + x_currentPage + '" class="pageBg"/>');
+	$pageBg
+		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
+		.css({
+			"opacity"		:Number(alpha/100),
+			"filter"		:"alpha(opacity=" + alpha + ")",
+			"visibility"	:"hidden"
+		})
+		.addClass(x_currentPageXML.getAttribute("bgImageGrey") == "true" ? "grayscale" :"")
+		.one("load", function() {
+			var $this = $(this);
+			setTimeout(function(){
+				if ((vConstrain != undefined && vConstrain != "" && vConstrain != "0") || (hConstrain != undefined && hConstrain != "" && hConstrain != "0")) {
+					var imgMaxW = 800,
+						imgMaxH = 500;
+					
+					if (hConstrain != undefined && hConstrain != "" && hConstrain != "0") {
+						imgMaxW = Number(hConstrain);
+					}
+					if (vConstrain != undefined && vConstrain != "" && vConstrain != "0") {
+						imgMaxH = Number(vConstrain);
+					}
+					
+					x_scaleImg($this[0], imgMaxW, imgMaxH, true, false, true);
+					
+					var vAlign = x_currentPageXML.getAttribute("bgImageVAlign") != undefined ? x_currentPageXML.getAttribute("bgImageVAlign") : "middle",
+						hAlign = x_currentPageXML.getAttribute("bgImageHAlign") != undefined ? x_currentPageXML.getAttribute("bgImageHAlign") : "centre";
+					
+					if (vAlign == "middle" || vAlign == "bottom") {
+						var topValue = "50%",
+							topMargin = 0 - Math.round($this.height() / 2);
+						
+						if (vAlign == "bottom") {
+							topValue = "100%"
+							topMargin = 0 - $this.height();
+						}
+						$this.css({
+							"top"			:topValue,
+							"margin-top"	:topMargin
+						})
+					}
+					if (hAlign == "centre" || hAlign == "right") {
+						var leftValue = "50%",
+							leftMargin = 0 - Math.round($this.width() / 2);
+						
+						if (hAlign == "right") {
+							leftValue = "100%"
+							leftMargin = 0 - $this.width();
+						}
+						$this.css({
+							"left"			:leftValue,
+							"margin-left"	:leftMargin
+						})
+					}
+				} else {
+					$this.css("visibility", "visible");
+				}
+			}, 0);
+			
+			if (loadModel != undefined) { loadModel() };
+		})
+		.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+			if (this.complete) {
+				$(this).trigger("load");
+			}
+		});
+	
+	$x_background.prepend($pageBg);
+	
+	if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
+		var $bgDarken = $("#x_bgDarken").length > 0 ? $("#x_bgDarken") : $('<div id="x_bgDarken" />').appendTo($x_background);
+		
+		$bgDarken
+			.css({
+				"opacity" :Number(x_currentPageXML.getAttribute("bgImageDark")/100),
+				"filter" :"alpha(opacity=" + x_currentPageXML.getAttribute("bgImageDark") + ")"
+			})
+			.show();
+	} else {
+		$("#x_bgDarken").hide();
+	}
+	
+	$pageBg.fadeIn();
+	
+	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
+		$pageBg.gray();
+		if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+			$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
+			$pageBg = $("#pageBg");
+			$pageBg.css("visibility", "visible");
+		}
+	}
+	
+	$("#x_mainBg").hide();
 }
 
 
@@ -2203,22 +2563,29 @@ function x_setFillWindow(updatePage) {
 
 
 // function applies CSS file to page - can't do this using media attribute in link tag or the jQuery way as in IE the page won't update with new styles
-function x_insertCSS(href, func, disable) {
+function x_insertCSS(href, func, disable, id) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = href;
     css.type = "text/css";
+    if (id != undefined)
+	{
+		css.id = id;
+	}
 	
 	// in some cases code is stopped until css loaded as some heights are done with js and depend on css being loaded
 	if (func != undefined) {
 		css.onload = function() {
-			if (href.indexOf("responsivetext.css") >= 0) {
-				x_responsive.push(this);
-				if (disable == true) {
-					$(this).prop("disabled", true);
+			if (x_cssFiles.indexOf(this) == -1) {
+				x_cssFiles.push(this);
+				if (href.indexOf("responsivetext.css") >= 0) {
+					x_responsive.push(this);
+					if (disable == true) {
+						$(this).prop("disabled", true);
+					}
 				}
+				func();
 			}
-			func();
 		};
 		
 		css.onerror = function(){

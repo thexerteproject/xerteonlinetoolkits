@@ -67,41 +67,52 @@
 			
 			if (x_params.navigation != "Linear" && x_params.navigation != "Historic") { // 1st page is menu page
 				
+				var img = false;
+				
 				if (x_params.menuImage != undefined && x_params.menuImage != "") {
-					
-					if (x_params.menuImageProperties != "Full Screen") { // use panel
-						var imgMaxW;
-						if (x_browserInfo.mobile == false) {
-							imgMaxW = $("#menuHolder .right").width() - 80;
-						} else {
-							imgMaxW = $x_mobileScroll.width() - 40;
-						}
-						var imgMaxH = 450;
-						
-						$("#menuHolder .right").append('<img class="panel centre" />');
-						
-						$("#menuHolder .right img")
-							.css("visibility", "hidden")
-							.one("load", function() {
-								x_scaleImg(this, imgMaxW, imgMaxH);
-								x_pageLoaded();
-							})
-							.attr({
-								"id":"pageImg",
-								"src":x_evalURL(x_params.menuImage)
-							})
-							.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-								if (this.complete) {
-									$(this).trigger("load");
+				
+					x_checkMediaExists(x_evalURL(x_params.menuImage), function(mediaExists) {
+						if (mediaExists) {
+							
+							if (x_params.menuImageProperties != "Full Screen") { // use panel
+								var imgMaxW;
+								if (x_browserInfo.mobile == false) {
+									imgMaxW = $("#menuHolder .right").width() - 80;
+								} else {
+									imgMaxW = $x_mobileScroll.width() - 40;
 								}
-							});
-						
-					} else { // bg image
-						this.setUpBg(true);
-						x_pageLoaded();
-					}
+								var imgMaxH = 450;
+								
+								$("#menuHolder .right").append('<img class="panel centre" />');
+								
+								$("#menuHolder .right img")
+									.css("visibility", "hidden")
+									.one("load", function() {
+										x_scaleImg(this, imgMaxW, imgMaxH);
+										x_pageLoaded();
+									})
+									.attr({
+										"id":"pageImg",
+										"src":x_evalURL(x_params.menuImage)
+									})
+									.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+										if (this.complete) {
+											$(this).trigger("load");
+										}
+									});
+								
+							} else { // bg image
+								menu.setUpBg(true);
+								x_pageLoaded();
+							}
+							
+							img = true;
+						}
+					});
 					
-				} else { // no image
+				}
+
+				if (img == false) { // no image
 					$("#menuHolder").removeClass("splitScreen");
 					if (x_browserInfo.mobile == false) {
 						$menuItems.width("70%");
@@ -157,33 +168,6 @@
 	menu.init();
 	
 </script>
-
-<style type="text/css">
-	
-	#menuItems .menuItem {
-		width:			100%;
-		display:		block;
-		margin-bottom:	5px;
-		text-align:		left;
-	}
-	
-	#menuItems .menuItem .notvisited {
-		display: none;
-	}
-
-	#menuItems {
-		width:	100%;
-		border:	none;
-		margin:	0;
-		padding:0;
-	}
-	
-	#menuItems .menuItem.current {
-		border: 2px solid #FF9900;
-		font-weight: bold;
-	}
-	
-</style>
 
 <div id="menuHolder" class="splitScreen">
 	

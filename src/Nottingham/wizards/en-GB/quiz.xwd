@@ -44,10 +44,16 @@
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
-	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
-	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
-    <video label="Video" type="media"  optional="true"/>
-	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
+	<videoInfo type="group" label="Video" optional="true">
+		<video label="Video" type="media" defaultValue="Select a Video" optional="true"/>
+		<movieSize label="Size" type="textInput" defaultValue="320,240" optional="true"/>
+	</videoInfo>
+	
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
@@ -62,8 +68,12 @@
     <prompt label="Prompt" type="TextArea"  height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-    <image label="Image" type="Media" optional="true" />
-    <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<imgInfo type="group" label="Image" optional="true">
+		<image label="Image" type="Media" defaultValue="Select an Image" optional="true" />
+		<tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
