@@ -27,6 +27,10 @@ class XerteXMLInspector
     private $mediaIsUsed;
     private $language;
     private $theme;
+    private $glossary;
+    private $resultpageEnabled;
+    private $hasResultPage;
+    private $pages;
 
     private function addModel($model)
     {
@@ -36,6 +40,20 @@ class XerteXMLInspector
             }
         }
         array_push($this->models, $model);
+    }
+
+    private function addPage($node, $i)
+    {
+        $page = new stdClass();
+        $name = (string)$node['name'];
+        // This may contain HTML tags, convert to plain text
+        // Remove the HTML tags
+        $name = strip_tags($name);
+        $page->name = $name;
+        $page->type = $node->getName();
+        $page->index = $i;
+
+        array_push($this->pages, $page);
     }
 
     private function fixXmlFile($name)
@@ -120,11 +138,13 @@ class XerteXMLInspector
         return $ok;
     }
 
-    public function loadTemplateXML($name, $resultPage)
+    public function loadTemplateXML($name)
     {
         _debug("Trying to simplexml_load_file : $name");
         $this->fname = $name;
 
+        $this->models = array();
+        $this->pages = array();
         // We don't really want to load external entities into our XML; but have no choice here. Make sure it's enabled (revert it later on).
         // This can be a security issue - see .e.g http://php.net/manual/en/function.libxml-disable-entity-loader.php
         // Supported from 5.2.11, so allow for older versions to work as well.
@@ -179,13 +199,16 @@ class XerteXMLInspector
         //Gets the value of resultpage (true/false)
         $rPath = $this->xml->xpath('/*');
         $rElmnt = $rPath[0];
-        $this->resultpageEnabled = (string)($rElmnt->attributes()->resultpage);
+        $this->resultpageEnabled = (string)($rElmnt['resultpage']);
         $this->hasResultPage = ($rElmnt->children());
         
         $nodes = $this->xml->xpath('/*/*');
 
+        $i = 0;
         foreach ($nodes as $node) {
             $this->addModel($node->getName());
+            $this->addPage($node, $i);
+            $i++;
         }
         $this->mediaIsUsed = false;
         $str = (string)$this->xml['media'];
@@ -247,6 +270,10 @@ class XerteXMLInspector
         return $this->glossary;
     }
 
+    public function getPages()
+    {
+        return $this->pages;
+    }
 }
 
 //$template = new XerteXMLInspector();

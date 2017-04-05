@@ -3,6 +3,8 @@ require_once("config.php");
 require_once("website_code/php/language_library.php");
 require_once("website_code/php/display_library.php");
 require_once("website_code/php/user_library.php");
+require_once("website_code/php/xmlInspector.php");
+
 _include_javascript_file("website_code/scripts/file_system.js?version=" . $version);
 _include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
 _include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
@@ -28,10 +30,41 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 	die("Please login");
 }
 
-$workspace = json_decode(get_users_projects(""));
+$workspace = json_decode(get_users_projects("date_down", true));
+
 $items = array();
-$xmlNottingham = new DOMDocument();
-$xmlNottingham->load("modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd");
+//$xmlNottingham = new DOMDocument();
+//$xmlNottingham->load("modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd");
+
+// Retrieve icon per model page type
+$Nottingham = simplexml_load_file("modules/xerte/parent_templates/Nottingham/wizards/en-GB/data.xwd");
+$nodes = $Nottingham->xpath("/wizard/learningObject/newNodes/*");
+$pageIcons = array();
+foreach($nodes as $node)
+{
+    $name = $node->getName();
+    $icon = (string)$Nottingham->xpath('/wizard/' . $name . '/@icon')[0]['icon'];
+    $pageIcons[$node->getName()] = $icon;
+}
+
+// Remove item in editor
+for($i=0; $i<count($workspace->items); $i++)
+{
+    $item = $workspace->items[$i];
+    if ($item->xot_id == $_GET["id"])
+    {
+        unset($workspace->nodes->{$item->id});
+        array_splice($workspace->items, $i, 1);
+        continue;
+    }
+    if ($item->type != "nottingham" && $item->type != "workspace" && $item->type != "folder")
+    {
+        unset($workspace->nodes->{$item->id});
+        array_splice($workspace->items, $i, 1);
+    }
+}
+
+$workspace_json = json_encode($workspace);
 
 foreach($workspace->items as $item)
 {
@@ -48,42 +81,21 @@ foreach($workspace->items as $item)
 		$source_folder = $xerte_toolkits_site->users_file_area_full . $source_row['template_id'] . "-" . $source_user['username'] . "-" . $source_template_name['template_name'];		
 		$source_file = $source_folder . "/data.xml";
 		
-		$templateXml = new DOMDocument();
-		$templateXml->load($source_file);
+		$template = new XerteXMLInspector();
+        $template->loadTemplateXML($source_file);
 		
 		$x = new stdClass();
 		$x->name = $item->text;
 		$x->id = $item->xot_id;
 		
-		$x->pages = array();
-		$children = $templateXml->documentElement->childNodes;
-		$x->glossary = $templateXml->documentElement->hasAttribute("glossary");
-		for($i = 0; $i < $children->length; $i++)
-		{
-			
-			$child = $children->item($i);	
-			$j = 0;
-			$iconChild = $xmlNottingham->documentElement->getElementsByTagName($child->tagName)->item($j);
-			while($iconChild != null && !$iconChild->hasAttribute("icon"))
-			{
-				$j++;
-				$iconChild = $xmlNottingham->documentElement->getElementsByTagName($child->tagName)->item($j);
-			}
-			$y = new stdClass();
-			$y->name = $child->getAttribute("name");
-			if(iconChild != null){
-				$y->icon = $iconChild->getAttribute("icon");
-			}
-			$y->type = $child->tagName;
-			
-			$y->index = $i;
-			array_push($x->pages, $y);
-		}
-		
-		
-		
-		//$tag = $xmlNottingham->documentElement->childNodes->getElementsByTagName($item->type);
-		
+		$x->glossary = $template->glossaryUsed();
+        $x->pages = $template->getPages();
+        for ($i=0; $i<count($x->pages); $i++)
+        {
+            $page = $x->pages[$i];
+            $page->icon = $pageIcons[$page->type];
+        }
+
 		$items[$x->id] = $x;
 	}
 	
@@ -116,26 +128,19 @@ foreach($workspace->items as $item)
 
 		initWorkspace = function()
 		{
-			$.get("website_code/php/templates/get_templates_sorted.php", function(data)
-			{
-				workspace = JSON.parse(data);
-				
-				init_workspace(true);
-				
-				
-			});
-			
+            workspace = JSON.parse('<?php echo $workspace_json; ?>');
+
+            init_workspace(true);
 		}
 
-		
-		
 		var merged = false;
 		currentProject = template_id;
 		sourceProject = -1;
 		$("#merge").hide();
+		$("#mergeGlossary").hide();
 		$("#pagetype").html("Import");
 		$(".optButtonContainer").hide();
-		initWorkspace()
+		initWorkspace();
 		$('#workspace').bind("DOMSubtreeModified",function(){
 		 	$("#workspace .jstree-clicked").removeClass("jstree-clicked");	
 		});
@@ -191,13 +196,13 @@ foreach($workspace->items as $item)
 		<td id="importProjectsPanel">
 			<div id="workspace">
 			</div>
-		
+
 		</td>
 		<td id="importPagesPanel">
 			<div id="mergeGlossary"><input type="checkbox" id="mergeGlossaryCheck"></input>Merge glossary</div>
 			<h2>Pages</h2>
 			<div id="pages">
-			
+
 			</div>
 			<div>
 				<button id="merge" >Merge</button>
@@ -205,6 +210,6 @@ foreach($workspace->items as $item)
 		</td>
 	</tr>
 </table>
-	
+
 </body>
 </html>
