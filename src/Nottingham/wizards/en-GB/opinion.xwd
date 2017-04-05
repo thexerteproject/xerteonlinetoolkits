@@ -12,7 +12,7 @@
   </pageWizard>
 
   <!-- OPINION=============================== -->
-    <opinion menu="Interactivity" menuItem="Opinion" icon="icPageWhiteGear" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
