@@ -27,6 +27,11 @@
 		var $pageContents, $backBtn, $fwdBtn, $stepHolder, $submitBtn, $helpBtn, $overviewHolder,
 			currentStepInfo;
 		
+		// Called from xenith if tab level deeplinking is available
+		this.deepLink = function(item) {
+			this.startNewDecision(item);
+		}
+		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents	= $("#pageContents");
@@ -336,7 +341,7 @@
 		
 		
 		// _____ START NEW DECISION FROM 1st STEP _____
-		this.startNewDecision = function() {
+		this.startNewDecision = function(deepLink) {
 			$pageContents.data("currentStep", 0);
 			$pageContents.data("decisionHistory", []);
 			$pageContents.data("storedResultTxt", []);
@@ -346,7 +351,7 @@
 			$submitBtn.button("disable");
 			
 			// set up 1st step - use firstStep from xml if valid id, otherwise use first step in array
-			var firstStep = this.findStep(x_currentPageXML.getAttribute("firstStep")) ? x_currentPageXML.getAttribute("firstStep") : $pageContents.data("allSteps")[0].name;
+			var firstStep = deepLink != undefined ? $pageContents.data("allSteps")[deepLink].name : this.findStep(x_currentPageXML.getAttribute("firstStep")) ? x_currentPageXML.getAttribute("firstStep") : $pageContents.data("allSteps")[0].name;
 			this.setUpStep(firstStep, true);
 			
 			this.showHideHolders($stepHolder);
