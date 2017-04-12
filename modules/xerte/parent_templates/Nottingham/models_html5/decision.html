@@ -510,11 +510,19 @@
 			} else {
 				
 				// _____ BUILD NEW Q _____
-				var authorSupport = "";
-				if (x_params.authorSupport == "true") {
-					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
+				var authorSupport = x_params.authorSupport == "true" ? '<p class="alert">' + currentStepInfo.name + ' </p>' : "";
+				var $text = $(x_addLineBreaks(currentStepInfo.text));
+				
+				if (x_currentPageXML.getAttribute("number") == "true") {
+					if ($text.length > 0) {
+						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
+					} else {
+						$text = $('<p>' + x_addLineBreaks(currentStepInfo.text) + '</p>');
+						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
+					}
 				}
-				$stepHolder.prepend('<div class="step"><p class="instruction">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + '</p></div>');
+				
+				$stepHolder.prepend('<div class="step"><div class="instruction">' + authorSupport + $text.text() + '</div></div>');
 				var $thisStep = $stepHolder.children(".step");
 				
 				if (currentStepInfo.options.length == 0) {
@@ -711,12 +719,19 @@
 			} else {
 				
 				// _____ BUILD NEW INFO _____
-				var authorSupport = "";
-				if (x_params.authorSupport == "true") {
-					authorSupport =  '<span class="alert">' + currentStepInfo.name + ' </span>';
+				var authorSupport = x_params.authorSupport == "true" ? '<p class="alert">' + currentStepInfo.name + ' </p>' : "";
+				var $text = $(x_addLineBreaks(currentStepInfo.text));
+				
+				if (x_currentPageXML.getAttribute("number") == "true") {
+					if ($text.length > 0) {
+						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
+					} else {
+						$text = $('<p>' + x_addLineBreaks(currentStepInfo.text) + '</p>');
+						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
+					}
 				}
 				
-				$stepHolder.prepend('<div class="step"><div class="info">' + authorSupport + x_addLineBreaks(currentStepInfo.text) + '</div></div>');
+				$stepHolder.prepend('<div class="step"><div class="info">' + authorSupport + $text.text() + '</div></div>');
 				
 				// save reference to this step so it can be reloaded later if needed
 				$pageContents.data("allSteps")[currentStepInfo.index].built = $stepHolder.children(".step");
@@ -846,6 +861,16 @@
 			// add details of each step in decision to string
 			for (var i=0; i<decisionHistory.length; i++) {
 				var thisStep = this.findStep(decisionHistory[i].id);
+				var $text = $(x_addLineBreaks(thisStep.text));
+				
+				if (x_currentPageXML.getAttribute("number") == "true" && thisStep.type != "resultStep") {
+					if ($text.length > 0) {
+						$text.prepend('<span class="num">' + (i + 1) + ': </span>');
+					} else {
+						$text = $('<p>' + x_addLineBreaks(thisStep.text) + '</p>');
+						$text.prepend('<span class="num">' + (i + 1) + ': </span>');
+					}
+				}
 				
 				if (type == "html") {
 					string += '<div class="overviewStep">';
@@ -853,9 +878,9 @@
 				
 				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-help"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+						string += '<div><span class="ui-icon ui-icon-help"/>' + $text.text() + '</div>';
 					} else {
-						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+						string += '<p>' + $text.text() + '</p>';
 					}
 					
 					if (thisStep.type == "mcqStep") {
@@ -903,18 +928,18 @@
 					
 				} else if (thisStep.type == "infoStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-notice"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+						string += '<div><span class="ui-icon ui-icon-notice"/>' + $text.text() + '</div>';
 					} else {
-						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
 					}
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + x_addLineBreaks(thisStep.text) + '</div>';
+						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + $text.text() + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
-						string += '<p>' + x_addLineBreaks(thisStep.text) + '</p>';
+						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
 					}
 					

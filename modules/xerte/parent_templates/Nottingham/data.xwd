@@ -669,7 +669,8 @@
 	<firstStep label="First Step ID" type="TextInput"/>
 	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
 	
-	<copy label="Copy Overview Option" type="CheckBox" optional="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
+	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
+	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>
@@ -2758,7 +2759,7 @@
     <link label="Specified URL" type="textInput"/>
 	  
     <url label="Image" type="media"/>
-    <tip label="Image Description" type="TextInput"/>
+    <tip label="Image Description" type="TextInput" mandatory="true" defaultValue="Enter a Description for Accessibility"/>
 
   </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
