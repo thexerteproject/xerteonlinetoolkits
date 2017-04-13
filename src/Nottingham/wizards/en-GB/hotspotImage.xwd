@@ -12,7 +12,7 @@
   <hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
 	<tip label="Image Description" type="TextInput"/>
     <interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>

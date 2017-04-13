@@ -9,7 +9,7 @@
   <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text  label="Text" type="TextArea" height="250"/>
+    <text  label="Page Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
     <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100"/>
 	<tip label="Image Description" type="TextInput"/>

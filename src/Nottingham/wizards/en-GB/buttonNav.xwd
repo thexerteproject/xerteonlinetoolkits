@@ -8,7 +8,7 @@
   <!-- BUTTON NAVIGATOR============================= -->
   <buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Text" type="TextArea" height="250" />
+    <text label="Page Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100"  width="100" deprecated="Width is now set automatically"/>
 	

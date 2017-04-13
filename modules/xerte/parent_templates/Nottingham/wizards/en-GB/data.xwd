@@ -183,7 +183,7 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
 	</background></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
 	
 	<panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" optional="true"/>
@@ -219,7 +219,7 @@
   </nestedPage><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput"/>
     <colour label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
@@ -336,7 +336,7 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
 	</background></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
 	
@@ -378,7 +378,7 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
 	</background></buttonQuestion><buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="200"/>
+    <text label="Page Text" type="TextArea" height="200"/>
     <intro label="Introduction" type="TextArea" height="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
@@ -450,7 +450,7 @@
 	</background></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="200"/>
+    <text label="Page Text" type="TextArea" height="200"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
 
 	<buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -531,7 +531,7 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
 	</background></columnPage><connectorHotspotImage menu="Connectors" menuItem="Hotspot Image Connector" hint="An interaction allowing you to mark up an image with regions. When selected, each region will take you to another page in the project or present further information." icon="icConHotSpotImage" thumb="thumbs/connectorHotspotImage.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="200"/>
+    <text label="Page Text" type="TextArea" height="200"/>
     <textWidth label="Min Text Width" options="No Text,Small,Medium,Large" type="ComboBox" data="none,narrow,wide,max" defaultValue="narrow" width="200"/>		
     <url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput"/>
@@ -793,7 +793,7 @@
 	</background></delicious><dialog menu="Interactivity" menuItem="Dialog" hint="An interaction comprising a sequence of text-entry interactions forming a short dialog." icon="icScript" thumb="thumbs/dialog.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="100"/>
+    <text label="Page Text" type="TextArea" height="100"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -992,7 +992,7 @@
   </textbox><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
     <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100"/>
 	<tip label="Image Description" type="TextInput"/>
@@ -1239,7 +1239,7 @@
 	</background></hangman><hotspotImage menu="Interactivity" menuItem="Hotspot Image" hint="An interaction allowing you to mark up an image with regions and associate explanatory text with each region. The type of interactivity can be varied." icon="icHotspot" thumb="thumbs/hotspotImage.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <url label="Image" type="media"/>
 	<tip label="Image Description" type="TextInput"/>
     <interactivity label="Interactivity" options="Show Me,Click Explore" type="ComboBox" data="Show Me,Click Explore" defaultValue="Show Me" width="100"/>
@@ -1952,7 +1952,7 @@
   </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="100"/>
+    <text label="Page Text" type="TextArea" height="100"/>
     <prompt label="Prompt" type="TextArea" height="100"/>
     
     <feedback label="Feedback" type="TextArea" height="100"/>
@@ -1991,7 +1991,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true" common="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" common="true"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
-	</background></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Text" height="280" remove="true">
+	</background></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" height="280" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
     <copyBtnTip label="Copy Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
@@ -2035,7 +2035,7 @@
 	</background></modify><morphImages menu="Media" menuItem="Morph Images" hint="Morph between two images. Can be used to present an impression of zooming into a region of an image." icon="icZoomIn" thumb="thumbs/morphImages.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <url label="Image One" type="media"/>
     <tip1 label="Image Description 1" type="TextInput"/>
     <url2 label="Image Two" type="media"/>
@@ -2058,7 +2058,7 @@
 	</background></morphImages><newWindow menu="Navigators" menuItem="New Window" hint="Allow the user to launch a new window to a URL." icon="icApplication" thumb="thumbs/newWindow.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="150"/>
+    <text label="Page Text" type="TextArea" height="150"/>
     <url label="URL" type="TextInput"/>
 	<descrip label="Link Text" type="TextInput"/>
     <previewImage label="Preview Image" type="media"/>
@@ -2461,7 +2461,7 @@
 
 	</outcomeCondition><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <nextBtnTip label="Next Button Tip" type="textInput" divider="true" language="true"/>	
     <priorBtnTip label="Previous Button Tip" type="textInput" language="true"/>
@@ -2500,7 +2500,7 @@
 	</background></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="10" width="100" defaultValue="100" deprecated="Width is now set automatically"/>
 	
@@ -2558,7 +2558,7 @@
   </nestedTab><table menu="Charts" menuItem="Table" hint="A page for basic tables." icon="icTable" remove="true" thumb="thumbs/table.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="300" width="380"/>
+    <text label="Page Text" type="TextArea" height="300" width="380"/>
     <align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="left,right,top,bottom" defaultValue="left" width="100"/>
 
     <loadingPrompt label="Loading Message" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
@@ -2731,7 +2731,7 @@
 	</background></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
 	
 	<showTitles label="Show Image Titles" type="CheckBox" defaultValue="false" optional="true"/>
 	
@@ -2765,7 +2765,7 @@
   </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
+    <text label="Page Text" type="TextArea" height="250"/>
     <interactivity label="Interactivity" options="Timeline,Matching Pairs" type="ComboBox" data="Timeline,Matching Pairs" defaultValue="Timeline" width="120"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
 
@@ -2838,7 +2838,7 @@
 	<timedText label="Timed Text File" type="Media" optional="true"/>
 
     <newNodes>
-      <nestedSynch><![CDATA[<nestedSynch text="Content for the pane" synch="0"/>]]></nestedSynch>
+      <nestedSynch><![CDATA[<nestedSynch text="Enter text here" synch="0"/>]]></nestedSynch>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -2850,9 +2850,9 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true" common="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" common="true"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
-	</background></transcriptReader><nestedSynch menuItem="Nested Page" icon="icBullet" remove="true">
+	</background></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
 
-    <text label="Page Text" type="TextArea" height="250"/>
+    <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
 
   </nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" remove="true">
