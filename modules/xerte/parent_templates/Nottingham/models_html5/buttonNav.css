@@ -24,3 +24,8 @@
 		margin-right:	0px; /* over-ride ui style */
 	}
 	
+	#btnHolder.bottom  {
+		margin-top: 10px;
+		margin-bottom: 0px;
+	}
+	

@@ -10,7 +10,9 @@
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="250" />
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-    <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100"  width="100" deprecated="Width is now set automatically"/>
+    <buttonWidth label="Button Width" type="NumericStepper" min="20" max="250" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
+	
+	<buttonPos label="Button Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" optional="true"/>
 	
     <newNodes>
       <nestedPage><![CDATA[<nestedPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedPage>
