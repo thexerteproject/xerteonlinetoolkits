@@ -37,7 +37,7 @@
 	<icDelete tooltip="Delete" prompt="Delete the item?"/>
 	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
-	<optionalPropHTML label="Optional Properties"/>
+	<optionalPropHTML label="Optional Properties" general="General"/>
 	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
 	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
     <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
