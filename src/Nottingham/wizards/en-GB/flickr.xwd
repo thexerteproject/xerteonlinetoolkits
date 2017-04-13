@@ -1,7 +1,7 @@
 <wizard menus="Misc">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr>  
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr>  
     </newNodes>
   </pageWizard>
 
@@ -12,6 +12,7 @@
     <keywords label="Keyword(s)" type="TextInput"/>
     <content label="Content for" options="All use,Non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
     <deriv label="Reuse" options="Unrestricted,Non-derivative,Share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 
 	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	

@@ -1,7 +1,7 @@
 <wizard menus="Navigators">
   <pageWizard remove="true" duplicate="false">
     <newNodes>    
-      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title"/>]]></tabNavExtra>
+      <tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large"/>]]></tabNavExtra>
     </newNodes>  	  
   </pageWizard>
 
@@ -10,6 +10,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Large" width="100" mandatory="true"/>
 
     <rememberTab label="Stay on Current Tab" type="CheckBox" optional="true"/>
 	

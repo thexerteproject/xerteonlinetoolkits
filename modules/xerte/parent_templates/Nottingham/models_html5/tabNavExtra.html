@@ -58,6 +58,15 @@
 		this.init = function() {
 			// tabWidth attribute is ignored as it is automatic
 			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Small") {
+				$("#pageContents .splitScreen").addClass("large");
+			} else if (panelWidth == "Medium") {
+				$("#pageContents .splitScreen").addClass("medium");
+			} else {
+				$("#pageContents .splitScreen").addClass("small");
+			}
+			
 			// __CREATE TOPICS__
 			// have to clone topics / tabs / pages in seperate functions as otherwise it clones the data from previous topic
 			var $topic =		$("#pageContents .topic"),
@@ -383,7 +392,7 @@
 
 <div id="pageContents">
 	
-	<div class="splitScreen small">
+	<div class="splitScreen">
 		
 		<div id="topicHolder" class="left">
 			<a class="topic"></a>
