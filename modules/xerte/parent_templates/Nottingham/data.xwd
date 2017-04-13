@@ -2710,7 +2710,7 @@
     <tip label="Video Description" type="TextInput"/>	
     <reset label="Reset on Completion" type="Checkbox" defaultValue="false" deprecated="This property is deprecated. Videos now reset on completion by default."/>
 	
-    <transcriptTabTxt label="Transcript Tab Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+    <transcriptTabTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <transcriptTabTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
     <transcriptTabWidth label="Check Button Width" type="NumericStepper" min="80" max="150" step="10" width="100" defaultValue="90" language="true" deprecated="Width is now set automatically"/>		
 
