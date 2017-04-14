@@ -1550,7 +1550,7 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        console.log([key, names, values]);
+        //console.log([key, names, values]);
         // Get the node name
 		
 		if (names == "hidePage") {
