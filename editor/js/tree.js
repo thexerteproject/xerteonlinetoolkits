@@ -609,6 +609,7 @@ var EDITOR = (function ($, parent) {
                 if (attribute_value.found && attribute_value.value=="")
                 {
                     attribute_value.value = language.$code;
+                    toolbox.setAttributeValue(key, [attribute_name], [attribute_value.value]);
                 }
             }
             if (attribute_value.found)

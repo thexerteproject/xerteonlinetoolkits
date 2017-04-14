@@ -1550,7 +1550,7 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        //console.log([key, names, values]);
+        console.log([key, names, values]);
         // Get the node name
 		
 		if (names == "hidePage") {
@@ -2517,6 +2517,7 @@ var EDITOR = (function ($, parent) {
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
+    my.setAttributeValue = setAttributeValue;
     my.displayParameter = displayParameter;
 	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;
