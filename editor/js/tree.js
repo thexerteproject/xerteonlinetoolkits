@@ -1154,7 +1154,7 @@ var EDITOR = (function ($, parent) {
     build = function (xml) {
         var xmlData = $.parseXML(xml);
         topLevelObject = xmlData.childNodes[0].nodeName;
-        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find(topLevelObject), null),
+        var tree_json = toolbox.build_lo_data($(xmlData).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children
