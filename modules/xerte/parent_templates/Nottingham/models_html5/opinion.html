@@ -121,7 +121,7 @@
 				}
 			}
 			
-			this.weighting =  x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") != undefined : 1.0; 
+			this.weighting =  x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
 
             XTSetPageType(x_currentPage, 'numeric', numberOfQuestions, this.weighting);
 

@@ -297,7 +297,7 @@
 		
 		this.setUpFillBlank = function() {
 			$("#labelHolder").remove();
-			
+
 			var	maxW = 0,
 				i;
 			for (i=0; i<$targetHolder.find("input").length; i++) {
@@ -314,11 +314,10 @@
 					$(this).data("index", $targetHolder.find("input").index($(this))); // stored here as using .index() won't return result needed as there are other elements (line breaks etc.) in $targetHolder
 				});
 				
-			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
-
-					//$("#submitBtn").remove();
-
-
+			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && isTracked) {
+				{
+				    $("#submitBtn").remove();
+                }
 
 				$targetHolder.find("input").on("keypress", function() {
 					var $this = $(this);
