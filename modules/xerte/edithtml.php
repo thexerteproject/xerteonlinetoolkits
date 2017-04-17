@@ -258,14 +258,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <div class="header"></div>
         <div id="content" class="content">
             <div id="mainPanel"></div>
-            <div id="languagePanel" style="display:none">
-                <hr>
-            </div>
-            <div id="insert_subnodes">
+            <div id="subPanels">
+                <div id="languagePanel" style="display:none">
+                    <hr>
+                </div>
+                <div id="insert_subnodes">
 
-            </div>
-            <div class="nodeInfo" id="info">
+                </div>
+                <div class="nodeInfo" id="info">
 
+                </div>
             </div>
         </div>
         <div id="main_footer" class="footer">

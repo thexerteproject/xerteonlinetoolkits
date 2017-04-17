@@ -153,7 +153,7 @@ var EDITOR = (function ($, parent) {
                     .attr('value', value.btnvalue)
                     .attr('tabindex', index + 3)
                     .addClass("insert_button")
-                    .click(loadEditHTMLphp)
+                    .click(insert_import)
                     .append($('<img>').attr('src', value.icon).height(14))
                     .append(value.name);
 
@@ -191,26 +191,14 @@ var EDITOR = (function ($, parent) {
     },
     
     //Loads the data into the import screen
-	loadEditHTMLphp = function() {
+	insert_import = function() {
+		parent.tree.refresh_workspaceMerge()
+	},
 
-		refresh_workspaceMerge()
-		
-	}
-	
-	function refresh_workspaceMerge(){
-        var url="import-choose.php?id="+template_id;
-        $.get(url, function(data){
-        	$("#content").html(data);
-        	
-        });
-
-	}
-    
-	
 	add_page = function(e) {
 		$("#insert_menu #menu").menu("collapseAll", e, true);
 		parent.tree.addNode($(this).closest("[item]").attr("item"), $(this).attr("value"));
-	}
+	},
 
     // Get text from html, by putting html in a div, strip out the scripts
     // and convert to text
@@ -270,7 +258,7 @@ var EDITOR = (function ($, parent) {
             }
 
             // Deal with media
-            if (attroptions.type != 'media')
+            if (attroptions.type && attroptions.type.toLowerCase() != 'media')
             {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
@@ -896,7 +884,7 @@ var EDITOR = (function ($, parent) {
             });
         })
         return xerte;
-    }
+    },
 
     jqGridAfterShowForm = function(id, ids, options)
     {

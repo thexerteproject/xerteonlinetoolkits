@@ -201,6 +201,19 @@ input.media
     background: #fff;
 }
 
+#merge_east, #merge_center {
+	background: #fff;
+	padding: 8px 8px 8px 8px;
+	border-radius: 4px;
+}
+
+#merge_mainContent .content {
+	background-image: none;
+	background-color: #fff;
+	padding: 10px 5px;
+	position: relative;
+}
+
 .ui-layout-center .content
 {
     background : #eee;
@@ -862,13 +875,41 @@ div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 4
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}
 div#save_buttons button:last-child {margin-left: 10px!important;}
 
-div#top_buttons button {font-size: 1.3em; height: 35px;}
+div#top_buttons button {font-size: 1.3em; height: 35px; margin-right: 20px}
 div#top_buttons button img {height: 20px!important;}
-div#top_buttons button:first-of-type {margin-right: 20px;}
-div#top_buttons button:last-of-type {margin-left: 20px;}
+/* div#top_buttons button:first-of-type {margin-right: 20px;} */
+div#top_buttons button:last-of-type {margin-right: 0px;}
 
 div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
+#merge_center label {cursor: pointer; display:block;}
+#merge.xerte_button_dark { background: #f0f0f0; font-size: 1.3em;
+	padding-top: 0px!important;
+	height: 40px!important;}
+#merge.xerte_button_dark:hover {background: #f86718; color: #000000;}
+.merge_title { margin-bottom: 5px;}
+#mergeGlossary {
+	margin-bottom:10px;
+}
+#select-all {
+	margin-bottom:15px;
+}
+#mergeGlossaryCheck, #pages {
+	margin-left: 15px;
+}
+#merge_button_icon {
+	height: 17px;
+	padding-bottom:1px;
 
+}
+.merge_page_icon
+{
+	margin: 1px 4px -1px 5px;
+}
+#merge_button_container {
+	/* float:right; */
+	margin-top: 10px;
+	color:black;
+}
 
 .xerte-icon {
     margin-right: 4px;
