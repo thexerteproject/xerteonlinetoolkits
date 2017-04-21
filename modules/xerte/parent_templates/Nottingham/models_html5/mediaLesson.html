@@ -202,7 +202,7 @@
 			if (!!document.createElement("canvas").getContext) {
 				// load popcorn library and plugins 
 				var loadFiles = true;
-                if(xot_offline) {
+                if(typeof(xot_offline) !== "undefined" && xot_offline) {
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
