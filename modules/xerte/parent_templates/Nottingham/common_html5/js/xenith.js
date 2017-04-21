@@ -1484,7 +1484,7 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if (x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if (x_pageInfo[0].type != "menu" && x_currentPageXML.getAttribute("bgImage") != undefined) {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
