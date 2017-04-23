@@ -20,11 +20,29 @@
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var results = new function() {		
+	var results = new function() {
+	    var generalResultsTxt,
+			averageTxt,
+			completionTxt,
+			startTimeTxt,
+			durationTxt,
+			interactivityResultsTxt,
+			globalResultsTxt,
+			nameTxt,
+			scoreTxt,
+			weightingTxt,
+			completedTxt,
+			specificResultsTxt,
+			yourAnswerTxt,
+			correctAnswerTxt,
+			downloadPdfTxt;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
-		}
+
+		    this.getLabels();
+
+        }
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -33,7 +51,9 @@
 		
 		this.init = function() {
 
-			// ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
+		    this.getLabels();
+
+            // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 			
 			if (x_currentPageXML.getAttribute("textWidth") == "300") {
 				$pageContents.addClass("width40");
@@ -67,7 +87,7 @@
 					$("#specific").show();
 					$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
 					if (x.subinteractions.length > 0) {
-						$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">Your Answer</th><th class=\"notLast\">Correct Answer</th></tr>");
+						$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">" + yourAnswerTxt + "</th><th class=\"notLast\">"+ correctAnswerTxt +"</th></tr>");
 					}
 				}
 				count = 1;
@@ -98,9 +118,45 @@
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
+
+        this.getLabels = function(){
+
+            generalResultsTxt = x_currentPageXML.getAttribute("generalResultsTxt") != undefined && x_currentPageXML.getAttribute("generalResultsTxt") != "" ? x_currentPageXML.getAttribute("generalResultsTxt") : "General Results";
+            averageTxt = x_currentPageXML.getAttribute("averageTxt") != undefined && x_currentPageXML.getAttribute("averageTxt") != "" ? x_currentPageXML.getAttribute("averageTxt") : "Average: ";
+            completionTxt = x_currentPageXML.getAttribute("completionTxt") != undefined && x_currentPageXML.getAttribute("completionTxt") != "" ? x_currentPageXML.getAttribute("completionTxt") : "Completion: ";
+            durationTxt = x_currentPageXML.getAttribute("durationTxt") != undefined && x_currentPageXML.getAttribute("durationTxt") != "" ? x_currentPageXML.getAttribute("durationTxt") : "Duration: ";
+            startTimeTxt = x_currentPageXML.getAttribute("startTimeTxt") != undefined && x_currentPageXML.getAttribute("startTimeTxt") != "" ? x_currentPageXML.getAttribute("startTimeTxt") : "Start Time";
+            interactivityResultsTxt = x_currentPageXML.getAttribute("interactivityResultsTxt") != undefined && x_currentPageXML.getAttribute("interactivityResultsTxt") != "" ? x_currentPageXML.getAttribute("interactivityResultsTxt") : "Interactivity Results";
+            globalResultsTxt = x_currentPageXML.getAttribute("globalResultsTxt") != undefined && x_currentPageXML.getAttribute("globalResultsTxt") != "" ? x_currentPageXML.getAttribute("globalResultsTxt") : "Global Results";
+            nameTxt = x_currentPageXML.getAttribute("nameTxt") != undefined && x_currentPageXML.getAttribute("nameTxt") != "" ? x_currentPageXML.getAttribute("nameTxt") : "Name";
+            scoreTxt = x_currentPageXML.getAttribute("scoreTxt") != undefined && x_currentPageXML.getAttribute("scoreTxt") != "" ? x_currentPageXML.getAttribute("scoreTxt") : "Score";
+            weightingTxt = x_currentPageXML.getAttribute("weightingTxt") != undefined && x_currentPageXML.getAttribute("weightingTxt") != "" ? x_currentPageXML.getAttribute("weightingTxt") : "Weighting";
+            completedTxt = x_currentPageXML.getAttribute("completedTxt") != undefined && x_currentPageXML.getAttribute("completedTxt") != "" ? x_currentPageXML.getAttribute("completedTxt") : "Completed";
+            specificResultsTxt = x_currentPageXML.getAttribute("specificResultsTxt") != undefined && x_currentPageXML.getAttribute("specificResultsTxt") != "" ? x_currentPageXML.getAttribute("specificResultsTxt") : "Specific Results";
+            yourAnswerTxt = x_currentPageXML.getAttribute("yourAnswerTxt") != undefined && x_currentPageXML.getAttribute("yourAnswerTxt") != "" ? x_currentPageXML.getAttribute("yourAnswerTxt") : "Your Answer";
+            correctAnswerTxt = x_currentPageXML.getAttribute("correctAnswerTxt") != undefined && x_currentPageXML.getAttribute("correctAnswerTxt") != "" ? x_currentPageXML.getAttribute("correctAnswerTxt") : "Correct Answer";
+            downloadPdfTxt = x_currentPageXML.getAttribute("downloadPdfTxt") != undefined && x_currentPageXML.getAttribute("downloadPdfTxt") != "" ? x_currentPageXML.getAttribute("downloadPdfTxt") : "Download PDF File";
+
+
+            $("#generalResultsTxt").html(generalResultsTxt);
+            $("#averageTxt").html(averageTxt);
+            $("#durationTxt").html(durationTxt);
+            $("#durationTxt1").html(durationTxt);
+            $("#startTimeTxt").html(startTimeTxt);
+            $("#completionTxt").html(completionTxt);
+            $("#interactivityResultsTxt").html(interactivityResultsTxt);
+            $("#globalResultsTxt").html(globalResultsTxt);
+            $("#nameTxt").html(nameTxt);
+            $("#scoreTxt").html(scoreTxt);
+            $("#weightingTxt").html(weightingTxt);
+            $("#completedTxt").html(completedTxt);
+            $("#specificResultsTxt").html(specificResultsTxt);
+            $("#button").html(downloadPdfTxt);
+        }
+
+
 	}
 results.init();
-	
  	
  	
 </script>
@@ -138,40 +194,40 @@ results.init();
 
 <div id="pageContents">
 	<div id="pdfContent">
-		<h2>General Results</h2>
+		<h2 id="generalResultsTxt"></h2>
 		<table id="general_summary" rules="rows">
 			<tr>
-				<td>Average: </td>
+				<td id="averageTxt"></td>
 				<td><span id="averageScore"></span></td>
 			</tr>
 			<tr>
-				<td>Completion: </td>
+				<td id="completionTxt"></td>
 				<td><span id = "completion"></span></td>
 			</tr>
 			<tr>
-				<td>Start time: </td>
+				<td id="startTimeTxt"></td>
 				<td><span id="startTime"></span></td>
 			</tr>
 			<tr>
-				<td>Duration: </td>
+				<td id="durationTxt1"></td>
 				<td><span id="totalDuration"></span></td>
 			</tr>
 		</table>
 		<div id ="specific">
-		<h2>Interactivity results</h2>
+		<h2 id="interactivityResultsTxt"></h2>
 		<br />
-		<h3>Global Results</h3>
+		<h3 id="globalResultsTxt"></h3>
 		<table id="questionScores" rules="rows">
 			<tr>
-				<th>Name</th>
-				<th>Score</th>
-				<th>Duration</th>
-				<th>Weighting</th>
-				<th>Completed</th>
+				<th id="nameTxt">Name</th>
+				<th id="scoreTxt">Score</th>
+				<th id="durationTxt">Duration</th>
+				<th id="weightingTxt">Weighting</th>
+				<th id="completedTxt">Completed</th>
 			</tr>
 		</table>
 		<br />
-		<h3>Specific Results</h3>
+		<h3 id="specificResultsTxt">Specific Results</h3>
 		<br />
 		<table id="fullResults">
 		</table>
@@ -180,6 +236,6 @@ results.init();
 	</div>
 	<br>
 	<div>
-		<center><button onClick="pdfDownload()" id="button">Download PDF file</button></center>
+		<center><button onClick="pdfDownload()" id="button"></button></center>
 	</div>
 </div>

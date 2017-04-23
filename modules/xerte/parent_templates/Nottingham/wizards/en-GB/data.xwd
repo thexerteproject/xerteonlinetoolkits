@@ -150,7 +150,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -2095,7 +2095,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icPageWhiteGear" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -2343,6 +2343,23 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></raptivity><results menu="Misc" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" remove="true">
+
+        <generalResultsTxt label="General results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <averageTxt label="Average text label" type="TextInput" wysiwyg="true" language="true"/>
+        <completionTxt label="Completion text label" type="TextInput" wysiwyg="true" language="true"/>
+        <startTimeTxt label="Start Time text label" type="TextInput" wysiwyg="true" language="true"/>
+        <durationTxt label="Duration text label" type="TextInput" wysiwyg="true" language="true"/>
+        <interactivityResultsTxt label="Interactivity Results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <globalResultsTxt label="Global Results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <nameTxt label="Name text label" type="TextInput" wysiwyg="true" language="true"/>
+        <scoreTxt label="Score text label" type="TextInput" wysiwyg="true" language="true"/>
+        <weightingTxt label="Weighting text label" type="TextInput" wysiwyg="true" language="true"/>
+        <completedTxt label="Completed text label" type="TextInput" wysiwyg="true" language="true"/>
+        <specificResultsTxt label="Specific Results text label" type="TextInput" wysiwyg="true" language="true"/>
+        <yourAnswerTxt label="Your answer text label" type="TextInput" wysiwyg="true" language="true"/>
+        <correctAnswerTxt label="Correct answer text label" type="TextInput" wysiwyg="true" language="true"/>
+        <downloadPdfTxt label="Download pdf text label" type="TextInput" wysiwyg="true" language="true"/>
+
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Full Results" data="minimal-results,full-results"/>
