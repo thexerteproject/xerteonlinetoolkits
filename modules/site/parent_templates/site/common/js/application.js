@@ -333,7 +333,7 @@ function parseContent(pageIndex){
 				$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
 				
 				//add the section header
-				var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
+				var msg = languageData.find("hiddenSection")[0] != undefined && languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
 				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
 				
 				var links = '';
