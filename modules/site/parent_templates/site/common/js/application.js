@@ -317,7 +317,7 @@ function parseContent(pageIndex){
 		//set the main page title and subtitle			
 		$('#pageTitle').text( page.attr('name'));
 		
-		var msg = languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
+		var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenPage")[0].getAttribute('label') != null ? languageData.find("hiddenPage")[0].getAttribute('label') : "This page will be hidden in live projects";
 		var extraTitle = page.attr('hidePage') == 'true' ? ' <span class="alertMsg">(' + msg + ')</span>' : '';
 		
 		$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
@@ -333,7 +333,7 @@ function parseContent(pageIndex){
 				$('#toc').append('<li><a href="#page' + (pageIndex+1) + 'section' + (index+1) + '">' + $(this).attr('name') + '</a></li>');
 				
 				//add the section header
-				var msg = languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
+				var msg = languageData.find("hiddenPage")[0] != undefined && languageData.find("hiddenSection")[0].getAttribute('label') != null ? languageData.find("hiddenSection")[0].getAttribute('label') : "This section will be hidden in live projects";
 				var extraTitle = $(this).attr('hidePage') == 'true' ? '<p class="alertMsg">' + msg + '</p>' : '';
 				
 				var links = '';
