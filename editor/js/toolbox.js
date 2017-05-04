@@ -136,32 +136,33 @@ var EDITOR = (function ($, parent) {
                     }
 
             });
-            $([
+            if (templateframework == "xerte") {
+                $([
 
-                {
-                    name: language.insertDialog.insertMerge.$label,
-                    icon: 'editor/img/insert-end.png',
-                    tooltip: language.insertDialog.insertMerge.$tooltip,
-                    id: 'insert_button_merge',
-                    btnvalue: "merge"
-                }
+                    {
+                        name: language.insertDialog.insertMerge.$label,
+                        icon: 'editor/img/insert-end.png',
+                        tooltip: language.insertDialog.insertMerge.$tooltip,
+                        id: 'insert_button_merge',
+                        btnvalue: "merge"
+                    }
 
-            ]).each(function (index, value) {
-                var button = $('<button>')
-                    .attr('id', value.id)
-                    .attr('title', value.tooltip)
-                    .attr('value', value.btnvalue)
-                    .attr('tabindex', index + 3)
-                    .addClass("insert_button")
-                    .click(insert_import)
-                    .append($('<img>').attr('src', value.icon).height(14))
-                    .append(value.name);
+                ]).each(function (index, value) {
+                    var button = $('<button>')
+                        .attr('id', value.id)
+                        .attr('title', value.tooltip)
+                        .attr('value', value.btnvalue)
+                        .attr('tabindex', index + 3)
+                        .addClass("insert_button")
+                        .click(insert_import)
+                        .append($('<img>').attr('src', value.icon).height(14))
+                        .append(value.name);
 
-                if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
-                    $menu.find(".insert_buttons").last().append(button);
-                }
-            });
-
+                    if ($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
+                        $menu.find(".insert_buttons").last().append(button);
+                    }
+                });
+            }
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
 				if (e.type == "click" && e.target.id != "insert_button") {

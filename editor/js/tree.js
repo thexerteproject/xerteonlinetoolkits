@@ -88,12 +88,25 @@ var EDITOR = (function ($, parent) {
         },
 
         buttons = $('<div />').attr('id', 'top_buttons');
-        $([
-            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
-            {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, imgicon:'editor/img/mergeIcon.svg', id:'merge_button', click:refresh_workspaceMerge},
-            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
-            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
-        ])
+        if (templateframework == "xerte") {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, imgicon:'editor/img/mergeIcon.svg', id:'merge_button', click:refresh_workspaceMerge},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ];
+        }
+        else
+        {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ]
+        }
+        $(button_def)
         .each(function(index, value) {
                 var button = $('<button>')
                     .attr('id', value.id)
