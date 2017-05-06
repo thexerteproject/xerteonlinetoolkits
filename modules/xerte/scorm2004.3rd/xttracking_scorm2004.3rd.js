@@ -670,7 +670,7 @@ function ScormTrackingState()
                 // If the weight is 0.0, set the score to 100
                 totalscore = 100.0;    
             }
-            return Math.round(totalscore*100/100);
+            return Math.round(totalscore*100)/100;
         }
     }
 
