@@ -87,6 +87,9 @@ export_folder_loop($parent_template_path);
 
 copy_parent_files();
 
+// Copy language files
+export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
+copy_extra_files();
 
 export_folder_loop($dir_path);
 
