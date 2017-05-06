@@ -1063,7 +1063,14 @@ function XTResults()
             counter++;
         }
     }
-    completion = Math.round((counter/state.completedPages.length)*100);
+    if(counter != 0)
+    {
+        completion = Math.round((counter/state.completedPages.length)*100);
+    }
+    else
+    {
+        completion = 0;
+    }
 
     results = {};
     results.mode = x_currentPageXML.getAttribute("resultmode");

@@ -205,7 +205,7 @@ x_projectDataLoaded = function(xmlData) {
 		else {
 			pageToHide.push(i);
 		}
-		if($(this)[0].getAttribute("markForCompletion") === "true")
+		if($(this)[0].getAttribute("markForCompletion") === "true" || $(this)[0].getAttribute("markForCompletion") == undefined)
 		{
 			markedPages.push(i);
 		}
