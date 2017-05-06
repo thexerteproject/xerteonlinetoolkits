@@ -48,7 +48,9 @@
 			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
-			if (x_currentPageXML.getAttribute("align") == "right") {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var align = x_currentPageXML.getAttribute("align") == "right" ? "Right" : "Left";
+			if (align == "Right") {
 				$("#textHolder")
 					.removeClass("left")
 					.addClass("right")
@@ -56,9 +58,14 @@
 				$("#infoHolder")
 					.removeClass("right")
 					.addClass("left");
-				$("#pageContents .splitScreen").addClass("large");
+			}
+			
+			if (panelWidth == "Small") {
+				align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
+			} else if (panelWidth == "Large") {
+				align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
 			} else {
-				$("#pageContents .splitScreen").addClass("medium");
+				align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
 			}
 			
 			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");

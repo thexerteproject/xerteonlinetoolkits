@@ -815,48 +815,49 @@ function x_continueSetUp1() {
 	
 	//add optional progress bar
     if (x_params.progressBar != undefined && x_params.progressBar != "") {
-	//add a div for the progress bar
-	$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
-	//add the progress bar
-	$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
-	//progress bar styling
-	$("*").css({"box-sizing":"border-box"});
-	$(".pbContainer").css({"width": "50%", "background-color":"#ddd", "height":"6px", "margin":"auto","margin-top":"15px"});
-	$(".pbPercent").css({"text-align":"right", "padding-right":"2px", "line-height":"6px", "color":"#ffffff"});
-	$(".pbBar").css({"width":"10%", "background-color":"#2196F3", "font-size":"8px"});
-	$(".pbTxt").css({"font-size": "10px",  "text-align":"center"});
-	if (x_params.progressBar =="pBarNoCounter") {
-	//remove page counter if that option selected
-	$("#x_pageNo").remove();
-    }
-
-	//add show/hide footer tools
-    if (x_params.footerTools != undefined && x_params.footerTools != "") {
-	var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
-	var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
-	//add a div for the show/hide chevron
-	$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
-	$('#x_footerChevron').prop('title', hideMsg);
-    }
-	//chevron to show/hide function
-	$('#x_footerChevron').click(function(){
-        $('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
-                if($(this).is(':visible')){
-                    $('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
-                    $('#x_footerChevron').prop('title', hideMsg);
-                }else{
-                    $('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-                    $('#x_footerChevron').prop('title', showMsg);
-                }
-            });
-        return(false);
-    });
-	if (x_params.footerTools =="hideFooterTools") {
-	$('#x_footerBlock .x_floatLeft').hide();
-	$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
-	$('#x_footerChevron').prop('title', showMsg);
+		//add a div for the progress bar
+		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
+		//add the progress bar
+		$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
+		//progress bar styling
+		$("*").css({"box-sizing":"border-box"});
+		$(".pbContainer").css({"width": "50%", "background-color":"#ddd", "height":"6px", "margin":"auto","margin-top":"15px"});
+		$(".pbPercent").css({"text-align":"right", "padding-right":"2px", "line-height":"6px", "color":"#ffffff"});
+		$(".pbBar").css({"width":"10%", "background-color":"#2196F3", "font-size":"8px"});
+		$(".pbTxt").css({"font-size": "10px",  "text-align":"center"});
+		if (x_params.progressBar =="pBarNoCounter") {
+			//remove page counter if that option selected
+			$("#x_pageNo").remove();
+		}
 	}
-	} 
+	
+	//add show/hide footer tools
+	if (x_params.footerTools != undefined && x_params.footerTools != "") {
+		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
+		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
+		//add a div for the show/hide chevron
+		$('#x_footerBlock .x_floatLeft').before('<div id="x_footerShowHide" ><div id="x_footerChevron"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div></div>');
+		$('#x_footerChevron').prop('title', hideMsg);
+		
+		//chevron to show/hide function
+		$('#x_footerChevron').click(function(){
+			$('#x_footerBlock .x_floatLeft').fadeToggle( "slow", function(){
+					if($(this).is(':visible')){
+						$('#x_footerChevron').html('<div class="chevron" id="chevron" title="Hide footer tools"><i class="fa fa-angle-double-left fa-lg " aria-hidden="true"></i></div>');
+						$('#x_footerChevron').prop('title', hideMsg);
+					}else{
+						$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+						$('#x_footerChevron').prop('title', showMsg);
+					}
+				});
+			return(false);
+		});
+		if (x_params.footerTools =="hideFooterTools") {
+			$('#x_footerBlock .x_floatLeft').hide();
+			$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="fa fa-angle-double-right fa-lg " aria-hidden="true"></i></div>');
+			$('#x_footerChevron').prop('title', showMsg);
+		}
+	}
 	
 	// get icon position
 	var icPosition = "x_floatLeft";
@@ -1492,7 +1493,7 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if (x_currentPageXML.getAttribute("bgImage") != undefined) {
+		if (x_pageInfo[0].type != "menu" && x_currentPageXML.getAttribute("bgImage") != undefined) {
 			x_checkMediaExists(x_currentPageXML.getAttribute("bgImage"), function(mediaExists) {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {

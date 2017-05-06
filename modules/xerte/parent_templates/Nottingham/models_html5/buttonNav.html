@@ -42,7 +42,9 @@
 					$btnHolder = $("#btnHolder");
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css("margin-bottom")));
+				
+				var margin = x_currentPageXML.getAttribute("buttonPos") != "Bottom" ? "margin-bottom" : "margin-top";
+				$("#infoHolder").height($panel.height() - $btnHolder.height() - parseInt($btnHolder.css(margin)));
 			}
 			
 			var $pageContents = $("#pageContents");
@@ -84,6 +86,12 @@
 				$panelBtnLabel = $("#btnHolder .panelBtnLabel:first"),
 				$panelPage = $("#pageContents .panelPage"),
 				$btnHolder = $("#btnHolder");
+			
+			if (x_currentPageXML.getAttribute("buttonPos") == "Bottom") {
+				$btnHolder
+					.addClass("bottom")
+					.before($("#infoHolder"));
+			}
 			
 			// set up buttons and panel contents
 			$(x_currentPageXML).children().each(function(i) {

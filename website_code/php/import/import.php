@@ -681,6 +681,20 @@ if(substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded'
                         fclose($fh);
                     }
                 }
+                else{
+                    $data_name = str_replace("\\","/",$xerte_toolkits_site->import_path . $this_dir) . "data.xml";
+                    if (file_exists($data_name)) {
+                        $preview_xml = file_get_contents($data_name);
+
+                        if ($preview_xml !== false) {
+                            $fh = fopen($xerte_toolkits_site->import_path . $this_dir . "preview.xml", "w");
+
+                            fwrite($fh, $preview_xml);
+
+                            fclose($fh);
+                        }
+                    }
+                }
                 make_new_template($folder, $xerte_toolkits_site->import_path . $this_dir);
 
             }else{

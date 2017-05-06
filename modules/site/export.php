@@ -87,6 +87,9 @@ export_folder_loop($parent_template_path);
 
 copy_parent_files();
 
+// Copy language files
+export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
+copy_extra_files();
 
 // Copy the favicon file
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");

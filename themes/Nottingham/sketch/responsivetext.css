@@ -26,7 +26,7 @@ h3 {
 #infoHolder {
     font-size: 3.0vmin;
 }
-.splitScreen.medium {
+.splitScreen {
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 3.0vmin;
 }

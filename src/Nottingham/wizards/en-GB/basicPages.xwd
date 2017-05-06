@@ -12,12 +12,12 @@
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
-	
+
 	<background type="group" label="Background" optional="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" common="true"/>
 	</background>
 	
 </commonNodes>

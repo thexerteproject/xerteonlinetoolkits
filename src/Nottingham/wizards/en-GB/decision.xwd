@@ -14,7 +14,8 @@
 	<firstStep label="First Step ID" type="TextInput"/>
 	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
 	
-	<copy label="Copy Overview Option" type="CheckBox" optional="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
+	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
+	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
 	
 	<newBtnLabel label="Refresh Button" type="TextInput" wysiwyg="true" language="true"/>
 	<viewThisBtn label="Overview Button" type="TextInput" wysiwyg="true" language="true"/>

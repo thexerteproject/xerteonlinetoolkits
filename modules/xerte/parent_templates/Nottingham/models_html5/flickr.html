@@ -67,6 +67,21 @@
 		this.init = function() {
 			this.$pageContents = $("#pageContents");
 			this.$panel = $("#pageContents .panel");
+			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large");
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
 
 			x_pageInfo[x_currentPage].savedData = {
 				pictureFeed  : undefined,
@@ -110,8 +125,6 @@
 					flickr.proceed(Math.min(x_pageInfo[x_currentPage].savedData.pictureIndex+1, x_pageInfo[x_currentPage].savedData.pictureFeed.length-1));
 				});
 			
-			
-			$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			this.setPanelSize(1);
@@ -323,7 +336,7 @@
 
 <div id="pageContents">
 	
-	<div class="splitScreen medium">
+	<div class="splitScreen">
 		
 		<div id="textHolder" class="left" tabindex="1">
 			

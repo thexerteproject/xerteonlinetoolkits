@@ -2627,6 +2627,7 @@ var EDITOR = (function ($, parent) {
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
+    my.setAttributeValue = setAttributeValue;
     my.displayParameter = displayParameter;
 	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;

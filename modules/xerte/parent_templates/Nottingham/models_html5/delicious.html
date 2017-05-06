@@ -22,7 +22,6 @@
 	// other functions for model should also be in here to avoid conflicts
 	var delicious = new function() {
 		var $pageContents,
-			$textHolder,
 			$panel,
 			$resultsHolder,
 			deliciousSearch,
@@ -43,11 +42,25 @@
 
 		this.init = function() {
 			$pageContents = $("#pageContents");
-			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
 			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
-
+			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large");
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
+			
 			deliciousSearch = x_currentPageXML.getAttribute("search");
 			deliciousTerm = x_currentPageXML.getAttribute("term");
 			var deliciousCount = x_currentPageXML.getAttribute("results");
@@ -78,8 +91,6 @@
 				jsonpCallback: "delicious.showLinks",
 				cache: false
 			});
-
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			this.sizeChanged();
 			x_pageLoaded();
@@ -123,7 +134,7 @@
 
 <div id="pageContents">
 	
-	<div class="splitScreen medium">
+	<div class="splitScreen">
 		
 		<div id="textHolder" class="left" tabindex="1"></div>
 		

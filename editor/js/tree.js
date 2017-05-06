@@ -653,6 +653,7 @@ var EDITOR = (function ($, parent) {
                 if (attribute_value.found && attribute_value.value=="")
                 {
                     attribute_value.value = language.$code;
+                    toolbox.setAttributeValue(key, [attribute_name], [attribute_value.value]);
                 }
             }
             if (attribute_value.found)
@@ -669,7 +670,8 @@ var EDITOR = (function ($, parent) {
         $('#optionalParams').html("");
         var html = $('<div>')
             .addClass("optButtonContainer");
-        var table = $('<table>');
+        var table = $('<table>'); // contains opt props specific to this page type
+		var table2 = $('<table>'); // contains opt props used on all page types
         var flashonly = $('<img>')
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
@@ -781,8 +783,12 @@ var EDITOR = (function ($, parent) {
                 var tablerow = $('<tr>')
                     .append($('<td>')
                         .append(button));
-                table.append(tablerow);
 				
+				if (node_options['optional'][i].value.common) {
+					table2.append(tablerow);
+				} else {
+					table.append(tablerow);
+				}
             }
 			
             if (attribute_value.found || $.inArray(true, found) > -1) {
@@ -802,7 +808,22 @@ var EDITOR = (function ($, parent) {
 				}
             }
         }
-        html.append(table);
+		
+		if (table.find("tr").length > 0) {
+			if (menu_options.menu != undefined) {
+				var tablerow = $('<tr>')
+					.append('<td class="optPropTitle">' + menu_options.menuItem + '</td>');
+				table.prepend(tablerow);
+			}
+			html.append(table);
+		};
+		if (table2.find("tr").length > 0) {
+			var tablerow = $('<tr>')
+				.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			table2.prepend(tablerow);
+			html.append(table2);
+		};
+		
         if (node_options['optional'].length > 0)
         {
             $('#optionalParams').append(html);
@@ -1180,7 +1201,7 @@ var EDITOR = (function ($, parent) {
     build = function (xml) {
         var xmlData = $.parseXML(xml);
         topLevelObject = xmlData.childNodes[0].nodeName;
-        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find(topLevelObject), null),
+        var tree_json = toolbox.build_lo_data($(xmlData).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children

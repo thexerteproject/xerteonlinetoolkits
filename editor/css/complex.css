@@ -722,6 +722,12 @@ td.flashonly, td.deprecated{
 
 }
 
+#optionalParams table {
+	width: 100%;
+	margin-bottom: 15px;
+	margin-top: 5px;
+}
+
 .optButtonContainer {
     overflow: auto;
     margin-bottom: 20px;
@@ -733,6 +739,11 @@ td.flashonly, td.deprecated{
 
 .optButtonContainer  td {
     padding: 1px;
+}
+
+.optButtonContainer .optPropTitle {
+	background-color: #f0f0f2;
+	padding: 10px;
 }
 
 .divInsertOptParam {
