@@ -127,8 +127,8 @@ foreach($workspace->items as $item)
 </div>
 
 <script>
-    jsonData = JSON.parse('<?php echo json_encode($items);?>');
-    workspace = JSON.parse('<?php echo $workspace_json; ?>');
+    jsonData = JSON.parse('<?php echo str_replace("'", "\\'", json_encode($items));?>');
+    workspace = JSON.parse('<?php echo str_replace("'", "\\'",$workspace_json); ?>');
 </script>
 
 <?php
