@@ -38,7 +38,7 @@ function peer_stateChanged(){
 
 	if (xmlHttp.readyState==4){ 
 		
-		document.getElementById("feedback").innerHTML = xmlHttp.responseText;
+		document.getElementById("pv_feedback").innerHTML = xmlHttp.responseText;
 		
 	}
 }
