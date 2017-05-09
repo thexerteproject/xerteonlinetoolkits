@@ -189,11 +189,9 @@
 					$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
 					var $optionTxt = $labelHolder.find(".optionTxt"),
 						$checkBtn = $("#checkBtn"),
-						$feedback = $("#feedback"),
 						correctOptions = [],
-						correctAnswer = [],
-						correctFeedback = [];
-					
+						correctAnswer = [];
+
 					$checkBtn.button("disable");
 					var max = $($thisQ).children().length - 1;
 					//TODO get the name of the label instead of the index as slideroutput
@@ -274,7 +272,7 @@
 					    updateBubble();
                     }
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, correctFeedback);
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null);
 					opinion.checked = false;
 				}
 			}
@@ -310,12 +308,9 @@
 
             var selected = $('#slider1')[0].valueAsNumber,
             	options = currentQ.children;
-				optionFeedback = "",
-				generalFeedback = "",
 				correct = true,
 				l_options = [],
 				l_answer = [],
-				l_feedback = [],
 				currentQuestionValue = 0;
             
             for (var i = 0; i < options.length; i++)
@@ -332,65 +327,26 @@
 			
             l_answer.push(Math.round(currentQuestionValue * 10) / 10);
             
-            if (options[selected].getAttribute("feedback") == null || options[selected].getAttribute("feedback") == undefined)
-            {
-            	optionFeedback = "";
-            }
-            else
-            {
-          	    optionFeedback += "<p>" + x_addLineBreaks(options[selected].getAttribute("feedback"))  + "</p>";
-            }
-            
-            if (options[selected].getAttribute("audioFB") != undefined && options[selected].getAttribute("audioFB") != "")
-            {
-				optionFeedback += '<div class="audioHolder" data-audio="' + options[selected].getAttribute("audioFB") + '"></div>';
-			}
-			
-			generalFeedback += optionFeedback;	
-			l_feedback.push(options[selected].getAttribute("feedback"));			
-            
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
             
-			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, l_feedback);
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
-            var answerFeedback = "<h3>" + $("#pageContents").data("feedbackLabel") + "</h3>" + generalFeedback;
-            
-            if (opinion.showfeedback)
-            {
-                $("#feedback")
-					.html(answerFeedback)
-					.find(".audioHolder").each(function() {
-						$(this).mediaPlayer({
-							type	:"audio",
-							source	:$(this).data("audio"),
-							width	:"100%"
-						});
-					});
+			// Continue to next question
+			opinion.currentQuestion++;
 
-                $("#nextBtn").button("enable");
-				$("#checkBtn").button("disable");
+			// If last question has been answered - show results, else continue
+			if (opinion.currentQuestion == opinion.questions.length)
+			{
+				opinion.trackOpinion();
+				opinion.resultShown = true;
+			}
+			else
+			{
+				opinion.loadQuestion();
+			}
 
-                $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
-            }
-            else
-            {
-                // Continue to next question
-                opinion.currentQuestion++;
-                
-             	// If last question has been answered - show results, else continue
-                if (opinion.currentQuestion == opinion.questions.length)
-                {
-                    opinion.trackOpinion();
-                    opinion.resultShown = true;
-                }
-                else
-                {
-                    opinion.loadQuestion();
-                }
-            }
-            
             // Queue reparsing of MathJax - fails if no network connection
             try
             {
@@ -415,20 +371,16 @@
             }
             
             myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
-            
-            feedbackText += "<p>" + $pageContents.data("scoreText").replace("{i}", Object.keys(answeredValues).length).replace("{n}", opinion.questions.length) + "</p>";
 
-            $("#feedback").html(feedbackText);
-			$("#questionAudio").empty();
-			
-            $("#sliderHolder").hide();
-			$("#nextBtn, #checkBtn").button("disable");
-			
-            if (XTGetMode() != "normal")
-            {
-                $("#restartBtn").button("enable");
+            if (opinion.showfeedback) {
+
+                $("#feedback").html(feedbackText);
             }
-            
+            $("#questionAudio").empty();
+
+            $("#sliderHolder").hide();
+			$("#checkBtn").hide();
+
             $("#qTxt").html("");
 
             XTSetPageScore(x_currentPage, myScore);
@@ -523,39 +475,14 @@
 				submitBtnText = "Submit";
 			}
 			
-			var nextBtnText = x_currentPageXML.getAttribute("nextBtnText");
-			if (nextBtnText == undefined)
-			{
-				nextBtnText = "Next";
-			}
-			
-			var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
-			if (restartBtnText == undefined)
-			{
-				restartBtnText = "Restart";
-			}
-			
 			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
 			if (onCompletionText == undefined)
 			{
-				onCompletionText = "You have completed the exercise";
+				onCompletionText = "You have completed the questionaire";
 			}
 
-            var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-            if (feedbackLabel == undefined)
-            {
-                feedbackLabel = "Feedback";
-            }
-            
-            var scoreText = x_currentPageXML.getAttribute("score");
-			if (scoreText == undefined) {
-				scoreText = "You answered {i} / {n}";
-			}
-			
             $("#pageContents").data({
-				"feedbackLabel"		:feedbackLabel,				
 				"onCompletionText"	:onCompletionText,
-				"scoreText"			:scoreText
 			});
             
             // submit button
@@ -567,39 +494,6 @@
 				    opinion.trackQuestion();
                 });
 
-			$("#nextBtn")
-				.button({
-					label: nextBtnText
-					})
-				.click(function() {
-					$(this).button("disable");
-					
-					opinion.currentQuestion++;
-					if (opinion.currentQuestion == opinion.questions.length) {
-	                    // last question answered - show results
-	                    opinion.trackOpinion();
-	                    opinion.resultShown = true;
-					}
-					else
-					{
-						opinion.loadQuestion();
-					}
-	                // Queue reparsing of MathJax - fails if no network connection
-	                try
-	                {
-	                	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-	                }
-	                catch (e) {}
-				});
-	
-			$("#restartBtn")
-				.button({
-					label: restartBtnText
-					})
-				.click(function() {
-					opinion.startQuestions();
-				});
-	
 			this.startQuestions();
 			this.sizeChanged();
 			x_pageLoaded();			
@@ -633,8 +527,6 @@
 					
 					<div id="buttonHolder">
 						<button id="checkBtn"></button>
-						<button id="nextBtn"></button>
-						<button id="restartBtn"></button>
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>

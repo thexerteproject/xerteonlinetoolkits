@@ -51,6 +51,7 @@
 		
 		this.init = function() {
 
+		    XTSetPageType(x_currentPage, 'result', 0, 0);
 		    this.getLabels();
 
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
@@ -62,7 +63,21 @@
 			} else if (x_currentPageXML.getAttribute("textWidth") == "600") {
 				$pageContents.addClass("width80");
 			}
-			
+
+			var showzeroweight = true;
+			if (x_currentPageXML.getAttribute("skipweigthingzero") != undefined)
+            {
+                showzeroweight =  x_currentPageXML.getAttribute("skipweigthingzero");
+            }
+            var disableexportpdf = false;
+            if (x_currentPageXML.getAttribute("disableexportpdf") != undefined)
+            {
+                disableexportpdf = x_currentPageXML.getAttribute("disableexportpdf");
+            }
+            if (disableexportpdf)
+            {
+                $("#button").hide();
+            }
 			results = XTResults();
 			
 			$("#averageScore").html(results.averageScore + "%");
@@ -71,6 +86,11 @@
 			$("#startTime").html(results.start);
 			results.interactions.forEach(function(x)
 			{
+			    if (x.ia_type == 'result' || (!showzeroweight && x.completed == "true" && x.weighting == 0))
+                {
+                    // Skip
+                    return;
+                }
 				var completedToken;
 				if(x.completed == "true")
 				{

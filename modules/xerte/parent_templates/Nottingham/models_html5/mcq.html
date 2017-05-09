@@ -70,12 +70,25 @@
             for (var i = 0; i < this.optionElements.length; i++) {
                 if (this.optionElements[i].correct == 'true') {
                     correctOptions.push((i+1)+"");
-                    correctAnswer.push(this.optionElements[i].text);
-                    correctFeedback.push(this.optionElements[i].feedback);
+                    if (this.optionElements[i].label != undefined)
+					{
+					    correctAnswer.push(this.optionElements[i].label);
+					}
+					else
+					{
+                        // Create fallback label
+                        var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+                        answerTxt += ' ' + (i+1);
+                        correctAnswer.push(x_GetTrackingTextFromHTML(this.optionElements[i].text, answerTxt));
+                    }
+                    correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
                     mcq.correctOption = true;
                 }
             }
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_currentPageXML.getAttribute("prompt"), correctOptions, correctAnswer, correctFeedback);
+            // Create fallback label
+            var questionTxt = (x_currentPageXML.getAttribute('questionTxt') != undefined ? x_currentPageXML.getAttribute('questionTxt') : "Multiple choice question");
+            questionTxt += ' ' + (x_currentPage+1);
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), questionTxt), correctOptions, correctAnswer, correctFeedback);
         }
 
         this.leavePage = function() {
@@ -113,8 +126,17 @@
 					}
 					
                     l_options.push(optionIndex+1+"");
-                    l_answer.push(selectedOption.text);
-                    l_feedback.push(selectedOption.feedback);
+					if (selectedOption.label != undefined) {
+                        l_answer.push(selectedOption.label);
+                    }
+                    else
+					{
+                        // Create fallback label
+                        var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+                        answerTxt += ' ' + (optionIndex+1);
+                        l_answer.push(x_GetTrackingTextFromHTML(selectedOption.text, answerTxt));
+					}
+                    l_feedback.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
                 }
             }
             generalFeedback += answerFeedback;
@@ -250,6 +272,7 @@
 				$(x_currentPageXML).children().each(function(i) {
 					elements.push(
 						{
+							label:		this.getAttribute("name"),
 							text:		this.getAttribute("text"),
 							correct:	this.getAttribute("correct"),
 							feedback:	this.getAttribute("feedback"),

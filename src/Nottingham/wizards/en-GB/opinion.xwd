@@ -2,11 +2,9 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
-	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
-	  onCompletion="You have completed the exercise" score="You answered {i} / {n}" 
+	  quesCount="Question {i} of {n}"
+	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
-	  nextBtnText="Next" 
-	  restartBtnText="Restart" 
 	  />]]></opinion>
     </newNodes>
   </pageWizard>
@@ -24,18 +22,10 @@
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
-    <score label="You answered {i} out of {n} questions." type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-    <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-    <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
-    <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>	
 
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
@@ -64,8 +54,6 @@
 
   <opinionOption menuItem="Option" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
-    <feedback label="Feedback" type="TextArea"  height="100" optional="true" />
-	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
   </opinionOption>
   
 </wizard>

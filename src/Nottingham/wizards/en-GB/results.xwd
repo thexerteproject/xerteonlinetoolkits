@@ -30,6 +30,8 @@
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Full Results"
                     data="minimal-results,full-results"/>
-        <exportpdf label="Enable export to PDF" type="Checkbox" optional="true" defaultValue="true" />
+        <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="false" />
+        <skipweigthingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false" />
+
     </results>
 </wizard>

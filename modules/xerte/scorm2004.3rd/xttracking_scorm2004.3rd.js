@@ -495,20 +495,20 @@ function ScormTrackingState()
                         res = setValue(interaction + 'result', (result ? 'correct' : 'incorrect'));
                         break;
                     case 'numeric':
-                    res = setValue(interaction + 'type', 'numeric');
-                    res = setValue(interaction + 'correct_responses.0.pattern', '100');
-                    if (ia_nr <0)  // Page mode
-                    {
-                        res = setValue(interaction + 'weighting', Math.round(sit.weighting * 100) / 100);
-                        res = setValue(interaction + 'learner_response', sit.score);
-                        res = setValue(interaction + 'result', Math.round(sit.score * 100) / 100);
-                    }
-                    else { // Interaction mode
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                        res = setValue(interaction + 'learner_response', sit.learneranswer);
-                        res = setValue(interaction + 'result', Math.round(sit.learneranswer * 100) / 100);
-                    }
-                    break;
+                        res = setValue(interaction + 'type', 'numeric');
+                        res = setValue(interaction + 'correct_responses.0.pattern', '100');
+                        if (ia_nr <0)  // Page mode
+                        {
+                            res = setValue(interaction + 'weighting', Math.round(sit.weighting * 100) / 100);
+                            res = setValue(interaction + 'learner_response', sit.score);
+                            res = setValue(interaction + 'result', Math.round(sit.score * 100) / 100);
+                        }
+                        else { // Interaction mode
+                            res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
+                            res = setValue(interaction + 'learner_response', sit.learneranswer);
+                            res = setValue(interaction + 'result', Math.round(sit.learneranswer * 100) / 100);
+                        }
+                        break;
                     case 'text':
                     case  'fill-in':
 

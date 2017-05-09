@@ -5,7 +5,7 @@
         <insertBefore label="Before" tooltip="Insert before selected page"/>
         <insertAfter label="After" tooltip="Insert after selected page"/>
         <insertAtEnd label="At end" tooltip="Insert as last page"/>
-		<insertMerge label="Import" tooltip="Import at the end"/>
+		<insertMerge label="Import pages" tooltip="Import pages after last page"/>
     </insertDialog>
     <btnSaveXerte label="Save" tooltip="Save Project" description="Save Button"/>
 	<btnPublishXot label="Publish" tooltip="Publish Project" description="Publish Button"/>
@@ -27,7 +27,7 @@
     <btnAddColumn label="Add Column" tooltip="Add a column to the right of the grid"/>
     <btnDelColumn label="Delete Column" tooltip="Delete the selected column"/>
 	<btnInsert label="Insert" tooltip="Insert"/>
-	<btnMerge label="Import" tooltip="Import"/>
+	<btnMerge label="Import pages" tooltip="Import pages"/>
 	<btnAddChild tooltip="add some children"/>
 	<btnDuplicate label="Copy" tooltip="Duplicate"/>
 	<btnDelete label="Delete" tooltip="Delete"/>
@@ -46,7 +46,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<hidePage tooltip="This page is hidden"/>
-	<markForCompletion tooltip="This page will be marked"/>
+	<markForCompletion tooltip="This page is marked for completion"/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>
