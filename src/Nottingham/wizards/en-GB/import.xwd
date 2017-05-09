@@ -1,4 +1,4 @@
-<wizard menus="Import">
+<wizard menus="Import pages">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
             <import><![CDATA[<import/>]]></import>
@@ -6,7 +6,7 @@
     </pageWizard>
 
     <!-- Import PAGE========================== -->
-    <import menu="Import" menuItem="Import" hint="Import pages from other objects" label="Page Text" id="Import" type="text" height="300" remove="true">
+    <import menu="Import pages" menuItem="Import pages" hint="Import pages from other objects" label="Page Text" id="Import" icon="icImport" thumb="thumbs/import.jpg" type="text" height="300" remove="true">
 
 
     </import>
