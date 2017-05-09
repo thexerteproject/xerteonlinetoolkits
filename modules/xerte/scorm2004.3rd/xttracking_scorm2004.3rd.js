@@ -152,6 +152,7 @@ function ScormTrackingState()
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
+    this.page_timeout = 5000;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
@@ -198,7 +199,7 @@ function ScormTrackingState()
                     return false;
                 }
             }
-            if (sit.duration < 1000)
+            if (sit.ia_type=="page" && sit.duration < state.page_timeout)
             {
                 return false;
             }
@@ -224,6 +225,7 @@ function ScormTrackingState()
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
             this.lo_passed = jsonObj.lo_passed;
+            this.page_timeout = jsonObj.page_timeout
             this.lo_completed = jsonObj.lo_completed;
 //            this.finished = jsonObj.finished;
             this.interactions = new Array();
@@ -249,7 +251,7 @@ function ScormTrackingState()
         }
         // Not found
         var sit =  new ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
-        if (ia_type != "page")
+        if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
             if (this.lo_passed == -1)
@@ -627,7 +629,7 @@ function ScormTrackingState()
 
     function getScaledScore()
     {
-        return this.getdScaledScore() + "";
+        return Math.round(this.getdScaledScore()*100)/100 + "";
     }
 
     function getdRawScore()
@@ -883,6 +885,10 @@ function XTSetOption(option, value)
         case "objective_passed":
             state.lo_passed = Number(value);
             break;
+        case "page_timeout":
+            // Page timeout in seconds
+            state.page_timeout = Number(value) * 1000;
+            break;
     }
 }
 
@@ -932,7 +938,15 @@ function XTExitPage(page_nr, pageName)
         }
         if(temp)
         {
-            state.completedPages[i] = state.pageCompleted(page_nr);
+            var sit = state.findInteraction(page_nr, -1);
+            if (sit != null) {
+                if (sit.ia_type == "result") {
+                    state.completedPages[i] = true;
+                }
+                else {
+                    state.completedPages[i] = state.pageCompleted(page_nr);
+                }
+            }
         }
 
     }
@@ -1072,12 +1086,12 @@ function XTResults()
         completion = 0;
     }
 
-    results = {};
+    var results = {};
     results.mode = x_currentPageXML.getAttribute("resultmode");
 
-    score = 0;
-    nrofquestions = 0;
-    totalWeight = 0;
+    var score = 0,
+    nrofquestions = 0,
+    totalWeight = 0,
     totalDuration = 0;
     results.interactions = Array();
 
@@ -1085,9 +1099,10 @@ function XTResults()
         score += state.interactions[i].score * state.interactions[i].weighting;
         if(state.interactions[i].ia_nr < 0) {
 
-            interaction = {};
+            var interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
+            interaction.type = state.interactions[i].ia_type;
             interaction.correct = state.interactions[i].result;
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
@@ -1117,7 +1132,7 @@ function XTResults()
         }
         else if(results.mode == "full-results")
         {
-            subinteraction = {}
+            var subinteraction = {}
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
@@ -1150,7 +1165,7 @@ function XTResults()
                     break;
                 case "numeric":
                     learnerAnswer = state.interactions[i].learneranswer;
-                    correctAnswer = "Nvt";
+                    correctAnswer = "NA";   // Not applicable
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":
