@@ -54,8 +54,8 @@ function show_peer_template($row, $retouremail)
     $peer_page .= "   <div style=\"width:900px; margin:0 auto;\">\n";
     $peer_page .= "   <div style=\"font-family:verdana,tahoma,arial; font-size:11pt\"><div><h1 style=\"margin-top:1em;\">" . XERTE_PEER_DESCRIPTION . "</h1><p>" . XERTE_PEER_GUIDANCE . "</p></div>\n";
 
-    $peer_page .=  "<div><a name=\"feedbackform\"><p style=\"color:red;\"  id=\"feedback\"></p></a>\n";
-    $peer_page .= "<form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"width:250px;\"  id=\"feedback\"></p></a></div></div>";
+    $peer_page .=  "<div>\n";
+    $peer_page .= "<form name=\"peer\" action=\"javascript:send_review('" . $retouremail . "','" . $row['template_id'] . "')\" method=\"post\" enctype=\"text/plain\"><textarea style=\"width:800px; height:300px;\" name=\"response\">" . XERTE_PEER_TEXTAREA_INSTRUCTIONS . "</textarea><br/><button type=\"submit\" class=\"xerte_button\">" . XERTE_PEER_BUTTON_SEND . "</button></form><a name=\"feedbackform\"><p style=\"color:red;\"  id=\"pv_feedback\"></p></a></div></div>";
 
     $peer_page .= substr($peer_template, $end_body_pos + 1);
 
