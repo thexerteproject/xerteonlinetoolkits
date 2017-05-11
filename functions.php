@@ -188,7 +188,6 @@ function _include_javascript_file($file_path) {
     _debug($language);
     _debug($real_file_path);
     _debug($en_gb_file_path);
-    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . "\"></script>";
     if (file_exists(dirname(__FILE__) . "/" . $en_gb_file_path)) {
         echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . "\"></script>";
     } else {
@@ -210,6 +209,7 @@ function _include_javascript_file($file_path) {
             }
         }
     }
+    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . "\"></script>";
     return true;
 }
 

@@ -1,0 +1,57 @@
+/* opinion.html */
+
+    #sliderHolder #labelHolder
+    {
+        text-align: justify;
+    }
+
+
+    #sliderHolder #inputHolder
+    {
+        width: 100%;
+    }
+
+    #sliderHolder #rangeHolder #slider1
+    {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    #sliderHolder #labelHolder a
+    {
+        display: inline-block;
+        text-align: center;
+        margin: 0 0.2em;
+        width: 4em;
+        text-decoration: none;
+    }
+
+    #sliderHolder #labelHolder .leftLabel
+    {
+        text-align: left;
+    }
+
+    #sliderHolder #labelHolder .rightLabel
+    {
+        text-align: right;
+    }
+
+    #sliderHolder #labelHolder:after {
+        content: '';
+        width: 100%;
+        display: inline-block;
+    }
+
+    #sliderHolder #rangeHolder
+    {
+        margin-bottom: 2em;
+        background-color: #d3d3d3;
+        border-radius: 2em;
+        height: 20px;
+    }
+
+    #sliderHolder #rangeHolder output
+    {
+        position: relative;
+    }

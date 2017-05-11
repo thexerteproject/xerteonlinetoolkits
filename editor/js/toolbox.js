@@ -20,6 +20,8 @@
 // *******************
 // *     Toolbox    *
 // *******************
+
+var merged = false;
 var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
@@ -29,15 +31,17 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {},
         jqGrGridData = {},
 		jqGridSetUp = false,
+		workspace,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
-                html: itemData.name
+                html: itemData.name,
+                class: itemData.name
             };
-			
+            
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
@@ -81,6 +85,7 @@ var EDITOR = (function ($, parent) {
         var $menu = $("<ul>", {
             id: 'menu'
         });
+        
         $.each(menu_data.menu, function () {
             if (!this.deprecated) {
                 $menu.append(
@@ -90,35 +95,85 @@ var EDITOR = (function ($, parent) {
         });
 		
 		// create insert buttons above the page hints / thumbs
-		$([
-            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before"},
-            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after"},
-            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end"}
-        ]).each(function(index, value) {
-			var button = $('<button>')
-				.attr('id', value.id)
-				.attr('title', value.tooltip)
-				.attr('value', value.btnvalue)
-				.attr('tabindex', index + 3)
-				.addClass("insert_button")
-				.click(add_page)
-				.append($('<img>').attr('src', value.icon).height(14))
-				.append(value.name);
-			
-			$menu.find(".insert_buttons").append(button);
-		});
-		
+            $([
+
+                {
+                    name: language.insertDialog.insertBefore.$label,
+                    icon: 'editor/img/insert-before.png',
+                    tooltip: language.insertDialog.insertBefore.$tooltip,
+                    id: 'insert_button_before',
+                    btnvalue: "before"
+                },
+                {
+                    name: language.insertDialog.insertAfter.$label,
+                    icon: 'editor/img/insert-after.png',
+                    tooltip: language.insertDialog.insertAfter.$tooltip,
+                    id: 'insert_button_after',
+                    btnvalue: "after"
+                },
+                {
+                    name: language.insertDialog.insertAtEnd.$label,
+                    icon: 'editor/img/insert-end.png',
+                    tooltip: language.insertDialog.insertAtEnd.$tooltip,
+                    id: 'insert_button_at_end',
+                    btnvalue: "end"
+                }
+
+            ]).each(function (index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .attr('value', value.btnvalue)
+                    .attr('tabindex', index + 3)
+                    .addClass("insert_button")
+                    .click(add_page)
+                    .append($('<img>').attr('src', value.icon).height(14))
+                    .append(value.name);
+
+                    $menu.find(".insert_buttons").append(button);
+                    if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
+                        $menu.find(".insert_buttons").last()[0].childNodes[1].remove();
+                    }
+
+            });
+            if (templateframework == "xerte") {
+                $([
+
+                    {
+                        name: language.insertDialog.insertMerge.$label,
+                        icon: 'editor/img/insert-end.png',
+                        tooltip: language.insertDialog.insertMerge.$tooltip,
+                        id: 'insert_button_merge',
+                        btnvalue: "merge"
+                    }
+
+                ]).each(function (index, value) {
+                    var button = $('<button>')
+                        .attr('id', value.id)
+                        .attr('title', value.tooltip)
+                        .attr('value', value.btnvalue)
+                        .attr('tabindex', index + 3)
+                        .addClass("insert_button")
+                        .click(insert_import)
+                        .append($('<img>').attr('src', value.icon).height(14))
+                        .append(value.name);
+
+                    if ($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
+                        $menu.find(".insert_buttons").last().append(button);
+                    }
+                });
+            }
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
 				if (e.type == "click" && e.target.id != "insert_button") {
 					$("#insert_menu").hide();
-                    $("#shadow").hide();
+                   	$("#shadow").hide();
 				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
 					$("#insert_menu").hide();
-                    $("#shadow").hide();
+               	   	$("#shadow").hide();
 					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
 				}
-				return this._super();
+                return this._super();
 			},
 			_open: function(submenu) {
 				// make sure the menus fit on screen and scroll when needed
@@ -132,16 +187,19 @@ var EDITOR = (function ($, parent) {
 				}
 			}
 		});
-		
         $("#insert_menu").append($menu.menu());
-		
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
-	
+    
+    //Loads the data into the import screen
+	insert_import = function() {
+		parent.tree.refresh_workspaceMerge()
+	},
+
 	add_page = function(e) {
 		$("#insert_menu #menu").menu("collapseAll", e, true);
 		parent.tree.addNode($(this).closest("[item]").attr("item"), $(this).attr("value"));
-	}
+	},
 
     // Get text from html, by putting html in a div, strip out the scripts
     // and convert to text
@@ -201,7 +259,7 @@ var EDITOR = (function ($, parent) {
             }
 
             // Deal with media
-            if (attroptions.type != 'media')
+            if (attroptions.type && attroptions.type.toLowerCase() != 'media')
             {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
@@ -231,18 +289,27 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
-        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
-        {
-			treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
-			
-			if (xmlData[0].getAttribute("hidePage") == "true")
-			{
-				treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;' + treeLabel;
-			}
+
+        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated) {
+            treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
+
+            if (xmlData[0].getAttribute("hidePage") == "true") {
+                treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;' + treeLabel;
+            }
+            if (xmlData[0].getAttribute("markForCompletion") == "true" && parent_id == 'treeroot') {
+                treeLabel = '<img src="editor/img/tick.png" title ="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;' + treeLabel;
+            }
         }
-		else if (xmlData[0].getAttribute("hidePage") == "true")
+		else
 		{
-            treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + treeLabel + '</span>';
+            if (xmlData[0].getAttribute("hidePage") == "true")
+            {
+                treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + treeLabel + '</span>';
+            }
+            if (xmlData[0].getAttribute("markForCompletion") == "true" && parent_id == 'treeroot')
+            {
+                treeLabel = '<img src="editor/img/tick.png" title ="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;' + treeLabel;
+            }
         }
         var this_json = {
             id : key,
@@ -564,6 +631,14 @@ var EDITOR = (function ($, parent) {
 					$this.html($this.html().replace(/&nbsp;/, ""));
 				});
 			}
+            if (toDelete[i] == "markForCompletion"){
+                $("#" + key + " .markCompletionImg").remove();
+                $("#" + key + " .hidden").contents().unwrap();
+                $("#" + key).each(function() {
+                    var $this = $(this);
+                    $this.html($this.html().replace(/&nbsp;/, ""));
+                });
+            }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
 			{
@@ -810,7 +885,7 @@ var EDITOR = (function ($, parent) {
             });
         })
         return xerte;
-    }
+    },
 
     jqGridAfterShowForm = function(id, ids, options)
     {
@@ -1113,25 +1188,40 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
-								
+
+                                var tree = $.jstree.reference("#treeview");
+                                var node = tree.get_node(options.key, false);
+                                var parent_id = tree.get_parent(node);
+
 								if (options.key != "treeroot") {
 									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
 									if ($("#" + options.key + " .deprecatedImg").length > 0) {
 										thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
-										if ($("#" + options.key + " .hiddenImg").length > 0)
+										if ($("#" + options.key + " .markCompletionImg").length > 0)
+                                        {
+                                            thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">' + thisText;
+                                        }
+                                        if (parent_id == "treeroot" && $("#" + options.key + " .hiddenImg").length > 0)
 										{
 											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
+
 										}
 									}
-									else if ($("#" + options.key + " .hiddenImg").length > 0)
+									else
 									{
-										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+                                        if ($("#" + options.key + " .hiddenImg").length > 0)
+                                        {
+                                            thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
+                                        }
+                                        if (parent_id == "treeroot" && $("#" + options.key + " .markCompletionImg").length > 0)
+                                        {
+                                            thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;<span class="marked">' + thisText + '</span>';
+                                        }
 									}
 								}
 
                                 // Rename the node
-                                var tree = $.jstree.reference("#treeview");
-                                tree.rename_node(tree.get_node(options.key, false), thisText);
+                                tree.rename_node(node, thisText);
 
                                 if ($('#mainleveltitle'))
                                 {
@@ -1552,8 +1642,7 @@ var EDITOR = (function ($, parent) {
     {
         //console.log([key, names, values]);
         // Get the node name
-		
-		if (names == "hidePage") {
+       if (names[0] == "hidePage") {
 			if (values[0] == "true") {
 				if ($("#" + key + " .deprecated").length == 0) {
 					$("#" + key + " .jstree-anchor").each(function(i,v) {
@@ -1572,6 +1661,26 @@ var EDITOR = (function ($, parent) {
 				});
 			}
 		}
+
+        if (names[0] == "markForCompletion") {
+            if (values[0] == "true") {
+                if ($("#" + key + " .deprecated").length == 0) {
+                    $("#" + key + " .jstree-anchor.jstree-clicked").each(function(i,v) {
+                        $(v).contents().eq($(v).contents().length - 1).wrap('<span class="marked"/>');
+                    });
+                    $("#" + key + " .jstree-anchor .marked").before('<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;');
+                } else {
+                    $("#" + key + " .deprecatedImg").before('<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;');
+                }
+            } else {
+                $("#" + key + " .markCompletionImg").remove();
+                $("#" + key + " .marked").contents().unwrap();
+                $("#" + key).each(function() {
+                    var $this = $(this);
+                    $this.html($this.html().replace(/&nbsp;/, ""));
+                });
+            }
+        }
 
         var node_name = lo_data[key]['attributes'].nodeName;
 
@@ -1905,6 +2014,7 @@ var EDITOR = (function ($, parent) {
      */
         getPageList = function()
         {
+        	
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];

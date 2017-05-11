@@ -18,6 +18,7 @@
  */
 
 // Tree : Add the tree object to the editor
+
 var EDITOR = (function ($, parent) {
 
     // Create the tree object and refer locally to it as 'my'
@@ -42,7 +43,22 @@ var EDITOR = (function ($, parent) {
         savepreviewasync(false);
         bunload();
 
-    }
+    },
+
+	refresh_workspaceMerge = function() {
+        var url="website_code/php/import-choose.php?id="+template_id;
+        var now = new Date().getTime();
+        $.ajax({
+            type: "GET",
+            url: url + "&t=" + now,
+            dataType: "html",
+            success: function (data) {
+                $("#subPanels").hide();
+                $("#mainPanel").html(data);
+            }
+        });
+
+	},
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
@@ -72,19 +88,41 @@ var EDITOR = (function ($, parent) {
         },
 
         buttons = $('<div />').attr('id', 'top_buttons');
-        $([
-            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
-            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
-            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
-        ])
+        if (templateframework == "xerte") {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, imgicon:'editor/img/mergeIcon.svg', id:'merge_button', click:refresh_workspaceMerge},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ];
+        }
+        else
+        {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ]
+        }
+        $(button_def)
         .each(function(index, value) {
                 var button = $('<button>')
                     .attr('id', value.id)
                     .attr('title', value.tooltip)
                     .click(value.click)
                     .attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
-                    .addClass("xerte_button")
-                    .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                    .addClass("xerte_button");
+                if (typeof value.icon != 'undefined') {
+                    button.append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                }
+                if (typeof value.imgicon != 'undefined')
+                {
+                    button.append($('<img>')
+                        .attr('src', value.imgicon)
+                        .height(14));
+                }
                 buttons.append(button);
         });
 		
@@ -219,6 +257,9 @@ var EDITOR = (function ($, parent) {
 
 
     publish = function () {
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -255,6 +296,9 @@ var EDITOR = (function ($, parent) {
     },
 
     savepreviewasync = function (async) {
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -400,7 +444,7 @@ var EDITOR = (function ($, parent) {
         $.each(current_node.children, function () {
             duplicateNodes(tree, this, key, "last", false)
         });
-    }
+    },
 
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
@@ -557,7 +601,6 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -576,6 +619,7 @@ var EDITOR = (function ($, parent) {
         // Build the form
         var attribute_name;
         var attribute_value;
+        var attribute_label;
         // Always display name option first
         if (node_options['name'].length > 0)
         {
@@ -973,6 +1017,9 @@ var EDITOR = (function ($, parent) {
             $('#content').animate({scrollTop: 0});
         }, 50);
         toolbox.scrollTop = 0;
+
+        // Make sure subpanels are visible
+        $("#subPanels").show();
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
@@ -1283,7 +1330,7 @@ var EDITOR = (function ($, parent) {
         function lo_key_exists(key) {
             for (var lo_key in lo_data) if (lo_key == key) return true;
             return false;
-        };
+        }
 
         do {
             key = "ID_";
@@ -1317,6 +1364,7 @@ var EDITOR = (function ($, parent) {
     my.showNodeData = showNodeData;
     my.addNode = addNode;
     my.getParent = getParent;
+    my.refresh_workspaceMerge = refresh_workspaceMerge;
 
     return parent;
 

@@ -1,0 +1,59 @@
+<wizard menus="Interactivity">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
+	  quesCount="Question {i} of {n}"
+	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
+	  submitBtnText="Submit" 
+	  />]]></opinion>
+    </newNodes>
+  </pageWizard>
+
+  <!-- OPINION=============================== -->
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+    <name label="Opinion Title" type="TextInput" wysiwyg="true" />
+	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+    <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
+    <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
+    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
+    <instructions label="Instructions" type="textArea"  height="120"/>
+	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
+    <feedback label="Feedback" type="textArea"  height="120"/>
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" /> 
+	
+    <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+
+	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
+	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
+
+    <newNodes>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
+	</newNodes>
+	
+  </opinion>
+
+  <opinionQuestion menuItem="Question">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
+
+    <prompt label="Prompt" type="TextArea"  height="100"/>
+    <image label="Image" type="Media" optional="true"/>
+    <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+    <scale label="Reverse scale" type="CheckBox" />  
+    <sound label="Sound" type="Media" optional="true"/>
+		
+    <newNodes>
+      <opinionOption><![CDATA[<opinionOption name="Option" text="Here is an option" />]]></opinionOption>
+    </newNodes>
+
+  </opinionQuestion>
+
+  <opinionOption menuItem="Option" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
+  </opinionOption>
+  
+</wizard>

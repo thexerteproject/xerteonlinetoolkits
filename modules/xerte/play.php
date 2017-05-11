@@ -111,7 +111,7 @@ function show_template_page($row, $datafile="")
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "js/xttracking_noop.js\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     }
@@ -150,7 +150,7 @@ function show_template_page($row, $datafile="")
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
         $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 		

@@ -36,58 +36,55 @@ optional: feedback page synch play enable
 
 (function (Popcorn) {
 	Popcorn.plugin("mcq", function(options) {
-		
+
 		// define plugin wide variables / functions here
 		var $target, $optHolder, $checkBtn, $feedbackDiv, media, selected, judge, autoEnable, questions;
 		
-		var finishTracking = function(options)
-		{
-			if(options.enableTracking == "true"){
-				window.questionsAnswerd++;
-				var allValid = true;
-				for (var i=0; i<options.childNodes.length; i++)
+		var finishTracking = function(options) {
+            debugger;
+            var allValid = true;
+            var ia_nr = Number(options.tracking_nr);
+            var numOfQuestions = Number(options.total_questions);
+            for (var i = 0; i < options.childNodes.length; i++) {
+                var curValid = false;
+                for (var j = 0; j < selected.length; j++) {
+                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
+                        allValid = false;
+                    }
+                    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
+                        curValid = true;
+                    }
+                }
+                if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
+                    allValid = false;
+                }
+            }
+            var l_options = [];
+            var l_answers = [];
+            var l_feedback = [];
+            $(selected).each(function (i, v) {
+                l_options.push((v + 1) + "");
+
+                l_answers.push(x_GetTrackingTextFromHTML(options.childNodes[v].getAttribute("text"), (v+1) + ""));
+                l_feedback.push("");
+            });
+            mediaLesson.questions[ia_nr] = true;
+
+            XTExitInteraction(x_currentPage, ia_nr, allValid, l_options, l_answers, l_feedback);
+            if (ia_nr == numOfQuestions-1) {
+            	var score = 0;
+            	for (var i=0; i<numOfQuestions; i++)
 				{
-					var curValid = false;
-					for(var j = 0;j<selected.length;j++)
+					if (mediaLesson.questions[i])
 					{
-						if(i == selected[j] && options.childNodes[i].getAttribute("correct") == "false")
-						{
-							allValid = false;
-						}
-						if(i == selected[j] && options.childNodes[i].getAttribute("correct") == "true")
-						{
-							curValid = true;
-						}
-					}
-					if(!curValid && options.childNodes[i].getAttribute("correct") == "true")
-					{
-						allValid = false;
+						score++;
 					}
 				}
-				l_options = [];
-				l_answers = [];
-				l_feedback = [];
-				$(selected).each(function(i, v){
-					l_options.push((v+1)+"");
-					
-					l_answers.push(options.childNodes[v].getAttribute("text"));
-					l_feedback.push("correct");
-				});
-				if(allValid)
-				{
-					correctQuestions++;
-				}
-				
-				XTExitInteraction(x_currentPage, window.questions[options._id].nr, allValid, l_options, l_answers, l_feedback);
-				if(window.questionsAnswerd == this.numOfQuestions)
-				{
-					scormScore = Math.ceil(correctQuestions / this.numOfQuestions * 100);
-					XTSetPageScore(x_currentPage, scormScore);
-				}
-				mediaLesson.enableControls(media.media, true);
-				
-			}
-		}
+                var scormScore = Math.ceil(score / numOfQuestions * 100);
+                XTSetPageScore(x_currentPage, scormScore);
+            }
+            mediaLesson.enableControls(media.media, true);
+        }
 		
 		var answerSelected = function() {
 			// put together feedback string;
@@ -215,10 +212,6 @@ optional: feedback page synch play enable
 		
 		return {
 			_setup: function(options) {
-				// setup code, fire on initialisation
-				options.nr = questionNr;
-				questionNr++;
-				window.questions[options._id] = options;
 
 				media = this;
 				judge = false;
@@ -419,19 +412,20 @@ optional: feedback page synch play enable
 			
 			start: function(event, options) {
 				// fire on options.start
-				correctOptions = [];
-				correctAnswers = [];
-				correctFeedback = [];
+				debugger;
+				var correctOptions = [];
+				var correctAnswers = [];
+				var correctFeedback = [];
+				var ia_nr = Number(options.tracking_nr);
 				$(options.childNodes).each(function(i, v){
 					if(v.getAttribute("correct") == "true")
 					{
 						correctOptions.push((i+1)+"");
-						correctAnswers.push(v.getAttribute("text"));
-						correctFeedback.push("correct");
+						correctAnswers.push(x_GetTrackingTextFromHTML(v.getAttribute("text"), (i+1)+""));
+						correctFeedback.push("Correct");
 					}
-					
 				});
-				XTEnterInteraction(x_currentPage, window.questions[options._id].nr, 'multiplechoice', options.text, correctOptions, correctAnswers, correctFeedback );
+				XTEnterInteraction(x_currentPage, ia_nr, 'multiplechoice', x_GetTrackingTextFromHTML(options.text, ia_nr + ""), correctOptions, correctAnswers, correctFeedback );
 				if ($(options.childNodes).length > 0) {
 					// reset any previous answers given
 					if (options.type == "radio") {

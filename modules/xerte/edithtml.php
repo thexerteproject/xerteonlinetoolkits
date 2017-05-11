@@ -258,14 +258,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <div class="header"></div>
         <div id="content" class="content">
             <div id="mainPanel"></div>
-            <div id="languagePanel" style="display:none">
-                <hr>
-            </div>
-            <div id="insert_subnodes">
+            <div id="subPanels">
+                <div id="languagePanel" style="display:none">
+                    <hr>
+                </div>
+                <div id="insert_subnodes">
 
-            </div>
-            <div class="nodeInfo" id="info">
+                </div>
+                <div class="nodeInfo" id="info">
 
+                </div>
             </div>
         </div>
         <div id="main_footer" class="footer">
@@ -327,6 +329,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 
     function bunload(){

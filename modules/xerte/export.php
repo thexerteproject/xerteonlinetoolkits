@@ -221,20 +221,25 @@ if ($fullArchive) {
             foreach ($models as $model) {
                 _debug("copy model " . $parent_template_path . "models_html5/" . $model . ".html");
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
             /* Always add menu.rlm */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
             /* Always add colourChanger.html */
             _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
             array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.css", ""));
             /* Always add language.html */
             _debug("copy model " . $parent_template_path . "models_html5/language.html");
             array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/language.css", ""));
             /* Add glossary if used */
             if ($xml->glossaryUsed()) {
                 _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
             }
         }
         export_folder_loop($parent_template_path . "common_html5/");

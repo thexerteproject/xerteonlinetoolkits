@@ -175,7 +175,7 @@ x_mobileDevice = function()
 
 x_projectDataLoaded = function(xmlData) {
     var i, len;
-
+	var markedPages = new Array();
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
@@ -204,6 +204,10 @@ x_projectDataLoaded = function(xmlData) {
 		}
 		else {
 			pageToHide.push(i);
+		}
+		if($(this)[0].getAttribute("markForCompletion") === "true" || $(this)[0].getAttribute("markForCompletion") == undefined)
+		{
+			markedPages.push(i);
 		}
     });
 	
@@ -283,9 +287,13 @@ x_projectDataLoaded = function(xmlData) {
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
+	XTSetOption('toComplete', markedPages);
+
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
+
+
 	if (x_params.trackingPassed != undefined)
 	{
 		// Get value, and try to convert to decimal between 0 and 1
@@ -302,6 +310,11 @@ x_projectDataLoaded = function(xmlData) {
         var passednumber = Number(passed) * factor;
         XTSetOption('objective_passed', passednumber);
 	}
+
+	if (x_params.trackingPageTimout != undefined)
+    {
+        XTSetOption('page_timeout', x_params.trackingPageTimout);
+    }
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -382,6 +395,25 @@ function x_evalURL(url)
     {
         return url;
     }
+}
+
+function x_GetTrackingTextFromHTML(html, fallback)
+{
+    var div = $('<div>').html(html);
+    var txt = $.trim(div.text());
+    if (txt == "")
+    {
+        var img = div.find("img");
+        if (img != undefined && img.length > 0)
+        {
+            txt = img[0].attributes['alt'].value;
+        }
+    }
+    if (txt == "")
+    {
+        txt = fallback;
+    }
+    return txt;
 }
 
 // setup functions load interface buttons and events
@@ -1400,7 +1432,8 @@ function x_changePageStep3(x_gotoPage) {
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-        XTEnterPage(x_currentPage, pageTitle);
+        // Use a clean text version of the page title
+        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);

@@ -230,27 +230,26 @@
 		}
 		
 		this.initTracking = function(){
-			questions = x_currentPageXML.getElementsByTagName("synchMCQ");
-			
-			numOfQuestions = 0;
-			correctQuestions = 0;
+			var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+            var numOfQuestions = questions.length;
+			// Number the quesion in the order they appear in the editor
+
+			mediaLesson.questions = [];
+			var nr=0;
 			$(questions).each(function(key, value){
-				if(value.getAttribute("enableTracking") == "true")
-				{
-					numOfQuestions++;	
-				}
+			    value.setAttribute("total_questions", numOfQuestions);
+				value.setAttribute("tracking_nr",nr);
+				mediaLesson.questions[nr] = false;
+				nr++;
 			});
 			this.weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
-            window.questionsAnswerd = 0;
 
+            window.correctQuestions = 0;
             XTSetPageType(x_currentPage, 'numeric',numOfQuestions , this.weighting);
-            window.questions = {};
-			questionNr = 0;
-			correctQuestions = 0;
 		}
 				
 		// function loads the popcorn files
@@ -853,8 +852,8 @@
 					// create the holder for the content if it doesn't exist & position it correctly
 					var $target = $("#" + targetRef);
 					if ($target.find("#" + pluginAttributes.target).length == 0) {
-						var $holder,
-							$targetDiv = $("#" + targetRef + " .panelContent").length > 0 ? $("#" + targetRef + " .panelContent") : $target;
+						var $holder;
+						var $targetDiv = ($("#" + targetRef + " .panelContent").length > 0 ? $("#" + targetRef + " .panelContent") : $target);
 							// ^^ targetDiv is different if it's content to show on top of additional media
 						
 						if (pluginAttributes.position == "top") {
