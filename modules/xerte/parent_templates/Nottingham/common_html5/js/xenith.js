@@ -572,7 +572,11 @@ function x_cssSetUp(param) {
 			}
             break;
         case "language":
-            x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+			if (x_params.kblanguage != undefined) {
+				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+			} else {
+				x_cssSetUp("glossary");
+			}
             break;
         case "language2":
             if (x_params.theme != undefined && x_params.theme != "default") {
@@ -584,7 +588,11 @@ function x_cssSetUp(param) {
             }
             break;
         case "glossary":
-            x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+			if (x_params.glossary != undefined) {
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+			} else {
+				x_cssSetUp("colourChanger");
+			}
             break;
         case "glossary2":
             if (x_params.theme != undefined && x_params.theme != "default") {
