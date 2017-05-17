@@ -34,8 +34,6 @@
 	
 	<footerTools optional="true" type="ComboBox" options="Hide/Show footer tools - hide by default,Show/Hide footer tools - show by default" data="hideFooterTools,showFooterTools" label="Enable Hide/Show footer tools" defaultValue="showFooterTools" width="100"/>
 	
-	<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
-	
 	<toc type="group" label="Table of Contents" optional="true">
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
 		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
