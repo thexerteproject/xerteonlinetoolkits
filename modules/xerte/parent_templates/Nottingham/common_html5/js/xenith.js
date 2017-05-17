@@ -118,32 +118,6 @@ $(document).ready(function() {
 	if (x_browserInfo.touchScreen == true) {
 		$x_mainHolder.addClass("x_touchScreen");
 	}
-    if (x_mobileDevice()) {
-        x_fillWindow = true;
-        if (window.orientation == 0 || window.orientation == 180) {
-            x_browserInfo.orientation = "portrait";
-        } else {
-            x_browserInfo.orientation = "landscape";
-        }
-
-        var mobileTimer = false;
-        if (x_browserInfo.iOS || x_browserInfo.Android) {
-            // zooming is disabled until 2nd gesture - can't find way around this (otherwise page zooms automatically on orientation change which messes other things up)
-            var $viewport = $("#viewport")
-            $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0");
-            $(window)
-                .on("gesturestart", function() {
-                    clearTimeout(mobileTimer);
-                    $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=10.0");
-                    })
-                .on("touchend",function () {
-                    clearTimeout(mobileTimer);
-                    mobileTimer = setTimeout(function () {
-                        $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0");
-                    },1000);
-                    });
-        }
-    }
 
     // get xml data and sort it
     if (typeof dataxmlstr != 'undefined')
@@ -170,11 +144,6 @@ $(document).ready(function() {
     }
 
 });
-
-x_mobileDevice = function()
-{
-	return x_browserInfo.touchScreen == true && x_browserInfo.Android && (x_browserInfo.iOS && x_browserInfo.Device != "iPad");
-}
 
 x_projectDataLoaded = function(xmlData) {
     var i, len;
@@ -494,58 +463,56 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	if (!x_mobileDevice()) {
-		$x_footerL.prepend('<button id="x_cssBtn"></button>');
-		$("#x_cssBtn")
-			.button({
-				icons:	{primary: "x_maximise"},
-				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
-				text:	false
-			})
-			.click(function() {
-				// Post flag to containing page for iframe resizing
-				if (window && window.parent && window.parent.postMessage) {
-					window.parent.postMessage((String)(!x_fillWindow), "*");
-				}
+	$x_footerL.prepend('<button id="x_cssBtn"></button>');
+	$("#x_cssBtn")
+		.button({
+			icons:	{primary: "x_maximise"},
+			label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+			text:	false
+		})
+		.click(function() {
+			// Post flag to containing page for iframe resizing
+			if (window && window.parent && window.parent.postMessage) {
+				window.parent.postMessage((String)(!x_fillWindow), "*");
+			}
 
-				if (x_fillWindow == false) {
-					x_setFillWindow();
-				} else {
-					for (var i=0; i<x_responsive.length; i++) {
-						$x_mainHolder.removeClass("x_responsive");
-						$(x_responsive[i]).prop("disabled", true);
-					};
-					
-					// minimised size to come from display size specified in xml or url param
-					if ($.isArray(x_params.displayMode)) {
-						$x_mainHolder.css({
-							"width"		:x_params.displayMode[0],
-							"height"	:x_params.displayMode[1]
-						});
-					// minimised size to come from css (800,600)
-					} else {
-						$x_mainHolder.css({
-							"width"		:"",
-							"height"	:""
-							});
-					}
-					$x_body.css("overflow", "auto");
-					$(this).button({
-						icons:	{primary: "x_maximise"},
-						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+			if (x_fillWindow == false) {
+				x_setFillWindow();
+			} else {
+				for (var i=0; i<x_responsive.length; i++) {
+					$x_mainHolder.removeClass("x_responsive");
+					$(x_responsive[i]).prop("disabled", true);
+				};
+				
+				// minimised size to come from display size specified in xml or url param
+				if ($.isArray(x_params.displayMode)) {
+					$x_mainHolder.css({
+						"width"		:x_params.displayMode[0],
+						"height"	:x_params.displayMode[1]
 					});
-					x_fillWindow = false;
-					x_updateCss();
+				// minimised size to come from css (800,600)
+				} else {
+					$x_mainHolder.css({
+						"width"		:"",
+						"height"	:""
+						});
 				}
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-			});
-		
-		if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
-			x_fillWindow = true;
-		}
+				$x_body.css("overflow", "auto");
+				$(this).button({
+					icons:	{primary: "x_maximise"},
+					label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+				});
+				x_fillWindow = false;
+				x_updateCss();
+			}
+			$(this)
+				.blur()
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		});
+	
+	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
+		x_fillWindow = true;
 	}
 	
 	if (x_fillWindow == true) {
