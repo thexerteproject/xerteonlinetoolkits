@@ -147,14 +147,7 @@ h3 {
 .ui-button-text-icon-secondary .ui-button-text {
 	padding-right: 1.2em;
 }
-#thumbHolder .thumbBox h3{
-/*possibly better slightly smaller than other text e.g. 2.5vmin*/
-    font-size: 2.5vmin;
-}
-#thumbHolder .thumbBox {
-/****This probably needs a better solution****/
-    width: 18.0vmin !important;
-}
+
 #resultsHolder div p, #resultsHolder div a {
 /*possibly better slightly smaller than other text e.g. 2.5vmin*/
     font-size: 3.0vmin;
