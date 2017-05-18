@@ -2038,22 +2038,23 @@ var EDITOR = (function ($, parent) {
 											page.push(pageID.found ? pageID.value : linkID.value);
 											pages.push(page);
 
-											// Now we do the children
-											var childNode = tree.get_node(key, false);
-											$.each(childNode.children, function(i, key){
-												var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-												var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-												var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-												if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-												{
-													var page = [];
-													// Also make sure we only take the text from the name, and not the full HTML
-													page.push(getTextFromHTML("&nbsp;- "+name.value));
-													page.push(pageID.found ? pageID.value : linkID.value);
-													pages.push(page);
-												}
-											});
-										
+											// Now we do the children (if deeplinking is allowed)
+											if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+												var childNode = tree.get_node(key, false);
+												$.each(childNode.children, function(i, key){
+													var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+													var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+													var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+													if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+													{
+														var page = [];
+														// Also make sure we only take the text from the name, and not the full HTML
+														page.push(getTextFromHTML("&nbsp;- "+name.value));
+														page.push(pageID.found ? pageID.value : linkID.value);
+														pages.push(page);
+													}
+												});
+											}
 									}
 							});
 						}

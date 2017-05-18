@@ -184,7 +184,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true">
+	</background></QRcode><accNav menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
@@ -219,7 +219,7 @@
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="300,300" optional="true" deprecated="This property is deprecated"/>
 	<synch label="Synch Point" type="TextInput"/><!-- for backwards compatibility with templates that used to use nestedPage -->
 
-  </nestedPage><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg">
+  </nestedPage><annotatedDiagram menu="Interactivity" menuItem="Annotated Diagram" hint="An interaction for exploring labelled diagrams." icon="icPageWhiteStar" remove="true" thumb="thumbs/annotatedDiagram.jpg" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -337,7 +337,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg">
+	</background></bullets><buttonNav menu="Navigators" menuItem="Button Navigator" hint="A series of pages of related text and graphical content controlled using a navigation bar." icon="icButtonBar" remove="true" thumb="thumbs/butNav.jpg" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -667,7 +667,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision">
+	</background></customHotspots><decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Intro Text" type="TextArea" height="100"/>
@@ -1523,7 +1523,7 @@
     <text label="Link Description" type="TextArea" height="100"/>
     <url label="URL" type="TextInput"/>
 
-  </link><list menu="Interactivity" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true">
+  </link><list menu="Interactivity" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200"/>
@@ -2187,7 +2187,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true">
+	</background></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
     <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
@@ -2585,7 +2585,7 @@
 	<scoreComp label="Score / Counter Comparison" defaultValue="LT" data="LT,GT,EQ" type="ComboBox" options="Less Than,Greater Than,Equal To" width="100" optional="true"/>
 	<chanceAct label="Out of 10" type="NumericStepper" min="1" max="9" step="1" width="100" optional="true" defaultValue="5"/>
 
-	</outcomeCondition><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true">
+	</outcomeCondition><slideshow menu="Navigators" menuItem="Slideshow" hint="A sequence of pages of related text and graphical content navigated with two arrow controls." icon="icPages" thumb="thumbs/slideNav.jpg" sortChildren="true" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
@@ -2623,7 +2623,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true">
+	</background></summary><tabNav menu="Navigators" menuItem="Tabbed Navigator" hint="A series of tabbed pages to present related text and graphical content." icon="icTab" thumb="thumbs/tabNav.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
@@ -2645,7 +2645,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true">
+	</background></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -2855,7 +2855,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true">
+	</background></textVideo><thumbnailViewer menu="Navigators" menuItem="Thumbnail Viewer" hint="A series of thumbnail images for the user to browse." icon="icPictures" thumb="thumbs/thumb.jpg" remove="true" deepLink="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="250"/>
