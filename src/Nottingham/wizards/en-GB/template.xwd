@@ -34,8 +34,6 @@
 	
 	<footerTools optional="true" type="ComboBox" options="Hide/Show footer tools - hide by default,Show/Hide footer tools - show by default" data="hideFooterTools,showFooterTools" label="Enable Hide/Show footer tools" defaultValue="showFooterTools" width="100"/>
 	
-	<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
-	
 	<toc type="group" label="Table of Contents" optional="true">
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
 		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
@@ -140,7 +138,7 @@
 	  />]]></opinion><orient><![CDATA[<orient name="Enter Page Title" goalsHeader="Aims and Objectives" goals="Outline the goals for this content"
 	  audienceHeader="Target Audience" audience="Describe the target audience"
 	  prereqHeader="Pre-requisites" prereq="State any pre-requisite knowledge or experience"
-	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Back" nextBtnTip="Forward" videoTip="Video Clip" soundTip="Sound Clip"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
+	  howtoHeader="How to use this resource" howto="Describe how the user can best use the resource"/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" url="Select a PDF File" open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" judge="true" showfeedback="true" feedback="Provide feedback here"  
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
@@ -2192,15 +2190,31 @@
 	</background></pdf><perspectives menu="Media" menuItem="Multiple Perspectives" hint="View and compare multiple video and sound clips." icon="icUser" thumb="thumbs/perspectives.jpg" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
-    <backBtnTip label="Back Button Tip" type="TextInput" wysiwyg="true" language="true"/>
-    <nextBtnTip label="Next Button Tip" type="TextInput" wysiwyg="true" language="true"/>
+    <backBtnTip label="Scroll Back Tip" type="TextInput" wysiwyg="true" language="true"/>
+    <nextBtnTip label="Scroll Forward Tip" type="TextInput" wysiwyg="true" language="true"/>
     <videoTip label="Generic Video Tip" type="TextInput" wysiwyg="true" language="true"/>
     <soundTip label="Generic Sound Tip" type="TextInput" wysiwyg="true" language="true"/>
+	<backGrid label="Back Button Text" type="TextInput" wysiwyg="true" language="true"/>
+	<playTip label="Play All Text" type="TextInput" wysiwyg="true" language="true"/>
+	
+	<thumbs type="group" label="Thumbnail Bar" optional="true">
+		<thumbPos label="Position" type="ComboBox" options="Top,Bottom,Grid" data="top,bottom,grid" defaultValue="top" width="200" optional="true"/>
+		<thumbH label="Height" type="ComboBox" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" width="200" optional="true"/>
+		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
+		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
+		<highlight label="Highlight Current" type="Checkbox" defaultValue="false" optional="true"/>
+		<highlightCol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00" optional="true"/>
+	</thumbs>
+	
+	<play type="group" label="Play All" optional="true">
+		<playAll label="Include Play All Button" type="Checkbox" defaultValue="true" optional="true"/>
+		<playImgTime label="Image Play Time" type="NumericStepper" min="1" max="60" step="1" defaultValue="5" optional="true"/>
+	</play>
 
     <newNodes>
-      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video"></movie>]]></movie>
-      <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound"></sound>]]></sound>
-      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility"></image>]]></image>	  
+      <movie><![CDATA[<movie txt="Enter text for the page here" src="Select a Video" name="Video" mediaW="Medium" align="Right"></movie>]]></movie>
+      <sound><![CDATA[<sound txt="Enter text for the page here" src="Select a Sound" name="Sound" mediaW="Medium" align="Right"></sound>]]></sound>
+      <image><![CDATA[<image txt="Enter text for the page here" src="Select an Image" name="Image" tooltip="Enter a Description for Accessibility" mediaW="Medium" align="Right"></image>]]></image>	  
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -2216,8 +2230,10 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Video" type="media"/>
+	<mediaW label="Video Size" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
 	
-	<movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
+	<movieSize label="Fixed Video Size" type="textInput" defaultValue="320,240" optional="true"/>
 	<img label="Image" type="media" optional="true"/>
     <tooltip label="Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<useVidThumb label="1st Frame as Thumbnail" type="Checkbox" defaultValue="true" optional="true"/>
@@ -2230,6 +2246,8 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Sound" type="media"/>
+	<mediaW label="Image Size" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
 	
 	<imgInfo type="group" label="Image" optional="true">
 		<img label="Image" type="media" optional="true" defaultValue="Select an Image"/>
@@ -2245,6 +2263,8 @@
     <txt label="Text" type="TextArea" height="300"/>
     <src label="Image File" type="media"/>
     <tooltip label="Image Description" type="TextInput"/>
+	<mediaW label="Image Size" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
+	<align label="Align Text" options="Left,Right,Top,Bottom" type="ComboBox" data="Left,Right,Top,Bottom" defaultValue="Right" width="100"/>
 	
 	<linkInfo type="group" label="Page Link" optional="true">
 		<pageLink label="Page" type="pageList" optional="true"/>

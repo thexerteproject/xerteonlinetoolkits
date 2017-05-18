@@ -21,19 +21,6 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	
-	function thumbsCovers(){
-		//tweak for swf player for flv having full screen button active in thumbnails
-		$("#thumbHolder .thumbMedia").not($("#thumbHolder .thumbMedia .thumbCover").parent()).append('<div class="thumbCover"></div>');
-		$("#thumbHolder .thumbCover").css({'position':'absolute','z-index':'1'});
-		$("#thumbHolder .thumbVideo").css({'position':'absolute','z-index':'0'})
-		$('#thumbHolder embed').attr({'wmode':'opaque'});
-
-		$("#thumbHolder .thumbCover").each(function() {
-			$(this).width($(this).prev().width());
-			$(this).height($(this).prev().height());
-		});
-	}
-	
 	var perspectives = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -43,12 +30,32 @@
 			} else if ($("#mainInfoHolder #pageAudio").length > 0) {
 				this.loadAudio($("#mainInfoHolder #pageAudio"));
 			}
-			thumbsCovers();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
-			$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+			setTimeout(function(){
+				// rescale thumbnail images if necessary
+				if (x_currentPageXML.getAttribute("thumbType") == "both" || x_currentPageXML.getAttribute("thumbType") == "imgNum") {
+					$("#thumbBar .thumbBox").each(function() {
+						var $this = $(this);
+						var maxImgSize = [$this.width(), $this.height() - $this.find("h3").height() - 5];
+						if ($this.find(".thumbMedia img").length > 0) {
+							x_scaleImg($this.find(".thumbMedia img")[0], maxImgSize[0], maxImgSize[1], true, false, false, true);
+						} else if ($this.find(".thumbMedia video").length > 0) {
+						}
+					});
+				}
+				
+				perspectives.checkIfBtnsNeeded();
+				
+				// trigger load of main content again so everything will rescale
+				if ($("#mainInfoHolder").data("index") != "undefined") {
+					$("#thumbHolder .thumbBox").filter(function() { return $(this).data("index") == $("#mainInfoHolder").data("index")}).trigger("click");
+				}
+				
+				perspectives.thumbsCovers();
+			}, 0);
 		}
 		
 		// Called from xenith if tab level deeplinking is available
@@ -65,142 +72,205 @@
 		}
 		
 		this.init = function() {
-			var	$thumbHolder = $("#thumbHolder");
+			var $thumbBar = $("#thumbBar"),
+				$thumbHolder = $("#thumbHolder"),
+				$mainInfoHolder = $("#mainInfoHolder"),
+				$mediaPanel = $("#mediaPanel"),
+				$mainTxt = $("#mainTxt"),
+				$gridBack = $("#gridBack");
 			
-			// set up thumb scrolling
-			var btnText = x_currentPageXML.getAttribute("backBtnTip");
-			if (btnText == undefined) {
-				btnText = "Back";
+			$mainInfoHolder.data("index", "undefined");
+			
+			// sort out size & layout of thumbBar
+			if (x_currentPageXML.getAttribute("thumbH") == "small") {
+				$thumbBar.addClass("small");
+			} else if (x_currentPageXML.getAttribute("thumbH") == "large" && (x_browserInfo.mobile != true || x_currentPageXML.getAttribute("thumbPos") == "grid")) {
+				$thumbBar.addClass("large");
+			}
+			
+			if (x_currentPageXML.getAttribute("thumbPos") == "bottom" && x_browserInfo.mobile != true) {
+				$mainInfoHolder.after($thumbBar);
+			} else if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+				$thumbBar.addClass("grid");
+				$("#prevBtn, #nextBtn").remove();
+				$mainInfoHolder.hide();
 			}
 			
 			$("#prevBtn")
 				.button({
-					icons:		{primary: "prev"},
-					label: 		btnText,
-					text:		false
+					icons: {primary: 'fa fa-chevron-circle-left'},
+					label: x_currentPageXML.getAttribute("backBtnTip") == undefined ? "Back" : x_currentPageXML.getAttribute("backBtnTip"),
+					text: false
 				})
 				.click(function() {
-					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() - $thumbHolder.find(".thumbBox:eq(0)").width() - 20}, 800, "easeInOutCubic");
-				})
-				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_prev.png")');
-			
-			
-			btnText = x_currentPageXML.getAttribute("nextBtnTip");
-			if (btnText == undefined) {
-				btnText = "Forward";
-			}
+					var scrollL = 0;
+					
+					$(".thumbBox").each(function() {
+						if ($(this).position().left - $thumbHolder.position().left >= 0) {
+							scrollL = $thumbHolder.scrollLeft() - ($thumbHolder.width() - ($(this).position().left - $thumbHolder.position().left));
+							return false;
+						}
+					});
+					
+					$thumbHolder.animate({scrollLeft: scrollL}, 800, "easeInOutCubic");
+				});
 			
 			$("#nextBtn")
 				.button({
-					icons:	{primary: "next"},
-					label: 	btnText,
-					text:	false
+					icons: {primary: 'fa fa-chevron-circle-right'},
+					label: x_currentPageXML.getAttribute("nextBtnTip") == undefined ? "Forward" : x_currentPageXML.getAttribute("nextBtnTip"),
+					text: false
 				})
 				.click(function() {
-					$thumbHolder.animate({scrollLeft: $thumbHolder.scrollLeft() + $thumbHolder.find(".thumbBox:eq(0)").width() + 20}, 800, "easeInOutCubic");
-				})
-				.find(".ui-icon").css("background-image", 'url("' + x_templateLocation + 'common_html5/small_next.png")');
+					var scrollL = $thumbHolder.scrollLeft() + $thumbHolder.width()
+					
+					$(".thumbBox").each(function(i) {
+						if ($(this).offset().left - $thumbHolder.offset().left + $(this).width() > $thumbHolder.width()) {
+							scrollL = $(this).position().left + $thumbHolder.scrollLeft() - $thumbHolder.position().left;
+							return false;
+						}
+					});
+					
+					$thumbHolder.animate({scrollLeft: scrollL}, 800, "easeInOutCubic");
+				});
 			
+			$("#prevBtn, #nextBtn").hide();
 			
-			if (x_browserInfo.touchScreen == true) {
-				$thumbHolder.css("overflow-x", "auto");
+			if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+				$gridBack
+					.prepend(x_currentPageXML.getAttribute("backGrid") == undefined ? "Back" : x_currentPageXML.getAttribute("backGrid"))
+					.click(function() {
+						if ($("#mainInfoHolder video").length > 0) {
+							$("#mainInfoHolder video")[0].player.pause();
+						}
+						
+						$("#thumbBar .current").removeClass("current");
+						
+						$("#mainInfoHolder")
+							.data("index", "undefined")
+							.fadeOut(400, function() { $thumbBar.fadeIn(400); });
+					});
+			} else {
+				$gridBack.hide();
 			}
-			
-			
-			// get default sound/movie tooltips
-			var soundTip = x_currentPageXML.getAttribute("soundTip");
-			if (soundTip == undefined) {
-				soundTip = "Sound Clip";
-			}
-			var videoTip = x_currentPageXML.getAttribute("videoTip");
-			if (videoTip == undefined) {
-				videoTip = "Video Clip";
-			}
-			
 			
 			// create thumbs in thumbBar
-			var newThumb = '<a href="#" class="thumbBox"><h3></h3><div class="thumbMedia"></div></a>';
+			var newThumb = '<a href="#" class="thumbBox ' + (x_currentPageXML.getAttribute("thumbBorder") == "false" ? "" : "border") + '"><h3>|</h3><div class="thumbMedia"></div></a>',
+				thumbType = x_currentPageXML.getAttribute("thumbType") == undefined ? "both" : x_currentPageXML.getAttribute("thumbType"),
+				adjustIndex = 1;
+			
+			if (x_currentPageXML.getAttribute("playAll") == "true") {
+				var	$thisThumb = $(newThumb);
+				$thumbHolder.append($thisThumb);
+				$thisThumb
+					.addClass("playAll")
+					.find("h3").html(x_currentPageXML.getAttribute("playTip") == undefined ? "Play All" : x_currentPageXML.getAttribute("playTip"));
+				
+				$thisThumb.find(".thumbMedia").remove();
+				
+				$thisThumb.click(function() {
+					$("#thumbHolder .thumbBox:eq(1)").trigger("click", true);
+				});
+				
+				adjustIndex--;
+			}
+			
 			$(x_currentPageXML).children().each(function(i) {
 				if (this.getAttribute("src") != undefined && this.getAttribute("src") != "") {
-					var	$thisThumb = $(newThumb),
-						$thisThumbMedia = $thisThumb.find(".thumbMedia");
-					
+					var	$thisThumb = $(newThumb);
 					$thumbHolder.append($thisThumb);
+					$thisThumb.data("index", i);
 					
-					$thisThumb
-						.data("index", i)
-						.find("h3").html(this.getAttribute("name"));
-					
-					if (this.nodeName == "image" || this.nodeName == "sound") {
-						var	imgSrc,
-							imgTip;
+					if (thumbType == "both" || thumbType == "image" || thumbType == "imgNum") {
+						var $thisThumbMedia = $thisThumb.find(".thumbMedia");
 						
-						if (this.nodeName == "image") {
-							imgSrc = x_evalURL(this.getAttribute("src"));
-							imgTip = this.getAttribute("tooltip");
+						var maxImgSize = [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5];
+						
+						if (thumbType == "both") {
+							$thisThumb.find("h3").html(this.getAttribute("name"));
+						} else if (thumbType == "imgNum") {
+							$thisThumb.find("h3").html($thisThumb.index() + adjustIndex);
+						} else {
+							$thisThumb.find("h3").remove();
+							maxImgSize = [$thisThumb.width(), $thisThumb.height()];
+						}
+						
+						if (this.nodeName == "image" || this.nodeName == "sound") {
+							var	imgSrc,
+								imgTip;
 							
-						} else { // sound - use default image / tip if none added
-							imgSrc = x_templateLocation + "common_html5/sound.jpg";
-							if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
-								imgSrc = x_evalURL(this.getAttribute("img"));
-							}
-							
-							if (this.getAttribute("tooltip") != undefined) {
+							if (this.nodeName == "image") {
+								imgSrc = x_evalURL(this.getAttribute("src"));
 								imgTip = this.getAttribute("tooltip");
-							} else {
-								imgTip = soundTip;
-							}
-						}
-						
-						// add img and scale it on load
-						$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
-						perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
-						
-					} else if (this.nodeName == "movie") {
-						if (this.getAttribute("tooltip") != undefined) {
-							imgTip = this.getAttribute("tooltip");
-						} else {
-							imgTip = videoTip;
-						}
-						
-						// defaults to use video.jpg as thumbnail
-						// unless an img is uploaded
-						// or the useVidThumb optional property is set so 1st frame in video shows (not default any more as often takes too long for them all to load)
-						if (this.getAttribute("useVidThumb") == "true" && this.getAttribute("src").substr(0,7) != "<iframe") {
-							$thisThumbMedia.html('<div class="thumbVideo" title="' + imgTip + '"></div>');
-							
-							var $thisVideo = $thisThumbMedia.find("div");
-							$thisVideo
-								.data({
-									"src"		:this.getAttribute("src"),
-									"dimensions":[$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5]
-								})
-								.attr("disabled", "disabled");
-							
-							perspectives.loadVideo($thisVideo);
-							
-						} else {
-							imgSrc = x_templateLocation + "common_html5/video.jpg";
-							if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
-								imgSrc = x_evalURL(this.getAttribute("img"));
+								
+							} else { // sound - use default image / tip if none added
+								imgSrc = x_templateLocation + "common_html5/sound.jpg";
+								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
+									imgSrc = x_evalURL(this.getAttribute("img"));
+								}
+								
+								if (this.getAttribute("tooltip") != undefined) {
+									imgTip = this.getAttribute("tooltip");
+								} else {
+									imgTip = x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+								}
 							}
 							
+							// add img and scale it on load
 							$thisThumbMedia.html('<img alt="' + imgTip + '" class="centre" />');
-							perspectives.loadImage($thisThumb.find("img"), [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5], imgSrc);
+							perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
+							
+						} else if (this.nodeName == "movie") {
+							var videoTip = this.getAttribute("tooltip") != undefined ? this.getAttribute("tooltip") : x_currentPageXML.getAttribute("videoTip") == undefined ? "Video Clip" : x_currentPageXML.getAttribute("videoTip");
+							$thisThumbMedia.data("videoTip", videoTip);
+							
+							// defaults to use video.jpg as thumbnail unless an img is uploaded
+							// or the useVidThumb optional property is set so 1st frame in video shows (not default any more as often takes too long for them all to load)
+							if (this.getAttribute("useVidThumb") == "true" && this.getAttribute("src").substr(0,7) != "<iframe") {
+								$thisThumbMedia.html('<div class="thumbVideo" title="' + videoTip + '"></div>');
+								
+								var $thisVideo = $thisThumbMedia.find("div");
+								$thisVideo
+									.data({
+										"src": this.getAttribute("src"),
+										"dimensions": [$thisThumb.width(), $thisThumb.height() - $thisThumb.find("h3").height() - 5]
+									})
+									.attr("disabled", "disabled");
+								
+								perspectives.loadVideo($thisVideo);
+								
+							} else {
+								imgSrc = x_templateLocation + "common_html5/video.jpg";
+								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
+									imgSrc = x_evalURL(this.getAttribute("img"));
+								}
+								
+								$thisThumbMedia.html('<img alt="' + videoTip + '" class="centre" />');
+								perspectives.loadImage($thisThumb.find("img"), maxImgSize, imgSrc);
+							}
 						}
+					
+					// only text to appear on thumbnail - removed caption/number only options in xwd as they don't look great
+					} else {
+						$thisThumb.find(".thumbMedia").remove();
+						$thisThumb.find("h3").html(thumbType == "caption" ? this.getAttribute("name") : $thisThumb.index() + adjustIndex);
 					}
 				}
 			});
 			
+			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "") {
+				highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightCol"));
+				$("#pageContents").append('<style>#thumbHolder .current { border-color: ' + highlightColour + ' !important; }</style>');
+			}
 			
-			var	$mainInfoHolder = $("#mainInfoHolder"),
-				$mediaPanel = $("#mediaPanel"),
-				$mainTxt = $("#mainTxt");
-				
 			// set up thumbnail click events - fadeOut old mainInfo and fadeIn new contents
-			$("#thumbHolder .thumbBox")
-				.click(function() {
+			$("#thumbHolder .thumbBox:not(.playAll)")
+				.click(function(e, playAll) {
 					var $this = $(this);
+					
+					playAll = playAll && $this.data("index") + 2 < $("#thumbHolder .thumbBox").length ? true : false;
+					$("#pageContents").data("playAll", playAll);
+					
 					//tweak to stop thumbnail from playing after clicking on it
 					if ($this.find("video").length>0) $this.find("video")[0].pause(); 
 					if ($mainInfoHolder.find("audio,video").length > 0) {
@@ -214,90 +284,192 @@
 					}
 					
 					var chgInfo = false;
-					if ($mainInfoHolder.data("index") == undefined || $mainInfoHolder.data("index") != $this.data("index")) {
+					if ($mainInfoHolder.data("index") == "undefined" || $mainInfoHolder.data("index") != $this.data("index")) {
 						chgInfo = true;
 					}
 					$mainInfoHolder.data("index", $this.data("index"));
 					var	thisData = $(x_currentPageXML).children()[$mainInfoHolder.data("index")];
 					
+					// media scaled by % of screen width (mobile devices always as large as possible regardless of width selected as layout is different)
+					var mediaW = thisData.getAttribute("mediaW"),
+						$media;
+					mediaW = x_browserInfo.mobile == true ? 0.8 : mediaW == "Small" ? 0.2 : mediaW == "Large" ? 0.6 : mediaW == "Full" ? 0.8 : 0.4;
+					
 					if (chgInfo == true) {
-						$mainInfoHolder.fadeOut(400, function() {
-							$mainInfoHolder.css({ // need to change the way the div's hidden so I can get its dimensions
-								"visibility"	:"hidden",
-								"display"		:"inherit"
+						$("#thumbHolder .current").removeClass("current");
+						
+						var showNew = function() {
+							$mediaPanel.width("auto");
+							
+							$mainInfoHolder.css({ // change the way the div's hidden so I can get its dimensions
+								"visibility": "hidden",
+								"display": "inherit"
 							});
 							
-							var pageLink = "";
-							if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
-								var pageNum = x_lookupPage("linkID", thisData.getAttribute("pageLink"));
-								if (pageNum != null) {
-									var linkTxt;
-									if (thisData.getAttribute("pageLinkTxt") != undefined && thisData.getAttribute("pageLinkTxt") != "") {
-										linkTxt = thisData.getAttribute("pageLinkTxt");
-									} else { // use page's name as link text if none set in xml
-										linkTxt = x_pages[pageNum].getAttribute("name");
-									}
-									pageLink = '<p><a href="#" onclick="x_navigateToPage(false, {type:\'linkID\', ID:\'' + thisData.getAttribute("pageLink") + '\'})">' + linkTxt + '</a></p>';
-								}
-							}
-							$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><p>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</p>' + pageLink);
+							perspectives.setInfoHolderHeight();
 							
+							$mainTxt.html("");
+							
+							// insert & size media
 							if (thisData.nodeName == "image") {
-								$mediaPanel.html('<img alt="' + $this.find("img").attr("alt") + '" class="centre" />');
-								perspectives.loadImage($mediaPanel.find("img"), [$mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 53], x_evalURL(thisData.getAttribute("src")));
+								$mediaPanel.html('<img id="pageImage" alt="' + $this.find("img").attr("alt") + '" class="centre" />');
+								var maxW = $mainInfoHolder.width() * mediaW,
+									maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - 5;
+								
+								perspectives.loadImage($mediaPanel.find("#pageImage"), [maxW, maxH], x_evalURL(thisData.getAttribute("src")), playAll);
 								
 							} else if (thisData.nodeName == "sound") {
-								$mediaPanel.html('<img alt="' + $this.find("img").attr("alt") + '" class="centre" /><div id="pageAudio"></div>');
-								perspectives.loadImage($mediaPanel.find("img"), [$mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - x_audioBarH - 53], $this.find("img").attr("src"));
+								var src = x_templateLocation + "common_html5/sound.jpg",
+									alt = this.getAttribute("tooltip") != undefined ? this.getAttribute("tooltip") : x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+								
+								if (thisData.getAttribute("img") != undefined && thisData.getAttribute("img") != "") {
+									src = x_evalURL(thisData.getAttribute("img"));
+								}
+								
+								$mediaPanel.html('<img id="audioImage" alt="' + alt + '" class="centre" /><div id="pageAudio"></div>');
+								var maxW = $mainInfoHolder.width() * mediaW,
+									maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
+								
+								perspectives.loadImage($mediaPanel.find("#audioImage"), [maxW, maxH], src);
 								
 								var $thisAudio = $mediaPanel.find("#pageAudio");
 								$thisAudio.data({
-									"src"	:thisData.getAttribute("src"),
-									"width"	:$mediaPanel.find("img").width()
+									"src": thisData.getAttribute("src"),
+									"width": $mediaPanel.find("#audioImage").width()
 								});
-								perspectives.loadAudio($thisAudio);
+								perspectives.loadAudio($thisAudio, playAll);
 								
 							} else { // movie
+								var videoTip = $this.find(".thumbMedia").data("videoTip");
+								
 								if (thisData.getAttribute("src").substr(0,7) == "<iframe") {
 									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '" class="iframe">' + thisData.getAttribute("src") + '</div>');
 									
 								} else {
-									var videoDimensions = [320,240];
+									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '"></div>');
+									var $thisVideo = $mediaPanel.find("#pageVideo"),
+										videoDimensions = ["100%", "100%"];
+									
 									if (thisData.getAttribute("movieSize") != "" && thisData.getAttribute("movieSize") != undefined) {
 										var dimensions = thisData.getAttribute("movieSize").split(",");
 										if (dimensions[0] != 0 && dimensions[1] != 0) {
 											videoDimensions = dimensions;
+											$thisVideo.data("width", "fixed");
 										}
 									}
 									
-									$mediaPanel.html('<div id="pageVideo" title="' + videoTip + '"></div>');
+									if ($thisVideo.data("width") != "fixed") {
+										$mediaPanel.width((mediaW * 100) + "%");
+									}
 									
-									var $thisVideo = $mediaPanel.find("#pageVideo");
 									$thisVideo.data({
-										"src"		:thisData.getAttribute("src"),
-										"dimensions":videoDimensions
+										"src": thisData.getAttribute("src"),
+										"dimensions": videoDimensions
 									});
-									perspectives.loadVideo($thisVideo);
+									
+									perspectives.loadVideo($thisVideo, playAll);
 								}
 							}
 							
+							// position image / text correctly
+							$mediaPanel.removeClass("full x_floatLeft x_floatRight");
+							$mainInfoHolder.removeClass("centerAlign");
+							
+							if (thisData.getAttribute("mediaW") != "Full") {
+								if (thisData.getAttribute("align") == "Top" || thisData.getAttribute("align") == "Bottom" ||  x_browserInfo.mobile == true) {
+									$mainInfoHolder.addClass("centerAlign");
+									
+								} else if (thisData.getAttribute("align") == "Left") {
+									$mediaPanel.addClass("x_floatRight");
+									
+								} else { // default - media left & text right
+									$mediaPanel.addClass("x_floatLeft");
+								}
+								
+								if (thisData.getAttribute("align") != "Top") {
+									$mediaPanel.insertBefore($mainTxt);
+								} else {
+									$mainTxt.insertBefore($mediaPanel);
+								}
+								
+								// get text for page (incl. links etc.)
+								var pageLink = "";
+								if (thisData.getAttribute("pageLink") != undefined && thisData.getAttribute("pageLink") != "") {
+									var pageNum = x_lookupPage("linkID", thisData.getAttribute("pageLink"));
+									if (pageNum != null) {
+										var linkTxt;
+										if (thisData.getAttribute("pageLinkTxt") != undefined && thisData.getAttribute("pageLinkTxt") != "") {
+											linkTxt = thisData.getAttribute("pageLinkTxt");
+										} else { // use page's name as link text if none set in xml
+											linkTxt = x_pages[pageNum].getAttribute("name");
+										}
+										pageLink = '<p><a href="#" onclick="x_navigateToPage(false, {type:\'linkID\', ID:\'' + thisData.getAttribute("pageLink") + '\'})">' + linkTxt + '</a></p>';
+									}
+								}
+								
+								$mainTxt.html('<h3>' + thisData.getAttribute("name") + '</h3><p>' + x_addLineBreaks(thisData.getAttribute("txt")) + '</p>' + pageLink);
+								
+							} else {
+								$mediaPanel
+									.insertBefore($mainTxt)
+									.addClass("full");
+								
+								$mainInfoHolder.addClass("centerAlign");
+							}
+							
 							$mainInfoHolder.css({ // change back the way the div's hidden so it can fadeIn
-								"display"		:"none",
-								"visibility"	:"visible"
+								"display": "none",
+								"visibility": "visible"
 							});
 							$mainInfoHolder.fadeIn();
-						});
+							
+							if (x_currentPageXML.getAttribute("highlight") == "true") {
+								$("#thumbHolder .current").removeClass("current");
+								$this.addClass("current");
+							}
+						}
 						
+						if (x_currentPageXML.getAttribute("thumbPos") == "grid") {
+							$thumbBar.fadeOut(400, showNew);
+						} else {
+							$mainInfoHolder.fadeOut(400, showNew);
+						}
+						
+					} else if (playAll == true) {
+						// starts play all if focus is already on 1st thumb
+						if ($this.data("index") == 0 && thisData.nodeName == "image") {
+							$("#thumbHolder .thumbBox:eq(2)").trigger("click", true);
+						} else {
+							perspectives.playAll($("#pageVideo, #pageAudio, #pageImage"));
+						}
 					} else { // no change to media shown - just resize if needed
+						perspectives.setInfoHolderHeight();
+						
 						if (thisData.nodeName == "image") {
-							x_scaleImg($mediaPanel.find("img"), $mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - 53, true, false);
+							var maxW = $mainInfoHolder.width() * mediaW,
+								maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - 5;
+							
+							x_scaleImg($mediaPanel.find("#pageImage"), maxW, maxH, true, false);
 							
 						} else if (thisData.nodeName == "sound") {
-							x_scaleImg($mediaPanel.find("img"), $mainInfoHolder.width() * 0.4, $x_pageHolder.height() - parseInt($mainInfoHolder.css("margin-top")) - x_audioBarH - 53, true, false);
+							var maxW = $mainInfoHolder.width() * mediaW,
+								maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
+							
+							x_scaleImg($mediaPanel.find("#audioImage"), maxW, maxH, true, false);
+							
 							var $audio = $mediaPanel.find("#pageAudio");
-							if ($audio.find(".mejs-audio").width() != $mediaPanel.find("img").width()) {
-								$audio.data("width", $mediaPanel.find("img").width());
-								perspectives.loadAudio($audio);
+							if ($audio.find(".mejs-audio").width() != $mediaPanel.find("#audioImage").width()) {
+								$audio.data("width", $mediaPanel.find("#audioImage").width());
+								perspectives.loadAudio($audio, playAll);
+							}
+						} else {
+							var $video = $mediaPanel.find("#pageVideo")
+							if ($video.data("width") != "fixed") {
+								if ($video.find(".mejs-video").width() == $video.width() || ($video.find(".mejs-video").width() > $video.width() && $video.find(".mejs-video").width() - 10 <= $video.width()) || ($video.find(".mejs-video").width() < $video.width() && $video.find(".mejs-video").width() + 10 >= $video.width())) {
+								} else {
+									// mediaelement.js videos only stay responsive when whole browser window is resized - if resize of LO is done by clicking minimise/maximise button we have to force mediaelement.js to triger resize
+									$x_window.resize();
+								}
 							}
 						}
 					}
@@ -315,31 +487,51 @@
 					}
 				});
 			
+			if (x_currentPageXML.getAttribute("thumbPos") != "grid") {
+				$("#thumbHolder .thumbBox:eq(" + (0 - (adjustIndex - 1)) + ")").trigger("click");
+			}
 			
-			// have to add this css using jQuery rather than in styles below as some browsers (IE) don't support first-child/last-child
-			$("#thumbHolder .thumbBox:eq(0)")
-				.css("margin-left", "40px")
-				.trigger("click");
+			if ($("#thumbHolder .thumbBox").length == 1 || ($("#thumbHolder .thumbBox").length == 2 && x_currentPageXML.getAttribute("playAll") == "true")) {
+				$thumbBar
+					.hide()
+					.addClass("hidden");
+				
+				$mainInfoHolder.addClass("noThumbs");
+			} else {
+				this.checkIfBtnsNeeded();
+			}
 			
-			$("#thumbHolder .thumbBox:last-child").css("margin-right", "40px");
+			if (x_browserInfo.touchScreen) {
+				$thumbHolder.css("overflow-x", "auto");
+			}
 			
 			x_pageLoaded();
 		}
 		
-		this.loadImage = function($img, maxDimensions, src) {
+		this.loadImage = function($img, maxDimensions, src, playAll) {
 			$img
 				.css({ // stops flicker on 1st load of image
-					"opacity"	:0,
-					"filter"	:'alpha(opacity=0)'
+					"opacity": 0,
+					"filter": 'alpha(opacity=0)'
 				})
 				.one("load", function() {
 					var $this = $(this);
-					x_scaleImg($this, maxDimensions[0], maxDimensions[1], true, true);
+					// thumbnail images where there's no caption should fill be made to fill thumbBox
+					if (x_currentPageXML.getAttribute("thumbType") == "image" && $this.parents("#thumbHolder").length > 0) {
+						var width = $img.width() / $img.height() >= 1 ? $img.width() / $img.height() * 100 : 100;
+						var left = width > 100 ? (width - 100) / 2 : 0;
+						$img.width($img.width() / $img.height() * 100 + "%");
+						$img.css("margin-left", 0-left + "%");
+					} else {
+						x_scaleImg($this, maxDimensions[0], maxDimensions[1], true, true);
+					}
 					
 					$this.css({
-						"opacity"	:1,
-						"filter"	:'alpha(opacity=100)'
+						"opacity": 1,
+						"filter": 'alpha(opacity=100)'
 					});
+					
+					if (playAll) perspectives.playAll($img);
 				})
 				.attr("src", src)
 				.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
@@ -349,22 +541,86 @@
 				});
 		}
 		
-		this.loadAudio = function($audio) {
+		this.loadAudio = function($audio, playAll) {
 			$audio.mediaPlayer({
-				type		:"audio",
-				source	:$audio.data("src"),
-				width		:$audio.data("width")
+				type: "audio",
+				source: $audio.data("src"),
+				width: $audio.data("width"),
+				pageName: "perspectives"
+			});
+			
+			if (playAll) perspectives.playAll($audio);
+		}
+		
+		this.loadVideo = function($video, playAll) {
+			$video.mediaPlayer({
+				type: "video",
+				source: $video.data("src"),
+				width: ($video.data("width") != "fixed" ? $video.data("dimensions")[0] : Number($video.data("dimensions")[0])),
+				height: ($video.data("width") != "fixed" ? $video.data("dimensions")[1] : Number($video.data("dimensions")[1])),
+				pageName: "perspectives"
+			});
+			
+			this.thumbsCovers();
+			
+			if (playAll) perspectives.playAll($video);
+		}
+		
+		this.playAll = function($media) {
+			if ($media[0].nodeName == "IMG") {
+				setTimeout(function(){
+					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+				}, (x_currentPageXML.getAttribute("playImgTime") != undefined && x_currentPageXML.getAttribute("playImgTime") != 0 ? Number(x_currentPageXML.getAttribute("playImgTime")) : 5) * 1000);
+			} else if ($media.is($("#pageVideo"))) {
+				setTimeout(function(){$media.find("video")[0].player.play();}, 0);
+			} else {
+				setTimeout(function(){$media.find("audio")[0].player.play();}, 0);
+			}
+		}
+		
+		// function called from mediaPlayer.js when media player has been set up
+		this.mediaFunct = function(mediaElement) {
+			mediaElement.addEventListener("ended", function(e) {
+				if ($("#pageContents").data("playAll") == true) {
+					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
+				}
 			});
 		}
 		
-		this.loadVideo = function($video) {
-			$video.mediaPlayer({
-				type	  :"video",
-				source	:$video.data("src"),
-				width	  :Number($video.data("dimensions")[0]),
-				height	:Number($video.data("dimensions")[1])
+		this.checkIfBtnsNeeded = function() {
+			if (x_currentPageXML.getAttribute("thumbPos") != "grid" && $("#thumbHolder .thumbBox").length > 1) {
+				$("#prevBtn, #nextBtn").hide();
+				var element = document.querySelector("#thumbHolder");
+				if (element.offsetWidth < element.scrollWidth) {
+					$("#prevBtn, #nextBtn").show();
+				}
+			}
+		}
+		
+		this.setInfoHolderHeight = function() {
+			var $mainInfoHolder = $("#mainInfoHolder");
+			var maxH;
+			if (x_browserInfo.mobile != true) {
+				maxH = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (x_currentPageXML.getAttribute("thumbPos") == "grid" ? 0 : $("#thumbBar").height()) - parseInt($mainInfoHolder.css("margin-top")) - parseInt($mainInfoHolder.css("margin-bottom")) - 2;
+			} else {
+				maxH = $(window).height();
+			}
+			$mainInfoHolder.data("height", maxH);
+			if (x_currentPageXML.getAttribute("thumbPos") != "grid" && $("#thumbHolder .thumbBox").length > 1 && x_browserInfo.mobile != true) {
+				$mainInfoHolder.height(maxH);
+			}
+		}
+		
+		this.thumbsCovers = function() {
+			//tweak for swf player for flv having full screen button active in thumbnails
+			$("#thumbHolder .thumbVideo").parent().not($("#thumbHolder .thumbCover").parent()).append('<div class="thumbCover"></div>');
+			$('#thumbHolder embed').attr({'wmode':'opaque'});
+
+			$("#thumbHolder .thumbCover").each(function() {
+				var $this = $(this);
+				$this.width($this.prev().width());
+				$this.height($this.prev().height());
 			});
-			thumbsCovers();
 		}
 	}
 	
@@ -379,7 +635,7 @@
 				$(tmp_elem).width(tmp_width);
 				$(tmp_elem).height(tmp_height);
 				tmp_elem = tmp_elem.parentElement;
-			}			
+			}
 		});
 		this.exitFullScreen_org();
 	}
@@ -391,17 +647,16 @@
 
 <div id="pageContents">
 	
-	<div id="mainInfoHolder">
-		<div id="mediaPanel" class="panel inline x_floatLeft"></div>
-		<div id="mainTxt"></div>
-	</div>
-	
 	<div id="thumbBar">
 		<button id="prevBtn"/>
-		<div id="thumbHolder"></div>
-		<div id="thumbOverlayLeft"/>
-		<div id="thumbOverlayRight"/>
 		<button id="nextBtn"/>
+		<div id="thumbHolder"></div>
+	</div>
+	
+	<div id="mainInfoHolder">
+		<div id="gridBack"><span class="fa fa-arrow-circle-o-left"></span></div>
+		<div id="mediaPanel" class="panel inline x_floatLeft"></div>
+		<div id="mainTxt"></div>
 	</div>
 	
 </div>
