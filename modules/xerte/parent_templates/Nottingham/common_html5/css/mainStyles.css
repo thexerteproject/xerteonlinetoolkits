@@ -22,12 +22,16 @@
 /* changing other styles in this file may cause problems in functionality */
 
 body {
-	margin:			0px;
+	margin: 0px;
 }
 
 p {
     padding: 4px;
     margin: 0;
+}
+
+ul, ol {
+	overflow: hidden;
 }
 
 .optionTxt p {

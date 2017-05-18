@@ -7,7 +7,7 @@ p {
 body {
 	font-size: 3.0vmin;
 }
-body ul{
+body ul, body ol {
 	font-size: 3.0vmin;
 }
 
