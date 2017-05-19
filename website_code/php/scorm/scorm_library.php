@@ -225,7 +225,8 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
     $version = getVersion();
 
     $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
-    $buffer = str_replace("%VERSION%", $version , $buffer);
+    $buffer = str_replace("%VERSION%", $version, $buffer);
+    $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
@@ -246,7 +247,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
         $buffer = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $buffer);
     }
 
-    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>", $buffer);
+    $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
 
     $file_handle = fopen($dir_path . "index.htm", 'w');
 
@@ -274,7 +275,8 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
     $version = getVersion();
 
     $scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
-    $scorm_html_page_content = str_replace("%VERSION%", $version , $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%VERSION%", $version, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
@@ -284,11 +286,11 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $scorm_html_page_content);
 
-    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js?version=" . $version . "\"></script>\n";
-    $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js?version=" . $version . "\"></script>\n";
-    $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js?version=" . $version . "\"></script>\n";
+    $tracking = "<script type=\"text/javascript\" src=\"apiwrapper_1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
+    $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js")) {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js?version=" . $version . "\"></script>";
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);

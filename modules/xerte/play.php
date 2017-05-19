@@ -139,6 +139,7 @@ function show_template_page($row, $datafile="")
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
         $page_content = str_replace("%VERSION%", $version , $page_content);
+        $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);

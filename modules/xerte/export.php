@@ -398,7 +398,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -410,7 +410,7 @@ if ($scorm == "true") {
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
 	

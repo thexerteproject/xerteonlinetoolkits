@@ -189,6 +189,7 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language)
 	$scorm_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
 	$scorm_html_page_content = str_replace("%VERSION%", $version , $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%VERSION_PARAM%", "" , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
@@ -203,7 +204,7 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language)
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm2004.3rd.js"))
     {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>";
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js\"></script>";
     }
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
