@@ -20,7 +20,7 @@
 
   </tabNavExtra>
 
-  <topic menuItem="Topic" icon="icFolderPage">
+  <topic menuItem="Topic" icon="icFolderPage" deepLink="true">
 
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
@@ -30,7 +30,7 @@
 
   </topic>
 
-  <nestedTab menuItem="Tab">
+  <nestedTab menuItem="Tab" deepLink="true">
 
     <name label="Panel Name" type="TextInput" wysiwyg="true"/>
 

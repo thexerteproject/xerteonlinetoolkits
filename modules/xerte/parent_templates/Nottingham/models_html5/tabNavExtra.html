@@ -24,12 +24,31 @@
 
 		// Called from xenith if tab level deeplinking is available
 		this.deepLink = function(item) {
+			item = item.split(",");
+			var topic, tab, page;
+			if (item.length > 0) {
+				topic = item[0];
+				tab = item[1];
+				page = item[2];
+			} else {
+				topic = item;
+			}
+			
 			$('.topic').each(function(i) {
-				if (
-					($.isNumeric(item) && i === parseInt(item))
-					|| (item.toLowerCase() === $(this).text().toLowerCase())
-				) {
+				if (($.isNumeric(topic) && i === parseInt(topic)) || (topic.toLowerCase() === $(this).text().toLowerCase())) {
 					$(this).click();
+					$('.infoHolder:eq(' + i + ') .tabHeader a').each(function(j) {
+						if (($.isNumeric(tab) && j === parseInt(tab))) {
+							$(this).click();
+							$('.infoHolder:eq(' + i + ') .paneHolder:eq(' + j + ') .paneList a').each(function(k) {
+								if (($.isNumeric(page) && k === parseInt(page))) {
+									$(this).click();
+									return false;
+								}
+							});
+							return false;
+						}
+					});
 					return false;
 				}
 			});
@@ -93,7 +112,7 @@
 							if ($this != $("#pageContents .topic.highlight")) {
 								$(".customHTMLHolder").detach();
 								$("#pageContents .topic.highlight").removeClass("highlight");
-								$("#pageContents .infoHolder:visible").hide();
+								$("#pageContents .infoHolder").hide();
 								$this.addClass("highlight");
 								
 								var $thisHolder = $("#pageContents .infoHolder:eq(" + $this.index() + ")");

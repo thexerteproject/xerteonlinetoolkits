@@ -2666,7 +2666,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></tabNavExtra><topic menuItem="Topic" icon="icFolderPage">
+	</background></tabNavExtra><topic menuItem="Topic" icon="icFolderPage" deepLink="true">
 
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
@@ -2674,7 +2674,7 @@
       <nestedTab><![CDATA[<nestedTab name="Enter Tab Name"><nestedPage name="Nested Page Name" text="Content for the pane"/></nestedTab>]]></nestedTab>
     </newNodes>
 
-  </topic><nestedTab menuItem="Tab">
+  </topic><nestedTab menuItem="Tab" deepLink="true">
 
     <name label="Panel Name" type="TextInput" wysiwyg="true"/>
 

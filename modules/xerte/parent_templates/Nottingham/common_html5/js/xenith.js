@@ -165,14 +165,28 @@ x_projectDataLoaded = function(xmlData) {
 			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
 				page.pageID = pageID;
 			}
-
+			
 			//Get child linkIDs for deeplinking
 			page.childIDs = [];
-			$(this).children().each(function () {
-				page.childIDs.push($(this)[0].getAttribute("linkID"));
-			});
-
+			var tempArrays = [];
+			var allChildIDs = function($this, array) {
+				$this.children().each(function () {
+					var $child = $(this)
+					if ($child.children().length > 0) {
+						array.push($child[0].getAttribute("linkID"));
+						tempArrays.push([]);
+						var tempArray = tempArrays[tempArrays.length-1];
+						allChildIDs($child, tempArray);
+						array.push(tempArray);
+						
+					} else {
+						array.push($child[0].getAttribute("linkID"));
+					}
+				});
+			}
+			allChildIDs($(this), page.childIDs);
 			x_pageInfo.push(page);
+			
 		}
 		else {
 			pageToHide.push(i);
@@ -1163,7 +1177,7 @@ function x_dialog(text){
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
     var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
+    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
         x_changePage(page);
     }
     else {
@@ -1204,7 +1218,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
         	else {
 				page = x_lookupPage(pageInfo.type, pageInfo.ID);
 				if ($.isArray(page)) {
-					x_deepLink = page[1];
+					x_deepLink = page.slice(1, page.length);
 					x_changePage(page[0]);
 				}
 				else if (page != null) {
@@ -1254,10 +1268,36 @@ function x_lookupPage(pageType, pageID) {
 		}
 	}
 	
-	// Lastly we now need to check first children of each page
-	for (var j,i=0, len = x_pageInfo.length; i<len; i++) {
-		if ((j = x_pageInfo[i].childIDs.indexOf(pageID)) > -1) {
-			return [i, j];
+	// Lastly we now need to check children of each page
+	var tempArray = [];
+	var checkChildIDs = function(ids) {
+		for (var i=0, j=-1; i<ids.length; i++) {
+			if ($.isArray(ids[i])) {
+				tempArray.push(j);
+				var result = checkChildIDs(ids[i]);
+				if (result == true) {
+					return true;
+				} else {
+					tempArray = tempArray.splice(0, tempArray.length-1);
+				}
+			} else {
+				j++;
+				if (ids[i] == pageID) {
+					tempArray.push(j);
+					return true;
+				}
+			}
+		}
+		return null;
+	}
+	
+	for (var i=0; i<x_pageInfo.length; i++) {
+		tempArray = tempArray.splice();
+		tempArray.push(i);
+		var result = checkChildIDs(x_pageInfo[i].childIDs);
+		if (result == true) {
+			return tempArray;
+			break;
 		}
 	}
 
@@ -1517,11 +1557,13 @@ function x_changePageStep3(x_gotoPage) {
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-	x_doDeepLink();
-
     x_updateHash();
 
     $("#x_pageDiv").show();
+	
+	if (x_pageInfo[x_currentPage].built != false) {
+		x_doDeepLink();
+	}
 }
 
 
