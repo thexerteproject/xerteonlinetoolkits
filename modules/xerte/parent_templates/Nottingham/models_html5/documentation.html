@@ -415,7 +415,7 @@
 						$element = $('<div class="question optionGroup"/>').append($input).append(label);
 						break;
 					case 'media':
-						if (xml.getAttribute('url').substr(0,10) == "USER-FILES") {
+						if (xml.getAttribute('url') != undefined && xml.getAttribute('url') != '') {
 							$element = $('<img class="itemImg">')
 								.attr('src', xml.getAttribute('url'));
 						}
