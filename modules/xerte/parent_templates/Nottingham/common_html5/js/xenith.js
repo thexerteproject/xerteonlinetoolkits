@@ -1452,6 +1452,11 @@ function x_changePageStep3(x_gotoPage) {
         builtPage.hide();
         builtPage.fadeIn();
 		
+		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+			$("#x_pageScript").remove();
+			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
+		}
+		
 		// show page background & hide main background
 		if ($(".pageBg#page" + x_currentPage).length > 0) {
 			$(".pageBg#page" + x_currentPage).show();
@@ -1700,7 +1705,7 @@ function x_pageLoaded() {
 	// script & style optional properties for each page added after page is otherwise set up
 	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
-			$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
 		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
 			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');

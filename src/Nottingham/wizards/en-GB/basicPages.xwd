@@ -10,8 +10,12 @@
 	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
 	<markForCompletion label="Mark for completion" type ="CheckBox" defaultValue="true" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
-	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
 	<styles label="Styles" type="script" height="200" optional="true"/>
+	
+	<scripts type="group" label="Script" optional="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts>
 
 	<background type="group" label="Background" optional="true">
 		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
