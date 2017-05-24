@@ -1,75 +1,123 @@
 /* perspectives.html */
 	
 	#thumbBar {
-		position:	absolute;
-		top:		10px;
-		left:		0px;
-		width:		100%;
-		height:		110px;
-		background:	#434343;
+		display: inline-block;
+		width: 100%;
+		height: 8em;
 	}
 	
-	#thumbOverlayLeft, #thumbOverlayRight {
-		position:		absolute;
-		width:			40px;
-		height:			100%;
+	#thumbBar.small { height: 5em; }
+	#thumbBar.large { height: 11em; }
+	
+	#thumbBar.grid, #thumbBar.grid.small, #thumbBar.grid.large {
+		height: auto !important;
 	}
 	
-	#thumbOverlayLeft {
-		background:	#434343; /* for non-css3 browsers */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#010101', endColorstr='#00010101',GradientType=1 ); /* IE */
-		background: -moz-linear-gradient(left,  rgba(1,1,1,1) 0%, rgba(1,1,1,1) 20%, rgba(1,1,1,0) 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,1)), color-stop(20%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,0))); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(left,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* IE10+ */
-		background: linear-gradient(to right,  rgba(1,1,1,1) 0%,rgba(1,1,1,1) 20%,rgba(1,1,1,0) 100%); /* W3C */
+	#prevBtn {
+		float: left;
+		z-index: 5;
+		
 	}
 	
-	#thumbOverlayRight {
-		right:	0;
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00010101', endColorstr='#010101',GradientType=1 ); /* IE */
-		background:	#434343; /* for non-css3 browsers */
-		background: -moz-linear-gradient(left,  rgba(1,1,1,0) 0%, rgba(1,1,1,1) 80%, rgba(1,1,1,1) 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(1,1,1,0)), color-stop(80%,rgba(1,1,1,1)), color-stop(100%,rgba(1,1,1,1))); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(left,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* IE10+ */
-		background: linear-gradient(to right,  rgba(1,1,1,0) 0%,rgba(1,1,1,1) 80%,rgba(1,1,1,1) 100%); /* W3C */
+	#nextBtn {
+		float: right;
+	}
+	
+	#thumbBar button {
+		background: none;
+		border: none;
+		width: 5em;
+		height: 5em;
+		margin: 1.5em;
+	}
+	
+	#thumbBar button .ui-icon {
+		font-size: 5em;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin: 0;
+		background-position: 0;
+	}
+	
+	#thumbBar button, #gridBack { color: #434343; cursor: pointer; }
+	#thumbBar button:hover, #thumbBar button:focus, #gridBack:hover, #gridBack:focus { color: #666666; }
+	#thumbBar button:active, #gridBack:active { color: #FF9900; }
+	
+	#thumbBar.small button { width: 3em; height: 3em; margin: 1em; }
+	#thumbBar.large button { width: 7em; height: 7em; margin: 2em; }
+	#thumbBar.small button .ui-icon { font-size: 3em; }
+	#thumbBar.large button .ui-icon { font-size: 7em; }
+	
+	#thumbBar.hidden {
+		height: 0 !important;
+		padding: 0 !important;
+		margin: 0 !important;
 	}
 	
 	#thumbHolder {
-		position:			absolute;
-		width:				100%;
-		height:				100%;
-		overflow:			hidden;
-		white-space:		nowrap;
+		width: auto;
+		margin: 0 auto;
+		height: 100%;
+		overflow: hidden;
+		text-align: center;
+		white-space: nowrap;
+	}
+	
+	#thumbBar.grid #thumbHolder {
+		overflow: auto;
+		white-space: normal;
 	}
 	
 	#thumbHolder .thumbBox {
-		display:			inline-block;
-		width:				90px;
-		height:				90px;
-		margin:				5px;
-		padding:			3px;
-		background-color:	white;
-		border:				2px solid transparent;
-		text-decoration:	none;
+		display: inline-block;
+		overflow: hidden;
+		width: 6.5em;
+		height: 6.5em;
+		margin: 5px;
+		padding: 3px;
+		background-color: white;
+		border: 1px solid transparent;
+		text-decoration: none;
 	}
 	
-	#thumbHolder .thumbBox.selected {
-		border-color:	yellow;
+	#thumbBar.small #thumbHolder .thumbBox { width: 3.5em; height: 3.5em;  }
+	#thumbBar.large #thumbHolder .thumbBox { width: 9.5em; height: 9.5em;  }
+	
+	#thumbHolder .thumbBox.border {
+		border: 1px solid #434343;
+	}
+	
+	#thumbHolder .thumbBox.selected, #thumbHolder .thumbBox.current {
+		border: 2px solid #FFFF00;
+		margin: 4px;
 	}
 	
 	#thumbHolder .thumbBox h3 {
-		text-align:		center;
-		overflow:		hidden;
-		margin-bottom:	5px;
+		text-align: center;
+		overflow: hidden;
+		margin-bottom: 5px;
 	}
 	
 	#thumbHolder .thumbBox:link, #thumbHolder .thumbBox:hover, #thumbHolder .thumbBox:active, #thumbHolder .thumbBox:visited {
-		color:	inherit;
+		color: inherit;
 	}
+	
+	#thumbHolder .thumbMedia {
+		overflow: hidden;
+		position: relative;
+	}
+	
+	#thumbHolder .playAll h3 {
+		font-size: 2em;
+		margin-top: 0.3em;
+		white-space: normal;
+	}
+	
+	#thumbBar.small #thumbHolder .playAll h3 { font-size: 1.2em; margin-top: 0.18em; }
+	#thumbBar.large #thumbHolder .playAll h3 { font-size: 2.8em; margin-top: 0.48em; }
 	
 	/* removes controls from thumbnail version of video player */
 	#thumbHolder .thumbMedia .mejs-container .mejs-controls, #thumbHolder .thumbMedia .mejs-container .mejs-layers {
@@ -77,45 +125,101 @@
 	}
 	
 	#thumbHolder .thumbMedia img {
-		border-width:	0px; /* IE8 fix */
+		border-width: 0px; /* IE8 fix */
 	}
-	
-	
-	#prevBtn {
-		float:		left;
-		z-index:	5;
-	}
-	
-	#nextBtn {
-		float:	right;
-	}
-	
-	/* over ride default jquery button styles */
-	#thumbBar button {
-		background:		none;
-		border:			none;
-		width:			40px;
-		height:			100%;
-		margin-right:	0;
-	}
-	
-	#thumbBar button .ui-icon {
-		width:		100%;
-		height:		100%;
-		position:	absolute;
-		top:		0;
-		left:		0;
-		margin:		0px;
-		background-position:	0px 0px;
-	}
-	
-	#thumbBar button.ui-state-hover .ui-icon, #thumbBar button.ui-state-focus .ui-icon, #thumbBar button.ui-state-active .ui-icon {
-		background-position: -40px 0px;
-	}
-	
 	
 	#mainInfoHolder {
-		margin-top:	130px;
+		overflow: auto;
 		visibility:	hidden;
 	}
 	
+	#mainInfoHolder:not(.noThumbs) {
+		margin-top: 0;
+		margin-bottom: 1em;
+	}
+	
+	#thumbBar + #mainInfoHolder:not(.noThumbs) {
+		margin-top:	1em;
+		margin-bottom: 0;
+	}
+	
+	#thumbBar.grid + #mainInfoHolder:not(.noThumbs) {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	
+	#thumbHolder .thumbCover {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	
+	#thumbHolder .thumbCover {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	
+	#mainInfoHolder.centerAlign #mainTxt {
+		text-align: left;
+	}
+	
+	#mainInfoHolder #gridBack {
+		float: right;
+		padding-bottom: 0.5em;
+		font-weight: bold;
+	}
+	
+	#mainInfoHolder #gridBack .fa {
+		font-size: 2em;
+		vertical-align: middle;
+		padding-left: 0.3em;
+	}
+	
+	#mainTxt + #mediaPanel {
+		margin-top: 20px;
+		margin-bottom: 0;
+	}
+	
+	#mediaPanel:not(.x_floatLeft) {
+		clear: right;
+	}
+	
+	#mediaPanel.full {
+		margin-bottom: 0;
+	}
+	
+	
+	/* RESPONSIVE STYLES */
+	
+	.x_responsive #thumbBar:not(.grid):not(.hidden) { height: 20.0vmin !important; }
+	.x_responsive #thumbBar.small:not(.grid):not(.hidden) { height: 12.5vmin !important; }
+	.x_responsive #thumbBar.large:not(.grid):not(.hidden) { height: 27.5vmin !important; }
+
+	.x_responsive #thumbHolder .thumbBox h3 {
+		font-size: 2.5vmin;
+	}
+	.x_responsive #thumbHolder .thumbBox { width: 18.0vmin !important; height: 18.0vmin !important; }
+	.x_responsive #thumbBar.small #thumbHolder .thumbBox { width: 9.7vmin !important; height: 9.7vmin !important; }
+	.x_responsive #thumbBar.large #thumbHolder .thumbBox { width: 26.3vmin !important; height: 26.3vmin !important; }
+
+	.x_responsive #thumbBar button {
+		width: 12.5vmin;
+		height: 12.5vmin;
+		margin: 3.75vmin;
+	}
+	.x_responsive #thumbBar button .ui-icon {
+		font-size: 12.5vmin;
+	}
+	.x_responsive #thumbBar.small button { width: 7.9vmin; height: 7.9vmin; margin: 2.3vmin; }
+	.x_responsive #thumbBar.large button { width: 17.5vmin; height: 17.5vmin; margin: 5vmin; }
+	.x_responsive #thumbBar.small button .ui-icon { font-size: 7.9vmin; }
+	.x_responsive #thumbBar.large button .ui-icon { font-size: 17.5vmin; }
+
+	.x_responsive #gridBack {
+		font-size: 2.5vmin;
+	}
+	
+	.x_responsive #thumbHolder .playAll h3 { font-size: 5.2vmin; }
+	.x_responsive #thumbBar.small #thumbHolder .playAll h3 { font-size: 3.1vmin; }
+	.x_responsive #thumbBar.large #thumbHolder .playAll h3 { font-size: 7.5vmin; }

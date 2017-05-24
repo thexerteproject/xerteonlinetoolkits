@@ -6,7 +6,7 @@
   </pageWizard>
 
   <!-- TABBED NAVIGATOR PLUS========================= -->
-  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true">
+  <tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
@@ -20,7 +20,7 @@
 
   </tabNavExtra>
 
-  <topic menuItem="Topic" icon="icFolderPage">
+  <topic menuItem="Topic" icon="icFolderPage" deepLink="true">
 
     <name label="Topic Name" type="TextInput" wysiwyg="true"/>
 
@@ -30,7 +30,7 @@
 
   </topic>
 
-  <nestedTab menuItem="Tab">
+  <nestedTab menuItem="Tab" deepLink="true">
 
     <name label="Panel Name" type="TextInput" wysiwyg="true"/>
 

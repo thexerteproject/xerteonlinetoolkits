@@ -661,7 +661,7 @@ function getIcon(nodetype)
             icon = "website_code/images/Icon_Page_" + nodetype + ".gif";
     }
     return icon;
-};
+}
 
 function create_node_type(nodetype, children) {
     // clone children
@@ -671,8 +671,10 @@ function create_node_type(nodetype, children) {
         icon: getIcon(nodetype),
         valid_children: lchildren
     };
-};
+}
 
+
+var lastTreeItemTimestamp = undefined;
 
 /**
  * Initialise tree from workspace (a json structure that contains all the info to build the tree)
@@ -711,7 +713,7 @@ function init_workspace()
 
     console.log(node_types);
     console.log(workspace.items);
-
+    
     var tree = $.jstree.reference("#workspace");
     if (tree)
     {
@@ -719,7 +721,7 @@ function init_workspace()
         tree.refresh();
     }
     else {
-        $("#workspace").jstree({
+        $workspace = $("#workspace").jstree({
             "plugins": ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? ["types", "search", "state"] : ["types", "dnd", "search", "state"],
             "core": {
                 "data": workspace.items,
@@ -736,21 +738,27 @@ function init_workspace()
                     "threshold": /Android|AppleWebKit|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 50 : 5
                 }
             }
-        })
-            .bind('select_node.jstree', function (event, data) {
+        });
+        $workspace.bind('select_node.jstree', function (event, data) {
+
                 button_check();
                 showInformationAndSetStatus(data.node);
-            })
-			.bind('deselect_node.jstree', function (event, data) {
+
+        })
+        .bind('deselect_node.jstree', function (event, data) {
+
                 button_check();
                 showInformationAndSetStatus();
-            })
-            .bind('move_node.jstree',function(event,data)
-            {
+
+        })
+        .bind('move_node.jstree',function(event,data)
+        {
+
                 console.log(event);
                 console.log(data);
                 copy_to_folder(data);
-            });
+
+        });
 
         /*
          .bind("copy_node.jstree", function (event, data) {

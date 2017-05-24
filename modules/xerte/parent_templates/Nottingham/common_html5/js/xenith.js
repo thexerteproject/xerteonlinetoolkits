@@ -115,32 +115,9 @@ $(document).ready(function() {
     }
 
     x_browserInfo.touchScreen = !!("ontouchstart" in window);
-    if (x_mobileDevice()) {
-        x_fillWindow = true;
-        if (window.orientation == 0 || window.orientation == 180) {
-            x_browserInfo.orientation = "portrait";
-        } else {
-            x_browserInfo.orientation = "landscape";
-        }
-
-        var mobileTimer = false;
-        if (x_browserInfo.iOS || x_browserInfo.Android) {
-            // zooming is disabled until 2nd gesture - can't find way around this (otherwise page zooms automatically on orientation change which messes other things up)
-            var $viewport = $("#viewport")
-            $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0");
-            $(window)
-                .on("gesturestart", function() {
-                    clearTimeout(mobileTimer);
-                    $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=10.0");
-                    })
-                .on("touchend",function () {
-                    clearTimeout(mobileTimer);
-                    mobileTimer = setTimeout(function () {
-                        $viewport.attr("content", "width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0");
-                    },1000);
-                    });
-        }
-    }
+	if (x_browserInfo.touchScreen == true) {
+		$x_mainHolder.addClass("x_touchScreen");
+	}
 
     // get xml data and sort it
     if (typeof dataxmlstr != 'undefined')
@@ -168,14 +145,9 @@ $(document).ready(function() {
 
 });
 
-x_mobileDevice = function()
-{
-	return x_browserInfo.touchScreen == true && x_browserInfo.Android && (x_browserInfo.iOS && x_browserInfo.Device != "iPad");
-}
-
 x_projectDataLoaded = function(xmlData) {
     var i, len;
-
+	var markedPages = new Array();
     for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
         x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
     }
@@ -193,17 +165,35 @@ x_projectDataLoaded = function(xmlData) {
 			if (pageID != undefined && pageID != "Unique ID for this page") { // Need to use this English for backward compatibility
 				page.pageID = pageID;
 			}
-
+			
 			//Get child linkIDs for deeplinking
 			page.childIDs = [];
-			$(this).children().each(function () {
-				page.childIDs.push($(this)[0].getAttribute("linkID"));
-			});
-
+			var tempArrays = [];
+			var allChildIDs = function($this, array) {
+				$this.children().each(function () {
+					var $child = $(this)
+					if ($child.children().length > 0) {
+						array.push($child[0].getAttribute("linkID"));
+						tempArrays.push([]);
+						var tempArray = tempArrays[tempArrays.length-1];
+						allChildIDs($child, tempArray);
+						array.push(tempArray);
+						
+					} else {
+						array.push($child[0].getAttribute("linkID"));
+					}
+				});
+			}
+			allChildIDs($(this), page.childIDs);
 			x_pageInfo.push(page);
+			
 		}
 		else {
 			pageToHide.push(i);
+		}
+		if($(this)[0].getAttribute("markForCompletion") === "true" || $(this)[0].getAttribute("markForCompletion") == undefined)
+		{
+			markedPages.push(i);
 		}
     });
 	
@@ -283,9 +273,13 @@ x_projectDataLoaded = function(xmlData) {
 
     // Setup nr of pages for tracking
     XTSetOption('nrpages', x_pageInfo.length);
+	XTSetOption('toComplete', markedPages);
+	
     if (x_params.trackingMode != undefined) {
         XTSetOption('tracking-mode', x_params.trackingMode);
     }
+
+
 	if (x_params.trackingPassed != undefined)
 	{
 		// Get value, and try to convert to decimal between 0 and 1
@@ -302,6 +296,11 @@ x_projectDataLoaded = function(xmlData) {
         var passednumber = Number(passed) * factor;
         XTSetOption('objective_passed', passednumber);
 	}
+
+	if (x_params.trackingPageTimout != undefined)
+    {
+        XTSetOption('page_timeout', x_params.trackingPageTimout);
+    }
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings
@@ -384,6 +383,25 @@ function x_evalURL(url)
     }
 }
 
+function x_GetTrackingTextFromHTML(html, fallback)
+{
+    var div = $('<div>').html(html);
+    var txt = $.trim(div.text());
+    if (txt == "")
+    {
+        var img = div.find("img");
+        if (img != undefined && img.length > 0)
+        {
+            txt = img[0].attributes['alt'].value;
+        }
+    }
+    if (txt == "")
+    {
+        txt = fallback;
+    }
+    return txt;
+}
+
 // setup functions load interface buttons and events
 function x_setUp() {
 	x_params.dialogTxt = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
@@ -449,65 +467,66 @@ function x_setUp() {
 		
 		if (screen.width <= 550) {
 			x_browserInfo.mobile = true;
+			$x_mainHolder.addClass("x_mobile");
 			x_insertCSS(x_templateLocation + "common_html5/css/mobileStyles.css", function() {x_cssSetUp()});
 		} else {
+			$x_mainHolder.addClass("x_desktop");
 			x_insertCSS(x_templateLocation + "common_html5/css/desktopStyles.css", x_desktopSetUp);
 		}
 	}
 }
 
 function x_desktopSetUp() {
-	if (!x_mobileDevice()) {
-		$x_footerL.prepend('<button id="x_cssBtn"></button>');
-		$("#x_cssBtn")
-			.button({
-				icons:	{primary: "x_maximise"},
-				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
-				text:	false
-			})
-			.click(function() {
-				// Post flag to containing page for iframe resizing
-				if (window && window.parent && window.parent.postMessage) {
-					window.parent.postMessage((String)(!x_fillWindow), "*");
-				}
+	$x_footerL.prepend('<button id="x_cssBtn"></button>');
+	$("#x_cssBtn")
+		.button({
+			icons:	{primary: "x_maximise"},
+			label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+			text:	false
+		})
+		.click(function() {
+			// Post flag to containing page for iframe resizing
+			if (window && window.parent && window.parent.postMessage) {
+				window.parent.postMessage((String)(!x_fillWindow), "*");
+			}
 
-				if (x_fillWindow == false) {
-					x_setFillWindow();
-				} else {
-					for (var i=0; i<x_responsive.length; i++) {
-						$(x_responsive[i]).prop("disabled", true);
-					};
-					
-					// minimised size to come from display size specified in xml or url param
-					if ($.isArray(x_params.displayMode)) {
-						$x_mainHolder.css({
-							"width"		:x_params.displayMode[0],
-							"height"	:x_params.displayMode[1]
-						});
-					// minimised size to come from css (800,600)
-					} else {
-						$x_mainHolder.css({
-							"width"		:"",
-							"height"	:""
-							});
-					}
-					$x_body.css("overflow", "auto");
-					$(this).button({
-						icons:	{primary: "x_maximise"},
-						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+			if (x_fillWindow == false) {
+				x_setFillWindow();
+			} else {
+				for (var i=0; i<x_responsive.length; i++) {
+					$x_mainHolder.removeClass("x_responsive");
+					$(x_responsive[i]).prop("disabled", true);
+				};
+				
+				// minimised size to come from display size specified in xml or url param
+				if ($.isArray(x_params.displayMode)) {
+					$x_mainHolder.css({
+						"width"		:x_params.displayMode[0],
+						"height"	:x_params.displayMode[1]
 					});
-					x_fillWindow = false;
-					x_updateCss();
+				// minimised size to come from css (800,600)
+				} else {
+					$x_mainHolder.css({
+						"width"		:"",
+						"height"	:""
+						});
 				}
-				$(this)
-					.blur()
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
-			});
-		
-		if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
-			x_fillWindow = true;
-		}
+				$x_body.css("overflow", "auto");
+				$(this).button({
+					icons:	{primary: "x_maximise"},
+					label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+				});
+				x_fillWindow = false;
+				x_updateCss();
+			}
+			$(this)
+				.blur()
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		});
+	
+	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
+		x_fillWindow = true;
 	}
 	
 	if (x_fillWindow == true) {
@@ -525,10 +544,8 @@ function x_cssSetUp(param) {
         	x_insertCSS(x_templateLocation + "models_html5/menu.css", function() {x_cssSetUp("menu2")});
             break;
         case "menu2":
-            if (x_params.theme != 'default') {
-                x_insertCSS(x_themePath + x_params.theme + "css/menu.css", function () {
-                    x_cssSetUp("language")
-                });
+            if (x_params.theme != undefined && x_params.theme != "default") {
+                x_insertCSS(x_themePath + x_params.theme + "/css/menu.css", function () {x_cssSetUp("language")});
             }
             else
 			{
@@ -536,13 +553,15 @@ function x_cssSetUp(param) {
 			}
             break;
         case "language":
-            x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+			if (x_params.kblanguage != undefined) {
+				x_insertCSS(x_templateLocation + "models_html5/language.css", function() {x_cssSetUp("language2")});
+			} else {
+				x_cssSetUp("glossary");
+			}
             break;
         case "language2":
-            if (x_params.theme != 'default') {
-                x_insertCSS(x_themePath + x_params.theme + "css/language.css", function () {
-                    x_cssSetUp("glossary")
-                });
+            if (x_params.theme != undefined && x_params.theme != "default") {
+                x_insertCSS(x_themePath + x_params.theme + "/css/language.css", function () {x_cssSetUp("glossary")});
             }
             else
             {
@@ -550,13 +569,15 @@ function x_cssSetUp(param) {
             }
             break;
         case "glossary":
-            x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+			if (x_params.glossary != undefined) {
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css", function() {x_cssSetUp("glossary2")});
+			} else {
+				x_cssSetUp("colourChanger");
+			}
             break;
         case "glossary2":
-            if (x_params.theme != 'default') {
-                x_insertCSS(x_themePath + x_params.theme + "css/glossary.css", function () {
-                    x_cssSetUp("colourChanger")
-                });
+            if (x_params.theme != undefined && x_params.theme != "default") {
+                x_insertCSS(x_themePath + x_params.theme + "/css/glossary.css", function () {x_cssSetUp("colourChanger")});
             }
             else
             {
@@ -567,50 +588,37 @@ function x_cssSetUp(param) {
             x_insertCSS(x_templateLocation + "models_html5/colourChanger.css", function() {x_cssSetUp("colourChanger2")});
             break;
         case "colourChanger2":
-            if (x_params.theme != 'default') {
-                x_insertCSS(x_themePath + x_params.theme + "css/colourChanger.css", function () {
-                    x_cssSetUp("theme")
-                });
+            if (x_params.theme != undefined && x_params.theme != "default") {
+                x_insertCSS(x_themePath + x_params.theme + "/css/colourChanger.css", function () {x_cssSetUp("theme")});
             }
             else
             {
-                x_cssSetUp("theme");
+                x_cssSetUp("responsive");
             }
             break;
         case "theme":
-            if (x_params.theme != undefined && x_params.theme != "default") {
-                $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
-                x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {
-                    x_cssSetUp("theme2")
-                });
-            } else {
-                if (x_params.responsive == "true") {
-                    // adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
-                    if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-                        x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {
-                            x_cssSetUp("stylesheet")
-                        }, true);
-                    } else {
-                        x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {
-                            x_cssSetUp("stylesheet")
-                        });
-                    }
-                } else {
-                    x_cssSetUp("stylesheet");
-                }
-            }
+            $.getScript(x_themePath + x_params.theme + '/' + x_params.theme + '.js'); // most themes won't have this js file
+            x_insertCSS(x_themePath + x_params.theme + '/' + x_params.theme + '.css', function () {x_cssSetUp("responsive")});
             break;
-        case "theme2":
+		case "responsive":
             if (x_params.responsive == "true") {
+				// adds default responsiveText.css - in some circumstances this will be immediately disabled
+				if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")}, true);
+				} else {
+					x_insertCSS(x_templateLocation + "common_html5/css/responsivetext.css", function () {x_cssSetUp("responsive2")});
+                }
+			} else {
+				x_cssSetUp("stylesheet");
+			}
+            break;
+        case "responsive2":
+            if (x_params.theme != undefined && x_params.theme != "default") {
 				// adds responsiveText.css for theme if it exists - in some circumstances this will be immediately disabled
                 if (x_params.displayMode == "default" || $.isArray(x_params.displayMode)) { // immediately disable responsivetext.css after loaded
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                        x_cssSetUp("stylesheet")
-                    }, true);
+                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")}, true);
                 } else {
-                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {
-                        x_cssSetUp("stylesheet")
-                    });
+                    x_insertCSS(x_themePath + x_params.theme + '/responsivetext.css', function () {x_cssSetUp("stylesheet")});
                 }
             } else {
                 x_cssSetUp("stylesheet");
@@ -1169,7 +1177,7 @@ function x_dialog(text){
 // function called after interface first setup (to load 1st page) and for links to other pages in the text on a page
 function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
     var page = XTStartPage();
-    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved bu the LO
+    if (force && page >= 0) {  // this is a resumed tracked LO, got to the page saved by the LO
         x_changePage(page);
     }
     else {
@@ -1210,7 +1218,7 @@ function x_navigateToPage(force, pageInfo) { // pageInfo = {type, ID}
         	else {
 				page = x_lookupPage(pageInfo.type, pageInfo.ID);
 				if ($.isArray(page)) {
-					x_deepLink = page[1];
+					x_deepLink = page.slice(1, page.length);
 					x_changePage(page[0]);
 				}
 				else if (page != null) {
@@ -1260,10 +1268,36 @@ function x_lookupPage(pageType, pageID) {
 		}
 	}
 	
-	// Lastly we now need to check first children of each page
-	for (var j,i=0, len = x_pageInfo.length; i<len; i++) {
-		if ((j = x_pageInfo[i].childIDs.indexOf(pageID)) > -1) {
-			return [i, j];
+	// Lastly we now need to check children of each page
+	var tempArray = [];
+	var checkChildIDs = function(ids) {
+		for (var i=0, j=-1; i<ids.length; i++) {
+			if ($.isArray(ids[i])) {
+				tempArray.push(j);
+				var result = checkChildIDs(ids[i]);
+				if (result == true) {
+					return true;
+				} else {
+					tempArray = tempArray.splice(0, tempArray.length-1);
+				}
+			} else {
+				j++;
+				if (ids[i] == pageID) {
+					tempArray.push(j);
+					return true;
+				}
+			}
+		}
+		return null;
+	}
+	
+	for (var i=0; i<x_pageInfo.length; i++) {
+		tempArray = tempArray.splice();
+		tempArray.push(i);
+		var result = checkChildIDs(x_pageInfo[i].childIDs);
+		if (result == true) {
+			return tempArray;
+			break;
 		}
 	}
 
@@ -1280,6 +1314,16 @@ function x_changePage(x_gotoPage) {
 	$("#page_model_css").remove();
 	$("#page_theme_css").remove();
 	var modelfile = x_pageInfo[x_gotoPage].type;
+	
+	var classList = $x_mainHolder.attr('class') == undefined ? [] : $x_mainHolder.attr('class').split(/\s+/);
+	$.each(classList, function(index, item) {
+		if (item.substring(0,2) == "x_" && item.substr(item.length-5,item.length) == "_page") {
+			$x_mainHolder.removeClass(item);
+		}
+	});
+	
+	$x_mainHolder.addClass("x_" + modelfile + "_page");
+	
 	x_insertCSS(x_templateLocation + "models_html5/" + modelfile + ".css", function () {
 		x_changePageStep2(x_gotoPage);
 	}, false, "page_model_css");
@@ -1400,12 +1444,18 @@ function x_changePageStep3(x_gotoPage) {
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
         // Start page tracking -- NOTE: You HAVE to do this before pageLoad and/or Page setup, because pageload could trigger XTSetPageType and/or XTEnterInteraction
-        XTEnterPage(x_currentPage, pageTitle);
+		// Use a clean text version of the page title
+        XTEnterPage(x_currentPage, $('<div>').html(pageTitle).text(), x_pageInfo[x_currentPage].type);
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
         builtPage.hide();
         builtPage.fadeIn();
+		
+		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+			$("#x_pageScript").remove();
+			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
+		}
 		
 		// show page background & hide main background
 		if ($(".pageBg#page" + x_currentPage).length > 0) {
@@ -1512,11 +1562,13 @@ function x_changePageStep3(x_gotoPage) {
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
-	x_doDeepLink();
-
     x_updateHash();
 
     $("#x_pageDiv").show();
+	
+	if (x_pageInfo[x_currentPage].built != false) {
+		x_doDeepLink();
+	}
 }
 
 
@@ -1653,7 +1705,7 @@ function x_pageLoaded() {
 	// script & style optional properties for each page added after page is otherwise set up
 	if (x_pageInfo[0].type != "menu" || x_currentPage != 0) {
 		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "") {
-			$("#x_page" + x_currentPage).append('<script>' +  x_currentPageXML.getAttribute("script") + '</script>');
+			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
 		if (x_currentPageXML.getAttribute("styles") != undefined && x_currentPageXML.getAttribute("styles") != "") {
 			$("#x_page" + x_currentPage).append('<style type="text/css">' +  x_currentPageXML.getAttribute("styles") + '</style>');
@@ -2535,6 +2587,7 @@ function x_setFillWindow(updatePage) {
 	 
     if (x_params.responsive == "true") {
         for (var i = 0; i < x_responsive.length; i++) {
+			$x_mainHolder.addClass("x_responsive");
             $(x_responsive[i]).prop("disabled", false);
         }
     }
@@ -2574,7 +2627,10 @@ function x_insertCSS(href, func, disable, id) {
 				if (href.indexOf("responsivetext.css") >= 0) {
 					x_responsive.push(this);
 					if (disable == true) {
+						$x_mainHolder.removeClass("x_responsive");
 						$(this).prop("disabled", true);
+					} else {
+						$x_mainHolder.addClass("x_responsive");
 					}
 				}
 				func();

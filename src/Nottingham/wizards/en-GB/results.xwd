@@ -1,0 +1,37 @@
+<wizard menus="Misc">
+    <pageWizard remove="true" duplicate="false">
+        <newNodes>
+            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" />]]></results>
+        </newNodes>
+    </pageWizard>
+
+    <!-- RESULTS PAGE ============================== -->
+    <results menu="Misc" menuItem="Results Page"
+             hint="A page displaying a summary of the results of the interactions." icon="icResults"
+             thumb="thumbs/results.jpg" remove="true">
+
+        <generalResultsTxt label="General results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <averageTxt label="Average text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <completionTxt label="Completion text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <startTimeTxt label="Start Time text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <durationTxt label="Duration text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <interactivityResultsTxt label="Interactivity Results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <globalResultsTxt label="Global Results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <nameTxt label="Name text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <scoreTxt label="Score text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <weightingTxt label="Weighting text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <completedTxt label="Completed text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <specificResultsTxt label="Specific Results text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <yourAnswerTxt label="Your answer text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <correctAnswerTxt label="Correct answer text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <downloadPdfTxt label="Download pdf text label" type="TextInput"  wysiwyg="true" language="true"/>
+
+
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Full Results"
+                    data="minimal-results,full-results"/>
+        <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="false" />
+        <skipweigthingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false" />
+
+    </results>
+</wizard>

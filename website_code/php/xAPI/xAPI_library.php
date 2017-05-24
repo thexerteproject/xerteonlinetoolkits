@@ -1,6 +1,6 @@
 <?php
 
-function xAPI_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
+function xAPI_html_page_create($template_name, $type, $lo_name, $language) {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -9,6 +9,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 	$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
 	$xapi_html_page_content = str_replace("%VERSION%", $version , $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%VERSION_PARAM%", "", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TITLE%",$lo_name,$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TEMPLATEPATH%","",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%XMLPATH%","",$xapi_html_page_content);

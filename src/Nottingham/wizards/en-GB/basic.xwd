@@ -1,4 +1,4 @@
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,Import pages">
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
@@ -25,15 +25,13 @@
 	<styles optional="true" type="script" height="200" label="Styles"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-	
+    <resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 	<variables optional="true" label="Variables" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 	<resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
 	
 	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress bar" defaultValue="pBar" width="100"/>
 	
 	<footerTools optional="true" type="ComboBox" options="Hide/Show footer tools - hide by default,Show/Hide footer tools - show by default" data="hideFooterTools,showFooterTools" label="Enable Hide/Show footer tools" defaultValue="showFooterTools" width="100"/>
-	
-	<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true"/>
 	
 	<toc type="group" label="Table of Contents" optional="true">
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
@@ -69,7 +67,8 @@
 	
 	<tracking type="group" label="Tracking" optional="true">
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
-		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal or percantage when tracking"/>
+		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
+        <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="1" max="1000" step="1" optional="true" defaultValue="5" tooltip="The number of seconds a page has to be viewed to count as completed" />
 	</tracking>
 	
     <newNodes>

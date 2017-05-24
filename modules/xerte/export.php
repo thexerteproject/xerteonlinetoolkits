@@ -221,20 +221,25 @@ if ($fullArchive) {
             foreach ($models as $model) {
                 _debug("copy model " . $parent_template_path . "models_html5/" . $model . ".html");
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
             /* Always add menu.rlm */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
             /* Always add colourChanger.html */
             _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
             array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.css", ""));
             /* Always add language.html */
             _debug("copy model " . $parent_template_path . "models_html5/language.html");
             array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/language.css", ""));
             /* Add glossary if used */
             if ($xml->glossaryUsed()) {
                 _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
             }
         }
         export_folder_loop($parent_template_path . "common_html5/");
@@ -393,7 +398,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -405,7 +410,7 @@ if ($scorm == "true") {
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
 	

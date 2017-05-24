@@ -126,8 +126,8 @@ var EDITOR = (function ($, parent) {
                 center: {
                     /*paneSelector:           "#mainContent",*/
                     minWidth:               200,
-                    minHeight:              200/*,
-                    contentSelector:        ".ui-layout-content"*/
+                    minHeight:              200,
+                    onresize_end:           centerResize
                 }
             };
 
@@ -158,6 +158,20 @@ var EDITOR = (function ($, parent) {
 		$("#optional_title").html(optionaltitle);
     }
 
+    /*
+     pane name - Always one of: "north", "south", "east" or "west"
+     pane element - The pane-element the callback was for, inside a jQuery wrapper
+     pane state - The 'state branch' for this pane, eg: state.north
+     pane options - The 'option branch' for this pane, eg: options.north
+     layout name - If a 'name' was specified when creating the layout, else returns an empty string.
+     */
+    function centerResize(paneName, paneElement, paneState, paneOptions, layoutName)
+    {
+        if (typeof merge_MainPanelResize != "undefined")
+        {
+            merge_MainPanelResize(paneName, paneElement, paneState, paneOptions, layoutName);
+        }
+    }
     // Create the layout once the document has finished loading
     //$(document).ready(setup);
 
