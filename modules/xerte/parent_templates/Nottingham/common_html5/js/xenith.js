@@ -1722,14 +1722,16 @@ function x_pageLoaded() {
 
 	//detect page loaded change and update progress bar
 
-    function  doPercentage() {
-        var totalpages=x_pageInfo.length;
-        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
-        var progress=Math.round((pagesviewed*100)/totalpages);
-        $(".pbBar").css({"width": progress+"%"});
-		var pBarText=x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
-        $('.pbTxt').html(progress+"% "+pBarText);
-    };
+  function  doPercentage() {
+  	var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0
+    var totalpages = x_pageInfo.length - menuOffset;
+    var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
+    var progress = Math.round((pagesviewed * 100) / totalpages);
+    var pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+
+    $(".pbBar").css({"width": progress + "%"});
+    $('.pbTxt').html(progress + "% " + pBarText);
+  };
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {
