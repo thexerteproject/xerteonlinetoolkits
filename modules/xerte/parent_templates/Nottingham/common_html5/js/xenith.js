@@ -1723,7 +1723,7 @@ function x_pageLoaded() {
 	//detect page loaded change and update progress bar
 
   function  doPercentage() {
-  	var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0
+    var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
     var totalpages = x_pageInfo.length - menuOffset;
     var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
     var progress = Math.round((pagesviewed * 100) / totalpages);
