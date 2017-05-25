@@ -1452,7 +1452,7 @@ function x_changePageStep3(x_gotoPage) {
         builtPage.hide();
         builtPage.fadeIn();
 		
-		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
