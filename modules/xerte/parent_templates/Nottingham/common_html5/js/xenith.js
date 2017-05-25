@@ -644,6 +644,7 @@ function x_continueSetUp1() {
 		if (x_params.navigation == "Menu") {
 			$x_prevBtn.hide();
 			$x_nextBtn.hide();
+			$("#x_pageControls").css("display","block");
 			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
 		}
 	} else if (x_params.navigation == "Historic") {
