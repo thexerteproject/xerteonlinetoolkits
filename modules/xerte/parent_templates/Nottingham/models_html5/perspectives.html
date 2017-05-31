@@ -36,7 +36,7 @@
 		this.sizeChanged = function(pageChg) {
 			setTimeout(function(){
 				// rescale thumbnail images if necessary
-				if (x_currentPageXML.getAttribute("thumbType") == "both" || x_currentPageXML.getAttribute("thumbType") == "imgNum") {
+				if (x_currentPageXML.getAttribute("thumbType") == "both" || x_currentPageXML.getAttribute("thumbType") == "imgNum" || x_currentPageXML.getAttribute("thumbType") == undefined) {
 					$("#thumbBar .thumbBox").each(function() {
 						var $this = $(this);
 						var maxImgSize = [$this.width(), $this.height() - $this.find("h3").height() - 5];

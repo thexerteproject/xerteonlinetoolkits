@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 	// HTML5 version currently ignores these optional properties:	itemHeight, menuOverLineCol, menuLineCol, menuOverFillCol, menuFillCol, itemSpacingX
 	// listToClip optional property doesn't do anything either (and therefore reportTitle, pageLabel, titleLabel, idLabel)
 	
@@ -35,28 +35,26 @@
 		}
 		
 		this.init = function() {
-			var	allIDs = [],	// linkIDs of all pages in LO
-				menuItems = [];	// index of pages in allIDs that should be included in menu
-			
-			// get list of all linkIDs
-			$(x_pageInfo).each(function() {
-				allIDs.push(this.linkID);
-			});
-			
+			var menuItems = [];
 			
 			// work out which pages to include in menu item list...
 			
 			// use pages set in child nodes
 			if ($(x_currentPageXML).children().length > 0) {
 				$(x_currentPageXML).children().each(function() {
-					menuItems.push(jQuery.inArray(this.getAttribute("pageID"), allIDs));
+					menuItems.push(this.getAttribute("pageID"));
 				});
 				
 			} else {
 				// use pages between endPageID / startPageID
+				var allIDs = [];
+				$(x_pageInfo).each(function() {
+					allIDs.push(this.linkID);
+				});
+				
 				if ((x_currentPageXML.getAttribute("startPageID") != undefined && x_currentPageXML.getAttribute("startPageID") != "") || (x_currentPageXML.getAttribute("endPageID") != undefined && x_currentPageXML.getAttribute("endPageID") != "")) {
-					var	start	= jQuery.inArray(x_currentPageXML.getAttribute("startPageID"), allIDs),
-						end		= jQuery.inArray(x_currentPageXML.getAttribute("endPageID"), allIDs);
+					var	start = jQuery.inArray(x_currentPageXML.getAttribute("startPageID"), allIDs),
+						end = jQuery.inArray(x_currentPageXML.getAttribute("endPageID"), allIDs);
 					if (start == -1) {
 						start = 0;
 					}
@@ -65,26 +63,19 @@
 					}
 					
 					for (var i=0; i<allIDs.length; i++) {
-						if (i >= start && i <= end) {
-							menuItems.push(i);
+						if (i >= start && i <= end && i != x_currentPage && (x_pageInfo[0].type != "menu" || i > 0)) {
+							menuItems.push(allIDs[i]);
 						}
 					}
 				
 				// use all pages
 				} else {
 					for (var i=0; i<allIDs.length; i++) {
-						menuItems.push(i);
+					
+						if ((x_pageInfo[0].type != "menu" || i > 0) && i != x_currentPage) {
+							menuItems.push(allIDs[i]);
+						}
 					}
-				}
-				
-				// remove current page from menuItems
-				if (jQuery.inArray(x_currentPage, menuItems) != -1) {
-					menuItems.splice(jQuery.inArray(x_currentPage, menuItems), 1);
-				}
-				
-				// remove main navigation menu from menuItems (if there is one)
-				if (x_pageInfo[0].type == "menu" && jQuery.inArray(0, menuItems) != -1) {
-					menuItems.splice(0, 1);
 				}
 			}
 			
@@ -99,9 +90,13 @@
 					$thisItem = $menuItem;
 				}
 				
+				var page = x_lookupPage("linkID", menuItems[i]);
+				var name = $.isArray(page) ? this.getNestedName(page) : x_pages[page].getAttribute("name");
+				page = $.isArray(page) ? page[0] : page;
+				
 				$thisItem
-					.data("id", allIDs[menuItems[i]])
-					.html(x_pages[menuItems[i]].getAttribute("name"));
+					.data("id", menuItems[i])
+					.html(name);
 			}
 			
 			$(".subMenuItem")
@@ -117,6 +112,16 @@
 			}
 			
 			x_pageLoaded();
+		}
+		
+		this.getNestedName = function(page) {
+			var child = x_pages[page[0]];
+			var name = child.getAttribute("name")
+			for (var i=0; i<page.length-1; i++) {
+				child = child.childNodes[page[i+1]];
+				name += " | " + child.getAttribute("name");
+			}
+			return name;
 		}
 	}
 

@@ -644,6 +644,7 @@ function x_continueSetUp1() {
 		if (x_params.navigation == "Menu") {
 			$x_prevBtn.hide();
 			$x_nextBtn.hide();
+			$("#x_pageControls").css("display","block");
 			$x_footerBlock.find(".x_floatRight button:eq(0)").css("border-right", "0px");
 		}
 	} else if (x_params.navigation == "Historic") {
@@ -1452,7 +1453,7 @@ function x_changePageStep3(x_gotoPage) {
         builtPage.hide();
         builtPage.fadeIn();
 		
-		if (x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
+		if ((x_pageInfo[0].type != "menu" || x_currentPage != 0) && x_currentPageXML.getAttribute("script") != undefined && x_currentPageXML.getAttribute("script") != "" && x_currentPageXML.getAttribute("run") == "all") {
 			$("#x_pageScript").remove();
 			$("#x_page" + x_currentPage).append('<script id="x_pageScript">' +  x_currentPageXML.getAttribute("script") + '</script>');
 		}
@@ -1722,14 +1723,16 @@ function x_pageLoaded() {
 
 	//detect page loaded change and update progress bar
 
-    function  doPercentage() {
-        var totalpages=x_pageInfo.length;
-        var pagesviewed=$(x_pageInfo).filter(function(){return this.built !== false;}).length;
-        var progress=Math.round((pagesviewed*100)/totalpages);
-        $(".pbBar").css({"width": progress+"%"});
-		var pBarText=x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
-        $('.pbTxt').html(progress+"% "+pBarText);
-    };
+  function  doPercentage() {
+    var menuOffset = x_pageInfo[0].type == 'menu' ? 1 : 0;
+    var totalpages = x_pageInfo.length - menuOffset;
+    var pagesviewed = $(x_pageInfo).filter(function(){return this.built !== false;}).length - menuOffset;
+    var progress = Math.round((pagesviewed * 100) / totalpages);
+    var pBarText = x_getLangInfo(x_languageData.find("progressBar")[0], "label", "COMPLETE");
+
+    $(".pbBar").css({"width": progress + "%"});
+    $('.pbTxt').html(progress + "% " + pBarText);
+  };
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration() {

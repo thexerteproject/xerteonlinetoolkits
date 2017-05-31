@@ -70,7 +70,7 @@
                 showzeroweight =  x_currentPageXML.getAttribute("skipweigthingzero");
             }
             var disableexportpdf = false;
-            if (x_currentPageXML.getAttribute("disableexportpdf") != undefined)
+            if (x_currentPageXML.getAttribute("disableexportpdf") == 'true')
             {
                 disableexportpdf = x_currentPageXML.getAttribute("disableexportpdf");
             }
@@ -111,29 +111,34 @@
 					}
 				}
 				count = 1;
-				x.subinteractions.forEach(function(y)
-				{
-					question = y.question;
-					learnerAnswer = y.learnerAnswer;
-					correctAnswer = y.correctAnswer;
-					if (learnerAnswer == correctAnswer ||y.correct) {
-						if (count == x.subinteractions.length) {
-							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+				if (x.subinteractions.length > 0) {
+					x.subinteractions.forEach(function(y)
+					{
+						question = y.question;
+						learnerAnswer = y.learnerAnswer;
+						correctAnswer = y.correctAnswer;
+						if (learnerAnswer == correctAnswer ||y.correct) {
+							if (count == x.subinteractions.length) {
+								$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+							}
+							else {
+								$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+							}
 						}
 						else {
-							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+							if (count == x.subinteractions.length) {
+								$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+							}
+							else {
+								$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+							}
 						}
-					}
-					else {
-						if (count == x.subinteractions.length) {
-							$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
-						}
-						else {
-							$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
-						}
-					}
-					count++;
-				});
+						count++;
+					});
+				}
+				else {
+					$("#fullResults").append("<tr><td class=\"last\">No results.</td></tr>");
+				}
 			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
