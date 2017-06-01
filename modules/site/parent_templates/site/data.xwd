@@ -10,10 +10,11 @@
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
 		<styles type="script" height="200" optional="true" label="Styles"/>
+		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
 		<logoR type="Media" optional="true" label="Header Logo (Right)"/>
 		<logoL type="Media" optional="true" label="Header Logo (Left)"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
-		<glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
+		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
 		
 		<newNodes>
 		<page><![CDATA[<page name="Enter Page Title" subtitle="Enter Page Subtitle"/>]]></page></newNodes>
@@ -28,7 +29,7 @@
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
 
-	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
+	<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/></page><section icon="icPageWhite" remove="true" duplicate="true" menuItem="Section">
 
 		<name type="TextInput" label="Section Title" wysiwyg="true"/>
 		
