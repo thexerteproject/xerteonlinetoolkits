@@ -90,9 +90,29 @@
 					$thisItem = $menuItem;
 				}
 				
-				var page = x_lookupPage("linkID", menuItems[i]);
-				var name = $.isArray(page) ? this.getNestedName(page) : x_pages[page].getAttribute("name");
-				page = $.isArray(page) ? page[0] : page;
+				switch (menuItems[i]) {
+					case "[first]":
+						menuItems.splice(i, 1, x_pageInfo[0].linkID);
+						break;
+					case "[last]":
+						menuItems.splice(i, 1, x_pageInfo[x_pageInfo.length-1].linkID);
+						break;
+					case "[previous]":
+						menuItems.splice(i, 1, x_pageInfo[x_currentPage != 0 ? x_currentPage-1 : 0].linkID);
+						break;
+					case "[next]":
+						menuItems.splice(i, 1, x_pageInfo[x_currentPage != x_pageInfo.length-1 ? x_currentPage+1 : x_pageInfo.length-1].linkID);
+						break;
+				}
+				
+				var name;
+				if (i == 0 && menuItems[i] == undefined && x_pageInfo[0].type == 'menu') {
+					name = x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
+					menuItems.splice(i, 1, "toc_menu");
+				} else {
+					var page = x_lookupPage("linkID", menuItems[i]);
+					name = $.isArray(page) ? this.getNestedName(page) : x_pages[page].getAttribute("name");
+				}
 				
 				$thisItem
 					.data("id", menuItems[i])
@@ -102,7 +122,11 @@
 			$(".subMenuItem")
 				.button()
 				.click(function() {
-					x_navigateToPage(false, {type:"linkID", ID:$(this).data("id")});
+					if ($(this).data("id") == "toc_menu") {
+						x_changePage(0);
+					} else {
+						x_navigateToPage(false, {type:"linkID", ID:$(this).data("id")});
+					}
 				});
 			
 			
