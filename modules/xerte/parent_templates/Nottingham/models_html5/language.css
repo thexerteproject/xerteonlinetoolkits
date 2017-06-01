@@ -1,10 +1,10 @@
 /* language.html */
 
 	#charsHolder .specChar {
-		width:			20px;
-		height:			20px;
-		float:			left;
-		margin:			4px;
+		width: 1.5em;
+		height: 1.5em;
+		float: left;
+		margin: 4px;
 	}
 
 	#charsHolder .specChar span {
