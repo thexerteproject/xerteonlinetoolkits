@@ -273,6 +273,12 @@ function setup(){
 			$('#overview div.logoL').show();
 		}
 	});
+	
+	// script optional property added before any content loads
+	var script = $(data).find('learningObject').attr('script');
+	if (script != undefined && script != "") {
+		$("head").append('<script>' +  script + '</script>');
+	}
 }
 
 
