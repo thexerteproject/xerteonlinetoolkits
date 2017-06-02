@@ -330,14 +330,15 @@
 								var maxW = $mainInfoHolder.width() * mediaW,
 									maxH = $mainInfoHolder.data("height") - (parseInt($mediaPanel.css("padding-top")) * 2) - parseInt($mediaPanel.css("margin-bottom")) - parseInt($mediaPanel.css("margin-top")) - x_audioBarH - 5;
 								
-								perspectives.loadImage($mediaPanel.find("#audioImage"), [maxW, maxH], src);
-								
-								var $thisAudio = $mediaPanel.find("#pageAudio");
-								$thisAudio.data({
-									"src": thisData.getAttribute("src"),
-									"width": $mediaPanel.find("#audioImage").width()
-								});
-								perspectives.loadAudio($thisAudio, playAll);
+								perspectives.loadImage($mediaPanel.find("#audioImage"), [maxW, maxH], src, false,
+									function() {
+										var $thisAudio = $mediaPanel.find("#pageAudio");
+										$thisAudio.data({
+											"src": thisData.getAttribute("src"),
+											"width": $mediaPanel.find("#audioImage").width()
+										});
+										perspectives.loadAudio($thisAudio, playAll);
+									});
 								
 							} else { // movie
 								var videoTip = $this.find(".thumbMedia").data("videoTip");
@@ -508,7 +509,7 @@
 			x_pageLoaded();
 		}
 		
-		this.loadImage = function($img, maxDimensions, src, playAll) {
+		this.loadImage = function($img, maxDimensions, src, playAll, audioFunc) {
 			$img
 				.css({ // stops flicker on 1st load of image
 					"opacity": 0,
@@ -530,6 +531,10 @@
 						"opacity": 1,
 						"filter": 'alpha(opacity=100)'
 					});
+					
+					if (audioFunc != undefined) {
+						audioFunc();
+					}
 					
 					if (playAll) perspectives.playAll($img);
 				})
