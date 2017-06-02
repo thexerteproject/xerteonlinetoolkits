@@ -1,0 +1,337 @@
+::-webkit-scrollbar {
+  width: 12px; }
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  background-color: #bcf0ff; }
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
+  background-color: aliceblue; }
+
+a:-webkit-any-link {
+  color: #007cdb !important;
+  text-decoration: none !important; }
+
+#x_headerBlock {
+  background: linear-gradient(to bottom, rgba(0, 92, 202, 0.68) 0%, rgba(22, 109, 218, 0.65) 100%); }
+
+#x_mainHolder {
+  background: linear-gradient(to bottom, #8bd2ef 0%, #d9f0f5 100%); }
+
+#x_footerBlock {
+  background: linear-gradient(to top, rgba(0, 89, 199, 0.65) 0%, rgba(34, 123, 230, 0.65) 100%); }
+
+/* see pngs in modules/xerte/parent_templates/Nottingham/common_html5 to see how replacement images for buttons should be made (with 4 states in one image file) */
+/* the easiest way is to keep button dimensions the same (42 x 40px) so background-positions below don't need adjusting */
+.ui-button .ui-icon.x_help {
+  background-image: url("help.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_help {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_help {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_help {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_info {
+  background-image: url("info.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_info {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_info {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_info {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_home {
+  background-image: url("home.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_home {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_home {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_home {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_glossary {
+  background-image: url("glossary.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_glossary {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_glossary {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_glossary {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_maximise {
+  background-image: url("maximise.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_maximise {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_maximise {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_maximise {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_minimise {
+  background-image: url("minimise.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_minimise {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_minimise {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_minimise {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_media {
+  background-image: url("media.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_media {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_media {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_media {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_next {
+  background-image: url("next.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_next {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_next {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_next {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev {
+  background-image: url("previous.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_prev {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_prev {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_prev {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_prev_hist {
+  background-image: url("previous_hist.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_prev_hist {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_prev_hist {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_prev_hist {
+  background-position: -84px 0px; }
+
+.ui-button .ui-icon.x_colourChanger {
+  background-image: url("colour_changer.svg");
+  background-position: 0px 0px; }
+
+.ui-button.ui-state-hover .ui-icon.x_colourChanger {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-focus .ui-icon.x_colourChanger {
+  background-position: -42px 0px; }
+
+.ui-button.ui-state-active .ui-icon.x_colourChanger {
+  background-position: -84px 0px; }
+
+.ui-dialog .ui-widget-header {
+  border: 1px solid #3D8EDF;
+  /*background: #010101 url(ui-bg_highlight-soft_75_2d2a2a_1x100.svg) 50% 50% repeat-x;*/
+  background-color: #3D8EDF;
+  color: #ffffff;
+  font-weight: bold;
+  background-image: none; }
+  .ui-dialog .ui-widget-header span {
+    color: #fff; }
+
+#x_headerBlock {
+  font-family: 'Open Sans', sans-serif;
+  color: #fff; }
+  #x_headerBlock h1 {
+    font-size: 2.5vh; }
+  #x_headerBlock h2 {
+    font-size: 4.5vh; }
+  #x_headerBlock img {
+    padding: 1vh 5vh;
+    margin-right: 1vw;
+    height: 10vh;
+    border: none;
+    box-shadow: none; }
+
+#x_pageHolder h1 {
+  font-size: 1em;
+  margin: 0px; }
+#x_pageHolder h2 {
+  font-size: 1.2em;
+  margin: 5px 0px 0px; }
+#x_pageHolder h3 {
+  font-size: 1em;
+  margin: 0px; }
+#x_pageHolder b,
+#x_pageHolder strong,
+#x_pageHolder h3,
+#x_pageHolder b span,
+#x_pageHolder strong span,
+#x_pageHolder h3 span,
+#x_pageHolder h2,
+#x_pageHolder h2 span,
+#x_pageHolder h2 span strong {
+  color: #007cdb;
+  font-size: 110%; }
+#x_pageHolder span,
+#x_pageHolder p,
+#x_pageHolder li,
+#x_pageHolder u,
+#x_pageHolder figcaption,
+#x_pageHolder #feedback,
+#x_pageHolder table caption {
+  font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+  background-color: rgba(255, 255, 255, 0) !important;
+  color: #525252; }
+#x_pageHolder .panel {
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #cfcfcf;
+  -moz-box-shadow: 2px 2px 5px #888888;
+  -webkit-box-shadow: 2px 2px 5px #888888;
+  box-shadow: 2px 2px 5px #888888;
+  /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')";  for IE 8
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888');  for IE 5.5-7 */ }
+#x_pageHolder .panel.inline {
+  display: inline-block;
+  margin: 0 20px 20px;
+  background-color: #1c1c1c; }
+
+#x_pageHolder .label.panel.ui-draggable {
+  transform: scale(1);
+  transition: transform 0.5s ease-out 0s,box-shadow 0.5s ease-out 0s; }
+  #x_pageHolder .label.panel.ui-draggable.ui-draggable-dragging {
+    transform: scale(1.25);
+    box-shadow: 2px 4px 1px #888888; }
+#x_pageHolder #feedback {
+  animation: fadePop 0.25s linear; }
+#x_pageHolder #infoHolder p {
+  animation: fadePop 0.25s linear; }
+@keyframes fadePop {
+  0% {
+    opacity: 0;
+    transform: scale(1); }
+  50% {
+    transform: scale(1.05); }
+  100% {
+    opacity: 1;
+    transform: scale(1); } }
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+body #x_footerBg {
+  background-image: none; }
+body #x_pageNo {
+  background-color: transparent; }
+
+/*.ui-widget-content {
+  border: 1px solid #aaaaaa;
+  background: #1c1c1c; url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+  color: yellow !important;
+}*/
+/*change font color for cards*/
+#pageContents .card {
+  color: #000000; }
+
+/*Normal Text*/
+.titlePageTxt {
+  top: 5%;
+  margin-top: 0px; }
+
+/*Drag and Drop*/
+.panel,
+#dragDropHolder .label,
+#targetHolder .target.bg {
+  border-radius: 5px;
+  background-color: #fff !important; }
+
+#targetHolder .target {
+  border-radius: 10px; }
+
+.tick {
+  margin-top: -10px; }
+
+/*Responsive iFrames*/
+.container {
+  position: relative;
+  width: 90%;
+  height: 0;
+  padding-bottom: 56.25%;
+  margin: auto; }
+
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+.embed-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%; }
+
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+/*Copyright(c) 2017 - Erasmus Medical School, Rotterdam
+
+>>>MIT-License<<<
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+/*# sourceMappingURL=django.css.map */

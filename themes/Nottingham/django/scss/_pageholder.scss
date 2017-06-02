@@ -1,0 +1,58 @@
+#x_pageHolder{
+  h1 {
+    font-size: 1em;
+    margin: 0px;
+  }
+
+  h2 {
+    font-size: 1.2em;
+    margin: 5px 0px 0px;
+  }
+
+  h3 {
+    font-size: 1em;
+    margin: 0px;
+  }
+
+    b,
+    strong,
+    h3,
+    b span,
+    strong span,
+    h3 span,
+    h2,
+    h2 span,
+    h2 span strong {
+      color: #007cdb;
+      font-size: 110%;
+    }
+
+  span,
+  p,
+  li,
+  u,
+  figcaption,
+  #feedback,
+  table caption {
+    font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
+    background-color: rgba(255, 255, 255, 0.0) !important;
+    color: #525252;
+  }
+
+  .panel {
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #cfcfcf;
+    -moz-box-shadow: 2px 2px 5px #888888;
+    -webkit-box-shadow: 2px 2px 5px #888888;
+    box-shadow: 2px 2px 5px #888888;
+    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')";  for IE 8
+  filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888');  for IE 5.5-7 */
+  }
+
+  .panel.inline {
+    display: inline-block;
+    margin: 0 20px 20px;
+    background-color: #1c1c1c;
+  }
+}

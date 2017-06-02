@@ -1,0 +1,229 @@
+
+/*
+>>>>> Start Menu Structuur <<<<<
+*/
+
+body #x_page0 figure {
+    width: 100%;
+    height: 25vh;
+    position: relative;
+    text-align: center !important;
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    margin-before: 0em;
+    margin-after: 0em;
+    margin-start: 0px;
+    margin-end: 0px;
+}
+
+body #x_page0 a {
+    /*display: flex;*/
+    /*flex-direction: row;*/
+}
+
+body #x_page0 a figcaption {
+    position: absolute;
+    left: 1.25vh;
+    top: 0px;
+    width: 100%;
+    background-color: #fff !important;
+    border-top-left-radius: 1.5vh;
+    border-top-right-radius: 1.5vh;
+    margin-top: 2px;
+}
+
+body #x_page0 figcaption a {
+    box-shadow: none !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    margin: 0 auto !important;
+    width: 30vh;
+    text-align: center !important;
+    height: auto !important;
+}
+
+body #x_page0 figure img {
+    margin: 0 !important;
+}
+
+body #x_page0 p {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    text-align: center !important;
+}
+
+body #x_page0 img {
+    border: 1.5vh solid #fff;
+    border-radius: 1.5vh;
+}
+
+
+/*///DIMENSIONS///*/
+
+
+/*///GLOBAL///*/
+
+#x_pageNo {
+    display: inline-block !important;
+}
+
+body #x_page0 #pageContents {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    max-width: 100vw;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+body.noStartMenu #x_page0 #pageContents {
+    display: block;
+    justify-content: center;
+    align-content: center;
+    max-width: 100vw;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+
+/*//DESKTOP//*/
+
+body #x_page0 #pageContents .menuConnector {
+    max-height: 75vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+body #x_page0 #pageContents .menuConnector a img {
+    width: 30vh;
+    /*height: 30vh;*/
+}
+
+body #x_page0 #pageContents .menuConnector a {
+    width: 25vh;
+    height: 25vh;
+    font-size: 2.25vh;
+    margin: 3.75vh;
+    /*Mocht je de connector font, kleur etc: willen veranderen:;*/
+    color: #0061aa;
+    font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+    text-align: center;
+    /*text-shadow: 0px 0px 5px #00040c;*/
+    padding-top: 0px;
+    font-weight: 300;
+    box-sizing: border-box;
+    text-decoration: none;
+    overflow: visible;
+    transform: scale(1, 1);
+    transition: transform 1s ease;
+    align-items: center;
+    justify-content: center;
+    word-break: normal;
+}
+
+body #x_page0 #pageContents .menuConnector a:hover {
+    transform: scale(1.05, 1.05);
+    transition: transform 1s ease;
+}
+
+
+/*//TABLET//*/
+
+@media(max-width: 1800px) {
+    body #x_page0 #pageContents .menuConnector {
+        width: 90vh;
+        max-height: none;
+        /*height: 70vmin;*/
+    }
+    body #x_page0 figure {
+        width: 100%;
+        height: 20vh;
+    }
+    body #x_page0 #pageContents .menuConnector a {
+        width: 20vh;
+        height: 20vh;
+        margin: 2.75vh;
+        font-size: 1.75vmin;
+    }
+    body #x_page0 a figcaption {
+        /*width: 22vh;*/
+    }
+}
+
+
+/*//PHONE//*/
+
+@media(max-width: 480px) {
+    body #x_page0 #pageContents .menuConnector {
+        width: 85vh;
+        max-height: none;
+        /*height: 60vh;*/
+    }
+    body #x_page0 figure {
+        width: 100%;
+        height: 20vh;
+    }
+    body #x_page0 #pageContents .menuConnector a {
+        width: 20vh;
+        height: 20vh;
+        margin: 2vh 3vh;
+        font-size: 2.75vmin;
+    }
+    body #x_page0 a figcaption {
+        left: 0.25vh;
+        border-top-left-radius: 0.5vh;
+        border-top-right-radius: 0.5vh;
+    }
+    body #x_page0 img {
+        border: 0.5vh solid #fff;
+        border-radius: 0.5vh;
+    }
+}
+
+
+/*@media(min-width: 1200px){*/
+
+
+/*  #pageContents {*/
+
+
+/*    columns:2*/
+
+
+/*  }*/
+
+
+/*  #pageContents.titlePageTxt, #pageContents #columnHolder {*/
+
+
+/*    columns: 1;*/
+
+
+/*  }*/
+
+
+/*}*/
+
+
+/*END MENU CONNECTOR*/
+
+
+/*Scrollbar*/
+
+
+/*Here I have defined a custom scrollbar. You can adjust the background colort to your own like or add display: none to the first statement to remove the scrollbar all together (Safari and Chrome only).*/
