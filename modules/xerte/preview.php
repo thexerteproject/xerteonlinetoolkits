@@ -176,7 +176,7 @@ function show_preview_code2($row, $row_username){
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
-        $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
+        $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
         $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 

@@ -17,7 +17,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
-    $xapi_html_page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $xapi_html_page_content);
 	
     $endpoint = $xerte_toolkits_site->LRS_Endpoint;
     $secret = $xerte_toolkits_site->LRS_Secret;
