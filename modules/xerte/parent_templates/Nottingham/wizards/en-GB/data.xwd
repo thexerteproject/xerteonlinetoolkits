@@ -3187,7 +3187,7 @@
 	<timedText label="Timed Text File" type="Media" optional="true"/>
 
     <newNodes>
-      <nestedSynch><![CDATA[<nestedSynch text="Enter text here" synch="0"/>]]></nestedSynch>
+      <nestedSynch><![CDATA[<nestedSynch text="Enter text here" synch="0" name="Synch point" />]]></nestedSynch>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -3203,7 +3203,7 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
-
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point"/>
     <text label="Text" type="TextArea" height="250"/>
     <synch label="Synch Point" type="TextInput"/>	
 
