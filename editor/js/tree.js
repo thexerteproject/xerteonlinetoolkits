@@ -31,6 +31,8 @@ var EDITOR = (function ($, parent) {
     // Called once document is ready
     setup = function (xml) {
         console.log("Setting up tree");
+
+        var bottom_buttons = $('#bottom_buttons').attr('id', 'bottom_buttons');
         do_bottom_buttons();
         do_buttons();
         build(xml);
@@ -46,7 +48,7 @@ var EDITOR = (function ($, parent) {
     },
 
 	refresh_workspaceMerge = function() {
-        var url="website_code/php/import-choose.php?id="+template_id;
+        var url="editor/importpages/import-choose.php?id="+template_id;
         var now = new Date().getTime();
         $.ajax({
             type: "GET",
@@ -271,12 +273,7 @@ var EDITOR = (function ($, parent) {
                     absmedia: rlourlvariable,
                     template_id: template_id
                 },
-                //success: function(data){
-                //    alert("success");
-                //},
-                //error: function(data, status, error){
-                //    alert(status + ': ' + error);
-                //},
+
                 dataType: "json",
                 type: "POST"
             }
@@ -309,21 +306,16 @@ var EDITOR = (function ($, parent) {
                     absmedia: rlourlvariable,
                     template_id: template_id
                 },
-                //success: function(data){
-                //    alert("success");
-                //},
-                //error: function(data, status, error){
-                //    alert(status + ': ' + error);
-                //},
+
                 dataType: "json",
                 type: "POST",
                 cache:false,
                 async:async
-            }
-        ).done(function() {
-                $('#loader').hide();
-                //alert( "success" );
             })
+            .done(function() {
+                    $('#loader').hide();
+                    //alert( "success" );
+                })
             .fail(function() {
                 $('#loader').hide();
                 alert( "error" );
@@ -1261,7 +1253,7 @@ var EDITOR = (function ($, parent) {
             },
             "types" : node_types
         })
-        .one('ready.jstree', function (e, data) {
+        .on('ready.jstree', function (e, data) {
             data.instance.open_node(["treeroot"]);
             data.instance.select_node(["treeroot"]);
         })
@@ -1359,12 +1351,15 @@ var EDITOR = (function ($, parent) {
     };
 
     my.setup = setup;
+    my.build = build;
     my.generate_lo_key = generate_lo_key;
     my.getSelectedNodeKeys = getSelectedNodeKeys;
     my.showNodeData = showNodeData;
     my.addNode = addNode;
     my.getParent = getParent;
     my.refresh_workspaceMerge = refresh_workspaceMerge;
+    my.build_json = build_json;
+
 
     return parent;
 

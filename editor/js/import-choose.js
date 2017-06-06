@@ -302,13 +302,62 @@ function init()
                 target_insert = $(".jstree-children li").length;
                 target_project = currentProject;
 
-                window.location.href = "merge.php?source_project="+source_project+"&target_project="+target_project+
-                    "&target_page_position="+target_insert+"&source_pages="+source_page + "&merge_glossary=" + merge_glossary;
+                //window.location.href = "merge.php?source_project="+source_project+"&target_project="+target_project+
+                //    "&target_page_position="+target_insert+"&source_pages="+source_page + "&merge_glossary=" + merge_glossary;
 
+                // 1. Save preview
+                $('#loader').show();
+                var json = EDITOR.tree.build_json("treeroot");
+                var ajax_call = $.ajax({
+                        url: "editor/upload.php",
+                        data: {
+                            fileupdate: 0, //0= preview->preview.xml
+                            filename: previewxmlurl,
+                            lo_data: encodeURIComponent(JSON.stringify(json)),
+                            absmedia: rlourlvariable,
+                            template_id: template_id
+                        },
+                        dataType: "json",
+                        type: "POST"
+                    }
+                )
+                .done(function() {
+                    // 2. Call merge
+                    var now = new Date().getTime();
+                    var ajax_call = $.ajax({
+                            url: "editor/importpages/merge.php?t=" + now,
+                            data: {
+                                source_project: source_project,
+                                target_project: target_project,
+                                target_page_position: target_insert,
+                                source_pages: source_page,
+                                merge_glossary: merge_glossary
+                            },
+                            dataType: "text",
+                            type: "POST"
+                        }
+                    )
+                    .done(function(data) {
+                        // 3. Reload preview
+                        $('#loader').hide();
+                        // Cleanup tree and rebuild
+                        $("#treeview").jstree("destroy");
+                        EDITOR.tree.build(data);
+                    })
+                    .fail(function() {
+                        $('#loader').hide();
+                        alert( ERROR_IMPORT );
+                    })
+                })
+                .fail(function() {
+                    $('#loader').hide();
+                    alert( ERROR_SAVING_PREVIEW );
+                });
             }else{
                 alert(NO_PAGES_SELECTED);
             }
         }
     );
 }
+debugger;
 setup();

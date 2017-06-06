@@ -1,22 +1,24 @@
 <?php
 require_once("../../config.php");
-require_once("display_library.php");
-require_once("user_library.php");
-require_once("xmlInspector.php");
+require_once("../../website_code/php/display_library.php");
+require_once("../../website_code/php/user_library.php");
+require_once("../../website_code/php/xmlInspector.php");
 ?>
 
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js?version=<?php echo $version;?>"></script>
-<script type="text/javascript" src="editor/js/tree.js?version=<?php echo $version;?>"></script>
+<!-- <script type="text/javascript" src="editor/js/tree.js?version=<?php echo $version;?>"></script> -->
 
 <?php
-_load_language_file("/website_code/php/import-choose.inc");
+_load_language_file("/editor/importpages/import-choose.inc");
 
 if(empty($_SESSION['toolkits_logon_id'])) {
 	die("Please login");
 }
+
+$version = getVersion();
 
 $workspace = json_decode(get_users_projects("date_down", true));
 
@@ -132,5 +134,5 @@ foreach($workspace->items as $item)
 </script>
 
 <?php
-_include_javascript_file("website_code/scripts/import-choose.js?version=" . $version);
+_include_javascript_file("editor/js/import-choose.js?version=" . $version);
 
