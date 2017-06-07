@@ -1238,6 +1238,7 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
+						[ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ],
                         [ 'Sourcedialog' ],
                         [ 'FontAwesome']
                     ],
@@ -2581,11 +2582,14 @@ var EDITOR = (function ($, parent) {
                     form_id_offset++;
                     if (options.wysiwyg && options.wysiwyg!="false")
                     {
+                        var htmlRegex = new RegExp(/<[a-z/][\s\S]*>/i);
+						
                         html = $('<div>')
                             .attr('id', id)
                             .addClass('inlinewysiwyg')
                             .attr('contenteditable', 'true')
-							.append('<p>' + value + '</p>');
+							.append(htmlRegex.test(value) == true ? ( value.substring(0,2) == "<p" ? value : '<p>' + value + '</p>' ) : '<p>' + value + '</p>');
+						
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
