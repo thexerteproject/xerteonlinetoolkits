@@ -269,6 +269,7 @@
 					var $this = $(this);
 					
 					playAll = playAll && $this.data("index") + 2 < $("#thumbHolder .thumbBox").length ? true : false;
+					if (playAll == false) { $(".playAll").removeClass("playing"); }
 					$("#pageContents").data("playAll", playAll);
 					
 					//tweak to stop thumbnail from playing after clicking on it
@@ -572,6 +573,7 @@
 		}
 		
 		this.playAll = function($media) {
+			$(".playAll").addClass("playing");
 			if ($media[0].nodeName == "IMG") {
 				setTimeout(function(){
 					$("#thumbHolder .thumbBox:eq(" + ($("#mainInfoHolder").data("index") + 2) + ")").trigger("click", true);
