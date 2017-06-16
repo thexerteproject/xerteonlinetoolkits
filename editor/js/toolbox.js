@@ -131,10 +131,6 @@ var EDITOR = (function ($, parent) {
                     .append(value.name);
 
                     $menu.find(".insert_buttons").append(button);
-                    if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
-                        $menu.find(".insert_buttons").last()[0].childNodes[1].remove();
-                    }
-
             });
             if (templateframework == "xerte") {
                 $([
@@ -158,9 +154,7 @@ var EDITOR = (function ($, parent) {
                         .append($('<img>').attr('src', value.icon).height(14))
                         .append(value.name);
 
-                    if ($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
                         $menu.find(".insert_buttons").last().append(button);
-                    }
                 });
             }
 		$.widget("ui.menu", $.ui.menu, {
