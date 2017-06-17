@@ -131,10 +131,6 @@ var EDITOR = (function ($, parent) {
                     .append(value.name);
 
                     $menu.find(".insert_buttons").append(button);
-                    if($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
-                        $menu.find(".insert_buttons").last()[0].childNodes[1].remove();
-                    }
-
             });
             if (templateframework == "xerte") {
                 $([
@@ -158,9 +154,7 @@ var EDITOR = (function ($, parent) {
                         .append($('<img>').attr('src', value.icon).height(14))
                         .append(value.name);
 
-                    if ($menu.find(".insert_buttons").last()[0].parentNode != null && $menu.find(".insert_buttons").last()[0].parentNode.parentNode.parentNode.parentNode.attributes[0].value == "import") {
                         $menu.find(".insert_buttons").last().append(button);
-                    }
                 });
             }
 		$.widget("ui.menu", $.ui.menu, {
@@ -1238,6 +1232,7 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
+						//[ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ],
                         [ 'Sourcedialog' ],
                         [ 'FontAwesome']
                     ],
@@ -2586,6 +2581,7 @@ var EDITOR = (function ($, parent) {
                             .addClass('inlinewysiwyg')
                             .attr('contenteditable', 'true')
 							.append('<p>' + value + '</p>');
+						
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
@@ -2593,9 +2589,9 @@ var EDITOR = (function ($, parent) {
                             .attr('type', "text")
                             .addClass('inputtext')
                             .attr('id', id)
-                            .keyup({id: id, key: key, options: options}, function()
+                            .keyup({name: name, key: key, options: options}, function()
                             {
-                            	if (id == 'textinput_0') {
+                            	if (name == 'name') {
 									// Rename the node
                                 	var tree = $.jstree.reference("#treeview");
                                 	tree.rename_node(tree.get_node(key, false), $(this).val());

@@ -95,6 +95,11 @@
 		margin: 4px;
 	}
 	
+	#thumbHolder .thumbBox.playing {
+		border: 2px solid purple;
+		margin: 4px;
+	}
+	
 	#thumbHolder .thumbBox h3 {
 		text-align: center;
 		overflow: hidden;

@@ -1013,11 +1013,13 @@
 				{
 					// No caption, replace width and height attributes of image with proper dimensions
                     var image = (el.name == 'img' ? el : el.getFirst( 'img' ));
-                    for ( var d in dimensions ) {
-                        if (dimensions[d])
-                            if ((dimensions[d]).match(regexPercent)) {
-                                image.attributes[d] =  dimensions[d];
-                            }
+                    if (image != null) {
+                        for (var d in dimensions) {
+                            if (dimensions[d])
+                                if ((dimensions[d]).match(regexPercent)) {
+                                    image.attributes[d] = dimensions[d];
+                                }
+                        }
                     }
 				}
 			}

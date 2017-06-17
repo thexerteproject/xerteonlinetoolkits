@@ -149,7 +149,7 @@ var EDITOR = (function ($, parent) {
 
             // search attribute name and put that as the first one
             $(all_options).each(function(key, option) {
-                if (option.name == 'name')
+                if (option.name == 'name' && option.value.wysiwyg != undefined && option.value.wysiwyg == "true")
                 {
                     name_option.push(option);
                 }
@@ -182,7 +182,7 @@ var EDITOR = (function ($, parent) {
                 }
                 else
                 {
-                    if (option.name != 'name')
+                    if (option.name != 'name' || option.value.wysiwyg == undefined || option.value.wysiwyg != "true")
                     {
                         normal_options.push(option);
                     }

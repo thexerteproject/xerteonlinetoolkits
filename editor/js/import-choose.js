@@ -359,5 +359,5 @@ function init()
         }
     );
 }
-debugger;
+
 setup();

@@ -57,15 +57,16 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
-      <question><![CDATA[<question  name="Question" prompt="Here is a prompt" type="Single Answer" />]]></question>
+      <question><![CDATA[<question prompt="Enter question" name="Question - Tree/Tracking label" type="Single Answer" />]]></question>
 	</newNodes>
 	
   </quiz>
 
   <question menuItem="Question">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
+
 
     <prompt label="Prompt" type="TextArea"  height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false" />
     <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 	
@@ -77,14 +78,14 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option name="Option" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option text="Enter option" name="Option - Tree/Tracking label" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question>
 
   <option menuItem="Option" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option"/>
     <text label="Option" type="TextArea"  height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - Tree/Tracking label" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea"  height="100"/>
     <correct label="Correct" options="True,False" type="ComboBox"  data="true,false" defaultValue="false" width="100" />
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true" />
