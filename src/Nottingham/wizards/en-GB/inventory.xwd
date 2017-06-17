@@ -41,13 +41,13 @@
     <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <invQuestion><![CDATA[<invQuestion name="Question" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+      <invQuestion><![CDATA[<invQuestion name="Question - Tree/Tracking label" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
     </newNodes>
 	
   </inventory>
 
   <invQuestion menuItem="Question" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false" />
     <prompt label="Prompt" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
@@ -58,15 +58,15 @@
 	</imgInfo>
 
     <newNodes>
-      <invOption><![CDATA[<invOption name="Option" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
+      <invOption><![CDATA[<invOption name="Option - Tree/Tracking label" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
     </newNodes>
 
   </invQuestion>
 
   <invOption menuItem="Option" icon="icBullet" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option" />
     <text label="Option" type="TextArea" height="100"/>
-	<class label="Classification" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>	
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - Tree/Tracking label" />
+    <class label="Classification" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
 	<weight label="Weight or Score" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
   </invOption>

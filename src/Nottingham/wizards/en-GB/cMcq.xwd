@@ -37,15 +37,15 @@
     <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cOption><![CDATA[<cOption name="name" text="here is an option" destination="destination Page ID" />]]></cOption>
+      <cOption><![CDATA[<cOption name="Option - tree/tracking label" text="here is an option" destination="destination Page ID" />]]></cOption>
     </newNodes>
 	
   </cMcq>
 
   <cOption menuItem="Option" icon="icBullet" remove="true">
-    <name label="Option Title" type="TextInput" wysiwyg="true"/>
     <text label="Option" type="TextArea" height="100"/>
-	<destination label="Go to Page ID" type="pageList" height="25"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - tree/tracking label" wysiwyg="false"/>
+    <destination label="Go to Page ID" type="pageList" height="25"/>
   </cOption>
 
 </wizard>

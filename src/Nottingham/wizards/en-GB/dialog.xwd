@@ -24,7 +24,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true" />
 
     <newNodes>
-      <dialogStep><![CDATA[<dialogStep name="Question" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
+      <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
     </newNodes>
 
   </dialog>
@@ -32,7 +32,7 @@
 
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" />
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label" />
     <question label="Question" type="TextArea" height="100"/> 
     <answer label="Answer" type="TextInput" wysiwyg="true"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 

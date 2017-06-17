@@ -2589,9 +2589,9 @@ var EDITOR = (function ($, parent) {
                             .attr('type', "text")
                             .addClass('inputtext')
                             .attr('id', id)
-                            .keyup({id: id, key: key, options: options}, function()
+                            .keyup({name: name, key: key, options: options}, function()
                             {
-                            	if (id == 'textinput_0') {
+                            	if (name == 'name') {
 									// Rename the node
                                 	var tree = $.jstree.reference("#treeview");
                                 	tree.rename_node(tree.get_node(key, false), $(this).val());

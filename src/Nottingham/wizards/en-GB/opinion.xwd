@@ -32,28 +32,27 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
 	</newNodes>
 	
   </opinion>
 
   <opinionQuestion menuItem="Question">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question"/>
-
     <prompt label="Prompt" type="TextArea"  height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false"/>
     <image label="Image" type="Media" optional="true"/>
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox" />  
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <opinionOption><![CDATA[<opinionOption name="Option" text="Here is an option" />]]></opinionOption>
+      <opinionOption><![CDATA[<opinionOption name="Option - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
     </newNodes>
 
   </opinionQuestion>
 
   <opinionOption menuItem="Option" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="false" defaultValue=""/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Opton - Tree/Tracking" wysiwyg="false"/>
   </opinionOption>
   
 </wizard>
