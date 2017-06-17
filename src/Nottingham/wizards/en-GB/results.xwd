@@ -1,7 +1,7 @@
 <wizard menus="Misc">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" />]]></results>
+            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" />]]></results>
         </newNodes>
     </pageWizard>
 
@@ -24,12 +24,16 @@
         <specificResultsTxt label="Specific Results text label" type="TextInput"  wysiwyg="true" language="true"/>
         <yourAnswerTxt label="Your answer text label" type="TextInput"  wysiwyg="true" language="true"/>
         <correctAnswerTxt label="Correct answer text label" type="TextInput"  wysiwyg="true" language="true"/>
+        <givenameTxt label="Ask name text label" type="TextInput" wysiwyg="true" language="true" />
         <downloadPdfTxt label="Download pdf text label" type="TextInput"  wysiwyg="true" language="true"/>
 
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Full Results"
-                    data="minimal-results,full-results"/>
+        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object." />
+        <givename label="Ask Name" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
+
+        <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Normal Results,Full Results"
+                    data="minimal-results,normal-results,full-results"/>
         <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="false" />
         <skipweigthingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false" />
 

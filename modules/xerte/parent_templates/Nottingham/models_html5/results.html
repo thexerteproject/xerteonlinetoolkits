@@ -51,7 +51,7 @@
 		
 		this.init = function() {
 
-		    XTSetPageType(x_currentPage, 'result', 0, 0);
+		    //XTSetPageType(x_currentPage, 'result', 0, 0);
 		    this.getLabels();
 
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
@@ -86,7 +86,7 @@
 			$("#startTime").html(results.start);
 			results.interactions.forEach(function(x)
 			{
-			    if (x.ia_type == 'result' || (!showzeroweight && x.completed == "true" && x.weighting == 0))
+			    if (x.type == 'result' || (!showzeroweight && x.completed == "true" && x.weighting == 0))
                 {
                     // Skip
                     return;
@@ -103,42 +103,46 @@
 				else {
 					completedToken = '-';
 				}
-				if(results.mode == 'full-results') {
+				if(results.mode == 'normal-results'){
+				    //TODO add normal result mode
+
+                    $("#specific").show();
+                    $("#specificResultsTxt").hide();
+                    $("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
+                }
+				else if(results.mode == 'full-results' ) {
 					$("#specific").show();
 					$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
-					if (x.subinteractions.length > 0) {
+					if (x.subinteractions.length > 0 && x.type != 'page') {
 						$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">" + yourAnswerTxt + "</th><th class=\"notLast\">"+ correctAnswerTxt +"</th></tr>");
 					}
 				}
 				count = 1;
-				if (x.subinteractions.length > 0) {
-					x.subinteractions.forEach(function(y)
-					{
-						question = y.question;
-						learnerAnswer = y.learnerAnswer;
-						correctAnswer = y.correctAnswer;
-						if (learnerAnswer == correctAnswer ||y.correct) {
-							if (count == x.subinteractions.length) {
-								$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
-							}
-							else {
-								$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
-							}
-						}
-						else {
-							if (count == x.subinteractions.length) {
-								$("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
-							}
-							else {
-								$("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
-							}
-						}
-						count++;
-					});
-				}
-				else {
-					$("#fullResults").append("<tr><td class=\"last\">No results.</td></tr>");
-				}
+				if (x.subinteractions.length > 0 && x.type != 'page') {
+                    x.subinteractions.forEach(function (y) {
+                        question = y.question;
+                        learnerAnswer = y.learnerAnswer;
+                        correctAnswer = y.correctAnswer;
+                        if (learnerAnswer == correctAnswer || y.correct) {
+                            if (count == x.subinteractions.length) {
+                                $("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"last\">' + question + '</td><td class=\"last\">' + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+                            }
+                            else {
+                                $("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+                            }
+                        }
+                        else {
+                            if (count == x.subinteractions.length) {
+                                $("#fullResults").append("<tr><td class=\"last\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"last\">' + question + "</td><td class=\"last\">" + learnerAnswer + "</td><td class=\"last\">" + correctAnswer + "</td></tr>");
+                            }
+                            else {
+                                $("#fullResults").append("<tr><td class=\"notLast\">" + '<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></td><td class=\"notLast\">' + question + "</td><td class=\"notLast\">" + learnerAnswer + "</td><td class=\"notLast\">" + correctAnswer + "</td></tr>");
+                            }
+                        }
+                        count++;
+                    });
+                }
+
 			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
