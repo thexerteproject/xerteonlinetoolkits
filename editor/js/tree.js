@@ -1256,6 +1256,7 @@ var EDITOR = (function ($, parent) {
         .on('ready.jstree', function (e, data) {
             data.instance.open_node(["treeroot"]);
             data.instance.select_node(["treeroot"]);
+            setNodeBackgrounds();
         })
         .bind('select_node.jstree', function(event, data) {
             showNodeData(data.node.id);
@@ -1265,6 +1266,25 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    setNodeBackgrounds = function() {
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node("treeroot", false);
+        var nodes = node.children;
+        $.each(nodes, function (i, key){
+            if ($("#"+key+"_deprecated.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("deprecatedNode");
+            }
+            if ($("#"+key+"_hidden.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("hiddenNode");
+            }
+            if ($("#"+key+"_unmark.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("unmarkNode");
+            }
+        });
+    },
 
     // Up button handler
     up_btn = function() {
