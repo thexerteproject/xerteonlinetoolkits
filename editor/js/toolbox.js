@@ -627,16 +627,16 @@ var EDITOR = (function ($, parent) {
 		
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
-                var hiddenImg = $("#" + key + "_hidden");
-                if (hiddenImg) {
+                var hiddenIcon = $("#" + key + "_hidden");
+                if (hiddenIcon) {
                     hiddenImg.switchClass('iconEnabled', 'iconDisabled');
                     $("#" + key + " .hidden").contents().unwrap();
                 }
 			}
             if (toDelete[i] == "unmarkForCompletion"){
-                var unmarkImg = $("#" + key + "_unmark");
-                if (unmarkImg) {
-                    unmarkImg.switchClass('iconEnabled', 'iconDisabled');
+                var unmarkIcon = $("#" + key + "_unmark");
+                if (unmarkIcon) {
+                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
                 }
             }
 
