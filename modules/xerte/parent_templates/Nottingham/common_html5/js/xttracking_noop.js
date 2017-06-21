@@ -221,6 +221,32 @@ function NoopTrackingState()
     		sit.exitInteraction(result,learneranswer, learneroptions, feedback);
     	}
     	sit.exit();
+        var temp = false;
+        var i = 0;
+        for(i=0; i<state.toCompletePages.length;i++)
+        {
+            var currentPageNr = state.toCompletePages[i];
+            if(currentPageNr == page_nr)
+            {
+                temp = true;
+                break;
+            }
+        }
+        if(temp)
+        {
+            if (! state.completedPages[i]) {
+                var sit = state.findInteraction(page_nr, -1);
+                if (sit != null) {
+                    if (sit.ia_type == "result") {
+                        state.completedPages[i] = true;
+                    }
+                    else {
+                        state.completedPages[i] = state.pageCompleted(page_nr);
+                    }
+                }
+            }
+        }
+
     }
 
     function setPageType(page_nr, page_type, nrinteractions, weighting)
@@ -468,32 +494,7 @@ function XTEnterPage(page_nr, page_name)
 
 function XTExitPage(page_nr, pageName)
 {
-    var temp = false;
-    var i = 0;
-
     state.exitInteraction(page_nr, -1, false, "", "", "", false);
-
-    for(i=0; i<state.toCompletePages.length;i++)
-    {
-        var currentPageNr = state.toCompletePages[i];
-        if(currentPageNr == page_nr)
-        {
-            temp = true;
-            break;
-        }
-    }
-    if(temp)
-    {
-        var sit = state.findInteraction(page_nr, -1);
-        if (sit != null) {
-            if (sit.ia_type == "result") {
-                state.completedPages[i] = true;
-            }
-            else {
-                state.completedPages[i] = state.pageCompleted(page_nr);
-            }
-        }
-    }
 }
 
 function XTSetPageType(page_nr, page_type, nrinteractions, weighting)

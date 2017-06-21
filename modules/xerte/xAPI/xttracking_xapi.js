@@ -89,6 +89,34 @@ function XApiTrackingState()
     {
     	var sit = this.findInteraction(page_nr, ia_nr);
     	sit.exit();
+
+        var temp = false;
+        var i = 0;
+        for(i; i<state.toCompletePages.length;i++)
+        {
+            var currentPageNr = toCompletePages[i];
+            if(currentPageNr == page_nr)
+            {
+                temp = true;
+                break;
+            }
+        }
+        if(temp)
+        {
+            if (! state.completedPages[i]) {
+                var sit = state.findInteraction(page_nr, -1);
+                if (sit != null) {
+                    if (sit.ia_type == "result") {
+                        state.completedPages[i] = true;
+                    }
+                    else {
+                        state.completedPages[i] = state.pageCompleted(page_nr);
+                    }
+                }
+            }
+        }
+
+
     }
     
     function setPageType(page_nr, page_type, nrinteractions, weighting)
@@ -425,31 +453,7 @@ function XTExitPage(page_nr, page_name)
             }
         );
 
-    var temp = false;
-    var i = 0;
-    for(i; i<state.toCompletePages.length;i++)
-    {
-        var currentPageNr = toCompletePages[i];
-        if(currentPageNr == page_nr)
-        {
-            temp = true;
-            break;
-        }
-    }
-    if(temp)
-    {
-        var sit = state.findInteraction(page_nr, -1);
-        if (sit != null) {
-            if (sit.ia_type == "result") {
-                state.completedPages[i] = true;
-            }
-            else {
-                state.completedPages[i] = state.pageCompleted(page_nr);
-            }
-        }
-    }
 
-    
     SaveStatement(statement);
     return state.exitInteraction(page_nr, -1, false, "", "", "", false);
 

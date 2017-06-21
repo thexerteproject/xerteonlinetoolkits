@@ -191,7 +191,7 @@ function ScormTrackingState()
             for (i=0; i<sit.nrinteractions; i++)
             {
                 var sit2 = state.findInteraction(page_nr, i);
-                if (sit2 == null || sit2.duration < 1000)
+                if (sit2 == null || sit2.duration < 100)
                 {
                     return false;
                 }
@@ -589,7 +589,33 @@ function ScormTrackingState()
                     this.skipcomments = true;
                 }
             }
-            this.finishTracking(state.currentpageid);
+            //this.finishTracking(state.currentpageid);
+            var temp = false;
+            var i = 0;
+            for(i=0; i<state.toCompletePages.length;i++)
+            {
+                var currentPageNr = state.toCompletePages[i];
+                if(currentPageNr == page_nr)
+                {
+                    temp = true;
+                    break;
+                }
+            }
+            if(temp)
+            {
+                if (! state.completedPages[i]) {
+                    var sit = state.findInteraction(page_nr, -1);
+                    if (sit != null) {
+                        if (sit.ia_type == "result") {
+                            state.completedPages[i] = true;
+                        }
+                        else {
+                            state.completedPages[i] = state.pageCompleted(page_nr);
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -936,32 +962,9 @@ function XTExitPage(page_nr, page_name)
 
     if (state.scormmode == 'normal')
     {
-        var temp = false;
-        var i = 0;
-
         state.exitInteraction(page_nr, -1, false, "", "", "", false);
 
-        for(i=0; i<state.toCompletePages.length;i++)
-        {
-            var currentPageNr = state.toCompletePages[i];
-            if(currentPageNr == page_nr)
-            {
-                temp = true;
-                break;
-            }
-        }
-        if(temp)
-        {
-            var sit = state.findInteraction(page_nr, -1);
-            if (sit != null) {
-                if (sit.ia_type == "result") {
-                    state.completedPages[i] = true;
-                }
-                else {
-                    state.completedPages[i] = state.pageCompleted(page_nr);
-                }
-            }
-        }
+
     }
 }
 
