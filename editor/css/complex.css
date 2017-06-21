@@ -663,7 +663,7 @@ td.wizardparameter{
     width:20px;
 }
 td.wizardlabel {
-    width: 150px;
+    width: 175px;
 }
 
 td.wizardvalue {
@@ -958,6 +958,39 @@ div.wizardvalue_inner {
 	max-height: 100%;
 }
 
+.unmarkCompletionIcon
+{
+	margin-right: 5px;
+	color:#a0a0a0;
+}
+
+.deprecatedIcon
+{
+	margin-right: 5px;
+	color: #ff8c00;
+}
+
+.hiddenIcon {
+	margin-right: 5px;
+	color: #ff0000;
+}
+.iconEnabled
+{
+	display: inline-block;
+}
+
+.iconDisabled
+{
+	display: none !important;
+}
+
+li.hiddenNode >a{
+	background: #e5e5e5;
+}
+
+li.deprecatedNode >a {
+	background: rgba(248, 103, 24, 0.33);
+}
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

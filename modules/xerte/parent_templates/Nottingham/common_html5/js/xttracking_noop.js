@@ -578,6 +578,8 @@ function XTResults()
     results.interactions = Array();
 
     for(i = 0; i < state.interactions.length-1; i++){
+
+
         score += state.interactions[i].score * state.interactions[i].weighting;
         if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
@@ -648,7 +650,7 @@ function XTResults()
                 case "numeric":
 
                     learnerAnswer = state.interactions[i].learnerAnswers;
-                    correctAnswer = "NA";  // Not applicable
+                    correctAnswer = "-";  // Not applicable
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":

@@ -284,27 +284,36 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
 
-        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated) {
-            treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
+        var deprecatedIcon;
+        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
+        {
+            deprecatedIcon = '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '"></i>';
+        }
+        else
+        {
+            deprecatedIcon = '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '"></i>';
+        }
+        var hiddenIcon;
+        if (xmlData[0].getAttribute("hidePage") == "true")
+        {
+            hiddenIcon = '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+        }
+        else
+        {
+            hiddenIcon = '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+        }
+        var unmarkIcon;
+        if (xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot')
+        {
+            unmarkIcon = '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+        }
+        else
+        {
+            unmarkIcon = '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+        }
 
-            if (xmlData[0].getAttribute("hidePage") == "true") {
-                treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;' + treeLabel;
-            }
-            if (xmlData[0].getAttribute("markForCompletion") == "true" && parent_id == 'treeroot') {
-                treeLabel = '<img src="editor/img/tick.png" title ="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;' + treeLabel;
-            }
-        }
-		else
-		{
-            if (xmlData[0].getAttribute("hidePage") == "true")
-            {
-                treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + treeLabel + '</span>';
-            }
-            if (xmlData[0].getAttribute("markForCompletion") == "true" && parent_id == 'treeroot')
-            {
-                treeLabel = '<img src="editor/img/tick.png" title ="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;' + treeLabel;
-            }
-        }
+        treeLabel = unmarkIcon + hiddenIcon + deprecatedIcon + '<span id="' + key + '_text">' + treeLabel + '</span>';
+
         var this_json = {
             id : key,
             text : treeLabel,
@@ -618,20 +627,17 @@ var EDITOR = (function ($, parent) {
 		
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
-				$("#" + key + " .hiddenImg").remove();
-				$("#" + key + " .hidden").contents().unwrap();
-				$("#" + key).each(function() {
-					var $this = $(this);
-					$this.html($this.html().replace(/&nbsp;/, ""));
-				});
+                var hiddenIcon = $("#" + key + "_hidden");
+                if (hiddenIcon) {
+                    hiddenImg.switchClass('iconEnabled', 'iconDisabled');
+                    $("#" + key + " .hidden").contents().unwrap();
+                }
 			}
-            if (toDelete[i] == "markForCompletion"){
-                $("#" + key + " .markCompletionImg").remove();
-                $("#" + key + " .hidden").contents().unwrap();
-                $("#" + key).each(function() {
-                    var $this = $(this);
-                    $this.html($this.html().replace(/&nbsp;/, ""));
-                });
+            if (toDelete[i] == "unmarkForCompletion"){
+                var unmarkIcon = $("#" + key + "_unmark");
+                if (unmarkIcon) {
+                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
+                }
             }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
@@ -1188,30 +1194,8 @@ var EDITOR = (function ($, parent) {
                                 var parent_id = tree.get_parent(node);
 
 								if (options.key != "treeroot") {
-									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
-									if ($("#" + options.key + " .deprecatedImg").length > 0) {
-										thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
-										if ($("#" + options.key + " .markCompletionImg").length > 0)
-                                        {
-                                            thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">' + thisText;
-                                        }
-                                        if (parent_id == "treeroot" && $("#" + options.key + " .hiddenImg").length > 0)
-										{
-											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
 
-										}
-									}
-									else
-									{
-                                        if ($("#" + options.key + " .hiddenImg").length > 0)
-                                        {
-                                            thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
-                                        }
-                                        if (parent_id == "treeroot" && $("#" + options.key + " .markCompletionImg").length > 0)
-                                        {
-                                            thisText = '<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;<span class="marked">' + thisText + '</span>';
-                                        }
-									}
+								    $("#" + options.key + "_text").html(thisText);
 								}
 
                                 // Rename the node
@@ -1637,43 +1621,34 @@ var EDITOR = (function ($, parent) {
     {
         //console.log([key, names, values]);
         // Get the node name
-       if (names[0] == "hidePage") {
-			if (values[0] == "true") {
-				if ($("#" + key + " .deprecated").length == 0) {
-					$("#" + key + " .jstree-anchor").each(function(i,v) {
-						$(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
-					});
-					$("#" + key + " .jstree-anchor .hidden").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
-				} else {
-					$("#" + key + " .deprecatedImg").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
-				}
-			} else {
-				$("#" + key + " .hiddenImg").remove();
-				$("#" + key + " .hidden").contents().unwrap();
-				$("#" + key).each(function() {
-					var $this = $(this);
-					$this.html($this.html().replace(/&nbsp;/, ""));
-				});
-			}
-		}
-
-        if (names[0] == "markForCompletion") {
-            if (values[0] == "true") {
-                if ($("#" + key + " .deprecated").length == 0) {
-                    $("#" + key + " .jstree-anchor.jstree-clicked").each(function(i,v) {
-                        $(v).contents().eq($(v).contents().length - 1).wrap('<span class="marked"/>');
-                    });
-                    $("#" + key + " .jstree-anchor .marked").before('<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;');
-                } else {
-                    $("#" + key + " .deprecatedImg").before('<img src="editor/img/tick.png" title="' + language.markForCompletion.$tooltip + '" class="markCompletionImg">&nbsp;');
+        if (names[0] == "hidePage") {
+            var hiddenIcon = $("#" + key + "_hidden");
+            if (hiddenIcon) {
+                if (values[0] == "true") {
+                    hiddenIcon.switchClass('iconDisabled', 'iconEnabled');
+                    $("#" + key).addClass("hiddenNode");
+                    //$("#" + key + " .jstree-anchor").each(function (i, v) {
+                    //   $(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
+                    //});
                 }
-            } else {
-                $("#" + key + " .markCompletionImg").remove();
-                $("#" + key + " .marked").contents().unwrap();
-                $("#" + key).each(function() {
-                    var $this = $(this);
-                    $this.html($this.html().replace(/&nbsp;/, ""));
-                });
+                else {
+                    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
+                    $("#" + key).removeClass("hiddenNode");
+                    //$("#" + key + " .hidden").contents().unwrap();
+                }
+            }
+        }
+
+        if (names[0] == "unmarkForCompletion") {
+            var unmarkIcon = $("#" + key + "_unmark");
+            if (unmarkIcon) {
+                if (values[0] == "true") {
+                    unmarkIcon.switchClass('iconDisabled', 'iconEnabled');
+                    $("#" + key).addClass("unmarkNode");
+                } else {
+                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
+                    $("#" + key).removeClass("unmarkNode");
+                }
             }
         }
 

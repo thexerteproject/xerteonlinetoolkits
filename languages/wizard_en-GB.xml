@@ -46,7 +46,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<hidePage tooltip="This page is hidden"/>
-	<markForCompletion tooltip="This page is marked for completion"/>
+	<unmarkForCompletion tooltip="This page is unmarked for completion"/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>
