@@ -72,7 +72,7 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
         // This implementation is based on One_Logins Saml2 php implementation
 
         if (!isset($_SESSION['saml2session'])) {
-            $_SESSION['saml2reqid'] = base64_encode(openssl_random_pseudo_bytes(10));
+            $_SESSION['saml2reqid'] = bin2hex(openssl_random_pseudo_bytes(10));
             if (strpos($this->_saml2config['ssourl'], '?') === false)
             {
                 $url = $this->_saml2config['ssourl'] . "?site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
@@ -100,7 +100,7 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
         if (isset($_SESSION['saml2session'])) {
             session_destroy();
 
-            $_SESSION['saml2reqid'] = base64_encode(openssl_random_pseudo_bytes(10));
+            $_SESSION['saml2reqid'] = bin2hex(openssl_random_pseudo_bytes(10));
             $url = $this->_saml2config['slourl'] . "?site=" . $this->xerte_toolkits_site->site_url . "&returnurl=library/Xerte/Authentication/Saml2/saml2login.php&request=" . $_SESSION['saml2reqid'];
             header("Location: " . $url);
             exit;
