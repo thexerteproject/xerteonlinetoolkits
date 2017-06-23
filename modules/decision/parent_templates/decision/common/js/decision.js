@@ -422,8 +422,10 @@ function setUpInterface() {
 	if (allQParams.print != "false" && allQParams.print != "") {
 		$("#printBtn")
 			.click(function() {
+				$('html, body').css('overflow-x', 'visible');
 				document.getElementById("mainHolder").scrollIntoView();
 				window.print();
+				$('html, body').css('overflow-x', 'hidden');
 			})
 			.attr("title", allParams.printBtn)
 			.find(".btnLabel").html(allParams.printBtn);
