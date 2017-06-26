@@ -157,7 +157,7 @@ input.media
 .pane-center {margin-left: 25px; background: #fff}
 .pane-east {margin-right: 15px}
 
-.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px; overflow-x: auto;}
+.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px; overflow-x: auto; height:91%}
 
 /* inner divs inside Outer East/West panes */
 .header {
