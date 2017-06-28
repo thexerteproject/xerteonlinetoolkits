@@ -87,7 +87,7 @@
 	  <hotSpot name="HotSpot" toSelect="Hot Spot. Druk op Spatie om te selecteren." selected="Hot Spot Geselecteerd"/>
 	  <hotObject name="HotObject" toSelect="Druk op Spatie om te selecteren." selected="Hot Object Geselecteerd"/>
 	  <textEntry name="Tekst Veld" selected="Tekst veld geselecteerd"/>
-	  <targetArea name="Doel Gebied" description="Doel gebied voor " toSelect="Druk op spatie om het geselecteerde object hier los te laten"/>
+	  <targetArea name="Doel Gebied" description="Doelgebied voor " toSelect="Druk op spatie om het geselecteerde object hier los te laten"/>
 	  <draggableItem name="Sleepbaar object" selected="Object geselecteerd" toSelect="Druk op spatie om te selecteren" deSelected="Geen Object Geselecteerd." />
 	  
   </interactions>
