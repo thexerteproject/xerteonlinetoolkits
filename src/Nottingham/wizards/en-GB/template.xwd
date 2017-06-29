@@ -16,7 +16,7 @@
     <kblanguage type="ComboBox" options="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" data="Croatian,French,German,Italian,Polish,Portuguese,Russian,Serbian,Slovene,Spanish" width="120" label="Keyboard Language" optional="true"/>
     <displayMode type="ComboBox" options="Default,Fill Window" data="default,fill window" label="Display Mode" width="100"/>
 	<responsive type="CheckBox" label="Responsive Text" defaultValue="false" mandatory="true"/>
-    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24"/>
+    <allpagestitlesize optional="true" type="NumericStepper" min="16" max="30" step="1" label="Page Title Size" defaultValue="24" deprecated="This property is deprecated"/>
 	
 	<nfo optional="true" label="Help File" type="media"/>
     <glossary optional="true" label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition"/>
