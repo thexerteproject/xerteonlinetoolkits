@@ -533,3 +533,41 @@ table.headerCol.simple td:first-child {
 .ui-button-icon-only .ui-icon[class*=" fa-"] {
     margin-left: -7px;
 }
+
+/*styling for optional show/hider footer tools*/
+#x_footerChevron{
+    cursor: pointer;
+}
+#x_footerShowHide{
+    padding-left: 8px; 
+    padding-top: 15px;
+    float:left;
+}
+
+/* PROGRESS BAR */
+#x_footerProgress {
+	box-sizing: border-box;
+}
+
+.pbContainer {
+	width: 50%;
+	height: 6px;
+	margin: auto;
+	margin-top: 15px;
+}
+
+.pbPercent {
+	text-align: right;
+	padding-right: 2px;
+	line-height: 6px;
+}
+
+.pbBar {
+	width: 10%;
+	font-size: 8px;
+}
+
+.pbTxt {
+	font-size: 10px;
+	text-align: center;
+}
