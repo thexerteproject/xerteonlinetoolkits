@@ -1441,6 +1441,7 @@ function x_changePageStep3(x_gotoPage) {
 
     x_updateCss(false);
 
+	$("#x_pageDiv").show();
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -1564,8 +1565,6 @@ function x_changePageStep3(x_gotoPage) {
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
     x_updateHash();
-
-    $("#x_pageDiv").show();
 	
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();
