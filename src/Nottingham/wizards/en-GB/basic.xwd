@@ -33,6 +33,7 @@
 	
 	<toc type="group" label="Table of Contents" optional="true">
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
+		<pageTick optional="true" type="CheckBox" label="Tick When Viewed" defaultValue="true"/>
 		<menuImage optional="true" type="media" label="Page Image" defaultValue="Select an Image"/>
 		<menuImageProperties optional="true" type="ComboBox" label="Page Image Style" options="Use Panel,Full Screen" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel"/>
 	</toc>
