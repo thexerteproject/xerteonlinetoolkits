@@ -1,4 +1,4 @@
-<wizard menus="website" runtime="preview_site.php">
+<wizard menus="Website" runtime="preview_site.php">
 
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
