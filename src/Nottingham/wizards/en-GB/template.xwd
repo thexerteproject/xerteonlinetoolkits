@@ -3080,7 +3080,7 @@
     <priorBtnTip label="Prior Button Tip" type="textInput" language="true"/>
 
     <newNodes>
-      <thumbnailImage><![CDATA[<thumbnailImage name="name" text="Content for the pane" align="Top" url="" linktarget="none" link="" tip="Enter a Description for Accessibility"/>]]></thumbnailImage>
+      <thumbnailImage><![CDATA[<thumbnailImage name="Image" text="Content for the pane" align="Top" url="Select an Image" linktarget="none" link="Link URL" tip="Enter a Description for Accessibility"/>]]></thumbnailImage>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -3097,14 +3097,14 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></thumbnailViewer><thumbnailImage menuItem="Image" icon="icBullet" remove="true">
 
-    <name label="Image Title" type="TextInput" wysiwyg="true"/>
+    <name label="Tree Label" type="TextInput" wysiwyg="true"/>
     <text label="Image Text" type="TextArea" height="250"/>
-
-	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
-    <link label="Specified URL" type="textInput"/>
-	  
-    <url label="Image" type="media"/>
+	
+	<url label="Image" type="media"/>
     <tip label="Image Description" type="TextInput" mandatory="true" defaultValue="Enter a Description for Accessibility"/>
+	
+	<linktarget label="Link from image" options="None,Original image,Specified URL" type="ComboBox" data="None,Original image,Specified URL" defaultValue="None" width="200"/>
+    <link label="URL" type="textInput"/>
 
   </thumbnailImage><timeline menu="Interactivity" menuItem="Timeline / Matching Pairs" hint="An interaction for creating either a timeline or matching activity with labels to drag and drop in place." icon="icTime" thumb="thumbs/timeline.jpg" remove="true">
 
