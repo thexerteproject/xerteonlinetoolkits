@@ -165,3 +165,17 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
 .ui-button.ui-state-hover .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-focus .ui-icon.x_colourChanger {	background-position: -42px 0px; }
 .ui-button.ui-state-active .ui-icon.x_colourChanger {	background-position: -84px 0px; }
+
+
+#x_footerShowHide, #chevron {
+	padding: 0 !important;
+}
+
+#x_footerChevron {
+	padding: 10px;
+	color: white;
+}
+
+#x_footerProgress {
+	display: none;
+}

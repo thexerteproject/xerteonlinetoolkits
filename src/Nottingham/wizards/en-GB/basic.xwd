@@ -30,8 +30,7 @@
 	<resultpage label="Results Page" optional="true" type="ComboBox" defaultValue="No results" options="No results,Minimal Results,Full Results" data="no-results,minimal-results,full-results"/>
 	
 	<progressBar optional="true" type="ComboBox" options="Show progress bar with page counter,Show progress bar and hide page counter" data="pBar,pBarNoCounter" label="Progress bar" defaultValue="pBar" width="100"/>
-	
-	<footerTools optional="true" type="ComboBox" options="Hide/Show footer tools - hide by default,Show/Hide footer tools - show by default" data="hideFooterTools,showFooterTools" label="Enable Hide/Show footer tools" defaultValue="showFooterTools" width="100"/>
+	<footerTools optional="true" type="ComboBox" options="Hide footer tools by default,Show footer tools by default,Remove show/hide button" data="hideFooterTools,showFooterTools,none" label="Show/Hide Footer Tools" defaultValue="showFooterTools" width="100"/>
 	
 	<toc type="group" label="Table of Contents" optional="true">
 		<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true"/>
