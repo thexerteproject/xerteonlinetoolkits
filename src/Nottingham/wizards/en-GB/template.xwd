@@ -1120,8 +1120,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="120"/>
 	<random label="Randomise Cards" type="Checkbox" optional="true"/>
-    <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true"/>
-	<!--<interactivity label="Interactivity" type="ComboBox" options="Flip,Reveal,None" data="flip,reveal,none" width="100"/>-->
+    <amountToShow label="Cards To Show" type="NumericStepper" min="1" max="1000" step="1" defaultValue="1" optional="true" tooltip="Use with 'Randomise Cards' to show a limited number of randomly selected cards"/>
 	
 	<cardNoTxt label="Card No. Text" type="TextInput" language="true"/>
     <flipTxt label="Flip Button Label" type="TextInput" language="true"/>
