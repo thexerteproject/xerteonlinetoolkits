@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,Import pages">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
 
   <learningObject icon="icPackage" remove="false" duplicate="false">
 
@@ -112,7 +112,7 @@
 	  selectAreaTip="Select Area"
 	  resetImageTip="Reset Image"
 	  toggleScreenTip="Toggle Full Screen"
-	  >Enter text for the page here</imageViewer>]]></imageViewer><import><![CDATA[<import/>]]></import><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;br/&gt;&lt;br/&gt;For example:&lt;br/&gt;&lt;br/&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;br/&gt;&lt;br/&gt;Where | are adjectives, * are verbs and # are nouns." interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="Well done! You have completed this activity." findTxt2="You have found {i} of {n}" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
+	  >Enter text for the page here</imageViewer>]]></imageViewer><interactiveText><![CDATA[<interactiveText name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. Create a 'New Group' for each of the exercise's categories and give it a unique delimiter. Then mark up sections of this interactive text by surrounding it with the relevant delimiter.&lt;br/&gt;&lt;br/&gt;For example:&lt;br/&gt;&lt;br/&gt;The |quick| |brown| #fox# *jumped* over the |lazy| #dog#&lt;br/&gt;&lt;br/&gt;Where | are adjectives, * are verbs and # are nouns." interactivity="explore" highlight="false" panelWidth="medium" exploreTxt="Explore the text. Click on the various parts to learn more." showMeTxt2="Click a group to learn more." showMeTxt="Click the arrow buttons to learn more." showBtnTxt="Show All" nextTxt="Next" prevTxt="Previous" findTxt="Click a group to begin, then click the text to find all examples." findTxt3="Can you find all of the examples?" findFeedback="Well done! You have completed this activity." findTxt2="You have found {i} of {n}" mcqText="What is highlighted in the text? Choose from the following options:" mcqQuesCount="Question {i} of {n}" mcqCorrect="That's right." mcqWrong="No, the correct answer is {i}." mcqFeedback="You have completed the quiz." mcqMore="More Information" mcqScore="You scored {i} / {n}" mcqBtnTxt="Check" mcqBtnTxt2="Next" mcqBtnTxt3="Restart" mcqDialogClose="Close" delimiterErrorMsg="Error: The delimiters {n} and {m} are not allowed." delimiterErrorMsg2="Error: The delimiter {n} is not allowed."/>]]></interactiveText><inventory><![CDATA[<inventory name="Enter Page Title" instructions="Enter user instructions" feedback="Enter feedback" order="random" align="left" panelWidth="Medium" classes="class1,class2,class3" scoreType="absolute" chartTitle="Chart Title" chartType="bar" chartColour="0xFFFF00"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -1407,22 +1407,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></imageViewer><import menu="Import pages" menuItem="Import pages" hint="Import pages from other objects" label="Page Text" id="Import" icon="icImport" thumb="thumbs/import.jpg" type="text" height="300" remove="true">
-
-
-    <narrate type="group" label="Narration" optional="true" common="true">
-		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true"/>
-		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true"/>
-	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" common="true"/><pageID label="Page ID" defaultValue="Unique ID for this page" type="TextInput" optional="true" deprecated="This property is deprecated" common="true"/><hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true" common="true"/><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="false" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" common="true"/><styles label="Styles" type="script" height="200" optional="true" common="true"/><scripts type="group" label="Script" optional="true" common="true">
-		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
-	</scripts><background type="group" label="Background" optional="true" common="true">
-		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></import><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
+	</background></imageViewer><interactiveText menu="Interactivity" menuItem="Interactive Text" hint="A text based page where sections can be explored using a variety of interactivities." icon="icInteractiveTxt" thumb="thumbs/interactiveText.jpg" remove="true">
     <name label="Name" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="150"/>
 	<passage label="Interactive Text" type="TextArea" height="200"/>

@@ -1,4 +1,4 @@
-<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc,Import pages">
+<wizard menus="Text,Media,Navigators,Connectors,Charts,Interactivity,Games,Misc">
 
   <learningObject  icon="icPackage" remove="false" duplicate="false">
 
