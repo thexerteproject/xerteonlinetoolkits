@@ -529,6 +529,10 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 }
 
+#insert_menu .ui-menu .ui-menu-item {
+	display: block;
+}
+
 #insert_menu .icon {
 	padding:	0 0.4em 0 0;
 	border:	none;
