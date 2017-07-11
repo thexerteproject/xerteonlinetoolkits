@@ -49,6 +49,10 @@ class XerteXMLInspector
         // This may contain HTML tags, convert to plain text
         // Remove the HTML tags
         $name = strip_tags($name);
+        // Make sure it all fits on one line
+        $name = str_replace("\n", "", $name);
+        // encode
+        $name = base64_encode($name);
         $page->name = $name;
         $page->type = $node->getName();
         $page->index = $i;
