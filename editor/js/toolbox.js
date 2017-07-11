@@ -209,6 +209,92 @@ var EDITOR = (function ($, parent) {
 
     },
 
+    getExtraTreeIcon = function(key, icon, enabled, tooltip)
+    {
+        switch (icon) {
+            case "deprecated":
+                if (enabled) {
+                    return '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated"></i>';
+                }
+            case "unmark":
+                if (enabled)
+                {
+                    return '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                }
+                else
+                {
+                    return '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                }
+            case "hidden":
+                if (enabled) {
+                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+        }
+    },
+
+    changeNodeStatus = function(key, item, enabled, newtext)
+    {
+        // Get icon states
+
+        var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
+        var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+        var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var change = false;
+        var tooltip = "";
+        switch(item)
+        {
+            case "deprecated":
+                if (deprecatedState != enabled)
+                    change = true;
+                break;
+            case "hidden":
+                if (hiddenState != enabled)
+                    change = true;
+                break;
+            case "unmark":
+                if (unmarkState != enabled)
+                    change = true;
+                break;
+            case "text":
+                change = true;
+                break;
+        }
+        if (change)
+        {
+            var tree = $.jstree.reference("#treeview");
+            var node = tree.get_node(key, false);
+            console.log(node);
+
+            if (deprecatedState) {
+                tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
+            }
+            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
+            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+            var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var nodetext;
+            if (item == "text")
+            {
+                nodetext = newtext;
+            }
+            else {
+                nodetext = $("#" + key + '_text').text();
+            }
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            tree.rename_node(node, nodetext);
+            //tree.set_text(node, nodetext);
+            //tree.refresh();
+            // debugging
+            node = tree.get_node(key, false);
+            console.log(node);
+        }
+    },
+
     // ** Recursive function to traverse the xml and build
     build_lo_data = function (xmlData, parent_id) {
 
@@ -284,35 +370,11 @@ var EDITOR = (function ($, parent) {
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
 
-        var deprecatedIcon;
-        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
-        {
-            deprecatedIcon = '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '"></i>';
-        }
-        else
-        {
-            deprecatedIcon = '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '"></i>';
-        }
-        var hiddenIcon;
-        if (xmlData[0].getAttribute("hidePage") == "true")
-        {
-            hiddenIcon = '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
-        }
-        else
-        {
-            hiddenIcon = '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
-        }
-        var unmarkIcon;
-        if (xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot')
-        {
-            unmarkIcon = '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
-        }
-        else
-        {
-            unmarkIcon = '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
-        }
+        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
+        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 
-        treeLabel = unmarkIcon + hiddenIcon + deprecatedIcon + '<span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -627,17 +689,18 @@ var EDITOR = (function ($, parent) {
 		
 		for (var i=0; i<toDelete.length; i++) {
 			if (toDelete[i] == "hidePage") {
-                var hiddenIcon = $("#" + key + "_hidden");
-                if (hiddenIcon) {
-                    hiddenImg.switchClass('iconEnabled', 'iconDisabled');
-                    $("#" + key + " .hidden").contents().unwrap();
-                }
+			    changeNodeStatus(key, "hidden", false);
+                //var hiddenIcon = $("#" + key + "_hidden");
+                //if (hiddenIcon) {
+                //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
+                //}
 			}
             if (toDelete[i] == "unmarkForCompletion"){
-                var unmarkIcon = $("#" + key + "_unmark");
-                if (unmarkIcon) {
-                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                }
+                changeNodeStatus(key, "unmark", false);
+                //var unmarkIcon = $("#" + key + "_unmark");
+                //if (unmarkIcon) {
+                //    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
+                //}
             }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
@@ -1189,17 +1252,18 @@ var EDITOR = (function ($, parent) {
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
 
-                                var tree = $.jstree.reference("#treeview");
-                                var node = tree.get_node(options.key, false);
-                                var parent_id = tree.get_parent(node);
+                                changeNodeStatus(options.key, "text", true, thisText);
+                                //var tree = $.jstree.reference("#treeview");
+                                //var node = tree.get_node(options.key, false);
+                                //var parent_id = tree.get_parent(node);
 
-								if (options.key != "treeroot") {
+								//if (options.key != "treeroot") {
 
-								    $("#" + options.key + "_text").html(thisText);
-								}
+								//    $("#" + options.key + "_text").html(thisText);
+								//}
 
                                 // Rename the node
-                                tree.rename_node(node, thisText);
+                                //tree.rename_node(node, thisText);
 
                                 if ($('#mainleveltitle'))
                                 {
@@ -1622,6 +1686,8 @@ var EDITOR = (function ($, parent) {
         //console.log([key, names, values]);
         // Get the node name
         if (names[0] == "hidePage") {
+            changeNodeStatus(key, "hidden", values[0] == "true");
+            /*
             var hiddenIcon = $("#" + key + "_hidden");
             if (hiddenIcon) {
                 if (values[0] == "true") {
@@ -1637,9 +1703,12 @@ var EDITOR = (function ($, parent) {
                     //$("#" + key + " .hidden").contents().unwrap();
                 }
             }
+            */
         }
 
         if (names[0] == "unmarkForCompletion") {
+            changeNodeStatus(key, "unmark", values[0] == "true");
+            /*
             var unmarkIcon = $("#" + key + "_unmark");
             if (unmarkIcon) {
                 if (values[0] == "true") {
@@ -1650,6 +1719,7 @@ var EDITOR = (function ($, parent) {
                     $("#" + key).removeClass("unmarkNode");
                 }
             }
+            */
         }
 
         var node_name = lo_data[key]['attributes'].nodeName;
@@ -2596,6 +2666,8 @@ var EDITOR = (function ($, parent) {
 	});
 	
     // Add the functions that need to be public
+    my.getExtraTreeIcon = getExtraTreeIcon;
+    my.changeNodeStatus = changeNodeStatus;
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;

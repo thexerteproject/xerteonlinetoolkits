@@ -410,10 +410,20 @@ var EDITOR = (function ($, parent) {
             lo_data[key].attributes['linkID'] = linkID;
         }
 
+        // Create node text based on xml, do not use text of original node, as this is not correct
+        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
+        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
+        var nodeText = $("#" + current_node.id + "_text").html();
+
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
-            text : current_node.text,
+            // Replace previous key by new key in id's
+            // Note that we know that no special characters are used in the key, so we do not need to escape current_node.id for characters that need escaping in regexp's
+            // cf. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+            text : treeLabel,
             type : current_node.type,
             state: {
                 opened:true
@@ -1047,6 +1057,15 @@ var EDITOR = (function ($, parent) {
         {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+        }
+        if (key == 'treeroot')
+        {
+            // Add icons to the node, all should be switched off
+            // Create node text based on xml, do not use text of original node, as this is not correct
+            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+
+            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         }
         var this_json = {
             id : lkey,
