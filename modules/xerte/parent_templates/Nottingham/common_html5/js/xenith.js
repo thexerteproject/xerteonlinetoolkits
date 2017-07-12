@@ -820,12 +820,6 @@ function x_continueSetUp1() {
 		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
 		//add the progress bar
 		$('#x_footerProgress').append('<div class="pbContainer"><div class="pbPercent pbBar">&nbsp;</div></div><p class="pbTxt"></p>');
-		//progress bar styling
-		$("*").css({"box-sizing":"border-box"});
-		$(".pbContainer").css({"width": "50%", "background-color":"#ddd", "height":"6px", "margin":"auto","margin-top":"15px"});
-		$(".pbPercent").css({"text-align":"right", "padding-right":"2px", "line-height":"6px", "color":"#ffffff"});
-		$(".pbBar").css({"width":"10%", "background-color":"#2196F3", "font-size":"8px"});
-		$(".pbTxt").css({"font-size": "10px",  "text-align":"center"});
 		if (x_params.progressBar =="pBarNoCounter") {
 			//remove page counter if that option selected
 			$("#x_pageNo").remove();
@@ -833,7 +827,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add show/hide footer tools
-	if (x_params.footerTools != undefined && x_params.footerTools != "") {
+	if (x_params.footerTools != "none") {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
 		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 		//add a div for the show/hide chevron
@@ -1441,6 +1435,7 @@ function x_changePageStep3(x_gotoPage) {
 
     x_updateCss(false);
 
+	$("#x_pageDiv").show();
 
     // x_currentPage has already been viewed so is already loaded
     if (x_pageInfo[x_currentPage].built != false) {
@@ -1564,8 +1559,6 @@ function x_changePageStep3(x_gotoPage) {
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){}
 
     x_updateHash();
-
-    $("#x_pageDiv").show();
 	
 	if (x_pageInfo[x_currentPage].built != false) {
 		x_doDeepLink();

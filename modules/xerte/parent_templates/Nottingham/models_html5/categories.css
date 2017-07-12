@@ -58,3 +58,6 @@
 		clear:	left;
 	}
 	
+	ul#initHolder {
+		overflow: visible;
+	}

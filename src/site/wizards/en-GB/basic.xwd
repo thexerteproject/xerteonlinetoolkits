@@ -1,17 +1,23 @@
-<wizard menus="website" runtime="preview_site.php">
+<wizard menus="Website" runtime="preview_site.php">
 
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
-		<header type="Media" optional="true" label="Header Image"/>
-		<headerColour type="ColourPicker" optional="true" label="Header Colour"/>
-		<headerTextColour type="ColourPicker" optional="true" label="Header Text Colour"/>
+		
+		<headerGroup type="group" label="Header" optional="true">
+			<header type="Media" optional="true" label="Image"/>
+			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
+			<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
+			<headerColour type="ColourPicker" optional="true" label="Background Colour" defaultValue="0x0088CC"/>
+			<headerTextColour type="ColourPicker" optional="true" label="Text Colour" defaultValue="0xFFFFFF"/>
+			<logoR type="Media" optional="true" label="Logo (Right)"/>
+			<logoL type="Media" optional="true" label="Logo (Left)"/>
+		</headerGroup>
+		
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
 		<styles type="script" height="200" optional="true" label="Styles"/>
 		<script type="script" height="200" optional="true" label="Script" defaultValue="// JavaScript / jQuery"/>
-		<logoR type="Media" optional="true" label="Header Logo (Right)"/>
-		<logoL type="Media" optional="true" label="Header Logo (Left)"/>
 		<authorSupport label="Author Support" type="Checkbox" defaultValue="true" optional="true"/>
 		<!--<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>-->
 		
