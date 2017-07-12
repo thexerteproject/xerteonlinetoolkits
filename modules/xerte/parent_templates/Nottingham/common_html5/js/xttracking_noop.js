@@ -622,28 +622,28 @@ function XTResults()
             switch (state.interactions[i].ia_type){
                 case "match":
                     var resultCorrect;
-                    for(var c = 0; c< state.interactions[i].learnerOptions.length;c++)
+                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
                     {
                         var matchSub = {}; //Create a subinteraction here for every match sub instead
-                        if(state.interactions[i].learnerOptions[c].result == true)
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        source = state.interactions[i].correctOptions[c].source;
+                        if(state.interactions[i].learnerOptions.length == 0)
                         {
-                            learnerAnswer = state.interactions[i].learnerOptions[c].source + ' --> ' + state.interactions[i].learnerOptions[c].target;
-                            correctAnswer = state.interactions[i].learnerOptions[c].source + ' --> ' + state.interactions[i].learnerOptions[c].target;
-                            resultCorrect = true;
+                            learnerAnswer = source + ' --> ' + ' ';
                         }
-                        else
-                        {
-                            learnerAnswer = state.interactions[i].learnerOptions[c].source + ' --> ' + state.interactions[i].learnerOptions[c].target;
-                            var source = state.interactions[i].learnerOptions[c].source;
-                            for(var d=0; d < state.interactions[i].correctOptions.length;d++)
+                        else{
+                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
                             {
-                                if(source == state.interactions[i].correctOptions[d].source) {
-                                    correctAnswer = source + ' --> ' + state.interactions[i].correctOptions[d].target;
+                                if(source == state.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
                                     break;
                                 }
+                                else{
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
                             }
-                            resultCorrect = false;
                         }
+
                         matchSub.question = state.interactions[i].ia_name;
                         matchSub.correct = resultCorrect;
                         matchSub.learnerAnswer = learnerAnswer;
