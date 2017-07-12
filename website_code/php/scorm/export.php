@@ -67,8 +67,10 @@ if (is_numeric($_GET['template_id'])) {
 
         $params = array($_GET['template_id'], 'creator');
         $row = db_query_one($query, $params);
-        if (file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php")) {
-            require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php");
+  
+		if (file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php")) {
+
+			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php");
         }
     }
 }

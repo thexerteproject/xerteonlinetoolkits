@@ -94,7 +94,7 @@ function XApiTrackingState()
         var i = 0;
         for(i; i<state.toCompletePages.length;i++)
         {
-            var currentPageNr = toCompletePages[i];
+            var currentPageNr = state.toCompletePages[i];
             if(currentPageNr == page_nr)
             {
                 temp = true;
@@ -272,7 +272,7 @@ function XTInitialise()
 		}
 		catch(ex)
 		{
-			alert("Failed LRS setup. Error: " + ex);
+			//alert("Failed LRS setup. Error: " + ex);
 		}	
 	}
 
@@ -361,9 +361,9 @@ function XTSetOption(option, value)
         case "toComplete":
             state.toCompletePages = value;
             //completedPages = new Array(length(toCompletePages));
-            for(i = 0; i< length(toCompletePages);i++)
+            for(i = 0; i< state.toCompletePages.length;i++)
             {
-                completedPages[i] = "false";
+                state.completedPages[i] = "false";
             }
 
             break;
@@ -583,6 +583,7 @@ function XTTerminate()
 
 function SaveStatement(statement)
 {
+	return;
 	statement.id = null;
 	lrsInstance.saveStatement(
         statement,
