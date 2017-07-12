@@ -616,20 +616,41 @@ function XTResults()
         }
         else if(results.mode == "full-results")
         {
-            var subinteraction = {}
+            var subinteraction = {};
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
                 case "match":
-                    if (state.interactions[i].learnerOptions[0] == null)
+                    var resultCorrect;
+                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
                     {
-                        learnerAnswer = "";
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        source = state.interactions[i].correctOptions[c].source;
+                        if(state.interactions[i].learnerOptions.length == 0)
+                        {
+                            learnerAnswer = source + ' --> ' + ' ';
+                        }
+                        else{
+                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
+                            {
+                                if(source == state.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                    break;
+                                }
+                                else{
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
+                            }
+                        }
+
+                        matchSub.question = state.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
                     }
-                    else
-                    {
-                        learnerAnswer = state.interactions[i].learnerOptions[0].source;
-                    }
-                    correctAnswer = state.interactions[i].correctOptions[0].source;
+
                     break;
                 case "text":
                     learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
@@ -658,11 +679,13 @@ function XTResults()
                     correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            subinteraction.question = state.interactions[i].ia_name;
-            subinteraction.correct = state.interactions[i].result;
-            subinteraction.learnerAnswer = learnerAnswer;
-            subinteraction.correctAnswer = correctAnswer;
-            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+            if(state.interactions[i].ia_type != "match") {
+                subinteraction.question = state.interactions[i].ia_name;
+                subinteraction.correct = state.interactions[i].result;
+                subinteraction.learnerAnswer = learnerAnswer;
+                subinteraction.correctAnswer = correctAnswer;
+                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+            }
         }
     }
     results.completion = completion;

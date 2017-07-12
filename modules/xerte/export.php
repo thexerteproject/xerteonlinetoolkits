@@ -23,7 +23,6 @@
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
 
-
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
 $folder_id_array = array();
@@ -81,6 +80,7 @@ $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
 $xAPI = false;
+$tsugi = false;
 $offline_includes="";
 
 if (isset($_REQUEST['html5'])) {
@@ -115,6 +115,12 @@ if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
 	$xAPI = true;
 }
 
+if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
+{
+	$xAPI = true;
+	$tsugi = true;
+}
+
 /*
  * Make the zip
  */
@@ -129,7 +135,7 @@ _debug("Temporary zip file is : $zipfile_tmpname");
 $options = array(
     'basedir' => $dir_path, 
     'prepand' => "", 
-    'inmemory' => 0, 
+    'inmemory' => 0,
     'overwrite' => 1,
     'recurse' => 1, 
     'storepaths' => 1);
@@ -410,7 +416,7 @@ if ($scorm == "true") {
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $tsugi);
 	}
 else {
 	
@@ -456,10 +462,28 @@ $row['zipname'] .= $export_engine . $export_type;
 xerte_zip_files($fullArchive, $dir_path);
 $zipfile->create_archive();
 
-
-// This outputs http headers etc.
-$zipfile->download_file($row['zipname']);
-
+if($tsugi)
+{
+	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
+	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
+	if (!file_exists($tsugi_dir)) {
+		mkdir($tsugi_dir, 0777, true);
+	}
+	$zipdir = $zipfile->GetFilename();
+	
+	copy($zipdir, $tsugi_dir . "archive.zip");
+	$zipArchive = new ZipArchive();
+	$result = $zipArchive->open($tsugi_dir. "archive.zip");
+	if ($result === TRUE) {
+		$zipArchive ->extractTo($tsugi_dir);
+		$zipArchive ->close();
+		
+	}
+	
+}else{
+	// This outputs http headers etc.
+	$zipfile->download_file($row['zipname']);
+}
 _debug("Zip file errors? " . implode(',', $zipfile->error));
 
 /*
@@ -470,3 +494,8 @@ clean_up_files();
 @unlink($dir_path . "template.xml");
 
 @unlink($zipfile_tmpname);
+if($tsugi)
+{
+	echo "Visit on: " . $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/";
+}
+?>

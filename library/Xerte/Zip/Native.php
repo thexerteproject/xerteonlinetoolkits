@@ -98,5 +98,10 @@ class Xerte_Zip_Native implements Xerte_Zip_Interface {
         _debug("Wrote : {$filesize} . bytes ... hopefully");
         fclose($fp);
     }
+	
+	public function GetFilename()
+	{
+		return $this->filename;
+	}
 
 }
