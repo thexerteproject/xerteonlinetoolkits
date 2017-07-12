@@ -91,6 +91,15 @@
                     // Skip
                     return;
                 }
+                var interactiveToken;
+			    if(x.type != 'page')
+				{
+				    interactiveToken = '<img src="' + x_templateLocation + 'common_html5/filledDot.png"/>';
+				}
+				else
+				{
+				    interactiveToken = '<img src="' + x_templateLocation + 'common_html5/emptyDot.png"/>';
+				}
 				var completedToken;
 				if(x.completed == "true")
 				{
@@ -108,11 +117,11 @@
 
                     $("#specific").show();
                     $("#specificResultsTxt").hide();
-                    $("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
+                    $("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td><td>" + interactiveToken + "</td></tr>");
                 }
 				else if(results.mode == 'full-results' ) {
 					$("#specific").show();
-					$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td></tr>");
+					$("#questionScores").append("<tr><td>" + x.title + "</td><td>" + x.score + "%</td><td>" + x.duration + " seconds</td><td class=\"td-center\">" + x.weighting + "</td><td>" + completedToken + "</td><td>" + interactiveToken + "</td></tr>");
 					if (x.subinteractions.length > 0 && x.type != 'page') {
 						$("#fullResults").append("<tr><th class=\"notLast\"></th><th class=\"notLast\">" + x.title + "</th><th class=\"notLast\">" + yourAnswerTxt + "</th><th class=\"notLast\">"+ correctAnswerTxt +"</th></tr>");
 					}
@@ -253,6 +262,7 @@ results.init();
 				<th id="durationTxt">Duration</th>
 				<th id="weightingTxt">Weighting</th>
 				<th id="completedTxt">Completed</th>
+				<th id="detailsTxt">Details</th>
 			</tr>
 		</table>
 		<br />
