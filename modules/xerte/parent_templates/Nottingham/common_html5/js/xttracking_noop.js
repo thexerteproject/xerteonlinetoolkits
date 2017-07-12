@@ -624,6 +624,7 @@ function XTResults()
                     var resultCorrect;
                     for(var c = 0; c< state.interactions[i].learnerOptions.length;c++)
                     {
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
                         if(state.interactions[i].learnerOptions[c].result == true)
                         {
                             learnerAnswer = state.interactions[i].learnerOptions[c].source + ' --> ' + state.interactions[i].learnerOptions[c].target;
@@ -643,11 +644,11 @@ function XTResults()
                             }
                             resultCorrect = false;
                         }
-                        subinteraction.question = state.interactions[i].ia_name;
-                        subinteraction.correct = resultCorrect;
-                        subinteraction.learnerAnswer = learnerAnswer;
-                        subinteraction.correctAnswer = correctAnswer;
-                        results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+                        matchSub.question = state.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
                     }
 
                     break;
