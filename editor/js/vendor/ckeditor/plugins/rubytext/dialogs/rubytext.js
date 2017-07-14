@@ -8,7 +8,6 @@
  * http://docs.ckeditor.com/#!/guide/plugin_sdk_sample_1
  */
 
-//http://ckeditor.com/forums/CKEditor-3.x/getSelection-getNative-returns-object-Object
 CKEDITOR.editor.prototype.getSelectedHtml = function() {
 	
 	var selection = this.getSelection();
