@@ -2231,7 +2231,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale." deprecated="This page is currently under development">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -2568,7 +2568,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is no longer supported">
+	</background></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
@@ -2589,11 +2589,11 @@
     <notFoundMessage label="Not Found Message" type="TextInput" wysiwyg="true" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" wysiwyg="true" language="true"/>
 
-    <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true"/>
-    <url label="FLV, SWF or Image File" type="media" optional="true"/>
+    <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true" deprecated="Unknown how this is used"/>
+    <url label="FLV, SWF or Image File" type="media" optional="true" deprecated="Unknown how this is used"/>
     <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
-    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
+    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" deprecated="Unknown how this is used"/>
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true" deprecated="Unknown how this is used"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
