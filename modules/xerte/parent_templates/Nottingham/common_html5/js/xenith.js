@@ -297,7 +297,7 @@ x_projectDataLoaded = function(xmlData) {
         XTSetOption('objective_passed', passednumber);
 	}
 
-	if (x_params.trackingPageTimout != undefined)
+	if (x_params.trackingPageTimeout != undefined)
     {
         XTSetOption('page_timeout', x_params.trackingPageTimout);
     }
