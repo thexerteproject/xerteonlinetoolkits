@@ -76,7 +76,7 @@ _load_language_file("/properties.inc");
     -->
 
     <body onload="javascript:tab_highlight('1');
-        properties_template()" onunload="javascript:window.opener.refresh_workspace()">
+        properties_template()" onunload="javascript:parent.window.opener.refresh_workspace()">
 
         <!--
         
@@ -201,6 +201,16 @@ if (in_array("media", $template_supports)) {
                             </div>
                             <div class="tab_spacer">							
                             </div>
+							<div id="tab8-1" class="tab" style="width:146px; height:38px;">
+                                <p onclick="javascript:tab_highlight('8-1');
+                                                                                                            tsugi_template()">
+                            <i class="fa fa-save xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_TSUGI; ?>
+                                </p>									
+                            </div>
+                            <div class="tab_spacer">							
+                            </div>
+							
+							
     <?PHP
 }
 ?>							                            

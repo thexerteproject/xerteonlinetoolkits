@@ -1283,6 +1283,20 @@ function export_template(){
 
 }
 
+function tsugi_template(){
+	
+	if(setup_ajax()!=false){
+    
+		var url="tsugi_template.php";
+
+		properties_ajax_send_prepare(url);
+
+		xmlHttp.send('template_id=' + window.name); 
+
+	}
+
+}
+
      /**
 	 * 
 	 * Function set sharing rights
