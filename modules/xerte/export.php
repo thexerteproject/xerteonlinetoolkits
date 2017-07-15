@@ -135,7 +135,7 @@ _debug("Temporary zip file is : $zipfile_tmpname");
 $options = array(
     'basedir' => $dir_path, 
     'prepand' => "", 
-    'inmemory' => 1, 
+    'inmemory' => 0,
     'overwrite' => 1,
     'recurse' => 1, 
     'storepaths' => 1);

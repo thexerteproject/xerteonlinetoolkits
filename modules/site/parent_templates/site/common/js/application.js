@@ -209,12 +209,29 @@ function setup(){
 		
 	});
 	
-	//set the header image, if defined
-	if ($(data).find('learningObject').attr('header') != undefined){
+	var bgImg = ''; 
 	
+	//set the header image, if defined
+	if ($(data).find('learningObject').attr('header') != undefined && $(data).find('learningObject').attr('header') != ''){
 		$('#overview').css({filter:''}); //for IE8
 		
-		$('#overview').css('background-image', "url(" + eval( $(data).find('learningObject').attr('header'))+ ")");
+		bgImg = "url(" + eval( $(data).find('learningObject').attr('header'))+ ")";
+		
+		$('#overview').css('background-image', bgImg);
+		
+		if ($(data).find('learningObject').attr('headerRepeat') != undefined && $(data).find('learningObject').attr('headerRepeat') != "") {
+			$('#overview').css('background-repeat', $(data).find('learningObject').attr('headerRepeat'));
+			
+			bgImg += ' ' + $(data).find('learningObject').attr('headerRepeat');
+		}
+		
+		if ($(data).find('learningObject').attr('headerPos') != undefined && $(data).find('learningObject').attr('headerPos') != "") {
+			$('#overview').css('background-position', $(data).find('learningObject').attr('headerPos') + ' top');
+			
+			bgImg += ' ' + $(data).find('learningObject').attr('headerPos');
+		}
+		
+		bgImg += ', ';
 	} 
 	
 	if ($(data).find('learningObject').attr('headerColour') != undefined){
@@ -231,15 +248,17 @@ function setup(){
 		col[1] = formatColour(col[1]);
 		
 		$('#overview').css('background', col[0]);
-		$('#overview').css('background', '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
-		$('#overview').css('background', '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
-		$('#overview').css('background', '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
-		$('#overview').css('background', 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
+		$('#overview').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + col[0] + ' 0%, ' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + col[0] + '), color-stop(100%,' + col[1] + '))');
+		$('#overview').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-o-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + col[0] + ' 0%,' + col[1] + ' 100%)');
+		$('#overview').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + col[1]+ ' 100%)');
 		$('#overview').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + col[0] + ', endColorstr=' + col[1] + ',GradientType=1 )');
 		
 	}
+	
+	
 	
 	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
 	

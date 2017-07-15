@@ -27,6 +27,12 @@
 			if (x_params.menuImage != undefined && x_params.menuImage != "" && x_params.navigation != "Linear" && x_params.menuImageProperties == "Full Screen") {
 				this.setUpBg();
 			}
+			
+			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
+				$("#menuItems .menuItem").each(function(i) {
+					if (x_pageInfo[i+1].built) $(this).find('i').removeClass('notvisited');
+				});
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -138,9 +144,11 @@
 				$thisItem.parents("#x_menu").scrollTop($thisItem.position().top - parseInt($thisItem.css("margin-bottom")));
 			}
 
-			$("#menuItems .menuItem").each(function(i) {
-				if (x_pageInfo[i].built) $(this).find('i').removeClass('notvisited');
-			});
+			if (x_params.pageTick == undefined || x_params.pageTick == "true") {
+				$("#menuItems .menuItem").each(function(i) {
+					if (x_pageInfo[i].built) $(this).find('i').removeClass('notvisited');
+				});
+			}
 		}
 		
 		// function sets up full screen bg image
