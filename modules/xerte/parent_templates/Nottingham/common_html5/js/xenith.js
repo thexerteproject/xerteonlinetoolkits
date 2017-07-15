@@ -301,6 +301,10 @@ x_projectDataLoaded = function(xmlData) {
     {
         XTSetOption('page_timeout', x_params.trackingPageTimout);
     }
+    if (x_params.forceTrackingMode != undefined)
+    {
+        XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
+    }
 }
 
 // Make absolute urls from urls with FileLocation + ' in their strings

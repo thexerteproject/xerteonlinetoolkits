@@ -64,6 +64,8 @@ function NoopTrackingState()
     this.lo_completed = 0;
     this.lo_passed = 0;
     this.page_timeout = 5000;
+    this.fullcompletion = false;
+    this.forcetrackingmode = false;
 
 
     this.initialise = initialise;
@@ -416,7 +418,10 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    return "";
+    if (state.forcetrackingmode === 'true')
+        return "normal";
+    else
+        return "";
 }
 
 function XTStartPage()
@@ -483,7 +488,13 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
-
+        case "full_completion":
+            // whether to show completion based on toCompleted or what has been viewed so far
+            state.fullcompletion = value;
+            break;
+        case "force_tracking_mode":
+            state.forcetrackingmode = value;
+            break;
     }
 }
 
@@ -561,7 +572,13 @@ function XTResults()
     }
     if(counter != 0)
     {
-        completion = Math.round((counter/state.completedPages.length)*100);
+        if (state.fullcompletion != 'true') {
+            completion = Math.round((counter / state.completedPages.length) * 100);
+        }
+        else
+        {
+            completion = Math.round((counter / state.toCompletePages.length) * 100);
+        }
     }
     else
     {

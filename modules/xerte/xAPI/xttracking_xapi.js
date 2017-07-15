@@ -38,6 +38,7 @@ function XApiTrackingState()
     this.lo_completed = 0;
     this.lo_passed = 0;
     this.page_timeout = 5000;
+    this.fullcompletion = false;
 
 
     
@@ -406,6 +407,10 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
+        case "full_completion":
+            // whether to show completion based on toCompleted or what has been viewed so far
+            state.fullcompletion = value;
+            break;
     }
 }
 
@@ -608,89 +613,156 @@ function SaveStatement(statement)
 
 function XTResults()
 {
+    var completion = 0;
+    var counter = 0;
+    var completed;
+    for(var i = 0; i< state.completedPages.length;i++)
+    {
+        if(state.completedPages[i] == true)
+        {
+            counter++;
+        }
+    }
+    if(counter != 0)
+    {
+        if (state.fullcompletion != 'true') {
+            completion = Math.round((counter / state.completedPages.length) * 100);
+        }
+        else
+        {
+            completion = Math.round((counter / state.toCompletePages.length) * 100);
+        }
+    }
+    else
+    {
+        completion = 0;
+    }
+
     var results = {};
-    results.mode = x_currentPageXML.getAttribute("mode");
+    results.mode = x_currentPageXML.getAttribute("resultmode");
 
     var score = 0,
-    nrofquestions = 0,
-    totalWeight = 0,
-    totalDuration = 0;
+        nrofquestions = 0,
+        totalWeight = 0,
+        totalDuration = 0;
     results.interactions = Array();
 
     for(i = 0; i < state.interactions.length-1; i++){
-        score += state.interactions[i].score * state.interactions[i].weighting ;
-        if(state.interactions[i].nrinteractions > 0)
-        {
+
+
+        score += state.interactions[i].score * state.interactions[i].weighting;
+        if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
+
             var interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
             interaction.type = state.interactions[i].ia_type;
+            interaction.correct = state.interactions[i].result;
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
+
+            var j = 0;
+            for (j; j < state.toCompletePages.length; j++) {
+                var currentPageNr = state.toCompletePages[j];
+                if (currentPageNr == state.interactions[i].page_nr) {
+                    if (state.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!state.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
+                    }
+                }
+            }
+
             results.interactions[nrofquestions] = interaction;
             totalDuration += state.interactions[i].duration;
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 
-        }else if(results.mode == "full-results")
+        }
+        else if(results.mode == "full-results")
         {
-            var subinteraction = {}
+            var subinteraction = {};
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
                 case "match":
-                    if (state.interactions[i].learneroptions[0] == null)
+                    var resultCorrect;
+                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
                     {
-                        learnerAnswer = "";
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        source = state.interactions[i].correctOptions[c].source;
+                        if(state.interactions[i].learnerOptions.length == 0)
+                        {
+                            learnerAnswer = source + ' --> ' + ' ';
+                        }
+                        else{
+                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
+                            {
+                                if(source == state.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                    break;
+                                }
+                                else{
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
+                            }
+                        }
+
+                        matchSub.question = state.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
                     }
-                    else
-                    {
-                        learnerAnswer = state.interactions[i].learneroptions[0].source;
-                    }
-                    correctAnswer = state.interactions[i].correctoptions[0].source;
+
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learneranswer.join(", ");
-                    correctAnswer = state.interactions[i].correctanswer.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learneranswer[0];
-                    for(var j = 1; j < state.interactions[i].learneranswer.length; j++)
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                    for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
                     {
-                        learnerAnswer += "\n" + state.interactions[i].learneranswer[j];
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
                     }
-                    correctAnswer = state.interactions[i].correctanswer[0];
-                    for(var j = 1; j < state.interactions[i].correctanswer.length; j++)
+                    correctAnswer = state.interactions[i].correctAnswers[0];
+                    for(var j = 1; j < state.interactions[i].correctAnswers.length; j++)
                     {
-                        correctAnswer += "\n" + state.interactions[i].correctanswer[j];
+                        correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
                     }
                     break;
                 case "numeric":
-                    learnerAnswer = state.interactions[i].learneranswer;
-                    correctAnswer = "NA";   // Not applicable
+
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = "-";  // Not applicable
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":
-                    learnerAnswer = state.interactions[i].learneranswer;
-                    correctAnswer = state.interactions[i].correctanswer;
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            subinteraction.question = state.interactions[i].ia_name;
-            subinteraction.learnerAnswer = learnerAnswer;
-            subinteraction.correct = state.interactions[i].result;
-            subinteraction.correctAnswer = correctAnswer;
-            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+            if(state.interactions[i].ia_type != "match") {
+                subinteraction.question = state.interactions[i].ia_name;
+                subinteraction.correct = state.interactions[i].result;
+                subinteraction.learnerAnswer = learnerAnswer;
+                subinteraction.correctAnswer = correctAnswer;
+                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+            }
         }
-
     }
-    if(state.interactions.length == 0)
-    {
-        $("#questionScores").hide()
-    }
+    results.completion = completion;
+    results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = Math.round(score / totalWeight);
+    results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
 
