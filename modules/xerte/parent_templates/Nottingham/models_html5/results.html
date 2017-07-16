@@ -44,9 +44,13 @@
             NACompleteTooltip,
             detailsTooltip,
             noDetailsTooltip,
+            userNameDialogTitle,
+            userNamePrompt,
+            okButtonTxt,
             numLoaded = 0,
 			xtresults,
         	normalcolumns,
+        	username,
         	normalrows = [],
         	detailstablescolumns = [],
         	detailstablesrows = [];
@@ -56,6 +60,10 @@
 		this.pageChanged = function() {
 
 		    this.getLabels();
+		    // Always regenerate page
+			$("#questionScores").html("");
+			$("#fullResults").html("");
+		    this.init();
 
         };
 		
@@ -97,7 +105,16 @@
 			}
 		};
 
+        this.userNameEntered = function()
+		{
+		    username = $("#name").val();
+		    $("#dialog-form").dialog("close");
+		    this.pdfDownload(true);
+		};
+
         this.init = function() {
+
+
 
             var loadFiles = true;
             if(xot_offline) {
@@ -116,8 +133,25 @@
                 this.loadJS();
             }
 
-		    //XTSetPageType(x_currentPage, 'result', 0, 0);
+		    XTSetPageType(x_currentPage, 'result', 0, 0);
 		    this.getLabels();
+
+            var dialog_buttons = {};
+            dialog_buttons[okButtonTxt] = function(){ results.userNameEntered(); };
+            var dialog = $( "#dialog-form" ).dialog({
+                autoOpen: false,
+                height: 150,
+                width: 350,
+                modal: true,
+                buttons: dialog_buttons,
+                close: function() {
+
+                }
+            });
+            //form = dialog.find( "form" ).on( "submit", function( event ) {
+            //    event.preventDefault();
+            //    results.userNameEntered();
+            //});
 
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 			
@@ -128,11 +162,11 @@
 			} else if (x_currentPageXML.getAttribute("textWidth") == "600") {
 				$pageContents.addClass("width80");
 			}
-
-			var showzeroweight = true;
-			if (x_currentPageXML.getAttribute("skipweigthingzero") != undefined)
+			debugger;
+			var showzeroweight = false;
+			if (x_currentPageXML.getAttribute("showweightingzero") != undefined)
             {
-                showzeroweight =  x_currentPageXML.getAttribute("skipweigthingzero");
+                showzeroweight =  x_currentPageXML.getAttribute("showweightingzero");
             }
             var disableexportpdf = false;
             if (x_currentPageXML.getAttribute("disableexportpdf") == 'true')
@@ -227,12 +261,12 @@
                             var correctAnswer = y.correctAnswer;
                             if (learnerAnswer == correctAnswer || y.correct) {
                                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-check green' title='" + correctTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
-                                var detailstablerow = [correctTooltip, question, learnerAnswer, correctAnswer];
+                                var detailstablerow = ["correct", question, learnerAnswer, correctAnswer];
                                 detailstablerows.push(detailstablerow);
                             }
                             else {
                                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-times red' title='" + inCorrectTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
-                                var detailstablerow = [inCorrectTooltip, question, learnerAnswer, correctAnswer];
+                                var detailstablerow = ["incorrect", question, learnerAnswer, correctAnswer];
                                 detailstablerows.push(detailstablerow);
                             }
                             altfullrow = !altfullrow;
@@ -273,7 +307,11 @@
 			NACompleteTooltip = x_currentPageXML.getAttribute("NACompleteTooltip") != undefined && x_currentPageXML.getAttribute("NACompleteTooltip") != "" ? x_currentPageXML.getAttribute("NACompleteTooltip") : "Not applicable";
 			detailsTooltip = x_currentPageXML.getAttribute("detailsTooltip") != undefined && x_currentPageXML.getAttribute("detailsTooltip") != "" ? x_currentPageXML.getAttribute("detailsTooltip") : "Details available";
             noDetailsTooltip = x_currentPageXML.getAttribute("noDetailsTooltip") != undefined && x_currentPageXML.getAttribute("noDetailsTooltip") != "" ? x_currentPageXML.getAttribute("noDetailsTooltip") : "No details available";
-
+            userNameDialogTitle = x_currentPageXML.getAttribute("userNameDialogTitle") != undefined && x_currentPageXML.getAttribute("userNameDialogTitle") != "" ? x_currentPageXML.getAttribute("userNameDialogTitle") : "Enter user name";
+            userNamePrompt = x_currentPageXML.getAttribute("userNamePrompt") != undefined && x_currentPageXML.getAttribute("userNamePrompt") != "" ? x_currentPageXML.getAttribute("userNamePrompt") : "User name:";
+            okButtonTxt = x_currentPageXML.getAttribute("okButtonTxt") != undefined && x_currentPageXML.getAttribute("okButtonTxt") != "" ? x_currentPageXML.getAttribute("okButtonTxt") : "OK";
+            $("#dialog-form").attr("title", userNameDialogTitle);
+            $("#namelabel").html(userNamePrompt);
             $("#generalResultsTxt").html(generalResultsTxt);
             $("#averageTxt").html(averageTxt);
             $("#durationTxt").html(durationTxt);
@@ -291,7 +329,13 @@
             $("#button").html(downloadPdfTxt);
         }
 
-        this.pdfDownload = function() {
+        this.pdfDownload = function(skip) {
+
+            if (skip!==true && x_currentPageXML.getAttribute("givename"))
+            {
+                $("#dialog-form").dialog( "open" );
+                return;
+            }
             var pdf = new jsPDF('p', 'mm', 'a4');
 
             var checkmark = "data:image/png;base64,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";
@@ -326,6 +370,12 @@
             */
             var vertpos = 20;
             pdf.setFontSize(14);
+
+            if (x_currentPageXML.getAttribute("givename"))
+			{
+                pdf.text(username, 10, vertpos);
+                vertpos += 5;
+			}
             pdf.text(generalResultsTxt, 10, vertpos);
             vertpos += 0.2;
             pdf.lines([[190,0]], 10, vertpos);
@@ -393,10 +443,10 @@
                             imgIndex++;
                         }
                     },
-                    afterPageContent: function() {
+                    addPageContent: function() {
                         for (var i = 0; i < images.length; i++) {
                             if (!images[i].used) {
-                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.5, 2.5, 2.5);
+                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
                                 images[i].used = true;
                             }
                         }
@@ -476,10 +526,10 @@
                             imgIndex++;
                         }
                     },
-                    afterPageContent: function() {
+                    addPageContent: function() {
                         for (var i = 0; i < images.length; i++) {
                             if (!images[i].used) {
-                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.5, 2.5, 2.5);
+                                pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
                                 images[i].used = true;
                             }
                         }
@@ -526,10 +576,10 @@
                                 imgIndex++;
                             }
                         },
-                        afterPageContent: function() {
+                        addPageContent: function() {
                             for (var i = 0; i < images.length; i++) {
                                 if (!images[i].used) {
-                                    pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.5, 2.5, 2.5);
+                                    pdf.addImage(images[i].url, 'png', images[i].x, images[i].y + 0.4, 2.4, 2.4);
                                     images[i].used = true;
                                 }
                             }
@@ -551,6 +601,16 @@ results.init();
 
 
 <div id="pageContents">
+	<div id="dialog-form" title="Create new user">
+		<form>
+			<fieldset>
+				<label id="namelabel" for="name">Name</label>
+				<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+
+			</fieldset>
+		</form>
+	</div>
+
 	<div id="pdfContent">
 		<h3 id="generalResultsTxt"></h3>
 		<table id="general_summary" rules="rows">

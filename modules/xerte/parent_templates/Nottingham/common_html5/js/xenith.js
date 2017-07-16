@@ -299,7 +299,7 @@ x_projectDataLoaded = function(xmlData) {
 
 	if (x_params.trackingPageTimeout != undefined)
     {
-        XTSetOption('page_timeout', x_params.trackingPageTimout);
+        XTSetOption('page_timeout', x_params.trackingPageTimeout);
     }
     if (x_params.forceTrackingMode != undefined)
     {

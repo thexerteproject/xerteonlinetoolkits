@@ -2542,7 +2542,7 @@
 
         <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Normal Results,Full Results" data="minimal-results,normal-results,full-results"/>
         <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="false"/>
-        <skipweigthingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false"/>
+        <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false"/>
 
     <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
