@@ -960,7 +960,7 @@ function x_continueSetUp1() {
 			icons: {
 				primary: "x_colourChanger"
 			},
-			label:	"Change Colours",
+			label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
 			text:	false
 		})
 		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)
