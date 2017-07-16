@@ -187,6 +187,7 @@
 			var detailstables=0;
 			var firstnormalrow=true;
 			var detailstable = $("<table class='details'>");
+			var scoretxt;
 
 
 			xtresults.interactions.forEach(function(x)
@@ -222,6 +223,14 @@
 					completedToken = '<i class="fa fa-minus" title="' + NACompleteTooltip + '"></i>';
 					completedTokenTxt = '-';
 				}
+				if (x.type == 'page')
+				{
+				    scoretxt = '-';
+				}
+				else
+				{
+				    scoretxt = x.score + '%';
+				}
 				if(xtresults.mode == 'normal-results'){
                     $("#specific").show();
                     $("#specificResultsTxt").hide();
@@ -231,8 +240,8 @@
                         normalcolumns = [nameTxt, scoreTxt, durationTxt, weightingTxt, completedTxt];
                         firstnormalrow = false;
 					}
-					$("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + x.score + "%</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td></tr>");
-					var normalrow = [x.title, x.score, x.duration, x.weighting, completedTokenTxt];
+					$("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td></tr>");
+					var normalrow = [x.title, scoretxt, x.duration, x.weighting, completedTokenTxt];
 					normalrows.push(normalrow);
 					altnormalrow = !altnormalrow;
                 }
@@ -245,8 +254,8 @@
                         $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th>");
                         firstnormalrow = false;
                     }
-                    $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + x.score + "%</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td><td class='td-right'>" + interactiveToken + "</td></tr>");
-                    var normalrow = [x.title, x.score, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
+                    $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td><td class='td-right'>" + interactiveToken + "</td></tr>");
+                    var normalrow = [x.title, scoretxt, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
                     normalrows.push(normalrow);
                     altnormalrow = !altnormalrow;
 					altfullrow = false;
