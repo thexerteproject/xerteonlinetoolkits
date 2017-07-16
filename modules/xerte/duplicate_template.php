@@ -98,7 +98,11 @@ function duplicate_template($folder_name_id,$id_to_copy,$tutorial_id_from_post){
 
     global $dir_path, $new_path, $temp_dir_path, $temp_new_path, $xerte_toolkits_site;
 
-    $dir_path = $xerte_toolkits_site->users_file_area_full . $id_to_copy. "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
+    /*
+     * Get username of original template (might be from a different user, if current user is co-author)
+     */
+    $username = get_template_creator_username($id_to_copy);
+    $dir_path = $xerte_toolkits_site->users_file_area_full . $id_to_copy. "-" . $username . "-" . $tutorial_id_from_post . "/";
 
     /*
      * Get the id of the folder we are looking to copy into
