@@ -42,6 +42,8 @@
 	<chkShowToolbar label="Toon Knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
 	<compMedia tooltip="Importeer Media"/>
 	<compPreview tooltip="Voorvertoning"/>
+	<hidePage tooltip="Deze pagina is verborgen"/>
+	<unmarkForCompletion tooltip="Deze pagine telt niet mee bij bepaling van voltooiing"/>
 	<filemenu title="Bestand">
 		<menuNew>Nieuw Project...</menuNew>
 		<menuOpen>Open...</menuOpen>
@@ -147,5 +149,10 @@
         </upload>
 
 	</Alert>
-
+	<XotLinkRelativePages>
+		<firstpage>[eerste pagina]</firstpage>
+		<lastpage>[laatste pagina]</lastpage>
+		<nextpage>[volgende pagina]</nextpage>
+		<prevpage>[vorige pagina]</prevpage>
+	</XotLinkRelativePages>
 </language>
