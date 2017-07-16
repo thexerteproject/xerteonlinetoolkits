@@ -31,7 +31,7 @@
 	</delimiters>
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-    <noise label="Distractors" type="script" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
+    <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
