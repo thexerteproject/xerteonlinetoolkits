@@ -69,7 +69,19 @@ class XerteXWDBuilder
 		$this->menuattrs = array_values($this->menuattrs);
 		
 		global $basicPageXML;
-		$basicPageXML = simplexml_load_file($basicPages);
+		if (file_exists($basicPages)) {
+			$basicPageXML = simplexml_load_file($basicPages);
+		}
+		else
+		{
+			$basicPageXML = new SimpleXMLElement('<commonNodes></commonNodes>');
+		}
+		// Add common="true" attribute to all children of basicPagesXML
+		$elements = $basicPageXML->xpath('/commonNodes/*');
+		foreach($elements as $node)
+		{
+		    $node->addAttribute("common", "true");
+		}
 	}
 
 	public function addMenuAttr($attr)

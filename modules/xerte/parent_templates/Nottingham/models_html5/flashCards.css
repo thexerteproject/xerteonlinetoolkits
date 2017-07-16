@@ -1,0 +1,107 @@
+/* flashCards.html */
+	
+	h3 {
+		padding: 4px; /* ** ideally put elsewhere */
+	}
+	
+	#x_pageDiv {
+		overflow: hidden;
+	}
+	
+	#textHolder {
+		overflow: auto;
+		margin-bottom: 2%;
+		max-height: 20%;
+	}
+	
+	#cardHolder, #cardCtrls {
+		display: table;
+	}
+	
+	#cardHolder {
+		width: 100%;
+		height: 1px;
+		min-height: 78%;
+	}
+	
+	#cardHolder.full {
+		min-height: 100%;
+	}
+	
+	#cardCtrls {
+		width: 100%;
+		height: 100%;
+	}
+	
+	.btnHolder, #cards {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	#leftBtn {
+		text-align: right;
+	}
+	
+	#rightBtn {
+		text-align: left;
+	}
+	
+	#prevBtn, #nextBtn {
+		margin: 1em;
+	}
+	
+	.card .panel {
+		padding: 0px;
+		text-align: left;
+	}
+	
+	.cardInner {
+		overflow: auto;
+		padding: 1em;
+	}
+	
+	.flipBtnHolder {
+		width: 100%;
+		text-align: center;
+		margin: 1em 0;
+	}
+	
+	#cardNoHolder {
+		display: table-row;
+		height: 1px;
+		vertical-align: middle;
+		text-align: center;
+	}
+	
+	#cardNoTxt {
+		display: table-cell;
+		vertical-align: middle;
+		padding: 1em;
+		font-weight: bold;
+	}
+	
+	.mediaHolder {
+		text-align: center;
+	}
+	
+	.cardVideo {
+		margin: 0 auto;
+	}
+	
+	.cardVideo, .cardAudio {
+		overflow: hidden;
+	}
+	
+	.mediaHolder .cardImg {
+		max-width: 95%;
+		max-height: 95%;
+	}
+	
+	.ui-effects-wrapper {
+		overflow: visible !important;
+	}
+	
+	#cards.hideOverflow, #cards.hideOverflow .cardInner {
+		overflow: hidden;
+	}
+	

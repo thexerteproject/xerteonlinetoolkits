@@ -77,7 +77,7 @@
                 }
 				l_options.push(l_option);
             });
-            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers.join(';'), l_feedback.join(';'));
+            XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
             XTSetPageScore(x_currentPage, (l_correct * 100.0)/this.totaloptions);
             this.checked = true;
         }
@@ -357,67 +357,6 @@
 	
 </script>
 
-<style type="text/css">
-	
-	#dragDropHolder {
-		overflow:	auto;
-	}
-	
-	#dragDropHolder .label {
-		cursor:				pointer;
-		list-style-type:	none;
-		padding:			5px;
-		position:			relative;
-	}
-	
-	#dragDropHolder .label.focus {
-		border:	2px solid yellow;
-	}
-	
-	#dragDropHolder .label.selected {
-		border:	2px solid green;
-	}
-	
-	#dragDropHolder .tick {
-		position: absolute;
-		bottom: 0px;
-		right: 0px
-	}
-	
-	#initHolder {
-		padding:		0px;
-		margin-right:	2%;
-		float:			right;
-	}
-	
-	#categoryHolder {
-		clear:	right;
-	}
-	
-	#categoryHolder .category {
-		padding:			1%;
-		float:				left;
-	}
-	
-	#categoryHolder .category .label {
-		margin-top:		10px;
-	}
-	
-	#categoryHolder h3 {
-		text-align:		center;
-	}
-	
-	#button {
-		clear:			left;
-		margin-bottom:	10px;
-		float:			right;
-	}
-	
-	#feedback {
-		clear:	left;
-	}
-	
-</style>
 
 <div id="pageContents">
 	

@@ -36,7 +36,7 @@ if(is_user_admin()) {
         rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?, 
         error_log_message=?, error_email_message=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=? , site_email_account=?,
         headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?,import_path=? ,
-        apache=?, mimetypes=?, LDAP_preference=? ,LDAP_filter=? , integration_config_path=?, admin_username=? ,admin_password=? ";
+        apache=?, mimetypes=?, LDAP_preference=? ,LDAP_filter=? , integration_config_path=?, admin_username=? ,admin_password=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=? ";
 
     $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
         base64_encode(stripcslashes($_POST['peer_form_string'])), $_POST['feedback_list'], $_POST['rss_title'], $_POST['module_path'], $_POST['website_code_path'], $_POST['users_file_area_short'],
@@ -44,7 +44,7 @@ if(is_user_admin()) {
         $_POST['error_email_message'], $_POST['authentication_method'], $_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['bind_dn'], $_POST['flash_save_path'], $_POST['flash_upload_path'],
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
-        $_POST['mimetypes'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password']);
+        $_POST['mimetypes'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret']);
 
     $res = db_query($query, $data);
 

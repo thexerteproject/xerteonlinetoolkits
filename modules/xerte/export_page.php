@@ -39,6 +39,12 @@
     echo "<ol type='a'>";
     echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm_rich" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_12_LINK . "</button></li><br/>";
     echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("scorm2004" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_SCORM_2004_LINK . "</button></li><br /></ol></li>";
+    echo "<li>" . XERTE_EXPORT_XAPI;
+    //echo "<ul type='a'>";
+    //echo "<li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("xAPI" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_XAPI_LINK . "</button></li><br />";
+	//echo "<li><button type=\"button\" class=\"xerte_button\"><a href=\"" . $xerte_toolkits_site->site_url . "website_code/php/scorm/export.php?tsugi=true&template_id=" . $_POST['template_id'] . "\"><i class=\"fa fa-download\"></i> To tsugi</a></button></li><br />";
+
+	echo "</ul></li>";
     echo "<li>" . XERTE_EXPORT_ZIP_ARCHIVE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_full" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_ARCHIVE_LINK . "</button></li></ul><br /></li>";
     echo "<li>" . XERTE_EXPORT_ZIP_OFFLINE . "<ul><li><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export_offline" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_OFFLINE_LINK . "</button></li></ul><br /></li>";
     echo "</ol>";

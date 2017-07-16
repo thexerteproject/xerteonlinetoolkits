@@ -23,7 +23,7 @@ global $oauth2config;
 $oauth2config = array(
     'CLIENT_ID'              => '',
     'CLIENT_SECRET'          => '',
-    'REDIRECT_URI'           => 'library/Xerte/Authentication/OAuth2/response.php',
+    'REDIRECT_URI'           => '',
     'AUTHORIZATION_ENDPOINT' => '',
     'TOKEN_ENDPOINT'         => '',
 //    'ACCESS_TOKENTYPE'       => OAuth2\Client::ACCESS_TOKEN_BEARER,

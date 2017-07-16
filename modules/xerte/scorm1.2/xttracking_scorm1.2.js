@@ -143,16 +143,20 @@ function ScormTrackingState()
     this.skipinteractions = false;
     this.scoremode = "first";
     this.nrpages = 0;
+    this.toCompletePages = new Array();
+    this.completedPages = new Array();
     this.pages_visited=0;
     this.start = new Date();
     this.duration_previous_attempts = 0;
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
+    this.page_timeout = 5000;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
 
     this.setVars = setVars;
+    this.pageCompleted = pageCompleted;
     this.find = find;
     this.findcreate = findcreate;
     this.findPage = findPage;
@@ -178,6 +182,26 @@ function ScormTrackingState()
     this.scorm_nr_interactions = scorm_nr_interactions;
     this.id_to_interactionidx = id_to_interactionidx;
 
+
+    function pageCompleted(sit)
+    {
+        for (i=0; i<sit.nrinteractions; i++)
+        {
+            var sit2 = state.findInteraction(sit.page_nr, i);
+            if (sit2 == null || sit2.duration < 100)
+            {
+                return false;
+            }
+        }
+        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+
     function setVars(jsonStr)
     {
         if (jsonStr.length > 0)
@@ -194,6 +218,7 @@ function ScormTrackingState()
             this.duration_previous_attempts = jsonObj.duration_previous_attempts;
             this.lo_type = jsonObj.lo_type;
             this.lo_passed = jsonObj.lo_passed;
+            this.page_timout = jsonObj.page_timeout;
             this.lo_completed = jsonObj.lo_completed;
 //            this.finished = jsonObj.finished;
             this.interactions = new Array();
@@ -219,7 +244,7 @@ function ScormTrackingState()
         }
         // Not found
         var sit =  new ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
-        if (ia_type != "page")
+        if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
             if (this.lo_passed == -1)
@@ -496,9 +521,17 @@ function ScormTrackingState()
                     case 'numeric':
                         res = setValue(interaction + 'type', 'numeric');
                         res = setValue(interaction + 'correct_responses.0.pattern', '100');
-                        res = setValue(interaction + 'weighting', Math.round(sit.weighting*100)/100);
-                        res = setValue(interaction + 'student_response', sit.score);
-                        res = setValue(interaction + 'result', Math.round(sit.score*100)/100);
+                        if (ia_nr <0)  // Page mode
+                        {
+                            res = setValue(interaction + 'weighting', Math.round(sit.weighting*100)/100);
+                            res = setValue(interaction + 'student_response', sit.score);
+                            res = setValue(interaction + 'result', Math.round(sit.score*100)/100);
+                        }
+                        else { // Interaction mode
+                            res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
+                            res = setValue(interaction + 'student_response', sit.learneranswer);
+                            res = setValue(interaction + 'result', Math.round(sit.learneranswer * 100) / 100);
+                        }
                         break;
                     case 'text':
                     case 'fill-in':
@@ -551,41 +584,68 @@ function ScormTrackingState()
                     this.skipcomments = true;
                 }
             }
-            this.finishTracking(state.currentpageid);
+            //this.finishTracking(state.currentpageid);
+            var temp = false;
+            var i = 0;
+            for(i=0; i<state.toCompletePages.length;i++)
+            {
+                var currentPageNr = state.toCompletePages[i];
+                if(currentPageNr == page_nr)
+                {
+                    temp = true;
+                    break;
+                }
+            }
+            if(temp)
+            {
+                if (! state.completedPages[i]) {
+                    var sit = state.findInteraction(page_nr, -1);
+                    if (sit != null) {
+                        // Skip results page ompletely
+                        if (sit.ia_type == "result") {
+                            state.completedPages[i] = state.pageCompleted(sit);
+                        }
+                    }
+                }
+            }
+
         }
     }
 
     function getSuccessStatus()
     {
-        if (this.lo_type != "pages only")
+        var completed = false;
+        for(var i = 0; i<state.completedPages.length; i++)
         {
-            if (this.nrpages > this.pages_visited)
+            if(state.completedPages[i] == false)
             {
-                return 'incomplete';
+                break;
             }
-            else
+            if( i == state.completedPages.length-1 && state.completedPages[i] == true)
             {
-                if (this.getdScaledScore() > this.lo_passed)
-                {
-                    return "passed";
-                }
-                else
-                {
-                    return "failed";
-                }
+                completed = true;
             }
+        }
+
+        if (!completed)
+        {
+
+            return 'incomplete';
+        }
+        else if(state.getScaledScore() == 0)
+        {
+            return "completed";
         }
         else
         {
-            if (this.nrpages <= this.pages_visited)
-            {
-                return "completed";
+            if (state.getdScaledScore() > this.lo_passed) {
+                return "passed";
             }
-            else
-            {
-                return 'incomplete';
+            else {
+                return "failed";
             }
         }
+
     }
 
     function getdScaledScore()
@@ -595,7 +655,7 @@ function ScormTrackingState()
 
     function getScaledScore()
     {
-        return this.getdScaledScore() + "";
+        return Math.round(this.getdScaledScore()*100)/100 + "";
     }
 
     function getdRawScore()
@@ -638,7 +698,7 @@ function ScormTrackingState()
                 // If the weight is 0.0, set the score to 100
                 totalscore = 100.0;    
             }
-            return Math.round(totalscore*100/100);
+            return Math.round(totalscore*100)/100;
         }
     }
 
@@ -780,10 +840,7 @@ function XTGetMode()
             var sit=state.find(state.currentpageid);
             if (sit != null)
             {
-                if (sit.weighting > 0)
-                    return "normal";
-                else
-                    return "not-tracking";
+                return "normal";
             }
         }
         return "tracking";
@@ -827,6 +884,14 @@ function XTSetOption(option, value)
         case "nrpages":
             state.nrpages = value;
             break;
+        case "toComplete":
+            state.toCompletePages = value;
+            //completedPages = new Array(length(toCompletePages));
+            for(var i = 0; i< state.toCompletePages.length;i++)
+            {
+                state.completedPages[i] = false;
+            }
+            break;
         case "tracking-mode":
             switch(value)
             {
@@ -857,6 +922,10 @@ function XTSetOption(option, value)
         case "objective_passed":
             state.lo_passed = Number(value);
             break;
+        case "page_timeout":
+            // Page timeout in seconds
+            state.page_timeout = Number(value) * 1000;
+            break;
     }
 }
 
@@ -881,11 +950,14 @@ function XTEnterPage(page_nr, page_name)
 }
 
 
-function XTExitPage(page_nr)
+function XTExitPage(page_nr, page_name)
 {
+
     if (state.scormmode == 'normal')
     {
-        return state.exitInteraction(page_nr, -1, false, "", "", "", false);
+        state.exitInteraction(page_nr, -1, false, "", "", "", false);
+
+
     }
 }
 
@@ -998,3 +1070,168 @@ function XTTerminate()
         }
     }
     doLMSFinish();}
+
+function XTResults(fullcompletion)
+{
+    var completion = 0;
+    var nrcompleted = 0;
+    var nrvisited = 0;
+    var completed;
+    $.each(state.completedPages, function(i, completed)
+    {
+        // indices not defined will be visited anyway.
+        // In that case 'completed' will be undefined
+        if (completed)
+        {
+            nrcompleted++;
+        }
+        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        }
+    })
+
+    if(nrcompleted != 0)
+    {
+        if (! fullcompletion) {
+            completion = Math.round((nrcompleted / nrvisited) * 100);
+        }
+        else
+        {
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+        }
+    }
+    else
+    {
+        completion = 0;
+    }
+
+    var results = {};
+    results.mode = x_currentPageXML.getAttribute("resultmode");
+
+    var score = 0,
+        nrofquestions = 0,
+        totalWeight = 0,
+        totalDuration = 0;
+    results.interactions = Array();
+
+    for(i = 0; i < state.interactions.length-1; i++){
+
+
+        score += state.interactions[i].score * state.interactions[i].weighting;
+        if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
+
+            var interaction = {};
+            interaction.score = Math.round(state.interactions[i].score);
+            interaction.title = state.interactions[i].ia_name;
+            interaction.type = state.interactions[i].ia_type;
+            interaction.correct = state.interactions[i].result;
+            interaction.duration = Math.round(state.interactions[i].duration / 1000);
+            interaction.weighting = state.interactions[i].weighting;
+            interaction.subinteractions = Array();
+
+            var j = 0;
+            for (j; j < state.toCompletePages.length; j++) {
+                var currentPageNr = state.toCompletePages[j];
+                if (currentPageNr == state.interactions[i].page_nr) {
+                    if (state.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!state.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
+                    }
+                }
+            }
+
+            results.interactions[nrofquestions] = interaction;
+            totalDuration += state.interactions[i].duration;
+            nrofquestions++;
+            totalWeight += state.interactions[i].weighting;
+
+        }
+        else if(results.mode == "full-results")
+        {
+            var subinteraction = {};
+
+            var learnerAnswer, correctAnswer;
+            switch (state.interactions[i].ia_type){
+                case "match":
+                    var resultCorrect;
+                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
+                    {
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        source = state.interactions[i].correctOptions[c].source;
+                        if(state.interactions[i].learnerOptions.length == 0)
+                        {
+                            learnerAnswer = source + ' --> ' + ' ';
+                        }
+                        else{
+                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
+                            {
+                                if(source == state.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                    break;
+                                }
+                                else{
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
+                            }
+                        }
+
+                        matchSub.question = state.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
+                    }
+
+                    break;
+                case "text":
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
+                    break;
+                case "multiplechoice":
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                    for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
+                    {
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
+                    }
+                    correctAnswer = state.interactions[i].correctAnswers[0];
+                    for(var j = 1; j < state.interactions[i].correctAnswers.length; j++)
+                    {
+                        correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
+                    }
+                    break;
+                case "numeric":
+
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = "-";  // Not applicable
+                    //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
+                    break;
+                case "fill-in":
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
+                    break;
+            }
+            if(state.interactions[i].ia_type != "match") {
+                subinteraction.question = state.interactions[i].ia_name;
+                subinteraction.correct = state.interactions[i].result;
+                subinteraction.learnerAnswer = learnerAnswer;
+                subinteraction.correctAnswer = correctAnswer;
+                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+            }
+        }
+    }
+    results.completion = completion;
+    results.completion = completion;
+    results.score = score;
+    results.nrofquestions = nrofquestions;
+    results.averageScore = state.getScaledScore()*100;
+    results.totalDuration = Math.round(totalDuration / 1000);
+    results.start = state.start.toLocaleString();
+
+    return results;
+}

@@ -55,7 +55,7 @@ $query_sharing_rows = db_query($sql, array($_POST['template_id'], $_SESSION['too
  * show a different view if you are the file creator
  */
 
-if(is_user_creator((int) $_POST['template_id'])){
+if(is_user_creator_or_coauthor((int) $_POST['template_id'])){
 
     echo "<div>";
     echo "<p class=\"header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
@@ -87,6 +87,16 @@ foreach($query_sharing_rows as $row) {
         if(is_user_creator($_POST['template_id'])){
 
             echo "<p class=\"share_files_paragraph\">";
+
+            if($row['role']=="co-author"){
+
+                echo "<img src=\"website_code/images/TickBoxOn.gif\" style=\"\" class=\"share_files_img\" /> " . SHARING_COAUTHOR;
+
+            }else{
+
+                echo "<img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:set_sharing_rights_template('co-author', '" . $row['template_id'] . "','" . $row['user_id'] . "')\" class=\"share_files_img\" /> " . SHARING_COAUTHOR;
+
+            }
 
             if($row['role']=="editor"){
 

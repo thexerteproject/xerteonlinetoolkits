@@ -1,0 +1,542 @@
+<script type="text/javascript">
+	var opinion = new function()
+	{
+		var currentQuestion,
+			resultShown,
+			checked,			
+			questionNumberText;
+		var	answeredValues = {};
+		
+		this.sizeChanged = function()
+		{
+			var $panel = $("#pageContents .qPanel");
+			
+			if (x_browserInfo.mobile == false)
+			{
+				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
+			}
+			
+			var resized = false;
+			
+			var questionAudio = $("#questionAudio");
+
+			if (questionAudio.children().length > 0)
+			{
+				if (resized == false)
+				{
+					var audioBarW = 0;
+					questionAudio.find(".mejs-inner").find(".mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					if (audioBarW < questionAudio.width() - 5 || audioBarW > questionAudio.width() + 5)
+					{
+						resized = true;
+						$x_window.resize();
+					}
+				}
+			}
+			
+			var audioHolder = $("#pageContents .audioHolder");
+
+			if (audioHolder.length > 0)
+			{
+				if (resized == false)
+				{
+					var audioBarW = 0;
+					$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
+						audioBarW += $(this).outerWidth();
+					});
+					
+					if (audioBarW - audioHolder.parents("#mainPanel").width() < -2 || audioBarW - audioHolder.parents("#mainPanel").width() > 2)
+					{
+						resized = true;
+						$x_window.resize();
+					}
+				}
+			}
+			
+			$("#qTxt").width($panel.width());
+		};
+		
+		this.loadAudio = function(soundFile)
+		{
+			if (soundFile != undefined && soundFile != "")
+			{
+				$("#questionAudio").mediaPlayer({
+					type	:"audio",
+					source	:soundFile,
+					width	:"100%"
+				});
+			}
+		};
+		
+		this.startQuestions = function()
+		{
+			// If the language attricute is not defined in the xml, fall back to English.
+			this.questionNumberText = x_currentPageXML.getAttribute("quesCount");
+			
+			if (this.questionNumberText == undefined)
+			{
+				this.questionNumberText = "Question {i} of {n}";
+			}
+			
+            this.showfeedback = false;
+            
+            if (x_currentPageXML.getAttribute("showfeedback") != undefined)
+            {
+                this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
+            }
+
+            $("#sliderHolder").show();
+			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
+			
+			this.currentQuestion = 0;
+			this.questions = []; // array of questions to use (index)
+			this.myProgress = []; // array of whether each question was answered correctly
+			var numberOfQuestions = $(x_currentPageXML).children().length; // Can't be 0
+			
+			if (x_currentPageXML.getAttribute("order") == "random")
+			{
+				var questionNumbers = [];
+				
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					questionNumbers.push(i);
+				}
+				
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					var questionNumber = Math.floor(Math.random() * questionNumbers.length);
+					this.questions.push(questionNumbers[questionNumber]);
+					questionNumbers.splice(questionNumber, 1);
+					this.myProgress.push("");
+				}
+			}
+			else
+			{
+				for (var i = 0; i < numberOfQuestions; i++)
+				{
+					this.questions.push(i);
+					this.myProgress.push("");
+				}
+			}
+			
+			this.weighting =  x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+
+            XTSetPageType(x_currentPage, 'numeric', numberOfQuestions, this.weighting);
+
+			this.loadQuestion();
+			
+            // Queue reparsing of MathJax - fails if no network connection
+            try
+            {
+            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
+            catch (e) {}			
+		};
+		
+		this.loadQuestion = function()
+		{
+			if ($(x_currentPageXML).children().length == 0)
+			{
+				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
+			}
+			else
+			{
+				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQuestion]];
+
+				$("#qNo").html(this.questionNumberText.replace("{i}", this.currentQuestion + 1).replace("{n}", this.questions.length));
+
+				var infoString = $thisQ.getAttribute("prompt");
+				
+				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
+					opinion.loadAudio($thisQ.getAttribute("sound"));
+				}
+				else
+				{
+					$("#questionAudio").empty();
+				}
+				
+				var url = $thisQ.getAttribute("image");
+				
+				if (url != undefined && url != "") {
+					var newString = "";
+					newString += '<img src="' + x_evalURL(url) + '" class="opinionImg"';
+					
+					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "")
+					{
+						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+					}
+					
+					newString += ' />';
+					infoString = newString + infoString;
+				}
+				
+				$("#qTxt").html(x_addLineBreaks(infoString));
+
+				$("#feedback").html("");
+				
+				if ($($thisQ).children().length == 0)
+				{
+					$("#sliderHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
+				}
+				else
+				{
+					var $sliderHolder = $("#sliderHolder"),
+						$labelHolder = $("#labelHolder"),
+						$rangeHolder = $("#rangeHolder");
+
+					$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
+					var $optionTxt = $labelHolder.find(".optionTxt"),
+						$checkBtn = $("#checkBtn"),
+						correctOptions = [],
+						correctAnswer = [];
+
+					$checkBtn.button("disable");
+					var max = $($thisQ).children().length - 1;
+					//TODO get the name of the label instead of the index as slideroutput
+					$rangeHolder.html('<form id="form1"> <input id="slider1" type="range" min="0" max = "' + max + '" step="1" /> <form> ');
+
+					$.each($($thisQ).children(), function(index, value)
+					{
+						var $thisOptionTxt;
+
+						if (index != 0)
+						{
+							$thisOptionTxt = $optionTxt.clone().appendTo($labelHolder);
+							$thisOptionTxt.after(" ");
+						}
+						else
+						{
+							$thisOptionTxt = $optionTxt;
+						}
+
+						$checkBtn.button("enable");
+						$("#nextBtn").button("disable");
+
+						$thisOptionTxt
+							.attr("for", "option" + index)
+							.html(x_addLineBreaks(value.getAttribute("name")));
+
+						$thisOptionTxt[0].onclick = function()
+						{
+						    $("#slider1")[0].value = index;
+						    if (labelsHidden)
+							{
+							    updateBubble();
+							}
+						};
+
+						correctOptions.push(index + 1 + "");
+						correctAnswer.push(value.getAttribute("name"));
+					});
+					
+					var labelsHidden = false;
+
+					if ($labelHolder[0].childElementCount * $labelHolder[0].children[0].clientWidth > $labelHolder[0].clientWidth)
+					{
+						var numberOfOptions = $labelHolder[0].childElementCount;
+						for (var i = 1; i < numberOfOptions - 1; i++)
+						{
+							$labelHolder[0].children[i].style.display = "none";
+						}
+						labelsHidden = true;
+						
+						$labelHolder[0].children[0].className += " leftLabel";
+						$labelHolder[0].children[numberOfOptions - 1].className += " rightLabel";
+                        $("#slider1").after('<output id="sliderOutput1" for="slider1" /> ');
+						$rangeHolder.find("#form1")[0].oninput = function()
+						{
+						    updateBubble();
+						};
+					}
+
+					function updateBubble()
+					{
+                        var index = $("#slider1")[0].valueAsNumber,
+							sliderOutput = $("#sliderHolder").find("#sliderOutput1")[0];
+
+                        sliderOutput.value = $labelHolder[0].children[index].innerHTML;
+                        sliderOutput.style.left = (index / $labelHolder[0].children.length * 100) + "%";
+					}
+					
+					var name = $thisQ.getAttribute("prompt");
+					
+					if ($thisQ.getAttribute("name"))
+					{
+						name = $thisQ.getAttribute("name");
+					}
+
+					if (labelsHidden)
+					{
+					    updateBubble();
+                    }
+
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null);
+					opinion.checked = false;
+				}
+			}
+		};
+		
+		this.pageChanged = function()
+		{
+			if ($(x_currentPageXML).children().length > 0)
+			{
+				this.startQuestions();
+			}
+		};
+		
+		this.leavePage = function()
+		{
+			if ($(x_currentPageXML).children().length > 0)
+			{
+				if (!this.checked)
+				{
+					this.trackQuestion();
+				}
+				
+				if (!this.resultShown)
+				{
+					this.trackOpinion();
+				}
+			}
+		};
+		
+		this.trackQuestion = function()
+		{
+			var currentQ = $(x_currentPageXML).children()[opinion.questions[opinion.currentQuestion]];
+
+            var selected = $('#slider1')[0].valueAsNumber,
+            	options = currentQ.children;
+				correct = true,
+				l_options = [],
+				l_answer = [],
+				currentQuestionValue = 0;
+            
+            for (var i = 0; i < options.length; i++)
+           	{
+           		l_options.push(i + "");
+           	}
+
+        	currentQuestionValue = calcPercentage(selected, options.length);
+        	
+        	if (x_currentPageXML.getAttribute("scale") == "true")
+       		{
+       			currentQuestionValue = 100 - currentQuestionValue;           		
+       		}
+			
+            l_answer.push(Math.round(currentQuestionValue * 10) / 10);
+            
+            var currentQuestionString = opinion.currentQuestion + "";
+            answeredValues[currentQuestionString] = currentQuestionValue;
+            
+			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
+            opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
+            
+			// Continue to next question
+			opinion.currentQuestion++;
+
+			// If last question has been answered - show results, else continue
+			if (opinion.currentQuestion == opinion.questions.length)
+			{
+				opinion.trackOpinion();
+				opinion.resultShown = true;
+			}
+			else
+			{
+				opinion.loadQuestion();
+			}
+
+            // Queue reparsing of MathJax - fails if no network connection
+            try
+            {
+            	MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
+            catch (e) {}
+		};
+		
+		this.trackOpinion = function()
+		{
+			 // Last question answered - show results
+            var $pageContents = $("#pageContents");
+            $("#qNo").html($pageContents.data("onCompletionText"));
+            
+            var feedbackText = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+
+            var myScore = 0;
+            
+            for (var key in answeredValues)
+            {
+            	myScore += answeredValues[key];
+            }
+            
+            myScore = Math.round(10 * myScore / Object.keys(answeredValues).length) / 10;
+
+            if (opinion.showfeedback) {
+
+                $("#feedback").html(feedbackText);
+            }
+            $("#questionAudio").empty();
+
+            $("#sliderHolder").hide();
+			$("#checkBtn").hide();
+
+            $("#qTxt").html("");
+
+            XTSetPageScore(x_currentPage, myScore);
+            opinion.checked = true;
+		};
+		
+		function calcPercentage(index, count)
+		{
+			var value;
+		 	
+			if (index == 0)
+       		{
+        		value = 0;
+       		}
+        	else if (index == count - 1)
+       		{
+       			value = 100;
+       		}
+        	else
+       		{
+       			value = index / (count - 1) * 100;
+       		}
+			
+			return value;
+		}
+		
+		this.init = function()
+		{
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
+				$splitScreen = $("#pageContents .splitScreen"),
+				$textHolder = $("#textHolder");
+			
+			if (panelWidth == "Full")
+			{
+				$("#infoHolder .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			}
+			else
+			{
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+				var textAlign = x_currentPageXML.getAttribute("align");
+				
+				if (textAlign != "right")
+				{
+					if (panelWidth == "Small")
+					{
+						$splitScreen.addClass("large");
+					}
+					else if (panelWidth == "Large")
+					{
+						$splitScreen.addClass("small");
+					}
+					else
+					{
+						$splitScreen.addClass("medium");
+					}
+				}
+				else
+				{
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small")
+					{
+						$splitScreen.addClass("medium");
+					}
+					else if (panelWidth == "Large")
+					{
+						$splitScreen.addClass("xlarge");
+					}
+					else
+					{
+						$splitScreen.addClass("large");
+					}
+				}
+			}
+			
+			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "")
+			{
+				var tip = x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ?
+						'alt="' + x_currentPageXML.getAttribute("tip") + '"' : "";
+				$textHolder.append('<img class="opinionImg" src="' + x_evalURL(x_currentPageXML.getAttribute("img")) + '"' + tip +'>');
+			}
+			
+			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
+			if (submitBtnText == undefined)
+			{
+				submitBtnText = "Submit";
+			}
+			
+			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
+			if (onCompletionText == undefined)
+			{
+				onCompletionText = "You have completed the questionaire";
+			}
+
+            $("#pageContents").data({
+				"onCompletionText"	:onCompletionText,
+			});
+            
+            // submit button
+            $("#checkBtn")
+			.button({
+				label: submitBtnText
+				})
+			.click(function() {
+				    opinion.trackQuestion();
+                });
+
+			this.startQuestions();
+			this.sizeChanged();
+			x_pageLoaded();			
+		}
+	};
+
+	opinion.init();
+</script>
+
+<div id="pageContents">
+
+	<div class="splitScreen">
+
+		<div id="textHolder" class="left"></div>
+
+		<div id="infoHolder" class="right">
+		
+			<div id="mainPanel" class="panel qPanel">
+			
+				<h3 id="qNo" aria-live="polite"></h3>
+								
+				<fieldset class="noStyle">
+				
+					<legend id="qTxt"></legend>
+				
+					<div id="questionAudio"></div>
+					<div id="sliderHolder">
+						<div id="labelHolder"></div>
+						<div id="rangeHolder"></div>
+					</div>
+					
+					<div id="buttonHolder">
+						<button id="checkBtn"></button>
+					</div>
+					
+					<div id="feedback" aria-live="polite"></div>
+					
+				</fieldset>
+				
+			</div>
+			
+		</div>
+
+	</div>
+
+</div>

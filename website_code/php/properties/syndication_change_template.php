@@ -39,7 +39,7 @@ if(is_numeric($_POST['tutorial_id'])){
 
     $database_connect_id = database_connect("syndication change template database connect success", "syndication change template database connect failed");
 
-    if(is_user_creator($_POST['tutorial_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['tutorial_id'])||is_user_admin()){
 
         $query_for_syndication_status = "select syndication from {$prefix}templatesyndication where template_id=?";
         $params = array($_POST['tutorial_id']);

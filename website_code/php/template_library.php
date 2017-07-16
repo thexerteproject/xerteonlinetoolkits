@@ -43,6 +43,23 @@ function get_template_type($template_id){
 
 }
 
+function get_template_creator_username($template_id){
+
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("SELECT ld.username FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE td.template_id = ? and td.creator_id=ld.login_id", array($template_id));
+
+    if($row == false) {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get creator username", "Failed to get the username of the template's creator");
+    }
+    else {
+        return $row['username'];
+    }
+
+}
+
+
+
 function get_default_engine($template_id)
 {
     global $xerte_toolkits_site;

@@ -128,6 +128,7 @@ class OAuth2Client
         // prepare access_token request
         $tokenRequestData = [
             'client_id' => $this->provider->getId(),
+            'client_secret' => $this->provider->getSecret(),
             'grant_type' => 'authorization_code',
             'code' => $authorizationResponseCode,
             'redirect_uri' => $queryParams['redirect_uri'],

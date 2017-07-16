@@ -46,9 +46,9 @@ $database_connect_id = database_connect("Folder_content_template.php connect suc
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
 $query_for_rss_templates = "select * from  {$prefix}templatedetails, {$prefix}templaterights, {$prefix}templatesyndication where creator_id= ? "
-. " and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and {$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id and role= ? AND (rss = ? OR export = ?)";
+. " and {$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and {$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id and (role= ? or role=?) AND (rss = ? OR export = ?)";
 
-$params = array($_SESSION['toolkits_logon_id'], "creator", "true", "true");
+$params = array($_SESSION['toolkits_logon_id'], "creator", "co-author", "true", "true");
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
 workspace_menu_create(50);

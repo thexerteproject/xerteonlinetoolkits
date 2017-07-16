@@ -38,7 +38,7 @@ if (is_numeric($_GET['template_id'])) {
     if (is_template_exportable($_GET['template_id'])) {
         $proceed = true;
     } else {
-        if (is_user_creator($_GET['template_id']) || is_user_admin()) {
+        if (is_user_creator_or_coauthor($_GET['template_id']) || is_user_admin()) {
             $proceed = true;
         }
     }
@@ -67,8 +67,10 @@ if (is_numeric($_GET['template_id'])) {
 
         $params = array($_GET['template_id'], 'creator');
         $row = db_query_one($query, $params);
-        if (file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php")) {
-            require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php");
+  
+		if (file_exists($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php")) {
+
+			require_once($xerte_toolkits_site->root_file_path . "modules/" . $row['template_framework'] . "/export.php");
         }
     }
 }

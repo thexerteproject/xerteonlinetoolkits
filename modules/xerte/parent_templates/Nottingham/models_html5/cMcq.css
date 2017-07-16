@@ -1,0 +1,32 @@
+/* cMcq.html */
+	
+	#infoHolder .panel {
+		overflow:	auto;
+	}
+	
+	#optionHolder {
+		margin-top:	15px;
+	}
+	
+	#optionHolder input {
+		float:		left;
+		display:	block;
+	}
+	
+	#optionHolder .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		margin-bottom:	10px;
+		display:		block;
+	}
+	
+	#infoHolder button {
+		margin:		10px;
+		float:		right;
+	}
+	
+	#feedback {
+		clear:	both;
+	}
+	

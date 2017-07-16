@@ -367,7 +367,7 @@ function list_users_projects($sort_type) {
  * @param $folder_id
  * @param $sort_type
  */
-function get_folders_in_this_folder($folder_id, $tree_id, $sort_type){
+function get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only=false){
 
     /*
     * use the global level for folder indenting
@@ -416,7 +416,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type){
 
         $items[] = $item;
 
-        $files = get_folder_contents($item->xot_id, $item->id,  $sort_type);
+        $files = get_folder_contents($item->xot_id, $item->id,  $sort_type, $copy_only);
         if ($files) {
             $items = array_merge($items, $files);
         }
@@ -433,7 +433,7 @@ function get_folders_in_this_folder($folder_id, $tree_id, $sort_type){
  * @param $sort_type
  */
 
-function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
+function get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only) {
 
     global $xerte_toolkits_site;
 
@@ -446,7 +446,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
         . " {$prefix}templaterights tr, {$prefix}originaltemplatesdetails otd where td.template_id = tr.template_id and tr.user_id = ? "
         . " and tr.folder= ? and  otd.template_type_id = td.template_type_id ";
 
-    $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+    if ($copy_only)
+    {
+        $query .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+    }
 
     if ($sort_type == "alpha_down") {
         $query .= "order by td.template_name DESC";
@@ -458,12 +461,14 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
         $query .= "order by td.date_created ASC";
     }
 
+    $params = array($_SESSION['toolkits_logon_id'], $folder_id);
+
     $query_response = db_query($query, $params);
 
     foreach($query_response as $row) {
 
         // Check whther shared LO is in recyclebin
-        if ($row['role'] != 'creator')
+        if ($row['role'] != 'creator' && $row['role'] != 'co-author')
         {
             $sql = "select * from {$prefix}templaterights tr, {$prefix}folderdetails fd where tr.role='creator' and tr.folder=fd.folder_id and tr.template_id=?";
             $params = array($row['template_id']);
@@ -499,10 +504,10 @@ function get_files_in_this_folder($folder_id, $tree_id, $sort_type) {
  * @param $folder_id
  * @param $sort_type
  */
-function get_folder_contents($folder_id, $tree_id, $sort_type) {
+function get_folder_contents($folder_id, $tree_id, $sort_type, $copy_only) {
 
-    $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type);
-    $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type);
+    $folders = get_folders_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
+    $files = get_files_in_this_folder($folder_id, $tree_id, $sort_type, $copy_only);
     if ($folders && $files) {
         return array_merge($folders, $files);
     }
@@ -521,7 +526,7 @@ function get_folder_contents($folder_id, $tree_id, $sort_type) {
  *
  * @param $sort_type the way the workspace is to be sorte
  */
-function get_users_projects($sort_type)
+function get_users_projects($sort_type, $copy_only=false)
 {
 
     global $xerte_toolkits_site;
@@ -554,7 +559,7 @@ function get_users_projects($sort_type)
 
     $workspace->items[] = $item;
     $workspace->nodes[$item->id] = $item;
-    $items = get_folder_contents($item->xot_id, $item->id, $sort_type);
+    $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only);
     if ($items) {
         $workspace->items = array_merge($workspace->items, $items);
         foreach($items as $item)
@@ -570,22 +575,23 @@ function get_users_projects($sort_type)
     $row = db_query_one($query, $params);
 
     $workspace->recyclebin_id = "ID_" . $_SESSION['toolkits_logon_id'] . "_F" . $row['folder_id'];
-    $item = new stdClass();
-    $item->id = $workspace->recyclebin_id;
-    $item->xot_id = $row['folder_id'];
-    $item->parent = "#";
-    $item->text = DISPLAY_RECYCLE;
-    $item->type = "recyclebin";
-    $item->xot_type = "recyclebin";
+    if (!$copy_only) {
+        $item = new stdClass();
+        $item->id = $workspace->recyclebin_id;
+        $item->xot_id = $row['folder_id'];
+        $item->parent = "#";
+        $item->text = DISPLAY_RECYCLE;
+        $item->type = "recyclebin";
+        $item->xot_type = "recyclebin";
 
-    $workspace->items[] = $item;
-    $workspace->nodes[$item->id] = $item;
-    $items = get_folder_contents($item->xot_id, $item->id, $sort_type);
-    if ($items) {
-        $workspace->items = array_merge($workspace->items, $items);
-        foreach($items as $item)
-        {
-            $workspace->nodes[$item->id] = $item;
+        $workspace->items[] = $item;
+        $workspace->nodes[$item->id] = $item;
+        $items = get_folder_contents($item->xot_id, $item->id, $sort_type, $copy_only);
+        if ($items) {
+            $workspace->items = array_merge($workspace->items, $items);
+            foreach ($items as $item) {
+                $workspace->nodes[$item->id] = $item;
+            }
         }
     }
 

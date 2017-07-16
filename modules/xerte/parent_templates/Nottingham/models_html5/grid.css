@@ -1,0 +1,121 @@
+/* grid.html */
+	
+	#gridHolder {
+		margin: 10px;
+	}
+	
+	#gridHolder.x_floatLeft {
+		margin:	0px 10px 10px 0px;
+	}
+	
+	#gridHolder.x_floatRight {
+		margin:	0px 0px 10px 10px;
+	}
+	
+	#grid, #gridBorders {
+		position:	absolute;
+	}
+	
+	#grid .listHolder {
+		float:	left;
+		clear:	both;
+	}
+	
+	#grid ul {
+		margin:		0px;
+		padding:	0px;
+	}
+	
+	#grid ul.preview {
+		position:	absolute;
+	}
+	
+	#grid .listHolder.constrainC {
+		clear:	none;
+	}
+	
+	#grid ul li {
+		font-size:	1.2em;
+		border:		2px solid white;
+		float:		left;
+		padding:	5px;
+		margin:		5px;
+		list-style-type:	none;
+		background-image:	none;
+		cursor:	pointer;
+	}
+	
+	#grid ul li.ui-draggable-disabled {
+		opacity:	1;
+	}
+	
+	#grid .listHolder.constrainC li {
+		float:	none;
+		margin-bottom:	10px;
+	}
+	
+	#grid ul li.static {
+		background:		none;
+		border-color:	transparent;
+	}
+	
+	#grid ul li.header {
+		font-weight:	bold;
+	}
+	
+	#grid ul:not(.preview) li.ui-state-highlight {
+		border:	2px solid green;
+		color:	white !important;
+		box-shadow:	none;
+	}
+	
+	#grid ul.preview li {
+		border:	2px solid yellow;
+		background-color:	white;
+	}
+	
+	#grid ul li .tick {
+		position:	absolute;
+		right:		2px;
+		bottom:		2px;
+	}
+	
+	#grid li.focus {
+		border:	2px solid yellow;
+	}
+	
+	#grid li.selected {
+		border:	2px solid green;
+	}
+
+	#grid table	{
+		height: 100%;
+		width: 100%;
+	}
+
+	#grid td {
+		vertical-align: middle !important;
+		text-align: center;
+	}
+
+	#gridBorders {
+		background-color:	white;
+	}
+	
+	#btnHolder {
+		width: 100%;
+		margin:	10px;
+	}
+
+	#btnHolder.x_floatRight {
+		margin:	0px 0px 10px 10px;
+	}
+	
+	#pageContents > #btnHolder {
+		float:	right;
+	}
+	
+	#feedback {
+		margin-top:	10px;
+	}
+	

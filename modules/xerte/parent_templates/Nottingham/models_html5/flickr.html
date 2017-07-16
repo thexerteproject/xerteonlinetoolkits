@@ -67,6 +67,21 @@
 		this.init = function() {
 			this.$pageContents = $("#pageContents");
 			this.$panel = $("#pageContents .panel");
+			
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large");
+				} else if (panelWidth == "Large") {
+					$("#pageContents .splitScreen").addClass("small");
+				} else {
+					$("#pageContents .splitScreen").addClass("medium");
+				}
+			}
 
 			x_pageInfo[x_currentPage].savedData = {
 				pictureFeed  : undefined,
@@ -110,8 +125,6 @@
 					flickr.proceed(Math.min(x_pageInfo[x_currentPage].savedData.pictureIndex+1, x_pageInfo[x_currentPage].savedData.pictureFeed.length-1));
 				});
 			
-			
-			$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			this.setPanelSize(1);
@@ -320,61 +333,10 @@
 
 </script>
 
-<style type="text/css">
-	
-	#pageContents .right .panel {
-		overflow:	hidden;
-	}
-	
-	#flickrHolder {
-		width:		100%;
-	}
-
-	#headerHolder {
-		text-align: 	left;
-		margin-bottom: 	10px;
-	}
-	
-	#licenseHolder {
-		margin-top: 	10px;
-	}
-
-	#pictureHolder {
-		width:		100%;
-		text-align: center;
-	}
-
-	#pictureHolder img {
-		margin-left: 	auto;
-  		margin-right: 	auto;
-	}
-
-	#loadingSpinner {
-		margin-left: 	auto;
-  		margin-right: 	auto;
-		width:			180px;
-	}
-
-	.spinner {
-		float:	left;
-		margin:	-8px 20px 0 0;
-	}
-
-	#loadingSpinner p {
-		font-weight:	bold;
-	}
-
-	#btnHolder {
-		text-align:		right;
-		margin-top:		10px;
-		margin-right:	0px; /* over-ride ui style */
-	}
-
-</style>
 
 <div id="pageContents">
 	
-	<div class="splitScreen medium">
+	<div class="splitScreen">
 		
 		<div id="textHolder" class="left" tabindex="1">
 			

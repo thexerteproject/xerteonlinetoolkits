@@ -48,7 +48,9 @@
 			$("#feedbackTxt").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</p>');
 			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			
-			if (x_currentPageXML.getAttribute("align") == "right") {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			var align = x_currentPageXML.getAttribute("align") == "right" ? "Right" : "Left";
+			if (align == "Right") {
 				$("#textHolder")
 					.removeClass("left")
 					.addClass("right")
@@ -56,9 +58,14 @@
 				$("#infoHolder")
 					.removeClass("right")
 					.addClass("left");
-				$("#pageContents .splitScreen").addClass("large");
+			}
+			
+			if (panelWidth == "Small") {
+				align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
+			} else if (panelWidth == "Large") {
+				align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
 			} else {
-				$("#pageContents .splitScreen").addClass("medium");
+				align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
 			}
 			
 			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
@@ -587,54 +594,6 @@
 	
 </script>
 
-<style type="text/css">
-	
-	#mainTxt p:first-child, #feedbackTxt p:first-child {
-		margin-top:	0px;
-	}
-	
-	#infoHolder .panel {
-		overflow:	auto;
-	}
-
-	#optionHolder {
-		margin-top:	15px;
-	}
-
-	#optionHolder input {
-		float:		left;
-		display:	block;
-	}
-
-	#optionHolder .optionTxt {
-		cursor:			pointer;
-		position:		relative;
-		margin-left:	30px;
-		margin-bottom:	10px;
-		display:		block;
-	}
-	
-	#qFeedback, #buttonHolder {
-		clear:		both;
-	}
-
-	#pageContents button {
-		margin-left:	10px;
-		float:			right;
-	}
-	
-	#infoHolder .quizImg {
-		padding:	5px;
-		float:		right;
-		max-width:	50%;
-		height:		auto;
-	}
-	
-	#chartTitle {
-		text-align:	center;
-	}
-	
-</style>
 
 <div id="pageContents">
 

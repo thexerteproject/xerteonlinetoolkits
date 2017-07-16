@@ -1,0 +1,32 @@
+/* dialog.html */
+
+	#pageContents .panel {
+		overflow:	auto;
+	}
+
+	#pageContents .question {
+		padding-bottom:	10px;
+		width:	100%;
+	}
+
+	#pageContents .question div {
+		margin-top:	2px;
+		width:		50%;
+		display:	inline-block;
+	}
+
+	#pageContents .question input {
+		width:	40%;
+		float:	right;
+	}
+
+	#pageContents .question img {
+		float:			right;
+		padding-left:	5px;
+	}
+
+	#pageContents button {
+		margin:		10px;
+		float:		right;
+	}
+

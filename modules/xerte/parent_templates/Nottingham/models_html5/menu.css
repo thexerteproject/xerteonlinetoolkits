@@ -1,0 +1,24 @@
+/* menu.html */
+	
+	#menuItems .menuItem {
+		width:			100%;
+		display:		block;
+		margin-bottom:	5px;
+		text-align:		left;
+	}
+
+	#menuItems {
+		width:	100%;
+		border:	none;
+		margin:	0;
+		padding:0;
+	}
+	
+	#menuItems .menuItem.current {
+		border: 2px solid #FF9900;
+		font-weight: bold;
+	}
+
+	#menuItems .menuItem .notvisited {
+		display: none;
+	}

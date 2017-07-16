@@ -53,8 +53,22 @@
 		}
 
 		this.init = function() {
+			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			if (panelWidth == "Full") {
+				$("#pageContents .right div:first").appendTo($("#pageContents"));
+				$("#pageContents .splitScreen").remove();
+			} else {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+				if (panelWidth == "Small") {
+					$("#pageContents .splitScreen").addClass("large");
+				} else if (panelWidth == "Medium") {
+					$("#pageContents .splitScreen").addClass("medium");
+				} else {
+					$("#pageContents .splitScreen").addClass("small");
+				}
+			}
+			
 			casesensitive = x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1" ? false : true;
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
 			if (answerDelimeter == undefined) {
 				answerDelimeter = ",";
@@ -264,43 +278,10 @@
 
 </script>
 
-<style type="text/css">
-
-	#pageContents .panel {
-		overflow:	auto;
-	}
-
-	#pageContents .question {
-		padding-bottom:	10px;
-		width:	100%;
-	}
-
-	#pageContents .question div {
-		margin-top:	2px;
-		width:		50%;
-		display:	inline-block;
-	}
-
-	#pageContents .question input {
-		width:	40%;
-		float:	right;
-	}
-
-	#pageContents .question img {
-		float:			right;
-		padding-left:	5px;
-	}
-
-	#pageContents button {
-		margin:		10px;
-		float:		right;
-	}
-
-</style>
 
 <div id="pageContents">
 
-	<div class="splitScreen small">
+	<div class="splitScreen">
 
 		<div id="textHolder" class="left" tabindex="1"></div>
 

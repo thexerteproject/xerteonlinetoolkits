@@ -1,0 +1,10 @@
+/* newWindow.html */
+	
+	#pageImg {
+		cursor:	pointer;
+	}
+	
+	#textHolder p:first-child {
+		margin-top:	0px;
+	}
+	

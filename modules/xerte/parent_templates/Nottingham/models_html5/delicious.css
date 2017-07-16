@@ -1,0 +1,45 @@
+/* delicious.html */
+
+	#headerHolder {
+		text-align:		center;
+		margin-bottom:	10px;
+	}
+
+	#resultsHolder {
+		width:	100%;
+	}
+
+	#resultsHolder div {
+		width: 100%;
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+
+	#resultsHolder div p {
+		margin:	0;
+		padding: 0 5px;
+	}
+
+	.shadedDiv {
+		background-color: #E3FFD6;
+	}
+
+	#loadingSpinner {
+		margin-left: auto;
+  		margin-right: auto;
+		width:180px;
+	}
+
+	.spinner {
+		float:left;
+		margin:-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
+	}
+	
+	#deliciousHolder .panel {
+		overflow: auto;
+	}
+

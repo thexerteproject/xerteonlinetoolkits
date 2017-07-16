@@ -1,0 +1,8 @@
+/* connectorMenu.html */
+	
+	#subMenuItems .subMenuItem {
+		display:		block;
+		margin-bottom:	5px;
+		text-align:		left;
+	}
+	

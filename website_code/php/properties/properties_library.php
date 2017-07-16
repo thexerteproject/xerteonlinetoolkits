@@ -572,9 +572,9 @@ function media_quota_info($template_id)
             "{$prefix}originaltemplatesdetails.template_type_id = {$prefix}templatedetails.template_type_id AND " .
             "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id AND " .
             "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " .
-            "{$prefix}templatedetails.template_id = ? AND role = ? ";
+            "{$prefix}templatedetails.template_id = ? AND (role = ? OR role = ?)";
 
-        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator'));
+        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator', 'co-author'));
 
         $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
 
@@ -644,6 +644,9 @@ function sharing_info($template_id)
         {
             case "creator":
                 $info .=  SHARING_CREATOR;
+                break;
+            case "co-author":
+                $info .=  SHARING_COAUTHOR;
                 break;
             case "editor":
                 $info .=  SHARING_EDITOR;

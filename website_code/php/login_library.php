@@ -301,12 +301,6 @@ function login_processing($exit = true) {
 
   $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
 
-  if ($_SERVER['REQUEST_METHOD'] !== "POST") {
-    if ($authmech->needsLogin() && $exit) { 
-      login_form($errors, $xerte_toolkits_site);
-      exit(0);
-    }
-  }
   if ($authmech->needsLogin()) {
    /**
     *  Check if we are logged in

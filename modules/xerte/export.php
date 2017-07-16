@@ -23,7 +23,6 @@
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
 
-
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
 $folder_id_array = array();
@@ -36,6 +35,7 @@ $zipfile = "";
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/archive.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/scorm/scorm2004_library.php");
+require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xAPI/xAPI_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xmlInspector.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_size_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
@@ -70,11 +70,17 @@ $scorm_path = $xerte_toolkits_site->basic_template_path . $row['template_framewo
 $scorm_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm1.2/";
 $scorm2004_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/scorm2004.3rd/";
 $scorm2004_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/scorm2004.3rd/";
+
+$xAPI_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/xAPI/";
+$xAPI_language_relpath = $xerte_toolkits_site->module_path . $row['template_framework'] . "/xAPI/";
+
 $js_path = $xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/js/";
 
 $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
+$xAPI = false;
+$tsugi = false;
 $offline_includes="";
 
 if (isset($_REQUEST['html5'])) {
@@ -104,6 +110,16 @@ if (isset($_REQUEST['offline']))
     $fullArchive = false;
 }
 
+if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
+{
+	$xAPI = true;
+}
+
+if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
+{
+	$xAPI = true;
+	$tsugi = true;
+}
 
 /*
  * Make the zip
@@ -119,21 +135,21 @@ _debug("Temporary zip file is : $zipfile_tmpname");
 $options = array(
     'basedir' => $dir_path, 
     'prepand' => "", 
-    'inmemory' => 0, 
+    'inmemory' => 0,
     'overwrite' => 1,
     'recurse' => 1, 
     'storepaths' => 1);
 
 
 $zipfile = Xerte_Zip_Factory::factory($zipfile_tmpname, $options);
-
+$scorm = $_GET['scorm'];
 
 /*
  * Copy the core files over from the parent folder
  */
 copy($dir_path . "data.xml", $dir_path . "template.xml");
 $xml = new XerteXMLInspector();
-$xml->loadTemplateXML($dir_path . 'template.xml');
+$xml->loadTemplateXML($dir_path . 'template.xml', $scorm == '2004'|| $scorm == 'true' || $xAPI || $export_offline);
 
 if ($fullArchive) {
     _debug("Full archive");
@@ -211,20 +227,25 @@ if ($fullArchive) {
             foreach ($models as $model) {
                 _debug("copy model " . $parent_template_path . "models_html5/" . $model . ".html");
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
             /* Always add menu.rlm */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
             /* Always add colourChanger.html */
             _debug("copy model " . $parent_template_path . "models_html5/colourChanger.html");
             array_push($file_array, array($parent_template_path . "models_html5/colourChanger.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/colourChanger.css", ""));
             /* Always add language.html */
             _debug("copy model " . $parent_template_path . "models_html5/language.html");
             array_push($file_array, array($parent_template_path . "models_html5/language.html", ""));
+            array_push($file_array, array($parent_template_path . "models_html5/language.css", ""));
             /* Add glossary if used */
             if ($xml->glossaryUsed()) {
                 _debug("copy model " . $parent_template_path . "models_html5/glossary.html");
                 array_push($file_array, array($parent_template_path . "models_html5/glossary.html", ""));
+                array_push($file_array, array($parent_template_path . "models_html5/glossary.css", ""));
             }
         }
         export_folder_loop($parent_template_path . "common_html5/");
@@ -308,6 +329,21 @@ if ($scorm == "true") {
     copy_extra_files();
 }
 
+if($xAPI)
+{	
+	export_folder_loop($xAPI_path, false, null, "/");
+	copy_extra_files();
+	if ($xml->getLanguage() != 'en-GB') {
+		export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $xAPI_language_relpath, false, null, "/languages/js/" . $xml->getLanguage() . "/");
+		copy_extra_files();
+	}
+	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
+	copy_extra_files();
+}
+// Copy the favicon file
+copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
+array_push($delete_file_array, $dir_path . "favicon.ico");
+
 $rlo_file = $row['template_name'] . ".rlt";
 /*
  * if used copy extra folders
@@ -368,7 +404,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -378,7 +414,12 @@ if ($scorm == "true") {
     } else {
         scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
     }
-} else {
+} else if($xAPI)
+	{
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $tsugi);
+	}
+else {
+	
     if ($export_flash) {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
@@ -407,6 +448,8 @@ elseif ($scorm == "true")
 	$export_type = "_scorm_1_2";
 elseif ($scorm == "2004")
 	$export_type = "_scorm_2004";
+elseif ($xAPI)
+	$export_type = "_xAPI";
 else
 	$export_type = "_deployment";
 
@@ -419,10 +462,28 @@ $row['zipname'] .= $export_engine . $export_type;
 xerte_zip_files($fullArchive, $dir_path);
 $zipfile->create_archive();
 
-
-// This outputs http headers etc.
-$zipfile->download_file($row['zipname']);
-
+if($tsugi)
+{
+	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
+	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
+	if (!file_exists($tsugi_dir)) {
+		mkdir($tsugi_dir, 0777, true);
+	}
+	$zipdir = $zipfile->GetFilename();
+	
+	copy($zipdir, $tsugi_dir . "archive.zip");
+	$zipArchive = new ZipArchive();
+	$result = $zipArchive->open($tsugi_dir. "archive.zip");
+	if ($result === TRUE) {
+		$zipArchive ->extractTo($tsugi_dir);
+		$zipArchive ->close();
+		
+	}
+	
+}else{
+	// This outputs http headers etc.
+	$zipfile->download_file($row['zipname']);
+}
 _debug("Zip file errors? " . implode(',', $zipfile->error));
 
 /*
@@ -433,3 +494,8 @@ clean_up_files();
 @unlink($dir_path . "template.xml");
 
 @unlink($zipfile_tmpname);
+if($tsugi)
+{
+	echo "Visit on: " . $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/";
+}
+?>

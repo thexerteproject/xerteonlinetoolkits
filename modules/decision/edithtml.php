@@ -133,6 +133,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?php echo DECISION_EDIT_TITLE ?></title>
 
+		<link rel="icon" href="favicon_edit.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="favicon_edit.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="editor/css/jquery-ui.css?version=<?php echo $version;?>">
     <link rel="stylesheet" href="editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />
@@ -207,14 +210,16 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         <div class="header"></div>
         <div id="content" class="content">
             <div id="mainPanel"></div>
-            <div id="languagePanel" style="display:none">
-                <hr>
-            </div>
-            <div id="insert_subnodes">
+            <div id="subPanels">
+                <div id="languagePanel" style="display:none">
+                    <hr>
+                </div>
+                <div id="insert_subnodes">
 
-            </div>
-            <div class="nodeInfo" id="info">
+                </div>
+                <div class="nodeInfo" id="info">
 
+                </div>
             </div>
         </div>
         <div id="main_footer" class="footer">
@@ -274,6 +279,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
+    echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     ?>
 
     function bunload(){

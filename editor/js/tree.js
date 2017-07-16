@@ -18,6 +18,7 @@
  */
 
 // Tree : Add the tree object to the editor
+
 var EDITOR = (function ($, parent) {
 
     // Create the tree object and refer locally to it as 'my'
@@ -30,6 +31,8 @@ var EDITOR = (function ($, parent) {
     // Called once document is ready
     setup = function (xml) {
         console.log("Setting up tree");
+
+        var bottom_buttons = $('#bottom_buttons').attr('id', 'bottom_buttons');
         do_bottom_buttons();
         do_buttons();
         build(xml);
@@ -42,7 +45,22 @@ var EDITOR = (function ($, parent) {
         savepreviewasync(false);
         bunload();
 
-    }
+    },
+
+	refresh_workspaceMerge = function() {
+        var url="editor/importpages/import-choose.php?id="+template_id;
+        var now = new Date().getTime();
+        $.ajax({
+            type: "GET",
+            url: url + "&t=" + now,
+            dataType: "html",
+            success: function (data) {
+                $("#subPanels").hide();
+                $("#mainPanel").html(data);
+            }
+        });
+
+	},
     // Add the buttons
     do_buttons = function () {
         var insert_page = function() {
@@ -72,19 +90,41 @@ var EDITOR = (function ($, parent) {
         },
 
         buttons = $('<div />').attr('id', 'top_buttons');
-        $([
-            {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
-            {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
-            {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
-        ])
+        if (templateframework == "xerte") {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnMerge.$label, tooltip: language.btnMerge.$tooltip, imgicon:'editor/img/mergeIcon.svg', id:'merge_button', click:refresh_workspaceMerge},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ];
+        }
+        else
+        {
+            var button_def =
+                [
+                    {name: language.btnInsert.$label, tooltip: language.btnInsert.$tooltip, icon:'fa-plus-circle', id:'insert_button', click:insert_page},
+                    {name: language.btnDuplicate.$label, tooltip: language.btnDuplicate.$tooltip, icon:'fa-copy', id:'copy_button', click:duplicate_page},
+                    {name: language.btnDelete.$label, tooltip: language.btnDelete.$tooltip, icon:'fa-trash', id:'delete_button', click:delete_page}
+                ]
+        }
+        $(button_def)
         .each(function(index, value) {
                 var button = $('<button>')
                     .attr('id', value.id)
                     .attr('title', value.tooltip)
                     .click(value.click)
                     .attr('tabindex', index == 0 ? index + 1 : index + 5) // leave gap in tab index for insert page menu & its insert buttons (needed for easy keyboard navigation)
-                    .addClass("xerte_button")
-                    .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                    .addClass("xerte_button");
+                if (typeof value.icon != 'undefined') {
+                    button.append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
+                }
+                if (typeof value.imgicon != 'undefined')
+                {
+                    button.append($('<img>')
+                        .attr('src', value.imgicon)
+                        .height(14));
+                }
                 buttons.append(button);
         });
 		
@@ -219,6 +259,9 @@ var EDITOR = (function ($, parent) {
 
 
     publish = function () {
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -230,12 +273,7 @@ var EDITOR = (function ($, parent) {
                     absmedia: rlourlvariable,
                     template_id: template_id
                 },
-                //success: function(data){
-                //    alert("success");
-                //},
-                //error: function(data, status, error){
-                //    alert(status + ': ' + error);
-                //},
+
                 dataType: "json",
                 type: "POST"
             }
@@ -255,6 +293,9 @@ var EDITOR = (function ($, parent) {
     },
 
     savepreviewasync = function (async) {
+    	if(typeof merged !== 'undefined' && merged == true){
+    		return;
+    	}
         var json = build_json("treeroot");
         var ajax_call = $.ajax({
                 url: "editor/upload.php",
@@ -265,21 +306,16 @@ var EDITOR = (function ($, parent) {
                     absmedia: rlourlvariable,
                     template_id: template_id
                 },
-                //success: function(data){
-                //    alert("success");
-                //},
-                //error: function(data, status, error){
-                //    alert(status + ': ' + error);
-                //},
+
                 dataType: "json",
                 type: "POST",
                 cache:false,
                 async:async
-            }
-        ).done(function() {
-                $('#loader').hide();
-                //alert( "success" );
             })
+            .done(function() {
+                    $('#loader').hide();
+                    //alert( "success" );
+                })
             .fail(function() {
                 $('#loader').hide();
                 alert( "error" );
@@ -374,10 +410,20 @@ var EDITOR = (function ($, parent) {
             lo_data[key].attributes['linkID'] = linkID;
         }
 
+        // Create node text based on xml, do not use text of original node, as this is not correct
+        var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
+        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
+        var nodeText = $("#" + current_node.id + "_text").html();
+
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
-            text : current_node.text,
+            // Replace previous key by new key in id's
+            // Note that we know that no special characters are used in the key, so we do not need to escape current_node.id for characters that need escaping in regexp's
+            // cf. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+            text : treeLabel,
             type : current_node.type,
             state: {
                 opened:true
@@ -400,7 +446,7 @@ var EDITOR = (function ($, parent) {
         $.each(current_node.children, function () {
             duplicateNodes(tree, this, key, "last", false)
         });
-    }
+    },
 
     // Make a copy of the currently selected node
     // Presently limited to first node if multiple selected
@@ -498,7 +544,7 @@ var EDITOR = (function ($, parent) {
 
     // Refresh the page when a new node is selected
     buildPage = function (key) {
-
+		
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -557,7 +603,6 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -576,6 +621,7 @@ var EDITOR = (function ($, parent) {
         // Build the form
         var attribute_name;
         var attribute_value;
+        var attribute_label;
         // Always display name option first
         if (node_options['name'].length > 0)
         {
@@ -609,6 +655,7 @@ var EDITOR = (function ($, parent) {
                 if (attribute_value.found && attribute_value.value=="")
                 {
                     attribute_value.value = language.$code;
+                    toolbox.setAttributeValue(key, [attribute_name], [attribute_value.value]);
                 }
             }
             if (attribute_value.found)
@@ -625,28 +672,74 @@ var EDITOR = (function ($, parent) {
         $('#optionalParams').html("");
         var html = $('<div>')
             .addClass("optButtonContainer");
-        var table = $('<table>');
+        var table = $('<table>'); // contains opt props specific to this page type
+		var table2 = $('<table>'); // contains opt props used on all page types
         var flashonly = $('<img>')
             .attr('src', 'editor/img/flashonly.png')
             .attr('alt', 'Flash only attribute');
         var flashonlytxt = '<img class="flash-icon" src="editor/img/flashonly.png" alt="Flash only attribute">';
-
+		
+		var optGroups = [];
+		
+		// get all optional property groups...
+		for (var i=0; i<node_options['optional'].length; i++) {
+			if (node_options['optional'][i].value.type == "group") {
+				node_options['optional'][i].value.children = node_options['optional'][i].value.children == undefined ? [] : node_options['optional'][i].value.children;
+				optGroups.push(node_options['optional'][i]);
+				node_options['optional'].splice(i,1);
+				i--;
+			}
+		}
+		
+		// ...find all optional properties that belong to them
+		if (optGroups.length > 0 && optGroups[0].value.children.length == 0) {
+			for (var i=0; i<node_options['optional'].length; i++) {
+				var index = $.map(optGroups, function(obj, index) { if (obj.name == node_options['optional'][i].value.group) { return index; } });
+				
+				if (index.length > 0) {
+					optGroups[index[0]].value.children.push(node_options['optional'][i]);
+					node_options['optional'].splice(i,1);
+					i--;
+				}
+			}
+			
+			// ignore groups with no children
+			for (var i=0; i<optGroups.length; i++) {
+				if (optGroups[i].value.children.length == 0) {
+					optGroups.splice(i,1);
+					i--;
+				}
+			}
+		}
+		
+		node_options['optional'] = node_options['optional'].concat(optGroups);
+		
 		// Sort into alphabetical order
 		node_options['optional'].sort(function(a,b) {
 			var aN = a.value.label.toLowerCase();
 			var bN = b.value.label.toLowerCase(); 
 			return (aN < bN) ? -1 : ((aN > bN) ? 1 : 0);
 		});
-
+		
         for (var i=0; i<node_options['optional'].length; i++)
         {
-            attribute_name = node_options['optional'][i].name;
+			// is optional property (or any children of group) already in project?
+			var found = [];
+			if (node_options['optional'][i].value.type == 'group') {
+				var groupChildren = node_options['optional'][i].value.children;
+				for (var j=0; j<groupChildren.length; j++) {
+					var child_value = toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key);
+					found.push(child_value.found);
+				}
+			}
+			
+			attribute_name = node_options['optional'][i].name;
             attribute_label = node_options['optional'][i].value.label;
             attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
 
             if (!node_options['optional'][i].value.deprecated) {
                 // Create button for right panel
-                var label = attribute_label;
+                var label = attribute_label + (node_options['optional'][i].value.type == 'group' ? '...' : '');
                 var button = $('<button>')
                     .attr('id', 'insert_opt_' + attribute_name)
                     .addClass('btnInsertOptParam')
@@ -654,10 +747,20 @@ var EDITOR = (function ($, parent) {
                     .click({
                         key: key,
                         attribute: attribute_name,
-                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : "")
+                        default: (node_options['optional'][i].value.defaultValue ? node_options['optional'][i].value.defaultValue : ""),
+						children: node_options['optional'][i].value.children
                     },
                     function (event) {
-                        parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+						if (event.data.children != undefined) {
+							// it's a group so add all children too
+							for (var j=0; j<event.data.children.length; j++) {
+								if (!event.data.children[j].value.deprecated) {
+									parent.toolbox.insertOptionalProperty(event.data.key, event.data.children[j].name, (event.data.children[j].value.defaultValue ? event.data.children[j].value.defaultValue : ""), j < event.data.children.length-1 ? false : true);
+								}
+							}
+						} else {
+							parent.toolbox.insertOptionalProperty(event.data.key, event.data.attribute, event.data.default);
+						}
                     })
                     .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
                 if (node_options['optional'][i].value.flashonly) {
@@ -668,12 +771,13 @@ var EDITOR = (function ($, parent) {
                 {
                     button.attr('title', node_options['optional'][i].value.tooltip);
                 }
-                if (attribute_value.found) {
+				
+                if (attribute_value.found || $.inArray(true, found) > -1) {
                     // Add disabled button to right panel
                     button.prop('disabled', true)
                         .addClass('disabled');
-                }
-                else {
+					
+				} else {
                     // Add enabled button to the right panel
                     button.prop('disabled', false)
                         .addClass('enabled');
@@ -681,14 +785,47 @@ var EDITOR = (function ($, parent) {
                 var tablerow = $('<tr>')
                     .append($('<td>')
                         .append(button));
-                table.append(tablerow);
+				
+				if (node_options['optional'][i].value.common) {
+					table2.append(tablerow);
+				} else {
+					table.append(tablerow);
+				}
             }
-            if (attribute_value.found) {
-                // Add paramter to the wizard
-                toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
+			
+            if (attribute_value.found || $.inArray(true, found) > -1) {
+                // Add parameter to the wizard
+				if (node_options['optional'][i].value.type != 'group') {
+					toolbox.displayParameter('#mainPanel .wizard', node_options['optional'], attribute_name, attribute_value.value, key);
+				} else {
+					toolbox.displayGroup('#mainPanel .wizard', node_options['optional'][i].name, node_options['optional'][i].value, key);
+					
+					// group children aren't sorted into alphabetical order - they appear in order taken from xml
+					var groupChildren = node_options['optional'][i].value.children;
+					for (var j=0; j<groupChildren.length; j++) {
+						if (found[j] == true || !groupChildren[j].value.deprecated) {
+							toolbox.displayParameter('#mainPanel .wizard #groupTable_' + node_options['optional'][i].name, groupChildren, groupChildren[j].name, toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value, key);
+						}
+					}
+				}
             }
         }
-        html.append(table);
+		
+		if (table.find("tr").length > 0) {
+			if (menu_options.menu != undefined) {
+				var tablerow = $('<tr>')
+					.append('<td class="optPropTitle">' + menu_options.menuItem + '</td>');
+				table.prepend(tablerow);
+			}
+			html.append(table);
+		};
+		if (table2.find("tr").length > 0) {
+			var tablerow = $('<tr>')
+				.append('<td class="optPropTitle">' + (language.optionalPropHTML && language.optionalPropHTML.$general ? language.optionalPropHTML.$general : "General") + '</td>');
+			table2.prepend(tablerow);
+			html.append(table2);
+		};
+		
         if (node_options['optional'].length > 0)
         {
             $('#optionalParams').append(html);
@@ -882,6 +1019,9 @@ var EDITOR = (function ($, parent) {
             $('#content').animate({scrollTop: 0});
         }, 50);
         toolbox.scrollTop = 0;
+
+        // Make sure subpanels are visible
+        $("#subPanels").show();
     },
 
     addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
@@ -917,6 +1057,15 @@ var EDITOR = (function ($, parent) {
         {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+        }
+        if (key == 'treeroot')
+        {
+            // Add icons to the node, all should be switched off
+            // Create node text based on xml, do not use text of original node, as this is not correct
+            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+
+            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         }
         var this_json = {
             id : lkey,
@@ -1063,7 +1212,7 @@ var EDITOR = (function ($, parent) {
     build = function (xml) {
         var xmlData = $.parseXML(xml);
         topLevelObject = xmlData.childNodes[0].nodeName;
-        var tree_json = toolbox.build_lo_data($($.parseXML(xml)).find(topLevelObject), null),
+        var tree_json = toolbox.build_lo_data($(xmlData).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children
@@ -1123,9 +1272,10 @@ var EDITOR = (function ($, parent) {
             },
             "types" : node_types
         })
-        .one('ready.jstree', function (e, data) {
+        .on('ready.jstree', function (e, data) {
             data.instance.open_node(["treeroot"]);
             data.instance.select_node(["treeroot"]);
+            setNodeBackgrounds();
         })
         .bind('select_node.jstree', function(event, data) {
             showNodeData(data.node.id);
@@ -1135,6 +1285,25 @@ var EDITOR = (function ($, parent) {
         });
     },
 
+    setNodeBackgrounds = function() {
+        var tree = $.jstree.reference("#treeview");
+        var node = tree.get_node("treeroot", false);
+        var nodes = node.children;
+        $.each(nodes, function (i, key){
+            if ($("#"+key+"_deprecated.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("deprecatedNode");
+            }
+            if ($("#"+key+"_hidden.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("hiddenNode");
+            }
+            if ($("#"+key+"_unmark.iconEnabled").length > 0)
+            {
+                $("#"+key).addClass("unmarkNode");
+            }
+        });
+    },
 
     // Up button handler
     up_btn = function() {
@@ -1192,7 +1361,7 @@ var EDITOR = (function ($, parent) {
         function lo_key_exists(key) {
             for (var lo_key in lo_data) if (lo_key == key) return true;
             return false;
-        };
+        }
 
         do {
             key = "ID_";
@@ -1221,11 +1390,15 @@ var EDITOR = (function ($, parent) {
     };
 
     my.setup = setup;
+    my.build = build;
     my.generate_lo_key = generate_lo_key;
     my.getSelectedNodeKeys = getSelectedNodeKeys;
     my.showNodeData = showNodeData;
     my.addNode = addNode;
     my.getParent = getParent;
+    my.refresh_workspaceMerge = refresh_workspaceMerge;
+    my.build_json = build_json;
+
 
     return parent;
 

@@ -1,0 +1,10 @@
+/* transcriptReader.html */
+	
+	#infoHolder {
+		overflow: auto;
+	}
+	
+	#infoHolder div {
+		padding: 10px;
+	}
+	

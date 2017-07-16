@@ -1,0 +1,26 @@
+/* videoSynch.html */
+	
+	#mainText {
+		padding: 10px;
+	}
+	
+	#infoHolder {
+		padding: 	0 10px;
+		overflow:	auto;
+	}
+	
+	#infoHolder div {
+		cursor:			pointer;
+		margin-bottom:	10px;
+	}
+	
+	#infoHolder .myImg {
+		text-align:		center;
+		padding-top:	10px;
+	}
+	
+	#infoHolder .myImg img {
+		max-width:	100%;
+		max-height:	100%;
+	}
+	

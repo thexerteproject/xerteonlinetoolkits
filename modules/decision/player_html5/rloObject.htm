@@ -26,27 +26,31 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>%TITLE%</title>
+    
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!--jquery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery-ui.min.js?version=%VERSION%"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery.ui.touch-punch.min.js?version=%VERSION%"></script>
-	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaPlayer.js?version=%VERSION%"></script>
-	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaelement/mediaelement-and-player.min.js?version=%VERSION%"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery-ui.min.js%VERSION_PARAM%"></script>
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/jquery/jquery.ui.touch-punch.min.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaPlayer.js%VERSION_PARAM%"></script>
+	<script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
 
     <!--styles -->
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/css/jquery-ui.min.css?version=%VERSION%">
-	<link rel="stylesheet" href="%TEMPLATEPATH%common/js/mediaelement/mediaelementplayer.css?version=%VERSION%">
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/css/styles.css?version=%VERSION%">
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/css/jquery-ui.min.css%VERSION_PARAM%">
+	<link rel="stylesheet" href="%TEMPLATEPATH%common/js/mediaelement/mediaelementplayer.css%VERSION_PARAM%">
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/css/styles.css%VERSION_PARAM%">
 
     <!--font awesome-->
     <link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css">
     
     <!--mathjax-->
-    <script type="text/javascript" src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+    <script type="text/javascript" async src="%MATHJAXPATH%MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
 
     <script type="text/javascript">
         var FileLocation = "%XMLPATH%";
@@ -102,7 +106,7 @@
 <div id="footerBlock" />
 
 <!--initialise the application specific code-->
-<script src="%TEMPLATEPATH%common/js/decision.js?version=%VERSION%"></script>
+<script src="%TEMPLATEPATH%common/js/decision.js%VERSION_PARAM%"></script>
 
 <script type="text/javascript" language="JavaScript">
 </script>

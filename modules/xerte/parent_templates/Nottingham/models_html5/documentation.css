@@ -1,0 +1,99 @@
+/* documentation.html */
+	
+	h3 {
+		padding: 4px;
+	}
+	
+	#pages {
+		overflow: auto;
+	}
+	
+	#pages:not(:last-child) {
+		border-bottom: 1px solid #CCCCCC;
+	}
+	
+	#btnHolder {
+		float: right;
+		margin-top: 0.7em;
+	}
+	
+	#btnHolder .ui-icon {
+		width:	auto;
+		height:	auto;
+	}
+	
+	#downloadBtn .ui-icon {
+		width:	auto;
+		height:	auto;
+	}
+	
+	#slideTxt {
+		font-weight: bold;
+		margin: 0.7em 0.5em 0;
+	}
+	
+	.item, .intro, .section {
+		margin: 1.5em 0;
+		overflow: auto;
+	}
+	
+	.item .itemImg {
+		max-width: 100%;
+		display: block;
+		margin: auto;
+	}
+	
+	.section .item:last-child, .section .intro:last-child {
+		margin-bottom: 0;
+	}
+	
+	.item:first-of-type, .intro:first-of-type {
+		margin-top: 0;
+	}
+	
+	.section legend {
+		font-weight: bold;
+	}
+	
+	.hidepage {
+		display:none;
+	}
+	
+	.question {
+		margin-top: 1em;
+	}
+	
+	.optionGroup input {
+		float: left;
+		display: block;
+	}
+
+	.optionGroup {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+	
+	.optionTxt {
+		cursor: pointer;
+		position: relative;
+		margin-left: 2em;
+		display: block;
+	}
+	
+	.optionGroup.horizontal {
+		display: inline;
+		float: left;
+	}
+	
+	.optionGroup.horizontal:not(:first-of-type) input {
+		margin-left: 1.5em;
+	}
+
+	.optionGroup.horizontal:not(:first-of-type) .optionTxt {
+		margin-left: 3.5em;
+	}
+	
+	#downloadBtn {
+		margin-top: 0.5em;
+	}
+	

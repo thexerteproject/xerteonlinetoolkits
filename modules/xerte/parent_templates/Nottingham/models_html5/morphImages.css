@@ -1,0 +1,20 @@
+/* morphImages.html */
+
+	.whiteBorder #pageImg1 {
+		visibility:	hidden;
+	}
+
+	#imgDiv {
+		overflow:	hidden;
+	}
+
+	#zoomBtn {
+		display:		block;
+		margin-top:		10px;
+	}
+
+	#pageImg2 {
+		position:	absolute;
+		cursor:		pointer;
+	}
+

@@ -1,0 +1,2072 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	// functions for model should be in here to avoid conflicts
+	var scenario = new function() {
+		var firstTime,
+				currentscenario,
+				destPageName,
+				scoresString,
+				scenarioScoreBoardLen,
+				propsInscenarioArray,
+				actionArray,
+				effectArray,
+				inventoryArray,
+				onStageArray,
+				notOnStageArray,
+				carriedArray,
+				notCarriedArray,
+				offStageArray,
+				inSceneArray,
+				visibleArray,
+				hiddenArray;
+	
+		this.init = function() {
+			this.setupLayout(); // create panels
+
+			this.pageChanged();
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		};
+		
+		this.UNDEF = function (x) {
+			return (x === undefined || x === null);
+		};
+		
+		this.setupLayout = function () {
+			var $panelHolder = $('#panelHolder'),
+					panelNames = ['scenario','actions','inventory','scores'];
+
+			// create all panels
+			$panelHolder.empty();
+			for (var i=0; i<4; i++) {
+				var title = '<h3 class="panelTitle">' + panelNames[i] + 'Panel</h3>';
+				$('<div class="panel">' + title + '<div><div/></div>')
+					.appendTo($('#panelHolder'))
+					.attr("id", panelNames[i]+ 'Panel');
+			}
+
+			$panelHolder.append('<div class="top"></div><div class="bottom"></div>');
+					
+			var panels = $panelHolder.find(".panel");
+					
+			for (var i=0; i<4; i++) {
+				if (i < 2) {
+					$(panels[i]).appendTo($panelHolder.find(".top")).addClass("tileH halfH");
+				} else {
+					$(panels[i]).appendTo($panelHolder.find(".bottom")).addClass("tileH halfH");
+				}
+			}
+
+			this.resizePanels();
+		};
+		
+		this.pageChanged = function () {
+			if (window.x_scenario == undefined) { // we're starting a new scenario
+			
+				this.scenarioScoreBoardLen = 300;
+
+				// set up persistent values
+				window.x_scenario = {};
+
+				this.scenarioInit();
+				this.setUpLanguage();
+			}
+
+			this.scenarioContinue();
+		};
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			this.resizePanels();
+		};
+		
+		this.resizePanels = function() {
+			// make sure no scroll bars are on screen during panel sizing
+			$x_pageHolder.css("overflow", "hidden");
+			
+			var $panelHolder = $('#panelHolder');
+					numTileH = 2,
+					numTileV = 2;
+			
+			var marginR = parseInt($panelHolder.find(".panel.tileH").css("margin-right")) == 0 ? 15 : parseInt($panelHolder.find(".panel.tileH").css("margin-right"));
+			
+			$panelHolder.find(".panel.tileH")
+				.width(Math.floor(($x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($panelHolder.find(".panel.tileH").css("padding-left")) * numTileH * 2) - (marginR * (numTileH - 1))) / numTileH) - 2);
+			
+			$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseInt($("#infoHolder .accTitle").css("padding-top")) * 2);
+			
+			$panelHolder.find(".panel.tileV")
+				.height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - parseInt($x_pageDiv.css("padding-top")) * 2) / numTileV) - (parseInt($panelHolder.find(".panel.tileV").css("padding-top")) * 2) - Math.floor((parseInt($panelHolder.find(".panel.tileV").css("margin-bottom")) * (numTileV - 1)) / numTileV) - 2);
+			
+			$panelHolder.find(".panel.fullH")
+				.height($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.fullH").css("padding-top")) * 2) - 5);
+
+			$panelHolder.find(".top .panel.halfH")
+				.height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) * 0.65) - 2);
+
+			$panelHolder.find(".bottom .panel.halfH")
+				.height(Math.floor(($x_pageHolder.height() - parseInt($panelHolder.css("margin-top")) - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($panelHolder.find(".panel.halfH").css("padding-top")) * 4) - parseInt($panelHolder.find(".panel.halfH").css("margin-bottom"))) * 0.35) - 2);
+			
+			$x_pageHolder.css("overflow", "auto");
+
+		};
+
+		this.scenarioContinue = function () {
+			this.currentscenario = x_currentPageXML.getAttribute('linkID');
+
+			this.processScenarioData();
+			this.processPropData();
+			this.fnSetUpScenario();
+		};
+
+		this.scenarioInit = function () {
+			/*
+			 * To enable multiple pages to share the same set up data an array is created as a
+			 * property of x_scenario, which will persist from page to page.
+			 * 
+			 * This script sets up the array, it will only run for the first scenario page or
+			 * after a game over situation has occurred
+			 */
+
+			var self = this; // create local object reference
+
+			x_scenario.scenarioStartPage = x_currentPageXML.getAttribute('linkID');
+	
+			// index arrays only contain the name value (unique identifier) of the data item
+			// the similarly named Array contains the detail in named format
+			// e.g. propIndexArray[0] = "it01" propArray[0].name = "it01", propArray[0].title = "a sharp sword"
+
+			x_scenario.propArray = [];
+			x_scenario.propIndexArray = [];
+			x_scenario.propscenarioArray = [];
+			x_scenario.scenarioIndexArray = [];
+			x_scenario.scenarioIndexArray[0] = "Inventory";
+			x_scenario.scenarioIndexArray[1] = "Off Stage";
+			x_scenario.scoreArray = [];
+
+			x_pages.each(function () {
+				if (this.nodeName == "scenario") {
+					$(this).children().each(function () { 
+						if (this.nodeName == "gameSetup" && this.attributes.length > 0) {
+							var i=0;
+							while (this.getAttribute("score" + (i+1) + "Use")) {
+								x_scenario.scoreArray[i] = [];
+								x_scenario.scoreArray[i].use = this.getAttribute("score" + (i+1) + "Use");
+								x_scenario.scoreArray[i].label = this.getAttribute("score" + (i+1) + "Label");
+								x_scenario.scoreArray[i].minScore = this.getAttribute("score" + (i+1) + "Min");
+								x_scenario.scoreArray[i].maxScore = this.getAttribute("score" + (i+1) + "Max");
+								x_scenario.scoreArray[i].startScore = this.getAttribute("score" + (i+1) + "Start");
+								x_scenario.scoreArray[i].progressBar = this.getAttribute("score" + (i+1) + "ProgressBar");
+								x_scenario.scoreArray[i].barColour = this.getAttribute("score" + (i+1) + "BarColour");
+								x_scenario.scoreArray[i].win = this.getAttribute("score" + (i+1) + "Win");
+								x_scenario.scoreArray[i].lose = this.getAttribute("score" + (i+1) + "Lose");
+								x_scenario.scoreArray[i].endGameState = "";
+								x_scenario.scoreArray[i].winMessage = this.getAttribute("score" + (i+1) + "WinMessage");
+								x_scenario.scoreArray[i].loseMessage = this.getAttribute("score" + (i+1) + "LoseMessage");
+								x_scenario.scoreArray[i].score = parseInt(this.getAttribute("score" + (i+1) + "Start"), 10);
+								x_scenario.scoreArray[i].scoreMultiplier = self.scenarioScoreBoardLen / (x_scenario.scoreArray[i].maxScore - x_scenario.scoreArray[i].minScore);
+								x_scenario.scoreArray[i].winEndID = this.getAttribute("score" + (i+1) + "WinEndID");
+								x_scenario.scoreArray[i].loseEndID = this.getAttribute("score" + (i+1) + "LoseEndID");
+								i++;
+							}
+
+							if (!self.UNDEF(this.getAttribute("loseEffect"))) {
+								x_scenario.scoreArray.loseEffect = this.getAttribute("loseEffect");
+							}
+
+							if (!self.UNDEF(this.getAttribute("winEffect"))) {
+								x_scenario.scoreArray.winEffect = this.getAttribute("winEffect");
+							}
+
+							x_scenario.scoreArray.gameOver = false;
+						}
+					});
+				}
+			});
+		};
+
+		this.setUpLanguage = function () {
+			/*
+			 *  This script sets up the various text items that will be consistent across all
+			 * the scenario pages in the project - again using x_scenario
+			 */
+
+			var self = this; // create local object reference
+
+			x_scenario.lang = [];
+			x_scenario.lang.imageButtonShow = x_currentPageXML.getAttribute("imageButtonShow");
+			x_scenario.lang.imageButtonHide = x_currentPageXML.getAttribute("imageButtonHide");
+			x_scenario.lang.imageButtonWidth = x_currentPageXML.getAttribute("imageButtonWidth");
+			x_scenario.lang.btnContinueLabel = x_currentPageXML.getAttribute("continueButtonLabel");
+			x_scenario.lang.continueButtonWidth = x_currentPageXML.getAttribute("continueButtonWidth");
+			x_scenario.lang.scenarioPropsTitle = x_currentPageXML.getAttribute("scenarioPropsTitle");
+			x_scenario.lang.scenarioPropsName = x_currentPageXML.getAttribute("scenarioPropsName");
+			x_scenario.lang.inventoryEmpty = x_currentPageXML.getAttribute("inventoryEmpty");
+			x_scenario.lang.inventoryTitle = x_currentPageXML.getAttribute("inventoryTitle");
+			x_scenario.lang.inventoryItemName = x_currentPageXML.getAttribute("inventoryItemName");
+			x_scenario.lang.actionTitle = x_currentPageXML.getAttribute("actionTitle");
+			x_scenario.lang.scoresTitle = x_currentPageXML.getAttribute("scoresTitle");
+			x_scenario.lang.scoresDebugMessage = x_currentPageXML.getAttribute("scoresDebugMessage");
+			x_scenario.lang.reportTitle = x_currentPageXML.getAttribute("reportTitle");
+			x_scenario.lang.pageLabel = x_currentPageXML.getAttribute("pageLabel");
+			x_scenario.lang.titleLabel = x_currentPageXML.getAttribute("titleLabel");
+			x_scenario.lang.idLabel = x_currentPageXML.getAttribute("idLabel");
+			x_scenario.lang.notFoundMessage = x_currentPageXML.getAttribute("notFoundMessage");
+			x_scenario.lang.notSetMessage = x_currentPageXML.getAttribute("notSetMessage");
+		};
+		
+		this.fnPropAction = function () {
+			/*
+			 * This script is used as a function
+			 * It is called when the page is loaded and each time an action is selected by the user, 
+			 * so that the page details are updated with the outcomes of the action. 
+			 * 
+			 * It loops through x_scenario.propArray to build up an array 
+			 * of all the props that are in the inventory, and 
+			 * all the props that have a scenario value of the current scenario, 
+			 * it also builds an array of all their actions which have their 
+			 * conditions met, and a series of arrays listing the props that match each prop location grouping.
+			 * 
+			 */
+
+			var self = this, // create local object reference
+					allowAction,
+					allowOutcome,
+					currentActionType,
+					outcomeIndex,
+					testScore;
+					
+			self.actionArray = [];
+			self.effectArray = [];
+
+			// identify which props are either at this location or are carried
+			self.propsInscenarioArray = []; // onStage i.e. current Location and Visible - used to display list of objects seen
+			self.inventoryArray = []; // Inventory and Visible - used to display objects in inventory
+
+			// the following are lookup arrays containing prop names only as quick check on propStates
+			// there is an array for each available propState
+			// presentArray = new Array(); // location == current scenario && prop state == visible
+
+			// new arrays for prop location groupings
+			self.onStageArray = []; // current location
+			self.notOnStageArray = []; // inventory or other location but not current location
+
+			self.carriedArray = []; // inventory (visible and hidden)
+			self.notCarriedArray = []; // either current location or other location but not inventory
+
+			self.offStageArray = []; // not current location or inventory - aka absentArray
+			self.inSceneArray = []; // carried or onStage but not other location
+
+			self.visibleArray = []; // state == visible
+			self.hiddenArray = []; // state == hidden
+
+			/* 
+			 absentArray = new Array(); // location != Inventory && location != current scenario
+			 hidingArray = new Array(); // prop state == hidden && (location == inventory || location == current scenario)
+			 carriedArray = new Array(); // location == inventory
+			 notCarriedArray = new Array(); // location != inventory
+			 accessibleArray = new Array(); // prop state == visible && (location == inventory || location == current scenario)
+			*/
+
+			for (var i = 0; i < x_scenario.propArray.length; i++) { // first set up state
+				if (x_scenario.propArray[i].state == "visible") {
+					self.visibleArray.push(i);
+				}
+				else {
+					self.hiddenArray.push(i);
+				}
+
+				// now sort out location based arrays
+				if (x_scenario.propArray[i].scenario == self.currentscenario) {
+					self.onStageArray.push(i);
+					self.notCarriedArray.push(i);
+					self.inSceneArray.push(i);
+
+					if (x_scenario.propArray[i].state == "visible") { // current scene and visible so add to array that will list what you can see
+						var propsInscenarioArrayIndex = self.propsInscenarioArray.length;
+						self.propsInscenarioArray[propsInscenarioArrayIndex] = [];
+						self.propsInscenarioArray[propsInscenarioArrayIndex].name = x_scenario.propArray[i].name;
+						self.propsInscenarioArray[propsInscenarioArrayIndex].title = x_scenario.propArray[i].title;
+						self.propsInscenarioArray[propsInscenarioArrayIndex].description = x_scenario.propArray[i].description;
+					}
+				}
+				else if (x_scenario.propArray[i].scenario == "Inventory") { // carried
+					self.carriedArray.push(i);
+					self.notOnStageArray.push(i);
+					self.inSceneArray.push(i);
+
+					if (x_scenario.propArray[i].state == "visible") { // add its details to the inventory array
+						var inventoryArrayIndex = self.inventoryArray.length;
+						self.inventoryArray[inventoryArrayIndex] = [];
+						self.inventoryArray[inventoryArrayIndex].name = x_scenario.propArray[i].name;
+						self.inventoryArray[inventoryArrayIndex].title = x_scenario.propArray[i].title;
+						self.inventoryArray[inventoryArrayIndex].description = x_scenario.propArray[i].description;
+					}
+				}
+				else { // not at current location or in inventory and not carried
+					self.offStageArray.push(i);
+					self.notCarriedArray.push(i);
+					self.offStageArray.push(i);
+				}
+			}
+
+			// inSceneArray contains both hidden and visible objects
+			if (!self.UNDEF(self.inSceneArray.length)) {
+				for (var n = 0; n < self.inSceneArray.length; n++) { // loop through array of prop indexes for props that can initiate actions in this scenario
+					i = self.inSceneArray[n]; // the index of the prop in x_scenario.propArray
+					if (!self.UNDEF(x_scenario.propArray[i].length)) {
+						for (var j = 0; j < x_scenario.propArray[i].length; j++) { // loop through actions
+							// test action conditions for validity - all conditions must pass for action to take place
+							allowAction = true;
+							currentActionType = x_scenario.propArray[i][j].actionType; // (action or effect)
+
+							for (var k = 0; k < x_scenario.propArray[i][j][0].length; k++) { // loop through conditions for this action
+								if (allowAction) { // only carry out further condition tests if no condition has failed
+									var thisProp,
+											thisPropIndex;
+
+									// check which prop we using in this condition for conditions that relate to a prop
+									if (self.UNDEF(x_scenario.propArray[i][j][0][k].propName)) { // name of property in condition
+										thisProp = x_scenario.propArray[i].name;
+										thisPropIndex = i;
+									}
+									else {
+										thisProp = x_scenario.propArray[i][j][0][k].propName;
+										thisPropIndex = x_scenario.propIndexArray.indexOf(thisProp); // find array for this prop
+									}
+
+									// test for propState
+									if (!self.UNDEF(x_scenario.propArray[i][j][0][k].propState)) { // we have a prop related condition so find out which prop it relates to
+										// confirm prop exists
+										if (thisPropIndex == -1) { // if thisPropIndex = -1 then the propName specified could not be found
+											allowAction = false; // prop not found
+										}
+										else { // now test for propState conditions
+											switch (x_scenario.propArray[i][j][0][k].propState) { // prop that is the subject of the condition may not be the same as the prop that has the action
+												case "visible":
+													if (self.visibleArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+														allowAction = false;
+													}
+													break;
+												case "hidden":
+													if (self.hiddenArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+														allowAction = false;
+													}
+													break;
+												default: // undefined - no action required if no propState value specified
+											}
+										}
+									}
+
+									// test for propLoc
+									if (!self.UNDEF(x_scenario.propArray[i][j][0][k].propLoc)) {
+										// we have a prop related condition so find out which prop it relates to
+										if (thisPropIndex == -1) { // confirm prop exists
+											allowAction = false; // prop not found
+										}
+										else { // now test for propState conditions
+											switch (x_scenario.propArray[i][j][0][k].propLoc) {
+												// prop that is the subject of the condition may not be the same as the prop that has the action
+												case "onStage":
+													if (self.onStageArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+														allowAction = false;
+													}
+													break;
+												case "carried":
+													if (self.carriedArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+														allowAction = false;
+													}
+													break;
+												case "offStage":
+													if (self.offStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+														allowAction = false;
+													}
+													break;
+												case "notOnStage":
+													if (self.notOnStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+														allowAction = false;
+													}
+													break;
+												case "notCarried":
+													if (self.notCarriedArray.indexOf(thisPropIndex) == -1) { // carried;
+														allowAction = false;
+													}
+													break;
+												case "inScene":
+													if (self.inSceneArray.indexOf(thisPropIndex) == -1) { // carried;
+														allowAction = false;
+													}
+													break;
+												default: // undefined - no action required if no propLoc value specified
+											}
+										}
+									}
+
+									// now test the scenario related options
+									if (!self.UNDEF(x_scenario.propArray[i][j][0][k].scenarioID)) { // name of scenario in condition
+										// need to test values for scenarioState
+										switch (x_scenario.propArray[i][j][0][k].scenarioState) { // prop that is the subject of the condition may not be the same as the prop that has the action
+											case "current":
+												if (x_scenario.propArray[i][j][0][k].scenarioID != self.currentscenario) { // test is current but condition scenario value is not current scenario
+													allowAction = false;
+												}
+												break;
+											case "notCurrent":
+												if (x_scenario.propArray[i][j][0][k].scenarioID == self.currentscenario) { // test is notCurrent but condition scenario value is the current scenario
+													allowAction = false;
+												}
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowAction = false;
+										} 
+									}
+
+									// now test for score value
+									if (!self.UNDEF(x_scenario.propArray[i][j][0][k].scoreNumber)) { // name of scenario in condition      
+										// need to test values for specified score
+										switch (x_scenario.propArray[i][j][0][k].scoreNumber) {
+											case "1":
+												testScore = x_scenario.scoreArray[0].score;
+												break;
+											case "2":
+												testScore = x_scenario.scoreArray[1].score;
+												break;
+											case "3":
+												testScore = x_scenario.scoreArray[2].score;
+												break;
+											case "4": // inventory
+												testScore = self.inventoryArray.length;
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowAction = false;
+										}
+
+										switch (x_scenario.propArray[i][j][0][k].scoreComp) { // prop that is the subject of the condition may not be the same as the prop that has the action
+											case "LT":
+												if (testScore >= x_scenario.propArray[i][j][0][k].scoreVal) { // test is current but condition scenario value is not current scenario
+													allowAction = false;
+												}
+												break;
+											case "GT":
+												if (testScore <= x_scenario.propArray[i][j][0][k].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+													allowAction = false;
+												}
+												break;
+											case "EQ":
+												if (testScore != x_scenario.propArray[i][j][0][k].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+													allowAction = false;
+												}
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowAction = false;
+										}
+									}             
+
+									// now test the chanceAct option against a random number
+									if (!self.UNDEF(x_scenario.propArray[i][j][0][k].chanceAct)) { // need to test values for scenarioState
+										myRand = Math.floor(Math.random() * 10); // returns 0 through 9
+										myChanceAct = parseInt(x_scenario.propArray[i][j][0][k].chanceAct, 10);
+										if (myRand >= myChanceAct) {
+											allowAction = false;
+										}
+									}
+								}
+							}
+
+							// still looping through actions
+							if (allowAction) {
+								var myArrayIndex;
+								if (self.UNDEF(x_scenario.propArray[i][j][1].length)) { // there are no outcomes so only use it if it is an effect
+									if (currentActionType == "effect") { // add effect to effect array
+										myArrayIndex = self.effectArray.length;
+										self.effectArray[myArrayIndex] = [];
+										self.effectArray[myArrayIndex].title = x_scenario.propArray[i][j].title;
+										self.effectArray[myArrayIndex].actionText = x_scenario.propArray[i][j].actionText;
+									}
+								}
+								else { // we have at least one outcome so create an entry for the action or effect
+									if (currentActionType == "action") { // create a new actionArray entry
+										myArrayIndex = self.actionArray.length;
+										self.actionArray[myArrayIndex] = [];
+										self.actionArray[myArrayIndex].title = x_scenario.propArray[i][j].title;
+										self.actionArray[myArrayIndex].actionText = x_scenario.propArray[i][j].actionText;
+									}
+									else { // create a new effectArray entry
+										myArrayIndex = self.effectArray.length;
+										self.effectArray[myArrayIndex] = [];
+										self.effectArray[myArrayIndex].title = x_scenario.propArray[i][j].title;
+										self.effectArray[myArrayIndex].actionText = x_scenario.propArray[i][j].actionText;
+									}
+
+									// now loop through the outcomes adding only those where all outcome conditions are valid 
+									for (var l = 0; l < x_scenario.propArray[i][j][1].length; l++) { // does the outcome have any outcome conditions?
+										if (self.UNDEF(x_scenario.propArray[i][j][1][l].length)) { // no conditions so we can simply add the outcome to the action or effect
+											if (currentActionType == "action") {
+												outcomeIndex = self.actionArray[myArrayIndex].length;
+												self.actionArray[myArrayIndex][outcomeIndex] = [];
+												self.actionArray[myArrayIndex][outcomeIndex].outcomeText = x_scenario.propArray[i][j][1][l].outcomeText;
+												self.actionArray[myArrayIndex][outcomeIndex].score1Inc = x_scenario.propArray[i][j][1][l].score1Inc;
+												self.actionArray[myArrayIndex][outcomeIndex].score2Inc = x_scenario.propArray[i][j][1][l].score2Inc;
+												self.actionArray[myArrayIndex][outcomeIndex].score3Inc = x_scenario.propArray[i][j][1][l].score3Inc;
+												self.actionArray[myArrayIndex][outcomeIndex].soundEffect = x_scenario.propArray[i][j][1][l].soundEffect;
+
+												// if propName has not been set in the outcome it must be set here to the current prop so that
+												// the author can just select a change of state without having to always set the prop
+												if (self.UNDEF(x_scenario.propArray[i][j][1][l].propName)) {
+													self.actionArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i].name;
+												}
+												else {
+													self.actionArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i][j][1][l].propName;
+												}
+
+												self.actionArray[myArrayIndex][outcomeIndex].propState = x_scenario.propArray[i][j][1][l].propState;
+												self.actionArray[myArrayIndex][outcomeIndex].propAction = x_scenario.propArray[i][j][1][l].propAction;
+												self.actionArray[myArrayIndex][outcomeIndex].specifiedLoc = x_scenario.propArray[i][j][1][l].specifiedLoc;
+												self.actionArray[myArrayIndex][outcomeIndex].destination = x_scenario.propArray[i][j][1][l].destination;
+											}
+											else {
+												outcomeIndex = self.effectArray[myArrayIndex].length;
+												self.effectArray[myArrayIndex][outcomeIndex] = [];
+												self.effectArray[myArrayIndex][outcomeIndex].outcomeText = x_scenario.propArray[i][j][1][l].outcomeText;
+												self.effectArray[myArrayIndex][outcomeIndex].score1Inc = x_scenario.propArray[i][j][1][l].score1Inc;
+												self.effectArray[myArrayIndex][outcomeIndex].score2Inc = x_scenario.propArray[i][j][1][l].score2Inc;
+												self.effectArray[myArrayIndex][outcomeIndex].score3Inc = x_scenario.propArray[i][j][1][l].score3Inc;
+												self.effectArray[myArrayIndex][outcomeIndex].soundEffect = x_scenario.propArray[i][j][1][l].soundEffect;
+
+												// if propName has not been set in the outcome it must be set here to the current prop so that
+												// the author can just select a change of state without having to always set the prop
+												if (self.UNDEF(x_scenario.propArray[i][j][1][l].propName)) {
+													self.effectArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i].name;
+												}
+												else {
+													self.effectArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i][j][1][l].propName;
+												}
+
+												self.effectArray[myArrayIndex][outcomeIndex].propState = x_scenario.propArray[i][j][1][l].propState;
+												self.effectArray[myArrayIndex][outcomeIndex].propAction = x_scenario.propArray[i][j][1][l].propAction;
+												self.effectArray[myArrayIndex][outcomeIndex].specifiedLoc = x_scenario.propArray[i][j][1][l].specifiedLoc;
+												self.effectArray[myArrayIndex][outcomeIndex].destination = x_scenario.propArray[i][j][1][l].destination;
+											}
+										}
+										else {
+											// we have outcome conditions so we must check all outcome conditions to see if all 
+											// conditions are met before the action can be added to the action array
+											allowOutcome = true;
+											for (var m = 0; m < x_scenario.propArray[i][j][1][l].length; m++) { // looping through the outcomeConditions and test them
+												// check which prop we using in this condition for conditions that relate to a prop		
+												if (self.UNDEF(x_scenario.propArray[i][j][1][l][m].propName)) {
+													thisProp = x_scenario.propArray[i].name;
+													thisPropIndex = i;
+												}
+												else {
+													thisProp = x_scenario.propArray[i][j][1][l][m].propName;
+													thisPropIndex = x_scenario.propIndexArray.indexOf(thisProp);
+												}
+
+												// test for propState
+												if (!self.UNDEF(x_scenario.propArray[i][j][1][l][m].propState)) { // we have a prop related condition so find out which prop it relates to
+													// confirm prop exists
+													if (thisPropIndex == -1) {
+														allowOutcome = false; // prop not found
+													}
+													else { // now test for propState conditions
+														switch (x_scenario.propArray[i][j][1][l][m].propState) { // prop that is the subject of the condition may not be the same as the prop that has the action
+															case "visible":
+																if (self.visibleArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+																	allowOutcome = false;
+																}
+																break;
+															case "hidden":
+																if (self.hiddenArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+																	allowOutcome = false;
+																}
+																break;
+															default: // undefined - no action required if no propState value specified
+														}
+													}
+												}	
+
+												// test for propLoc
+												if (!self.UNDEF(x_scenario.propArray[i][j][1][l][m].propLoc)) { // we have a prop related condition so find out which prop it relates to
+													// confirm prop exists
+													if (thisPropIndex == -1) {
+														allowOutcome = false; // prop not found
+													}
+													else {
+														// now test for propLoc conditions
+														switch (x_scenario.propArray[i][j][1][l][m].propLoc) { // prop that is the subject of the condition may not be the same as the prop that has the action
+															case "onStage":
+																if (self.onStageArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+																	allowOutcome = false;
+																}
+																break;
+															case "carried":
+																if (self.carriedArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+																	allowOutcome = false;
+																}
+																break;
+															case "offStage":
+																if (self.offStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+																	allowOutcome = false;
+																}
+																break;
+															case "notOnStage":
+																if (self.notOnStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+																	allowOutcome = false;
+																}
+																break;
+															case "notCarried":
+																if (self.notCarriedArray.indexOf(thisPropIndex) == -1) { // carried;
+																	allowOutcome = false;
+																}
+																break;
+															case "inScene":
+																if (self.inSceneArray.indexOf(thisPropIndex) == -1) { // carried;
+																	allowOutcome = false;
+																}
+																break;
+															default: // undefined - no action required if no propState value specified
+														}
+													}
+												}					
+
+												// now test the scenario related options
+												if (!self.UNDEF(x_scenario.propArray[i][j][1][l][m].scenarioID)) { // name of scenario in condition
+													// need to test values for scenarioState
+													switch (x_scenario.propArray[i][j][1][l][m].scenarioState) { // prop that is the subject of the condition may not be the same as the prop that has the action
+														case "current":
+															if (x_scenario.propArray[i][j][1][l][m].scenarioID != self.currentscenario) { // test is current but condition scenario value is not current scenario
+																allowOutcome = false;
+															}
+															break;
+														case "notCurrent":
+															if (x_scenario.propArray[i][j][1][l][m].scenarioID == self.currentscenario) { // test is notCurrent but condition scenario value is the current scenario
+																allowOutcome = false;
+															}
+															break;
+														default: // undefined - reject action as improperly formed condition
+															allowOutcome = false;
+													}
+												}
+
+												// now test for score value
+												if (!self.UNDEF(x_scenario.propArray[i][j][1][l][m].scoreNumber)) { // name of scenario in condition
+													// need to test values for specified score
+													switch (x_scenario.propArray[i][j][1][l][m].scoreNumber) {
+														case "1":
+															testScore = x_scenario.scoreArray[0].score;
+															break;
+														case "2":
+															testScore = x_scenario.scoreArray[1].score;
+															break;
+														case "3":
+															testScore = x_scenario.scoreArray[2].score;
+															break;
+														case "4": // inventory
+															testScore = self.inventoryArray.length;
+															break;
+														default: // undefined - reject action as improperly formed condition
+															allowOutcome = false;
+													}
+
+													switch (x_scenario.propArray[i][j][1][l][m].scoreComp) {
+														// prop that is the subject of the condition may not be the same as the prop that has the action
+														case "LT":
+															if (testScore >= x_scenario.propArray[i][j][1][l][m].scoreVal) { // test is current but condition scenario value is not current scenario
+																allowOutcome = false;
+															}
+															break;
+														case "GT":
+															if (testScore <= x_scenario.propArray[i][j][1][l][m].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+																allowOutcome = false;
+															}
+															break;
+														case "EQ":
+															if (testScore != x_scenario.propArray[i][j][1][l][m].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+																allowOutcome = false;
+															}
+															break;
+														default: // undefined - reject action as improperly formed condition
+															allowOutcome = false;
+													}
+												}
+
+												// now test the chanceAct option against a random number
+												if (!self.UNDEF(x_scenario.propArray[i][j][1][l][m].chanceAct)) { // need to test values for scenarioState
+													myRand = Math.floor(Math.random() * 10); // returns 0 through 9
+													myChanceAct = parseInt(x_scenario.propArray[i][j][1][l][m].chanceAct, 10);
+													if (myRand >= myChanceAct) {
+														allowOutcome = false;
+													}
+												}
+											}
+
+											if (allowOutcome) { // add outcome to effect or action
+												if (currentActionType == "action") {
+													outcomeIndex = self.actionArray[myArrayIndex].length;
+													self.actionArray[myArrayIndex][outcomeIndex] = [];
+													self.actionArray[myArrayIndex][outcomeIndex].name = x_scenario.propArray[i][j][1][l].name;
+													self.actionArray[myArrayIndex][outcomeIndex].outcomeText = x_scenario.propArray[i][j][1][l].outcomeText;
+													self.actionArray[myArrayIndex][outcomeIndex].score1Inc = x_scenario.propArray[i][j][1][l].score1Inc;
+													self.actionArray[myArrayIndex][outcomeIndex].score2Inc = x_scenario.propArray[i][j][1][l].score2Inc;
+													self.actionArray[myArrayIndex][outcomeIndex].score3Inc = x_scenario.propArray[i][j][1][l].score3Inc;
+													self.actionArray[myArrayIndex][outcomeIndex].soundEffect = x_scenario.propArray[i][j][1][l].soundEffect;
+
+													// if propName has not been set in the outcome it must be set here to the current prop so that
+													// the author can just select a change of state without having to always set the prop
+													if (self.UNDEF(x_scenario.propArray[i][j][1][l].propName)) {
+														self.actionArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i].name;
+													}
+													else {
+														self.actionArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i][j][1][l].propName;
+													}
+
+													self.actionArray[myArrayIndex][outcomeIndex].propState = x_scenario.propArray[i][j][1][l].propState;
+													self.actionArray[myArrayIndex][outcomeIndex].propAction = x_scenario.propArray[i][j][1][l].propAction;
+													self.actionArray[myArrayIndex][outcomeIndex].specifiedLoc = x_scenario.propArray[i][j][1][l].specifiedLoc;
+													self.actionArray[myArrayIndex][outcomeIndex].destination = x_scenario.propArray[i][j][1][l].destination;
+												}
+												else {
+													outcomeIndex = self.effectArray[myArrayIndex].length;
+													self.effectArray[myArrayIndex][outcomeIndex] = [];
+													self.effectArray[myArrayIndex][outcomeIndex].outcomeText = x_scenario.propArray[i][j][1][l].outcomeText;
+													self.effectArray[myArrayIndex][outcomeIndex].score1Inc = x_scenario.propArray[i][j][1][l].score1Inc;
+													self.effectArray[myArrayIndex][outcomeIndex].score2Inc = x_scenario.propArray[i][j][1][l].score2Inc;
+													self.effectArray[myArrayIndex][outcomeIndex].score3Inc = x_scenario.propArray[i][j][1][l].score3Inc;
+													self.effectArray[myArrayIndex][outcomeIndex].soundEffect = x_scenario.propArray[i][j][1][l].soundEffect;
+
+													// if propName has not been set in the outcome it must be set here to the current prop so that
+													// the author can just select a change of state without having to always set the prop
+													if (self.UNDEF(x_scenario.propArray[i][j][1][l].propName)) {
+														self.effectArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i].name;
+													}
+													else {
+														self.effectArray[myArrayIndex][outcomeIndex].propName = x_scenario.propArray[i][j][1][l].propName;
+													}
+
+													self.effectArray[myArrayIndex][outcomeIndex].propState = x_scenario.propArray[i][j][1][l].propState;
+													self.effectArray[myArrayIndex][outcomeIndex].propAction = x_scenario.propArray[i][j][1][l].propAction;
+													self.effectArray[myArrayIndex][outcomeIndex].specifiedLoc = x_scenario.propArray[i][j][1][l].specifiedLoc;
+													self.effectArray[myArrayIndex][outcomeIndex].destination = x_scenario.propArray[i][j][1][l].destination;
+												}
+											}						
+										}	
+									}
+									// need to remove the action if it has no outcomes
+									if (currentActionType == "action") {
+										if (self.actionArray[myArrayIndex].length == 0) { // there are no outcomes
+											self.actionArray.pop();
+										}
+									}
+								}
+
+							}		
+						}			
+					}					
+				}
+			}
+		};
+
+		this.fnScenarioAction = function () {
+			/*
+			 * This script is used as a function
+			 * It loops through the scenarioActions defined in templateData for this page 
+			 * to build an array of all the actions for this scenario which have their 
+			 * conditions met.
+			 * 
+			 * It is called when the page is loaded and each time an action is selected by the user, 
+			 * so that the page details can be updated after an action has taken place.
+			 */
+
+			var self = this, // create local object reference
+					allowAction,
+					testScore,
+					myArrayIndex,
+					outcomeIndex,
+					currentActionType;
+
+			if (!self.UNDEF($($(x_currentPageXML).find('scenarioActions')[0]).find('userAction').length)) {
+				$($(x_currentPageXML).find('scenarioActions')[0]).find('userAction').each(function() {
+				
+					allowAction = true;
+					currentActionType = this.getAttribute("actionType");
+
+					if (this.getAttribute("actionCondition") && !self.UNDEF(this.getAttribute("actionCondition").length)) {
+						//	pageActionArray[i][0] = new Array(); // for conditions
+						$(this).find('actionCondition').each(function() {
+							if (allowAction) { // start of all condition checks
+								// test prop related conditions, set allowAction to false if a condition fails
+								if (!self.UNDEF(this.getAttribute("propName"))) { // check a prop condition exists
+									
+									var thisProp = this.getAttribute("propName"); // a prop related condition has been defined
+									var thisPropIndex = x_scenario.propIndexArray.indexOf(thisProp); // find array for this prop
+
+									if (thisPropIndex != -1) { // a prop related condition has been specified
+										// test the propState
+										switch (this.getAttribute("propState")) {
+											case "visible":
+												if (self.visibleArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+													allowAction = false;
+												}
+												break;
+											case "hidden":
+												if (self.hiddenArray.indexOf(thisPropIndex) == -1) { // not hiding;
+													allowAction = false;
+												}
+												break;
+											default: // undefined - no action required if no propState value specified
+										}
+
+										// switch case propLoc
+										switch (this.getAttribute("propLoc")) {
+											case "onStage":
+												if (self.onStageArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+													allowAction = false;
+												}
+												break;
+											case "carried":
+												if (self.carriedArray.indexOf(thisPropIndex) == -1) { // not carried;
+													allowAction = false;
+												}
+												break;
+											case "offStage":
+												if (self.offStageArray.indexOf(thisPropIndex) == -1) {
+													allowAction = false;
+												}
+												break;
+											case "notOnStage":
+												if (self.notOnStageArray.indexOf(thisPropIndex) == -1) { // not hiding;
+													allowAction = false;
+												}
+												break;
+											case "notCarried":
+												if (self.notCarriedArray.indexOf(thisPropIndex) == -1) { // carried;
+													allowAction = false;
+												}
+												break;
+											case "inScene":
+												if (self.inSceneArray.indexOf(thisPropIndex) == -1) { // not accessible;
+													allowAction = false;
+												}
+												break;
+											default: // undefined - no action required if no propState value specified
+										}
+									}
+									else { // this prop does not exist in propIndexArray
+										allowAction = false;
+									}
+								}
+
+								// now test the scenario related options
+								if (!self.UNDEF(this.getAttribute("scenarioID"))) { // name of scenario in condition
+									// need to test values for scenarioState
+									switch (this.getAttribute("scenarioState")) {
+										// prop that is the subject of the condition may not be the same as the prop that has the action
+										case "current":
+											if (this.getAttribute("scenarioID") != self.currentscenario) { // test is current but condition scenario value is not current scenario
+												allowAction = false;
+											}
+											break;
+										case "notCurrent":
+											if (this.getAttribute("scenarioID") == self.currentscenario) { // test is notCurrent but condition scenario value is the current scenario
+												allowAction = false;
+											}
+											break;
+										default: // undefined - reject action as improperly formed condition
+											allowAction = false;
+									}
+								}
+								
+								// now test for score value
+								if (!self.UNDEF(this.getAttribute("scoreNumber"))) { // name of scenario in condition      
+									// need to test values for specified score
+									switch (this.getAttribute("scoreNumber")) {
+										case "1":
+											testScore = x_scenario.scoreArray[0].score;
+											break;
+										case "2":
+											testScore = x_scenario.scoreArray[1].score;
+											break;
+										case "3":
+											testScore = x_scenario.scoreArray[2].score;
+											break;
+										case "4": // inventory
+											testScore = inventoryArray.length;
+											break;
+										default: // undefined - reject action as improperly formed condition
+											allowAction = false;
+									}
+
+									switch (this.getAttribute("scoreComp")) { // prop that is the subject of the condition may not be the same as the prop that has the action
+										case "LT":
+											if (testScore >= this.getAttribute("scoreVal")) { // test is current but condition scenario value is not current scenario
+												allowAction = false;
+											}
+											break;
+										case "GT":
+											if (testScore <= this.getAttribute("scoreVal")) { // test is notCurrent but condition scenario value is the current scenario
+												allowAction = false;
+											}
+											break;
+										case "EQ":
+											if (testScore != this.getAttribute("scoreVal")) { // test is notCurrent but condition scenario value is the current scenario
+												allowAction = false;
+											}
+											break;
+										default: // undefined - reject action as improperly formed condition
+											allowAction = false;
+									}
+								}  
+
+								// now test the chanceAct option against a random number
+								if (!self.UNDEF(this.getAttribute("chanceAct"))) { // name of scenario in condition
+									// need to test values for scenarioState
+									myRand = Math.floor(Math.random() * 10); // returns 0 through 9
+									myChanceAct = parseInt(this.getAttribute("chanceAct"), 10);
+									if (myRand >= myChanceAct) {
+										allowAction = false;
+									}
+								}
+							}
+						});
+					}
+
+					if (allowAction) {
+						if (this.getAttribute("actionOutcome") && self.UNDEF(this.getAttribute("actionOutcome").length)) { // there are no outcomes so only use it if it is an effect
+							if (currentActionType == "effect") { // add effect to effect array
+								myArrayIndex = self.effectArray.length;
+								self.effectArray[myArrayIndex] = [];
+								self.effectArray[myArrayIndex].title = this.getAttribute("title");
+								self.effectArray[myArrayIndex].actionText = this.getAttribute("actionText");
+							}
+						}
+						else { // we have at least one outcome so create an entry for the action or effect
+							if (currentActionType == "action") { // create a new actionArray entry
+								myArrayIndex = self.actionArray.length;
+								self.actionArray[myArrayIndex] = [];
+								self.actionArray[myArrayIndex].title = this.getAttribute("title");
+								self.actionArray[myArrayIndex].actionText = this.getAttribute("actionText");
+							}
+							else { // create a new effectArray entry
+								myArrayIndex = self.effectArray.length;
+								self.effectArray[myArrayIndex] = [];
+								self.effectArray[myArrayIndex].title = this.getAttribute("title");
+								self.effectArray[myArrayIndex].actionText = this.getAttribute("actionText");
+							}
+
+							// now loop through the outcomes adding only those where all outcome conditions are valid 
+							$(this).find('actionOutcome').each(function() {
+								// does the outcome have any outcome conditions?
+								if (self.UNDEF($(this).children().length)) {
+									// no conditions so we can simply add the outcome to the action or effect
+									if (currentActionType == "action") {
+										outcomeIndex = self.actionArray[myArrayIndex].length;
+										self.actionArray[myArrayIndex][outcomeIndex] = [];
+										self.actionArray[myArrayIndex][outcomeIndex].name = this.getAttribute("name");
+										self.actionArray[myArrayIndex][outcomeIndex].outcomeText = this.getAttribute("outcomeText");
+										self.actionArray[myArrayIndex][outcomeIndex].score1Inc = this.getAttribute("score1Inc");
+										self.actionArray[myArrayIndex][outcomeIndex].score2Inc = this.getAttribute("score2Inc");
+										self.actionArray[myArrayIndex][outcomeIndex].score3Inc = this.getAttribute("score3Inc");
+										self.actionArray[myArrayIndex][outcomeIndex].soundEffect = this.getAttribute("soundEffect");
+										self.actionArray[myArrayIndex][outcomeIndex].propName = this.getAttribute("propName");
+										self.actionArray[myArrayIndex][outcomeIndex].propState = this.getAttribute("propState");
+										self.actionArray[myArrayIndex][outcomeIndex].propAction = this.getAttribute("propAction");
+										self.actionArray[myArrayIndex][outcomeIndex].specifiedLoc = this.getAttribute("specifiedLoc");
+										self.actionArray[myArrayIndex][outcomeIndex].destination = this.getAttribute("destination");
+									}
+									else {
+										outcomeIndex = self.effectArray[myArrayIndex].length;
+										self.effectArray[myArrayIndex][outcomeIndex] = [];
+										self.effectArray[myArrayIndex][outcomeIndex].name = this.getAttribute("name");
+										self.effectArray[myArrayIndex][outcomeIndex].outcomeText = this.getAttribute("outcomeText");
+										self.effectArray[myArrayIndex][outcomeIndex].score1Inc = this.getAttribute("score1Inc");
+										self.effectArray[myArrayIndex][outcomeIndex].score2Inc = this.getAttribute("score2Inc");
+										self.effectArray[myArrayIndex][outcomeIndex].score3Inc = this.getAttribute("score3Inc");
+										self.effectArray[myArrayIndex][outcomeIndex].soundEffect = this.getAttribute("soundEffect");
+										self.effectArray[myArrayIndex][outcomeIndex].propName = this.getAttribute("propName");
+										self.effectArray[myArrayIndex][outcomeIndex].propState = this.getAttribute("propState");
+										self.effectArray[myArrayIndex][outcomeIndex].propAction = this.getAttribute("propAction");
+										self.effectArray[myArrayIndex][outcomeIndex].specifiedLoc = this.getAttribute("specifiedLoc");
+										self.effectArray[myArrayIndex][outcomeIndex].destination = this.getAttribute("destination");
+									}
+								}
+								else {
+									// we have outcome conditions so we must check all outcome conditions
+									// to see if all conditions are met before the action can be added to 
+									// the action array
+									allowOutcome = true;
+									$(this).find('outcomeCondition').each(function() {
+										// looping through the outcomeConditions and test them
+										var thisProp = this.getAttribute("propName");
+										var thisPropIndex = x_scenario.propIndexArray.indexOf(thisProp);
+
+										// test for propState
+										if (!self.UNDEF(this.getAttribute("propState"))) { // we have a prop related condition so find out which prop it relates to
+											// confirm prop exists
+											if (thisPropIndex == -1) {
+												allowOutcome = false; // prop not found
+											}
+											else { // now test for propState conditions
+												switch (this.getAttribute("propState")) { // prop that is the subject of the condition may not be the same as the prop that has the action
+													case "visible":
+														if (self.visibleArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+															allowOutcome = false;
+														}
+														break;
+													case "hidden":
+														if (self.hiddenArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+															allowOutcome = false;
+														}
+														break;
+													default: // undefined - no action required if no propState value specified
+												}
+											}
+										}
+
+										// test for propLoc
+										if (!self.UNDEF(this.getAttribute("propLoc"))) { // we have a prop related condition so find out which prop it relates to
+											// confirm prop exists
+											if (thisPropIndex == -1) {
+												allowOutcome = false; // prop not found
+											}
+											else { // now test for propLoc conditions
+												switch (this.getAttribute("propLoc")) { // prop that is the subject of the condition may not be the same as the prop that has the action
+													case "onStage":
+														if (self.onStageArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+															allowOutcome = false;
+														}
+														break;
+													case "carried":
+														if (self.carriedArray.indexOf(thisPropIndex) == -1) { // prop not in absent list
+															allowOutcome = false;
+														}
+														break;
+													case "offStage":
+														if (self.offStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+															allowOutcome = false;
+														}
+														break;
+													case "notOnStage":
+														if (self.notOnStageArray.indexOf(thisPropIndex) == -1) { // not carried;
+															allowOutcome = false;
+														}
+														break;
+													case "notCarried":
+														if (self.notCarriedArray.indexOf(thisPropIndex) == -1) { // carried;
+															allowOutcome = false;
+														}
+														break;
+													case "inScene":
+														if (self.inSceneArray.indexOf(thisPropIndex) == -1) { // carried;
+															allowOutcome = false;
+														}
+														break;
+													default: // undefined - no action required if no propState value specified
+												}
+											}
+										}				
+
+										// now test the scenario related options
+										if (!self.UNDEF(this.getAttribute("scenarioID"))) { // name of scenario in condition
+											// need to test values for scenarioState
+											switch (this.getAttribute("scenarioState")) { // prop that is the subject of the condition may not be the same as the prop that has the action
+												case "current":
+													if (this.getAttribute("scenarioID") != self.currentscenario) { // test is current but condition scenario value is not current scenario
+														allowOutcome = false;
+													}
+													break;
+												case "notCurrent":
+													if (this.getAttribute("scenarioID") == self.currentscenario) { // test is notCurrent but condition scenario value is the current scenario
+														allowOutcome = false;
+													}
+													break;
+												default: // undefined - reject action as improperly formed condition
+													allowOutcome = false;
+											}
+										}							
+
+										// now test for score value
+										if (!self.UNDEF(this.getAttribute("scoreNumber"))) { // name of scenario in condition      
+											// need to test values for specified score
+											switch (this.getAttribute("scoreNumber")) {
+												case "1":
+													testScore = x_scenario.scoreArray[0].score;
+													break;
+												case "2":
+													testScore = x_scenario.scoreArray[1].score;
+													break;
+												case "3":
+													testScore = x_scenario.scoreArray[2].score;
+													break;
+												case "4": // inventory
+													testScore = self.inventoryArray.length;
+													break;
+												default: // undefined - reject action as improperly formed condition
+													allowOutcome = false;
+											}
+
+											switch (this.getAttribute("scoreComp")) { // prop that is the subject of the condition may not be the same as the prop that has the action
+												case "LT":
+													if (testScore >= this.getAttribute("scoreVal")) { // test is current but condition scenario value is not current scenario
+														allowOutcome = false;
+													}
+													break;
+												case "GT":
+													if (testScore <= this.getAttribute("scoreVal")) { // test is notCurrent but condition scenario value is the current scenario
+														allowOutcome = false;
+													}
+													break;
+												case "EQ":
+													if (testScore != this.getAttribute("scoreVal")) { // test is notCurrent but condition scenario value is the current scenario
+														allowOutcome = false;
+													}
+													break;
+												default: // undefined - reject action as improperly formed condition
+													allowOutcome = false;
+											}
+										}
+
+										// now test the chanceAct option against a random number
+										if (!self.UNDEF(this.getAttribute("chanceAct"))) { // need to test values for scenarioState
+											myRand = Math.floor(Math.random() * 10); // returns 0 through 9
+											myChanceAct = parseInt(this.getAttribute("chanceAct"));
+											if (myRand >= myChanceAct) {
+												allowOutcome = false;
+											}
+										}
+									});
+
+									if (allowOutcome) { // add outcome to effect or action
+										if (currentActionType == "action") {
+											outcomeIndex = self.actionArray[myArrayIndex].length;
+											self.actionArray[myArrayIndex][outcomeIndex] = []
+											self.actionArray[myArrayIndex][outcomeIndex].name = this.getAttribute("name");
+											self.actionArray[myArrayIndex][outcomeIndex].outcomeText = this.getAttribute("outcomeText");
+											self.actionArray[myArrayIndex][outcomeIndex].score1Inc = this.getAttribute("score1Inc");
+											self.actionArray[myArrayIndex][outcomeIndex].score2Inc = this.getAttribute("score2Inc");
+											self.actionArray[myArrayIndex][outcomeIndex].score3Inc = this.getAttribute("score3Inc");
+											self.actionArray[myArrayIndex][outcomeIndex].soundEffect = this.getAttribute("soundEffect");
+											self.actionArray[myArrayIndex][outcomeIndex].propName = this.getAttribute("propName");
+											self.actionArray[myArrayIndex][outcomeIndex].propState = this.getAttribute("propState");
+											self.actionArray[myArrayIndex][outcomeIndex].propAction = this.getAttribute("propAction");
+											self.actionArray[myArrayIndex][outcomeIndex].specifiedLoc = this.getAttribute("specifiedLoc");
+											self.actionArray[myArrayIndex][outcomeIndex].destination = this.getAttribute("destination");
+										}
+										else {
+											outcomeIndex = self.effectArray[myArrayIndex].length;
+											self.effectArray[myArrayIndex][outcomeIndex] = [];
+											self.effectArray[myArrayIndex][outcomeIndex].name = this.getAttribute("name");
+											self.effectArray[myArrayIndex][outcomeIndex].outcomeText = this.getAttribute("outcomeText");
+											self.effectArray[myArrayIndex][outcomeIndex].score1Inc = this.getAttribute("score1Inc");
+											self.effectArray[myArrayIndex][outcomeIndex].score2Inc = this.getAttribute("score2Inc");
+											self.effectArray[myArrayIndex][outcomeIndex].score3Inc = this.getAttribute("score3Inc");
+											self.effectArray[myArrayIndex][outcomeIndex].soundEffect = this.getAttribute("soundEffect");
+											self.effectArray[myArrayIndex][outcomeIndex].propName = this.getAttribute("propName");
+											self.effectArray[myArrayIndex][outcomeIndex].propState = this.getAttribute("propState");
+											self.effectArray[myArrayIndex][outcomeIndex].propAction = this.getAttribute("propAction");
+											self.effectArray[myArrayIndex][outcomeIndex].specifiedLoc = this.getAttribute("specifiedLoc");
+											self.effectArray[myArrayIndex][outcomeIndex].destination = this.getAttribute("destination");
+										}
+									}				
+								}						
+							});
+
+							// need to remove the action if it has no outcomes
+							if (currentActionType == "action") {
+								if (self.actionArray[myArrayIndex].length == 0) { // there are no outcomes
+									self.actionArray.pop();
+								}
+							}
+						}
+					}
+				});
+			}
+		};
+		
+		this.fnUpdateScore = function (scoreIndex, scoreInc) {
+			/*
+			 *  updates scores and checks for score in range
+			 *  receives 
+			 *  scoreIndex - the array index of the score to change (score 1 = 0, score2 = 1, score 3 = 2)
+			 *  scoreInc - the amount to change the score by
+			 * 
+			 * It also refers to x_scenario.scoreArray to check on Win and Lose conditions so that 
+			 * scores that exceed their game end conditions trigger the end of the game
+			 */
+			 
+			var self = this; // create local object reference
+
+			x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].score, 10) + parseInt(scoreInc, 10);
+
+			// test score ranges and take appropriate action
+			if (parseInt(x_scenario.scoreArray[scoreIndex].score, 10) < parseInt(x_scenario.scoreArray[scoreIndex].minScore, 10)) { // score below of lowest setting
+					if (x_scenario.scoreArray[scoreIndex].lose == "min") { // this score loses the game
+						x_scenario.scoreArray[scoreIndex].endGameState = "L";
+						x_scenario.scoreArray.gameOver = true;
+						x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].minScore, 10);
+
+						if (!self.UNDEF(x_scenario.scoreArray.loseEffect)) {
+							self.playSound(x_scenario.scoreArray.loseEffect);
+						}
+					}
+					else if (x_scenario.scoreArray[scoreIndex].win == "min") { // this score wins the game
+						x_scenario.scoreArray[scoreIndex].endGameState = "W";
+						x_scenario.scoreArray.gameOver = true;
+						x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].maxScore, 10);
+
+						if (!self.UNDEF(x_scenario.scoreArray.winEffect)) {
+							self.playSound(x_scenario.scoreArray.winEffect);
+						}
+					}
+					else {
+							x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].minScore, 10);
+					}
+			}
+
+			if (parseInt(x_scenario.scoreArray[scoreIndex].score, 10) > parseInt(x_scenario.scoreArray[scoreIndex].maxScore, 10)) { // score above highest setting
+					if (x_scenario.scoreArray[scoreIndex].lose == "max") { // this score loses the game
+						x_scenario.scoreArray[scoreIndex].endGameState = "L";
+						x_scenario.scoreArray.gameOver = true;
+						x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].minScore, 10);
+
+						if (!self.UNDEF(x_scenario.scoreArray.loseEffect)) {
+							self.playSound(x_scenario.scoreArray.loseEffect);
+						}
+					}
+					else if (x_scenario.scoreArray[scoreIndex].win == "max") { // this score wins the game
+						x_scenario.scoreArray[scoreIndex].endGameState = "W";
+						x_scenario.scoreArray.gameOver = true;
+						x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].maxScore, 10);
+
+						if (!self.UNDEF(x_scenario.scoreArray.winEffect)) {
+							self.playSound(x_scenario.scoreArray.winEffect);
+						}
+					}
+					else {
+							x_scenario.scoreArray[scoreIndex].score = parseInt(x_scenario.scoreArray[scoreIndex].maxScore, 10);
+					}
+			}
+		};
+		
+		this.playSound = function (sound) {
+			//
+		};
+		
+		this.linkClicked = function (type, i) {
+			switch (type) {
+				case 'action':
+				case 'inventory':
+				case 'prop':
+					this.processActionOrInventory(type,i);
+					break;
+				default:
+					alert("Couldn't find a type of link '" + type + "'.");
+			}
+		};
+		
+		this.updateScores = function (changeScore1, changeScore2, changeScore3) {
+			var self = this; // create local object reference
+
+			// update scores - which may trigger a game end
+			if (changeScore1 != 0){
+				self.fnUpdateScore(0, parseInt(changeScore1, 10));
+			}
+			if (changeScore2 != 0){
+				self.fnUpdateScore(1, parseInt(changeScore2, 10));
+			}
+			if (changeScore3 != 0){
+				self.fnUpdateScore(2, parseInt(changeScore3, 10));
+			}
+
+			if (!x_scenario.scoreArray.gameOver) {  
+
+				if (self.UNDEF(self.destPageName)){
+					// re-run scenario set up to display changes of score, property location etc.
+					self.fnSetUpScenario();
+				}
+				else if (self.destPageName == "") {
+					// error in setup as a destination has been added to the outcome but no value specified
+					alert("A destination has been added to the outcome but no value specified");
+					//  fnSetUpscenario();
+				}
+				else {  // a destination has been specified 
+					// only go to new page if game is not over
+					// navigate to destination page
+					var destinationPageIndex = x_lookupPage('linkID', self.destPageName);				
+					x_changePage(destinationPageIndex);
+				}
+			}
+			else {
+				self.doEndGame();
+			}
+		};
+
+		this.fnScoreDisplay = function () {
+			/* ******************************
+			 * function called to set up the score display once the scores have been adjusted
+			 * as a result of page loading, effects taking place, or actions taking place.
+			 */
+
+			var self = this; // create local object reference
+			self.scoreString = "";
+
+			$('#scoresPanel > div').empty();
+
+			for (var i = 0; i < 3; i++) {
+					if (x_scenario.scoreArray[i].use == "1") { // draw progress bar
+							if (x_scenario.scoreArray[i].progressBar == "1") {
+									// draw the score board
+									var scoreBoardLen = self.scenarioScoreBoardLen;
+									var scoreLen = x_scenario.scoreArray[i].score * x_scenario.scoreArray[i].scoreMultiplier;
+
+									$('#scoresPanel > div')
+										.append(
+											$("<span>")
+												.css({
+													"display": "block",
+													"width": scoreLen + "px",
+													"height": "10px",
+													"background-color": "#" + x_scenario.scoreArray[i].barColour.substring(2),
+													"border": "black 1px solid"
+												})
+										)
+										.append(
+											$("<span>")
+												.text(x_scenario.scoreArray[i].label + ": " + x_scenario.scoreArray[i].score)
+										);
+							}
+					}
+				self.scoreString += x_scenario.scoreArray[i].label + ": " + x_scenario.scoreArray[i].score + "<br />";
+				if (i < 2) self.scoreString += "<br>";
+			}
+			
+			self.panelDisplay('scores', x_scenario.lang.scoresTitle, null);
+		};
+		
+		this.doEndGame = function () {
+			var self = this, // create local object reference
+					gameOverText,
+					endDestination;
+
+			self.fnScoreDisplay();
+
+			gameOverText = self.scoreString;
+
+			// loop through endGameState values to identify messages required.
+			for (var i = 0; i < 3; i++) {
+				if(x_scenario.scoreArray[i].endGameState == "W"){
+					gameOverText += "<br>" + x_scenario.scoreArray[i].winMessage;
+					endDestination = x_scenario.scoreArray[i].winEndID;
+					break;
+				}
+				else if (x_scenario.scoreArray[i].endGameState == "L") {
+					gameOverText += "<br>" + x_scenario.scoreArray[i].loseMessage;
+					endDestination = x_scenario.scoreArray[i].loseEndID;
+					break;
+				}
+			}
+
+			self.popup(
+				'End',
+				$('<div>')
+					.append(gameOverText)
+					.css('margin', '15px'),
+				function () {
+					var destinationPageIndex;
+					if (!self.UNDEF(endDestination) && endDestination != '') {
+						destinationPageIndex = x_lookupPage('linkID', endDestination);
+					}
+					else {
+						destinationPageIndex = x_lookupPage('linkID', x_scenario.scenarioStartPage);
+					}
+
+					x_scenario = undefined; // Clear the object to rebuild
+					if (destinationPageIndex != undefined) {
+						x_changePage(destinationPageIndex);
+					}
+
+					// restart
+					self.init();
+				}
+			);
+		};
+
+		this.fnSetUpScenario = function () {
+			/*
+			 * This script is used as a function
+			 * it calls the functions 
+			 * fnPropAction()
+			 * fnScenarioAction() 
+			 * fnUpdateScore()
+			 * fnScoreDisplay()
+			 * to set up the scenario display
+			 * when the page loads and each time the user selects an action
+			 */
+
+			var self = this, // create local object reference
+					thisProp,
+					thisPropIndex,
+					invList,
+					inventoryDesc,
+					testScore,
+					outcomeProp,
+					outcomePropIndex;
+
+			self.fnPropAction(); // call function to set up prop based actions
+			self.fnScenarioAction(); // call function to set up scenario based actions
+
+			var scenarioDesc = x_currentPageXML.getAttribute("description"),
+					allowOutcome;
+
+			// add any effects and their outcomes to the scenario
+			if (!self.UNDEF(self.effectArray.length)) {
+				scenarioDesc += "<br><br>";
+				for (i = 0; i < self.effectArray.length; i++) { // go through each effect that has by now been checked for action conditions being met
+					// we still have to consider outcomeConditions
+					if (!(self.UNDEF(self.effectArray[i].actionText) || self.effectArray[i] == "")) {
+						scenarioDesc += "<br>" + self.effectArray[i].actionText;
+					}
+					if (!self.UNDEF(self.effectArray[i].length)) { // there are outcomes
+						for (j = 0; j < self.effectArray[i].length; j++) {
+							allowOutcome = true;
+
+							// need to set up test for outcomeConditions here
+							if (!self.UNDEF(self.effectArray[i][j].length)) { // we have outcome conditions	
+								for (k = 0; k < self.effectArray[i][j].length; k++) { // we have outcomeConditions for this outcome
+									if (!self.UNDEF(self.effectArray[i][j][k].propName)) {
+										thisProp = self.effectArray[i][j][k].propName;
+										thisPropIndex = x_scenario.propIndexArray.indexOf(thisProp); // find array for this prop
+										if (thisPropIndex != -1) { // prop can be found
+											switch (self.effectArray[i][j][k].propState) {
+												case "visible":
+													if (self.visibleArray.indexOf(thisPropIndex) == -1) { // prop is not present in visibleArray
+														allowOutcome = false;
+													}
+													break;
+												case "hidden":
+													if (self.hiddenArray.indexOf(thisPropIndex) == -1) { // not hiding;
+														allowOutcome = false;
+													}
+													break;
+												default: // undefined
+											}
+
+											// switch case propLoc  
+											switch (self.effectArray[i][j][k].propLoc) {
+												case "onStage":
+													if (self.onStageArray.indexOf(thisPropIndex) == -1) { // prop is not present in presentArray
+														allowOutcome = false;
+													}
+													break;
+												case "carried":
+													if (self.carriedArray.indexOf(thisPropIndex) == -1) { // carried;
+														allowOutcome = false;
+													}
+													break;
+												case "offStage":
+													if (self.offStageArray.indexOf(thisPropIndex) == -1) {
+														allowOutcome = false;
+													}
+													break;
+												case "notOnStage":
+													if (self.notOnStageArray.indexOf(thisPropIndex) == -1) { // not hiding;
+														allowOutcome = false;
+													}
+													break;
+												case "notCarried":
+													if (self.notCarriedArray.indexOf(thisPropIndex) == -1) { // not carried;
+														allowOutcome = false;
+													}
+													break;
+												case "inScene":
+													if (self.inSceneArray.indexOf(thisPropIndex) == -1) { // not accessible;
+														allowOutcome = false;
+													}
+													break;
+												default: // undefined - no action required if no propState value specified
+											}
+										}
+										else { // this prop does not exist in propIndexArray
+											allowOutcome = false;
+										}
+									}
+
+									// now test the scenario related options
+									if (!self.UNDEF(self.effectArray[i][j][k].scenarioID)) { // name of scenario in condition
+										// need to test values for scenarioState
+										switch (self.effectArray[i][j][k].scenarioState) { // prop that is the subject of the condition may not be the same as the prop that has the action
+											case "current":
+												if (self.effectArray[i][j][k].scenarioID != self.currentscenario) { // test is current but condition scenario value is not current scenario
+													allowOutcome = false;
+												}
+												break;
+											case "notCurrent":
+												if (self.effectArray[i][j][k].scenarioID == self.currentscenario) { // test is notCurrent but condition scenario value is the current scenario
+													allowOutcome = false;
+												}
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowOutcome = false;
+										}
+									}				
+
+									// now test for score value
+									if (!self.UNDEF(self.effectArray[i][j][k].scoreNumber)) { // name of scenario in condition      
+										// need to test values for specified score
+										switch (self.effectArray[i][j][k].scoreNumber) {
+											case "1":
+												testScore = x_scenario.scoreArray[0].score;
+												break;
+											case "2":
+												testScore = x_scenario.scoreArray[1].score;
+												break;
+											case "3":
+												testScore = x_scenario.scoreArray[2].score;
+												break;
+											case "4": // inventory
+												testScore = self.inventoryArray.length;
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowOutcome = false;
+										}
+
+										switch (self.effectArray[i][j][k].scoreComp) {
+											// prop that is the subject of the condition may not be the same as the prop that has the action
+											case "LT":
+												if (testScore >= self.effectArray[i][j][k].scoreVal) { // test is current but condition scenario value is not current scenario
+													allowOutcome = false;
+												}
+												break;
+											case "GT":
+												if (testScore <= self.effectArray[i][j][k].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+													allowOutcome = false;
+												}
+												break;
+											case "EQ":
+												if (self.effectArray[i][j][k].scoreVal) { // test is notCurrent but condition scenario value is the current scenario
+													allowOutcome = false;
+												}
+												break;
+											default: // undefined - reject action as improperly formed condition
+												allowOutcome = false;
+										}
+									}
+	
+									// now test the chanceAct option against a random number
+									if (!self.UNDEF(self.effectArray[i][j][k].chanceAct)) { // name of scenario in condition
+										// need to test values for scenarioState
+										var myRand = Math.floor(Math.random() * 10); // returns 0 through 9
+										var myChanceAct = parseInt(self.effectArray[i][j][k].chanceAct, 10);
+										if (myRand >= myChanceAct) {
+											allowOutcome = false;
+										}
+									}
+								}
+
+								// process outcomes of effect only if allowOutcome == "true"
+								if (allowOutcome) {
+									if (!(self.UNDEF(self.effectArray[i][j].outcomeText) || self.effectArray[i][j].outcomeText == "")) {
+										scenarioDesc += "<br>" + self.effectArray[i][j].outcomeText;
+										// add processing of other outcomes here
+										// handle any score increments
+										if (!self.UNDEF(self.effectArray[i][j].score1Inc)) {
+											self.fnUpdateScore(0, parseInt(self.effectArray[i][j].score1Inc, 10));
+										}
+										if (!self.UNDEF(effectArray[i][j].score2Inc)) {
+											self.fnUpdateScore(1, parseInt(self.effectArray[i][j].score2Inc, 10));
+										}
+										if (!self.UNDEF(effectArray[i][j].score3Inc)) {
+											self.fnUpdateScore(2, parseInt(self.effectArray[i][j].score3Inc, 10));
+										}
+
+										// handle changes to a prop
+										if (!self.UNDEF(self.effectArray[i][j].propName)) {
+											// identify the prop
+											outcomeProp = effectArray[i][j].propName;
+											outcomePropIndex = x_scenario.propIndexArray.indexOf(outcomeProp);
+											if (outcomePropIndex != -1) { // the prop has been found
+												switch (self.effectArray[i][j].propState) {
+													case "show":
+														x_scenario.propArray[outcomePropIndex].state = "visible";
+														break;
+													case "hide":
+														x_scenario.propArray[outcomePropIndex].state = "hidden";
+														break;
+													case "carry":
+														x_scenario.propArray[outcomePropIndex].scenario = "Inventory";
+														break;
+													case "drop":
+														x_scenario.propArray[outcomePropIndex].scenario = self.currentscenario;
+														break;
+													case "offStage":
+														x_scenario.propArray[outcomePropIndex].scenario = "Off Stage";
+														break;
+													default:
+												}
+											}
+										}            
+
+										// play soundEffect if one has been provided
+										if (!self.UNDEF(self.effectArray[i][j].soundEffect)) {
+											self.playSound(self.effectArray[i][j].soundEffect);
+										}
+
+										// destination change not implemented for effects as this could be confusing
+										// and is inconsistent with the concept of an effect but it would go here
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// add list of props present at the scenario
+			if (self.propsInscenarioArray.length > 0) {
+				scenarioDesc += x_scenario.lang.scenarioPropsTitle + " " + self.propsInscenarioArray.length + " " + x_scenario.lang.scenarioPropsName + "<br><ul>";
+				for (i = 0; i < self.propsInscenarioArray.length; i++) {
+					// list each item in present array to be displayed under the scenario description as hot text items
+					scenarioDesc += '<li><a href="javascript:scenario.linkClicked(\'prop\',' + i + ')">' + self.propsInscenarioArray[i].title + '</a></li>';
+				}
+				scenarioDesc += '</ul>';
+			}
+
+			// set up actions
+			var actionList = '<ul>';
+			if (!self.UNDEF(self.actionArray.length)) {
+				for (i = 0; i < self.actionArray.length; i++) {
+					actionList += '<li><a href="javascript:scenario.linkClicked(\'action\',' + i + ')">' + self.actionArray[i].title + '</a></li>';
+				}
+			}
+			actionList += '</ul>';
+
+			self.panelDisplay('actions', x_scenario.lang.actionTitle, actionList);
+			// inventory list
+			var invList;
+			if (self.inventoryArray.length > 0) {
+				inventoryDesc = x_scenario.lang.inventoryTitle + " " + self.inventoryArray.length + " " + x_scenario.lang.inventoryItemName;
+				invList = '<ul>';
+				for (i = 0; i < self.inventoryArray.length; i++) {
+					invList += '<li><a href="javascript:scenario.linkClicked(\'inventory\',' + i + ')">' + self.inventoryArray[i].title + '</a></li>';
+				}
+				invList += '</ul>';
+			}
+			else {
+				invList = x_scenario.lang.inventoryEmpty;
+				inventoryDesc = x_scenario.lang.inventoryTitle;
+			}
+
+			self.panelDisplay('inventory', inventoryDesc, invList);
+
+			// scores
+			self.fnScoreDisplay();
+			self.panelDisplay('scenario', x_currentPageXML.getAttribute('title'), scenarioDesc);
+		};
+		
+		this.panelDisplay = function (panel, title, description) {
+			var panelID = '#' + panel + 'Panel';
+	
+			if (title) {
+				$(panelID +' > h3').html(title);
+			}
+		
+			if (description) {
+				$(panelID +' > div').html(description);
+			}
+		};
+		
+		this.popup = function (title, load, closeCallback) {
+			$(".x_popupDialog").parent().detach();
+
+			var $x_popupDialog = $('<div id="x_scenarioPopup" class="x_popupDialog"></div>');
+			$x_body.append($x_popupDialog);
+			$x_popupDialog
+				.dialog({
+					dialogClass: "no-close",
+					closeOnEscape: true,
+					modal: true,
+					title: title,
+					closeText: '',
+					close: function() {
+						$(this).parent().detach();
+						if (closeCallback != undefined) {
+							closeCallback();
+						}
+					},
+					buttons: [
+						{
+							text: 'Continue',
+							click: function() {
+								$(this).dialog( "close" );
+							}
+						}
+					]
+				})
+				.parent().hide();
+
+			if (load instanceof jQuery) {
+				$x_popupDialog.append(load);
+			}
+			else {
+				$x_popupDialog.html(load);
+			}
+			x_setDialogSize($x_popupDialog, 'description');
+
+			
+		};
+
+		this.processScenarioData = function () {
+			 /*
+			 * This script sets the current scenario to this page and then checks if this is the first time this page
+			 * has been run. If it is the first time this page's name is added to x_scenario.scenarioIndexArray
+			 * and any score changes for visiting this page are acted on. This ensures that scores awarded
+			 * for accessing a new scenario page are only earned on the first visit to the page.
+			 */
+
+			//gameOver = 0;  // NOT SURE WHAY THIS IS HERE OR WHAT IT DOES???
+
+			var self = this, // create local object reference
+					currentscenarioIndex;
+					
+			currentscenarioIndex = x_scenario.scenarioIndexArray.indexOf(self.currentscenario);
+			self.firstTime = false; // Assume not
+			if (currentscenarioIndex == -1) { // first time for all items in this page
+				self.firstTime = true;
+
+				// add locationID to array
+				x_scenario.scenarioIndexArray.push(self.currentscenario);
+				currentscenarioIndex = x_scenario.scenarioIndexArray.length - 1;
+
+				// add score for getting to this location for the first time.
+				if (!isNaN(parseInt(x_currentPageXML.getAttribute("score1Inc"), 10))) {
+					self.fnUpdateScore(0, parseInt(x_currentPageXML.getAttribute("score1Inc"), 10));
+				}
+
+				if (!isNaN(parseInt(x_currentPageXML.getAttribute("score2Inc"), 10))) {
+					self.fnUpdateScore(1, parseInt(x_currentPageXML.getAttribute("score2Inc"), 10));
+				}
+
+				if (!isNaN(parseInt(x_currentPageXML.getAttribute("score3Inc"), 10))) {
+					self.fnUpdateScore(2, parseInt(x_currentPageXML.getAttribute("score3Inc"), 10));
+				}
+			}
+		};
+
+		this.processActionOrInventory = function (actionSource, outcomeIndex) {
+			var self = this, // create local object reference
+					changeScore1 = 0,
+					changeScore2 = 0,
+					changeScore3 = 0,
+					outcomeProp,
+					outcomePropIndex,
+					propScenarioIndex,
+					actionOutcomeText = "",
+					actionOutcomeTitle = "";
+
+			if (actionSource == "action") {
+				if (self.actionArray[outcomeIndex].length != undefined) {
+					actionOutcomeTitle = this.actionArray[outcomeIndex].title;
+					actionOutcomeText += self.actionArray[outcomeIndex].actionText + "...<br><br>";
+					// loop through actionArray outcomes for this action (there is only one action here selected by the user!)
+					for (i = 0; i < self.actionArray[outcomeIndex].length; i++) { // loop through the outcomes
+						actionOutcomeText += self.actionArray[outcomeIndex][i].outcomeText + "<br>";
+						// handle any score increments
+						if (!self.UNDEF(self.actionArray[outcomeIndex][i].score1Inc)) {
+									changeScore1 += parseInt(self.actionArray[outcomeIndex][i].score1Inc, 10);
+						}
+
+						if (!self.UNDEF(self.actionArray[outcomeIndex][i].score2Inc)) {
+									changeScore2 += parseInt(self.actionArray[outcomeIndex][i].score2Inc, 10);
+						}
+
+						if (!self.UNDEF(self.actionArray[outcomeIndex][i].score3Inc)) {
+									changeScore3 += parseInt(self.actionArray[outcomeIndex][i].score3Inc, 10);
+						}
+
+						// handle changes to a prop
+						if (!self.UNDEF(self.actionArray[outcomeIndex][i].propName)) {
+							// identify the prop
+							outcomeProp = self.actionArray[outcomeIndex][i].propName;
+							outcomePropIndex = x_scenario.propIndexArray.indexOf(outcomeProp);
+							if (outcomePropIndex != -1){ // the prop has been found
+								// do state
+								switch(self.actionArray[outcomeIndex][i].propState){
+									case "visible":
+										x_scenario.propArray[outcomePropIndex].state = "visible";
+										break;             
+									case "hidden":
+										x_scenario.propArray[outcomePropIndex].state = "hidden";            
+										break;
+									default: // do nothing
+								}
+
+								switch(self.actionArray[outcomeIndex][i].propAction){
+									case "carry":
+										x_scenario.propArray[outcomePropIndex].scenario = "Inventory";
+										break;
+									case "drop":
+										x_scenario.propArray[outcomePropIndex].scenario = self.currentscenario;            
+										break;
+									case "specified":
+										// check if specified location exists
+										propScenarioIndex = x_scenario.scenarioIndexArray.indexOf(self.actionArray[outcomeIndex][i].specifiedLoc);          
+										if (propScenarioIndex != -1) {              
+											x_scenario.propArray[outcomePropIndex].scenario = self.actionArray[outcomeIndex][i].specifiedLoc;
+										}
+										break;                
+									case "destroy":
+										x_scenario.propArray[outcomePropIndex].scenario = "Off Stage";
+										break;              
+									default: // do nothing
+								}
+							}
+						}            
+
+						// play soundEffect if one has been provided
+						if (self.actionArray[outcomeIndex][i].soundEffect){
+							self.playSound(self.actionArray[outcomeIndex][i].soundEffect);
+						}  
+
+						// now need to set up the destination
+						if (self.actionArray[outcomeIndex][i].destination){    
+							self.destPageName = self.actionArray[outcomeIndex][i].destination;
+						}
+					}
+				}		
+			}
+			else if (actionSource == "inventory") {  // inventory list item selected
+				actionOutcomeTitle = self.inventoryArray[outcomeIndex].title;
+				actionOutcomeText = self.inventoryArray[outcomeIndex].description;
+			}
+			else {
+				actionOutcomeTitle = self.propsInscenarioArray[outcomeIndex].title;
+				actionOutcomeText = self.propsInscenarioArray[outcomeIndex].description;
+			}
+
+			self.popup(
+				actionOutcomeTitle,
+				$('<div>')
+					.append(actionOutcomeText)
+					.css('margin', '15px'),
+				function () {
+					self.fnSetUpScenario();
+					self.updateScores(changeScore1, changeScore2, changeScore3);
+					self.fnScoreDisplay();
+				}
+			);
+		};
+
+		this.processPropData = function () {
+			/*
+			 * The first time a page is accessed the details of the props referenced in this page
+			 * are stored in the following persistent arrays
+			 * prop Name in x_scenario.propIndexArray
+			 * Full details of the prop in x_scenario.propArray
+			 */
+			 
+			var self = this, // create local object reference
+					currentProp,
+					propIndex;
+			 
+			// add items to item array if this is the first time the page has loaded
+			if (self.firstTime) {
+				$(x_currentPageXML).find('propList').children('prop').each(function(i) {
+					currentProp = this.getAttribute("name");
+					currentPropTitle = this.getAttribute("title");
+					currentPropDesc = this.getAttribute("description");
+					currentPropState = this.getAttribute("state");
+
+					if (x_scenario.propIndexArray.indexOf(currentProp) == -1) { // first time for this prop add its name to the index array
+						x_scenario.propIndexArray.push(currentProp);
+						x_scenario.propscenarioArray.push(self.currentscenario);
+					}
+
+					// add current prop details to propArray
+					propIndex = x_scenario.propIndexArray.indexOf(currentProp);
+					x_scenario.propArray[propIndex] = [];
+					x_scenario.propArray[propIndex].elementType = "prop";
+					x_scenario.propArray[propIndex].name = currentProp;
+					x_scenario.propArray[propIndex].title = currentPropTitle;
+					x_scenario.propArray[propIndex].description = currentPropDesc;
+					x_scenario.propArray[propIndex].state = currentPropState;
+					x_scenario.propArray[propIndex].scenario = self.currentscenario;
+
+					// add actions to current prop
+					$(this).children("userAction").each(function(k) {
+						x_scenario.propArray[propIndex][k] = []; // first add actions
+						x_scenario.propArray[propIndex][k].elementType = "action";
+						x_scenario.propArray[propIndex][k].name = this.getAttribute("name");
+						x_scenario.propArray[propIndex][k].title = this.getAttribute("title");
+						x_scenario.propArray[propIndex][k].actionText = this.getAttribute("actionText");
+						x_scenario.propArray[propIndex][k].actionType = this.getAttribute("actionType");
+
+						// add action conditions to propArray[propIndex][0][0]
+						if (!self.UNDEF($(this).children("actionCondition").length)) {
+							x_scenario.propArray[propIndex][k][0] = []; // for conditions
+							$(this).children("actionCondition").each(function(j) {
+								x_scenario.propArray[propIndex][k][0][j] = [];
+								x_scenario.propArray[propIndex][k][0][j].elementType = "condition";
+								x_scenario.propArray[propIndex][k][0][j].name = this.getAttribute("name");
+								x_scenario.propArray[propIndex][k][0][j].propName = this.getAttribute("propName");
+								x_scenario.propArray[propIndex][k][0][j].propState = this.getAttribute("propState");
+								x_scenario.propArray[propIndex][k][0][j].propLoc = this.getAttribute("propLoc");
+								x_scenario.propArray[propIndex][k][0][j].scenarioID = this.getAttribute("scenarioID");
+								x_scenario.propArray[propIndex][k][0][j].scenarioState = this.getAttribute("scenarioState");
+								x_scenario.propArray[propIndex][k][0][j].scoreNumber = this.getAttribute("scoreNumber");
+								x_scenario.propArray[propIndex][k][0][j].scoreVal = this.getAttribute("scoreVal");
+								x_scenario.propArray[propIndex][k][0][j].scoreComp = this.getAttribute("scoreComp");
+								x_scenario.propArray[propIndex][k][0][j].chanceAct = this.getAttribute("chanceAct");
+							});
+						}
+
+						// add action outcomes to propArray[propIndex][0][0]
+						if (!self.UNDEF($(this).children("actionOutcome").length)) {
+							x_scenario.propArray[propIndex][k][1] = []; // for outcomes
+							$(this).children("actionOutcome").each(function(j) {
+								x_scenario.propArray[propIndex][k][1][j] = [];
+								x_scenario.propArray[propIndex][k][1][j].elementType = "outcome";
+								x_scenario.propArray[propIndex][k][1][j].name = this.getAttribute("name");
+								x_scenario.propArray[propIndex][k][1][j].outcomeText = this.getAttribute("outcomeText");
+								x_scenario.propArray[propIndex][k][1][j].score1Inc = this.getAttribute("score1Inc");
+								x_scenario.propArray[propIndex][k][1][j].score2Inc = this.getAttribute("score2Inc");
+								x_scenario.propArray[propIndex][k][1][j].score3Inc = this.getAttribute("score3Inc");
+								x_scenario.propArray[propIndex][k][1][j].propName = this.getAttribute("propName");
+								x_scenario.propArray[propIndex][k][1][j].propState = this.getAttribute("propState");
+								x_scenario.propArray[propIndex][k][1][j].propAction = this.getAttribute("propAction");
+								x_scenario.propArray[propIndex][k][1][j].specifiedLoc = this.getAttribute("specifiedLoc");
+								x_scenario.propArray[propIndex][k][1][j].destination = this.getAttribute("destination");
+								x_scenario.propArray[propIndex][k][1][j].soundEffect = this.getAttribute("soundEffect");
+
+								// add outcome conditions to this outcome
+								$(this).children("outcomeCondition").each(function(m) {
+									x_scenario.propArray[propIndex][k][1][j][m] = []; // for outcomeConditions
+									x_scenario.propArray[propIndex][k][1][j][m].elementType = "outcomeCondition";
+									x_scenario.propArray[propIndex][k][1][j][m].name = this.getAttribute("name");
+									x_scenario.propArray[propIndex][k][1][j][m].propName = this.getAttribute("propName");
+									x_scenario.propArray[propIndex][k][1][j][m].propState = this.getAttribute("propState");
+									x_scenario.propArray[propIndex][k][1][j][m].propLoc = this.getAttribute("propLoc");
+									x_scenario.propArray[propIndex][k][1][j][m].scenarioID = this.getAttribute("scenarioID");
+									x_scenario.propArray[propIndex][k][1][j][m].scenarioState = this.getAttribute("scenarioState");
+									x_scenario.propArray[propIndex][k][1][j][m].scoreNumber = this.getAttribute("scoreNumber");
+									x_scenario.propArray[propIndex][k][1][j][m].scoreVal = this.getAttribute("scoreVal");
+									x_scenario.propArray[propIndex][k][1][j][m].scoreComp = this.getAttribute("scoreComp");
+									x_scenario.propArray[propIndex][k][1][j][m].chanceAct = this.getAttribute("chanceAct");
+								});
+							});
+						}
+					});
+				});
+			}
+		};
+	};
+
+	scenario.init();
+	
+</script>
+
+<style type="text/css">
+	/* PANEL LAYOUT */
+	
+	#panelHolder .panel.tileH {
+		display:	inline-block;
+	}
+	
+	#panelHolder .panel.fullW {
+		display:	block;
+	}
+	
+	#panelHolder .panel {
+		vertical-align:	top;
+		overflow:		auto;
+	}
+	
+	#panelHolder .top .panel.halfH {
+		margin-bottom:	15px;
+	}
+	
+	#panelHolder .panel.tileH:not(:last-of-type) {
+		margin-right:	15px;
+	}
+	
+	#panelHolder .panel.tileV:not(:last-of-type) {
+		margin-bottom:	15px;
+	}
+	
+	.mediaHolder {
+		margin: 0 auto;
+	}
+	
+	.splitScreen .right {
+		margin-left:	15px;
+	}
+	
+	.audioImgHolder {
+		position:	relative;
+		overflow:	hidden;
+	}
+	
+	.transcript {
+		padding-top:	10px;
+		text-align:		left;
+	}
+	
+	.transcriptBtn {
+		margin-top:	10px;
+		margin-bottom:	10px;
+	}
+	
+	.panel h3 {
+		border-bottom:	1px solid #CCCCCC;
+		padding-bottom:	8px;
+		margin-bottom:	8px;
+	}
+	
+	.panel h4 {
+		margin-top:		10px;
+		margin-bottom:	5px;
+	}
+	
+	.panel h5 {
+		font-size:		1em;
+		margin-bottom:	0.5em;
+		margin-top:		0.5em;
+	}
+	
+	hr {
+		border: none;
+		background-color: #CCCCCC;
+		height: 1px;
+	}
+	
+	.panel .contentBlock {
+		width:			100%;
+		margin-bottom:	5px;
+	}
+
+	.no-close .ui-dialog-titlebar-close {
+		display: none;
+	}
+</style>
+
+<div id="pageContents">
+	<div id="panelHolder"></div>
+</div>

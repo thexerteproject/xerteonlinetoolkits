@@ -1,0 +1,20 @@
+/* modelAnswerResults.html */
+	
+	#pageContents .panel {
+		overflow:	auto;
+	}
+	
+	#copyBtn {
+		margin-top:	10px;
+	}
+	
+	#copyTxt {
+		color:		red;
+		font-size:	0.8em;
+	}
+	
+	#textHolder hr {
+		margin-top:		20px;
+		margin-bottom:	20px;
+	}
+	

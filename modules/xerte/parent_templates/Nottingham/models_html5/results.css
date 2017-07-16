@@ -1,0 +1,87 @@
+/* results.html */
+	table, tr, th, td {
+		border: 0px;
+	}
+
+    #questionScores
+	{
+		width: 100%;
+	}
+
+	table.details
+	{
+		width: 100%;
+	}
+
+	#pageContents p:first-child {
+		margin-top: 0px;
+	}
+
+	h3{
+		padding: 8px;
+	}
+
+	td, th{
+		padding-left: 25px !important;
+		padding-right: 25px !important;
+	}
+
+	td.question, th.question {
+		width: 40%;
+	}
+
+	td.answer, th.answer {
+		width:28.5%;
+	}
+
+	td.correctanswer, th.correctanswer
+	{
+		width:28.5%;
+	}
+
+	th {
+		background: black;
+		color: #ffffff;
+	}
+	.details th {
+		background: darkgray;
+		color: #ffffff;
+	}
+	.td-center{
+		text-align:center;
+	}
+
+	.td-right{
+		text-align:right;
+	}
+
+	tr.alt td {
+		background-color: #efefef;
+	}
+    .alt td
+	{
+		background-color: #efefef;
+	}
+
+	.notLast{
+		/*border-bottom: 1px solid black !important; */
+		background-color: #bbbbbb;
+	}
+	#specific{
+		display:none;
+	}
+
+.red
+{
+	color: #ff0000;
+}
+
+.green
+{
+	color: #62c562;
+}
+
+.blue
+{
+	color: #0000ff;
+}

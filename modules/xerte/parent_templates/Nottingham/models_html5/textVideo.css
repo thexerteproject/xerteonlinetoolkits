@@ -1,0 +1,15 @@
+/* textVideo.html */
+	
+	#textHolder {
+		padding-bottom:	20px;
+	}
+	
+	#transcriptHolder {
+		margin-top:	10px;
+		text-align:	right;
+	}
+	
+	#transcript {
+		text-align:		left;
+	}
+	

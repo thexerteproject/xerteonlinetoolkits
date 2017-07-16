@@ -1,0 +1,50 @@
+/* flickr.html */
+	
+	#pageContents .right .panel {
+		overflow:	hidden;
+	}
+	
+	#flickrHolder {
+		width:		100%;
+	}
+
+	#headerHolder {
+		text-align: 	left;
+		margin-bottom: 	10px;
+	}
+	
+	#licenseHolder {
+		margin-top: 	10px;
+	}
+
+	#pictureHolder {
+		width:		100%;
+		text-align: center;
+	}
+
+	#pictureHolder img {
+		margin-left: 	auto;
+  		margin-right: 	auto;
+	}
+
+	#loadingSpinner {
+		margin-left: 	auto;
+  		margin-right: 	auto;
+		width:			180px;
+	}
+
+	.spinner {
+		float:	left;
+		margin:	-8px 20px 0 0;
+	}
+
+	#loadingSpinner p {
+		font-weight:	bold;
+	}
+
+	#btnHolder {
+		text-align:		right;
+		margin-top:		10px;
+		margin-right:	0px; /* over-ride ui style */
+	}
+

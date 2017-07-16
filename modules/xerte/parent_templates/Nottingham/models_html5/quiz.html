@@ -278,7 +278,22 @@
                     l_feedback = [];
 
             var generalFeedback = "";
-
+            var correctCounter = 0;
+            var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+            var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
+            for(i = 0; i < currentQuestionsChildren.length; i++)
+           	{
+            	
+            	if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
+            	{
+            		correctCounter++;
+            	}
+           	}
+            
+			if(selected.length == 0 && correctCounter != 0)
+			{
+				correct = false;	
+			}
             // get feedback for selected options and check if they are correct
             for (var i=0; i<selected.length; i++) {
                 var optionIndex = $(selected[i]).parent().index(),
@@ -326,6 +341,7 @@
                     }
                 }
                 // Track answer
+                
                 XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], correct, l_options, l_answer, l_feedback);
                 quiz.myProgress.splice(quiz.currentQ, 1, correct);
             }
@@ -410,7 +426,7 @@
             var scormScore = Math.ceil(myScore / quiz.questions.length * 100);
             XTSetPageScore(x_currentPage, scormScore);
         }
-
+/*
         this.leavePage = function() {
 			if ($(x_currentPageXML).children().length > 0) {
 				if (!this.checked) {
@@ -421,6 +437,7 @@
 				}
 			}
         }
+        */
 
 		this.loadVideo = function() {
 			var $video = $("#pageVideo"),
@@ -615,75 +632,6 @@
 
 </script>
 
-<style type="text/css">
-
-	.qPanel {
-		overflow:	auto;
-	}
-	
-	#optionHolder {
-		margin-top:	15px;
-		margin-bottom:	15px;
-	}
-
-	#pageContents input {
-		float:		left;
-		display:	block;
-	}
-
-	#optionHolder .optionGroup {
-		padding-top:	5px;
-		padding-bottom:	5px;
-	}
-	
-	#pageContents .optionTxt {
-		cursor:			pointer;
-		position:		relative;
-		margin-left:	2em;
-		display:		block;
-	}
-	
-	#feedback, #buttonHolder {
-		clear:		both;
-	}
-	
-	#buttonHolder {
-		float:	right;
-		margin-bottom:	10px;
-	}
-
-	#infoHolder .quizImg {
-		padding:	5px;
-		float:		right;
-		max-width:	50%;
-		height:		auto;
-	}
-	
-	#vidHolder.panel {
-		margin-top:	1em;
-	}
-	
-	#textHolder .quizImg {
-		padding:	5px;
-		max-width:	80%;
-		display:	block;
-		margin-left: auto;
-		margin-right:auto;
-	}
-
-	#textHolder p:first-child {
-		margin-top:	0px;
-	}
-	
-	#questionAudio {
-		clear:	both;
-	}
-	
-	#feedback .audioHolder {
-		margin:	0.5em 0 1em 0;
-	}
-
-</style>
 
 <div id="pageContents">
 

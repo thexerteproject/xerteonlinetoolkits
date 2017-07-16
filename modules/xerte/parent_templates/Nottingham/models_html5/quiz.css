@@ -1,0 +1,68 @@
+/* quiz.html */
+
+	.qPanel {
+		overflow:	auto;
+	}
+	
+	#optionHolder {
+		margin-top:	15px;
+		margin-bottom:	15px;
+	}
+
+	#pageContents input {
+		float:		left;
+		display:	block;
+	}
+
+	#optionHolder .optionGroup {
+		padding-top:	5px;
+		padding-bottom:	5px;
+	}
+	
+	#pageContents .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	2em;
+		display:		block;
+	}
+	
+	#feedback, #buttonHolder {
+		clear:		both;
+	}
+	
+	#buttonHolder {
+		float:	right;
+		margin-bottom:	10px;
+	}
+
+	#infoHolder .quizImg {
+		padding:	5px;
+		float:		right;
+		max-width:	50%;
+		height:		auto;
+	}
+	
+	#vidHolder.panel {
+		margin-top:	1em;
+	}
+	
+	#textHolder .quizImg {
+		padding:	5px;
+		max-width:	80%;
+		display:	block;
+		margin-left: auto;
+		margin-right:auto;
+	}
+
+	#textHolder p:first-child {
+		margin-top:	0px;
+	}
+	
+	#questionAudio {
+		clear:	both;
+	}
+	
+	#feedback .audioHolder {
+		margin:	0.5em 0 1em 0;
+	}
+

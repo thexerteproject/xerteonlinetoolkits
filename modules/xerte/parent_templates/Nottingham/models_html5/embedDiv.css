@@ -1,0 +1,11 @@
+/* embedDiv.html */
+
+#iFrame {
+	background-color: white;
+}
+
+.centre iframe {
+	margin:		0 auto;
+	display:	block;
+}
+	

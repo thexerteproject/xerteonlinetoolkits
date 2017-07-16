@@ -157,7 +157,7 @@ input.media
 .pane-center {margin-left: 25px; background: #fff}
 .pane-east {margin-right: 15px}
 
-.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px;}
+.pane-west .content #treeview {margin-top: 10px; padding-bottom: 25px; overflow-x: auto; height:91%}
 
 /* inner divs inside Outer East/West panes */
 .header {
@@ -199,6 +199,19 @@ input.media
 	position:	relative;
 	overflow:	auto;
     background: #fff;
+}
+
+#merge_east, #merge_center {
+	background: #fff;
+	padding: 8px 8px 8px 8px;
+	border-radius: 4px;
+}
+
+#merge_mainContent .content {
+	background-image: none;
+	background-color: #fff;
+	padding: 10px 5px;
+	position: relative;
 }
 
 .ui-layout-center .content
@@ -516,6 +529,10 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 }
 
+#insert_menu .ui-menu .ui-menu-item {
+	display: block;
+}
+
 #insert_menu .icon {
 	padding:	0 0.4em 0 0;
 	border:	none;
@@ -641,7 +658,7 @@ select, input, textarea
 {
     width: 100%;
 }
-table.wizard{
+table.wizard, table.wizardgroup_table{
     vertical-align: middle;
     width: 100%;
 }
@@ -650,10 +667,33 @@ td.wizardparameter{
     width:20px;
 }
 td.wizardlabel {
-    width: 150px;
+    width: 175px;
 }
 
 td.wizardvalue {
+}
+
+fieldset.wizardgroup {
+	border: 1px solid #ccc;
+}
+
+fieldset.wizardgroup.collapsed {
+	border-color: transparent;
+	border-top-color: #ccc;
+}
+
+fieldset.wizardgroup legend {
+	margin-left: -17px;
+	padding-right: 10px;
+	cursor: pointer;
+}
+
+fieldset.wizardgroup legend i {
+	padding-bottom: 10px;
+}
+
+fieldset.wizardgroup legend span, fieldset.wizardgroup legend span i.fa {
+	padding-left: 6px;
 }
 
 #parameter_checkboxes span {
@@ -686,6 +726,12 @@ td.flashonly, td.deprecated{
 
 }
 
+#optionalParams table {
+	width: 100%;
+	margin-bottom: 15px;
+	margin-top: 5px;
+}
+
 .optButtonContainer {
     overflow: auto;
     margin-bottom: 20px;
@@ -697,6 +743,11 @@ td.flashonly, td.deprecated{
 
 .optButtonContainer  td {
     padding: 1px;
+}
+
+.optButtonContainer .optPropTitle {
+	background-color: #f0f0f2;
+	padding: 10px;
 }
 
 .divInsertOptParam {
@@ -786,7 +837,7 @@ td.flashonly, td.deprecated{
 }
 
 .hotspotLightboxImg {
-    width:400px;
+    width:100%;
 }
 
 
@@ -839,13 +890,41 @@ div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 4
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}
 div#save_buttons button:last-child {margin-left: 10px!important;}
 
-div#top_buttons button {font-size: 1.3em; height: 35px;}
+div#top_buttons button {font-size: 1.3em; height: 35px; margin-right: 20px}
 div#top_buttons button img {height: 20px!important;}
-div#top_buttons button:first-of-type {margin-right: 20px;}
-div#top_buttons button:last-of-type {margin-left: 20px;}
+/* div#top_buttons button:first-of-type {margin-right: 20px;} */
+div#top_buttons button:last-of-type {margin-right: 0px;}
 
 div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
+#merge_center label {cursor: pointer; display:block;}
+#merge.xerte_button_dark { background: #f0f0f0; font-size: 1.3em;
+	padding-top: 0px!important;
+	height: 40px!important;}
+#merge.xerte_button_dark:hover {background: #f86718; color: #000000;}
+.merge_title { margin-bottom: 5px;}
+#mergeGlossary {
+	margin-bottom:10px;
+}
+#select-all {
+	margin-bottom:15px;
+}
+#mergeGlossaryCheck, #pages {
+	margin-left: 15px;
+}
+#merge_button_icon {
+	height: 17px;
+	padding-bottom:1px;
 
+}
+.merge_page_icon
+{
+	margin: 1px 4px -1px 5px;
+}
+#merge_button_container {
+	/* float:right; */
+	margin-top: 10px;
+	color:black;
+}
 
 .xerte-icon {
     margin-right: 4px;
@@ -856,7 +935,14 @@ div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
 
 #bottom_buttons i {color: white;}
 
-div.wizardvalue_inner {width: 95%}
+div.wizardvalue_inner {
+/*	width: 95%*/
+	margin-right: 2em;
+}
+
+.wizardgroup_table div.wizardvalue_inner {
+	margin-right: 1em;
+}
 
 .media_browse {
     cursor: pointer;
@@ -867,6 +953,48 @@ div.wizardvalue_inner {width: 95%}
     height: auto!important;
 }
 
+.featherlight-content {
+	min-width: 0 !important;
+}
+
+.previewFile {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.unmarkCompletionIcon
+{
+	margin-right: 5px;
+	color:#a0a0a0;
+}
+
+.deprecatedIcon
+{
+	margin-right: 5px;
+	color: #ff8c00;
+}
+
+.hiddenIcon {
+	margin-right: 5px;
+	color: #ff0000;
+}
+.iconEnabled
+{
+	display: inline-block;
+}
+
+.iconDisabled
+{
+	display: none !important;
+}
+
+li.hiddenNode >a{
+	background: #e5e5e5;
+}
+
+li.deprecatedNode >a {
+	background: rgba(248, 103, 24, 0.33);
+}
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

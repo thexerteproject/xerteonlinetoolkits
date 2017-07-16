@@ -57,7 +57,14 @@ if(is_user_admin()){
         $params = array($_POST['new_user'], $row_folder['folder_id'], $_POST['template_id'], 'creator'); 
 
         $ok = db_query($query, $params);
-        if($ok) {
+        // Delete other rights this user might have
+        $query = "delete from {$prefix}templaterights WHERE user_id =? and template_id = ? AND role != ?";
+        $params = array($_POST['new_user'], $_POST['template_id'], 'creator');
+
+        $ok = db_query_one($query, $params);
+
+
+    if($ok) {
 
         echo "Update successful";
 

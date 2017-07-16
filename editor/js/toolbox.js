@@ -20,6 +20,8 @@
 // *******************
 // *     Toolbox    *
 // *******************
+
+var merged = false;
 var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
@@ -29,15 +31,17 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {},
         jqGrGridData = {},
 		jqGridSetUp = false,
+		workspace,
 
     // Build the "insert page" menu
     create_insert_page_menu = function () {
         var getMenuItem = function (itemData) {
             var data = {
                 href: '#',
-                html: itemData.name
+                html: itemData.name,
+                class: itemData.name
             };
-			
+            
             if (itemData.icon != undefined) {
                 data.icon = itemData.icon;
 				data.html = '<img class="icon" src="' + moduleurlvariable + 'icons/' + itemData.icon + '.png"/>' + data.html;
@@ -81,6 +85,7 @@ var EDITOR = (function ($, parent) {
         var $menu = $("<ul>", {
             id: 'menu'
         });
+        
         $.each(menu_data.menu, function () {
             if (!this.deprecated) {
                 $menu.append(
@@ -90,35 +95,79 @@ var EDITOR = (function ($, parent) {
         });
 		
 		// create insert buttons above the page hints / thumbs
-		$([
-            {name: language.insertDialog.insertBefore.$label, icon:'editor/img/insert-before.png', tooltip: language.insertDialog.insertBefore.$tooltip,  id:'insert_button_before', btnvalue: "before"},
-            {name: language.insertDialog.insertAfter.$label, icon:'editor/img/insert-after.png', tooltip: language.insertDialog.insertAfter.$tooltip,  id:'insert_button_after', btnvalue: "after"},
-            {name: language.insertDialog.insertAtEnd.$label, icon:'editor/img/insert-end.png', tooltip: language.insertDialog.insertAtEnd.$tooltip,  id:'insert_button_at_end', btnvalue: "end"}
-        ]).each(function(index, value) {
-			var button = $('<button>')
-				.attr('id', value.id)
-				.attr('title', value.tooltip)
-				.attr('value', value.btnvalue)
-				.attr('tabindex', index + 3)
-				.addClass("insert_button")
-				.click(add_page)
-				.append($('<img>').attr('src', value.icon).height(14))
-				.append(value.name);
-			
-			$menu.find(".insert_buttons").append(button);
-		});
-		
+            $([
+
+                {
+                    name: language.insertDialog.insertBefore.$label,
+                    icon: 'editor/img/insert-before.png',
+                    tooltip: language.insertDialog.insertBefore.$tooltip,
+                    id: 'insert_button_before',
+                    btnvalue: "before"
+                },
+                {
+                    name: language.insertDialog.insertAfter.$label,
+                    icon: 'editor/img/insert-after.png',
+                    tooltip: language.insertDialog.insertAfter.$tooltip,
+                    id: 'insert_button_after',
+                    btnvalue: "after"
+                },
+                {
+                    name: language.insertDialog.insertAtEnd.$label,
+                    icon: 'editor/img/insert-end.png',
+                    tooltip: language.insertDialog.insertAtEnd.$tooltip,
+                    id: 'insert_button_at_end',
+                    btnvalue: "end"
+                }
+
+            ]).each(function (index, value) {
+                var button = $('<button>')
+                    .attr('id', value.id)
+                    .attr('title', value.tooltip)
+                    .attr('value', value.btnvalue)
+                    .attr('tabindex', index + 3)
+                    .addClass("insert_button")
+                    .click(add_page)
+                    .append($('<img>').attr('src', value.icon).height(14))
+                    .append(value.name);
+
+                    $menu.find(".insert_buttons").append(button);
+            });
+            if (templateframework == "xerte") {
+                $([
+
+                    {
+                        name: language.insertDialog.insertMerge.$label,
+                        icon: 'editor/img/insert-end.png',
+                        tooltip: language.insertDialog.insertMerge.$tooltip,
+                        id: 'insert_button_merge',
+                        btnvalue: "merge"
+                    }
+
+                ]).each(function (index, value) {
+                    var button = $('<button>')
+                        .attr('id', value.id)
+                        .attr('title', value.tooltip)
+                        .attr('value', value.btnvalue)
+                        .attr('tabindex', index + 3)
+                        .addClass("insert_button")
+                        .click(insert_import)
+                        .append($('<img>').attr('src', value.icon).height(14))
+                        .append(value.name);
+
+                        $menu.find(".insert_buttons").last().append(button);
+                });
+            }
 		$.widget("ui.menu", $.ui.menu, {
 			collapseAll: function(e) {
 				if (e.type == "click" && e.target.id != "insert_button") {
 					$("#insert_menu").hide();
-                    $("#shadow").hide();
+                   	$("#shadow").hide();
 				} else if  (e.type == "keydown" && $(e.target).parent().hasClass("insert_buttons")) {
 					$("#insert_menu").hide();
-                    $("#shadow").hide();
+               	   	$("#shadow").hide();
 					parent.tree.addNode($(e.target).closest("[item]").attr("item"), $(e.target).attr("value"));
 				}
-				return this._super();
+                return this._super();
 			},
 			_open: function(submenu) {
 				// make sure the menus fit on screen and scroll when needed
@@ -132,16 +181,19 @@ var EDITOR = (function ($, parent) {
 				}
 			}
 		});
-		
         $("#insert_menu").append($menu.menu());
-		
 		$menu.find(".ui-menu-item a").first().attr("tabindex", 2);
     },
-	
+    
+    //Loads the data into the import screen
+	insert_import = function() {
+		parent.tree.refresh_workspaceMerge()
+	},
+
 	add_page = function(e) {
 		$("#insert_menu #menu").menu("collapseAll", e, true);
 		parent.tree.addNode($(this).closest("[item]").attr("item"), $(this).attr("value"));
-	}
+	},
 
     // Get text from html, by putting html in a div, strip out the scripts
     // and convert to text
@@ -155,6 +207,92 @@ var EDITOR = (function ($, parent) {
         var tmpText = tmpDiv.text();
         return tmpText;
 
+    },
+
+    getExtraTreeIcon = function(key, icon, enabled, tooltip)
+    {
+        switch (icon) {
+            case "deprecated":
+                if (enabled) {
+                    return '<i class="deprecatedIcon iconEnabled fa fa-exclamation-triangle " id="' + key + '_deprecated" title ="' + tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="deprecatedIcon iconDisabled fa fa-exclamation-triangle " id="' + key + '_deprecated"></i>';
+                }
+            case "unmark":
+                if (enabled)
+                {
+                    return '<i class="unmarkCompletionIcon iconEnabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                }
+                else
+                {
+                    return '<i class="unmarkCompletionIcon iconDisabled fa fa-times-circle-o " id="' + key + '_unmark" title ="' + language.unmarkForCompletion.$tooltip + '"></i>';
+                }
+            case "hidden":
+                if (enabled) {
+                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                }
+        }
+    },
+
+    changeNodeStatus = function(key, item, enabled, newtext)
+    {
+        // Get icon states
+
+        var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
+        var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+        var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var change = false;
+        var tooltip = "";
+        switch(item)
+        {
+            case "deprecated":
+                if (deprecatedState != enabled)
+                    change = true;
+                break;
+            case "hidden":
+                if (hiddenState != enabled)
+                    change = true;
+                break;
+            case "unmark":
+                if (unmarkState != enabled)
+                    change = true;
+                break;
+            case "text":
+                change = true;
+                break;
+        }
+        if (change)
+        {
+            var tree = $.jstree.reference("#treeview");
+            var node = tree.get_node(key, false);
+            console.log(node);
+
+            if (deprecatedState) {
+                tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
+            }
+            var deprecatedIcon = getExtraTreeIcon(key, "deprecated", (item == "deprecated" ? enabled : deprecatedState), tooltip);
+            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+            var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var nodetext;
+            if (item == "text")
+            {
+                nodetext = newtext;
+            }
+            else {
+                nodetext = $("#" + key + '_text').text();
+            }
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            tree.rename_node(node, nodetext);
+            //tree.set_text(node, nodetext);
+            //tree.refresh();
+            // debugging
+            node = tree.get_node(key, false);
+            console.log(node);
+        }
     },
 
     // ** Recursive function to traverse the xml and build
@@ -201,7 +339,7 @@ var EDITOR = (function ($, parent) {
             }
 
             // Deal with media
-            if (attroptions.type != 'media')
+            if (attroptions.type && attroptions.type.toLowerCase() != 'media')
             {
                 attributes[key] = makeAbsolute(attributes[key]);
             }
@@ -231,19 +369,13 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[treeLabel].menu_options.menuItem)
                 treeLabel = wizard_data[treeLabel].menu_options.menuItem;
         }
-        if (wizard_data[xmlData[0].nodeName].menu_options.deprecated)
-        {
-			treeLabel = '<img src="editor/img/deprecated.png" title="' + wizard_data[xmlData[0].nodeName].menu_options.deprecated + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + treeLabel + '</span>';
-			
-			if (xmlData[0].getAttribute("hidePage") == "true")
-			{
-				treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;' + treeLabel;
-			}
-        }
-		else if (xmlData[0].getAttribute("hidePage") == "true")
-		{
-            treeLabel = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + treeLabel + '</span>';
-        }
+
+        var deprecatedIcon = getExtraTreeIcon(key, "deprecated", wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecated);
+        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
+
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+
         var this_json = {
             id : key,
             text : treeLabel,
@@ -316,16 +448,17 @@ var EDITOR = (function ($, parent) {
         }
         return {found : true, value: attribute_value};
     },
-
+	
 
     displayParameter = function (id, all_options, name, value, key, nodelabel)
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
-        var deprecated = false;
+        var deprecated = false,
+			groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
+		
         if (options != null)
         {
-            //var output_string;
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
@@ -339,7 +472,7 @@ var EDITOR = (function ($, parent) {
                         .attr('src', 'editor/img/deprecated.png')
                         .attr('title', options.deprecated)
                         .addClass("deprecated"));
-                if (options.optional == 'true') {
+                if (options.optional == 'true' && groupChild == false) {
                     var opt = $('<i>').attr('id', 'optbtn_' + name)
                         .addClass('fa')
                         .addClass('fa-trash')
@@ -360,7 +493,7 @@ var EDITOR = (function ($, parent) {
                     .append(td);
                 deprecated = true;
             }
-            else if (options.optional == 'true') {
+            else if (options.optional == 'true' && groupChild == false) {
                 var td = $('<td>')
                     .addClass("wizardoptional")
                     .append($('<i>')
@@ -407,14 +540,111 @@ var EDITOR = (function ($, parent) {
                     .append($('<div>')
                         .addClass("wizardvalue_inner")
                         .append(displayDataType(value, options, name, key))));
+			
             $(id).append(tr);
-            if (options.optional == 'true') {
+            if (options.optional == 'true' && groupChild == false) {
                 $("#optbtn_"+ name).on("click", function () {
                     var this_name = name;
                     removeOptionalProperty(this_name);
                 });
             }
         }
+    },
+	
+	
+	displayGroup = function (id, name, options, key)
+    {
+		var tr = $('<tr><td colspan="3"/></tr>');
+		var group = $('<fieldset class="wizardgroup"></fieldset>').appendTo(tr.find('td'));
+		var legend = $('<legend></legend>').appendTo(group);
+		
+		if (options.deprecated) {
+			group.addClass("wizarddeprecated");
+			
+			legend
+				.append($('<img>')
+				.attr('id', 'deprbtn_' + name)
+				.attr('src', 'editor/img/deprecated.png')
+				.attr('title', options.deprecated)
+				.addClass("deprecated"));
+			
+			if (options.optional == 'true') {
+				legend.prepend($('<i>')
+					.attr('id', 'optbtn_' + name)
+					.addClass('fa')
+					.addClass('fa-trash')
+					.addClass("xerte-icon")
+					.height(14)
+					.addClass("optional"));
+			}
+			
+			legend.append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute")
+				.addClass("wizarddeprecated")
+			
+		} else if (options.optional == 'true') {
+			group.addClass("wizardoptional")
+			
+			legend
+				.append($('<i>')
+				.attr('id', 'optbtn_' + name)
+				.addClass('fa')
+				.addClass('fa-trash')
+				.addClass("xerte-icon")
+				.height(14)
+				.addClass("optional"));
+			
+			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute")
+			
+		} else {
+			group.addClass("wizardparameter");
+			
+			group.find('legend').append('<span class="legend_label">' + options.label + '</span>');
+			
+			tr.attr('id', 'group_' + name)
+				.addClass("wizardattribute");
+		}
+		
+		$('<i class="fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+		
+		legend.find('.legend_label').click(function() {
+			var $icon = $(this).find('i.fa');
+			var $fieldset = $(this).parents('fieldset');
+			
+			if ($fieldset.find('.table_holder').is(':visible')) {
+				$fieldset.find('.table_holder').slideUp(400, function() {
+					$icon
+						.removeClass('fa-caret-up')
+						.addClass('fa-caret-down');
+					
+					$fieldset.addClass('collapsed');
+				});
+				
+			} else {
+				$fieldset.find('.table_holder').slideDown(400);
+				
+				$icon
+					.removeClass('fa-caret-down')
+					.addClass('fa-caret-up');
+				
+				$fieldset.removeClass('collapsed');
+			}
+		});
+		
+		group.append('<div class="table_holder"><table id="groupTable_' + name + '" class="wizardgroup_table"/></div>');
+		
+		$(id).append(tr);
+		
+		if (options.optional == 'true') {
+			$("#optbtn_" + name).on("click", function () {
+				removeOptionalProperty(name, options.children);
+			});
+		}
     },
 
 
@@ -438,30 +668,49 @@ var EDITOR = (function ($, parent) {
 
     },
 
-    removeOptionalProperty = function (name) {
+    removeOptionalProperty = function (name, children) {
         if (!confirm('Are you sure?')) {
             return;
         }
 		
+		var toDelete = [];
+		
+		// if it's a group being deleted then remove all of its children
+		if (children) {
+			for (var i=0; i<children.length; i++) {
+				toDelete.push(children[i].name);
+			}
+		} else {
+			toDelete.push(name);
+		}
+		
         // Find the property in the data store
         var key = parent.tree.getSelectedNodeKeys();
 		
-		if (name == "hidePage") {
-			$("#" + key + " .hiddenImg").remove();
-			$("#" + key + " .hidden").contents().unwrap();
-			$("#" + key).each(function() {
-				var $this = $(this);
-				$this.html($this.html().replace(/&nbsp;/, ""));
-			});
+		for (var i=0; i<toDelete.length; i++) {
+			if (toDelete[i] == "hidePage") {
+			    changeNodeStatus(key, "hidden", false);
+                //var hiddenIcon = $("#" + key + "_hidden");
+                //if (hiddenIcon) {
+                //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
+                //}
+			}
+            if (toDelete[i] == "unmarkForCompletion"){
+                changeNodeStatus(key, "unmark", false);
+                //var unmarkIcon = $("#" + key + "_unmark");
+                //if (unmarkIcon) {
+                //    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
+                //}
+            }
+
+			if (toDelete[i] in lo_data[key]["attributes"])
+			{
+				delete lo_data[key]["attributes"][toDelete[i]];
+			};
 		}
-
-        if (name in lo_data[key]["attributes"])
-        {
-            delete lo_data[key]["attributes"][name];
-        };
-
-        console.log(lo_data[key]["attributes"]);
-
+		
+		console.log(lo_data[key]["attributes"]);
+		
         /**
          * TOR 20150614
          *
@@ -483,17 +732,19 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key);
     },
 
-    insertOptionalProperty = function (key, name, defaultvalue)
+    insertOptionalProperty = function (key, name, defaultvalue, load)
     {
-        // Place attribute
-        lo_data[key]['attributes'][name] = defaultvalue;
+		// Place attribute
+		lo_data[key]['attributes'][name] = defaultvalue;
 
-        // Enable the optional parameter button
-        $('#insert_opt_' + name)
-            .switchClass('enabled', 'disabled')
-            .prop('disabled', true);
-
-        parent.tree.showNodeData(key);
+		// Enable the optional parameter button
+		$('#insert_opt_' + name)
+			.switchClass('enabled', 'disabled')
+			.prop('disabled', true);
+		
+		if (load != false) {
+			parent.tree.showNodeData(key);
+		}
     },
 
     showToolBar = function(show){
@@ -697,7 +948,7 @@ var EDITOR = (function ($, parent) {
             });
         })
         return xerte;
-    }
+    },
 
     jqGridAfterShowForm = function(id, ids, options)
     {
@@ -739,8 +990,9 @@ var EDITOR = (function ($, parent) {
             filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+            uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
-            mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+            mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : true,
             height : 150,
             resize_enabled: false
@@ -896,8 +1148,9 @@ var EDITOR = (function ($, parent) {
                 filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                 mathJaxClass :  'mathjax',
-                mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
@@ -917,10 +1170,20 @@ var EDITOR = (function ($, parent) {
             if (options.options.type != 'script')
             {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
-                        inputChanged(options.id, options.key, options.name, this.getData(), this);
+                		var self = this;
+                    // Editor is ready, attach change event
+                    this.on('change', function(){
+                        inputChanged(options.id, options.key, options.name, self.getData(), self);
                     });
+										this.on('fileUploadResponse', function(e) {
+											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
+												e.removeListener();
+												inputChanged(options.id, options.key, options.name, self.getData(), self);	
+											});*/
+											setTimeout(function () {
+														self.fire('change');
+													}, 1500);
+										});
                 }, ckoptions);
             }
             else
@@ -929,7 +1192,7 @@ var EDITOR = (function ($, parent) {
                 codemirroroptions['mode'] = "javascript";
                 var textArea = document.getElementById(options.id);
                 var codemirror = CodeMirror.fromTextArea(textArea, codemirroroptions);
-                codemirror.on("blur", function(){
+                codemirror.on("change", function(){
                     inputChanged(options.id, options.key, options.name, codemirror.getValue(), codemirror);
                 });
                 if (options.options.height)
@@ -974,8 +1237,8 @@ var EDITOR = (function ($, parent) {
         $.each(textinputs_options, function (i, options) {
             if (options) {
                 $('#'+options.id).ckeditor(function(){
-                    // Editor is ready, attach onblur event
-                    this.on('blur', function(){
+                    // Editor is ready, attach onchange event
+                    this.on('change', function(){
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
                         inputChanged(options.id, options.key, options.name, thisValue, this);
@@ -988,25 +1251,19 @@ var EDITOR = (function ($, parent) {
                             thisValue = stripP(thisValue.substr(0, thisValue.length-1));
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
-								
-								if (options.key != "treeroot") {
-									// makes sure deprecated / hidden page highlights aren't lost when page name is changed
-									if ($("#" + options.key + " .deprecatedImg").length > 0) {
-										thisText = '<img src="editor/img/deprecated.png" title="' + $("#" + options.key + " .deprecatedImg").attr("title") + '" class="deprecatedImg">&nbsp;<span class="deprecated">' + thisText + '</span>';
-										if ($("#" + options.key + " .hiddenImg").length > 0)
-										{
-											thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">' + thisText;
-										}
-									}
-									else if ($("#" + options.key + " .hiddenImg").length > 0)
-									{
-										thisText = '<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;<span class="hidden">' + thisText + '</span>';
-									}
-								}
+
+                                changeNodeStatus(options.key, "text", true, thisText);
+                                //var tree = $.jstree.reference("#treeview");
+                                //var node = tree.get_node(options.key, false);
+                                //var parent_id = tree.get_parent(node);
+
+								//if (options.key != "treeroot") {
+
+								//    $("#" + options.key + "_text").html(thisText);
+								//}
 
                                 // Rename the node
-                                var tree = $.jstree.reference("#treeview");
-                                tree.rename_node(tree.get_node(options.key, false), thisText);
+                                //tree.rename_node(node, thisText);
 
                                 if ($('#mainleveltitle'))
                                 {
@@ -1023,14 +1280,17 @@ var EDITOR = (function ($, parent) {
                     [
                         [ 'Font', 'FontSize', 'TextColor', 'BGColor' ],
                         [ 'Bold', 'Italic', 'Underline', 'Superscript', 'Subscript'],
-                        [ 'Sourcedialog' ]
+						//[ 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ],
+                        [ 'Sourcedialog' ],
+                        [ 'FontAwesome']
                     ],
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                    uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
                     mathJaxClass :  'mathjax',
-                    mathJaxLib :    '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                    extraPlugins : 'sourcedialog',
+                    mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                    extraPlugins : 'sourcedialog,image3,fontawesome',
                     language : language.$code.substr(0,2)
                 });
             }
@@ -1046,7 +1306,7 @@ var EDITOR = (function ($, parent) {
         {
 
             var textinput = textinputs_options[i];
-            $('#' + textinput.id).blur();
+            $('#' + textinput.id).change();
             if ($('#cke_' + textinput.id).is(':visible'))
             {
                 $('#cke_' + textinput.id).hide();
@@ -1423,35 +1683,51 @@ var EDITOR = (function ($, parent) {
 
     setAttributeValue = function (key, names, values)
     {
-        console.log([key, names, values]);
+        //console.log([key, names, values]);
         // Get the node name
-		
-		if (names == "hidePage") {
-			if (values[0] == "true") {
-				if ($("#" + key + " .deprecated").length == 0) {
-					$("#" + key + " .jstree-anchor").each(function(i,v) {
-						$(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
-					});
-					$("#" + key + " .jstree-anchor .hidden").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
-				} else {
-					$("#" + key + " .deprecatedImg").before('<img src="editor/img/hidden.png" title="' + language.hidePage.$tooltip + '" class="hiddenImg">&nbsp;');
-				}
-			} else {
-				$("#" + key + " .hiddenImg").remove();
-				$("#" + key + " .hidden").contents().unwrap();
-				$("#" + key).each(function() {
-					var $this = $(this);
-					$this.html($this.html().replace(/&nbsp;/, ""));
-				});
-			}
-		}
+        if (names[0] == "hidePage") {
+            changeNodeStatus(key, "hidden", values[0] == "true");
+            /*
+            var hiddenIcon = $("#" + key + "_hidden");
+            if (hiddenIcon) {
+                if (values[0] == "true") {
+                    hiddenIcon.switchClass('iconDisabled', 'iconEnabled');
+                    $("#" + key).addClass("hiddenNode");
+                    //$("#" + key + " .jstree-anchor").each(function (i, v) {
+                    //   $(v).contents().eq($(v).contents().length - 1).wrap('<span class="hidden"/>');
+                    //});
+                }
+                else {
+                    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
+                    $("#" + key).removeClass("hiddenNode");
+                    //$("#" + key + " .hidden").contents().unwrap();
+                }
+            }
+            */
+        }
+
+        if (names[0] == "unmarkForCompletion") {
+            changeNodeStatus(key, "unmark", values[0] == "true");
+            /*
+            var unmarkIcon = $("#" + key + "_unmark");
+            if (unmarkIcon) {
+                if (values[0] == "true") {
+                    unmarkIcon.switchClass('iconDisabled', 'iconEnabled');
+                    $("#" + key).addClass("unmarkNode");
+                } else {
+                    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
+                    $("#" + key).removeClass("unmarkNode");
+                }
+            }
+            */
+        }
 
         var node_name = lo_data[key]['attributes'].nodeName;
 
         var node_options = wizard_data[node_name].node_options;
 
         $.each(names, function(i, name){
-            console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
+            //console.log("Setting sub attribute " + key + ", " + name + ": " + values[i]);
             if (node_options['cdata'] && node_options['cdata_name'] == name)
             {
                 lo_data[key]['data'] = values[i];
@@ -1548,7 +1824,7 @@ var EDITOR = (function ($, parent) {
 
     inputChanged = function (id, key, name, value, obj)
     {
-        console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
         if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
@@ -1674,6 +1950,20 @@ var EDITOR = (function ($, parent) {
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
     },
+	
+	previewFile = function(label, src)
+	{
+		// ** currently only previews images - need to allow other file types too
+		var $preview = $('<img class="previewFile"/>')
+				.on("error", function() {
+						$('.featherlight .previewFile')
+							.after('<p>' + language.compPreview.$error + '</p>')
+							.remove();
+					})
+				.attr("src", rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1))
+		
+		$.featherlight($preview);
+	},
 
     makeAbsolute = function(html){
         var temp = html;
@@ -1764,40 +2054,51 @@ var EDITOR = (function ($, parent) {
      */
         getPageList = function()
         {
+        	
             var tree = $.jstree.reference("#treeview");
             var lo_node = tree.get_node("treeroot", false);
             var pages=[];
-            $.each(lo_node.children, function(i, key){
-                var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-                var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-                var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-                {
-                    var page = [];
-                    // Also make sure we only take the text from the name, and not the full HTML
-                    page.push(getTextFromHTML(name.value));
-                    page.push(pageID.found ? pageID.value : linkID.value);
-                    pages.push(page);
+            
+            if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
+            	pages = [
+            						[language.XotLinkRelativePages.firstpage,'[first]'],
+            						[language.XotLinkRelativePages.lastpage,'[last]'],
+            						[language.XotLinkRelativePages.prevpage,'[previous]'],
+            						[language.XotLinkRelativePages.nextpage,'[next]']
+            					];
+							$.each(lo_node.children, function(i, key){
+									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+									{
+											var page = [];
+											// Also make sure we only take the text from the name, and not the full HTML
+											page.push(getTextFromHTML(name.value));
+											page.push(pageID.found ? pageID.value : linkID.value);
+											pages.push(page);
 
-					// Now we do the children, only for Xerte template just now
-					if (moduleurlvariable == "modules/xerte/") {
-						var childNode = tree.get_node(key, false);
-						$.each(childNode.children, function(i, key){
-							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-							var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
-							{
-								var page = [];
-								// Also make sure we only take the text from the name, and not the full HTML
-								page.push(getTextFromHTML("&nbsp;- "+name.value));
-								page.push(pageID.found ? pageID.value : linkID.value);
-								pages.push(page);
-							}
-						});
-					}
-                }
-            });
+											// Now we do the children (if deeplinking is allowed)
+											if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+												var childNode = tree.get_node(key, false);
+												$.each(childNode.children, function(i, key){
+													var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+													var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
+													var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+													if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
+													{
+														var page = [];
+														// Also make sure we only take the text from the name, and not the full HTML
+														page.push(getTextFromHTML("&nbsp;- "+name.value));
+														page.push(pageID.found ? pageID.value : linkID.value);
+														pages.push(page);
+													}
+												});
+											}
+									}
+							});
+						}
+            
             return pages;
         },
 
@@ -1904,13 +2205,22 @@ var EDITOR = (function ($, parent) {
                         {
                             selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         });
+					
+					if (value == '') {
+						html.append($('<option>').attr('value', '').prop('selected', true));
+					}
+					
                     for (var i=0; i<s_options.length; i++) {
                         var option = $('<option>')
                             .attr('value', s_data[i]);
-                        if (s_data[i]==value)
+                        if (s_data[i]==value) {
                             option.prop('selected', true);
+						}
                         option.append(s_options[i]);
                         html.append(option);
+						if (value == '' && html.find('option:selected').index() > 0) {
+							html.find(option).eq(0).remove();
+						}
                     }
 
                     break;
@@ -2146,7 +2456,7 @@ var EDITOR = (function ($, parent) {
 
                                 })
                         );
-
+						
 						// Ok, now create the content to be shown in the lightbox
 						var editdiv = $('<div>')
 							.attr('id', 'edit_' + id)
@@ -2224,7 +2534,7 @@ var EDITOR = (function ($, parent) {
                     }
                     else
                     {
-                        html.append("select image first");
+                        html.append("select image first"); // ** shouldn't this be translated?
                     }
 
                     break;
@@ -2242,17 +2552,30 @@ var EDITOR = (function ($, parent) {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             })
                             .attr('value', value));
-                    var td2 = $('<td>')
-                        .append($('<button>')
-                            .attr('id', 'browse_' + id)
-                            .attr('title', language.compMedia.$tooltip)
-                            .addClass("xerte_button")
-                            .addClass("media_browse")
-                            .click({id:id, key:key, name:name}, function(event)
-                            {
-                                browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
-                            })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
+					
+                    var td2 = $('<td>');
+					var btnHolder = $('<div style="width:4.2em"></div>').appendTo(td2);
+                    btnHolder.append($('<button>')
+						.attr('id', 'browse_' + id)
+						.attr('title', language.compMedia.$tooltip)
+						.addClass("xerte_button")
+						.addClass("media_browse")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
+					
+					btnHolder.append($('<button>')
+						.attr('id', 'preview_' + id)
+						.attr('title', language.compPreview.$tooltip)
+						.addClass("xerte_button")
+						.click({id:id, key:key, name:name}, function(event)
+						{
+							previewFile(options.label, $(this).closest('tr').find('input')[0].value);
+						})
+						.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
+							
                     html = $('<div>')
                         .attr('id', 'container_' + id)
                         .addClass('media_container');
@@ -2303,6 +2626,7 @@ var EDITOR = (function ($, parent) {
                             .addClass('inlinewysiwyg')
                             .attr('contenteditable', 'true')
 							.append('<p>' + value + '</p>');
+						
                         textinputs_options.push({id: id, key: key, name: name, options: options});
                     }
                     else {
@@ -2310,9 +2634,9 @@ var EDITOR = (function ($, parent) {
                             .attr('type', "text")
                             .addClass('inputtext')
                             .attr('id', id)
-                            .keyup({id: id, key: key, options: options}, function()
+                            .keyup({name: name, key: key, options: options}, function()
                             {
-                            	if (id == 'textinput_0') {
+                            	if (name == 'name') {
 									// Rename the node
                                 	var tree = $.jstree.reference("#treeview");
                                 	tree.rename_node(tree.get_node(key, false), $(this).val());
@@ -2342,10 +2666,14 @@ var EDITOR = (function ($, parent) {
 	});
 	
     // Add the functions that need to be public
+    my.getExtraTreeIcon = getExtraTreeIcon;
+    my.changeNodeStatus = changeNodeStatus;
     my.build_lo_data = build_lo_data;
     my.create_insert_page_menu = create_insert_page_menu;
     my.getAttributeValue = getAttributeValue;
+    my.setAttributeValue = setAttributeValue;
     my.displayParameter = displayParameter;
+	my.displayGroup = displayGroup;
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;

@@ -96,7 +96,7 @@ function show_preview_code2($row, $row_username){
     $xmlfile = $string_for_flash . "preview.xml";
 
     $xmlFixer = new XerteXMLInspector();
-    $xmlFixer->loadTemplateXML($xmlfile);
+    $xmlFixer->loadTemplateXML($xmlfile, true);
 
     if (strlen($xmlFixer->getName()) > 0)
     {
@@ -156,7 +156,7 @@ function show_preview_code2($row, $row_username){
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $flash_js_dir . "js/xttracking_noop.js\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     }
@@ -166,6 +166,7 @@ function show_preview_code2($row, $row_username){
         // $engine is assumed to be javascript if flash is NOT set
         $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
         $page_content = str_replace("%VERSION%", $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
+        $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);        // $engine is assumed to be html5 if flash is NOT set
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
@@ -175,7 +176,7 @@ function show_preview_code2($row, $row_username){
         // Handle offline variables
         $page_content = str_replace("%OFFLINESCRIPTS%", "", $page_content);
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
-        $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
+        $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
         $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
 

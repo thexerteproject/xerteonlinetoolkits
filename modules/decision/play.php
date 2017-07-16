@@ -31,7 +31,7 @@ function show_template($row_play)
     $xmlfile = $string_for_flash . "data.xml";
 
     $xmlFixer = new XerteXMLInspector();
-    $xmlFixer->loadTemplateXML($xmlfile);
+    $xmlFixer->loadTemplateXML($xmlfile, true);
 
     if (strlen($xmlFixer->getName()) > 0) {
         $title = $xmlFixer->getName();
@@ -51,12 +51,12 @@ function show_template($row_play)
 
     // $engine is assumed to be html5 if flash is NOT set
     $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row_play['template_framework'] . "/player_html5/rloObject.htm");
-    $page_content = str_replace("%VERSION%", $version , $page_content);
+    $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
     $page_content = str_replace("%TITLE%", $title, $page_content);
     $page_content = str_replace("%TEMPLATEPATH%", $template_path_string, $page_content);
     $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
-    $page_content = str_replace("%MATHJAXPATH%", "//cdn.mathjax.org/mathjax/latest/", $page_content);
+    $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
     echo $page_content;
 }

@@ -15,10 +15,12 @@
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
 	
-	<mcqType label="MCQ Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
-	<mcqFB label="MCQ Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
-	<mcqNumQs label="MCQ Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
-	<mcqNumAs label="MCQ Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	<mcqOptions type="group" label="MCQ" optional="true">
+		<mcqType label="Type" options="Highlight One From Group,Highlight Whole Group" type="ComboBox" data="one,all" defaultValue="one" optional="true"/>
+		<mcqFB label="Feedback" type="TextArea" height="150" defaultValue="Enter feedback text here" optional="true"/>
+		<mcqNumQs label="Number of Questions (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+		<mcqNumAs label="Number of Answer Options (*=All)" type="TextInput" defaultValue="*" optional="true"/>
+	</mcqOptions>
 	
 	<exploreTxt label="Explore Instructions" type="TextInput" wysiwyg="true" language="true"/>
 	<showMeTxt2 label="Show Me Instructions" type="TextInput" wysiwyg="true" language="true"/>

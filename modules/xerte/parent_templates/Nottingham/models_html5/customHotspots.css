@@ -1,0 +1,110 @@
+/* customHotspots.html */
+	
+	#hsHolder {
+		position:	relative;
+	}
+	
+	#hsHolder canvas, #hsHolder div {
+		position:	absolute;
+		opacity:	0;
+		top:		0;
+		left:		0;
+	}
+	
+	#hsHolder canvas.visible, #hsHolder div.visible {
+		opacity:	1;
+	}
+	
+	#instructions {
+		margin-top:	10px;
+	}
+	
+	#instructions button {
+		margin-right:	5px;
+	}
+	
+	#hsInfo {
+		margin-top:	20px;
+	}
+	
+	
+	/* styles below are only used for label interactivity */
+	
+	#labelHolder {
+		margin-top:	10px;
+	}
+	
+	#labelHolder .label {
+		border:		2px solid transparent;
+		display:	inline-block;
+		cursor:		pointer;
+		padding:	5px;
+		margin:		10px;
+	}
+	
+	#labelHolder .label.focus {
+		border:		2px solid yellow;
+	}
+	
+	#labelHolder .label.selected {
+		border:		2px solid green;
+	}
+	
+	#pageContents img.pinImg {
+		padding-right:	5px;
+	}
+	
+	#labelHolder img.pinImg {
+		opacity:	0;
+	}
+	
+	#labelHolder img.visible {
+		opacity:	1;
+	}
+	
+	#labelHolder .helper, #pinHolder .helper {
+		padding:	5px;
+	}
+	
+	#pinHolder .helper {
+		position:	absolute;
+	}
+	
+	
+	/* styles below are only used in mcq interactivity */
+	
+	#hsHolder div.greenTint {
+		background-color:	green;
+		border-color:		green;
+	}
+	
+	#qHolder, #scoreHolder {
+		margin-top:		20px;
+	}
+	
+	#qHolder button, #scoreHolder button {
+		margin-left:	10px;
+		float:			right;
+	}
+	
+	#optionHolder {
+		margin:	15px 0px 15px 15px;
+	}
+	
+	#optionHolder input {
+		float:		left;
+		display:	block;
+	}
+
+	#optionHolder .optionTxt {
+		cursor:			pointer;
+		position:		relative;
+		margin-left:	30px;
+		margin-bottom:	10px;
+		display:		block;
+	}
+
+	#feedback, #buttonHolder {
+		clear:		both;
+	}
+
