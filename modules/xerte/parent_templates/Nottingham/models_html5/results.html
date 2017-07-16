@@ -177,7 +177,12 @@
             {
                 $("#button").hide();
             }
-			xtresults = XTResults();
+            var fullcompletion = false;
+            if (x_currentPageXML.getAttribute("fullcompletion") == 'true')
+			{
+			    fullcompletion = true;
+			}
+			xtresults = XTResults(fullcompletion);
 			var altnormalrow = false;
 			var altfullrow = false;
 			$("#averageScore").html(xtresults.averageScore + "%");

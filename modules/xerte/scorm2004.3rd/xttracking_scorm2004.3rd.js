@@ -153,7 +153,6 @@ function ScormTrackingState()
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
     this.page_timeout = 5000;
-    this.fullcompletion = false;
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
@@ -187,26 +186,21 @@ function ScormTrackingState()
     this.id_to_interactionidx = id_to_interactionidx;
     this.initTracking = initTracking;
 
-    function pageCompleted(page_nr)
+    function pageCompleted(sit)
     {
-        var sit = state.findPage(page_nr);
-        if (sit != null)
+        for (i=0; i<sit.nrinteractions; i++)
         {
-            for (i=0; i<sit.nrinteractions; i++)
-            {
-                var sit2 = state.findInteraction(page_nr, i);
-                if (sit2 == null || sit2.duration < 100)
-                {
-                    return false;
-                }
-            }
-            if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+            var sit2 = state.findInteraction(sit.page_nr, i);
+            if (sit2 == null || sit2.duration < 100)
             {
                 return false;
             }
-            return true;
         }
-        return false;
+        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        {
+            return false;
+        }
+        return true;
     }
 
 
@@ -227,7 +221,6 @@ function ScormTrackingState()
             this.lo_type = jsonObj.lo_type;
             this.lo_passed = jsonObj.lo_passed;
             this.page_timeout = jsonObj.page_timeout;
-            this.fullcompletion = jsonObj.fullcompletion;
             this.lo_completed = jsonObj.lo_completed;
 //            this.finished = jsonObj.finished;
             this.interactions = new Array();
@@ -582,11 +575,9 @@ function ScormTrackingState()
                     var sit = state.findInteraction(page_nr, -1);
 
                     if (sit != null) {
+                        //Skip results page completely
                         if (sit.ia_type == "result") {
-                            state.completedPages[i] = true;
-                        }
-                        else {
-                            state.completedPages[i] = state.pageCompleted(page_nr);
+                            state.completedPages[i] = state.pageCompleted(sit);
                         }
                     }
                 }
@@ -921,10 +912,6 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
-        case "full_completion":
-            // whether to show completion based on toCompleted or what has been viewed so far
-            state.fullcompletion = value;
-            break;
     }
 }
 
@@ -1075,26 +1062,33 @@ function XTTerminate()
     terminateCommunication();
 }
 
-function XTResults()
+function XTResults(fullcompletion)
 {
     var completion = 0;
-    var counter = 0;
+    var nrcompleted = 0;
+    var nrvisited = 0;
     var completed;
-    for(var i = 0; i< state.completedPages.length;i++)
+    $.each(state.completedPages, function(i, completed)
     {
-        if(state.completedPages[i] == true)
+        // indices not defined will be visited anyway.
+        // In that case 'completed' will be undefined
+        if (completed)
         {
-            counter++;
+            nrcompleted++;
         }
-    }
-    if(counter != 0)
+        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        }
+    })
+
+    if(nrcompleted != 0)
     {
-        if (state.fullcompletion != 'true') {
-            completion = Math.round((counter / state.completedPages.length) * 100);
+        if (! fullcompletion) {
+            completion = Math.round((nrcompleted / nrvisited) * 100);
         }
         else
         {
-            completion = Math.round((counter / state.toCompletePages.length) * 100);
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
         }
     }
     else
@@ -1228,7 +1222,7 @@ function XTResults()
     results.nrofquestions = nrofquestions;
     results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
-    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+    results.start = state.start.toLocaleString();
 
     return results;
 }
