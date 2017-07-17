@@ -3,9 +3,32 @@
 	{
 		var currentQuestion,
 			resultShown,
-			checked,			
+			checked,
+            numLoaded = 0,
 			questionNumberText;
 		var	answeredValues = {};
+		var diagramAnswers = [];
+		var diagramLabels = [];
+
+
+
+        this.loadJS = function() {
+            if (numLoaded < 1) {
+                var fileToLoad;
+                if (numLoaded == 0) {
+                    fileToLoad = "common_html5/js/chart.min.js";
+                }
+                debugger;
+                $.getScript(x_templateLocation + fileToLoad)
+                    .done(function(script, textStatus) {
+                        numLoaded++;
+                        opinion.loadJS();
+                    })
+                    .fail(function( jqxhr, settings, exception ) {
+                        console.log("Failed to load chart scripts");
+                    });
+            }
+        };
 		
 		this.sizeChanged = function()
 		{
@@ -175,6 +198,8 @@
 				$("#qTxt").html(x_addLineBreaks(infoString));
 
 				$("#feedback").html("");
+
+
 				
 				if ($($thisQ).children().length == 0)
 				{
@@ -306,6 +331,7 @@
 		{
 			var currentQ = $(x_currentPageXML).children()[opinion.questions[opinion.currentQuestion]];
 
+
             var selected = $('#slider1')[0].valueAsNumber,
             	options = currentQ.children;
 				correct = true,
@@ -329,7 +355,10 @@
             
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
-            
+
+            diagramLabels[opinion.currentQuestion] = currentQ.getAttribute("name");
+            diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
+
 			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
             
@@ -355,9 +384,13 @@
             catch (e) {}
 		};
 		
-		this.trackOpinion = function()
-		{
-			 // Last question answered - show results
+		this.trackOpinion = function() {
+            // Last question answered - show results
+			debugger;
+            if (x_currentPageXML.getAttribute("diagram") == "true"){
+                opinion.createDiagram();
+			}
+
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
             
@@ -380,7 +413,6 @@
 
             $("#sliderHolder").hide();
 			$("#checkBtn").hide();
-
             $("#qTxt").html("");
 
             XTSetPageScore(x_currentPage, myScore);
@@ -406,9 +438,42 @@
 			
 			return value;
 		}
+
+		this.createDiagram = function()
+		{
+			var ctx = $("#diagram");
+			debugger;
+            var myRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: diagramLabels,
+                    datasets: [{
+                        data: diagramAnswers
+                    }]
+                }
+            });
+		};
 		
 		this.init = function()
 		{
+            var loadFiles = true;
+            if(xot_offline) {
+				/* files are already loaded statically */
+                loadFiles = false;
+            }
+            for (var i=0; i<x_pageInfo.length; i++) {
+                if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
+                    // a page of this type has already been loaded - don't reload js files
+                    loadFiles = false;
+                    break;
+                }
+            }
+
+            if (loadFiles == true ) {
+                //this.loadJS();
+            }
+
+
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
 				$splitScreen = $("#pageContents .splitScreen"),
 				$textHolder = $("#textHolder");
@@ -494,6 +559,7 @@
 				    opinion.trackQuestion();
                 });
 
+
 			this.startQuestions();
 			this.sizeChanged();
 			x_pageLoaded();			
@@ -530,6 +596,8 @@
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>
+					<canvas id ="diagram" aria-live="polite"></canvas>
+
 					
 				</fieldset>
 				
