@@ -10,7 +10,7 @@
   </pageWizard>
 
   <!-- OPINION=============================== -->
-    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+    <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale." deprecated="This page is currently under development">
     <name label="Opinion Title" type="TextInput" wysiwyg="true" />
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -32,27 +32,27 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
 	</newNodes>
 	
   </opinion>
 
   <opinionQuestion menuItem="Question">
-    <prompt label="Prompt" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false"/>
+    <prompt label="Question" type="TextArea"  height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false"/>
     <image label="Image" type="Media" optional="true"/>
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox" />  
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <opinionOption><![CDATA[<opinionOption name="Option - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
+      <opinionOption><![CDATA[<opinionOption name="A - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
     </newNodes>
 
   </opinionQuestion>
 
-  <opinionOption menuItem="Option" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Opton - Tree/Tracking" wysiwyg="false"/>
+  <opinionOption menuItem="Answer" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking" wysiwyg="false"/>
   </opinionOption>
   
 </wizard>

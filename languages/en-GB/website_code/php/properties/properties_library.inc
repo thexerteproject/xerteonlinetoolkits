@@ -30,7 +30,7 @@
 	
 	define("PROPERTIES_LIBRARY_XML_SAVE", "Your changes have been saved");
 	
-	define("PROPERTIES_LIBRARY_XML_ERROR", "Sorry, only creators of projectss can set up XML sharing");
+	define("PROPERTIES_LIBRARY_XML_ERROR", "Sorry, only creators or co-authors of projects can set up XML sharing");
 	
 	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
 	define ("PROJECT_INFO_NAME", "Name");
@@ -102,7 +102,7 @@
 	
 	define("PROPERTIES_LIBRARY_NOTES_SAVED", "Notes saved");
 	
-	define("PROPERTIES_LIBRARY_NOTES_FAIL", "Sorry only the creator of the project can set notes for the project");
+	define("PROPERTIES_LIBRARY_NOTES_FAIL", "Sorry only the creator or co-authors of the project can set notes for the project");
 	
 	
 	// PEER TAB
@@ -121,7 +121,7 @@
 
 	define("PROPERTIES_LIBRARY_PEER_SAVED", "Peer review settings changed");
 			
-	define("PROPERTIES_LIBRARY_PEER_FAIL", "Sorry, only creators of projects can set up peer review");
+	define("PROPERTIES_LIBRARY_PEER_FAIL", "Sorry, only creators or co-authors of projects can set up peer review");
 	
 	
 	// SYNDICATION TAB
@@ -150,7 +150,7 @@
 	
 	define("PROPERTIES_LIBRARY_SYNDICATION_URL", "The address for this site's syndicated content is");
 
-	define("PROPERTIES_LIBRARY_SYNDICATION_FAIL", "Sorry only the creator of the project can set syndication for the project");
+	define("PROPERTIES_LIBRARY_SYNDICATION_FAIL", "Sorry only the creator or co-author of the project can set syndication for the project");
 	
 	
 	
@@ -175,7 +175,7 @@
 		
 	define("PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED", "This makes your project visible to editors only.");
 		
-	define("PROPERTIES_LIBRARY_ACCESS_FAIL", "Sorry only the creator can set the access settings");
+	define("PROPERTIES_LIBRARY_ACCESS_FAIL", "Sorry only the creator or co-author can set the access settings");
 	
 	define("PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE", "Change Access");
 
@@ -205,7 +205,7 @@
 	
 	define("PROPERTIES_LIBRARY_RSS_PUBLIC", "Please set this project to the 'Public' on the access tab before using the RSS Feed features");
 	
-	define("PROPERTIES_LIBRARY_RSS_FAIL", "Sorry only the creator of the project can set notes for the project");
+	define("PROPERTIES_LIBRARY_RSS_FAIL", "Sorry only the creator or co-author of the project can set notes for the project");
 
 	
 ?>

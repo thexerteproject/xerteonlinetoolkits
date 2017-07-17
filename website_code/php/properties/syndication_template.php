@@ -39,7 +39,7 @@ if(!is_numeric($_POST['tutorial_id'])){
     syndication_display_fail();
     exit(0);
 }
-if(!is_user_creator((int) $_POST['tutorial_id']) && !is_user_admin()){
+if(!is_user_creator_or_coauthor((int) $_POST['tutorial_id']) && !is_user_admin()){
     syndication_display_fail();
     exit(0);
 }

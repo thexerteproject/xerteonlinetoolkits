@@ -49,9 +49,9 @@ $query_for_rss_templates = "select * from {$prefix}templatedetails, {$prefix}tem
 . "{$prefix}templatesyndication where creator_id= ? and "
 . "{$prefix}templatedetails.template_id = {$prefix}templaterights.template_id and "
 . "{$prefix}templaterights.template_id  = {$prefix}templatesyndication.template_id "
-. "and role=? and (rss= ? or export = ? )" ; 
+. "and (role=? or role=?) and (rss= ? or export = ? )" ;
 
-$params = array($_SESSION['toolkits_logon_id'], 'creator', 'true', 'true');
+$params = array($_SESSION['toolkits_logon_id'], 'creator', 'co-author', 'true', 'true');
 $query_rss_response = db_query($query_for_rss_templates, $params);
 
 workspace_menu_create(50);

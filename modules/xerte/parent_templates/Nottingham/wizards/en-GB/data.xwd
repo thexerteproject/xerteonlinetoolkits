@@ -69,6 +69,7 @@
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first"/>
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage when tracking"/>
         <trackingPageTimeout label="Page timeout for completion" type="NumericStepper" min="1" max="1000" step="1" optional="true" defaultValue="5" tooltip="The number of seconds a page has to be viewed to count as completed"/>
+        <forceTrackingMode label="Force tracking mode behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracking LO's. This changes the behaviour of some pagetypes, i.e. in Quiz the restart button will be disabled and in drag/drop exercises, the labels will stick, even if the answer is wrong"/>
 	</tracking>
 	
     <newNodes>
@@ -145,7 +146,7 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="General Results" givenameTxt="Your name" averageTxt="Average" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Interactivity Results" globalResultsTxt="Global Results" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Specific Results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Compleate" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter user name" userNamePrompt="User name: " okButtonTxt="Ok" />]]></results><rss><![CDATA[<rss name="Enter Page Title" text="Enter text for the page here" url="Enter Feed URL" align="Left" panelWidth="Medium"/>]]></rss><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -437,7 +438,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100"/>	
-    <prompt label="Prompt" type="TextArea" height="100"/>
+    <prompt label="Question" type="TextArea" height="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
 
@@ -448,7 +449,7 @@
     <info><![CDATA[<b>For full details on how to use the Multiple Choice Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/MultipleChoiceConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <cOption><![CDATA[<cOption name="Option - tree/tracking label" text="Here is an option" destination="" />]]></cOption>
+      <cOption><![CDATA[<cOption name="A - tree/tracking label" text="Here is an option" destination="" />]]></cOption>
     </newNodes>
 	
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -463,9 +464,9 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></cMcq><cOption menuItem="Option" icon="icBullet" remove="true">
-    <text label="Option" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - tree/tracking label" wysiwyg="false"/>
+	</background></cMcq><cOption menuItem="Answer" icon="icBullet" remove="true">
+    <text label="Answer" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - tree/tracking label" wysiwyg="false"/>
     <destination label="Destination Page" type="pageList" defaultValue=""/>
   </cOption><captivate menu="Media" menuItem="Captivate Movie" hint="A page for incorporating Captivate swfs. Captivate provides a convenient way of displaying screen captures in your presentation." icon="icPageWhiteC" thumb="thumbs/captivate.jpg" remove="true" deprecated="Captivate is no longer supported.">
 
@@ -914,7 +915,7 @@
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
 
     <newNodes>
-      <nestedDictation><![CDATA[<nestedDictation name="Sentence - tree/tracking label" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
+      <nestedDictation><![CDATA[<nestedDictation name="S - tree/tracking label" prompt="Enter Text Here" audio="Select an Audio File" answer="Enter Answer Here"/>]]></nestedDictation>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -931,7 +932,7 @@
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></dictation><nestedDictation menuItem="Sentence" icon="icBullet" remove="true">
     <prompt label="Prompt Text" type="TextArea" height="200"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence - tree/tracking label" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="S - tree/tracking label" wysiwyg="false"/>
     <audio label="Audio File" type="Media"/>
 	<answer label="Answer Text" type="TextArea" height="200"/>
   </nestedDictation><documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" hint="A form based interaction where the user downloads a copy of their responses.">
@@ -1227,7 +1228,7 @@
 	</delimiters>
 	
     <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
-    <noise label="Distractors" type="script" height="50" optional="true" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
+    <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<showHint label="Show Hint" type="CheckBox" defaultValue="true" optional="true"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
@@ -1498,7 +1499,7 @@
     <info><![CDATA[<b>For full details on how to use the Inventory Page. <u><a href="http://xerte.org.uk/docs/xot/help/InventoryPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
     <newNodes>
-      <invQuestion><![CDATA[<invQuestion name="Question - Tree/Tracking label" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
+      <invQuestion><![CDATA[<invQuestion name="Q - Tree/Tracking label" prompt="Here is a prompt" type="Single Answer" questionFeedback="no" />]]></invQuestion>
     </newNodes>
 	
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -1514,8 +1515,8 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></inventory><invQuestion menuItem="Question" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false"/>
-    <prompt label="Prompt" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false"/>
+    <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
 
@@ -1525,12 +1526,12 @@
 	</imgInfo>
 
     <newNodes>
-      <invOption><![CDATA[<invOption name="Option - Tree/Tracking label" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
+      <invOption><![CDATA[<invOption name="A - Tree/Tracking label" text="Here is an option" class="0" feedback="Feedback for this option"   weight="1"/>]]></invOption>
     </newNodes>
 
   </invQuestion><invOption menuItem="Option" icon="icBullet" remove="true">
-    <text label="Option" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - Tree/Tracking label"/>
+    <text label="Answer" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking label"/>
     <class label="Classification" options="0,1,2,3,4,5,6,7,8,9" type="ComboBox" data="0,1,2,3,4,5,6,7,8,9" defaultValue="0" width="100"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
 	<weight label="Weight or Score" options="0,1,2,3,4,5" type="ComboBox" data="0,1,2,3,4,5" defaultValue="1" width="100"/>
@@ -1712,7 +1713,7 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
     <instruction label="Instruction" type="TextArea" height="100"/>
-    <prompt label="Prompt" type="TextArea" height="100"/>
+    <prompt label="Question" type="TextArea" height="100"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/> 
@@ -1731,7 +1732,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <option><![CDATA[<option name="Option - tree/tracking label" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option name="A - tree/tracking label" text="Here is an option" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -1746,9 +1747,9 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></mcq><option menuItem="Option" icon="icBullet">
-    <text label="Option" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - Tree/Tracking label" wysiwyg="false"/>
+	</background></mcq><option menuItem="Answer" icon="icBullet">
+    <text label="Answer" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking label" wysiwyg="false"/>
     <feedback label="Feedback" type="TextArea" height="100"/>
     <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 	<audioFB label="Audio Feedback" defaultValue="Select a Sound File" type="media" optional="true"/>
@@ -1920,7 +1921,7 @@
 	</synchMediaPlus><synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 		
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<text label="Prompt" type="TextArea" height="100"/>
+		<text label="Question" type="TextArea" height="100"/>
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false"/>
@@ -1945,13 +1946,13 @@
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 		
 		<newNodes>
-			<synchMCQOption><![CDATA[<synchMCQOption name="Option - Tree/Tracking label" text="Option text" correct="false"/>]]></synchMCQOption>
+			<synchMCQOption><![CDATA[<synchMCQOption name="A - Tree/Tracking label" text="Option text" correct="false"/>]]></synchMCQOption>
 		</newNodes>
 		
-	</synchMCQ><synchMCQOption menuItem="Option" icon="icBullet" remove="true">
+	</synchMCQ><synchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
-		<text label="Option" type="TextInput" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Option - Tree/Tracking label" wysiwyg="false"/>
+		<text label="Answer" type="TextInput" wysiwyg="true"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking label" wysiwyg="false"/>
 	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 		
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
@@ -2231,7 +2232,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale.">
+	</background></newWindow><opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" hint="Create a opinion with question that can be answered on a selectable scale." deprecated="This page is currently under development">
     <name label="Opinion Title" type="TextInput" wysiwyg="true"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
@@ -2253,7 +2254,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
 	</newNodes>
 	
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -2269,19 +2270,19 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
 	</background></opinion><opinionQuestion menuItem="Question">
-    <prompt label="Prompt" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false"/>
+    <prompt label="Question" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false"/>
     <image label="Image" type="Media" optional="true"/>
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox"/>  
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <opinionOption><![CDATA[<opinionOption name="Option - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
+      <opinionOption><![CDATA[<opinionOption name="A - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
     </newNodes>
 
-  </opinionQuestion><opinionOption menuItem="Option" icon="icBullet">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Opton - Tree/Tracking" wysiwyg="false"/>
+  </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking" wysiwyg="false"/>
   </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
@@ -2457,7 +2458,7 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
 
     <newNodes>
-      <question><![CDATA[<question prompt="Enter question" name="Question - Tree/Tracking label" type="Single Answer" />]]></question>
+      <question><![CDATA[<question prompt="Enter question" name="Q - Tree/Tracking label" type="Single Answer" />]]></question>
 	</newNodes>
 	
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -2475,8 +2476,8 @@
 	</background></quiz><question menuItem="Question">
 
 
-    <prompt label="Prompt" type="TextArea" height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - Tree/Tracking label" wysiwyg="false"/>
+    <prompt label="Question" type="TextArea" height="100"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 	
@@ -2488,7 +2489,7 @@
     <sound label="Sound" type="Media" optional="true"/>
 		
     <newNodes>
-      <option><![CDATA[<option text="Enter option" name="Option - Tree/Tracking label" feedback="Feedback for this option" correct="false"/>]]></option>
+      <option><![CDATA[<option text="Enter option" name="A - Tree/Tracking label" feedback="Feedback for this option" correct="false"/>]]></option>
     </newNodes>
 
   </question><raptivity menu="Media" menuItem="Raptivity SWF" hint="A page for incorporating Raptivity swfs." icon="icRaptivity" thumb="thumbs/raptivity.jpg" remove="true" deprecated="This page is no longer supported">
@@ -2521,20 +2522,29 @@
         <scoreTxt label="Score text label" type="TextInput" wysiwyg="true" language="true"/>
         <weightingTxt label="Weighting text label" type="TextInput" wysiwyg="true" language="true"/>
         <completedTxt label="Completed text label" type="TextInput" wysiwyg="true" language="true"/>
+        <detailsTxt label="Details text label" type="TextInput" wysiwyg="true" language="true"/>
         <specificResultsTxt label="Specific Results text label" type="TextInput" wysiwyg="true" language="true"/>
         <yourAnswerTxt label="Your answer text label" type="TextInput" wysiwyg="true" language="true"/>
         <correctAnswerTxt label="Correct answer text label" type="TextInput" wysiwyg="true" language="true"/>
-        <givenameTxt label="Ask name text label" type="TextInput" wysiwyg="true" language="true"/>
         <downloadPdfTxt label="Download pdf text label" type="TextInput" wysiwyg="true" language="true"/>
-
+        <correctTooltip label="Correct tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <inCorrectTooltip label="Incorrect tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <completeTooltip label="Complete tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <inCompleteTooltip label="Incomplete tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <NACompleteTooltip label="Not applicable complete tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <detailsTooltip label="Details available tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <noDetailsTooltip label="Details not available tooltip" type="TextInput" wysiwyg="false" language="true"/>
+        <userNameDialogTitle label="User name dialog title" type="TextInput" wysiwyg="false" language="true"/>
+        <userNamePrompt label="User name prompt" type="TextInput" wysiwyg="false" language="true"/>
+        <okButtonTxt label="Ok button tekst" type="TextInput" wysiwyg="false" language="true"/>
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full learning object."/>
-        <givename label="Ask Name" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
+        <givename label="Ask user name" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask your learner for his name to be placed on the results page"/>
 
         <resultmode label="Results Mode" type="ComboBox" options="Minimal Results,Normal Results,Full Results" data="minimal-results,normal-results,full-results"/>
         <disableexportpdf label="Disable export to PDF" type="Checkbox" optional="true" defaultValue="false"/>
-        <skipweigthingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false"/>
+        <showweightingzero label="Show pages with 0 tracking weight" tooltip="Show results of completed pages with a zero tracking weight" type="Checkbox" optional="true" defaultValue="false"/>
 
     <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -2568,7 +2578,7 @@
 		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
-	</background></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is no longer supported">
+	</background></rss><scenario menu="Connectors" menuItem="Scenario Connector" hint="A page that allows the setting up of complex scenarios with scenes, props, conditional events and outcomes that can take the user to other pages" icon="icConScenario" thumb="thumbs/scenario.jpg" remove="true" deprecated="This page is currently under development">
 	<name label="Scenario Name" type="TextInput" wysiwyg="true" width="200"/>
 	<title label="Scenario Title" type="TextInput" wysiwyg="true" width="200"/>
 	<description label="Description" type="textArea" height="120"/>
@@ -2589,11 +2599,11 @@
     <notFoundMessage label="Not Found Message" type="TextInput" wysiwyg="true" language="true"/>
     <notSetMessage label="Not Set Message" type="TextInput" wysiwyg="true" language="true"/>
 
-    <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true"/>
-    <url label="FLV, SWF or Image File" type="media" optional="true"/>
+    <hideButtonPos label="Hide Media Button" options="Over Media (bottom left),Same as Show Media" type="ComboBox" data="1,0" width="200" defaultValue="1" optional="true" deprecated="Unknown how this is used"/>
+    <url label="FLV, SWF or Image File" type="media" optional="true" deprecated="Unknown how this is used"/>
     <reset label="Reset on Completion" type="Checkbox" defaultValue="true" optional="true"/>
-    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true"/>
-    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
+    <movieSize label="Video Size" type="textInput" defaultValue="320,240" optional="true" deprecated="Unknown how this is used"/>
+    <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true" deprecated="Unknown how this is used"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
@@ -2979,7 +2989,7 @@
 	
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0"/>
     <newNodes>
-      <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="Sentence - Tree/Tracking label" />]]></sentence>
+      <sentence><![CDATA[<sentence p1="Write part one of your sentence here." p2="Write part two of your sentence here" hint="Provide a hint" name="S - Tree/Tracking label" />]]></sentence>
     </newNodes>
 
   <narrate type="group" label="Narration" optional="true" common="true">
@@ -2999,7 +3009,7 @@
     <hint label="Hint" type="TextArea" height="50"/>
     <p2 label="Part 2" type="TextArea" height="50"/>
 	<audioFeedback label="Audio Feedback" type="media" optional="true"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence - Tree/Tracking label" wysiwyg="false"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="S - Tree/Tracking label" wysiwyg="false"/>
 
   </sentence><textSWF menu="Media" menuItem="Flash Animation" hint="A page for integrating Flash animations and movies with your presentation." label="Page Text" icon="icPageWhiteFlash" thumb="thumbs/textSWF.jpg" type="text" height="300" remove="true" deprecated="This page is no longer supported.">
 

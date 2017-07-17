@@ -41,7 +41,7 @@ if(is_numeric($_POST['template_id'])){
 
     $database_id = database_connect("peer template database connect success","peer template change database connect failed");
 
-    if(is_user_creator($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 
         peer_display($xerte_toolkits_site,false, $_POST['template_id']);
 

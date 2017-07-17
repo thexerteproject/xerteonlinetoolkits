@@ -46,7 +46,7 @@ $prefix = $xerte_toolkits_site->database_table_prefix;
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator($_POST['template_id'])){
+    if(is_user_creator_or_coauthor($_POST['template_id'])){
 
         if($_POST['folder_id']=="workspace"){
 

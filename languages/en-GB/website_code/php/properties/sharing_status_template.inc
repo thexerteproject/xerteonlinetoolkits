@@ -18,7 +18,9 @@
 
     define("SHARING_CREATOR", "Creator");
 
-	define("SHARING_EDITOR","Editor");
+    define("SHARING_COAUTHOR", "Co-author");
+
+    define("SHARING_EDITOR","Editor");
 
 	define("SHARING_READONLY","Read only");
 

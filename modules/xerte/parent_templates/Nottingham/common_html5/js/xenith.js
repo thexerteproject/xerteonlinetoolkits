@@ -191,7 +191,7 @@ x_projectDataLoaded = function(xmlData) {
 		else {
 			pageToHide.push(i);
 		}
-		if($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined)
+		if(($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "result" )
 		{
 			markedPages.push(i);
 		}
@@ -297,9 +297,13 @@ x_projectDataLoaded = function(xmlData) {
         XTSetOption('objective_passed', passednumber);
 	}
 
-	if (x_params.trackingPageTimout != undefined)
+	if (x_params.trackingPageTimeout != undefined)
     {
-        XTSetOption('page_timeout', x_params.trackingPageTimout);
+        XTSetOption('page_timeout', x_params.trackingPageTimeout);
+    }
+    if (x_params.forceTrackingMode != undefined)
+    {
+        XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
     }
 }
 
@@ -956,7 +960,7 @@ function x_continueSetUp1() {
 			icons: {
 				primary: "x_colourChanger"
 			},
-			label:	"Change Colours",
+			label:	x_getLangInfo(x_languageData.find("colourChanger")[0], "tooltip", "Change Colour"),
 			text:	false
 		})
 		.attr("aria-label", $("#x_colourChangerBtn").attr("title") + " " + x_params.dialogTxt)

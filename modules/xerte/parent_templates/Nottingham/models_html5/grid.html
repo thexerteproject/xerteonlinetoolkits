@@ -26,7 +26,8 @@
 			timeout,
 			labelData = [],
 			separator = "|",
-			$pageContents;
+			$pageContents,
+            checked = false;
 		var numOfQuestions = 0, correct = 0;
 
 		// function called every time the page is viewed after it has initially loaded
@@ -43,7 +44,67 @@
 
 		}
 
+        this.leavePage = function()
+        {
+            if (!this.checked)
+            {
+                this.showFeedBackandTrackScore();
+            }
+        };
+
+        this.showFeedBackandTrackScore = function()
+        {
+            // there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
+            // maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
+            var Correct = true,
+                l_options = [],
+                l_answers = [],
+                l_feedbacks = [],
+                l_answer,
+                l_option,
+                l_feedback,
+                counter = 0;
+                this.allCorrect = true;
+            $("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
+                Correct = true;
+                var $this = $(this);
+                var columnLength = x_currentPageXML.getAttribute("data").split("||")[0].split("|").length;
+                var xPos = ($this.index() % columnLength) + 1;
+                var yPos = (Math.floor($this.index() / columnLength)) + 1;
+                l_answer = ($this.text().trim() + " --> [" + yPos + "," + xPos + "]");
+                l_option = {source: $this.text().trim(),target: "[" + xPos + "," + yPos + "]"};
+
+                if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
+                    $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
+                    numOfQuestions++;
+                    correct++;
+                    l_option.result = true;
+                    l_feedback = "Correct";
+                } else {
+                    Correct = false;
+                    $this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
+                    numOfQuestions++;
+                    l_option.result = false;
+                    l_feedback = "Incorrect";
+                    this.allCorrect = false;
+                }
+                l_options.push(l_option);
+                l_answers.push(l_answer);
+                l_feedbacks.push(l_feedback);
+                counter++;
+            });
+            XTExitInteraction(x_currentPage, 0, this.allCorrect, l_options, l_answers, l_feedbacks);
+
+
+            if(XTGetMode() == "normal") {
+                $("#checkBtn").hide();
+                $(".ui-draggable").draggable("disable");
+            }
+            XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100));
+        };
+
 		this.init = function() {
+		    this.checked = false;
 			$pageContents = $("#pageContents");
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -77,72 +138,31 @@
 			$("#checkBtn")
 				.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
 				.click(function() {
-					if ($(this).data("state") == "check") {
-						grid.removeFocus();
+                    if ($(this).data("state") == "check") {
+                        grid.removeFocus();
+				        grid.showFeedBackandTrackScore();
+                        if (grid.allCorrect == true) {
+                            $(this)
+                                .button({label: x_currentPageXML.getAttribute("resetBtnTxt") != undefined ? x_currentPageXML.getAttribute("resetBtnTxt") : "Reset"})
+                                .data("state", "reset");
+                            $("#feedback").show();
+                            $("#grid .listHolder ul li.ui-draggable")
+                                .draggable( "option", "disabled", true )
+                                .off("focusin focusout keypress");
+                        }
+                    } else {
+                        $(this)
+                            .button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
+                            .data("state", "check");
 
-						// there are loads of variations on how we could mark this - at the moment it has to be in exact position (taking identical labels into account)
-						// maybe at some point add an option to editor for how they want it marked (e.g. mark correct if in correct row but order in row irrelevant)
-						var Correct = true,
-								l_options = [],
-								l_answer,
-								l_feedback,
-								counter = 0,
-								allCorrect = true;
-						$("#grid").find("ul:not(.preview) li:not(.static)").each(function() {
-							Correct = true,
-							l_answer;
-							l_options = [];
-							l_feedback;
-							var $this = $(this);
-							columnLength = x_currentPageXML.getAttribute("data").split("||")[0].split("|").length;
-							xPos = ($this.index() % columnLength) + 1;
-							yPos = (Math.floor($this.index() / columnLength)) + 1;
-							l_answer = ($this.text().trim() + "" + yPos + "" + xPos);
-							l_option = {source: $this.text().trim(),target: xPos.toString() + "" + yPos.toString()};
-							l_options.push(l_option);
-							if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html()) {
-								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/tick.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '"></img>');
-								numOfQuestions++;
-								correct++;
-								l_feedback = "Correct";
-							} else {
-								Correct = false;
-								$this.append('<img class="tick" src="' + x_templateLocation + 'common_html5/cross.png" alt="' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Incorrect") + '"></img>');
-								numOfQuestions++;
-								l_feedback = "Incorrect";
-								allCorrect = false;
-							}
-							XTExitInteraction(x_currentPage, counter, Correct, l_options, l_answer, $("#feedback").text());
-							counter++;
-						});
-
-						if(XTGetMode() == "normal") {
-							$("#checkBtn").hide();
-							$(".ui-draggable").draggable("disable");
-						}
-						XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100));
-						if (allCorrect == true) {
-							$(this)
-								.button({label: x_currentPageXML.getAttribute("resetBtnTxt") != undefined ? x_currentPageXML.getAttribute("resetBtnTxt") : "Reset"})
-								.data("state", "reset");
-							$("#feedback").show();
-							$("#grid .listHolder ul li.ui-draggable")
-								.draggable( "option", "disabled", true )
-								.off("focusin focusout keypress");
-						}
-					} else {
-						$(this)
-							.button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
-							.data("state", "check");
-
-						$("#feedback").hide();
-						$("#grid .tick").remove();
-						$("#grid .listHolder ul li.ui-draggable")
-							.draggable( "option", "disabled", false )
-							.on("focusin focusout keypress"); //
-						grid.randomiseLabels();
-					}
-				})
+                        $("#feedback").hide();
+                        $("#grid .tick").remove();
+                        $("#grid .listHolder ul li.ui-draggable")
+                            .draggable( "option", "disabled", false )
+                            .on("focusin focusout keypress"); //
+                        grid.randomiseLabels();
+                    }
+                })
 				.data("state", "check");
 
 			if (x_currentPageXML.getAttribute("url") != undefined && x_currentPageXML.getAttribute("url") != "") {
@@ -773,9 +793,9 @@
 						(x_currentPageXML.getAttribute("fixedRows") == undefined || x_currentPageXML.getAttribute("fixedRows").indexOf(rowCount) == -1) &&
 						(x_currentPageXML.getAttribute("fixedCols") == undefined || x_currentPageXML.getAttribute("fixedCols").indexOf(columnCount) == -1))
 				{
-					correctAnswer.push(columns[column] + "" + columnCount + "" + rowCount);
+					correctAnswer.push(columns[column] + " --> [" + columnCount + "," + rowCount +"]");
 					correctFeedback.push("Correct");
-					correctOption = {source:columns[column], target:columnCount + "" + rowCount};
+					correctOption = {source:columns[column], target: "[" + columnCount + "," + rowCount + "]"};
 					correctOptions.push(correctOption);
 				}
 				columnCount++;
@@ -783,13 +803,16 @@
 			}
 			rowCount++;
 		}
-		XTSetPageType(x_currentPage, 'numeric', correctOptions.length, this.weighting);
+		XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+		XTEnterInteraction(x_currentPage, 0, 'match', x_currentPageXML.getAttribute("name"), correctOptions, correctAnswer, correctFeedback);
+		/*
 		for(var i = 0; i < correctOptions.length; i++)
 		{
 			options = []
 			options.push(correctOptions[i])
 			XTEnterInteraction(x_currentPage, i, 'match', correctOptions[i].target, options, correctAnswer[i], correctFeedback[i]);
 		}
+		*/
 	}
 }
 

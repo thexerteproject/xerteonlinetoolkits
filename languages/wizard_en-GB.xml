@@ -46,7 +46,7 @@
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
 	<hidePage tooltip="This page is hidden"/>
-	<unmarkForCompletion tooltip="This page is unmarked for completion"/>
+	<unmarkForCompletion tooltip="This page is not required for completion"/>
 	<filemenu title="File">
 		<menuNew>New Project...</menuNew>
 		<menuOpen>Open...</menuOpen>
@@ -158,4 +158,10 @@
 		</changeLanguage>
 		
 	</Alert>
+	<XotLinkRelativePages>
+		<firstpage>* first page *</firstpage>
+		<lastpage>* last page *</lastpage>
+		<nextpage>* next page *</nextpage>
+		<prevpage>* previous page*</prevpage>
+	</XotLinkRelativePages>
 </language>

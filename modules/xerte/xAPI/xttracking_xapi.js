@@ -57,26 +57,21 @@ function XApiTrackingState()
     	
     }
 
-    function pageCompleted(page_nr)
+    function pageCompleted(sit)
     {
-        var sit = state.findPage(page_nr);
-        if (sit != null)
+        for (i=0; i<sit.nrinteractions; i++)
         {
-            for (i=0; i<sit.nrinteractions; i++)
-            {
-                var sit2 = state.findInteraction(page_nr, i);
-                if (sit2 == null || sit2.duration < 1000)
-                {
-                    return false;
-                }
-            }
-            if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+            var sit2 = state.findInteraction(sit.page_nr, i);
+            if (sit2 == null || sit2.duration < 1000)
             {
                 return false;
             }
-            return true;
         }
-        return false;
+        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        {
+            return false;
+        }
+        return true;
     }
     
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
@@ -106,11 +101,9 @@ function XApiTrackingState()
             if (! state.completedPages[i]) {
                 var sit = state.findInteraction(page_nr, -1);
                 if (sit != null) {
+                    // Skip result page completely
                     if (sit.ia_type == "result") {
-                        state.completedPages[i] = true;
-                    }
-                    else {
-                        state.completedPages[i] = state.pageCompleted(page_nr);
+                        state.completedPages[i] = state.pageCompleted(sit);
                     }
                 }
             }
@@ -606,93 +599,167 @@ function SaveStatement(statement)
     );
 }
 
-function XTResults()
+function XTResults(fullcompletion)
 {
+    var completion = 0;
+    var nrcompleted = 0;
+    var nrvisited = 0;
+    var completed;
+    $.each(state.completedPages, function(i, completed)
+    {
+        // indices not defined will be visited anyway.
+        // In that case 'completed' will be undefined
+        if (completed)
+        {
+            nrcompleted++;
+        }
+        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        }
+    })
+
+    if(nrcompleted != 0)
+    {
+        if (! fullcompletion) {
+            completion = Math.round((nrcompleted / nrvisited) * 100);
+        }
+        else
+        {
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+        }
+    }
+    else
+    {
+        completion = 0;
+    }
+
     var results = {};
-    results.mode = x_currentPageXML.getAttribute("mode");
+    results.mode = x_currentPageXML.getAttribute("resultmode");
 
     var score = 0,
-    nrofquestions = 0,
-    totalWeight = 0,
-    totalDuration = 0;
+        nrofquestions = 0,
+        totalWeight = 0,
+        totalDuration = 0;
     results.interactions = Array();
 
     for(i = 0; i < state.interactions.length-1; i++){
-        score += state.interactions[i].score * state.interactions[i].weighting ;
-        if(state.interactions[i].nrinteractions > 0)
-        {
+
+
+        score += state.interactions[i].score * state.interactions[i].weighting;
+        if(state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
+
             var interaction = {};
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
             interaction.type = state.interactions[i].ia_type;
+            interaction.correct = state.interactions[i].result;
             interaction.duration = Math.round(state.interactions[i].duration / 1000);
             interaction.weighting = state.interactions[i].weighting;
             interaction.subinteractions = Array();
+
+            var j = 0;
+            for (j; j < state.toCompletePages.length; j++) {
+                var currentPageNr = state.toCompletePages[j];
+                if (currentPageNr == state.interactions[i].page_nr) {
+                    if (state.completedPages[j]) {
+                        interaction.completed = "true";
+                    }
+                    else if (!state.completedPages[j]) {
+                        interaction.completed = "false";
+                    }
+                    else {
+                        interaction.completed = "unknown";
+                    }
+                }
+            }
+
             results.interactions[nrofquestions] = interaction;
             totalDuration += state.interactions[i].duration;
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 
-        }else if(results.mode == "full-results")
+        }
+        else if(results.mode == "full-results")
         {
-            var subinteraction = {}
+            var subinteraction = {};
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type){
                 case "match":
-                    if (state.interactions[i].learneroptions[0] == null)
+                    var resultCorrect;
+                    for(var c = 0; c< state.interactions[i].correctOptions.length;c++)
                     {
-                        learnerAnswer = "";
+                        var matchSub = {}; //Create a subinteraction here for every match sub instead
+                        correctAnswer = state.interactions[i].correctOptions[c].source + ' --> ' + state.interactions[i].correctOptions[c].target;
+                        source = state.interactions[i].correctOptions[c].source;
+                        if(state.interactions[i].learnerOptions.length == 0)
+                        {
+                            learnerAnswer = source + ' --> ' + ' ';
+                        }
+                        else{
+                            for(var d=0; d < state.interactions[i].learnerOptions.length;d++)
+                            {
+                                if(source == state.interactions[i].learnerOptions[d].source) {
+                                    learnerAnswer = source + ' --> ' + state.interactions[i].learnerOptions[d].target;
+                                    break;
+                                }
+                                else{
+                                    learnerAnswer = source + ' --> ' + ' ';
+                                }
+                            }
+                        }
+
+                        matchSub.question = state.interactions[i].ia_name;
+                        matchSub.correct = resultCorrect;
+                        matchSub.learnerAnswer = learnerAnswer;
+                        matchSub.correctAnswer = correctAnswer;
+                        results.interactions[nrofquestions-1].subinteractions.push(matchSub);
                     }
-                    else
-                    {
-                        learnerAnswer = state.interactions[i].learneroptions[0].source;
-                    }
-                    correctAnswer = state.interactions[i].correctoptions[0].source;
+
                     break;
                 case "text":
-                    learnerAnswer = state.interactions[i].learneranswer.join(", ");
-                    correctAnswer = state.interactions[i].correctanswer.join(", ");
+                    learnerAnswer = state.interactions[i].learnerAnswers.join(", ");
+                    correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learneranswer[0];
-                    for(var j = 1; j < state.interactions[i].learneranswer.length; j++)
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                    for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
                     {
-                        learnerAnswer += "\n" + state.interactions[i].learneranswer[j];
+                        learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
                     }
-                    correctAnswer = state.interactions[i].correctanswer[0];
-                    for(var j = 1; j < state.interactions[i].correctanswer.length; j++)
+                    correctAnswer = state.interactions[i].correctAnswers[0];
+                    for(var j = 1; j < state.interactions[i].correctAnswers.length; j++)
                     {
-                        correctAnswer += "\n" + state.interactions[i].correctanswer[j];
+                        correctAnswer += "\n" + state.interactions[i].correctAnswers[j];
                     }
                     break;
                 case "numeric":
-                    learnerAnswer = state.interactions[i].learneranswer;
-                    correctAnswer = "NA";   // Not applicable
+
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = "-";  // Not applicable
                     //TODO: We don't have a good example of an interactivity where the numeric type has a correctAnswer. Currently implemented for the survey page.
                     break;
                 case "fill-in":
-                    learnerAnswer = state.interactions[i].learneranswer;
-                    correctAnswer = state.interactions[i].correctanswer;
+                    learnerAnswer = state.interactions[i].learnerAnswers;
+                    correctAnswer = state.interactions[i].correctAnswers;
                     break;
             }
-            subinteraction.question = state.interactions[i].ia_name;
-            subinteraction.learnerAnswer = learnerAnswer;
-            subinteraction.correct = state.interactions[i].result;
-            subinteraction.correctAnswer = correctAnswer;
-            results.interactions[nrofquestions-1].subinteractions.push(subinteraction);
+            if(state.interactions[i].ia_type != "match") {
+                subinteraction.question = state.interactions[i].ia_name;
+                subinteraction.correct = state.interactions[i].result;
+                subinteraction.learnerAnswer = learnerAnswer;
+                subinteraction.correctAnswer = correctAnswer;
+                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+            }
         }
-
     }
-    if(state.interactions.length == 0)
-    {
-        $("#questionScores").hide()
-    }
+    results.completion = completion;
+    results.completion = completion;
     results.score = score;
     results.nrofquestions = nrofquestions;
-    results.averageScore = Math.round(score / totalWeight);
+    results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
-    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+    results.start = state.start.toLocaleString();
 
     return results;
 }

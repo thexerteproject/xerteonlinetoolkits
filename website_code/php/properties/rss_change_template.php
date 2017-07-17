@@ -40,7 +40,7 @@ include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
 
-    if(is_user_creator($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 
         $query_for_rss_status = "select rss from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
 

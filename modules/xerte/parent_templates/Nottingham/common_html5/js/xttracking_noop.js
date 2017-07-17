@@ -64,6 +64,7 @@ function NoopTrackingState()
     this.lo_completed = 0;
     this.lo_passed = 0;
     this.page_timeout = 5000;
+    this.forcetrackingmode = false;
 
 
     this.initialise = initialise;
@@ -185,26 +186,21 @@ function NoopTrackingState()
     }
 
 
-    function pageCompleted(page_nr)
+    function pageCompleted(sit)
     {
-        var sit = state.findPage(page_nr);
-        if (sit != null)
+        for (i=0; i<sit.nrinteractions; i++)
         {
-            for (i=0; i<sit.nrinteractions; i++)
-            {
-                var sit2 = state.findInteraction(page_nr, i);
-                if (sit2 == null || sit2.duration < 1000)
-                {
-                    return false;
-                }
-            }
-            if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+            var sit2 = state.findInteraction(sit.page_nr, i);
+            if (sit2 == null || sit2.duration < 1000)
             {
                 return false;
             }
-            return true;
         }
-        return false;
+        if (sit.ia_type=="page" && sit.duration < state.page_timeout)
+        {
+            return false;
+        }
+        return true;
     }
 
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
@@ -237,11 +233,9 @@ function NoopTrackingState()
             if (! state.completedPages[i]) {
                 var sit = state.findInteraction(page_nr, -1);
                 if (sit != null) {
-                    if (sit.ia_type == "result") {
-                        state.completedPages[i] = true;
-                    }
-                    else {
-                        state.completedPages[i] = state.pageCompleted(page_nr);
+                    // Skip results page completely
+                    if (sit.ia_type != "result") {
+                        state.completedPages[i] = state.pageCompleted(sit);
                     }
                 }
             }
@@ -416,7 +410,10 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    return "";
+    if (state.forcetrackingmode === 'true')
+        return "normal";
+    else
+        return "";
 }
 
 function XTStartPage()
@@ -483,7 +480,9 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
-
+        case "force_tracking_mode":
+            state.forcetrackingmode = value;
+            break;
     }
 }
 
@@ -547,21 +546,34 @@ function XTTerminate()
 	window.opener.innerWidth-=2;
 }
 
-function XTResults()
+function XTResults(fullcompletion)
 {
     var completion = 0;
-    var counter = 0;
+    var nrcompleted = 0;
+    var nrvisited = 0;
     var completed;
-    for(var i = 0; i< state.completedPages.length;i++)
+    $.each(state.completedPages, function(i, completed)
     {
-        if(state.completedPages[i] == true)
+        // indices not defined will be visited anyway.
+        // In that case 'completed' will be undefined
+        if (completed)
         {
-            counter++;
+            nrcompleted++;
         }
-    }
-    if(counter != 0)
+        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        }
+    })
+
+    if(nrcompleted != 0)
     {
-        completion = Math.round((counter/state.completedPages.length)*100);
+        if (! fullcompletion) {
+            completion = Math.round((nrcompleted / nrvisited) * 100);
+        }
+        else
+        {
+            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
+        }
     }
     else
     {
@@ -694,7 +706,7 @@ function XTResults()
     results.nrofquestions = nrofquestions;
     results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
-    results.start = state.start.getDate() + "-" + (state.start.getMonth()+1) + "-" +state.start.getFullYear() + " " + state.start.getHours() + ":" + state.start.getMinutes();
+    results.start = state.start.toLocaleString();
 
     return results;
 }

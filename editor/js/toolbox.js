@@ -2061,10 +2061,10 @@ var EDITOR = (function ($, parent) {
             
             if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
             	pages = [
-            						['* first page *','[first]'],
-            						['* last page *','[last]'],
-            						['* previous page *','[previous]'],
-            						['* next page *','[next]']
+            						[language.XotLinkRelativePages.firstpage,'[first]'],
+            						[language.XotLinkRelativePages.lastpage,'[last]'],
+            						[language.XotLinkRelativePages.prevpage,'[previous]'],
+            						[language.XotLinkRelativePages.nextpage,'[next]']
             					];
 							$.each(lo_node.children, function(i, key){
 									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);

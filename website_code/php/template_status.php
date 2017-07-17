@@ -214,7 +214,7 @@ function is_user_an_editor($template_id, $user_id){
 
     $row = db_query_one($query, $params);
 
-    if(($row['role']=="creator")||($row['role']=="editor")){
+    if(($row['role']=="creator")||($row['role']=="co-author")||($row['role']=="editor")){
 
         return true;
 
@@ -294,6 +294,19 @@ function is_user_creator($template_id){
     $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $_SESSION['toolkits_logon_id']));
 
     if($row['role']=="creator"){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function is_user_creator_or_coauthor($template_id){
+
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("select role from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id=? AND user_id=?", array($template_id, $_SESSION['toolkits_logon_id']));
+
+    if($row['role']=="creator" || $row['role']=="co-author"){
         return true;
     }else{
         return false;
