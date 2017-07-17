@@ -30,7 +30,7 @@
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-    <diagram label="Show diagram" type="CheckBox" defaultValue="false" optional="true"/>
+    <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
 
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
