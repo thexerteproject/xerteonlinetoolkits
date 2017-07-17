@@ -48,9 +48,13 @@
 			$name = "Name";
 			$shortname = "Short name";
 			$desciption = "Description";
-			
+			$checked = "";
+			$xapi_enabled = "";
+			$published = false;
 			if(file_exists($projectdir))
 			{
+				$published = true;
+				$checked = "checked";
 				if(file_exists($projectdir . "/register.php"))
 				{
 					include($projectdir . "/register.php");
@@ -58,17 +62,36 @@
 					$shortname = $REGISTER_LTI2["short_name"];
 					$desciption = $REGISTER_LTI2["description"];
 				}
+				if(file_exists($projectdir . "/xttracking_xapi.js"))
+				{
+					$xapi_enabled = "checked";
+					$xapi_endpoint = "";
+					$xapi_username = "";
+					$xapi_password = "";
+				}
 			}
 			?>
 				<p class="header"><span>Tsugi</span></p>
 				<p>
 					
 					<form method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/scorm/export.php?tsugi=true&template_id=<?php echo $id;?>">
+						<label for="tsugi_published">Publish</label><input type="checkbox" name="tsugi_published" <?php echo $checked;?>><br>
 						<label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>
 						<label for="tsugi_shortname">Short name:</label><input name="tsugi_shortname" type="text" value="<?php echo $shortname ?>"><br>
 						<label for="tsugi_description">Description:</label><input name="tsugi_description" type="text" value="<?php echo $desciption ?>"><br>
-						<input type="submit" value="Publish" class="xerte_button">
+						<label for="tsugi_xapi">xAPI enabled: </label><input type="checkbox" name="tsugi_xapi" <?php echo $xapi_enabled;?>><br>
+						<label for="tsugi_xapi_endpoint">xAPI endpoint: </label><input type="text" name="tsugi_xapi_endpoint" <?php echo $xapi_endpoint;?>><br>
+						<label for="tsugi_xapi_username">xAPI username: </label><input type="text" name="tsugi_xapi_username" <?php echo $xapi_username;?>><br>
+						<label for="tsugi_xapi_password">xAPI endpoint: </label><input type="text" name="tsugi_xapi_password" <?php echo $xapi_password;?>><br>
+						<input type="submit" value="Update" class="xerte_button">
 					</form>
+					<?php
+					if($published)
+					{
+						$url = $xerte_toolkits_site->site_url . "tsugi/mod/" . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+						echo "Your LTI2 link is: <br><a href=\"$url\">$url</a>";
+					}
+					?>
 				</p>
 			<?php
 
