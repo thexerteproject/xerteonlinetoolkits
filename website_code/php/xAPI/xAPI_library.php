@@ -5,40 +5,9 @@ function xAPI_html_page_create($template_name, $type, $lo_name, $language, $tsug
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
 	$version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
-	_debug($register_page_content);
 	if($tsugi)
 	{
 		$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.php");
-		_debug("tsugi");
-		//creates the register.php that tsugi uses
-		$name = "";
-		$shortname = "";
-		$description = "";
-		if(isset($_POST["tsugi_name"]))
-		{
-			$name = htmlspecialchars($_POST["tsugi_name"]);
-		}
-		if(isset($_POST["tsugi_shortname"]))
-		{
-			$shortname = htmlspecialchars($_POST["tsugi_shortname"]);
-		}
-		if(isset($_POST["tsugi_description"]))
-		{
-			$description = htmlspecialchars($_POST["tsugi_description"]);
-		}
-		
-		$register_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/register.php");
-		$register_page_content = str_replace("%NAME%", $name , $register_page_content);
-		$register_page_content = str_replace("%SHORT_NAME%", $shortname , $register_page_content);
-		$register_page_content = str_replace("%DESCRIPTION%", $description , $register_page_content);
-		$file_handle = fopen($dir_path . "register.php", 'w');
-		fwrite($file_handle,$register_page_content, strlen($register_page_content));
-		fclose($file_handle);
-		
-		$zipfile->add_files("register.php");
-		include("/../../../functions.php");
-		
-		array_push($delete_file_array,  $dir_path . "register.php");
 		
 	}else{
 		$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
