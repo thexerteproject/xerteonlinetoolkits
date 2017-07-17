@@ -32,11 +32,19 @@
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
     <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
 
+      <newNodes>
+        <opinionClass><![CDATA[<opinionClass  name="C - Tree/Tracking label"/>]]></opinionClass>
+      </newNodes>
+
+  </opinion>
+
+  <opinionClass menuItem="Class">
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
+
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
-	</newNodes>
-	
-  </opinion>
+    </newNodes>
+  </opinionClass>
 
   <opinionQuestion menuItem="Question">
     <prompt label="Question" type="TextArea"  height="100"/>

@@ -116,8 +116,7 @@
 			this.currentQuestion = 0;
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
-			var numberOfQuestions = $(x_currentPageXML).children().length; // Can't be 0
-
+			var numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
 
 			if (x_currentPageXML.getAttribute("order") == "random")
 			{
@@ -167,7 +166,7 @@
 			}
 			else
 			{
-				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQuestion]];
+				var $thisQ = $(x_currentPageXML).children().children()[this.questions[this.currentQuestion]];
 
 				$("#qNo").html(this.questionNumberText.replace("{i}", this.currentQuestion + 1).replace("{n}", this.questions.length));
 
@@ -330,7 +329,7 @@
 		
 		this.trackQuestion = function()
 		{
-			var currentQ = $(x_currentPageXML).children()[opinion.questions[opinion.currentQuestion]];
+			var currentQ = $(x_currentPageXML).children().children()[opinion.questions[opinion.currentQuestion]];
 
 
             var selected = $('#slider1')[0].valueAsNumber,
@@ -449,6 +448,7 @@
                 data: {
                     labels: diagramLabels,
                     datasets: [{
+						label: x_currentPageXML.getAttribute("name"),
                         data: diagramAnswers
                     }]
                 }
