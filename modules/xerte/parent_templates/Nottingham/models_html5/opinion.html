@@ -11,7 +11,6 @@
 		var diagramLabels = [];
 
 
-
         this.loadJS = function() {
             if (numLoaded < 1) {
                 var fileToLoad;
@@ -117,6 +116,11 @@
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
 			var numberOfQuestions = $(x_currentPageXML).children().children().length; // Can't be 0
+
+            for(var i = 0; i < $(x_currentPageXML).children().length; i++)
+            {
+                $(x_currentPageXML).children()[i].classId = i;
+            }
 
 			if (x_currentPageXML.getAttribute("order") == "random")
 			{
@@ -356,8 +360,11 @@
             var currentQuestionString = opinion.currentQuestion + "";
             answeredValues[currentQuestionString] = currentQuestionValue;
 
-            diagramLabels[opinion.currentQuestion] = currentQ.getAttribute("name");
+
+
+            diagramLabels[opinion.currentQuestion] = currentQ;
             diagramAnswers[opinion.currentQuestion] = (Math.round(currentQuestionValue * 10) / 10);
+
 
 			XTExitInteraction(x_currentPage, opinion.questions[opinion.currentQuestion], correct, l_options, l_answer, null);
             opinion.myProgress.splice(opinion.currentQuestion, 1, correct);
@@ -386,7 +393,6 @@
 		
 		this.trackOpinion = function() {
             // Last question answered - show results
-			debugger;
             if (x_currentPageXML.getAttribute("diagram") == "true"){
                 opinion.createDiagram();
 			}
@@ -441,15 +447,34 @@
 
 		this.createDiagram = function()
 		{
-			var ctx = $("#diagram");
+			var classNames = [];
+			var classValues = [];
+			var classWeighting = [];
 			debugger;
+			for(var i = 0; i< diagramLabels.length; i++){
+				var q = diagramLabels[i];
+				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
+				if(classValues[q.parentNode.classId] != undefined){
+                    classValues[q.parentNode.classId] = classValues[q.parentNode.classId] + (diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
+                    classWeighting[q.parentNode.classId] = parseInt(classWeighting[q.parentNode.classId]) + parseInt(diagramLabels[i].getAttribute("classWeight"));
+                }
+                else{
+                    classValues[q.parentNode.classId] =(diagramAnswers[i]* diagramLabels[i].getAttribute("classWeight"));
+                    classWeighting[q.parentNode.classId] = diagramLabels[i].getAttribute("classWeight");
+				}
+			}
+			for(var j=0; j<classValues.length;j++){
+			    classValues[j] = classValues[j] / classWeighting[j];
+			}
+
+			var ctx = $("#diagram");
             var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: diagramLabels,
+                    labels: classNames,
                     datasets: [{
 						label: x_currentPageXML.getAttribute("name"),
-                        data: diagramAnswers
+                        data: classValues
                     }]
                 }
             });
@@ -597,7 +622,7 @@
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>
-					<canvas id ="diagram" aria-live="polite"></canvas>
+					<canvas id="diagram" aria-live="polite"></canvas>
 
 					
 				</fieldset>

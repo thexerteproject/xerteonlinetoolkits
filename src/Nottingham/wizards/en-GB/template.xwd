@@ -2252,7 +2252,7 @@
 	<img label="Image" type="media" defaultValue="Select an Image" optional="true"/>
 	<tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
 	<timer label="Page Timer" defaultValue="60" type="NumericStepper" min="0" max="1200" step="1" width="100" optional="true"/>
-    <diagram label="Show diagram" type="CheckBox" defaultValue="false" optional="true"/>
+    <diagram label="Show diagram" type="CheckBox" defaultValue="true" optional="true"/>
 
       <newNodes>
         <opinionClass><![CDATA[<opinionClass  name="C - Tree/Tracking label"/>]]></opinionClass>
@@ -2274,11 +2274,12 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer"/>]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" />]]></opinionQuestion>
     </newNodes>
   </opinionClass><opinionQuestion menuItem="Question">
     <prompt label="Question" type="TextArea" height="100"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Q - Tree/Tracking label" wysiwyg="false"/>
+    <classWeight label="Weighting" type="TextInput" wysiwyg="false"/>
     <image label="Image" type="Media" optional="true"/>
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox"/>  

@@ -576,7 +576,6 @@ function XTTerminate()
 
 function SaveStatement(statement)
 {
-	return;
 	statement.id = null;
 	lrsInstance.saveStatement(
         statement,
