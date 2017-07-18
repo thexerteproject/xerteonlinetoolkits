@@ -218,13 +218,21 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name, $offline=false, $offline_includes="") {
+function basic_html5_page_create($type, $template_name, $lo_name, $tsugi, $offline=false, $offline_includes="") {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
 
-    $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+	if($tsugi)
+	{
+		 $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.php");
+	}else{
+		$buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+
+	}
+	
+   
     $buffer = str_replace("%VERSION%", $version, $buffer);
     $buffer = str_replace("%VERSION_PARAM%", "", $buffer);
     $buffer = str_replace("%TITLE%", $lo_name, $buffer);
@@ -246,17 +254,23 @@ function basic_html5_page_create($type, $template_name, $lo_name, $offline=false
         $buffer = str_replace("%OFFLINEINCLUDES%", "", $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
-
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
-
-    $file_handle = fopen($dir_path . "index.htm", 'w');
+	
+	if($tsugi)
+	{
+		$index = "index.php";
+	}else{
+		$index = "index.htm";
+	}
+	
+    $file_handle = fopen($dir_path . $index, 'w');
 
     fwrite($file_handle, $buffer, strlen($buffer));
     fclose($file_handle);
 
-    $zipfile->add_files("index.htm");
+    $zipfile->add_files($index);
 
-    array_push($delete_file_array, $dir_path . "index.htm");
+    array_push($delete_file_array, $dir_path . $index);
 }
 
 /**
