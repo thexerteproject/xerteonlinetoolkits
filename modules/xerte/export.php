@@ -346,23 +346,43 @@ if($tsugi)
 	$name = "";
 	$shortname = "";
 	$description = "";
-	if(isset($_POST["tsugi_name"]))
-	{
+
+	$endpoint = "";
+	$username = "";
+	$password = "";
+
+	//Fill Register_LTI2
+	if(isset($_POST["tsugi_name"])) {
 		$name = htmlspecialchars($_POST["tsugi_name"]);
 	}
-	if(isset($_POST["tsugi_shortname"]))
-	{
+	if(isset($_POST["tsugi_shortname"])) {
 		$shortname = htmlspecialchars($_POST["tsugi_shortname"]);
 	}
-	if(isset($_POST["tsugi_description"]))
-	{
+	if(isset($_POST["tsugi_description"])) {
 		$description = htmlspecialchars($_POST["tsugi_description"]);
 	}
+
+	//Fill xApi_Config
+	if(isset($_POST["tsugi_xapi_endpoint"])) {
+        $endpoint = htmlspecialchars($_POST["tsugi_xapi_endpoint"]);
+	}
+    if(isset($_POST["tsugi_xapi_username"])) {
+        $username = htmlspecialchars($_POST["tsugi_xapi_username"]);
+    }
+    if(isset($_POST["tsugi_xapi_password"])) {
+        $password = htmlspecialchars($_POST["tsugi_xapi_password"]);
+    }
+
 	
 	$register_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/register.php");
 	$register_page_content = str_replace("%NAME%", $name , $register_page_content);
 	$register_page_content = str_replace("%SHORT_NAME%", $shortname , $register_page_content);
 	$register_page_content = str_replace("%DESCRIPTION%", $description , $register_page_content);
+
+	$register_page_content = str_replace("%END%", $endpoint, $register_page_content);
+    $register_page_content = str_replace("%USER%", $username, $register_page_content);
+    $register_page_content = str_replace("%PASSWORD%", $password, $register_page_content);
+
 	$file_handle = fopen($dir_path . "register.php", 'w');
 	fwrite($file_handle,$register_page_content, strlen($register_page_content));
 	fclose($file_handle);
