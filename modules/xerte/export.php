@@ -22,6 +22,12 @@
  * Export a LO - e.g. from properties.
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
+require_once("../../../tsugi/config.php");
+require_once("../../../tsugi/admin/admin_util.php");
+
+use \Tsugi\Util\LTI;
+use \Tsugi\Core\LTIX;
+use \Tsugi\Config\ConfigInfo;
 
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
@@ -83,6 +89,8 @@ $xAPI = false;
 $tsugi = false;
 $offline_includes="";
 
+
+
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
 }
@@ -117,8 +125,26 @@ if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
 
 if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
 {
-	$xAPI = true;
 	$tsugi = true;
+}
+
+if($tsugi && (!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on"))
+{
+	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
+	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
+
+	$it = new RecursiveDirectoryIterator($tsugi_dir, RecursiveDirectoryIterator::SKIP_DOTS);
+	$files = new RecursiveIteratorIterator($it,
+				 RecursiveIteratorIterator::CHILD_FIRST);
+	foreach($files as $file) {
+		if ($file->isDir()){
+			rmdir($file->getRealPath());
+		} else {
+			unlink($file->getRealPath());
+		}
+	}
+	rmdir($tsugi_dir);
+	exit();
 }
 
 /*
@@ -370,7 +396,8 @@ if($tsugi)
 	$zipfile->add_files("register.php");
 	
 	
-	array_push($delete_file_array,  $dir_path . "register.php");
+	array_push($delete_file_array,  $dir_path . "register.php");	
+	
 }
 
 // Copy the favicon file
@@ -457,7 +484,7 @@ else {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $export_offline, $offline_includes);
+        basic_html5_page_create($row['template_framework'], $row['template_name'], $tsugi, $lo_name, $export_offline, $offline_includes);
     }
 }
 
@@ -497,6 +524,7 @@ $zipfile->create_archive();
 
 if($tsugi)
 {
+	$PDOX = LTIX::getConnection();
 	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
 	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
 	if (!file_exists($tsugi_dir)) {
@@ -511,8 +539,7 @@ if($tsugi)
 		$zipArchive ->extractTo($tsugi_dir);
 		$zipArchive ->close();
 		
-	}
-	
+	}	
 }else{
 	// This outputs http headers etc.
 	$zipfile->download_file($row['zipname']);
@@ -529,6 +556,44 @@ clean_up_files();
 @unlink($zipfile_tmpname);
 if($tsugi)
 {
-	echo "Visit on: " . $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/";
+	$tsugi_key = $_REQUEST["tsugi_key"];
+	$tsugi_secret = $_REQUEST["tsugi_secret"];
+	$url = $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/index.php";
+	$PDOX = LTIX::getConnection();
+	$p = $CFG->dbprefix;
+	$context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");
+	$context_id = ($context_row["MAX(context_id)"]) + 1;
+	$key_row = $PDOX->rowDie("SELECT MAX(key_id) FROM {$p}lti_key;");	
+	$key_id = ($key_row["MAX(key_id)"]) + 1;
+	$link_row = $PDOX->rowDie("SELECT MAX(link_id) FROM {$p}lti_link;");
+	$link_id = ($link_row["MAX(link_id)"]) + 1;
+		$sql = "INSERT INTO {$p}lti_key
+                ( key_id, key_sha256, key_key, secret) VALUES
+                    ( :key_id, :key_sha256, :key_key, :secret);";
+	$PDOX->queryDie($sql, array(
+		':key_id' => $key_id,
+		':key_sha256' => lti_sha256($tsugi_key),
+		':key_key' => $tsugi_key,
+		':secret' => $tsugi_secret
+	));
+	$sql = "INSERT INTO {$p}lti_context
+                ( context_key, context_sha256, title, key_id, created_at, updated_at ) VALUES
+                ( :context_key, :context_sha256, :title, :key_id, NOW(), NOW() );";
+	$PDOX->queryDie($sql, array(
+		':context_key' => $context_id,
+		':context_sha256' => lti_sha256($context_id),
+		':title' => $name,
+		':key_id' => $key_id));
+	$sql = "INSERT INTO {$p}lti_link
+                ( link_key, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
+                    ( :link_key, :link_sha256, :title, :context_id, :path, NOW(), NOW() );";
+	$PDOX->queryDie($sql, array(
+		':link_key' => $link_id,
+		':link_sha256' => lti_sha256($key_id),
+		':title' => $name,
+		':context_id' => $context_id,
+		':path' => $url
+	));
+
 }
 ?>

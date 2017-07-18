@@ -50,11 +50,23 @@
 			$desciption = "Description";
 			$checked = "";
 			$xapi_enabled = "";
+			$key = "12345";
+			$secret = "secret";
 			$published = false;
+			$url = $xerte_toolkits_site->site_url . "tsugi/mod/" . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 			if(file_exists($projectdir))
 			{
+				$indexfile = $projectdir . "index.php";
 				$published = true;
-				$checked = "checked";
+				$checked = "checked";;
+				$PDOX = LTIX::getConnection();
+				$row = $PDOX->rowDie(
+					"	SELECT k.key_key, k.secret 
+						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, lti_link AS l  
+							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
+						array(':DPATH' => $url . "index.php"));
+				$key = $row["key_key"];
+				$secret = $row["secret"];
 				if(file_exists($projectdir . "/register.php"))
 				{
 					include($projectdir . "/register.php");
@@ -79,16 +91,18 @@
 						<label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>
 						<label for="tsugi_shortname">Short name:</label><input name="tsugi_shortname" type="text" value="<?php echo $shortname ?>"><br>
 						<label for="tsugi_description">Description:</label><input name="tsugi_description" type="text" value="<?php echo $desciption ?>"><br>
+						<label for="tsugi_secret">Secret:</label><input name="tsugi_secret" type="text" value="<?php echo $secret ?>"><br>
+						<label for="tsugi_key">Key:</label><input name="tsugi_key" type="text" value="<?php echo $key ?>"><br>
 						<label for="tsugi_xapi">xAPI enabled: </label><input type="checkbox" name="tsugi_xapi" <?php echo $xapi_enabled;?>><br>
 						<label for="tsugi_xapi_endpoint">xAPI endpoint: </label><input type="text" name="tsugi_xapi_endpoint" <?php echo $xapi_endpoint;?>><br>
 						<label for="tsugi_xapi_username">xAPI username: </label><input type="text" name="tsugi_xapi_username" <?php echo $xapi_username;?>><br>
-						<label for="tsugi_xapi_password">xAPI endpoint: </label><input type="text" name="tsugi_xapi_password" <?php echo $xapi_password;?>><br>
+						<label for="tsugi_xapi_password">xAPI password: </label><input type="text" name="tsugi_xapi_password" <?php echo $xapi_password;?>><br>
 						<input type="submit" value="Update" class="xerte_button">
 					</form>
 					<?php
 					if($published)
 					{
-						$url = $xerte_toolkits_site->site_url . "tsugi/mod/" . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+						
 						echo "Your LTI2 link is: <br><a href=\"$url\">$url</a>";
 					}
 					?>
