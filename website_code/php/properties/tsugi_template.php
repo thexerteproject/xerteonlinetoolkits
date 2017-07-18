@@ -87,7 +87,7 @@
 				}
 			}
 			?>
-				<p class="header"><span>Tsugi</span></p>
+				<p class="header"><span>LTI2/Tsugi</span></p>
 				<p>
 
 					<form method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/scorm/export.php?tsugi=true&template_id=<?php echo $id;?>">
@@ -96,8 +96,9 @@
 						    <label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>
 						    <label for="tsugi_shortname">Short name:</label><input name="tsugi_shortname" type="text" value="<?php echo $shortname ?>"><br>
 						    <label for="tsugi_description">Description:</label><input name="tsugi_description" type="text" value="<?php echo $desciption ?>"><br>
-							<label for="tsugi_secret">Secret:</label><input name="tsugi_secret" type="text" value="<?php echo $secret ?>"><br>
 							<label for="tsugi_key">Key:</label><input name="tsugi_key" type="text" value="<?php echo $key ?>"><br>
+							<label for="tsugi_secret">Secret:</label><input name="tsugi_secret" type="text" value="<?php echo $secret ?>"><br>
+
 
 							<label for="tsugi_xapi">xAPI enabled: </label><input id="xChk" type="checkbox" name="tsugi_xapi" <?php echo $xapi_enabled;?>><br>
                             <div id="xApi">

@@ -122,6 +122,10 @@ if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
 {
 	$xAPI = true;
 }
+if (isset($_REQUEST['tsugi_xapi']) && $_REQUEST['tsugi_xapi'] == "on")
+{
+	$xAPI = true;
+}
 
 if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
 {
