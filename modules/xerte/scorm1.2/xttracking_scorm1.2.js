@@ -70,9 +70,10 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.score = 0.0;
     this.result = 'unknown';
     this.complete = false;
-    this.correctanswer = "";
+    this.correctAnswers = [];
     this.correctfeedback = "";
-    this.learneranswer = "";
+    this.learnerOptions = [];
+    this.learnerAnswers = [];
     this.answerfeedback = "";
     this.id = makeId(page_nr, ia_nr, ia_type, ia_name);
     this.idx = -1;
@@ -433,8 +434,8 @@ function ScormTrackingState()
             var index = this.id_to_interactionidx(id);
             var interaction = 'cmi.interactions.' + index + '.';
 
-            sit.learneroptions = learneroptions;
-            sit.learneranswer = learneranswer;
+            sit.learnerOptions = learneroptions;
+            sit.learnerAnswer = learneranswer;
             sit.result = result;
             sit.answerfeedback = feedback;
 
@@ -477,10 +478,10 @@ function ScormTrackingState()
                         // Do the same for the answer pattern
                         var scormCorrectArray = [];
                         var i=0;
-                        for (i=0; i<sit.correctoptions.length; i++)
+                        for (i=0; i<sit.correctOptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
-                            var entry = sit.correctoptions[i];
+                            var entry = sit.correctOptions[i];
                             scormCorrectArray.push(entry.source.replace(/ /g, "_") + "." + entry.target.replace(/ /g, "_"));
                         }
                         var scorm_canswer = scormCorrectArray.join(',');
@@ -997,8 +998,8 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     if (state.scormmode == 'normal')
     {
         var sit = state.enter(page_nr, ia_nr, ia_type, ia_name);
-        sit.correctoptions = correctoptions;
-        sit.correctanswer = correctanswer;
+        sit.correctOptions = correctoptions;
+        sit.correctAnswers = correctanswer;
         sit.correctfeedback = feedback;
         sit.currentid = sit.id;
     }
