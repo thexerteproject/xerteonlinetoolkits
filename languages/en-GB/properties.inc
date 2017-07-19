@@ -20,6 +20,7 @@
 	define("PROPERTIES_TAB_RSS","RSS");
 	define("PROPERTIES_TAB_OPEN","Open Content");
 	define("PROPERTIES_TAB_EXPORT","Export");
+	define("PROPERTIES_TAB_TSUGI","LTI2/Tsugi");
 	define("PROPERTIES_TAB_PEER","Peer review");
 	define("PROPERTIES_TAB_GIVE","Give this project");
 	define("PROPERTIES_TAB_XML","XML sharing");

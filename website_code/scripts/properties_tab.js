@@ -1283,6 +1283,44 @@ function export_template(){
 
 }
 
+function tsugi_template(){
+	
+	if(setup_ajax()!=false){
+    
+		var url="tsugi_template.php";
+
+		properties_ajax_send_prepare(url);
+        xmlHttp.onreadystatechange = function () {
+        	if (xmlHttp.readyState == 4) {
+        		document.getElementById('dynamic_area').innerHTML=xmlHttp.responseText;
+                showOptions();
+                $('#pubChk').change(showOptions);
+                $('#xChk').change(showOptions);
+            }
+        }
+		xmlHttp.send('template_id=' + window.name);
+	}
+}
+
+function showOptions() {
+    if ($('#pubChk').attr('checked'))
+    {
+        $('#publish').show();
+        if ($('#xChk').attr('checked'))
+        {
+            $('#xApi').show();
+        }
+        else{
+            $('#xApi').hide();
+		}
+
+    }
+    else
+	{
+        $('#publish').hide();
+	}
+}
+
      /**
 	 * 
 	 * Function set sharing rights

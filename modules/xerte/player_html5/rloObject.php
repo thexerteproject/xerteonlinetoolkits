@@ -1,5 +1,6 @@
 <?php
 require_once "../config.php";
+include("./register.php");
 
 // The Tsugi PHP API Documentation is available at:
 // http://do1.dr-chuck.com/tsugi/phpdoc/
@@ -37,6 +38,7 @@ $LAUNCH = LTIX::requireData();
 <!--[if lt IE 9]><html class="no-js lt-ie9"><![endif]-->
 <!--[if IE 9]><html class="no-js ie9"><![endif]-->
 <!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
@@ -64,6 +66,9 @@ $LAUNCH = LTIX::requireData();
     %OFFLINESCRIPTS%
 	<script>
 		var username = "<?php echo $USER->email; ?>";
+		var lrsEndpoint = "<?php echo $xApi_Config["xapi_endpoint"]; ?>";
+        var lrsUsername = "<?php echo $xApi_Config["xapi_username"]; ?>";
+        var lrsPassword = "<?php echo $xApi_Config["xapi_password"]; ?>";
 	</script>
 </head>
 
