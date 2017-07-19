@@ -71,10 +71,10 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.result = 'unknown';
     this.complete = false;
     this.correctoptions = "";
-    this.correctanswer = "";
+    this.correctAnswers = [];
     this.correctfeedback = "";
-    this.learneroptions = "";
-    this.learneranswer = "";
+    this.learnerOptions = [];
+    this.learnerAnswers = [];
     this.answerfeedback = "";
     this.id = makeId(page_nr, ia_nr, ia_type, ia_name);
     this.idx = -1;
@@ -404,8 +404,8 @@ function ScormTrackingState()
             var index = this.id_to_interactionidx(id);
             var interaction = 'cmi.interactions.' + index + '.';
 
-            sit.learneroptions = learneroptions;
-            sit.learneranswer = learneranswer;
+            sit.learnerOptions = learneroptions;
+            sit.learnerAnswers = learneranswer;
             sit.result = result;
             sit.answerfeedback = feedback;
 
@@ -985,8 +985,8 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
     if (state.scormmode == 'normal')
     {
         var sit = state.enter(page_nr, ia_nr, ia_type, ia_name);
-        sit.correctoptions = correctoptions;
-        sit.correctanswer = correctanswer;
+        sit.correctOptions = correctoptions;
+        sit.correctAnswers = correctanswer;
         sit.correctfeedback = feedback;
         sit.currentid = sit.id;
     }

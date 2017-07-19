@@ -25,6 +25,7 @@ _load_language_file("/properties.inc");
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo PROPERTIES_TITLE; ?></title>
 
@@ -49,7 +50,7 @@ _load_language_file("/properties.inc");
             var ajax_php_path = "website_code/php/";
 
         </script>
-
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
         <?php
         _include_javascript_file("website_code/scripts/import.js");
@@ -76,7 +77,7 @@ _load_language_file("/properties.inc");
     -->
 
     <body onload="javascript:tab_highlight('1');
-        properties_template()" onunload="javascript:window.opener.refresh_workspace()">
+        properties_template()" onunload="javascript:parent.window.opener.refresh_workspace()">
 
         <!--
         
@@ -201,6 +202,16 @@ if (in_array("media", $template_supports)) {
                             </div>
                             <div class="tab_spacer">							
                             </div>
+							<div id="tab8-1" class="tab" style="width:146px; height:38px;">
+                                <p onclick="javascript:tab_highlight('8-1');
+                                                                                                            tsugi_template()">
+                            <i class="fa fa-save xerte-icon"></i>&nbsp;<?PHP echo PROPERTIES_TAB_TSUGI; ?>
+                                </p>									
+                            </div>
+                            <div class="tab_spacer">							
+                            </div>
+							
+							
     <?PHP
 }
 ?>							                            
