@@ -831,7 +831,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add show/hide footer tools
-	if (x_params.footerTools != "none") {
+	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
 		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 		//add a div for the show/hide chevron
