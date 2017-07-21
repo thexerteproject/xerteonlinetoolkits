@@ -29,7 +29,8 @@ $pageIcons = array();
 foreach($nodes as $node)
 {
     $name = $node->getName();
-    $icon = (string)$Nottingham->xpath('/wizard/' . $name . '/@icon')[0]['icon'];
+	$tmpelement = $Nottingham->xpath('/wizard/' . $name . '/@icon');
+	$icon = (string) $tmpelement[0]['icon'];
     $pageIcons[$node->getName()] = $icon;
 }
 
