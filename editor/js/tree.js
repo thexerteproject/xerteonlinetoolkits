@@ -338,7 +338,7 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         var id = ids[0];
-        while (tree.get_parent(id) != 'treeroot')
+        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot')
         {
             id = tree.get_parent(id);
         }
