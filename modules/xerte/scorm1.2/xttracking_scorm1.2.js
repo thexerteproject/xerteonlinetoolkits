@@ -70,6 +70,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.score = 0.0;
     this.result = 'unknown';
     this.complete = false;
+    this.correctOptions = [];
     this.correctAnswers = [];
     this.correctfeedback = "";
     this.learnerOptions = [];
@@ -100,9 +101,11 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.score = jsonObj.score;
         this.result = jsonObj.result;
         this.complete = jsonObj.complete;
-        this.correctanswer = jsonObj.correctanswer;
+        this.correctOptions = jsonObj.correctOptions;
+        this.correctAnswers = jsonObj.correctAnswers;
         this.correctfeedback = jsonObj.correctfeedback;
-        this.learneranswer = jsonObj.learneranswer;
+        this.learnerOptions = jsonObj.learnerOptions;
+        this.learnerAnswers = jsonObj.learnerAnswers;
         this.answerfeedback = jsonObj.answerfeedback;
         this.id = jsonObj.id;
         this.idx = jsonObj.idx;
@@ -265,16 +268,16 @@ function ScormTrackingState()
             if (this.interactions[i].id == id)
                 return this.interactions[i];
         }
+
         return null;
     }
 
     function findPage(page_nr)
     {
-        var id = makeId(page_nr, -1, 'page', "");
         var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].id.indexOf(id) == 0 && this.interactions[i].id.indexOf(id + ':interaction') < 0)
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == -1)
                 return this.interactions[i];
         }
         return null;
@@ -286,11 +289,10 @@ function ScormTrackingState()
         {
             return this.findPage(page_nr);
         }
-        var id = makeId(page_nr, ia_nr, "", "");
         var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].id.indexOf(id) == 0)
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
         }
         return null;
@@ -303,7 +305,7 @@ function ScormTrackingState()
         var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].id.indexOf(id + ':interaction') == 0)
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr >=0)
                 count++;
         }
         return count;
@@ -435,7 +437,7 @@ function ScormTrackingState()
             var interaction = 'cmi.interactions.' + index + '.';
 
             sit.learnerOptions = learneroptions;
-            sit.learnerAnswer = learneranswer;
+            sit.learnerAnswers = learneranswer;
             sit.result = result;
             sit.answerfeedback = feedback;
 
@@ -507,10 +509,10 @@ function ScormTrackingState()
 
                         // Do the same for the answer pattern
                         var scormCorrectArray = [];
-                        for (i=0; i<sit.correctoptions.length; i++)
+                        for (i=0; i<sit.correctOptions.length; i++)
                         {
                             // Create ascii characters from option number and add answer string
-                            scormCorrectArray.push(String.fromCharCode(parseInt(sit.correctoptions[i])+96));
+                            scormCorrectArray.push(String.fromCharCode(parseInt(sit.correctOptions[i])+96));
                         }
                         var scorm_canswer = scormCorrectArray.join(',');
                         res = setValue(interaction + 'type', 'choice');
@@ -542,14 +544,14 @@ function ScormTrackingState()
                             //This is the page
                             // Get the interaction, it is always assumed to be 0
                             var siti = this.findInteraction(page_nr, 0);
-                            sit.correctanswer = siti.correctanswer;
-                            sit.learneranswer = siti.learneranswer;
+                            sit.correctAnswers = siti.correctAnswers;
+                            sit.learnerAnswers = siti.learnerAnswers;
                         }
 
                         res = setValue(interaction + 'type', 'fill-in');
-                        res = setValue(interaction + 'correct_responses.0.pattern', sit.correctanswer);
+                        res = setValue(interaction + 'correct_responses.0.pattern', sit.correctAnswers);
                         res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                        res = setValue(interaction + 'student_response', sit.learneranswer);
+                        res = setValue(interaction + 'student_response', sit.learnerAnswers);
                         if (sit.ia_type=='text') {
                             res = setValue(interaction + 'result', 'neutral');
                         }
