@@ -133,14 +133,25 @@ function XApiTrackingState()
             sit.count++;
         }
     }
-    
-    function findPage(page_nr)
+
+    function find(id)
     {
-        var id = makeId(page_nr, -1, 'page', "");
         var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].id.indexOf(id) == 0 && this.interactions[i].id.indexOf(id + ':interaction') < 0)
+            if (this.interactions[i].id == id)
+                return this.interactions[i];
+        }
+
+        return null;
+    }
+
+    function findPage(page_nr)
+    {
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == -1)
                 return this.interactions[i];
         }
         return null;
@@ -152,18 +163,15 @@ function XApiTrackingState()
         {
             return this.findPage(page_nr);
         }
-        var id = makeId(page_nr, ia_nr, "", "");
         var i=0;
         for (i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].id.indexOf(id) == 0)
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
                 return this.interactions[i];
         }
         return null;
     }
 
-    
-    
     function findCreate(page_nr, ia_nr, ia_type, ia_name)
     {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
