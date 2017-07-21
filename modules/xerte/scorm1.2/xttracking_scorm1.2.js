@@ -473,6 +473,9 @@ function ScormTrackingState()
                         {
                             // Create ascii characters from option number and ignore answer string
                             var entry = learneroptions[i];
+                            if (typeof(entry.source) == "undefined")
+                                entry.source = "";
+
                             scormAnswerArray.push(entry.source.replace(/ /g, "_") + "." + entry.target.replace(/ /g, "_"));
                         }
                         var scorm_lanswer = scormAnswerArray.join(',');
@@ -605,7 +608,7 @@ function ScormTrackingState()
                     var sit = state.findInteraction(page_nr, -1);
                     if (sit != null) {
                         // Skip results page ompletely
-                        if (sit.ia_type == "result") {
+                        if (sit.ia_type != "result") {
                             state.completedPages[i] = state.pageCompleted(sit);
                         }
                     }
