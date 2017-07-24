@@ -18,19 +18,14 @@
  * limitations under the License.
  */
 
-	// pageChanged & sizeChanged functions are needed in every model file
-	// other functions for model should also be in here to avoid conflicts
+	// Built using the feed library at https://rss2json.com/google-feed-api-alternative
+ 
 	var rss = new function() {
 		var $pageContents,
 			$textHolder,
 			$panel,
 			$resultsHolder,
 			rssURL;
-
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-
-		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -41,9 +36,12 @@
 		};
 		
 		this.init = function() {
-			rssURL = x_currentPageXML.getAttribute("url");
-			var googleFeedURL = document.location.protocol + "//ajax.googleapis.com/ajax/services/feed/load";
-
+			$script('http://rss2json.com/gfapi.js', function () {
+				rss.begin();
+			});
+		};
+		
+		this.begin = function() {
 			$pageContents = $("#pageContents");
 			$textHolder = $("#textHolder");
 			$panel = $("#pageContents .panel");
@@ -51,24 +49,25 @@
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 
 			$("#loadingSpinner").show();
-			$.ajax({
-				beforeSend: function() {
-					$("#loadingSpinner").show();
-					x_timer = setTimeout(function() {
-						rss.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL + "\"");
-					}, 5000);
-				},
-				url: googleFeedURL,
-				data: {
-						"q" : encodeURI(rssURL),
-						"num" : 10,
-						"v" : "1.0"
-					},
-				dataType: 'jsonp',
-				jsonpCallback: "rss.listFeed",
-				cache: false
-			});
 
+			google.load("feeds", "1");
+			
+			rssURL = x_currentPageXML.getAttribute("url");
+
+			function initialize() {
+				var feed = new google.feeds.Feed(rssURL);
+				feed.load(function(result) {
+					$("#loadingSpinner").hide();
+					if (!result.error) {
+						rss.listFeed(result.feed);
+					}
+					else {
+						rss.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
+					}
+				});
+			}
+			google.setOnLoadCallback(initialize);
+			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
 				$("#pageContents .right div:first").appendTo($("#pageContents"));
@@ -101,35 +100,30 @@
 			this.sizeChanged();
 			x_pageLoaded();
 		};
-
-		this.listFeed = function(data) {
-			clearTimeout(x_timer);
-			if (data.responseStatus == 200) {
-				$("#loadingSpinner").hide();
-
+		
+		this.listFeed = function(feed) {
 				var resultsString = "";
-				if (data.responseData.feed.entries == 0) {
+
+				if (feed.entries == 0) {
 					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
-				} else {
-					$pageContents.find("#headerHolder").html("<h3>" + data.responseData.feed.description + "</h3>");
-					$.each(data.responseData.feed.entries, function (index, item) {
+				}
+				else {
+					$pageContents.find("#headerHolder").html("<h3>" + feed.description + "</h3>");
+
+					$.each(feed.entries, function (index, item) {
 						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
 					});
 				}
 				$resultsHolder
 					.html(resultsString)
 					.find("div:even").addClass("shadedDiv");
-			}
-			else {
-				this.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
-			}
 		};
 
 		this.errorLoading = function(msg) {
-			$("#loadingSpinner").hide();
 			$resultsHolder
 				.html('<div><p>' + msg + '</p></div>');
 		};
+
 	};
 
 	rss.init();
