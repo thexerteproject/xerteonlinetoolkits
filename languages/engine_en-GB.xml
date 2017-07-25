@@ -49,6 +49,8 @@
   
   <errorBrowser label="Your browser does not fully support this page type."/>
   
+  <pageDeprecatedCeased label="This page has been deprecated as the service has ceased."/>
+  
   <errorQuestions noQ="No questions have been added" noA="No answer options have been added" />
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
