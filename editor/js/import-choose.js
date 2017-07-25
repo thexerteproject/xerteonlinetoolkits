@@ -157,6 +157,52 @@ function create_node_type(nodetype, children) {
 
 var lastTreeItemTimestamp = undefined;
 
+
+
+function showPageData(xot_id, data) {
+		if (data.pages != undefined) {
+				sourceProject = xot_id;
+				if(data.glossary)
+				{
+						$("#mergeGlossary").show();
+				}else{
+						$("#mergeGlossaryCheck").prop("checked", false);
+						$("#mergeGlossary").hide();
+				}
+
+				var html = '';
+				$("#merge").hide();
+				if (data.pages.length > 0) {
+					if (data.pages.length > 1) {
+						html += "<label><input class=\"allCheck\" type=\"checkbox\" id=\"select-all\"  onClick=\"CheckAll()\"/> Select/Deselect All</label>";
+					}
+					$.each(data.pages, function(x){
+							html += "<label><input class=\"pageCheckbox checkAll\" type=\"checkbox\" id=\"page_"+this.index+"\"'>" + '<img class=\"merge_page_icon\" src="modules/xerte/icons/'+this.icon+'.png">' + atob(this.name) + "</label>";
+					});
+					$("#merge").show();
+				}
+				else {
+					html = "<span>No pages in this project.</span>";
+
+					if (data.glossary) $("#merge").show();
+
+					$(".merge_title").hide();
+				}
+
+				$(".merge_title").show();
+				$("#pages").html(html);
+			}
+			else {
+				$("#mergeGlossaryCheck").prop("checked", false);
+				$("#mergeGlossary").hide();
+				$("#pages").html("");
+				$("#merge").hide();
+				$(".merge_title").hide();
+			}
+}
+
+
+
 /**
  * Initialise tree from workspace (a json structure that contains all the info to build the tree)
  * information is in global variable workspace
@@ -249,43 +295,24 @@ function init_workspace()
 							var data = jsonData[xot_id];
 							if(data != undefined){
 
-									sourceProject = xot_id;
-									if(data.glossary)
-									{
-											$("#mergeGlossary").show();
-									}else{
-											$("#mergeGlossaryCheck").prop("checked", false);
-											$("#mergeGlossary").hide();
-									}
+									showPageData(xot_id, data);
 
-									var html = '';
-									if (data.pages.length > 0) {
-										if (data.pages.length > 1) {
-											html += "<label><input class=\"allCheck\" type=\"checkbox\" id=\"select-all\"  onClick=\"CheckAll()\"/> Select/Deselect All</label>";
-										}
-										$.each(data.pages, function(x){
-												html += "<label><input class=\"pageCheckbox checkAll\" type=\"checkbox\" id=\"page_"+this.index+"\"'>" + '<img class=\"merge_page_icon\" src="modules/xerte/icons/'+this.icon+'.png">' + atob(this.name) + "</label>";
-										});
-										$("#merge").show();
-									}
-									else {
-										html = "<span>No pages in this project.</span>";
-										$("#merge").hide();
-										$(".merge_title").hide();
-									}
-
-									$(".merge_title").show();
-									$("#pages").html(html);
-							}else{
-									$("#mergeGlossaryCheck").prop("checked", false);
-									$("#mergeGlossary").hide();
-									$("#pages").html("");
-									$("#merge").hide();
-									$(".merge_title").hide();
+	  					}
+	  					else { // haven't loaded that page yet
+									var url="editor/importpages/import-pagedata.php?id=" + xot_id;
+									var now = new Date().getTime();
+									$.ajax({
+											type: "GET",
+											url: url + "&t=" + now,
+											dataType: "html",
+											success: function (response) {
+													jsonData[xot_id] = JSON.parse(response)[xot_id];
+													showPageData(xot_id, jsonData[xot_id]);
+											}
+									});
 							}
 						}
         });
-
     }
 }
 
