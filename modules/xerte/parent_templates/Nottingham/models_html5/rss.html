@@ -111,7 +111,7 @@
 					$pageContents.find("#headerHolder").html("<h3>" + feed.description + "</h3>");
 
 					$.each(feed.entries, function (index, item) {
-						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>"' + item.contentSnippet + '"</p></div>';
+						resultsString += '<div><a target="_blank" href="' + item.link + '">' + item.title + '</a><p>' + item.contentSnippet + '</p></div>';
 					});
 				}
 				$resultsHolder
