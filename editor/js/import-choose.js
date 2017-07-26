@@ -267,6 +267,7 @@ function init_workspace()
             }
         });
 
+        debugger;
         $workspace.bind('select_node.jstree', function (e, treenode)
         {
             if(lastTreeItemTimestamp == e.timeStamp)
@@ -306,7 +307,7 @@ function init_workspace()
 											url: url + "&t=" + now,
 											dataType: "html",
 											success: function (response) {
-													jsonData[xot_id] = JSON.parse(response)[xot_id];
+													jsonData[xot_id] = JSON.parse(response);
 													showPageData(xot_id, jsonData[xot_id]);
 											}
 									});

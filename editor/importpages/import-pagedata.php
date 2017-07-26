@@ -10,6 +10,7 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $template_id = $_GET["id"];
 
+/*
 $workspace = json_decode(get_users_projects("date_down", true));
 
 $items = array();
@@ -42,8 +43,13 @@ foreach($workspace->items as $item)
 	if($item->xot_id == $template_id)
 	{
         if ($item->xot_type == "file") {
+*/
+
+
+$pageIcons = json_decode($_SESSION['pageIcons']);
+
             $query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?";
-            $source_row = db_query_one($query, array($item->xot_id));
+            $source_row = db_query_one($query, array($template_id));
 
             $query = "SELECT username FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE login_id = ?";
             $source_user = db_query_one($query, array($source_row["creator_id"]));
@@ -57,16 +63,20 @@ foreach($workspace->items as $item)
             $template->loadTemplateXML($source_file);
 
             $x = new stdClass();
-            $x->name = $item->text;
-            $x->id = $item->xot_id;
+            //$x->name = $item->text;
+            $x->id = $template_id;
 
             $x->glossary = $template->glossaryUsed();
             $x->pages = $template->getPages();
             for ($i = 0; $i < count($x->pages); $i++) {
                 $page = $x->pages[$i];
-                $page->icon = $pageIcons[$page->type];
+                $type = $page->type;
+                $page->icon = $pageIcons->$type;
             }
 
+            echo str_replace("'", "\\'", json_encode($x));
+
+/*
             $items[$x->id] = $x;
         }
         else
@@ -89,3 +99,4 @@ foreach($workspace->items as $item)
 echo str_replace("'", "\\'", json_encode($items));
 
 
+*/
