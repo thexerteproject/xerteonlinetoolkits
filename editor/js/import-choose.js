@@ -267,7 +267,6 @@ function init_workspace()
             }
         });
 
-        debugger;
         $workspace.bind('select_node.jstree', function (e, treenode)
         {
             if(lastTreeItemTimestamp == e.timeStamp)
@@ -396,7 +395,8 @@ function init()
                         // 3. Reload preview
                         $('#loader').hide();
                         // Cleanup tree and rebuild
-                        $("#treeview").jstree("destroy");
+                        $("").jstree("destroy");
+                        $("#treeview").remove();
                         EDITOR.tree.build(data);
                     })
                     .fail(function() {
