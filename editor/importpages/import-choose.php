@@ -34,6 +34,9 @@ foreach($nodes as $node)
     $pageIcons[$node->getName()] = $icon;
 }
 
+// Put pageIcons in session
+$_SESSION['pageIcons'] = json_encode($pageIcons);
+
 // Remove item in editor
 for($i=count($workspace->items) - 1; $i>=0; $i--)
 {
@@ -52,7 +55,7 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
 }
 
 $workspace_json = json_encode($workspace);
-
+/*
 foreach($workspace->items as $item)
 {
 	if($item->xot_id != $_GET["id"])
@@ -66,7 +69,7 @@ foreach($workspace->items as $item)
             $query = "SELECT template_name FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_type_id = ?";
             $source_template_name = db_query_one($query, array($source_row["template_type_id"]));
 
-/*            $source_folder = $xerte_toolkits_site->users_file_area_full . $source_row['template_id'] . "-" . $source_user['username'] . "-" . $source_template_name['template_name'];
+           $source_folder = $xerte_toolkits_site->users_file_area_full . $source_row['template_id'] . "-" . $source_user['username'] . "-" . $source_template_name['template_name'];
             $source_file = $source_folder . "/data.xml";
 
             $template = new XerteXMLInspector();
@@ -81,7 +84,7 @@ foreach($workspace->items as $item)
             for ($i = 0; $i < count($x->pages); $i++) {
                 $page = $x->pages[$i];
                 $page->icon = $pageIcons[$page->type];
-            }*/
+            }
 
             $items[$x->id] = $x;
         }
@@ -95,11 +98,14 @@ foreach($workspace->items as $item)
             $x->pages = [];
 
             $items[$x->id] = $x;
+
+
         }
 	}
 
 	
 }
+*/
 ?>
 
 <style>
