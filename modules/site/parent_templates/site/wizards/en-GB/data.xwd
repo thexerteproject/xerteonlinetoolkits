@@ -15,6 +15,19 @@
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
 		</headerGroup>
 		
+		<socialGroup type="group" label="Social" optional="true" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
+			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
+			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
+			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
+			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" optional="true"/>
+			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" optional="true"/>
+			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" optional="true"/>
+			<email label="Email" type="Checkbox" defaultValue="true" optional="true"/>
+			<yammer label="Yammer" type="Checkbox" defaultValue="true" optional="true"/>
+			<addthis label="AddThis" type="Checkbox" defaultValue="true" optional="true"/>
+		</socialGroup>
+		
+		
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
 		<styles type="script" height="200" optional="true" label="Styles"/>
