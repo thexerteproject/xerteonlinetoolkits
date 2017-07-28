@@ -103,12 +103,6 @@ function loadLibraries(){
 		
 	}
 	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
-		
-		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
-		
-	}
-	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
 	
 		$('head').append('<style type="text/css">' +  $(data).find('learningObject').attr('styles') + '</style>');
