@@ -64,12 +64,12 @@ if(is_user_admin()){
         $ok = db_query_one($query, $params);
 
 
-    if($ok) {
+    if($ok !== false) {
 
         echo "Update successful";
 
     }else{
-	die('database error');
+	    die('database error');
 
     }
 
