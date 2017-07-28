@@ -218,7 +218,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="") {
+function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -244,6 +244,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, 
     if ($offline) {
         // Handle offline variables
         $buffer = str_replace("%OFFLINESCRIPTS%", "    <script type=\"text/javascript\" src=\"offline/js/offlinesupport.js\"></script>", $buffer);
+        if ($need_download_url) $offline_includes .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
         $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $buffer);
     }
@@ -251,7 +252,8 @@ function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, 
     {
         // Handle offline variables
         $buffer = str_replace("%OFFLINESCRIPTS%", "", $buffer);
-        $buffer = str_replace("%OFFLINEINCLUDES%", "", $buffer);
+        if ($need_download_url) $offline_includes = "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+        $buffer = str_replace("%OFFLINEINCLUDES%", $offline_includes, $buffer);
         $buffer = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $buffer);
     }
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
@@ -282,7 +284,7 @@ function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, 
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
+function scorm_html5_page_create($type, $template_name, $lo_name, $language, $need_download_url=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -304,8 +306,10 @@ function scorm_html5_page_create($type, $template_name, $lo_name, $language) {
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm1.2.js\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm1.2.js\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm1.2.js")) {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>";
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm1.2.js\"></script>\n";
     }
+    if ($need_download_url) $tracking .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 
