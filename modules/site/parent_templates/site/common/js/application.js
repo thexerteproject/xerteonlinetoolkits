@@ -302,45 +302,39 @@ function setup(){
 	// Hide or show the social media buttons
 	$(".addthis_sharing_toolbox").hide();
 	setTimeout(function () {
-		var value,
-				count_hidden = 0,
-				count_undef = 0,
-				social =	
-					[	'facebook',
-						'twitter',
-						['google', 'google_plusone_share'],
-						'linkedin',
-						'scoopit',
-						['pinterest', 'pinterest_share'],
-						'email',
-						'yammer',
-						['addthis', 'compact']
-					];
+		var count_hidden = count_undef = 0,
+				value, social = [
+					'facebook',
+					'twitter',
+					['google', 'google_plusone_share'],
+					'linkedin',
+					'scoopit',
+					['pinterest', 'pinterest_share'],
+					'email',
+					'yammer',
+					['addthis', 'compact']
+				];
 
 		$(social).each(function(i, item) {
-			
 			value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
-			console.log(($.isArray(item) ? item[0] : item) + " = " + value);
 			
 			if (value == undefined) {
 				count_undef++;
 			}
 			else if (value == 'false') {
-				console.log(".at-svc-" + ($.isArray(item) ? item[1] : item));
-				$(".at-svc-" + ($.isArray(item) ? item[1] : item))
-					.hide();
+				$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
 				count_hidden++;
 			}
 		});
-console.log(count_hidden, count_undef);
+
 		if (
 			(count_hidden > 0 && count_hidden < social.length) ||
 			(count_hidden == 0 && count_undef == 0) ||
 			count_undef == social.length
-		)
+		) {
 			$(".addthis_sharing_toolbox").show();
-
-	}, 1000);
+		}
+	}, 2000);
 }
 
 
