@@ -508,7 +508,7 @@ else {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $tsugi, $lo_name, $export_offline, $offline_includes);
+        basic_html5_page_create($row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes);
     }
 }
 

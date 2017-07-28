@@ -218,7 +218,7 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name, $tsugi, $offline=false, $offline_includes="") {
+function basic_html5_page_create($type, $template_name, $lo_name, $tsugi=false, $offline=false, $offline_includes="") {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
