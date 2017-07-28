@@ -4,6 +4,7 @@
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
+		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>
@@ -15,7 +16,7 @@
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
 		</headerGroup>
 		
-		<socialGroup type="group" label="Social" optional="true" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
+		<socialGroup type="group" label="Social" optional="true">
 			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
 			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
 			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>

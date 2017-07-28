@@ -3,6 +3,7 @@
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
+		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
 		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>

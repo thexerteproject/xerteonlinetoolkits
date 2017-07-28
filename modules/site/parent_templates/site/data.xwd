@@ -4,6 +4,7 @@
 	<learningObject icon="icLayout" remove="false" duplicate="false">
   
 		<name type="TextInput" label="Learning Object Title"/>
+		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>
@@ -14,6 +15,19 @@
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
 		</headerGroup>
+		
+		<socialGroup type="group" label="Social" optional="true">
+			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
+			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
+			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
+			<linkedin label="Linkedin" type="Checkbox" defaultValue="true" optional="true"/>
+			<scoopit label="Scoop.it!" type="Checkbox" defaultValue="true" optional="true"/>
+			<pinterest label="Pinterest" type="Checkbox" defaultValue="true" optional="true"/>
+			<email label="Email" type="Checkbox" defaultValue="true" optional="true"/>
+			<yammer label="Yammer" type="Checkbox" defaultValue="true" optional="true"/>
+			<addthis label="AddThis" type="Checkbox" defaultValue="true" optional="true"/>
+		</socialGroup>
+		
 		
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>

@@ -91,10 +91,22 @@ function loadLibraries(){
 
 	//load stylesheet and libraries...
 	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined){
+	if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+		
+		$('head').append('<link rel="stylesheet" href="' + themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css' + '" type="text/css" />');
+		
+	}
 	
+	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+		
 		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
+		
+	}
 	
+	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+		
+		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
+		
 	}
 	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
