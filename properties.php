@@ -50,7 +50,6 @@ _load_language_file("/properties.inc");
             var ajax_php_path = "website_code/php/";
 
         </script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
         <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js"></script>
         <?php
         _include_javascript_file("website_code/scripts/import.js");
