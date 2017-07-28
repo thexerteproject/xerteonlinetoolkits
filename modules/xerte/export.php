@@ -22,12 +22,12 @@
  * Export a LO - e.g. from properties.
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
-require_once("../../../tsugi/config.php");
-require_once("../../../tsugi/admin/admin_util.php");
+//require_once("../../../tsugi/config.php");
+//require_once("../../../tsugi/admin/admin_util.php");
 
-use \Tsugi\Util\LTI;
-use \Tsugi\Core\LTIX;
-use \Tsugi\Config\ConfigInfo;
+//use \Tsugi\Util\LTI;
+//use \Tsugi\Core\LTIX;
+//use \Tsugi\Config\ConfigInfo;
 
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
