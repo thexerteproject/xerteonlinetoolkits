@@ -41,7 +41,7 @@ $_SESSION['pageIcons'] = json_encode($pageIcons);
 for($i=count($workspace->items) - 1; $i>=0; $i--)
 {
     $item = $workspace->items[$i];
-    if ($item->xot_id == $_GET["id"])
+    if ($item->xot_id == $_GET["id"] && $item->xot_type == 'file')
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);
