@@ -636,7 +636,25 @@ var EDITOR = (function ($, parent) {
 			}
 		});
 		
-		group.append('<div class="table_holder"><table id="groupTable_' + name + '" class="wizardgroup_table"/></div>');
+		var info = "";
+		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
+		
+		group.append('<div class="table_holder">' + info + '</div>');
+		group.find('.table_holder').append(
+			$('<table width="100%" class="column_table"><tr></table>')
+		);
+
+		var group_table, columns = (options.cols ? Math.min(options.cols, 3) : 1);
+		for (var w = 0; w < columns; w++) {
+			group_table = $('<table id="groupTable_' + name + (w == 0 ? '' : '_' + w ) + '" class="wizardgroup_table"/>');
+
+			if (columns > 1) group_table.addClass('wizardgroup_table_box');
+
+			group.find('.column_table tr').append(
+				$('<td width="' + parseInt(100 / columns, 10) + '%"/>')
+					.append(group_table)
+			);
+		}
 		
 		$(id).append(tr);
 		

@@ -15,7 +15,7 @@
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
 		</headerGroup>
 		
-		<socialGroup type="group" label="Social" optional="true">
+		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
 			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
 			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
 			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
