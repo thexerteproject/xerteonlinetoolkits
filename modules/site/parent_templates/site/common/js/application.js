@@ -386,6 +386,13 @@ function setup(){
         $("#customFooter").css({"margin-bottom": "10px"});
         } 
         
+        //convert img paths
+        $('#customFooter img').each(function() {
+        	if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
+						$(this).attr('src', eval($(this).attr('src')));
+					}
+				});
+
         if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
         
         $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
