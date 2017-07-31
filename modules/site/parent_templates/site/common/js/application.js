@@ -279,7 +279,6 @@ function setup(){
 		
 	}
     
-	
 	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
 	$('#overview div.logoR, #overview div.logoL').hide();
 	
@@ -306,6 +305,62 @@ function setup(){
 			$('#overview div.logoL').show();
 		}
 	});
+    
+    //---------------Optional Navbar properties--------------------
+    
+    //Hide the Navbar position if defined
+    if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
+	
+		$(".navbar-inner").remove();
+		
+	}
+    
+    //Position the Navbar position if defined
+    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') != 'above'){
+	
+		$('#overview').after('<div id="pageLinks"></div>');
+        $('.navbar').appendTo('#pageLinks');
+
+	}
+    
+    //Change navbar background colour
+    if ($(data).find('learningObject').attr('navbarColour') != undefined){
+	
+		var navbarcol = $(data).find('learningObject').attr('navbarColour');
+        
+        //one or two?
+		if (navbarcol.indexOf(',') != -1){
+			navbarcol = navbarcol.split(',');
+		} else {
+			navbarcol = [navbarcol,navbarcol];
+		}
+		navbarcol[0] = formatColour(navbarcol[0]);
+		navbarcol[1] = formatColour(navbarcol[1]);
+		
+		$('.navbar-inverse .navbar-inner').css('background', navbarcol[0]);
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%, ' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + navbarcol[0] + '), color-stop(100%,' + navbarcol[1] + '))');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-o-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + navbarcol[1]+ ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + navbarcol[0] + ', endColorstr=' + navbarcol[1] + ',GradientType=1 )');
+        
+    }
+    
+    //Change navbar text/link colour
+    if ($(data).find('learningObject').attr('navbarTextColour') != undefined){
+	
+		$('.navbar-inverse .brand, .navbar-inverse .nav > li > a').css('color', formatColour($(data).find('learningObject').attr('navbarTextColour')));
+		
+	}
+    //Change navbar text/link Hover colour ***DOESNT CURRENTLY WORK
+    if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined){
+        
+        $('.navbar-inverse .brand, .navbar-inverse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover').css('color', formatColour($(data).find('learningObject').attr('navbarTextHoverColour')));
+		
+	}
+    
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
