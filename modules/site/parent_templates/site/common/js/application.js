@@ -266,13 +266,19 @@ function setup(){
 		
 	}
 	
-	
-	
+		
 	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
 	
 		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		
 	}
+    
+    if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
+	
+		$(".jumbotron").remove();
+		
+	}
+    
 	
 	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
 	$('#overview div.logoR, #overview div.logoL').hide();

@@ -14,6 +14,7 @@
 			<headerTextColour type="ColourPicker" optional="true" label="Text Colour" defaultValue="0xFFFFFF"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
+            <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		</headerGroup>
 		
 		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
