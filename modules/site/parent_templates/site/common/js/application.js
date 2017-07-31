@@ -361,6 +361,32 @@ function setup(){
 		
 	}
     
+    //---------------Optional footer properties--------------------
+    
+    // remove footer
+    if ($(data).find('learningObject').attr('footerHide') != undefined && $(data).find('learningObject').attr('footerHide') != 'false'){
+	
+		$('.footer').remove();
+		
+	}
+    
+    //add custom footer
+    if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+        var customFooterContent=$(data).find('learningObject').attr('customFooter');
+        
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+        
+        $('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+        $("#customFooter").css({"margin-bottom": "10px"});
+        } 
+        
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+        
+        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+        $("#customFooter").css({"margin-top": "40px"});
+        } 
+        
+    }
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
