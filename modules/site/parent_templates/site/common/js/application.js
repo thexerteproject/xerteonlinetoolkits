@@ -349,17 +349,23 @@ function setup(){
     }
     
     //Change navbar text/link colour
-    if ($(data).find('learningObject').attr('navbarTextColour') != undefined){
-	
-		$('.navbar-inverse .brand, .navbar-inverse .nav > li > a').css('color', formatColour($(data).find('learningObject').attr('navbarTextColour')));
-		
-	}
-    //Change navbar text/link Hover colour ***DOESNT CURRENTLY WORK
-    if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined){
-        
-        $('.navbar-inverse .brand, .navbar-inverse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover').css('color', formatColour($(data).find('learningObject').attr('navbarTextHoverColour')));
-		
-	}
+    var navbarTextColour = $('.nav li a').css('color');
+    if ($(data).find('learningObject').attr('navbarTextColour') != undefined) {
+			navbarTextColour = formatColour($(data).find('learningObject').attr('navbarTextColour'));
+			$('.nav li a').css('color', navbarTextColour);
+		}
+
+  	//Change navbar text/link Hover colour ***DOESNT CURRENTLY WORK
+  	var navbarTextHoverColour;
+  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined) {
+  		navbarTextHoverColour = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
+    	$('.nav li a').hover(function(){
+      	$(this).css('color', navbarTextHoverColour);
+    	},
+    	function(){
+      	$(this).css('color', navbarTextColour);
+    	});
+		}
     
     //---------------Optional footer properties--------------------
     
