@@ -242,7 +242,7 @@ function setup(){
 		bgImg += ', ';
 	} 
 	
-	if ($(data).find('learningObject').attr('headerColour') != undefined){
+	if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != '0xEEEEEE'){
 	
 		var col = $(data).find('learningObject').attr('headerColour');
 		
@@ -267,7 +267,7 @@ function setup(){
 	}
 	
 		
-	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
+	if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != '0xEEEEEE'){
 	
 		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		
@@ -324,7 +324,7 @@ function setup(){
 	}
     
     //Change navbar background colour
-    if ($(data).find('learningObject').attr('navbarColour') != undefined){
+    if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != '0xEEEEEE'){
 	
 		var navbarcol = $(data).find('learningObject').attr('navbarColour');
         
@@ -350,14 +350,14 @@ function setup(){
     
     //Change navbar text/link colour
     var navbarTextColour = $('.nav li a').css('color');
-    if ($(data).find('learningObject').attr('navbarTextColour') != undefined) {
+    if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '0xEEEEEE') {
 			navbarTextColour = formatColour($(data).find('learningObject').attr('navbarTextColour'));
 			$('.nav li a').css('color', navbarTextColour);
 		}
 
-  	//Change navbar text/link Hover colour ***DOESNT CURRENTLY WORK
+  	//Change navbar text/link Hover colour
   	var navbarTextHoverColour;
-  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined) {
+  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '0xEEEEEE') {
   		navbarTextHoverColour = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
     	$('.nav li a').hover(function(){
       	$(this).css('color', navbarTextHoverColour);
@@ -385,6 +385,18 @@ function setup(){
         $('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
         $("#customFooter").css({"margin-bottom": "10px"});
         } 
+
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+        
+        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+        $("#customFooter").css({"margin-top": "40px"});
+        } 
+        
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+        $('.footer .container').remove();
+        $('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+            $("#customFooter").css({"margin-left": "10px"});
+        } 
         
         //convert img paths
         $('#customFooter img').each(function() {
@@ -392,12 +404,22 @@ function setup(){
 						$(this).attr('src', eval($(this).attr('src')));
 					}
 				});
-
-        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
         
-        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
-        $("#customFooter").css({"margin-top": "40px"});
-        } 
+    }
+    
+    //Change footer background colour
+    if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != '0xEEEEEE'){
+	
+		var footercol = $(data).find('learningObject').attr('footerColour');
+        
+        if (footercol.indexOf(',') != -1){
+			footercol = footercol.split(',');
+		} else {
+			footercol = [footercol,footercol];
+		}
+		footercol[0] = formatColour(footercol[0]);
+		footercol[1] = formatColour(footercol[1]);
+        $('.footer').css('background', footercol[0]);
         
     }
 	
