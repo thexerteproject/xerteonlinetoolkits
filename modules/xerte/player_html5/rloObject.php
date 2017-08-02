@@ -11,6 +11,16 @@ use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
+if(isset($_POST['grade']))
+{
+	$grade = $_POST['grade'];
+	if(is_numeric($grade) && $grade >= 0 && $grade <= 1.0)
+	{
+		$LAUNCH->result->gradeSend($grade);
+	}
+	exit();
+}
+
 ?>
 <!DOCTYPE html>
 <!--

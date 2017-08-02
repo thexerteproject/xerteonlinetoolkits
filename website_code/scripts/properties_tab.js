@@ -1296,6 +1296,18 @@ function tsugi_template(){
                 showOptions();
                 $('#pubChk').change(showOptions);
                 $('#xChk').change(showOptions);
+				$('#form-action').submit(function(e)
+				{
+					e.preventDefault();
+					 $.ajax({
+						type: 'POST',
+						url: $('#form-action').attr("action"),
+						data: $('#form-action').serialize(),
+						success: function () {
+						  location.reload();
+						}
+					  });
+				});
             }
         }
 		xmlHttp.send('template_id=' + window.name);

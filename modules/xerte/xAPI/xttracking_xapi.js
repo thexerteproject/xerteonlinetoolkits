@@ -238,7 +238,7 @@ var state = new XApiTrackingState();
 
 var scorm=false,
     lrsInstance,
-    userEMail = "mailto:email@test.com";
+    userEMail = "mailto:"+username;
 
 var answeredQs = [];
 
@@ -752,6 +752,14 @@ function XTResults(fullcompletion)
             }
         }
     }
+	$.ajax({
+		type: "POST",
+		url: window.location.href,
+		data: {
+			grade: results.averageScore/100
+		}
+	});
+	
     results.completion = completion;
     results.completion = completion;
     results.score = score;

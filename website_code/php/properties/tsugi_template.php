@@ -54,6 +54,9 @@
 			$secret = "secret";
 			$published = false;
 			$url = $xerte_toolkits_site->site_url . "tsugi/mod/" . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+			$xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
+			$xapi_username = $xerte_toolkits_site->LRS_Key;
+			$xapi_password = $xerte_toolkits_site->LRS_Secret;
 			if(file_exists($projectdir))
 			{
 				$indexfile = $projectdir . "index.php";
@@ -70,9 +73,7 @@
                 if(file_exists($projectdir . "/xttracking_xapi.js"))
                 {
                     $xapi_enabled = "checked";
-                    $xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
-                    $xapi_username = $xerte_toolkits_site->LRS_Key;
-                    $xapi_password = $xerte_toolkits_site->LRS_Secret;
+                    
                 }
 
 				if(file_exists($projectdir . "/register.php"))
@@ -90,7 +91,7 @@
 				<p class="header"><span>LTI2/Tsugi</span></p>
 				<p>
 
-					<form method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/scorm/export.php?tsugi=true&template_id=<?php echo $id;?>">
+					<form id="form-action" method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/scorm/export.php?tsugi=true&template_id=<?php echo $id;?>">
 						<label for="tsugi_published">Publish</label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo $checked; ?>><br>
                         <div id="publish">
 						    <label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>

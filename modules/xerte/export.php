@@ -131,11 +131,53 @@ if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
 {
 	$tsugi = true;
 }
-
+_debug($_REQUEST);
 if($tsugi && (!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on"))
 {
+	_debug("Count 0");
+	$PDOX = LTIX::getConnection();
 	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
 	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
+	$url =  $xerte_toolkits_site->site_url . "tsugi/mod/$tsugi_project_dir/index.php";
+	$p = $CFG->dbprefix;
+	//link -> context -> key
+	$sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
+	$link_row = $PDOX->rowDie($sql, array(
+		':PATH' => $url
+	));
+		$sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
+	$PDOX->queryDie($sql, array(
+		':LINK_ID' => $link_row["link_id"]
+	));
+	$sql = "SELECT context_id FROM {$p}lti_context WHERE link_id = :LINK_ID";
+	$context_id = $link_row["context_id"];
+	$sql = "SELECT COUNT(*) AS count FROM {$p}lti_link WHERE context_id = :CONTEXT_ID";
+	$context_count = $PDOX->rowDie($sql, array(
+		':CONTEXT_ID' => $context_id
+	))["count"];
+	_debug("Count 1");
+	if($context_count == 0)
+	{
+		$context_row = $PDOX->rowDie("SELECT * FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
+			':CONTEXT_ID' => $context_id));
+		$PDOX->queryDie("DELETE FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
+			':CONTEXT_ID' => $context_id));
+		$sql = "SELECT COUNT(*) AS count FROM {$p}lti_key WHERE key_id = :KEY_ID";
+		$key_count = $PDOX->rowDie($sql, array(
+			':KEY_ID' => $context_row["key_id"]
+		))["count"];	
+		_debug("Count 2");
+		if($key_count == 0)
+		{
+			$PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID", array(
+			':KEY_ID' => $context_row["key_id"]));
+		}
+		
+	}
+	_debug("Count 3");
+	
+	
+	
 
 	$it = new RecursiveDirectoryIterator($tsugi_dir, RecursiveDirectoryIterator::SKIP_DOTS);
 	$files = new RecursiveIteratorIterator($it,
