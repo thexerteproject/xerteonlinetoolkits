@@ -707,6 +707,12 @@ function XTResults(fullcompletion)
     results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
-
+	$.ajax({
+		type: "POST",
+		url: window.location.href,
+		data: {
+			grade: results.averageScore/100
+		}
+	});
     return results;
 }
