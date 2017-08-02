@@ -43,6 +43,14 @@ function XApiTrackingState()
     
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
+    this.getdScaledScore = getdScaledScore;
+    this.getdRawScore = getdRawScore;
+    this.getdMinScore = getdMinScore;
+    this.getdMaxScore = getdMaxScore;
+    this.getScaledScore = getScaledScore;
+    this.getRawScore = getRawScore;
+    this.getMinScore = getMinScore;
+    this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
     this.setPageScore = setPageScore;
     this.enterInteraction = enterInteraction;
@@ -56,6 +64,100 @@ function XApiTrackingState()
     {
     	
     }
+
+    function getdScaledScore()
+    {
+        return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());
+    }
+
+    function getScaledScore()
+    {
+        return Math.round(this.getdScaledScore()*100)/100 + "";
+    }
+
+    function getdRawScore()
+    {
+        if (this.lo_type == "pages only")
+        {
+            if (getSuccessStatus() == 'completed')
+                return 100;
+            else
+                return 0;
+        }
+        else
+        {
+            var score = [];
+            var weight = [];
+            var totalweight = 0.0;
+            // Walk passed the pages
+            var i=0;
+            for (i=0; i<this.nrpages; i++)
+            {
+                var sit = this.findPage(i);
+                if (sit != null && sit.weighting > 0)
+                {
+                    totalweight += sit.weighting;
+                    score.push(sit.score);
+                    weight.push(sit.weighting);
+                }
+            }
+            var totalscore = 0.0;
+            if (totalweight > 0.0)
+            {
+                for (i=0; i<score.length; i++)
+                {
+                    totalscore += (score[i] * weight[i]);
+                }
+                totalscore = totalscore / totalweight;
+            }
+            else
+            {
+                // If the weight is 0.0, set the score to 100
+                totalscore = 100.0;
+            }
+            return Math.round(totalscore*100)/100;
+        }
+    }
+
+    function getRawScore()
+    {
+        return this.getdRawScore() + "";
+    }
+
+    function getdMinScore()
+    {
+        if (this.lo_type == "pages only")
+        {
+            return 0.0;
+        }
+        else
+        {
+            return 0.0;
+        }
+    }
+
+    function getMinScore()
+    {
+        return this.getdMinScore() + "";
+    }
+
+    function getdMaxScore()
+    {
+        if (this.lo_type == "pages only")
+        {
+            return 100.0;
+        }
+        else
+        {
+            return 100.0;
+        }
+    }
+
+    function getMaxScore()
+    {
+        return this.getdMaxScore() + "";
+    }
+
 
     function pageCompleted(sit)
     {
@@ -721,7 +823,7 @@ function XTResults(fullcompletion)
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
+                    learnerAnswer = typeof(state.interactions[i].learnerAnswers[0]) != "undefined" ? state.interactions[i].learnerAnswers[0] : "";
                     for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
                     {
                         learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
