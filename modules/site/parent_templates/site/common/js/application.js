@@ -794,7 +794,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [];
+	var iframeKaltura = [],
+		pdf = [];
 	
 	node.children().each( function(index, value){
 	
@@ -859,7 +860,11 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				
+				pdf.push(i);
+				
 			}
 			
 		});
@@ -880,7 +885,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
 		// hacky fix for issue with UoN mediaspace videos embedded on navigators
-		var $iframeTabs = $();
+		var $iframeTabs = $(),
+			$pdfTabs = $();
 		
 		for (var i=0; i<iframeKaltura.length; i++) {
 			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
@@ -891,6 +897,21 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (iframeRefresh.data("refresh") != true) {
 				iframeRefresh[0].src = iframeRefresh[0].src;
 				iframeRefresh.data("refresh", true);
+			}
+		});
+		
+		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
+		for (var i=0; i<pdf.length; i++) {
+			$pdfTabs = $pdfTabs.add($('a[data-toggle="tab"]:eq(' + pdf[i] + ')'));
+		}
+		
+		$pdfTabs.on('shown.bs.tab', function (e) {
+			if ($.browser.mozilla) {
+				var $pdfRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active object[id*='pdfDoc']");
+				if ($pdfRefresh.parent().data("refresh") != true) {
+					$pdfRefresh.parent().data("refresh", true);
+					$pdfRefresh.attr("data", $pdfRefresh.attr("data"));
+				}
 			}
 		});
 		
