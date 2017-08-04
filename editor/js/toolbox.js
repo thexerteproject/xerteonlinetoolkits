@@ -1335,8 +1335,11 @@ var EDITOR = (function ($, parent) {
     convertColorPickers = function ()
     {
         $.each(colorpickers, function (i, options){
-            var myPicker = new jscolor.color(document.getElementById(options.id), {})
-            myPicker.fromString(Array(7-options.value.length).join('0') + options.value)  // now you can access API via 'myPicker' variable
+			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
+			
+			if (options.value != undefined) {
+				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
+			}
         });
     },
 
@@ -2352,7 +2355,6 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .attr('type', 'color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
@@ -2363,12 +2365,17 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .addClass('color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             });
-                        colorpickers.push({id: id, value: colorvalue, options: options});
+						
+						colorpickers.push({id: id, options: options});
+						
+						if (colorvalue != '') {
+							html.attr('value', colorvalue);
+							colorpickers[colorpickers.length-1].value = colorvalue;
+						}
                     }
                     break;
                 case 'languagelist':

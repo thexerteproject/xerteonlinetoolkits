@@ -10,13 +10,22 @@
 			<header type="Media" optional="true" label="Image"/>
 			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
 			<headerRepeat type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
-			<headerColour type="ColourPicker" optional="true" label="Background Colour" defaultValue="0x0088CC"/>
-			<headerTextColour type="ColourPicker" optional="true" label="Text Colour" defaultValue="0xFFFFFF"/>
+			<headerColour type="ColourPicker" optional="true" label="Background Colour"/>
+			<headerTextColour type="ColourPicker" optional="true" label="Text Colour"/>
 			<logoR type="Media" optional="true" label="Logo (Right)"/>
 			<logoL type="Media" optional="true" label="Logo (Left)"/>
+            <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		</headerGroup>
+        
+        <navbarGroup type="group" label="Navbar" optional="true">
+			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Navbar Position" defaultValue="above" width="175"/>
+			<navbarColour type="ColourPicker" optional="true" label="Navbar Background Colour"/>
+			<navbarTextColour type="ColourPicker" optional="true" label="Navbar Text Colour"/>
+            <navbarTextHoverColour type="ColourPicker" optional="true" label="Navbar Text Hover Colour"/>
+            <navbarHide label="Hide Navbar" type="Checkbox" defaultValue="false" optional="true"/>
+		</navbarGroup>
 		
-		<socialGroup type="group" label="Social" optional="true">
+		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
 			<facebook label="Facebook" type="Checkbox" defaultValue="true" optional="true"/>
 			<twitter label="Twitter" type="Checkbox" defaultValue="true" optional="true"/>
 			<google label="Google+" type="Checkbox" defaultValue="true" optional="true"/>
@@ -28,6 +37,12 @@
 			<addthis label="AddThis" type="Checkbox" defaultValue="true" optional="true"/>
 		</socialGroup>
 		
+        <footerGroup type="group" label="Footer" optional="true">
+            <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true"/>
+            <customFooter type="TextArea" height="60" label="Add custom footer content here"/>
+			<footerPos type="ComboBox" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175"/>
+            <footerColour type="ColourPicker" optional="true" label="Footer Background Colour"/>
+		</footerGroup>
 		
 		<libs type="DataGrid" label="JavaScript Libraries" optional="true" height="150" width="390" columns="1" colWidths="390" editable="1" controls="1" headers="Library URL" newRow="Enter URL" rendererOptions="none" defaultValue="Enter URL"/>
 		<stylesheet type="Media" optional="true" label="Stylesheet"/>
