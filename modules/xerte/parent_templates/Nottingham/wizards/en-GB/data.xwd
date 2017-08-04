@@ -2358,7 +2358,7 @@
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
 		<highlight label="Highlight Current" type="Checkbox" defaultValue="false" optional="true"/>
-		<highlightCol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00" optional="true"/>
+		<highlightCol label="Highlight Colour" type="ColourPicker" optional="true"/>
 	</thumbs>
 	
 	<play type="group" label="Play All" optional="true">
