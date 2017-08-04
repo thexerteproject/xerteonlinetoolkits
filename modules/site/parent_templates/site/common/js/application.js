@@ -242,7 +242,6 @@ function setup(){
 		bgImg += ', ';
 	} 
 	
-	console.log($(data).find('learningObject').attr('headerColour'));
 	if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != ''){
 	
 		var col = $(data).find('learningObject').attr('headerColour');
