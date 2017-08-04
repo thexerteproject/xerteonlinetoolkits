@@ -316,7 +316,7 @@ function setup(){
 	}
     
     //Position the Navbar position if defined
-    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') != 'above'){
+    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
 	
 		$('#overview').after('<div id="pageLinks"></div>');
         $('.navbar').appendTo('#pageLinks');
