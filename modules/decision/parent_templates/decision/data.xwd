@@ -4,8 +4,10 @@
 	<learningObject icon="icPackage" remove="false" duplicate="false">
   
 		<name label="Project Title" type="TextInput"/>
+		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default" />
 		
 		<stylesheet label="Stylesheet" type="Media" optional="true"/>
+		<styles optional="true" type="script" height="200" label="Styles"/>
 		<displayMode type="ComboBox" options="Fixed,Fill screen" data="fixed,fill" label="Display Mode" width="100"/>
 		<language type="LanguageList" label="Language" width="170"/>
 		<authorSupport label="Author Support" type="CheckBox" defaultValue="true" optional="true"/>
