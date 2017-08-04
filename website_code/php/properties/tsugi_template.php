@@ -53,7 +53,7 @@
 			$key = "12345";
 			$secret = "secret";
 			$published = false;
-			$url = $xerte_toolkits_site->site_url . "tsugi/mod/" . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+			$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
 			$xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
 			$xapi_username = $xerte_toolkits_site->LRS_Key;
 			$xapi_password = $xerte_toolkits_site->LRS_Secret;
@@ -66,7 +66,7 @@
 					"	SELECT k.key_key, k.secret 
 						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, lti_link AS l  
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
-						array(':DPATH' => $url . "index.php"));
+						array(':DPATH' => $url));
 				$key = $row["key_key"];
 				$secret = $row["secret"];
 				$checked = "checked";

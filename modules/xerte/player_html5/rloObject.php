@@ -1,16 +1,18 @@
 <?php
-require_once "../config.php";
-include("./register.php");
-
-// The Tsugi PHP API Documentation is available at:
-// http://do1.dr-chuck.com/tsugi/phpdoc/
-
+if(!isset($dir))
+{
+	exit();
+}
+require_once("../../../config.php");
+require_once($xerte_toolkits_site->root_file_path . "tsugi/config.php");
+			
 use \Tsugi\Core\LTIX;
 use \Tsugi\Core\Settings;
 use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
+
 if(isset($_POST['grade']))
 {
 	$grade = $_POST['grade'];
@@ -50,6 +52,8 @@ if(isset($_POST['grade']))
 <!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 
 <head>
+	<base href="<?php echo $xerte_toolkits_site->site_url . "$dir" ?>" target="_blank">
+ 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
