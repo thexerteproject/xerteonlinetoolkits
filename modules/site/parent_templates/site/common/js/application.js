@@ -906,7 +906,7 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		}
 		
 		$pdfTabs.on('shown.bs.tab', function (e) {
-			if ($.browser.mozilla) {
+			if ($.browser.mozilla || $.browser.msie) {
 				var $pdfRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active object[id*='pdfDoc']");
 				if ($pdfRefresh.parent().data("refresh") != true) {
 					$pdfRefresh.parent().data("refresh", true);
