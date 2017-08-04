@@ -17,12 +17,12 @@
             <headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
 		</headerGroup>
         
-        <navbarGroup type="group" label="Navbar" optional="true">
-			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Navbar Position" defaultValue="above" width="175"/>
-			<navbarColour type="ColourPicker" optional="true" label="Navbar Background Colour"/>
-			<navbarTextColour type="ColourPicker" optional="true" label="Navbar Text Colour"/>
-            <navbarTextHoverColour type="ColourPicker" optional="true" label="Navbar Text Hover Colour"/>
-            <navbarHide label="Hide Navbar" type="Checkbox" defaultValue="false" optional="true"/>
+        <navbarGroup type="group" label="Navigation Bar" optional="true">
+			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
+			<navbarColour type="ColourPicker" optional="true" label="Background Colour"/>
+			<navbarTextColour type="ColourPicker" optional="true" label="Text Colour"/>
+            <navbarTextHoverColour type="ColourPicker" optional="true" label="Text Hover Colour"/>
+            <navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true"/>
 		</navbarGroup>
 		
 		<socialGroup type="group" label="Social" optional="true" cols="3" info="Select below which social media options you wish to enable or disable. Removing this group will enable them all.">
