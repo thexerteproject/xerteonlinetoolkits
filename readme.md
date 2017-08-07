@@ -16,11 +16,6 @@ Here's a quick guide to installing toolkits on your local computer:
  5. Visit http://localhost/xertetoolkits/setup
  6. Click the XAMPP button.
 
-There's a quick capture of the process here:
-
-http://www.nottingham.ac.uk/xerte/manual/installingToolkits.swf
-
-
 Server administrators should choose the 'full install' option and step through the wizard. When copying the files to a server, you can use the setup utility at http://yourserver.com/yourtololkitsfolder/setup
 
 
