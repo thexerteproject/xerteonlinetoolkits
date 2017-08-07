@@ -10,7 +10,7 @@ Installation Instructions (Stable release, .zip)
 Here's a quick guide to installing toolkits on your local computer:
 
  1. Download and install XAMPP from http://www.apachefriends.org/download.php?xampp-win32-1.7.0-installer.exe accepting the default settings;
- 2. Download Xerte Online Toolkits from http://www.nottingham.ac.uk/xerte/downloads/xertetoolkits.zip
+ 2. Download Xerte Online Toolkits from http://xerte.org.uk
  3. Unzip the folder 'xertetoolkits' to c:\xampp\htdocs\, giving you c:\xampp\htdocs\xertetoolkits
  4. Start Apache and MySQL in XAMPP control panel
  5. Visit http://localhost/xertetoolkits/setup
