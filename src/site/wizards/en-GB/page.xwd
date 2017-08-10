@@ -27,6 +27,7 @@
 		<links label="Subsection Links" type="ComboBox" width="80" options="None,Horizontal List,Vertical List" data="none,hlist,vlist" defaultValue="hlist" optional="true" tooltip="Add a list of subsection links below the section title. Only subsections where title isn't hidden will be included."/>
 
 		<newNodes>
+			<xot><![CDATA[<xot name="Title" showTitle="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
 			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select a PDF File" width="500" height="350"/>]]></pdf>
 			<markup><![CDATA[<markup name="Title" showTitle="true">&lt;!--Enter HTML Code--&gt;</markup>]]></markup>
 			<canvas><![CDATA[<canvas name="Title" showTitle="true" id="EnterID" width="500" height="350"/>]]></canvas>
@@ -147,6 +148,7 @@
 
 		<newNodes>
 			
+			<xot><![CDATA[<xot name="Title" showTitle="true" link="Xerte XOT Project URL" header="false" footer="false"/>]]></xot>
 			<pdf><![CDATA[<pdf name="Title" showTitle="true" url="Select a PDF File" width="500" height="350"/>]]></pdf>
 			<link><![CDATA[<link name="Title" url="Link URL"/>]]></link>
 			<video><![CDATA[<video name="Title" showTitle="true" url="Select a Video"/>]]></video>
@@ -156,6 +158,19 @@
 
 		</newNodes>
 	</pane>
+	
+	<xot icon="icXot" menuItem="XOT Project" remove="true">
+
+		<name type="TextInput" label="Title" wysiwyg="true"/>
+		<link type="TextInput" label="Xerte Project Link"/>
+		<header label="Hide Header" type="CheckBox"/>
+		<footer label="Hide Footer" type="CheckBox"/>
+		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
+		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true"/>
+		<width label="Width" type="TextInput" defaultValue="100%" optional="true"/>
+		<height label="Height" type="TextInput" defaultValue="400" optional="true"/>
+
+	</xot>
 
 </wizard>
-

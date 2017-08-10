@@ -700,6 +700,10 @@ function parseContent(pageIndex){
 						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 					}
 					
+					if (this.nodeName == 'xot'){
+						section.append(loadXotContent($(this)));
+					}
+					
 					if (this.nodeName == 'navigator'){
 					
 						if ($(this).attr('type') == 'Tabs'){
@@ -867,6 +871,10 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 				
 			}
 			
+			if (this.nodeName == 'xot'){
+				tab.append(loadXotContent($(this)));
+			}
+			
 		});
 		
 		content.append(tab);
@@ -983,6 +991,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
+			
+			if (this.nodeName == 'xot'){
+				inner.append(loadXotContent($(this)));
+			}
 		});
 		
 		outer.append(inner);
@@ -1067,6 +1079,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
+			if (this.nodeName == 'xot'){
+				pane.append(loadXotContent($(this)));
+			}
+			
 		});
 		
 		items.append(pane);
@@ -1114,3 +1130,50 @@ function findAnchor(name){
 	
 }
 
+function loadXotContent($this) {
+	
+	// get link & store url parameters to add back in later if not overridden
+	var xotLink = $this.attr('link'),
+		params = [],
+		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
+	
+	if (xotLink.indexOf(separator) != -1) {
+		params = xotLink.split(separator);
+		if (separator == '?') {
+			params.splice(1, 1, params[1].split('&'));
+		}
+		xotLink = params[0];
+		params.splice(0,1);
+		
+		for (var i=0; i<params.length; i++) {
+			params[i] = params[i].split('=');
+		}
+	}
+	
+	var hide = '';
+	if ($this.attr('header') == 'true') { hide = 'top'; }
+	if ($this.attr('footer') == 'true') { hide = hide == 'top' ? 'both' : 'bottom'; }
+	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
+	separator = '&';
+	
+	if ($this.attr('pageNum') != undefined && $.isNumeric($this.attr('pageNum'))) {
+		xotLink += separator + 'page=' + $this.attr('pageNum');
+	}
+	
+	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
+	xotLink += separator + 'embed=true';
+	
+	// add back any url params that haven't been overridden
+	for (var i=0; i<params.length; i++) {
+		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
+			xotLink += separator + params[i][0] + '=' + params[i][1];
+		}
+	}
+	
+	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',
+		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
+		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 400;
+	
+	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	
+}
