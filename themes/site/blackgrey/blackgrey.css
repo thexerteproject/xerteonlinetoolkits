@@ -138,3 +138,14 @@ background-image: linear-gradient(3deg, #000000 0%, #333333 100%);
 .alertMsg {
 	color: red;
 }
+
+/* --GLOSSARY-------------------------------------------------------------- */
+
+a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
+	color: white;
+}
+
+.glossaryTip {
+	background-color: orange;
+	color: black;
+}

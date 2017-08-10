@@ -6,6 +6,8 @@
 		<name type="TextInput" label="Learning Object Title"/>
 		<theme type="ThemeList" label="Theme" mandatory="true" defaultValue="default"/>
 		
+		<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
+		
 		<headerGroup type="group" label="Header" optional="true">
 			<header type="Media" optional="true" label="Image"/>
 			<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
@@ -113,6 +115,8 @@
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
+		<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
 	</text><pdf icon="icPDF" menuItem="PDF File" remove="true">
 

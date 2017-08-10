@@ -25,6 +25,7 @@ var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
+var glossary = [];
 
 function init(){
 	loadContent();
@@ -189,13 +190,116 @@ function formatColour(col) {
 
 function setup(){
 	
+	if ($(data).find('learningObject').attr('glossary') != undefined) {
+		
+		// get list of glossary words & definitions
+		var i, len, item, word,
+			items = $(data).find('learningObject').attr('glossary').split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				glossary.push(word);
+			}
+		}
+		
+		if (glossary.length > 0) {
+			glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+			
+			// add link around all examples of glossary words in text
+			var insertText = function(node) {
+				var temp = document.createElement("pre");
+				temp.innerHTML = node;
+				var tempText = temp.innerHTML;
+				
+				// check text for glossary words - if found replace with a link
+				if (glossary.length > 0) {
+					for (var k=0, len=glossary.length; k<len; k++) {
+						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+						tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+					}
+					for (var k=0, len=glossary.length; k<len; k++) {
+						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+						tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+					}
+				}
+				
+				return tempText;
+			}
+			
+			var checkForText = function(data) {
+				for (var i=0; i<data.length; i++) {
+					if (data[i].nodeName == 'text') {
+						if ($(data[i]).attr('disableGlossary') != 'true') {
+							data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+						}
+						
+					} else {
+						checkForText(data[i].childNodes);
+					}
+				}
+			}
+			
+			checkForText($(data).find('page'));
+			
+			// add events to control what happens when you rollover glossary words
+			$("body > .container")
+				.on("mouseenter", ".glossary", function(e) {
+					$(this).trigger("mouseleave");
+					
+					var $this = $(this),
+						myText = $this.text(),
+						myDefinition, i, len;
+					
+					for (i=0, len=glossary.length; i<len; i++) {
+						if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							myDefinition += glossary[i].definition;
+						}
+					}
+					
+					$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+					
+					$("#glossaryHover").css({
+						"left"	:$(this).offset().left + 20,
+						"top"	:$(this).offset().top + 20
+					});
+					$("#glossaryHover").fadeIn("slow");
+				})
+				.on("mouseleave", ".glossary", function(e) {
+					$(this).parent('.container').off("click.glossary");
+					
+					if ($("#glossaryHover") != undefined) {
+						$("#glossaryHover").remove();
+					}
+				})
+				.on("mousemove", ".glossary", function(e) {
+					$("#glossaryHover").css({
+						"left": e.pageX + 20,
+						"top": e.pageY + 20
+					});
+				})
+				.on("focus", ".glossary", function(e) { // called when link is tabbed to
+					$(this).trigger("mouseenter");
+				})
+				.on("focusout", ".glossary", function(e) {
+					$(this).trigger("mouseleave");
+				});
+		}
+	}
+	
+	
 	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
 		
 		authorSupport = true;
 		
 	}
 
-	//add all the pages to the pages menu: this links bak to the same page
+	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		
 		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {

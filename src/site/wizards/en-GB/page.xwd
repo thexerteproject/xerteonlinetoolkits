@@ -73,6 +73,8 @@
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
 		<showTitle label="Show Title" type="CheckBox" defaultValue="false" mandatory="true"/>
+		
+		<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true"/>
 
 	</text>
 	
