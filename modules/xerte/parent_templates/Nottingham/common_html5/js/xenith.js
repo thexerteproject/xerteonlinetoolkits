@@ -834,7 +834,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add optional progress bar
-    if (x_params.progressBar != undefined && x_params.progressBar != "") {
+    if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 		//add a div for the progress bar
 		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
 		//add the progress bar
