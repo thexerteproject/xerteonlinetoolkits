@@ -464,12 +464,12 @@ function upgrade_9()
         }
 
         if (($error2 === false)) {
-            $error1_returned = false;
+            $error2_returned = false;
             // echo "creating LRS_Key field FAILED";
         }
 
         if (($error3 === false)) {
-            $error1_returned = false;
+            $error3_returned = false;
             // echo "creating LRS_Secret field FAILED";
         }
 
@@ -478,6 +478,25 @@ function upgrade_9()
     else
     {
         return "LRS Endpoint settings fields already present - ok ? true";
+    }
+}
+
+function upgrade_10()
+{
+	if (! _db_field_exists('sitedetails', 'tsugi_dir')) {
+        $error1 = _db_add_field('sitedetails', 'tsugi_dir', 'text', '', 'LRS_Secret');
+        $error1_returned = true;
+
+        
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Tsugi directory field - ok ? " . ($error1_returned ? 'true' : 'false');
+    }
+    else
+    {
+        return "Tsugi directory already exists - ok ? true";
     }
 }
 ?>

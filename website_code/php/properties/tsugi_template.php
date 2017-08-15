@@ -1,12 +1,16 @@
 <?php
-	require_once("../../../tsugi/config.php");
-	require_once("../../../tsugi/admin/admin_util.php");
+	require_once("../../../config.php");
+
+	global $xerte_toolkits_site;
+	
+	require_once($xerte_toolkits_site->tsugi_dir . "config.php");
+	require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
 
 	use \Tsugi\Util\LTI;
 	use \Tsugi\Core\LTIX;
 	use \Tsugi\Config\ConfigInfo;
 
-	require_once("../../../config.php");
+	
 	
 	require_once("../../../functions.php");
 	
@@ -18,13 +22,13 @@
 	
 	require_once "properties_library.php";
 
-    global $xerte_toolkits_site;
+    
 	
 	$id = $_REQUEST['template_id'];
 		
 	if(is_numeric($id)){
 		if(true || is_user_creator($id)||is_user_admin()){
-			$tsugidir = "../../../tsugi/";
+			$tsugidir = $xerte_toolkits_site->tsugi_dir;
 			$moddir = $tsugidir . "mod/";
 			$database_id = database_connect("peer template database connect success","peer template change database connect failed");
 

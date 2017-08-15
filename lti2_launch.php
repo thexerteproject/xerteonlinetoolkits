@@ -20,15 +20,15 @@ if(is_numeric($id))
 	$row = db_query_one($query, $params);
 		
 	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
-	//$tsugi_project_dir = "2-guest2-Nottingham";
-	//$tsugi_dir = dirname(__FILE__) . "/tsugi/mod/$tsugi_project_dir/";
+	$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "mod/$tsugi_project_dir/";
 	$dir = "tsugi/mod/$tsugi_project_dir/";
 	if(file_exists($tsugi_dir))
 	{
 		chdir($tsugi_dir);
 		include($tsugi_dir . "register.php");
 		include($tsugi_dir . "index.php");
+	}else{
+		echo "Tsugi object does not exists.";
 	}
 }
 ?>

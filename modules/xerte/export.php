@@ -22,8 +22,8 @@
  * Export a LO - e.g. from properties.
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
-require_once("../../../tsugi/config.php");
-require_once("../../../tsugi/admin/admin_util.php");
+require_once($xerte_toolkits_site->tsugi_dir . "config.php");
+require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
 
 use \Tsugi\Util\LTI;
 use \Tsugi\Core\LTIX;
@@ -131,13 +131,16 @@ if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
 {
 	$tsugi = true;
 }
+
 _debug($_REQUEST);
-if($tsugi && (!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on"))
+$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
+$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "/mod/$tsugi_project_dir/";
+
+if($tsugi && 
+	((!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on") ||
+	file_exists($tsugi_dir)))
 {
-	_debug("Database Tsugi");
 	$PDOX = LTIX::getConnection();
-	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
 	$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
 	$p = $CFG->dbprefix;
 	//link -> context -> key
@@ -161,17 +164,16 @@ if($tsugi && (!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published
 			':CONTEXT_ID' => $context_id));
 		$PDOX->queryDie("DELETE FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
 			':CONTEXT_ID' => $context_id));
-		$sql = "SELECT COUNT(*) AS count FROM {$p}lti_key WHERE key_id = :KEY_ID";
+		$sql = "SELECT COUNT(*) AS count FROM {$p}lti_context WHERE key_id = :KEY_ID";
 		$key_count = $PDOX->rowDie($sql, array(
 			':KEY_ID' => $context_row["key_id"]
 		))["count"];
-		_debug("Key count" . print_r($key_count, true));
+		
 		if($key_count == 0)
 		{
-			_debug("Delete key id: " . $context_row["key_id"]);
-			$PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID", array(
-			':KEY_ID' => $context_row["key_id"]));
 			
+			$PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID;", array(
+			':KEY_ID' => $context_row["key_id"]));
 		}
 		
 	}
@@ -188,7 +190,10 @@ if($tsugi && (!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published
 		}
 	}
 	rmdir($tsugi_dir);
-	exit();
+	if(!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on")
+	{
+		exit();
+	}
 }
 
 /*
@@ -590,10 +595,14 @@ if($tsugi)
 {
 	$PDOX = LTIX::getConnection();
 	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/mod/$tsugi_project_dir/";
+	$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "/mod/$tsugi_project_dir/";
 	if (!file_exists($tsugi_dir)) {
+		
 		mkdir($tsugi_dir, 0777, true);
+		_debug("Folder created at " . $tsugi_dir);
+		_debug(file_exists($tsugi_dir));
 	}
+	
 	$zipdir = $zipfile->GetFilename();
 	
 	copy($zipdir, $tsugi_dir . "archive.zip");
@@ -620,55 +629,50 @@ clean_up_files();
 @unlink($zipfile_tmpname);
 if($tsugi)
 {
-	_debug("DB Export");
 	$tsugi_key = $_REQUEST["tsugi_key"];
 	$tsugi_secret = $_REQUEST["tsugi_secret"];
 	$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
 	$PDOX = LTIX::getConnection();
-	_debug("Got connection");
 	$p = $CFG->dbprefix;
 	$context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");
 	$context_id = ($context_row["MAX(context_id)"]) + 1;
-	_debug("New context_id: " . $context_id);
 	$key_row = $PDOX->rowDie("SELECT MAX(key_id) FROM {$p}lti_key;");	
 	$key_id = ($key_row["MAX(key_id)"]) + 1;
-	_debug("New key: " . $key_id);
 	$link_row = $PDOX->rowDie("SELECT MAX(link_id) FROM {$p}lti_link;");
 	$link_id = ($link_row["MAX(link_id)"]) + 1;
-	_debug("Link key: " . $link_id);
 	$sql = "INSERT INTO {$p}lti_key
 			( key_id, key_sha256, key_key, secret) VALUES
 				( :key_id, :key_sha256, :key_key, :secret);";
-	_debug("SQL: " . $sql);
+
 	$param = array(
 		':key_id' => $key_id,
 		':key_sha256' => lti_sha256($tsugi_key),
 		':key_key' => $tsugi_key,
 		':secret' => $tsugi_secret
 	);
-	_debug(print_r($param, true));
 	$res = $PDOX->queryDie($sql, $param);
-	_debug(print_r($res, true));
+	
 	
 	$sql = "INSERT INTO {$p}lti_context
-                ( context_key, context_sha256, title, key_id, created_at, updated_at ) VALUES
-                ( :context_key, :context_sha256, :title, :key_id, NOW(), NOW() );";
-	_debug(print_r($PDOX->queryDie($sql, array(
-		':context_key' => $context_id,
+                ( context_id, context_sha256, title, key_id, created_at, updated_at ) VALUES
+                ( :context_id, :context_sha256, :title, :key_id, NOW(), NOW() );";
+	$PDOX->queryDie($sql, array(
+		':context_id' => $context_id,
 		':context_sha256' => lti_sha256($context_id),
 		':title' => $name,
-		':key_id' => $key_id)), true));
+		':key_id' => $key_id));
 	$sql = "INSERT INTO {$p}lti_link
-                ( link_key, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
-                    ( :link_key, :link_sha256, :title, :context_id, :path, NOW(), NOW() );";
-	_debug(print_r($PDOX->queryDie($sql, array(
-		':link_key' => $link_id,
-		':link_sha256' => lti_sha256($key_id),
+                ( link_id, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
+                    ( :link_id, :link_sha256, :title, :context_id, :path, NOW(), NOW() );";
+
+	$params = array(
+		':link_id' => $link_id,
+		':link_sha256' => lti_sha256($link_id),
 		':title' => $name,
 		':context_id' => $context_id,
 		':path' => $url
-	)), true));
-	_debug("Tsugi DB Done");
+	);
+	$link = $PDOX->queryDie($sql, $params);
 
 }
 ?>

@@ -4,7 +4,7 @@ if(!isset($dir))
 	exit();
 }
 require_once("../../../config.php");
-require_once($xerte_toolkits_site->root_file_path . "tsugi/config.php");
+require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
 			
 use \Tsugi\Core\LTIX;
 use \Tsugi\Core\Settings;
