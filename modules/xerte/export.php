@@ -132,13 +132,18 @@ if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
 	$tsugi = true;
 }
 
-_debug($_REQUEST);
 $tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "/mod/$tsugi_project_dir/";
+$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "mod/$tsugi_project_dir/";
 
 if($tsugi && 
-	((!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on") ||
-	file_exists($tsugi_dir)))
+		(
+			(
+				!isset($_REQUEST["tsugi_published"]) || 
+				$_REQUEST["tsugi_published"] != "on"
+			) ||
+			file_exists($tsugi_dir)
+		)
+	)
 {
 	$PDOX = LTIX::getConnection();
 	$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
@@ -171,7 +176,6 @@ if($tsugi &&
 		
 		if($key_count == 0)
 		{
-			
 			$PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID;", array(
 			':KEY_ID' => $context_row["key_id"]));
 		}
@@ -189,6 +193,8 @@ if($tsugi &&
 			unlink($file->getRealPath());
 		}
 	}
+	unset($it);
+	unset($files);
 	rmdir($tsugi_dir);
 	if(!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on")
 	{
@@ -595,12 +601,10 @@ if($tsugi)
 {
 	$PDOX = LTIX::getConnection();
 	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "/mod/$tsugi_project_dir/";
+	$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "mod/$tsugi_project_dir/";
 	if (!file_exists($tsugi_dir)) {
-		
 		mkdir($tsugi_dir, 0777, true);
 		_debug("Folder created at " . $tsugi_dir);
-		_debug(file_exists($tsugi_dir));
 	}
 	
 	$zipdir = $zipfile->GetFilename();
@@ -608,11 +612,14 @@ if($tsugi)
 	copy($zipdir, $tsugi_dir . "archive.zip");
 	$zipArchive = new ZipArchive();
 	$result = $zipArchive->open($tsugi_dir. "archive.zip");
+
 	if ($result === TRUE) {
 		$zipArchive ->extractTo($tsugi_dir);
 		$zipArchive ->close();
 		
-	}	
+	}else{
+		_debug("Error opening zip file");
+	}
 }else{
 	// This outputs http headers etc.
 	$zipfile->download_file($row['zipname']);
