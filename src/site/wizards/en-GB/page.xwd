@@ -171,7 +171,7 @@
 		
 		<pageNum label="Page" type="TextInput" defaultValue="1" optional="true"/>
 		<width label="Width" type="TextInput" defaultValue="100%" optional="true"/>
-		<height label="Height" type="TextInput" defaultValue="400" optional="true"/>
+		<height label="Height" type="TextInput" defaultValue="600" optional="true"/>
 
 	</xot>
 
