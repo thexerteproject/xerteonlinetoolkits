@@ -1241,6 +1241,8 @@ function loadXotContent($this) {
 		params = [],
 		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
 	
+	xotLink = xotLink.slice(0,xotLink.indexOf('#resume='));
+	
 	if (xotLink.indexOf(separator) != -1) {
 		params = xotLink.split(separator);
 		if (separator == '?') {
