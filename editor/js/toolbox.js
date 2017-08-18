@@ -2155,7 +2155,7 @@ var EDITOR = (function ($, parent) {
 					while (newText.indexOf("<math", mathNum) != -1) {
 						var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
 							tableNum = 0;
-						while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+						while (text1.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags before/between math tags
 							tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 							tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
 							tableNum = text1.indexOf("</table>", tableNum) + 8;
@@ -2167,7 +2167,7 @@ var EDITOR = (function ($, parent) {
 
 					var text2 = newText.substring(mathNum),
 						tableNum = 0;
-					while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+					while (text2.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags after math tags
 						tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
 						tableNum = text2.indexOf("</table>", tableNum) + 8;
@@ -2178,7 +2178,8 @@ var EDITOR = (function ($, parent) {
 				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 					var tempText = "",
 						tableNum = 0;
-					while (newText.indexOf("<table", tableNum) != -1) {
+					
+					while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
 						tableNum = newText.indexOf("</table>", tableNum) + 8;
