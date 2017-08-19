@@ -26,7 +26,7 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
 
 function XApiTrackingState()
 {
-	this.initialised = false;
+    this.initialised = false;
     this.trackingmode = "full";
     this.mode = "normal";
     this.scoremode = 'first';
@@ -40,7 +40,7 @@ function XApiTrackingState()
     this.page_timeout = 5000;
 
 
-    
+
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
@@ -59,10 +59,10 @@ function XApiTrackingState()
     this.findInteraction = findInteraction;
     this.findCreate = findCreate;
     this.enterPage = enterPage;
-    
+
     function initialise()
     {
-    	
+
     }
 
     function getdScaledScore()
@@ -175,17 +175,17 @@ function XApiTrackingState()
         }
         return true;
     }
-    
+
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
-    	interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
+        interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
         this.interactions.push(interaction);
     }
-    
+
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
-    	var sit = this.findInteraction(page_nr, ia_nr);
-    	sit.exit();
+        var sit = this.findInteraction(page_nr, ia_nr);
+        sit.exit();
 
         var temp = false;
         var i = 0;
@@ -213,10 +213,10 @@ function XApiTrackingState()
 
 
     }
-    
+
     function setPageType(page_nr, page_type, nrinteractions, weighting)
     {
-    	var sit = state.findPage(page_nr);
+        var sit = state.findPage(page_nr);
         if (sit != null)
         {
             sit.ia_type = page_type;
@@ -225,17 +225,17 @@ function XApiTrackingState()
             sit.weighting = parseFloat(weighting);
         }
     }
-    
+
     function setPageScore(page_nr, score)
     {
-    	var sit = state.findPage(page_nr);
+        var sit = state.findPage(page_nr);
         if (sit != null && (state.scoremode != 'first' || sit.count < 1))
         {
             sit.score = score;
             sit.count++;
         }
     }
-    
+
     function findPage(page_nr)
     {
         var id = makeId(page_nr, -1, 'page', "");
@@ -264,8 +264,8 @@ function XApiTrackingState()
         return null;
     }
 
-    
-    
+
+
     function findCreate(page_nr, ia_nr, ia_type, ia_name)
     {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
@@ -289,21 +289,21 @@ function XApiTrackingState()
         this.interactions.push(sit);
         return sit;
     }
-    
+
     function enterPage(page_nr, ia_nr, ia_type, ia_name)
     {
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
         return sit;
     }
-    
-    
+
+
 }
 
 function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 {
     this.id = makeId(page_nr, ia_nr, ia_type, ia_name);
-	this.page_nr = page_nr;
-	this.ia_nr = ia_nr;
+    this.page_nr = page_nr;
+    this.ia_nr = ia_nr;
     this.ia_type = ia_type;
     this.ia_name = ia_name;
     this.start = new Date();
@@ -313,9 +313,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
-    
+
     this.exit = exit;
-    
+
     function exit()
     {
         this.end = new Date();
@@ -332,7 +332,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         }
 
     }
-    
+
 }
 
 
@@ -346,35 +346,35 @@ var answeredQs = [];
 
 function XTInitialise()
 {
-	if (! state.initialised)
+    if (! state.initialised)
     {
         state.initialised = true;
         state.initialise();
     }
-	
-	if(lrsInstance == undefined){
-		try{
-			lrsInstance = new TinCan.LRS(
-				{
-		            endpoint: lrsEndpoint,
-		            username: lrsUsername,
-		            password: lrsPassword,
-		            allowFail: false,
-		            version: "1.0.1"
-		        }
-			);
-			
-		}
-		catch(ex)
-		{
-			//alert("Failed LRS setup. Error: " + ex);
-		}	
-	}
 
-	if(lrsInstance != undefined)
+    if(lrsInstance == undefined){
+        try{
+            lrsInstance = new TinCan.LRS(
+                {
+                    endpoint: lrsEndpoint,
+                    username: lrsUsername,
+                    password: lrsPassword,
+                    allowFail: false,
+                    version: "1.0.1"
+                }
+            );
+
+        }
+        catch(ex)
+        {
+            //alert("Failed LRS setup. Error: " + ex);
+        }
+    }
+
+    if(lrsInstance != undefined)
     {
-		this.initStamp = new Date();
-		
+        this.initStamp = new Date();
+
         var statement = new TinCan.Statement(
             {
                 actor: {
@@ -402,27 +402,27 @@ function XTTrackingSystem()
 
 function XTLogin(login, passwd)
 {
-	this.loginStamp = new Date();
-	
+    this.loginStamp = new Date();
+
     var statement = new TinCan.Statement(
-            {
-                actor: {
-                    mbox: userEMail
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/logged-in"
-                },
-                target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
-                },
-                timestamp: this.loginStamp
-            }
-        );
-    
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/logged-in"
+            },
+            target: {
+                id: "http://rusticisoftware.github.com/TinCanJS"
+            },
+            timestamp: this.loginStamp
+        }
+    );
+
     SaveStatement(statement);
-    
+
     // TODO: Compare the login and the password with credentials from the LRS.
-	
+
     return true;
 }
 
@@ -471,31 +471,31 @@ function XTSetOption(option, value)
                     state.mode = "normal";
                     break;
                 case 'minimal_first':
-                	state.trackingmode = "minimal";
-                	state.scoremode = "first";
-                	state.mode = "normal";
+                    state.trackingmode = "minimal";
+                    state.scoremode = "first";
+                    state.mode = "normal";
                     break;
                 case 'full':
-                	state.trackingmode = "full";
-                	state.scoremode = "last";
-                	state.mode = "normal";
+                    state.trackingmode = "full";
+                    state.scoremode = "last";
+                    state.mode = "normal";
                     break;
                 case 'minimal':
-                	state.trackingmode = "minimal";
-                	state.scoremode = "last";
-                	state.mode = "normal";
+                    state.trackingmode = "minimal";
+                    state.scoremode = "last";
+                    state.mode = "normal";
                     break;
                 case 'none':
-                	state.trackingmode = "none";
-                	state.mode = "no-tracking";
+                    state.trackingmode = "none";
+                    state.mode = "no-tracking";
                     break;
             }
             break;
         case "completed":
-        	state.lo_completed = value;
+            state.lo_completed = value;
             break;
         case "objective_passed":
-        	state.lo_passed = Number(value);
+            state.lo_passed = Number(value);
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -507,46 +507,46 @@ function XTSetOption(option, value)
 function XTEnterPage(page_nr, page_name)
 {
     state.enterPage(page_nr, -1, "page", page_name);
-	this.pageStart = new Date();
-	
+    this.pageStart = new Date();
+
     var statement = new TinCan.Statement(
-            {
-                actor: {
-                    mbox: userEMail
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/initialized"
-                },
-                target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
-                },
-                timestamp: this.pageStart              	
-                
-            }
-        );
-    
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/initialized"
+            },
+            target: {
+                id: "http://rusticisoftware.github.com/TinCanJS"
+            },
+            timestamp: this.pageStart
+
+        }
+    );
+
     SaveStatement(statement);
 }
 
 function XTExitPage(page_nr, page_name)
 {
-    
-	this.exitPageStamp = new Date();
-	
+
+    this.exitPageStamp = new Date();
+
     var statement = new TinCan.Statement(
-            {
-                actor: {
-                    mbox: userEMail
-                },
-                verb: {
-                    id: "http://adlnet.gov/expapi/verbs/exited"
-                },
-                target: {
-                    id: "http://rusticisoftware.github.com/TinCanJS"
-                },
-                timestamp: this.exitPageStamp
-            }
-        );
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/exited"
+            },
+            target: {
+                id: "http://rusticisoftware.github.com/TinCanJS"
+            },
+            timestamp: this.exitPageStamp
+        }
+    );
 
 
     SaveStatement(statement);
@@ -563,9 +563,9 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 function XTSetPageScore(page_nr, score)
 {
     state.setPageScore(page_nr, score);
-	this.pageEnd = new Date();
-	var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
-	
+    this.pageEnd = new Date();
+    var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
+
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -579,14 +579,14 @@ function XTSetPageScore(page_nr, score)
             },
             result:{
                 "completion": true,
-	            "success": score >= state.lo_passed,
-	            "score": {
-	              "scaled": score / 100
-	            },
-            	"duration": pageDuration
+                "success": score >= state.lo_passed,
+                "score": {
+                    "scaled": score / 100
+                },
+                "duration": pageDuration
             },
             timestamp: this.pageEnd
-            
+
         }
     );
 
@@ -618,6 +618,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
 {
+    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
     state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback);
     if (($.inArray([page_nr, ia_nr] , answeredQs) == -1 && state.scoremode == "first") || state.scoremode == "last") {
 
@@ -632,7 +633,7 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
                     id: "http://adlnet.gov/expapi/verbs/answered"
                 },
                 target: {
-                    id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                    id: "http://xerte.org.uk/xapi/questions/" + idQ
                 },
                 result: {
                     "response": result + ""
@@ -643,13 +644,51 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
 
         answeredQs.push([page_nr, ia_nr]);
         SaveStatement(statement);
+        XTGetInteractionScore(page_nr, ia_nr, ia_type, "");
     }
 }
 
+//Get interactions from the LRS Server
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
 {
-    return 0;
+    //Get ID from the question
+    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
+    var x = lrsInstance.queryStatements(
+        {
+            params: {
+                verb: new TinCan.Verb(
+                    {
+                        id: "http://adlnet.gov/expapi/verbs/answered"
+                    }
+                ),
+                activity: (
+                {
+                    id: "http://xerte.org.uk/xapi/questions/" + idQ
+                }
+                )
+            },
+            callback: function(err, sr) {
+
+                var stringObjects = [];
+
+                for (x = 0; x < sr.statements.length; x++)
+                {
+                    stringObjects[x] = sr.statements[x].originalJSON;
+                }
+
+                if(err !== null) {
+                    console.log("Failed to query statements: " + err);
+                    // TODO: do something with error, didn't get statements
+                    return;
+                }
+                if (sr.more !== null) {
+                }
+            }
+        }
+
+    );
 }
+
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
     return "";
@@ -673,13 +712,13 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     window.opener.innerWidth+=2;
-	window.opener.innerWidth-=2;
+    window.opener.innerWidth-=2;
 }
 
 function SaveStatement(statement)
 {
-	statement.id = null;
-	lrsInstance.saveStatement(
+    statement.id = null;
+    lrsInstance.saveStatement(
         statement,
         {
             callback: function (err, xhr) {
