@@ -32,7 +32,7 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 // (pl)
 // Set up the preview window for a xerte piece
 
-function show_template_page($row, $datafile="")
+function show_template_page($row, $datafile="", $tsugi_enabled = false)
 {
     global $xerte_toolkits_site;
 	global $youtube_api_key;
@@ -84,23 +84,28 @@ function show_template_page($row, $datafile="")
         }
     }
     // If given as a parameter, force this engine
-    if (isset($_REQUEST['engine']))
-    {
-        if ($_REQUEST['engine'] == 'other')
-        {
+    if (isset($_REQUEST['engine'])) {
+        if ($_REQUEST['engine'] == 'other') {
             if ($engine == 'flash')
                 $engine = 'javascript';
             else
                 $engine = 'flash';
+        } else {
+            $engine = $_REQUEST['engine'];
         }
-        else
-        {
-            $engine=$_REQUEST['engine'];
+    }
+    $xapi_js_file = $template_path . "common_html5/js/xttracking_noop.js";
+    if($tsugi_enabled) {
+        $rlo_object_file = "rloObject.php";
+        if($row["tsugi_xapi_enabled"] == 1) {
+            $xapi_js_file = $flash_js_dir . "xAPI/xttracking_xapi.js";
         }
+    }else{
+        $rlo_object_file = "rloObject.htm";
     }
     if ($engine == 'flash')
     {
-        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/rloObject.htm");
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player/$rlo_object_file");
 
         $page_content = str_replace("%WIDTH%", $x, $page_content);
         $page_content = str_replace("%HEIGHT%", $y, $page_content);
@@ -111,7 +116,10 @@ function show_template_page($row, $datafile="")
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%SITE%",$xerte_toolkits_site->site_url,$page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\"$xapi_js_file?version=" . $version . "\"></script>";
+        if($row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>";
+        }
 
         $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
     }
@@ -137,7 +145,7 @@ function show_template_page($row, $datafile="")
     {
         $version = getVersion();
         // $engine is assumed to be javascript if flash is NOT set
-        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/rloObject.htm");
+        $page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/$rlo_object_file");
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
@@ -151,13 +159,29 @@ function show_template_page($row, $datafile="")
         $page_content = str_replace("%OFFLINEINCLUDES%", "", $page_content);
         $page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $page_content);
 
-        $tracking = "<script type=\"text/javascript\" src=\"" . $template_path . "common_html5/js/xttracking_noop.js?version=" . $version . "\"></script>";
+        $tracking = "<script type=\"text/javascript\" src=\" $xapi_js_file?version=" . $version . "\"></script>";
+        if($row["tsugi_xapi_enabled"] == 1) {
+            $tracking .= "<script type=\"text/javascript\" src=\"$flash_js_dir/xAPI/tincan.js?\"></script>";
+        }
+
 
 		$page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
 		
 		$page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
 		
     }
+    if(substr($rlo_object_file, -3) == "php")
+    {
+        $tmp = tmpfile ();
+        $tmpf = stream_get_meta_data ( $tmp );
+        $tmpf = $tmpf ['uri'];
+        fwrite ( $tmp, $page_content );
+        $ret = include($tmpf);
+        fclose ( $tmp );
+        return $ret;
+
+    }
+
     return $page_content;
 }
 

@@ -1,9 +1,4 @@
 <?php
-if(!isset($dir))
-{
-	exit();
-}
-require_once("../../../config.php");
 require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
 			
 use \Tsugi\Core\LTIX;
@@ -12,7 +7,7 @@ use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
 $LAUNCH = LTIX::requireData();
-
+$USER = $LAUNCH->user;
 if(isset($_POST['grade']))
 {
 	$grade = $_POST['grade'];
@@ -52,8 +47,6 @@ if(isset($_POST['grade']))
 <!--[if (gt IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 
 <head>
-	<base href="<?php echo $xerte_toolkits_site->site_url . "$dir" ?>" target="_blank">
- 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -78,12 +71,20 @@ if(isset($_POST['grade']))
     <link href="%TEMPLATEPATH%common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
 	
     %OFFLINESCRIPTS%
+
 	<script>
 		var username = "<?php echo $USER->email; ?>";
-		var lrsEndpoint = "<?php echo $xApi_Config["xapi_endpoint"]; ?>";
-        var lrsUsername = "<?php echo $xApi_Config["xapi_username"]; ?>";
-        var lrsPassword = "<?php echo $xApi_Config["xapi_password"]; ?>";
+        <?php
+        if($row["tsugi_xapi_enabled"]){
+        ?>
+		var lrsEndpoint = "<?php echo $row["tsugi_xapi_endpoint"]; ?>";
+        var lrsUsername = "<?php echo $row["tsugi_xapi_key"]; ?>";
+        var lrsPassword = "<?php echo $row["tsugi_xapi_secret"]; ?>";
+        <?php
+        }
+        ?>
 	</script>
+
 </head>
 
 <body onload = "XTInitialise();" onbeforeunload = "XTTerminate();">

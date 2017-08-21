@@ -34,11 +34,14 @@ _load_language_file("/preview.inc");
 require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path  . "template_status.php";
 require $xerte_toolkits_site->php_library_path  . "user_library.php";
-
+if(!isset($tsugi_enabled))
+{
+    $tsugi_enabled = false;
+}
 /*
  * Check the ID is numeric
  */
-if(isset($_SESSION['toolkits_logon_id'])) {
+if($tsugi_enabled || isset($_SESSION['toolkits_logon_id'])) {
 
     if(is_numeric($_GET['template_id'])) {
 
@@ -47,13 +50,19 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         /*
          * Standard query
          */
-        $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags";
+        $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags,";
+        $query_for_preview_content .= "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
         $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
         $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
 
 		$row = db_query_one($query_for_preview_content);
 		
         if(!empty($row)) {
+            if($tsugi_enabled && $row["tsugi_published"] != 1)
+            {
+                echo PREVIEW_RESOURCE_FAIL;
+                exit();
+            }
 
             // get their username from the db which matches their login_id from the $_SESSION
             // ???? This is just the same user as in the previous query, NOT from the session. WHY?
@@ -63,8 +72,8 @@ if(isset($_SESSION['toolkits_logon_id'])) {
 
             // is there a matching template?
             // if they're an admin or have rights to see the template, then show it.
-            if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
-                show_preview_code($row);
+            if($tsugi_enabled || is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
+                show_preview_code($row, $tsugi_enabled);
                 exit(0);
             }
         }
