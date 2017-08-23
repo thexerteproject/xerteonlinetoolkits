@@ -1,0 +1,13 @@
+/******Header******/
+#x_headerBlock {
+  color:			$whiteorlightest;
+  background-repeat:no-repeat;
+  background-position:right;
+  background-image:	none;
+  width: 98%;
+  border-top-right-radius: $largeroundedcorners;
+  border-bottom-right-radius: $largeroundedcorners;
+  margin-top: 5px;
+  background: $contrastcolor;
+  box-shadow: $interfaceboxshadow;
+}
