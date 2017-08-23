@@ -382,34 +382,52 @@ function setup(){
 		$(".jumbotron").remove();
 		
 	}
-    
-	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
+	
+	// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+	// they are overridden by any logos in theme folders
+	// they can also be overridden by images uploaded via Header Logo optional properties
 	$('#overview div.logoR, #overview div.logoL').hide();
+	$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+	$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
 	
-	if ($(data).find('learningObject').attr('logoR') != undefined){
+	var checkExists = function(logoClass, fallback) {
+		$.ajax({
+			url: $('#overview .' + logoClass + ' img').attr('src'),
+			success: function() {
+				$('#overview').addClass(logoClass);
+				$('#overview div.' + logoClass).show();
+			},
+			error: function() {
+				if (fallback == 'theme') {
+					$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+					checkExists(logoClass, 'default');
+				} else if (fallback == 'default') {
+					$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+					checkExists(logoClass);
+				}
+			}
+		});
+	}
+	
+	var fallback;
+	if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
 		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		fallback = 'default';
+		$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
 	}
+	checkExists('logoR', fallback);
 	
-	$.ajax({
-		url: $('#overview .logoR img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoR');
-			$('#overview div.logoR').show();
-		}
-	});
-	
-	if ($(data).find('learningObject').attr('logoL') != undefined){
+	if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
 		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		fallback = 'default';
+		$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
 	}
+    checkExists('logoL', fallback);
 	
-	$.ajax({
-		url: $('#overview .logoL img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoL');
-			$('#overview div.logoL').show();
-		}
-	});
-    
     //---------------Optional Navbar properties--------------------
     
     //Hide the Navbar position if defined
