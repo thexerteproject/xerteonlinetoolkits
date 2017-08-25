@@ -105,7 +105,6 @@ if ($theme != "" && $theme != "default")
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
 array_push($delete_file_array, $dir_path . "favicon.ico");
 
-
 export_folder_loop($dir_path);
 
 

@@ -1,20 +1,20 @@
 <language name="Turkish" code="tr-TR">
-    <layout closetooltip="Bu paneli kapat" opentooltip="Bu paneli aç" resizetooltip="Bu paneli boyutlandır" />
+    <layout closetooltip="Bu paneli kapat" opentooltip="Bu paneli aç" resizetooltip="Bu paneli boyutlandır" pin="Pin" unpin="Un-Pin" />
     <edit label="Düzenle ..." tooltip="Bu seçeneği düzenle" description="Düzenle butonu" />
     <insertDialog label="Yeni ekle {i}" Ön İzleme="Ön izleme">
         <insertBefore label="Önce" tooltip="Seçilen sayfadan önce ekle"/>
         <insertAfter label="Sonra" tooltip="Seçilen sayfadan sonra ekle"/>
         <insertAtEnd label="Sonuna" tooltip="Son sayfa olarak ekle"/>
+		<insertMerge label="sayfaları içe aktar" tooltip="Sayfaları son sayfadan sonra  içe aktar"/>
     </insertDialog>
     <btnSaveXerte label="Kaydet" tooltip="Projeyi Kaydet" description="Kaydet Butonu"/>
 	<btnPublishXot label="Yayınla" tooltip="Projeyi Yayınla" description="Yayınla Butonu"/>
 	<popupFileUpload title="Dosya Yükle" cancelLabel="Vazgeç"/>
-	<browseImportFile title="Eklemek için dosyayı seçin...">
+	<browseImportFile title="İçe aktarılacak dosyayı seçin...">
 		<dialogFilter>Tüm Dosyalar|*.*|JPG|*.jpg|PNG|*.png|SWF Dosyaları|*.swf|Sesler|*.mp3|Video|*.flv</dialogFilter>
-		<buttontext>Ekle</buttontext>
+		<buttontext>İçe aktar</buttontext>
 	</browseImportFile>
 	<kblanguage title="Karakter Pad" tooltip="Karakter Pad" description="Klavye Dilleri">
-		<item>Turkish</item>
 		<item>French</item>
 		<item>German</item>
 		<item>Italian</item>
@@ -27,6 +27,7 @@
     <btnAddColumn label="Sütun Ekle" tooltip="Tablonun sağına sütun ekle"/>
     <btnDelColumn label="Sütun Sil" tooltip="Seçilen sütunu sil"/>
 	<btnInsert label="Ekle" tooltip="Ekle"/>
+	<btnMerge label="Sayfaları içe aktar" tooltip="Sayfaları içe aktar"/>
 	<btnAddChild tooltip="add some children"/>
 	<btnDuplicate label="Kopyala" tooltip="Kopyala"/>
 	<btnDelete label="Sil" tooltip="Sil"/>
@@ -41,9 +42,11 @@
 	<optionalPropHTML label="Seçenekli Özellikler"/>
 	<chkShowLanguage label="Dil Seçeneklerini Göster" tooltip="Dil seçenekleri mevcutsa göster"/>
 	<chkShowAdvanced label="Gelişmiş Seçenekleri Göster" tooltip="Gelişmiş seçenekler mevcutsa göster"/>
-    <chkShowToolbar label="Araç Çubuğunu Göster" tooltip="Varsayılan olarak tüm araç çubuklarını göster"/>
+    <chkShowToolbar label="Araç Çubuğunu Göster" tooltip="Tüm araç çubuklarını varsayılan olarak göster"/>
 	<compMedia tooltip="Medya Ekleme"/>
 	<compPreview tooltip="Ön İzleme"/>
+	<hidePage tooltip="Bu sayfa gizlenmiştir"/>
+	<markForCompletion tooltip="Bu sayfa tamamlanmak için işaretlenmiştir"/>
 	<filemenu title="Dosya">
 		<menuNew>Yeni Proje...</menuNew>
 		<menuOpen>Aç...</menuOpen>
@@ -62,7 +65,7 @@
 		<menuPublish>Yayınla</menuPublish>
 		<menuPackage>Paket</menuPackage>
 	</publishmenu>
-	<menuPackage title="Save SCORM 1.2 Paket">
+	<menuPackage title="SCORM 1.2 Paketi olarak kayded">
 		<dialogText>Bir dosya seç</dialogText>
 		<filterList>*.zip</filterList>
 		<filterText>Zip Dosyaları|*.zip</filterText>
@@ -83,11 +86,11 @@
 		</filters>
 		<title>Eklemek için dosya seç...</title>
 		<filter>Tüm Dosyalar|*.*|JPG|*.jpg|PNG|*.png|SWF Dosyaları|*.swf|Sesler|*.mp3|Video|*.flv</filter>
-		<btnimport>Ekle</btnimport>
+		<btnimport>İçe aktar</btnimport>
 		<btncancel>Vazgeç</btncancel>
 		<fileexists>
 			<prompt>Bu dosya {f} zaten var.\r\rÜzerine yazılsın mı?</prompt>
-			<title>Onaylama</title>
+			<title>Onayla</title>
 		</fileexists>
 	</importMedia>
 	<Alert>
@@ -150,7 +153,9 @@
                 <security>Yükleme başarısız: Güvenlik Hatası</security>
             </failed>
         </upload>
+		<changeLanguage>
+			<prompt>Tüm dil seçeneklerini varsayılan dil değerlerine değiştirmek istiyor musunuz? </prompt>
+		</changeLanguage>
 		
 	</Alert>
 </language>
-
