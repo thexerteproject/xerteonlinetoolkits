@@ -65,6 +65,7 @@ function XApiTrackingState()
 
     }
 
+
     function getdScaledScore()
     {
         return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());
@@ -158,7 +159,6 @@ function XApiTrackingState()
         return this.getdMaxScore() + "";
     }
 
-
     function pageCompleted(sit)
     {
         for (i=0; i<sit.nrinteractions; i++)
@@ -179,12 +179,16 @@ function XApiTrackingState()
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
         interaction = new XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name);
+        interaction.enterInteraction(correctanswer, correctoptions);
         this.interactions.push(interaction);
     }
 
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
         var sit = this.findInteraction(page_nr, ia_nr);
+        if(ia_nr != -1){
+            sit.exitInteraction(result,learneranswer, learneroptions, feedback);
+        }
         sit.exit();
 
         var temp = false;
@@ -313,8 +317,13 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.correctAnswers = [];
+    this.learnerAnswers = [];
+    this.learnerOptions = [];
 
     this.exit = exit;
+    this.enterInteraction = enterInteraction;
+    this.exitInteraction = exitInteraction;
 
     function exit()
     {
@@ -333,6 +342,20 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
 
     }
 
+    function enterInteraction(correctAnswers, correctOptions)
+    {
+        this.correctAnswers = correctAnswers;
+        this.correctOptions = correctOptions;
+    }
+
+    function exitInteraction(result, learnerAnswers, learnerOptions, feedback)
+    {
+        this.learnerAnswers = learnerAnswers;
+        this.learnerOptions = learnerOptions;
+        this.result = result;
+        this.feedback = feedback;
+    }
+
 }
 
 
@@ -340,7 +363,7 @@ var state = new XApiTrackingState();
 
 var scorm=false,
     lrsInstance,
-    userEMail = "mailto:"+username;
+    userEMail = "mailto:email@test.com";
 
 var answeredQs = [];
 
@@ -618,7 +641,6 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
 {
-    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
     state.exitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback);
     if (($.inArray([page_nr, ia_nr] , answeredQs) == -1 && state.scoremode == "first") || state.scoremode == "last") {
 
@@ -633,7 +655,7 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
                     id: "http://adlnet.gov/expapi/verbs/answered"
                 },
                 target: {
-                    id: "http://xerte.org.uk/xapi/questions/" + idQ
+                    id: "http://xerte.org.uk/xapi/questions/" + page_nr
                 },
                 result: {
                     "response": result + ""
@@ -644,51 +666,13 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
 
         answeredQs.push([page_nr, ia_nr]);
         SaveStatement(statement);
-        XTGetInteractionScore(page_nr, ia_nr, ia_type, "");
     }
 }
 
-//Get interactions from the LRS Server
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
 {
-    //Get ID from the question
-    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
-    var x = lrsInstance.queryStatements(
-        {
-            params: {
-                verb: new TinCan.Verb(
-                    {
-                        id: "http://adlnet.gov/expapi/verbs/answered"
-                    }
-                ),
-                activity: (
-                {
-                    id: "http://xerte.org.uk/xapi/questions/" + idQ
-                }
-                )
-            },
-            callback: function(err, sr) {
-
-                var stringObjects = [];
-
-                for (x = 0; x < sr.statements.length; x++)
-                {
-                    stringObjects[x] = sr.statements[x].originalJSON;
-                }
-
-                if(err !== null) {
-                    console.log("Failed to query statements: " + err);
-                    // TODO: do something with error, didn't get statements
-                    return;
-                }
-                if (sr.more !== null) {
-                }
-            }
-        }
-
-    );
+    return 0;
 }
-
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
     return "";
@@ -862,7 +846,7 @@ function XTResults(fullcompletion)
                     correctAnswer = state.interactions[i].correctAnswers.join(", ");
                     break;
                 case "multiplechoice":
-                    learnerAnswer = typeof(state.interactions[i].learnerAnswers[0]) != "undefined" ? state.interactions[i].learnerAnswers[0] : "";
+                    learnerAnswer = state.interactions[i].learnerAnswers[0] != undefined ? state.interactions[i].learnerAnswers[0] : "";
                     for(var j = 1; j < state.interactions[i].learnerAnswers.length; j++)
                     {
                         learnerAnswer += "\n" + state.interactions[i].learnerAnswers[j];
@@ -893,8 +877,6 @@ function XTResults(fullcompletion)
             }
         }
     }
-
-	
     results.completion = completion;
     results.completion = completion;
     results.score = score;
@@ -902,12 +884,12 @@ function XTResults(fullcompletion)
     results.averageScore = state.getScaledScore()*100;
     results.totalDuration = Math.round(totalDuration / 1000);
     results.start = state.start.toLocaleString();
-	$.ajax({
-		type: "POST",
-		url: window.location.href,
-		data: {
-			grade: results.averageScore/100
-		}
-	});
+    $.ajax({
+        type: "POST",
+        url: window.location.href,
+        data: {
+            grade: results.averageScore/100
+        }
+    });
     return results;
 }
