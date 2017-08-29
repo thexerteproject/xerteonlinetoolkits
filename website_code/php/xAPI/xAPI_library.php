@@ -1,18 +1,13 @@
 <?php
 
-function xAPI_html_page_create($template_name, $type, $lo_name, $language, $tsugi) {
+function xAPI_html_page_create($template_name, $type, $lo_name, $language) {
 
 global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
 	$version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
-	if($tsugi)
-	{
-		$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.php");
-		
-	}else{
-		$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 
-	}
+	$xapi_html_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
+
 	$xapi_html_page_content = str_replace("%VERSION%", $version , $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%VERSION_PARAM%", "", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%TITLE%",$lo_name,$xapi_html_page_content);
@@ -31,22 +26,17 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 	$tracking = "<script type=\"text/javascript\" src=\"xttracking_xapi.js\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_xapi.js\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"tincan.js\"></script>\n";
-	if(!$tsugi){
-		$tracking .= "<script>var lrsEndpoint=\"$endpoint\";var lrsPassword=\"$secret\"; var lrsUsername=\"$key\";</script>";
-	}
+	$tracking .= "<script>var lrsEndpoint=\"$endpoint\";var lrsPassword=\"$secret\"; var lrsUsername=\"$key\";</script>";
+
 	if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_xapi.js") && $language != "en-GB")
 	{
 		$tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_xapi.js\"></script>";
 	}
 	$xapi_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$xapi_html_page_content);
 	$xapi_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $xapi_html_page_content);
-	
-	if($tsugi)
-	{
-		$index_file = "index.php";
-	}else{
-		$index_file = "index.htm";
-	}
+
+	$index_file = "index.htm";
+
 	$file_handle = fopen($dir_path . $index_file, 'w');
 	
 	fwrite($file_handle,$xapi_html_page_content,strlen($xapi_html_page_content));

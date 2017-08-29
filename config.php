@@ -124,7 +124,7 @@ foreach ($row as $key => $value) {
     $xerte_toolkits_site->$key = $value;
 }
 
-if($xerte_toolkits_site->tsugi_dir == "")
+if($xerte_toolkits_site->tsugi_dir == "" || $xerte_toolkits_site->tsugi_dir == null)
 {
 	$xerte_toolkits_site->tsugi_dir = $xerte_toolkits_site->root_file_path . "tsugi/";
 }

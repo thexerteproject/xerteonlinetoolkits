@@ -218,19 +218,13 @@ function scorm_html_page_create($name, $type, $rlo_file, $lo_name, $language) {
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($type, $template_name, $lo_name, $tsugi, $offline=false, $offline_includes="") {
+function basic_html5_page_create($type, $template_name, $lo_name, $offline=false, $offline_includes="") {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
     $version = getVersion();
 
-	if($tsugi)
-	{
-		 $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.php");
-	}else{
-		$buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
-
-	}
+    $buffer = file_get_contents($xerte_toolkits_site->basic_template_path . $type . "/player_html5/rloObject.htm");
 	
    
     $buffer = str_replace("%VERSION%", $version, $buffer);
@@ -256,12 +250,8 @@ function basic_html5_page_create($type, $template_name, $lo_name, $tsugi, $offli
     }
     $buffer = str_replace("%TRACKING_SUPPORT%", "<script type=\"text/javascript\" src=\"common_html5/js/xttracking_noop.js\"></script>", $buffer);
 	
-	if($tsugi)
-	{
-		$index = "index.php";
-	}else{
-		$index = "index.htm";
-	}
+	$index = "index.htm";
+
 	
     $file_handle = fopen($dir_path . $index, 'w');
 

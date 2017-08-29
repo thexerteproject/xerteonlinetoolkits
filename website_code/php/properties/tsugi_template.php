@@ -1,8 +1,7 @@
 <?php
 	require_once("../../../config.php");
-
 	global $xerte_toolkits_site;
-	
+
 	require_once($xerte_toolkits_site->tsugi_dir . "config.php");
 	require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
 
@@ -10,8 +9,6 @@
 	use \Tsugi\Core\LTIX;
 	use \Tsugi\Config\ConfigInfo;
 
-	
-	
 	require_once("../../../functions.php");
 	
 	require_once "../template_status.php";
@@ -21,11 +18,8 @@
 	require_once "../user_library.php";
 	
 	require_once "properties_library.php";
-
-    
 	
 	$id = $_REQUEST['template_id'];
-		
 	if(is_numeric($id)){
 		if(true || is_user_creator($id)||is_user_admin()){
 			$tsugidir = $xerte_toolkits_site->tsugi_dir;
@@ -57,10 +51,23 @@
 			$key = "12345";
 			$secret = "secret";
 			$published = false;
-			$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
+            $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
+            _debug("here");
+            $query_for_preview_content = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
+            $query_for_preview_content .= " from " .  $xerte_toolkits_site->database_table_prefix . "templatedetails td";
+            $row = db_query_one($query_for_preview_content);
+            _debug($row["tsugi_xapi_key"]);
 			$xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
 			$xapi_username = $xerte_toolkits_site->LRS_Key;
 			$xapi_password = $xerte_toolkits_site->LRS_Secret;
+
+			if(isset($row["tsugi_xapi_key"]))
+            {
+                $xapi_endpoint = $row["tsugi_xapi_endpoint"];
+                $xapi_username = $row["tsugi_xapi_key"];
+                $xapi_password = $row["tsugi_xapi_secret"];
+            }
+
 			if(file_exists($projectdir))
 			{
 				$indexfile = $projectdir . "index.php";
@@ -77,13 +84,15 @@
                 if(file_exists($projectdir . "/xttracking_xapi.js"))
                 {
                     $xapi_enabled = "checked";
-                    
+
                 }
 
 				if(file_exists($projectdir . "/register.php"))
 				{
 					include($projectdir . "/register.php");
-					$name = $REGISTER_LTI2["name"];
+
+                    $query_for_preview_content = "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
+                    $name = $REGISTER_LTI2["name"];
 					$shortname = $REGISTER_LTI2["short_name"];
 					$desciption = $REGISTER_LTI2["description"];
                     $xapi_endpoint = $xApi_Config["xapi_endpoint"];
@@ -95,7 +104,7 @@
 				<p class="header"><span>LTI2/Tsugi</span></p>
 				<p>
 
-					<form id="form-action" method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/scorm/export.php?tsugi=true&template_id=<?php echo $id;?>">
+					<form id="form-action" method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/properties/lti_update.php?tsugi=true&template_id=<?php echo $id;?>">
 						<label for="tsugi_published">Publish</label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo $checked; ?>><br>
                         <div id="publish">
 						    <label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>
@@ -118,7 +127,6 @@
 					<?php
 					if($published)
 					{
-						
 						echo "Your LTI2 link is: <br><a href=\"$url\">$url</a>";
 					}
 					?>
