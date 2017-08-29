@@ -64,7 +64,7 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
 /**
  * 
- * Function receive message
+ * Function write message
  * This function is used to send an error email meesage
  * @param string $user_name = username the error relates to
  * @param string $type = user / Admin / system
@@ -75,7 +75,7 @@ function receive_message($user_name, $type, $level, $subject, $content){
  * @author Patrick Lockley
  */
 
-function write_message($user_name, $type, $level, $subject,$content){
+function write_message($user_name, $type, $level, $subject, $content){
 
     global $xerte_toolkits_site;
 
