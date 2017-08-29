@@ -454,6 +454,7 @@ $row['zipname'] .= $export_engine . $export_type;
 
 xerte_zip_files($fullArchive, $dir_path);
 $zipfile->create_archive();
+$zipfile->download_file($row['zipname']);
 
 
 _debug("Zip file errors? " . implode(',', $zipfile->error));
