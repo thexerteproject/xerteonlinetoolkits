@@ -22,94 +22,58 @@
 	$id = $_REQUEST['template_id'];
 	if(is_numeric($id)){
 		if(true || is_user_creator($id)||is_user_admin()){
-			$tsugidir = $xerte_toolkits_site->tsugi_dir;
-			$moddir = $tsugidir . "mod/";
 			$database_id = database_connect("peer template database connect success","peer template change database connect failed");
+            $template_id = $id;
+            $safe_template_id = (int)$id;
+            $query_for_preview_content = "select otd.template_name, ld.username, otd.template_framework, tr.user_id, tr.folder, tr.template_id, td.access_to_whom, td.extra_flags,";
+            $query_for_preview_content .= "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
+            $query_for_preview_content .= " from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails otd, " . $xerte_toolkits_site->database_table_prefix . "templaterights tr, " . $xerte_toolkits_site->database_table_prefix . "templatedetails td, " . $xerte_toolkits_site->database_table_prefix . "logindetails ld";
+            $query_for_preview_content .= " where td.template_type_id = otd.template_type_id and td.creator_id = ld.login_id and tr.template_id = td.template_id and tr.template_id=" . $safe_template_id .  " and role='creator'";
 
-			$prefix = $xerte_toolkits_site->database_table_prefix;
-			
-			$query = "select {$prefix}templaterights.template_id, "
-					. "{$prefix}logindetails.username, {$prefix}originaltemplatesdetails.template_name,"
-					. "{$prefix}originaltemplatesdetails.template_framework from {$prefix}templaterights, {$prefix}logindetails, "
-					. "{$prefix}originaltemplatesdetails, {$prefix}templatedetails WHERE "
-					. "{$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id and "
-					. "{$prefix}templaterights.template_id = {$prefix}templatedetails.template_id and "
-					. "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id and {$prefix}templaterights.template_id= ? AND role= ?";
+            $row = db_query_one($query_for_preview_content);
 
-			$params = array($id, 'creator');
-			
-			$row = db_query_one($query, $params);
-			$projectdir = $moddir . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-			$new_publish = true;
 			$tsugi_secret = "secret";
 			$tsugi_key = "12345";
-			$name = "Name";
-			$shortname = "Short name";
-			$desciption = "Description";
+			$title = "Name";
 			$checked = "";
 			$xapi_enabled = "";
 			$key = "12345";
 			$secret = "secret";
-			$published = false;
+			$published = $row["tsugi_published"];
             $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
-            _debug("here");
-            $query_for_preview_content = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
-            $query_for_preview_content .= " from " .  $xerte_toolkits_site->database_table_prefix . "templatedetails td";
-            $row = db_query_one($query_for_preview_content);
-            _debug($row["tsugi_xapi_key"]);
 			$xapi_endpoint = $xerte_toolkits_site->LRS_Endpoint;
 			$xapi_username = $xerte_toolkits_site->LRS_Key;
 			$xapi_password = $xerte_toolkits_site->LRS_Secret;
 
-			if(isset($row["tsugi_xapi_key"]))
+			if($row["tsugi_xapi_enabled"] == 1)
             {
                 $xapi_endpoint = $row["tsugi_xapi_endpoint"];
                 $xapi_username = $row["tsugi_xapi_key"];
                 $xapi_password = $row["tsugi_xapi_secret"];
+                $xapi_enabled = "checked";
             }
 
-			if(file_exists($projectdir))
+			if($published == 1)
 			{
-				$indexfile = $projectdir . "index.php";
-				$published = true;
 				$PDOX = LTIX::getConnection();
 				$row = $PDOX->rowDie(
-					"	SELECT k.key_key, k.secret 
+					"	SELECT l.title, k.key_key, k.secret 
 						FROM {$CFG->dbprefix}lti_key AS k, {$CFG->dbprefix}lti_context AS c, lti_link AS l  
 							WHERE k.key_id = c.key_id AND c.context_id = l.context_id AND l.path = :DPATH",
 						array(':DPATH' => $url));
 				$key = $row["key_key"];
 				$secret = $row["secret"];
+				$title = $row["title"];
 				$checked = "checked";
-                if(file_exists($projectdir . "/xttracking_xapi.js"))
-                {
-                    $xapi_enabled = "checked";
-
-                }
-
-				if(file_exists($projectdir . "/register.php"))
-				{
-					include($projectdir . "/register.php");
-
-                    $query_for_preview_content = "td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret";
-                    $name = $REGISTER_LTI2["name"];
-					$shortname = $REGISTER_LTI2["short_name"];
-					$desciption = $REGISTER_LTI2["description"];
-                    $xapi_endpoint = $xApi_Config["xapi_endpoint"];
-                    $xapi_username = $xApi_Config["xapi_username"];
-                    $xapi_password = $xApi_Config["xapi_password"];
-				}
 			}
 			?>
 				<p class="header"><span>LTI2/Tsugi</span></p>
 				<p>
 
-					<form id="form-action" method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/properties/lti_update.php?tsugi=true&template_id=<?php echo $id;?>">
+					<form id="form-action" method="post" action="<?php echo $xerte_toolkits_site->site_url;?>website_code/php/properties/lti_update.php?template_id=<?php echo $id;?>">
 						<label for="tsugi_published">Publish</label><input id="pubChk" type="checkbox" name="tsugi_published" <?php echo $checked; ?>><br>
                         <div id="publish">
-						    <label for="tsugi_name">Name:</label><input name="tsugi_name" type="text" value="<?php echo $name ?>"><br>
-						    <label for="tsugi_shortname">Short name:</label><input name="tsugi_shortname" type="text" value="<?php echo $shortname ?>"><br>
-						    <label for="tsugi_description">Description:</label><input name="tsugi_description" type="text" value="<?php echo $desciption ?>"><br>
+						    <label for="tsugi_title">Name:</label><input name="tsugi_title" type="text" value="<?php echo $title ?>"><br>
 							<label for="tsugi_key">Key:</label><input name="tsugi_key" type="text" value="<?php echo $key ?>"><br>
 							<label for="tsugi_secret">Secret:</label><input name="tsugi_secret" type="text" value="<?php echo $secret ?>"><br>
 
@@ -130,6 +94,7 @@
 						echo "Your LTI2 link is: <br><a href=\"$url\">$url</a>";
 					}
 					?>
+                    <div class="result_message"></div>
 				</p>
 			<?php
 

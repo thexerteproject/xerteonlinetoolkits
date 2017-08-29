@@ -1303,8 +1303,12 @@ function tsugi_template(){
 						type: 'POST',
 						url: $('#form-action').attr("action"),
 						data: $('#form-action').serialize(),
-						success: function () {
+						success: function (data) {
 						  location.reload();
+						},
+                        error: function(data)
+						{
+                            $(".result_message").html(data.response);
 						}
 					  });
 				});
