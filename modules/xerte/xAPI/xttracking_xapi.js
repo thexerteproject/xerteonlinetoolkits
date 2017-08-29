@@ -589,6 +589,16 @@ function XTSetPageScore(page_nr, score)
     this.pageEnd = new Date();
     var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
 
+    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
+
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+    var seconds = delta % 60;
+
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -606,10 +616,55 @@ function XTSetPageScore(page_nr, score)
                 "score": {
                     "scaled": score / 100
                 },
-                "duration": pageDuration
+                "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
             },
             timestamp: this.pageEnd
 
+        }
+    );
+
+    SaveStatement(statement);
+}
+
+function XTSetPageScoreJSON(page_nr, score, JSONGraph)
+{
+    state.setPageScore(page_nr, score);
+    this.pageEnd = new Date();
+    var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
+
+    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
+
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+    var seconds = delta % 60;
+
+    var statement = new TinCan.Statement(
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/scored"
+            },
+            target: {
+                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+            },
+            result:{
+                "completion": true,
+                "success": score >= state.lo_passed,
+                "score": {
+                    "scaled": score / 100
+                },
+                "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
+                "extensions": {
+                    "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
+                }
+            },
+            timestamp: this.pageEnd
         }
     );
 
@@ -671,7 +726,42 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
 {
-    return 0;
+    //Get ID from the question
+    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
+    var x = lrsInstance.queryStatements(
+        {
+            params: {
+                verb: new TinCan.Verb(
+                    {
+                        id: "http://adlnet.gov/expapi/verbs/answered"
+                    }
+                ),
+                activity: (
+                {
+                    id: "http://xerte.org.uk/xapi/questions/" + idQ
+                }
+                )
+            },
+            callback: function(err, sr) {
+
+                var stringObjects = [];
+
+                for (x = 0; x < sr.statements.length; x++)
+                {
+                    stringObjects[x] = sr.statements[x].originalJSON;
+                }
+
+                if(err !== null) {
+                    console.log("Failed to query statements: " + err);
+                    // TODO: do something with error, didn't get statements
+                    return;
+                }
+                if (sr.more !== null) {
+                }
+            }
+        }
+
+    );
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
