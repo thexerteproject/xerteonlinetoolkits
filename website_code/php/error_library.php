@@ -51,10 +51,10 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
 
     /*
-     * If error email message turned on, send an error email message 
+     * If error email list is set, send an error email message to those users
      */
 
-    if(isset($xerte_toolkits_site->error_email_message) && $xerte_toolkits_site->error_email_message=="true"){
+    if(isset($xerte_toolkits_site->email_error_list) && trim($xerte_toolkits_site->email_error_list) != false){
 
         email_message($user_name, $type, $level, $subject, $content);		
 
@@ -202,6 +202,6 @@ function email_message($user_name, $type, $level, $subject, $content){
 
     $email_content = date("G:i:s-d/m/Y") . "\n" . $content;
 
-    mail($xerte_toolkits_site->email_error_list, $email_subject, $email_content,get_email_headers());
+    mail($xerte_toolkits_site->email_error_list, $email_subject, $email_content, get_email_headers());
 
 }
