@@ -27,23 +27,24 @@ $ok = true; $warning = false; ?>
             <ul>
                 <li>Look in the Ini file for <code>file_uploads =</code> and set the value to be On: <?php if ( ini_get("file_uploads" ) == 1 ) { echo "<div class=\"ok\">OK</div>"; } else { echo "div class=\"error\">Off</div>"; $ok = false; } ?></li>
 
-                <li>Look in the Ini file for <code>upload_tmp_dir =</code> and set the value to a path outside of the public area available to visitors to the web server (e.g if you are using XAMPP - you should not put the temp directory in the HTDOCS folder): try changing this setting to
-                <code><?php echo ini_get( "upload_tmp_dir" ); ?></code>
+                <li>Look in the Ini file for <code>upload_tmp_dir =</code> and set the value to a path outside of the public area available to visitors to the web server (e.g if you are using XAMPP - you should not put the temp directory in the HTDOCS folder): 
                 <?php if ( ini_get( "upload_tmp_dir" ) == "" ): $warning = true; ?>
                     <div class="warning">Not set!</div>
+                <?php else: ?>
+                    <code><?php echo ini_get( "upload_tmp_dir" ); ?></code>
                 <?php endif; ?></li>
 
-                <li>Look in the Ini file for <code>upload_max_filesize =</code> and set the value to an amount that you want to be the maximum file size you can upload. The format for this setting is the number, then the letter 'M': 
+                <li>Look in the Ini file for <code>upload_max_filesize =</code> and set the value to an amount that you want to be the maximum file size you can upload. The format for this setting is a number, then the letter 'M': 
                 <div class="info"><?php echo ini_get( "upload_max_filesize" );?></div></li>
 
-                <li>Look in the Ini file for <code>post_max_size =</code> and set the value to an amount that you want to be the maximum size of post data allowed. The format for this setting is the number, then the letter 'M':
+                <li>Look in the Ini file for <code>post_max_size =</code> and set the value to an amount that you want to be the maximum size of post data allowed. The format for this setting is a number, then the letter 'M':
                 <div class="info"><?php echo ini_get( "post_max_size" );?></div>
                     <ul>
                         <li>PHP advise you set this value to be slightly greater than the <code>upload_max_filesize</code>.</li>
                     </ul> 
                 </li>
 
-                <li>Look in the Ini file for <code>memory_limit =</code> and set the value to an amount that you want to be the maximum amount of memory in bytes that a script is allowed to allocate. The format for this setting is the number, then the letter 'M': 
+                <li>Look in the Ini file for <code>memory_limit =</code> and set the value to an amount that you want to be the maximum amount of memory in bytes that a script is allowed to allocate. The format for this setting is a number, then the letter 'M': 
                 <div class="info"><?php echo ini_get( "memory_limit" );?></div>
                 </li>
             </ul>
