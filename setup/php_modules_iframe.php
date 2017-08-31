@@ -30,27 +30,27 @@
 
 	if(ini_get("upload_tmp_dir")==""){
 
-		echo "The directory isn't set, PHP should use a default value, but you may want to set this. <br>";
+		echo "The file upload temporary directory isn't set. PHP should use a default value, but you may want to set this. <br>";
 
 	}else{
 
-		echo "File uploads are set in php.ini to be " . ini_get("upload_tmp_dir") . "<br>";
+		echo "The file upload temporary directory is set in php.ini to be " . ini_get("upload_tmp_dir") . "<br>";
 
 	}
 
-	echo "The maximum uploadedable file size is set in php.ini to be " . ini_get("upload_max_filesize") . "<br>";
+	echo "The maximum uploadable file size is set in php.ini to be " . ini_get("upload_max_filesize") . "<br>";
 	echo "The max post size is set in php.ini to be " . ini_get("post_max_size") . "<br>";
 	echo "The memory limit is set in php.ini to be " . ini_get("memory_limit") . "<br>";
 
-	echo "Checking for MySQL Code<br>";
+	echo "Checking for MySQL code<br>";
 
 	if(function_exists("mysql_connect")){
 
-		echo "MySQL functions exist<Br>";
+		echo "MySQL functions exist<br>";
 
 	}else{
 
-		echo "MySQL functions do not exist<Br>";
+		echo "MySQL functions do not exist<br>";
 
 	}
 
@@ -58,35 +58,35 @@
 
 	if(function_exists("session_start")){
 
-		echo "Sessions exists<Br>";
+		echo "Sessions exists<br>";
 
 	}else{
 
-		echo "Session functions do not exist<Br>";
+		echo "Session functions do not exist<br>";
 
 	}
 
-	echo "Checking for ldap code <br>";
+	echo "Checking for LDAP code<br>";
 
 	if(function_exists("ldap_connect")){
 
-		echo "LDAP functions exists<Br>";
+		echo "LDAP functions exist<br>";
 
 	}else{
 
-		echo "LDAP functions do not exist<Br>";
+		echo "LDAP functions do not exist<br>";
 
 	}
 
-	echo "Checking for mail Zlib <br>";
+	echo "Checking for mail Zlib functions<br>";
 
 	if(function_exists("gzcompress")){
 
-		echo "Zlib function exists<Br>";
+		echo "Zlib functions exist<br>";
 
 	}else{
 
-		echo "Zlib functions do not exist<Br>";
+		echo "Zlib functions do not exist<br>";
 
 	}
 
