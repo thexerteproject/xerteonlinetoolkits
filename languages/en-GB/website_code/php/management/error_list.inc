@@ -11,7 +11,7 @@
 	 */
 	 
 
-	define("DELETE_VIEW", "View");
+	define("LOGS_VIEW", "Show");
 
 	define("DELETE_ALL_LOGS", "Delete all log files");
 
