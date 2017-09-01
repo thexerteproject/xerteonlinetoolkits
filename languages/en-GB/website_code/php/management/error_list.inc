@@ -13,6 +13,6 @@
 
 	define("DELETE_VIEW", "View");
 
-	define("DELETE_ALL", "Delete all error logs");
+	define("DELETE_ALL_LOGS", "Delete all log files");
 
 ?>

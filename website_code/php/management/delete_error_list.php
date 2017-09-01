@@ -28,7 +28,7 @@ if(is_user_admin()){
 
 	$error_file_list = opendir($path);
 	
-	echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\">All error logs deleted</div>";
+	echo "<div style=\"float:left; margin:10px; width:100%; height:30px; position:relative; border-bottom:1px solid #999\">All log files deleted</div>";
 
 	while($file = readdir($error_file_list)){
 
