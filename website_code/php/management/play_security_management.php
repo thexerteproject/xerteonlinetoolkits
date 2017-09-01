@@ -31,6 +31,9 @@ if(is_user_admin()){
     $res = db_query($query, array($_POST['security'], $_POST['data'], $_POST['info'] , $_POST['play_id'] ));
 
     if($res) {
+        $msg = "Play security changes saved by user from " . $_SERVER['REMOTE_ADDR'];
+        receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
+
         echo MANAGEMENT_PLAY_SUCCESS;
     }else{
         echo MANAGEMENT_PLAY_FAIL;
