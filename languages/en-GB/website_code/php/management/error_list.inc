@@ -2,7 +2,7 @@
 
 	/**
 	 * 
-	 * management delete english language file
+	 * management log files english language file
 	 *
 	 * @author Patrick Lockley
 	 * @version 1.0
