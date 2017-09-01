@@ -72,6 +72,9 @@ if(is_user_admin()) {
     }
     if($res!==false && $res2){
 
+        $msg = "Site changes saved by user from " . $_SERVER['REMOTE_ADDR'];
+        receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
+
         echo MANAGEMENT_SITE_CHANGES_SUCCESS;
 
     }else{
