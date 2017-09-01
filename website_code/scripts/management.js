@@ -382,7 +382,7 @@ function remove_security(){
 
 }
 
-// Function delete sharing template
+// Function update site
 //
 // remove a share, and check who did it
 
@@ -426,7 +426,7 @@ function update_site(){
 					 '&play_edit_preview_query=' + document.getElementById("play_edit_preview_query").value + 
 					 '&email_error_list=' + document.getElementById("error_email_list").value + 
 					 '&error_log_message=' + document.getElementById("error_log_message").value + 
-					 '&error_email_message=' + document.getElementById("error_email_message").value + 
+					 '&max_error_size=' + document.getElementById("max_error_size").value + 
 					 '&authentication_method=' + document.getElementById("authentication_method").value + 
 					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
 					 '&ldap_port=' + document.getElementById("ldap_port").value + 
