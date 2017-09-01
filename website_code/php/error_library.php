@@ -23,7 +23,7 @@
  * This function is used to handle how an error message is used
  * @param string $user_name = username the error relates to
  * @param string $type = user / Admin / system
- * @param string $level = how serious the problem is, or whether it is a sucess
+ * @param string $level = how serious the problem is, or whether it is a success
  * @param string $subject = The title of the error problem (a preci effectively)
  * @param string $content = The error message in full.
  * @version 1.0
@@ -64,18 +64,18 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
 /**
  * 
- * Function receive message
- * This function is used to send an error email meesage
+ * Function write message
+ * This function is used to log an error message
  * @param string $user_name = username the error relates to
  * @param string $type = user / Admin / system
- * @param string $level = how serious the problem is, or whether it is a sucess
+ * @param string $level = how serious the problem is, or whether it is a success
  * @param string $subject = The title of the error problem (a preci effectively)
  * @param string $content = The error message in full.
  * @version 1.0
  * @author Patrick Lockley
  */
 
-function write_message($user_name, $type, $level, $subject,$content){
+function write_message($user_name, $type, $level, $subject, $content){
 
     global $xerte_toolkits_site;
 
@@ -184,10 +184,10 @@ function write_message($user_name, $type, $level, $subject,$content){
 /**
  * 
  * Function email message
- * This function is used to send an error email meesage
+ * This function is used to send an error email message
  * @param string $user_name = username the error relates to
  * @param string $type = user / Admin / system
- * @param string $level = how serious the problem is, or whether it is a sucess
+ * @param string $level = how serious the problem is, or whether it is a success
  * @param string $subject = The title of the error problem (a preci effectively)
  * @param string $content = The error message in full.
  * @version 1.0
