@@ -165,7 +165,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
 
         $_SESSION['toolkits_logon_id'] = "site_administrator";
 
-        $msg = "User logged in successfully from " . $_SERVER['REMOTE_ADDR'];
+        $msg = "Admin user logged in successfully from " . $_SERVER['REMOTE_ADDR'];
         receive_message("", "SYSTEM", "MGMT", "Successful login", $msg);
 
         $mysql_id = database_connect("management.php database connect success", "management.php database connect fail");
@@ -335,7 +335,7 @@ if (empty($_POST["login"]) && empty($_POST["password"])) {
          */
 
         if ($_POST["login"] == $xerte_toolkits_site->admin_username) {
-            $msg = "User attempted to login from " . $_SERVER['REMOTE_ADDR'];
+            $msg = "Admin user attempted to login from " . $_SERVER['REMOTE_ADDR'];
         }
         else {
             $uid = (empty($_POST["login"])) ? 'UNKNOWN' : $_POST["login"];
