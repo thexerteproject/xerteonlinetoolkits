@@ -28,21 +28,21 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 
-if (isset($_SESSION['toolkits_logon_id'])) {
-    if ($_SESSION['toolkits_logon_id'] == "site_administrator") {
-        $msg = "Admin user (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
-        receive_message("", "SYSTEM", "MGMT", "Logout", $msg);
+require "user_library.php";
+
+if (is_user_admin()) {
+    $msg = "Admin user (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
+    receive_message("", "SYSTEM", "MGMT", "Logout", $msg);
+}
+else {
+    if (isset($_SESSION['toolkits_logon_username'])) {
+        $msg = "User " . $_SESSION['toolkits_logon_username'] . " (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
     }
     else {
-        if (isset($_SESSION['toolkits_logon_username'])) {
-            $msg = "User " . $_SESSION['toolkits_logon_username'] . " (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
-        }
-        else {
-            $msg = "Unknown user (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
-        }
-
-        receive_message("", "SYSTEM", "LOGINS", "Logout", $msg);
+        $msg = "Unknown user (from " . $_SERVER['REMOTE_ADDR'] . ") has logged out";
     }
+
+    receive_message("", "SYSTEM", "LOGINS", "Logout", $msg);
 }
 
 $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
