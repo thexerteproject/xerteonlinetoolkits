@@ -1,6 +1,6 @@
 <language name="Turkish">
 
-  <noPages label="Bu projede hiç bir sayfa yok."/> 
+  <noPages label="Bu projede hiç sayfa yok."/> 
 
   <nextButton label="İleri" description="Sonraki Sayfa Butonu"/>
   
@@ -20,15 +20,19 @@
   
   <continueButton label="Devam" description="Devam Butonu"/>
   
-  <toc label="İçindekiler Tablosu" description="İçindekiler tablosu. Yön tuşlarını ile bir sayfa seçin. Sayfaya gitmek için Boşluk Çubuğu'nu tuşlayın.">
+  <progressBar label="TAMAMLANDI"/>
+  
+  <footerTools hide="Altbilgi araçlarını gizle" show="Altbilgi araçlarını göster"/>
+  
+  <toc label="İçindekiler Tablosu" description="İçindekiler tablosu. Yön tuşlarını ile bir sayfa seçin. Sayfaya gitmek için Boşluk Çubuğu'nu tuşlayın." htmlDescription="Sekme tuşları ile bir sayfa seçin. Sayfaya gitmek için Boşluk Çubuğu'nu tuşlayın.">
 	  <contentsList label="" description=""/>
 	  <closeButton label="" description="İçindekiler Tablosunu Kapat"/>
-	  <gotoPageButton label="Sayfaya Git" description="Sayfaya Git Butonu"/>
+	  <gotoPageButton label="Sayfaya Git Butonu" description="Sayfaya Git Butonu"/>
   </toc>
-  
+    
   <mediaWindow label="Medya Görüntüleyici"/>
   
-  <glossary label="Sözlük" description="Sözcükler listesi ve onların tanımları.">
+  <glossary label="Sözlük" description="Sözcükler listesi ve  tanımları.">
 	  <closeButton label="" description="Sözlüğü Kapat"/>
   </glossary>
   
@@ -49,87 +53,94 @@
   
   <errorFlash label="Bu sayfayı görüntüleyebilmek için Flash Player kurmalısınız." description="Flash Player İndir"/>
   
+  <authorSupport label="Yazar Desteği AÇIK: kırmızı renkte gösterilen metin canlı projelerde görünmez."/>
+  
+  <hiddenPage label="Bu sayfa canlı projelerde gizlenecek"/>
+  
+  <hiddenSection label="Bu bölüm canlı projelerde gizlenecek"/>
+  
   <tick label="Tick"/>
   
   <cross label="Cross"/>
 
   <themes label="--Renk Şeması--" description="Renk Şeması Seçenekleri">
-    <item>default</item>
-    <item>blue</item>
-    <item>green</item>
-    <item>red</item>
+    <item>varsayılan</item>
+    <item>mavi</item>
+    <item>yeşil</item>
+    <item>kırmızı</item>
     <item>orange</item>
-    <item>purple</item>
-    <item>grey</item>
-    <item>high contrast 1</item>
-    <item>high contrast 2</item>
+    <item>mor</item>
+    <item>gri</item>
+    <item>yüksek contrast 1</item>
+    <item>yüksek contrast 2</item>
   </themes>
  
   <sizes label="--Ekran Boyutu--" description="Ekran Boyutu Seçenekleri">
-	<item>Default</item>
-	<item>large</item>
-	<item>larger</item>
-	<item>Full Screen</item>
-	<item>fill window</item>
+	<item>Varsayılan</item>
+	<item>geniş</item>
+	<item>daha geniş</item>
+	<item>Tam Ekran</item>
+	<item>Pencereye Sığdır</item>
   </sizes>
   
   <fonts label="--Metin Font--" description="Font Seçenekleri">
-	  <item>default</item>
+	  <item>varsayılan</item>
   </fonts>
   
   <textSizes label="--Metin Boyut--" description="Metin Boyutu Seçenekleri">
-	  <item>default</item>
-	  <item>small</item>
-	  <item>medium</item>
-	  <item>large</item>
-	  <item>larger</item>
+	  <item>varsayılan</item>
+	  <item>küçük</item>
+	  <item>orta</item>
+	  <item>geniş</item>
+	  <item>daha geniş</item>
   </textSizes>
   
-  <volumeControl label="Ses şiddeti:" description="Ses Kontrol"/>
-  <volumeControlSlider label="" description="Ses şiddeti Kontrol Sürgüsü"/>
+  <volumeControl label="Ses şiddeti:" description="Ses Şiddeti Kontrol"/>
+  <volumeControlSlider label="" description="Ses Şiddeti Kontrol Sürgüsü"/>
   
   <vocab>
-	  <page>Page</page>
+	  <page>Sayfa</page>
 	  <of>of</of>
   </vocab>
   
   <soundController>
-	<stopButton label="Dur" description="Ses Durdurma Butonu"/>
-	<playButton label="Çal" description="Ses Çalma Butonu"/>
-	<pauseButton label="Durakla" description="Ses Duraklatma Butonu"/>
-	<rwndButton label="Geri" description="Ses Geri Butonu"/>
-	<ffwdButton label="İleri" description="Ses İleri Butonu"/>
-	<loader label="yükleniyor: "/>
+	<stopButton label="Sesi Durdur" description="Sesi Durdurma Butonu"/>
+	<playButton label="Sesi Çal" description="Sesi Çalma Butonu"/>
+	<pauseButton label="Sesi Duraklat" description="Sesi Duraklatma Butonu"/>
+	<rwndButton label="Sesi Geri Sar" description="Sesi Geri Sarma Butonu"/>
+	<ffwdButton label="Sesi İleri Sar" description="Sesi İleri Sarma Butonu"/>
+	<loader label="Yükleniyor: "/>
   </soundController>
   
   <movieController>
-	<stopButton label="Dur" description="Video Durdurma Butonu"/>
-	<playButton label="Oynat" description="Video Oynatma Butonu"/>
-	<pauseButton label="Duraklat" description="Video Duraklatma Butonu"/>
-	<rwndButton label="Geri" description="Video İleri Butonu"/>
-	<ffwdButton label="İleri" description="Video Geri Butonu"/>
-	<loader label="yükleniyor: "/>
+	<stopButton label="Filmi Durdur" description="Filmi Durdurma Butonu"/>
+	<playButton label="Filmi Oynat" description="Filmi Oynatma Butonu"/>
+	<pauseButton label="Filmi Duraklat" description="Filmi Duraklatma Butonu"/>
+	<rwndButton label="Filmi Geri Sar" description="Filmi İleri sarma Butonu"/>
+	<ffwdButton label="Filmi İleri Sar" description="Filmi Geri sarma Butonu"/>
+	<loader label="Yükleniyor: "/>
   </movieController>
   
-  <mediaElementControls>
-	<stopButton label="Dur" description="Medya Durdurma Button"/>
-	<playPauseButton label="Oynat/Duraklat" description="Medya Oynat/Duraklat Butonu"/>
+  <mediaElementControls video="Video" audio="Ses">
+	<stopButton label="Dur" description="Medya Durdur Butonu"/>
+	<playPauseButton label="Oynat/Duraksat" description="medya Oynat/Duraksat Butonu"/>
 	<muteButton label="Ses Aç/Kapat" description="Ses Aç/Kapat Butonu"/>
-	<fullscreenButton label="Tam Ekran" description="Tam Ekran Butonu"/>
-	<captionsButton label="Başlıklar/Alt yazılar" description="Başlıklar/Alt yazıları Göster/Gizle Butonu"/>
+	<fullscreenButton label="Tam Ekran" description="Tam Ekran Button"/>
+	<captionsButton label="Başlıklar/Alt yazılar" description="Alt yazı Göster/Gizle Butonu"/>
   </mediaElementControls>
-  
+   
   <interactions>
-	  <button name="Button"/>
+	  <button name="Buton"/>
 	  <radioButton selected="seçildi. Seçeneklerden seçim yapmak için yön tuşlarını kullanın"/>
 	  <checkBox selected="seçildi" deselected="seçilmedi"/>
-	  <comboBox name="ComboBox" options="Seçenekler." selected="seçildi." selectedOptions="seçildi. Seşmek için yön tuşlarını kullanın" />
+	  <comboBox name="Açılır Kutu" options="Seçenekler." selected="seçildi." selectedOptions="seçildi. Seşmek için yön tuşlarını kullanın" />
 	  <hotSpot name="HotSpot" toSelect="Hot Spot. Seçmek için Boşluk Çubuğu'nu tuşlayın." selected="Hot Spot seçildi"/>
 	  <hotObject name="HotObject" toSelect="Seçmek için Boşluk Çubuğu'nu tuşlayın" selected="Hot Object seçildi"/>
-	  <textEntry name="Text Entry Box" selected="Metin Kutusu seçildi"/>
-	  <targetArea name="Target Area" description="Hedef alana bırkmak için" toSelect="Seçilen elemanı alana bırakmak için Boşluk Çubuğu'nu tuşlayın."/>
-	  <draggableItem name="Draggable Item" selected="Eleman Seçildi" toSelect="Seçmek için Boşluk Çubuğu'nu tuşlayın" deSelected="Hiçbir eleman seçilmedi." />
-  </interactions>
+	  <textEntry name="Metin Kutusu" selected="Metin Kutusu seçildi"/>
+	  <targetArea name="Hedef Alan" description="Hedef alana bırkmak için" toSelect="Seçilen elemanı alana bırakmak için Boşluk Çubuğu'nu tuşlayın."/>
+	  <draggableItem name="Sürüklenebilir eleman" selected="Eleman Seçildi" toSelect="Seçmek için Boşluk Çubuğu'nu tuşlayın" deSelected="Hiçbir eleman seçilmedi." />
+      <moreInfoItem toSelect="Seçmek için Boşluk Çubuğu tuşlayın" selected="Seçildi" moreInfo="daha fazla bilgi için Boşluk Çubuğu tuşlayın" /> 
+ </interactions>
   
   <fetchResults label="Sonuçlar alınıyor..."/>
   <errorResults label="Sonuçlar yüklenirken bir hata oluştu"/>
@@ -137,18 +148,52 @@
   <noResults label="Hiçbir sonuç alınamadı"/>
   
   <timer>
-	  <remaining name="Time remaining"/>
-	  <timeUp name="Time up"/>
-	  <seconds name="seconds"/>
+	  <remaining name="Kalan süre"/>
+	  <timeUp name="Süre doldu"/>
+	  <seconds name="saniye"/>
   </timer>
 
   <colourChanger label="Renk Değiştirici" description="Renkleri değiştirir.">
 	  <closeButton label="" description="Renk değiştiriciyi kapat"/>
 	  <selectTxt label="Lütfen aşağıdaki seçeneklerden seçiniz"/>
-	  <adviceTxt label="Yardıma mı ihtiyacınız var? Jisc TechDis' ziyaret ediniz &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
+	  <adviceTxt label="Yardıma mı ihtiyacınız var? Ziyaret edin: &lt;a target=&apos;_blank&apos; href=&apos;http://accessiblepractice.org/v/xerte/play_427&apos;&gt;Xerte Toolkits accessibility guide&lt;/a&gt;."/>
 	  <off label="Yok"/>
-	  <invert label="Invert"/>
+	  <noBg label="Arka zemin resimlerini kaldır"/>
+	  <invert label="Ters çevir"/>
 	  <blackYellow label="Sarı üzerine Siyah"/>
   </colourChanger>
 
+   <screenReaderInfo label="Ekran Okuyucu Bilgileri" newWindow="Bu bağlantı yeni bir pencerede açılacaktır" thisWindow="Bu bağlantı bu pencerede açılacaktır" dialog="Bu buton bir diyalog penceresi açar.">
+	  <tabNav description="Bu sayfada, sekmeyi seçerek sunulan bilgileri değiştiren sekmeli bir panel bulunmaktadır. Bir sekme seçmek için: İki kez Enter tuşuna basın veya Shift-Enter  tuşuna basın."/>
+	  <accNav description="Bu sayfada, bir sekmeyi seçerek sunulan bilgileri değiştiren bir akordeon paneli bulunur. Bir sekme seçmek için Enter veya Space tuşunu tıklayın."  click="Bilgi açığa çıkarmak için tıklayın."/>
+	  <buttonNav description="Bu sayfada her biri ilgili bazı bilgileri açığa çıkaran bir dizi buton bulunur." click="Bilgi açığa çıkarmak için tıklayın."/>
+	  <slideshow description="Bu sayfada, önceki ve sonraki butonları tıklatarak sunulan bilgileri değiştiren bir slayt gösterisi bulunmaktadır."/>
+	  <audioSlideshow description="Bu sayfada bir ses dosyasıyla senkronize şekilde içerik görüntülenir. Ses çalınca sayfaya yeni içerik eklenir."/>
+	  <videoSynch description="Bu sayfada içeriği bir video ile senkronize olarak görüntüler. Video oynatıldığı zaman sayfaya yeni içerik eklenir."/>
+	  <list description="Bu sayfada her birinin ilgili bazı bilgileri açığa çıkaran bir dizi bağlantı bulunmaktadır." click="Bilgi açığa çıkarmak için tıklayın."/>
+	  <modelAnswerResults selected="Metin seçildi"/>
+	  <mcq description="TSayfasında çoktan seçmeli bir soru bulunmaktadır. Olası cevapları keşfetmek için sekmeyi ve yukarı / aşağı ok tuşlarını kullanın ve cevabınızı seçmek için Boşluk Çubuğu'nu tuşlayın."/>
+	  <quiz description="Bu sayfada çoktan seçmeli bir dizi soru bulunmaktadır. Olası cevapları keşfetmek için sekmeyi ve yukarı / aşağı ok tuşlarını kullanın ve cevabınızı seçmek için Boşluk Çubuğu'nu tuşlayın."/>
+  </screenReaderInfo>
+  
+  <authorVars label="View variable data">
+	<item>Name</item>
+	<item>Fixed Value</item>
+	<item>Random</item>
+	<item>Min</item>
+	<item>Max</item>
+	<item>Step</item>
+	<item>DP</item>
+	<item>SF</item>
+	<item>Trailing Zeros</item>
+	<item>Exclude</item>
+	<item>Default</item>
+	<item>Value</item>
+  </authorVars>
+  
+  <authorVarsInfo>
+	  <error unable="Hesaplanamıyor" invalid="Geçersiz değer" none="No variable data"/>
+	  <info undef="References an undefined variable" minMax="min > max" valueMin="value &lt; min" valueMax="value > max" exclude="{n} is excluded" circular="Circular variable reference" none="All possible values are excluded or fall outside the min &amp; max range" none2="{n} attempts have not returned an accepted value" attempts="{n} attempts to calculate a valid value" default="Fallback to default value"/>
+  </authorVarsInfo>
+  
 </language>

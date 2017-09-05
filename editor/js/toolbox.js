@@ -636,7 +636,25 @@ var EDITOR = (function ($, parent) {
 			}
 		});
 		
-		group.append('<div class="table_holder"><table id="groupTable_' + name + '" class="wizardgroup_table"/></div>');
+		var info = "";
+		if (options.info) info = '<div class="group_info">' + options.info + '</div>';
+		
+		group.append('<div class="table_holder">' + info + '</div>');
+		group.find('.table_holder').append(
+			$('<table width="100%" class="column_table"><tr></table>')
+		);
+
+		var group_table, columns = (options.cols ? Math.min(options.cols, 3) : 1);
+		for (var w = 0; w < columns; w++) {
+			group_table = $('<table id="groupTable_' + name + (w == 0 ? '' : '_' + w ) + '" class="wizardgroup_table"/>');
+
+			if (columns > 1) group_table.addClass('wizardgroup_table_box');
+
+			group.find('.column_table tr').append(
+				$('<td width="' + parseInt(100 / columns, 10) + '%"/>')
+					.append(group_table)
+			);
+		}
 		
 		$(id).append(tr);
 		
@@ -1317,8 +1335,11 @@ var EDITOR = (function ($, parent) {
     convertColorPickers = function ()
     {
         $.each(colorpickers, function (i, options){
-            var myPicker = new jscolor.color(document.getElementById(options.id), {})
-            myPicker.fromString(Array(7-options.value.length).join('0') + options.value)  // now you can access API via 'myPicker' variable
+			var myPicker = new jscolor.color(document.getElementById(options.id), {'required':false});
+			
+			if (options.value != undefined) {
+				myPicker.fromString(Array(7-options.value.length).join('0') + options.value);
+			}
         });
     },
 
@@ -2134,7 +2155,7 @@ var EDITOR = (function ($, parent) {
 					while (newText.indexOf("<math", mathNum) != -1) {
 						var text1 = newText.substring(mathNum, newText.indexOf("<math", mathNum)),
 							tableNum = 0;
-						while (text1.indexOf("<table", tableNum) != -1) { // check for table tags before/between math tags
+						while (text1.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags before/between math tags
 							tempText += text1.substring(tableNum, text1.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 							tempText += text1.substring(text1.indexOf("<table", tableNum), text1.indexOf("</table>", tableNum) + 8);
 							tableNum = text1.indexOf("</table>", tableNum) + 8;
@@ -2146,7 +2167,7 @@ var EDITOR = (function ($, parent) {
 
 					var text2 = newText.substring(mathNum),
 						tableNum = 0;
-					while (text2.indexOf("<table", tableNum) != -1) { // check for table tags after math tags
+					while (text2.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) { // check for table tags after math tags
 						tempText += text2.substring(tableNum, text2.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += text2.substring(text2.indexOf("<table", tableNum), text2.indexOf("</table>", tableNum) + 8);
 						tableNum = text2.indexOf("</table>", tableNum) + 8;
@@ -2157,7 +2178,8 @@ var EDITOR = (function ($, parent) {
 				} else if (newText.indexOf("<table") != -1) { // no math tags - so just check table tags
 					var tempText = "",
 						tableNum = 0;
-					while (newText.indexOf("<table", tableNum) != -1) {
+					
+					while (newText.indexOf("<table", tableNum) != -1 && newText.indexOf("</table", tableNum) != -1) {
 						tempText += newText.substring(tableNum, newText.indexOf("<table", tableNum)).replace(/(\n|\r|\r\n)/g, "<br />");
 						tempText += newText.substring(newText.indexOf("<table", tableNum), newText.indexOf("</table>", tableNum) + 8);
 						tableNum = newText.indexOf("</table>", tableNum) + 8;
@@ -2334,7 +2356,6 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .attr('type', 'color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
@@ -2345,12 +2366,17 @@ var EDITOR = (function ($, parent) {
                         html = $('<input>')
                             .attr('id', id)
                             .addClass('color')
-                            .attr('value', colorvalue)
                             .change({id:id, key:key, name:name}, function(event)
                             {
                                 inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                             });
-                        colorpickers.push({id: id, value: colorvalue, options: options});
+						
+						colorpickers.push({id: id, options: options});
+						
+						if (colorvalue != '') {
+							html.attr('value', colorvalue);
+							colorpickers[colorpickers.length-1].value = colorvalue;
+						}
                     }
                     break;
                 case 'languagelist':

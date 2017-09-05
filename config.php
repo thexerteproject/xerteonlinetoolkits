@@ -47,7 +47,7 @@ if ($development) {
     ini_set('error_reporting', E_ALL);
     // Change this to where you want the XOT log file to go; 
     // the webserver will need to be able to write to it.
-    define('XOT_DEBUG_LOGFILE', '/tmp/debug.log');
+    define('XOT_DEBUG_LOGFILE', 'error_logs/debug.log');
 }
 
 if (version_compare(PHP_VERSION, '5.1.0', '<')) {

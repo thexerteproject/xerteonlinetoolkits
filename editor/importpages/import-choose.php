@@ -29,15 +29,19 @@ $pageIcons = array();
 foreach($nodes as $node)
 {
     $name = $node->getName();
-    $icon = (string)$Nottingham->xpath('/wizard/' . $name . '/@icon')[0]['icon'];
+	$tmpelement = $Nottingham->xpath('/wizard/' . $name . '/@icon');
+	$icon = (string) $tmpelement[0]['icon'];
     $pageIcons[$node->getName()] = $icon;
 }
+
+// Put pageIcons in session
+$_SESSION['pageIcons'] = json_encode($pageIcons);
 
 // Remove item in editor
 for($i=count($workspace->items) - 1; $i>=0; $i--)
 {
     $item = $workspace->items[$i];
-    if ($item->xot_id == $_GET["id"])
+    if ($item->xot_id == $_GET["id"] && $item->xot_type == 'file')
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);
@@ -51,41 +55,57 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
 }
 
 $workspace_json = json_encode($workspace);
-
+/*
 foreach($workspace->items as $item)
 {
-	if($item->parent != "#" && $item->xot_id != $_GET["id"])
+	if($item->xot_id != $_GET["id"])
 	{
-		$query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?";
-		$source_row = db_query_one($query, array($item->xot_id));
-		
-		$query = "SELECT username FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE login_id = ?";
-		$source_user = db_query_one($query, array($source_row["creator_id"]));
-		$query = "SELECT template_name FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_type_id = ?";
-		$source_template_name = db_query_one($query, array($source_row["template_type_id"]));
+        if ($item->xot_type == "file") {
+            $query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}templatedetails WHERE template_id = ?";
+            $source_row = db_query_one($query, array($item->xot_id));
 
-		$source_folder = $xerte_toolkits_site->users_file_area_full . $source_row['template_id'] . "-" . $source_user['username'] . "-" . $source_template_name['template_name'];		
-		$source_file = $source_folder . "/data.xml";
-		
-		$template = new XerteXMLInspector();
-        $template->loadTemplateXML($source_file);
-		
-		$x = new stdClass();
-		$x->name = $item->text;
-		$x->id = $item->xot_id;
-		
-		$x->glossary = $template->glossaryUsed();
-        $x->pages = $template->getPages();
-        for ($i=0; $i<count($x->pages); $i++)
-        {
-            $page = $x->pages[$i];
-            $page->icon = $pageIcons[$page->type];
+            $query = "SELECT username FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE login_id = ?";
+            $source_user = db_query_one($query, array($source_row["creator_id"]));
+            $query = "SELECT template_name FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_type_id = ?";
+            $source_template_name = db_query_one($query, array($source_row["template_type_id"]));
+
+           $source_folder = $xerte_toolkits_site->users_file_area_full . $source_row['template_id'] . "-" . $source_user['username'] . "-" . $source_template_name['template_name'];
+            $source_file = $source_folder . "/data.xml";
+
+            $template = new XerteXMLInspector();
+            $template->loadTemplateXML($source_file);
+
+            $x = new stdClass();
+            $x->name = $item->text;
+            $x->id = $item->xot_id;
+
+            $x->glossary = $template->glossaryUsed();
+            $x->pages = $template->getPages();
+            for ($i = 0; $i < count($x->pages); $i++) {
+                $page = $x->pages[$i];
+                $page->icon = $pageIcons[$page->type];
+            }
+
+            $items[$x->id] = $x;
         }
+        else
+        {
+            $x = new stdClass();
+            $x->name = $item->text;
+            $x->id = $item->xot_id;
 
-		$items[$x->id] = $x;
+            $x->glossary = false;
+            $x->pages = [];
+
+            $items[$x->id] = $x;
+
+
+        }
 	}
+
 	
 }
+*/
 ?>
 
 <style>

@@ -299,10 +299,12 @@
     <text label="Slide Text" type="TextArea" height="250"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
-    <url label="Image" type="media" optional="true"/>
-    <tip label="Image Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	<imgInfo type="group" label="Image" optional="true">
+		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<tip label="Description" type="textInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
+	</imgInfo>
+	
 	<synch label="Synch Point" type="TextInput"/>
-    
 
   </synchPoint><bleedingImage menu="Media" menuItem="Advanced Image" hint="A text and graphics page with a flexible layout including bleeding the image at one edge of the stage or adding a margin." label="Page Text" type="text" height="200" icon="icPageWhiteImage2" thumb="thumbs/bleedingImage.jpg" remove="true">
 
@@ -829,7 +831,7 @@
 	<clear label="Clear Progress Text" type="CheckBox" optional="true" tooltip="Clears any Progress Text added in previous steps."/>
 	
 	<destinationBtn label="Go Button Label" type="TextInput" language="true"/>
-  </resultStep><delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" remove="true">
+  </resultStep><delicious menu="Misc" menuItem="Delicious Bookmarks" hint="Include Delicious bookmarks in your project." thumb="thumbs/delicious.jpg" icon="icDelicious" deprecated="This page is no longer supported">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Instructions" type="textArea" height="300"/>
@@ -1100,9 +1102,12 @@
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
     <src label="Embed Code or URL" type="script" height="300"/>
 
-    <text label="Text" type="TextArea" height="150" optional="true"/>
 	<windowWidth label="Window Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" optional="true"/>
-	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
+	
+	<textInfo type="group" label="Text" optional="true">
+		<text label="Text" type="TextArea" height="150" optional="true"/>
+		<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
+	</textInfo>
 
   <narrate type="group" label="Narration" optional="true" common="true">
 		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
@@ -2353,7 +2358,7 @@
 		<thumbType label="Type" type="ComboBox" options="Image and Caption,Image and Number,Image Only" data="both,imgNum,image" defaultValue="both" width="200" optional="true"/>
 		<thumbBorder label="Border" type="Checkbox" defaultValue="true" optional="true"/>
 		<highlight label="Highlight Current" type="Checkbox" defaultValue="false" optional="true"/>
-		<highlightCol label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00" optional="true"/>
+		<highlightCol label="Highlight Colour" type="ColourPicker" optional="true"/>
 	</thumbs>
 	
 	<play type="group" label="Play All" optional="true">

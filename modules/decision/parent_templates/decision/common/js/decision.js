@@ -180,6 +180,14 @@ function getLangInfo(node, attribute, fallBack) {
 
 // _____ SET UP INTERFACE _____
 function setUpInterface() {
+	if (allParams.theme != undefined && allParams.theme != "default") {
+		
+		$('head').append('<link rel="stylesheet" href="' + themePath + allParams.theme + '/' + allParams.theme + '.css' + '" type="text/css" />');
+        
+        $('head').append('<script src="'+ themePath + allParams.theme + '/'+ allParams.theme + '.js"' + '</script>');
+		
+	}
+	
 	// stylesheet can be added in editor
 	if (allParams.stylesheet != undefined) {
 		insertCSS(evalURL(allParams.stylesheet));

@@ -2,7 +2,7 @@
 
 	/**
 	 * 
-	 * management delete english language file
+	 * management log files english language file
 	 *
 	 * @author Patrick Lockley
 	 * @version 1.0
@@ -11,8 +11,8 @@
 	 */
 	 
 
-	define("DELETE_VIEW", "View");
+	define("LOGS_VIEW", "Show");
 
-	define("DELETE_ALL", "Delete all error logs");
+	define("DELETE_ALL_LOGS", "Delete all log files");
 
 ?>

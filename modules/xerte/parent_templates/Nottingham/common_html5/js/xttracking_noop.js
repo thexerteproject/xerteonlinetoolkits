@@ -265,36 +265,6 @@ function NoopTrackingState()
         }
     }
 
-    function findPage(page_nr)
-    {
-        var id = makeId(page_nr, -1, 'page', "");
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
-        {
-            if (this.interactions[i].id.indexOf(id) == 0 && this.interactions[i].id.indexOf(id + ':interaction') < 0)
-                return this.interactions[i];
-        }
-        return null;
-    }
-
-    function findInteraction(page_nr, ia_nr)
-    {
-        if (ia_nr < 0)
-        {
-            return this.findPage(page_nr);
-        }
-        var id = makeId(page_nr, ia_nr, "", "");
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
-        {
-            if (this.interactions[i].id.indexOf(id) == 0)
-                return this.interactions[i];
-        }
-        return null;
-    }
-
-
-
     function findCreate(page_nr, ia_nr, ia_type, ia_name)
     {
         var tmpid = makeId(page_nr, ia_nr, ia_type, ia_name);
@@ -319,6 +289,45 @@ function NoopTrackingState()
         return sit;
     }
 
+    function find(id)
+    {
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].id == id)
+                return this.interactions[i];
+        }
+
+        return null;
+    }
+
+    function findPage(page_nr)
+    {
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == -1)
+                return this.interactions[i];
+        }
+        return null;
+    }
+
+    function findInteraction(page_nr, ia_nr)
+    {
+        if (ia_nr < 0)
+        {
+            return this.findPage(page_nr);
+        }
+        var i=0;
+        for (i=0; i<this.interactions.length; i++)
+        {
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
+                return this.interactions[i];
+        }
+        return null;
+    }
+
+
     function enterPage(page_nr, ia_nr, ia_type, ia_name)
     {
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
@@ -342,6 +351,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.correctOptions = [];
     this.correctAnswers = [];
     this.learnerAnswers = [];
     this.learnerOptions = [];

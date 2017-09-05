@@ -80,6 +80,7 @@ $export_flash = false;
 $export_offline = false;
 $xAPI = false;
 $offline_includes="";
+$need_download_url = false;
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -221,7 +222,7 @@ if ($fullArchive) {
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
-            /* Always add menu.rlm */
+            /* Always add menu.html */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
             array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
@@ -362,6 +363,11 @@ if ($xml->mediaIsUsed()) {
     export_folder_loop($xerte_toolkits_site->root_file_path . "mediaViewer/");
     copy_extra_files();
 }
+/* 
+ * documentation
+ */
+ if ($xml->modelUsed("documentation")) $need_download_url = true;
+
 
 export_folder_loop($dir_path);
 
@@ -397,7 +403,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -405,22 +411,20 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if($xAPI)
 	{
 		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
-	
     if ($export_flash) {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $export_offline, $offline_includes);
+        basic_html5_page_create($row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
     }
 }
-
 
 /*
  * Improve the naming of the exported zip file

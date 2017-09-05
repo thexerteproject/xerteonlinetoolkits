@@ -338,7 +338,7 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         var id = ids[0];
-        while (tree.get_parent(id) != 'treeroot')
+        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot')
         {
             id = tree.get_parent(id);
         }
@@ -803,8 +803,15 @@ var EDITOR = (function ($, parent) {
 					// group children aren't sorted into alphabetical order - they appear in order taken from xml
 					var groupChildren = node_options['optional'][i].value.children;
 					for (var j=0; j<groupChildren.length; j++) {
+						var tableOffset = (node_options['optional'][i].value.cols ? j % parseInt(node_options['optional'][i].value.cols, 10) : '');
 						if (found[j] == true || !groupChildren[j].value.deprecated) {
-							toolbox.displayParameter('#mainPanel .wizard #groupTable_' + node_options['optional'][i].name, groupChildren, groupChildren[j].name, toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value, key);
+							toolbox.displayParameter(
+								'#mainPanel .wizard #groupTable_' + node_options['optional'][i].name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+								groupChildren,
+								groupChildren[j].name,
+								toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value,
+								key
+							);
 						}
 					}
 				}

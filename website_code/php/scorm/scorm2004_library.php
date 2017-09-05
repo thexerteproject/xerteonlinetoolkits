@@ -180,7 +180,7 @@ function scorm2004_html_page_create($name, $type, $rlo_file, $lo_name, $language
 
 }
 
-function scorm2004_html5_page_create($type, $template_name, $lo_name, $language){
+function scorm2004_html5_page_create($type, $template_name, $lo_name, $language, $need_download_url=false){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -204,8 +204,10 @@ function scorm2004_html5_page_create($type, $template_name, $lo_name, $language)
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm2004.3rd.js"))
     {
-        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js\"></script>";
+        $tracking .= "<script type=\"text/javascript\" src=\"languages/js/" . $language . "/xttracking_scorm2004.3rd.js\"></script>\n";
     }
+    if ($need_download_url) $tracking .= "   <script type=\"text/javascript\">var x_downloadURL = \"" . $xerte_toolkits_site->site_url . "download.php\";</script>\n";
+
     $scorm_html_page_content = str_replace("%TRACKING_SUPPORT%",$tracking,$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $scorm_html_page_content);
 

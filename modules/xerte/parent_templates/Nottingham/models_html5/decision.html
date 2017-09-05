@@ -521,8 +521,10 @@
 						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
 					}
 				}
+				$text.prepend(authorSupport);
 				
-				$stepHolder.prepend('<div class="step"><div class="instruction">' + authorSupport + $text.text() + '</div></div>');
+				$stepHolder.prepend('<div class="step"><div class="instruction"></div></div>');
+				$stepHolder.find('.instruction').append($text);
 				var $thisStep = $stepHolder.children(".step");
 				
 				if (currentStepInfo.options.length == 0) {
@@ -730,8 +732,10 @@
 						$text.prepend('<span class="num">' + ($pageContents.data("currentStep") + 1) + ': </span>');
 					}
 				}
+				$text.prepend(authorSupport);
 				
-				$stepHolder.prepend('<div class="step"><div class="info">' + authorSupport + $text.text() + '</div></div>');
+				$stepHolder.prepend('<div class="step"><div class="info"></div></div>');
+				$stepHolder.find('.info').append($text);
 				
 				// save reference to this step so it can be reloaded later if needed
 				$pageContents.data("allSteps")[currentStepInfo.index].built = $stepHolder.children(".step");
@@ -878,7 +882,7 @@
 				
 				if (thisStep.type == "mcqStep" || thisStep.type == "sliderStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-help"/>' + $text.text() + '</div>';
+						string += '<div><span class="ui-icon ui-icon-help"/>' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 					}
@@ -928,7 +932,7 @@
 					
 				} else if (thisStep.type == "infoStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-notice"/>' + $text.text() + '</div>';
+						string += '<div><span class="ui-icon ui-icon-notice"/>' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + $text.text() + '</p>';
 						string += '<p>-------------------------------------------------</p>';
@@ -936,7 +940,7 @@
 					
 				} else if (thisStep.type == "resultStep") {
 					if (type == "html") {
-						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + $text.text() + '</div>';
+						string += '<div><span class="ui-icon ui-icon-lightbulb"/>' + $text.prop('outerHTML') + '</div>';
 					} else {
 						string += '<p>' + (x_currentPageXML.getAttribute("resultString") ? x_currentPageXML.getAttribute("resultString") : "Result") + ':</p>';
 						string += '<p>' + $text.text() + '</p>';
