@@ -361,6 +361,9 @@ function login_processing($exit = true) {
 
     if ($exit === true) {
       if (!$success || !empty($errors)) {
+        $msg = "User '" . $_POST['login'] . "' attempted to login from " . $_SERVER['REMOTE_ADDR'];
+        receive_message("", "SYSTEM", "LOGINS", "Failed login", $msg);
+
         login_form($errors, $xerte_toolkits_site);
         exit(0);
       }
