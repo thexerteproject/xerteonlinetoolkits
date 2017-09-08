@@ -40,6 +40,12 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
     }
 
+    if($user_name==""){
+
+        $user_name="UNKNOWN";
+
+    }
+
     /*
      * If error log message turned on, create an error log
      */
@@ -78,12 +84,6 @@ function receive_message($user_name, $type, $level, $subject, $content){
 function write_message($user_name, $type, $level, $subject, $content){
 
     global $xerte_toolkits_site;
-
-    if($user_name==""){
-
-        $user_name="UNKNOWN";
-
-    }
 
     /*
      * Login/logout and management entries should not get logged to any other log files but their own.
