@@ -412,4 +412,7 @@ function login_processing2($firstname = false, $surname = false, $username = fal
 
     update_user_logon_time();
   }
+
+  $msg = "User " . $_SESSION['toolkits_logon_username'] . " logged in successfully from " . $_SERVER['REMOTE_ADDR'];
+  receive_message($_SESSION['toolkits_logon_username'], "SYSTEM", "LOGINS", "Successful login", $msg);
 }
