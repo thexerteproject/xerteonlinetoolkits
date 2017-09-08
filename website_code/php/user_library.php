@@ -40,11 +40,11 @@ function check_if_first_time($username){
 
 /**
  *
- * Function get user id
- * get the user's database ID
+ * Function get user info
+ * get the user's database info
  * @author Patrick Lockley
  * @version 1.0
- * @return number - The user's database id
+ * @return array - items of user info
  * @package
  */
 function get_user_info(){
@@ -289,7 +289,7 @@ function get_user_root_folder(){
  * Is this user set as an administrator
  * @author Patrick Lockley
  * @version 1.0
- * @return bool - Is this the user an administrator
+ * @return bool - Is this user an administrator?
  * @package
  */
 function is_user_admin(){
