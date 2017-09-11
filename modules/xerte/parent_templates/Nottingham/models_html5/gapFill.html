@@ -324,10 +324,9 @@
 					$(this).data("index", $targetHolder.find("input").index($(this))); // stored here as using .index() won't return result needed as there are other elements (line breaks etc.) in $targetHolder
 				});
 				
-			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && this.isTracked) {
-				{
-				    $("#submitBtn").remove();
-                }
+			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !this.isTracked) {
+
+			    $("#submitBtn").remove();
 
 				$targetHolder.find("input").on("keypress", function() {
 					var $this = $(this);
@@ -609,59 +608,59 @@
 
 			labelAnswers[$thisTarget.data("answer")]= $thisLabel.data("answer");
 
-//			if ($targetHolder.find(".target.highlight").length == 0 && (this.isTracked || (x_currentPageXML.getAttribute("markEnd") == "true"))) {
-//				if (x_currentPageXML.getAttribute("markEnd") == "true") {
-//					$("#targetHolder .target").filter(function() { return $(this).data("correct") == true; })
-//						.addClass("correct");
-//
-//					if (score == $("#targetHolder .target").length) {
-//						$("#labelHolder").hide();
-//						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-//						$feedbackTxt.fadeIn();
-//					} else {
-//						if (score == 0) {
-//							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
-//							$feedbackTxt.fadeIn();
-//						} else {
-//							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong."));
-//							$feedbackTxt.fadeIn();
-//						}
-//
-//
-//							var $targets = $("#targetHolder .target").filter(function () {
-//								return $(this).data("correct") != true;
-//							});
-//
-//							$targets.each(function () {
-//								var $this = $(this);
-//								$this
-//										.attr("title", targetTxt1 + " " + ($this.data("index") + 1))
-//										.html("")
-//										.droppable("option", "disabled", false)
-//										.addClass("highlight");
-//
-//								gapFill.setUpTargetListeners($targets);
-//							});
-//
-//							var $labels = $("#labelHolder .label").filter(function () {
-//										return $(this).data("correct") != true;
-//									})
-//									.attr("title", labelTxt1)
-//									.draggable("enable")
-//									.css({
-//										"opacity": 1,
-//										"left": "auto",
-//										"top": "auto"
-//									});
-//
-//							this.setUpLabelListeners($labels);
-//
-//					}
-//				} else {
-//					$("#labelHolder").hide();
-//					$feedbackTxt.fadeIn();
-//				}
-//			}
+			if ($targetHolder.find(".target.highlight").length == 0){ //&& (this.isTracked || (x_currentPageXML.getAttribute("markEnd") == "true"))) {
+				if (x_currentPageXML.getAttribute("markEnd") == "true") {
+					$("#targetHolder .target").filter(function() { return $(this).data("correct") == true; })
+						.addClass("correct");
+
+					if (score == $("#targetHolder .target").length) {
+						$("#labelHolder").hide();
+						$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+						$feedbackTxt.fadeIn();
+					} else {
+						if (score == 0) {
+							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."));
+							$feedbackTxt.fadeIn();
+						} else {
+							$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong."));
+							$feedbackTxt.fadeIn();
+						}
+
+
+							var $targets = $("#targetHolder .target").filter(function () {
+								return $(this).data("correct") != true;
+							});
+
+							$targets.each(function () {
+								var $this = $(this);
+								$this
+										.attr("title", targetTxt1 + " " + ($this.data("index") + 1))
+										.html("")
+										.droppable("option", "disabled", false)
+										.addClass("highlight");
+
+								gapFill.setUpTargetListeners($targets);
+							});
+
+							var $labels = $("#labelHolder .label").filter(function () {
+										return $(this).data("correct") != true;
+									})
+									.attr("title", labelTxt1)
+									.draggable("enable")
+									.css({
+										"opacity": 1,
+										"left": "auto",
+										"top": "auto"
+									});
+
+							this.setUpLabelListeners($labels);
+
+					}
+				} else {
+					$("#labelHolder").hide();
+					$feedbackTxt.fadeIn();
+				}
+			}
 			$("#submitBtn")
 					.button({
 						label:	x_currentPageXML.getAttribute("checkBtn") != undefined && x_currentPageXML.getAttribute("checkBtn") != "" ? x_currentPageXML.getAttribute("checkBtn") : "Check"
@@ -831,6 +830,7 @@
 		this.dragDropSubmit = function(forceTracking){
             {
                 var score = $pageContents.data("score");
+                debugger;
                 if ($targetHolder.find(".target.highlight").length == 0 || forceTracking) {
 
                     $("#targetHolder .target").filter(function () {
@@ -838,11 +838,13 @@
                     })
                         .addClass("correct");
 
+                    if (!$(this).data("correct")) {
 
                     $("#targetHolder .target").filter(function () {
                         return $(this).data("correct") != true;
                     })
                         .addClass("incorrect");
+                   	}
                     if (score == $("#targetHolder .target").length) {
                         $("#labelHolder").hide();
                         $("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
