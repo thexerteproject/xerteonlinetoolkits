@@ -516,6 +516,11 @@ function XTSetPageScore(page_nr, score)
 	state.setPageScore(page_nr, score);
 }
 
+function XTSetPageScoreJSON(page_nr, score)
+{
+    state.setPageScore(page_nr, score);
+}
+
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback)
 {
 	state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
@@ -528,7 +533,12 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
 {
-    return 0;
+    var JSONGraph = {
+        label: "Enter Page Title",
+        classnames: ["C-1", "C-2", "C-3"],
+        classvalues: [50, 30, 40]
+    };
+    return JSONGraph;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {

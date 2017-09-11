@@ -980,6 +980,8 @@ function XTSetPageScore(page_nr, score)
     }
 }
 
+function XTSetPageScoreJSON(page_nr, score) {}
+
 function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
 {
     if (state.scormmode == 'normal')
