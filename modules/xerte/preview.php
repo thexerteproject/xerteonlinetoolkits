@@ -41,7 +41,7 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 
 require_once(dirname(__FILE__) . "/play.php");
 
-function show_preview_code($row, $tsugi_enabled)
+function show_preview_code($row)
 {
     global $xerte_toolkits_site;
 
@@ -66,7 +66,7 @@ function show_preview_code($row, $tsugi_enabled)
 
 	//***************************************
 
-    echo show_template_page($row, $preview_filename, $tsugi_enabled);
+    echo show_template_page($row, $preview_filename);
 }
 
 function show_preview_code2($row, $row_username){

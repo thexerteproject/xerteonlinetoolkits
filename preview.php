@@ -34,14 +34,10 @@ _load_language_file("/preview.inc");
 require $xerte_toolkits_site->php_library_path  . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path  . "template_status.php";
 require $xerte_toolkits_site->php_library_path  . "user_library.php";
-if(!isset($tsugi_enabled))
-{
-    $tsugi_enabled = false;
-}
 /*
  * Check the ID is numeric
  */
-if($tsugi_enabled || isset($_SESSION['toolkits_logon_id'])) {
+if(isset($_SESSION['toolkits_logon_id'])) {
 
     if(is_numeric($_GET['template_id'])) {
 
@@ -58,11 +54,6 @@ if($tsugi_enabled || isset($_SESSION['toolkits_logon_id'])) {
 		$row = db_query_one($query_for_preview_content);
 		
         if(!empty($row)) {
-            if($tsugi_enabled && $row["tsugi_published"] != 1)
-            {
-                echo PREVIEW_RESOURCE_FAIL;
-                exit();
-            }
 
             // get their username from the db which matches their login_id from the $_SESSION
             // ???? This is just the same user as in the previous query, NOT from the session. WHY?
@@ -72,8 +63,8 @@ if($tsugi_enabled || isset($_SESSION['toolkits_logon_id'])) {
 
             // is there a matching template?
             // if they're an admin or have rights to see the template, then show it.
-            if($tsugi_enabled || is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
-                show_preview_code($row, $tsugi_enabled);
+            if(is_user_admin() || has_rights_to_this_template($row['template_id'], $_SESSION['toolkits_logon_id'])){
+                show_preview_code($row);
                 exit(0);
             }
         }

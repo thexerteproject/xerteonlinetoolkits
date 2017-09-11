@@ -937,40 +937,42 @@ function XTSetPageScore(page_nr, score) {
                     }
                 );
                 SaveStatement(statement);
-                var statement = new TinCan.Statement(
-                    {
-                        actor: {
-                            mbox: userEMail
-                        },
-                        verb: {
-                            id: "http://lrs.surfuni.org/verb/accessed",
-                            display: {
-                                "en-US": "Accessed"
-                            }
-                        },
-                        object: {
-                            objectType: "Activity",
-                            id: "http://lrs.surfuni.org/object/feedback",
-                            definition: {
-                                name: {
-                                    "en-US": "Feedback"
+                if (feedback != null) {
+                    var statement = new TinCan.Statement(
+                        {
+                            actor: {
+                                mbox: userEMail
+                            },
+                            verb: {
+                                id: "http://lrs.surfuni.org/verb/accessed",
+                                display: {
+                                    "en-US": "Accessed"
                                 }
-                            }
-                        },
-                        result: {
-                            "response": feedback[0]
-                        },
-                        context: {
-                            extensions: {
-                                "http://lrs.surfuni.org/context/course": surf_course,
-                                "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                "http://lrs.surfuni.org/context/label": ""
-                            }
-                        },
-                        timestamp: this.initStamp
-                    }
-                );
-                SaveStatement(statement);
+                            },
+                            object: {
+                                objectType: "Activity",
+                                id: "http://lrs.surfuni.org/object/feedback",
+                                definition: {
+                                    name: {
+                                        "en-US": "Feedback"
+                                    }
+                                }
+                            },
+                            result: {
+                                "response": feedback[0]
+                            },
+                            context: {
+                                extensions: {
+                                    "http://lrs.surfuni.org/context/course": surf_course,
+                                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                                    "http://lrs.surfuni.org/context/label": ""
+                                }
+                            },
+                            timestamp: this.initStamp
+                        }
+                    );
+                    SaveStatement(statement);
+                }
             }
         }
     }
