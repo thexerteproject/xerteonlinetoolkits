@@ -34,24 +34,27 @@ if($tsugi_publish) {
 $PDOX = LTIX::getConnection();
 $p = $CFG->dbprefix;
 _debug("Data init " . print_r($_POST, true));
+$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+_debug("Detele " . $url);
+
+
 if($tsugi_publish) {
 
-    $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key WHERE key_key = :KEY", array(
-        ':KEY' => $tsugi_key
+    $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_key = :KEY and c.key_id = k.key_key and l.context_id=c.context_id and l.path != :URL", array(
+        ':KEY' => $tsugi_key,
+        ':URL' => $url
 ))
     ["count"];
     if($key_count > 0)
     {
         header('HTTP/1.0 403 Forbidden');
-        echo '<div class="error">Key already in use, use another key.</div>';
+        //echo '<div class="error">Key already in use, use another key.</div>';
+        alert("Key already in use, use another key.");
         exit(1);
     }
 }
 
 
-
-$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
-_debug("Detele " . $url);
 
 //link -> context -> key
 $sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";

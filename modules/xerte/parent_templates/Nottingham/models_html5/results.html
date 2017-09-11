@@ -241,11 +241,11 @@
                     if (firstnormalrow)
 					{
                         $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th>");
-                        normalcolumns = [nameTxt, scoreTxt, durationTxt, weightingTxt, completedTxt];
+                        normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt];
                         firstnormalrow = false;
 					}
 					$("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td></tr>");
-					var normalrow = [x.title, scoretxt, x.duration, x.weighting, completedTokenTxt];
+					var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt];
 					normalrows.push(normalrow);
 					altnormalrow = !altnormalrow;
                 }
@@ -254,18 +254,18 @@
                     $("#specificResultsTxt").show();
                     if (firstnormalrow)
                     {
-                        normalcolumns = [nameTxt, scoreTxt, durationTxt, weightingTxt, completedTxt, detailsTxt];
+                        normalcolumns = [x_GetTrackingTextFromHTML(nameTxt, ""), scoreTxt, durationTxt, weightingTxt, completedTxt, detailsTxt];
                         $("#questionScores").append("<th>" + nameTxt + "</th><th>" + scoreTxt + "</th><th>" + durationTxt + "</th><th>" + weightingTxt + "</th><th>" + completedTxt + "</th><th>" + detailsTxt + "</th>");
                         firstnormalrow = false;
                     }
                     $("#questionScores").append("<tr " + (altnormalrow ? "class='alt'" : "") + "><td>" + x.title + "</td><td class='td-right'>" + scoretxt + "</td><td class='td-right'>" + x.duration + "s</td><td class='td-right'>" + x.weighting + "</td><td class='td-right'>" + completedToken + "</td><td class='td-right'>" + interactiveToken + "</td></tr>");
-                    var normalrow = [x.title, scoretxt, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
+                    var normalrow = [x_GetTrackingTextFromHTML(x.title, ""), scoretxt, x.duration, x.weighting, completedTokenTxt, interactiveTokenTxt];
                     normalrows.push(normalrow);
                     altnormalrow = !altnormalrow;
 					altfullrow = false;
 					if (x.subinteractions.length > 0 && x.type != 'page') {
 						detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
-						var detailstablecolumns = ["", x.title, yourAnswerTxt, correctAnswerTxt];
+						var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
 						var detailstablerows = [];
 						altfullrow = false;
                         x.subinteractions.forEach(function (y) {
@@ -274,12 +274,12 @@
                             var correctAnswer = y.correctAnswer;
                             if (learnerAnswer == correctAnswer || y.correct) {
                                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-check green' title='" + correctTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
-                                var detailstablerow = ["correct", question, learnerAnswer, correctAnswer];
+                                var detailstablerow = ["correct",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
                             else {
                                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-times red' title='" + inCorrectTooltip + "'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
-                                var detailstablerow = ["incorrect", question, learnerAnswer, correctAnswer];
+                                var detailstablerow = ["incorrect", x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
                             }
                             altfullrow = !altfullrow;

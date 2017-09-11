@@ -1141,13 +1141,13 @@ function x_continueSetUp2() {
 		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
 	);
 
-	XTInitialise(); // initialise here, because of XTStartPage in next function
-	
 	// script optional property added after all interface set up & before any pages load
 	if (x_params.script != undefined && x_params.script != "") {
 		$x_head.append('<script>' +  x_params.script + '</script>');
 	}
-	
+
+    XTInitialise(); // initialise here, because of XTStartPage in next function
+
 	x_navigateToPage(true, x_startPage);
 }
 
