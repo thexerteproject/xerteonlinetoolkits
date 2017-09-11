@@ -25,6 +25,7 @@ var pageLink = "";
 var authorSupport = false;
 var deepLink = "";
 var currentPage = 0;
+var glossary = [];
 
 function init(){
 	loadContent();
@@ -91,10 +92,18 @@ function loadLibraries(){
 
 	//load stylesheet and libraries...
 	
-	if ( $(data).find('learningObject').attr('stylesheet') != undefined){
+	if ( $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default") {
+		
+		$('head').append('<link rel="stylesheet" href="' + themePath + $(data).find('learningObject').attr('theme') + '/' + $(data).find('learningObject').attr('theme') + '.css' + '" type="text/css" />');
+        
+        $('head').append('<script src="'+ themePath + $(data).find('learningObject').attr('theme') + '/'+ $(data).find('learningObject').attr('theme')+ '.js"' + '</script>');
+		
+	}
 	
+	if ( $(data).find('learningObject').attr('stylesheet') != undefined) {
+		
 		$('head').append('<link rel="stylesheet" href="' + eval( $(data).find('learningObject').attr('stylesheet') ) + '" type="text/css" />');
-	
+		
 	}
 	
 	if ( $(data).find('learningObject').attr('styles') != undefined){
@@ -181,13 +190,116 @@ function formatColour(col) {
 
 function setup(){
 	
+	if ($(data).find('learningObject').attr('glossary') != undefined) {
+		
+		// get list of glossary words & definitions
+		var i, len, item, word,
+			items = $(data).find('learningObject').attr('glossary').split("||");
+
+		for (i=0, len=items.length; i<len; i++) {
+			item = items[i].split("|"),
+			word = {word:item[0], definition:item[1]};
+
+			if (word.word.replace(/^\s+|\s+$/g, "") != "" && word.definition.replace(/^\s+|\s+$/g, "") != "") {
+				glossary.push(word);
+			}
+		}
+		
+		if (glossary.length > 0) {
+			glossary.sort(function(a, b){ // sort by size
+				return a.word.length > b.word.length ? -1 : 1;
+			});
+			
+			// add link around all examples of glossary words in text
+			var insertText = function(node) {
+				var temp = document.createElement("pre");
+				temp.innerHTML = node;
+				var tempText = temp.innerHTML;
+				
+				// check text for glossary words - if found replace with a link
+				if (glossary.length > 0) {
+					for (var k=0, len=glossary.length; k<len; k++) {
+						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(' + glossary[k].word + ')([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+						tempText = tempText.replace(regExp, '$1{|{'+k+'::$2}|}$3');
+					}
+					for (var k=0, len=glossary.length; k<len; k++) {
+						var regExp = new RegExp('(^|[\\s>]|&nbsp;)(\\{\\|\\{' + k + '::(.*?)\\}\\|\\})([\\s\\.,!?:;<]|$|&nbsp;)', 'i');
+						tempText = tempText.replace(regExp, '$1<a class="glossary" href="#" def="' + glossary[k].definition.replace(/\"/g, "'") + '">$3</a>$4');
+					}
+				}
+				
+				return tempText;
+			}
+			
+			var checkForText = function(data) {
+				for (var i=0; i<data.length; i++) {
+					if (data[i].nodeName == 'text') {
+						if ($(data[i]).attr('disableGlossary') != 'true') {
+							data[i].childNodes[0].data = insertText(data[i].childNodes[0].data);
+						}
+						
+					} else {
+						checkForText(data[i].childNodes);
+					}
+				}
+			}
+			
+			checkForText($(data).find('page'));
+			
+			// add events to control what happens when you rollover glossary words
+			$("body > .container")
+				.on("mouseenter", ".glossary", function(e) {
+					$(this).trigger("mouseleave");
+					
+					var $this = $(this),
+						myText = $this.text(),
+						myDefinition, i, len;
+					
+					for (i=0, len=glossary.length; i<len; i++) {
+						if (myText.toLowerCase() == glossary[i].word.toLowerCase()) {
+							myDefinition = "<b>" + myText + ":</b><br/>"
+							myDefinition += glossary[i].definition;
+						}
+					}
+					
+					$(this).parents('.container').append('<div id="glossaryHover" class="glossaryTip">' + myDefinition + '</div>');
+					
+					$("#glossaryHover").css({
+						"left"	:$(this).offset().left + 20,
+						"top"	:$(this).offset().top + 20
+					});
+					$("#glossaryHover").fadeIn("slow");
+				})
+				.on("mouseleave", ".glossary", function(e) {
+					$(this).parent('.container').off("click.glossary");
+					
+					if ($("#glossaryHover") != undefined) {
+						$("#glossaryHover").remove();
+					}
+				})
+				.on("mousemove", ".glossary", function(e) {
+					$("#glossaryHover").css({
+						"left": e.pageX + 20,
+						"top": e.pageY + 20
+					});
+				})
+				.on("focus", ".glossary", function(e) { // called when link is tabbed to
+					$(this).trigger("mouseenter");
+				})
+				.on("focusout", ".glossary", function(e) {
+					$(this).trigger("mouseleave");
+				});
+		}
+	}
+	
+	
 	if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && $(data).find('learningObject').attr('authorSupport') == 'true' ) {
 		
 		authorSupport = true;
 		
 	}
 
-	//add all the pages to the pages menu: this links bak to the same page
+	//add all the pages to the pages menu: this links back to the same page
 	$(data).find('page').each( function(index, value){
 		
 		if ($(this).attr('hidePage') != 'true' || authorSupport == true) {
@@ -234,7 +346,7 @@ function setup(){
 		bgImg += ', ';
 	} 
 	
-	if ($(data).find('learningObject').attr('headerColour') != undefined){
+	if ($(data).find('learningObject').attr('headerColour') != undefined && $(data).find('learningObject').attr('headerColour') != ''){
 	
 		var col = $(data).find('learningObject').attr('headerColour');
 		
@@ -258,46 +370,223 @@ function setup(){
 		
 	}
 	
-	
-	
-	if ($(data).find('learningObject').attr('headerTextColour') != undefined){
+		
+	if ($(data).find('learningObject').attr('headerTextColour') != undefined && $(data).find('learningObject').attr('headerTextColour') != ''){
 	
 		$('#overview').css('color', formatColour($(data).find('learningObject').attr('headerTextColour')));
 		
 	}
+    
+    if ($(data).find('learningObject').attr('headerHide') != undefined && $(data).find('learningObject').attr('headerHide') != 'false'){
 	
-	// default logos used are logo.png & logoL.png in modules/site/parent_templates/site/common/img/ - these can be overridden by images uploaded via Header Logo optional properties
+		$(".jumbotron").remove();
+		
+	}
+	
+	// default logos used are logo_left.png & logo.png in modules/site/parent_templates/site/common/img/
+	// they are overridden by any logos in theme folders
+	// they can also be overridden by images uploaded via Header Logo optional properties
 	$('#overview div.logoR, #overview div.logoL').hide();
+	$('#overview div.logoR').data('defaultLogo', $('#overview .logoR img').attr('src'));
+	$('#overview div.logoL').data('defaultLogo', $('#overview .logoL img').attr('src'));
 	
-	if ($(data).find('learningObject').attr('logoR') != undefined){
+	var checkExists = function(logoClass, fallback) {
+		$.ajax({
+			url: $('#overview .' + logoClass + ' img').attr('src'),
+			success: function() {
+				$('#overview').addClass(logoClass);
+				$('#overview div.' + logoClass).show();
+			},
+			error: function() {
+				if (fallback == 'theme') {
+					$('#overview .' + logoClass + ' img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo' + (logoClass == 'logoL' ? '_left' : '') + '.png');
+					checkExists(logoClass, 'default');
+				} else if (fallback == 'default') {
+					$('#overview .' + logoClass + ' img').attr('src', $('#overview div.' + logoClass).data('defaultLogo'));
+					checkExists(logoClass);
+				}
+			}
+		});
+	}
+	
+	var fallback;
+	if ($(data).find('learningObject').attr('logoR') != undefined && $(data).find('learningObject').attr('logoR') != '') {
 		$('#overview .logoR img').attr('src', eval( $(data).find('learningObject').attr('logoR')));
+		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		fallback = 'default';
+		$('#overview .logoR img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo.png');
 	}
+	checkExists('logoR', fallback);
 	
-	$.ajax({
-		url: $('#overview .logoR img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoR');
-			$('#overview div.logoR').show();
-		}
-	});
-	
-	if ($(data).find('learningObject').attr('logoL') != undefined){
+	if ($(data).find('learningObject').attr('logoL') != undefined && $(data).find('learningObject').attr('logoL') != '') {
 		$('#overview .logoL img').attr('src', eval( $(data).find('learningObject').attr('logoL')));
+		fallback = $(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != "default" ? 'theme' : 'default';
+	} else if ($(data).find('learningObject').attr('theme') != undefined && $(data).find('learningObject').attr('theme') != 'default') {
+		fallback = 'default';
+		$('#overview .logoL img').attr('src', themePath + $(data).find('learningObject').attr('theme') + '/logo_left.png');
 	}
+    checkExists('logoL', fallback);
 	
-	$.ajax({
-		url: $('#overview .logoL img').attr('src'),
-		success: function() {
-			$('#overview').addClass('logoL');
-			$('#overview div.logoL').show();
+    //---------------Optional Navbar properties--------------------
+    
+    //Hide the Navbar position if defined
+    if ($(data).find('learningObject').attr('navbarHide') != undefined && $(data).find('learningObject').attr('navbarHide') != 'false'){
+	
+		$(".navbar-inner").remove();
+		
+	}
+    
+    //Position the Navbar position if defined
+    if ($(data).find('learningObject').attr('navbarPos') != undefined && $(data).find('learningObject').attr('navbarPos') == 'below'){
+	
+		$('#overview').after('<div id="pageLinks"></div>');
+        $('.navbar').appendTo('#pageLinks');
+
+	}
+    
+    //Change navbar background colour
+    if ($(data).find('learningObject').attr('navbarColour') != undefined && $(data).find('learningObject').attr('navbarColour') != ''){
+	
+		var navbarcol = $(data).find('learningObject').attr('navbarColour');
+        
+        //one or two?
+		if (navbarcol.indexOf(',') != -1){
+			navbarcol = navbarcol.split(',');
+		} else {
+			navbarcol = [navbarcol,navbarcol];
 		}
-	});
+		navbarcol[0] = formatColour(navbarcol[0]);
+		navbarcol[1] = formatColour(navbarcol[1]);
+		
+		$('.navbar-inverse .navbar-inner').css('background', navbarcol[0]);
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-moz-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%, ' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-gradient(linear, left bottom, right top, color-stop(0%,' + navbarcol[0] + '), color-stop(100%,' + navbarcol[1] + '))');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-webkit-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-o-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + '-ms-linear-gradient(45deg,  ' + navbarcol[0] + ' 0%,' + navbarcol[1] + ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('background', bgImg + 'linear-gradient(45deg,  ' + + ' 0%,' + navbarcol[1]+ ' 100%)');
+		$('.navbar-inverse .navbar-inner').css('filter', 'progid:DXImageTransform.Microsoft.gradient( startColorstr=' + navbarcol[0] + ', endColorstr=' + navbarcol[1] + ',GradientType=1 )');
+        
+    }
+    
+    //Change navbar text/link colour
+    var navbarTextColour = $('.nav li a').css('color');
+    if ($(data).find('learningObject').attr('navbarTextColour') != undefined && $(data).find('learningObject').attr('navbarTextColour') != '') {
+			navbarTextColour = formatColour($(data).find('learningObject').attr('navbarTextColour'));
+			$('.nav li a').css('color', navbarTextColour);
+		}
+
+  	//Change navbar text/link Hover colour
+  	var navbarTextHoverColour;
+  	if ($(data).find('learningObject').attr('navbarTextHoverColour') != undefined && $(data).find('learningObject').attr('navbarTextHoverColour') != '') {
+  		navbarTextHoverColour = formatColour($(data).find('learningObject').attr('navbarTextHoverColour'));
+    	$('.nav li a').hover(function(){
+      	$(this).css('color', navbarTextHoverColour);
+    	},
+    	function(){
+      	$(this).css('color', navbarTextColour);
+    	});
+		}
+    
+    //---------------Optional footer properties--------------------
+    
+    // remove footer
+    if ($(data).find('learningObject').attr('footerHide') != undefined && $(data).find('learningObject').attr('footerHide') != 'false'){
+	
+		$('.footer').remove();
+		
+	}
+    
+    //add custom footer
+    if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+        var customFooterContent=$(data).find('learningObject').attr('customFooter');
+        
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'above'){
+        
+        $('.footer .container .row-fluid').before('<div id="customFooter">'+customFooterContent+'</div>');
+        $("#customFooter").css({"margin-bottom": "10px"});
+        } 
+
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'below'){
+        
+        $('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
+        $("#customFooter").css({"margin-top": "40px"});
+        } 
+        
+        if ($(data).find('learningObject').attr('footerPos') != undefined && $(data).find('learningObject').attr('footerPos') == 'replace'){
+        $('.footer .container').remove();
+        $('.footer').append('<div id="customFooter">'+customFooterContent+'</div>');
+            $("#customFooter").css({"margin-left": "10px"});
+        } 
+        
+        //convert img paths
+        $('#customFooter img').each(function() {
+        	if ($(this).attr('src').substring(0, 16) == "FileLocation + '") {
+						$(this).attr('src', eval($(this).attr('src')));
+					}
+				});
+        
+    }
+    
+    //Change footer background colour
+    if ($(data).find('learningObject').attr('footerColour') != undefined && $(data).find('learningObject').attr('footerColour') != ''){
+	
+		var footercol = $(data).find('learningObject').attr('footerColour');
+        
+        if (footercol.indexOf(',') != -1){
+			footercol = footercol.split(',');
+		} else {
+			footercol = [footercol,footercol];
+		}
+		footercol[0] = formatColour(footercol[0]);
+		footercol[1] = formatColour(footercol[1]);
+        $('.footer').css('background', footercol[0]);
+        
+    }
 	
 	// script optional property added before any content loads
 	var script = $(data).find('learningObject').attr('script');
 	if (script != undefined && script != "") {
 		$("head").append('<script>' +  script + '</script>');
 	}
+	
+	// Hide or show the social media buttons
+	$(".addthis_sharing_toolbox").hide();
+	setTimeout(function () {
+		var count_hidden = count_undef = 0,
+				value, social = [
+					'facebook',
+					'twitter',
+					['google', 'google_plusone_share'],
+					'linkedin',
+					'scoopit',
+					['pinterest', 'pinterest_share'],
+					'email',
+					'yammer',
+					['addthis', 'compact']
+				];
+
+		$(social).each(function(i, item) {
+			value = $.isArray(item) ? $(data).find('learningObject').attr(item[0]) : $(data).find('learningObject').attr(item);
+			
+			if (value == undefined) {
+				count_undef++;
+			}
+			else if (value == 'false') {
+				$(".at-svc-" + ($.isArray(item) ? item[1] : item)).hide();
+				count_hidden++;
+			}
+		});
+
+		if (
+			(count_hidden > 0 && count_hidden < social.length) ||
+			(count_hidden == 0 && count_undef == 0) ||
+			count_undef == social.length
+		) {
+			$(".addthis_sharing_toolbox").show();
+		}
+	}, 2000);
 }
 
 
@@ -533,6 +822,10 @@ function parseContent(pageIndex){
 						section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 					}
 					
+					if (this.nodeName == 'xot'){
+						section.append(loadXotContent($(this)));
+					}
+					
 					if (this.nodeName == 'navigator'){
 					
 						if ($(this).attr('type') == 'Tabs'){
@@ -627,7 +920,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 		
 	var content = $( '<div class="tab-content"/>' );
 	
-	var iframeKaltura = [];
+	var iframeKaltura = [],
+		pdf = [];
 	
 	node.children().each( function(index, value){
 	
@@ -692,7 +986,15 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 			
 			if (this.nodeName == 'pdf'){
-				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+				
+				tab.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '#page=1&view=fitH"></object>');
+				
+				pdf.push(i);
+				
+			}
+			
+			if (this.nodeName == 'xot'){
+				tab.append(loadXotContent($(this)));
 			}
 			
 		});
@@ -713,7 +1015,8 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			.parents(".tabbable").find(".tab-content .tab-pane.active iframe[id*='kaltura_player']").data("refresh", true);
 		
 		// hacky fix for issue with UoN mediaspace videos embedded on navigators
-		var $iframeTabs = $();
+		var $iframeTabs = $(),
+			$pdfTabs = $();
 		
 		for (var i=0; i<iframeKaltura.length; i++) {
 			$iframeTabs = $iframeTabs.add($('a[data-toggle="tab"]:eq(' + iframeKaltura[i] + ')'));
@@ -724,6 +1027,21 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			if (iframeRefresh.data("refresh") != true) {
 				iframeRefresh[0].src = iframeRefresh[0].src;
 				iframeRefresh.data("refresh", true);
+			}
+		});
+		
+		// fix for issue where firefox doesn't zoom pdfs correctly if not on 1st pane of navigators
+		for (var i=0; i<pdf.length; i++) {
+			$pdfTabs = $pdfTabs.add($('a[data-toggle="tab"]:eq(' + pdf[i] + ')'));
+		}
+		
+		$pdfTabs.on('shown.bs.tab', function (e) {
+			if ($.browser.mozilla || $.browser.msie) {
+				var $pdfRefresh = $(e.target).parents(".tabbable").find(".tab-content .tab-pane.active object[id*='pdfDoc']");
+				if ($pdfRefresh.parent().data("refresh") != true) {
+					$pdfRefresh.parent().data("refresh", true);
+					$pdfRefresh.attr("data", $pdfRefresh.attr("data"));
+				}
 			}
 		});
 		
@@ -794,6 +1112,10 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			
 			if (this.nodeName == 'pdf'){
 				inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
+			}
+			
+			if (this.nodeName == 'xot'){
+				inner.append(loadXotContent($(this)));
 			}
 		});
 		
@@ -879,6 +1201,10 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + eval( $(this).attr('url')) + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + eval( $(this).attr('url')) + '"></object>');
 			}
 			
+			if (this.nodeName == 'xot'){
+				pane.append(loadXotContent($(this)));
+			}
+			
 		});
 		
 		items.append(pane);
@@ -926,3 +1252,52 @@ function findAnchor(name){
 	
 }
 
+function loadXotContent($this) {
+	
+	// get link & store url parameters to add back in later if not overridden
+	var xotLink = $this.attr('link'),
+		params = [],
+		separator = xotLink.indexOf('.php?template_id') == -1 ? '?' : '&';
+	
+	xotLink = xotLink.slice(0,xotLink.indexOf('#resume='));
+	
+	if (xotLink.indexOf(separator) != -1) {
+		params = xotLink.split(separator);
+		if (separator == '?') {
+			params.splice(1, 1, params[1].split('&'));
+		}
+		xotLink = params[0];
+		params.splice(0,1);
+		
+		for (var i=0; i<params.length; i++) {
+			params[i] = params[i].split('=');
+		}
+	}
+	
+	var hide = '';
+	if ($this.attr('header') == 'true') { hide = 'top'; }
+	if ($this.attr('footer') == 'true') { hide = hide == 'top' ? 'both' : 'bottom'; }
+	xotLink += separator + 'hide=' + (hide != '' ? hide : 'none');
+	separator = '&';
+	
+	if ($this.attr('pageNum') != undefined && $.isNumeric($this.attr('pageNum'))) {
+		xotLink += separator + 'page=' + $this.attr('pageNum');
+	}
+	
+	// the embed url parameter makes it responsive, full screen & hides minimise/maximise button (these can be overridden by manually adding other params to the url entered in editor)
+	xotLink += separator + 'embed=true';
+	
+	// add back any url params that haven't been overridden
+	for (var i=0; i<params.length; i++) {
+		if (xotLink.indexOf(separator + params[i][0] + '=') == -1) {
+			xotLink += separator + params[i][0] + '=' + params[i][1];
+		}
+	}
+	
+	var warning = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") != -1 && (xotLink.indexOf('preview_') != -1 || xotLink.indexOf('preview.php?') != -1) ? '<p class="alertMsg">' + (languageData.find("errorEmbed")[0] != undefined && languageData.find("errorEmbed")[0].getAttribute('label') != null ? languageData.find("errorEmbed")[0].getAttribute('label') : "You have embedded an XOT project preview. You must make the project public and embed the public facing URL.") + '</p>' : '',
+		xotWidth = $this.attr('width') != undefined && ($.isNumeric($this.attr('width')) || $.isNumeric($this.attr('width').split('%')[0])) ? $this.attr('width') : '100%',
+		xotHeight = $this.attr('height') != undefined && ($.isNumeric($this.attr('height')) || $.isNumeric($this.attr('height').split('%')[0])) ? $this.attr('height') : 600;
+	
+	return warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+	
+}

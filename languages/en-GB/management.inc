@@ -36,7 +36,7 @@
 	
 	define("MANAGEMENT_MENUBAR_TEMPLATES","Users projects");
 	
-	define("MANAGEMENT_MENUBAR_ERRORS","Errors");
+	define("MANAGEMENT_MENUBAR_LOGS","Log files");
 	
 	define("MANAGEMENT_MENUBAR_PLAY","Play security");
 	

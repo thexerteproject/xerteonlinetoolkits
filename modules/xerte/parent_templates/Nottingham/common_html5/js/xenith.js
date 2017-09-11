@@ -228,7 +228,15 @@ x_projectDataLoaded = function(xmlData) {
     for (i = 0; i < tempUrlParams.length; i++) {
         urlParams[tempUrlParams[i].split("=")[0]] = tempUrlParams[i].split("=")[1];
     }
-
+	
+	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
+	if (urlParams.embed == 'true') {
+		x_params.embed = true;
+		x_params.displayMode = 'full screen';
+		x_params.responsive = 'false';
+		// css button also won't appear
+	}
+	
     // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
     if (urlParams.display != undefined) {
         if ($.isNumeric(urlParams.display.split(",")[0]) == true && $.isNumeric(urlParams.display.split(",")[1]) == true) {
@@ -268,7 +276,12 @@ x_projectDataLoaded = function(xmlData) {
             x_params.hideFooter = "false";
         }
     }
-
+	
+	// url parameter to turn responsive on / off
+	if (urlParams.responsive != undefined && (urlParams.responsive == "true" || urlParams.responsive == "false")) {
+		x_params.responsive = urlParams.responsive;
+	}
+	
     x_getLangData(x_params.language);
 
     // Setup nr of pages for tracking
@@ -481,53 +494,55 @@ function x_setUp() {
 }
 
 function x_desktopSetUp() {
-	$x_footerL.prepend('<button id="x_cssBtn"></button>');
-	$("#x_cssBtn")
-		.button({
-			icons:	{primary: "x_maximise"},
-			label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
-			text:	false
-		})
-		.click(function() {
-			// Post flag to containing page for iframe resizing
-			if (window && window.parent && window.parent.postMessage) {
-				window.parent.postMessage((String)(!x_fillWindow), "*");
-			}
-
-			if (x_fillWindow == false) {
-				x_setFillWindow();
-			} else {
-				for (var i=0; i<x_responsive.length; i++) {
-					$x_mainHolder.removeClass("x_responsive");
-					$(x_responsive[i]).prop("disabled", true);
-				};
-				
-				// minimised size to come from display size specified in xml or url param
-				if ($.isArray(x_params.displayMode)) {
-					$x_mainHolder.css({
-						"width"		:x_params.displayMode[0],
-						"height"	:x_params.displayMode[1]
-					});
-				// minimised size to come from css (800,600)
-				} else {
-					$x_mainHolder.css({
-						"width"		:"",
-						"height"	:""
-						});
+	if (x_params.embed != true || x_params.displayMode != 'full screen') {
+		$x_footerL.prepend('<button id="x_cssBtn"></button>');
+		$("#x_cssBtn")
+			.button({
+				icons:	{primary: "x_maximise"},
+				label: 	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen"),
+				text:	false
+			})
+			.click(function() {
+				// Post flag to containing page for iframe resizing
+				if (window && window.parent && window.parent.postMessage) {
+					window.parent.postMessage((String)(!x_fillWindow), "*");
 				}
-				$x_body.css("overflow", "auto");
-				$(this).button({
-					icons:	{primary: "x_maximise"},
-					label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
-				});
-				x_fillWindow = false;
-				x_updateCss();
-			}
-			$(this)
-				.blur()
-				.removeClass("ui-state-focus")
-				.removeClass("ui-state-hover");
-		});
+
+				if (x_fillWindow == false) {
+					x_setFillWindow();
+				} else {
+					for (var i=0; i<x_responsive.length; i++) {
+						$x_mainHolder.removeClass("x_responsive");
+						$(x_responsive[i]).prop("disabled", true);
+					};
+					
+					// minimised size to come from display size specified in xml or url param
+					if ($.isArray(x_params.displayMode)) {
+						$x_mainHolder.css({
+							"width"		:x_params.displayMode[0],
+							"height"	:x_params.displayMode[1]
+						});
+					// minimised size to come from css (800,600)
+					} else {
+						$x_mainHolder.css({
+							"width"		:"",
+							"height"	:""
+							});
+					}
+					$x_body.css("overflow", "auto");
+					$(this).button({
+						icons:	{primary: "x_maximise"},
+						label:	x_getLangInfo(x_languageData.find("sizes").find("item")[3], false, "Full screen")
+					});
+					x_fillWindow = false;
+					x_updateCss();
+				}
+				$(this)
+					.blur()
+					.removeClass("ui-state-focus")
+					.removeClass("ui-state-hover");
+			});
+	}
 	
 	if (x_params.displayMode == "full screen" || x_params.displayMode == "fill window") {
 		x_fillWindow = true;
@@ -819,7 +834,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add optional progress bar
-    if (x_params.progressBar != undefined && x_params.progressBar != "") {
+    if (x_params.progressBar != undefined && x_params.progressBar != "" && x_params.hideFooter != "true") {
 		//add a div for the progress bar
 		$('#x_footerBlock').append('<div id="x_footerProgress" style="margin:auto; padding:20; width:20%; diaply:inline-block; text-align:center"></div>');
 		//add the progress bar
@@ -831,7 +846,7 @@ function x_continueSetUp1() {
 	}
 	
 	//add show/hide footer tools
-	if (x_params.footerTools != "none") {
+	if (x_params.footerTools != "none" && x_params.hideFooter != "true") {
 		var hideMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools");
 		var showMsg=x_getLangInfo(x_languageData.find("footerTools")[0], "show", "Hide footer tools");
 		//add a div for the show/hide chevron

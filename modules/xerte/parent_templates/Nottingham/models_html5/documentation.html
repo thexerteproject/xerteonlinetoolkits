@@ -632,7 +632,8 @@
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
-			form.action = 'download.php';
+			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
 			$('<input type="hidden">') // IE compatibility
 				.attr({
 					name: 'data',

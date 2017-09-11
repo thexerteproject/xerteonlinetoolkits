@@ -22,12 +22,6 @@
  * Export a LO - e.g. from properties.
  * Example call : /website_code/php/scorm/export.php?scorm=false&template_id=10&html5=false&flash=true
  */
-require_once($xerte_toolkits_site->tsugi_dir . "config.php");
-require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
-
-use \Tsugi\Util\LTI;
-use \Tsugi\Core\LTIX;
-use \Tsugi\Config\ConfigInfo;
 
 global $dir_path, $delete_file_array, $zipfile, $folder_id_array, $file_array, $folder_array, $delete_folder_array, $parent_template_path;
 
@@ -46,7 +40,6 @@ require_once ($xerte_toolkits_site->root_file_path . "website_code/php/xmlInspec
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/screen_size_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/user_library.php");
 require_once ($xerte_toolkits_site->root_file_path . "website_code/php/url_library.php");
-
 
 function create_offline_file($varname, $sourcefile, $destfile)
 {
@@ -86,10 +79,8 @@ $export_html5 = false;
 $export_flash = false;
 $export_offline = false;
 $xAPI = false;
-$tsugi = false;
 $offline_includes="";
-
-
+$need_download_url = false;
 
 if (isset($_REQUEST['html5'])) {
     $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
@@ -121,85 +112,6 @@ if (isset($_REQUEST['offline']))
 if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
 {
 	$xAPI = true;
-}
-if (isset($_REQUEST['tsugi_xapi']) && $_REQUEST['tsugi_xapi'] == "on")
-{
-	$xAPI = true;
-}
-
-if (isset($_REQUEST['tsugi']) && $_REQUEST['tsugi'] == "true")
-{
-	$tsugi = true;
-}
-
-$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "mod/$tsugi_project_dir/";
-
-if($tsugi && 
-		(
-			(
-				!isset($_REQUEST["tsugi_published"]) || 
-				$_REQUEST["tsugi_published"] != "on"
-			) ||
-			file_exists($tsugi_dir)
-		)
-	)
-{
-	$PDOX = LTIX::getConnection();
-	$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
-	$p = $CFG->dbprefix;
-	//link -> context -> key
-	$sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
-	$link_row = $PDOX->rowDie($sql, array(
-		':PATH' => $url
-	));
-		$sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
-	$PDOX->queryDie($sql, array(
-		':LINK_ID' => $link_row["link_id"]
-	));
-	$sql = "SELECT context_id FROM {$p}lti_context WHERE link_id = :LINK_ID";
-	$context_id = $link_row["context_id"];
-	$sql = "SELECT COUNT(*) AS count FROM {$p}lti_link WHERE context_id = :CONTEXT_ID";
-	$context_count = $PDOX->rowDie($sql, array(
-		':CONTEXT_ID' => $context_id
-	))["count"];
-	if($context_count == 0)
-	{
-		$context_row = $PDOX->rowDie("SELECT * FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-			':CONTEXT_ID' => $context_id));
-		$PDOX->queryDie("DELETE FROM {$p}lti_context WHERE context_id = :CONTEXT_ID", array(
-			':CONTEXT_ID' => $context_id));
-		$sql = "SELECT COUNT(*) AS count FROM {$p}lti_context WHERE key_id = :KEY_ID";
-		$key_count = $PDOX->rowDie($sql, array(
-			':KEY_ID' => $context_row["key_id"]
-		))["count"];
-		
-		if($key_count == 0)
-		{
-			$PDOX->queryDie("DELETE FROM {$p}lti_key WHERE key_id = :KEY_ID;", array(
-			':KEY_ID' => $context_row["key_id"]));
-		}
-		
-	}
-
-
-	$it = new RecursiveDirectoryIterator($tsugi_dir, RecursiveDirectoryIterator::SKIP_DOTS);
-	$files = new RecursiveIteratorIterator($it,
-				 RecursiveIteratorIterator::CHILD_FIRST);
-	foreach($files as $file) {
-		if ($file->isDir()){
-			rmdir($file->getRealPath());
-		} else {
-			unlink($file->getRealPath());
-		}
-	}
-	unset($it);
-	unset($files);
-	rmdir($tsugi_dir);
-	if(!isset($_REQUEST["tsugi_published"]) || $_REQUEST["tsugi_published"] != "on")
-	{
-		exit();
-	}
 }
 
 /*
@@ -310,7 +222,7 @@ if ($fullArchive) {
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".html", ""));
                 array_push($file_array, array($parent_template_path . "models_html5/" . $model . ".css", ""));
             }
-            /* Always add menu.rlm */
+            /* Always add menu.html */
             _debug("copy model " . $parent_template_path . "models_html5/menu.html");
             array_push($file_array, array($parent_template_path . "models_html5/menu.html", ""));
             array_push($file_array, array($parent_template_path . "models_html5/menu.css", ""));
@@ -421,59 +333,6 @@ if($xAPI)
 	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
 	copy_extra_files();
 }
-if($tsugi)
-{
-	//creates the register.php that tsugi uses
-	$name = "";
-	$shortname = "";
-	$description = "";
-
-	$endpoint = "";
-	$username = "";
-	$password = "";
-
-	//Fill Register_LTI2
-	if(isset($_POST["tsugi_name"])) {
-		$name = htmlspecialchars($_POST["tsugi_name"]);
-	}
-	if(isset($_POST["tsugi_shortname"])) {
-		$shortname = htmlspecialchars($_POST["tsugi_shortname"]);
-	}
-	if(isset($_POST["tsugi_description"])) {
-		$description = htmlspecialchars($_POST["tsugi_description"]);
-	}
-
-	//Fill xApi_Config
-	if(isset($_POST["tsugi_xapi_endpoint"])) {
-        $endpoint = htmlspecialchars($_POST["tsugi_xapi_endpoint"]);
-	}
-    if(isset($_POST["tsugi_xapi_username"])) {
-        $username = htmlspecialchars($_POST["tsugi_xapi_username"]);
-    }
-    if(isset($_POST["tsugi_xapi_password"])) {
-        $password = htmlspecialchars($_POST["tsugi_xapi_password"]);
-    }
-
-	
-	$register_page_content = file_get_contents($xerte_toolkits_site->basic_template_path . $row['template_framework'] . "/player_html5/register.php");
-	$register_page_content = str_replace("%NAME%", $name , $register_page_content);
-	$register_page_content = str_replace("%SHORT_NAME%", $shortname , $register_page_content);
-	$register_page_content = str_replace("%DESCRIPTION%", $description , $register_page_content);
-
-	$register_page_content = str_replace("%END%", $endpoint, $register_page_content);
-    $register_page_content = str_replace("%USER%", $username, $register_page_content);
-    $register_page_content = str_replace("%PASSWORD%", $password, $register_page_content);
-
-	$file_handle = fopen($dir_path . "register.php", 'w');
-	fwrite($file_handle,$register_page_content, strlen($register_page_content));
-	fclose($file_handle);
-	
-	$zipfile->add_files("register.php");
-	
-	
-	array_push($delete_file_array,  $dir_path . "register.php");	
-	
-}
 
 // Copy the favicon file
 copy($xerte_toolkits_site->root_file_path . "favicon.ico", $dir_path . "favicon.ico");
@@ -504,6 +363,11 @@ if ($xml->mediaIsUsed()) {
     export_folder_loop($xerte_toolkits_site->root_file_path . "mediaViewer/");
     copy_extra_files();
 }
+/* 
+ * documentation
+ */
+ if ($xml->modelUsed("documentation")) $need_download_url = true;
+
 
 export_folder_loop($dir_path);
 
@@ -539,7 +403,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+            scorm_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -547,22 +411,20 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage());
+        scorm2004_html5_page_create($row['template_framework'], $row['template_name'], $lo_name, $xml->getLanguage(), $need_download_url);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage(), $tsugi);
+		xAPI_html_page_create($row['template_name'], $row['template_framework'], $lo_name, $xml->getLanguage());
 	}
 else {
-	
     if ($export_flash) {
         basic_html_page_create($row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($row['template_framework'], $row['template_name'], $tsugi, $lo_name, $export_offline, $offline_includes);
+        basic_html5_page_create($row['template_framework'], $row['template_name'],$lo_name,  $tsugi, $export_offline, $offline_includes, $need_download_url);
     }
 }
-
 
 /*
  * Improve the naming of the exported zip file
@@ -596,34 +458,9 @@ $row['zipname'] .= $export_engine . $export_type;
 
 xerte_zip_files($fullArchive, $dir_path);
 $zipfile->create_archive();
+$zipfile->download_file($row['zipname']);
 
-if($tsugi)
-{
-	$PDOX = LTIX::getConnection();
-	$tsugi_project_dir = $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'];
-	$tsugi_dir = $xerte_toolkits_site->tsugi_dir . "mod/$tsugi_project_dir/";
-	if (!file_exists($tsugi_dir)) {
-		mkdir($tsugi_dir, 0777, true);
-		_debug("Folder created at " . $tsugi_dir);
-	}
-	
-	$zipdir = $zipfile->GetFilename();
-	
-	copy($zipdir, $tsugi_dir . "archive.zip");
-	$zipArchive = new ZipArchive();
-	$result = $zipArchive->open($tsugi_dir. "archive.zip");
 
-	if ($result === TRUE) {
-		$zipArchive ->extractTo($tsugi_dir);
-		$zipArchive ->close();
-		
-	}else{
-		_debug("Error opening zip file");
-	}
-}else{
-	// This outputs http headers etc.
-	$zipfile->download_file($row['zipname']);
-}
 _debug("Zip file errors? " . implode(',', $zipfile->error));
 
 /*
@@ -634,52 +471,5 @@ clean_up_files();
 @unlink($dir_path . "template.xml");
 
 @unlink($zipfile_tmpname);
-if($tsugi)
-{
-	$tsugi_key = $_REQUEST["tsugi_key"];
-	$tsugi_secret = $_REQUEST["tsugi_secret"];
-	$url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $row['template_id'];
-	$PDOX = LTIX::getConnection();
-	$p = $CFG->dbprefix;
-	$context_row = $PDOX->rowDie("SELECT MAX(context_id) FROM {$p}lti_context;");
-	$context_id = ($context_row["MAX(context_id)"]) + 1;
-	$key_row = $PDOX->rowDie("SELECT MAX(key_id) FROM {$p}lti_key;");	
-	$key_id = ($key_row["MAX(key_id)"]) + 1;
-	$link_row = $PDOX->rowDie("SELECT MAX(link_id) FROM {$p}lti_link;");
-	$link_id = ($link_row["MAX(link_id)"]) + 1;
-	$sql = "INSERT INTO {$p}lti_key
-			( key_id, key_sha256, key_key, secret) VALUES
-				( :key_id, :key_sha256, :key_key, :secret);";
 
-	$param = array(
-		':key_id' => $key_id,
-		':key_sha256' => lti_sha256($tsugi_key),
-		':key_key' => $tsugi_key,
-		':secret' => $tsugi_secret
-	);
-	$res = $PDOX->queryDie($sql, $param);
-	
-	
-	$sql = "INSERT INTO {$p}lti_context
-                ( context_id, context_sha256, title, key_id, created_at, updated_at ) VALUES
-                ( :context_id, :context_sha256, :title, :key_id, NOW(), NOW() );";
-	$PDOX->queryDie($sql, array(
-		':context_id' => $context_id,
-		':context_sha256' => lti_sha256($context_id),
-		':title' => $name,
-		':key_id' => $key_id));
-	$sql = "INSERT INTO {$p}lti_link
-                ( link_id, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
-                    ( :link_id, :link_sha256, :title, :context_id, :path, NOW(), NOW() );";
-
-	$params = array(
-		':link_id' => $link_id,
-		':link_sha256' => lti_sha256($link_id),
-		':title' => $name,
-		':context_id' => $context_id,
-		':path' => $url
-	);
-	$link = $PDOX->queryDie($sql, $params);
-
-}
 ?>

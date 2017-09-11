@@ -9,7 +9,7 @@
 		var	answeredValues = {};
 		var diagramAnswers = [];
 		var diagramLabels = [];
-
+		var JSONGraph;
 
         this.loadJS = function() {
             if (numLoaded < 1) {
@@ -17,7 +17,6 @@
                 if (numLoaded == 0) {
                     fileToLoad = "common_html5/js/chart.min.js";
                 }
-                debugger;
                 $.getScript(x_templateLocation + fileToLoad)
                     .done(function(script, textStatus) {
                         numLoaded++;
@@ -301,7 +300,7 @@
 					    updateBubble();
                     }
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctOptions, correctAnswer, null);
+					XTEnterInteraction(x_currentPage, this.questions[this.currentQuestion], 'numeric', name, correctAnswer, null);
 					opinion.checked = false;
 				}
 			}
@@ -421,7 +420,7 @@
 			$("#checkBtn").hide();
             $("#qTxt").html("");
 
-            XTSetPageScore(x_currentPage, myScore);
+            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph));
             opinion.checked = true;
 		};
 		
@@ -450,7 +449,7 @@
 			var classNames = [];
 			var classValues = [];
 			var classWeighting = [];
-			debugger;
+
 			for(var i = 0; i< diagramLabels.length; i++){
 				var q = diagramLabels[i];
 				classNames[q.parentNode.classId] = q.parentNode.getAttribute("name");
@@ -466,6 +465,12 @@
 			for(var j=0; j<classValues.length;j++){
 			    classValues[j] = classValues[j] / classWeighting[j];
 			}
+
+			JSONGraph = {
+				label: x_currentPageXML.getAttribute("name"),
+				classnames: classNames,
+				classvalues: classValues
+			};
 
 			var ctx = $("#diagram");
             var myRadarChart = new Chart(ctx, {

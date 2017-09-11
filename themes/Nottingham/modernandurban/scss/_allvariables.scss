@@ -1,0 +1,32 @@
+/*define color pallette*/
+$darkestcolor: #2F3131;
+$lightestcolor:#F8F1E5;
+$brightcolor:#F9BA32;
+$contrastcolor:#426E86;
+$whiteorlightest:#ffffff;
+$blackordarkest:$darkestcolor;
+
+/*set background colors*/
+$bodybackgroundcolor:$lightestcolor;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+/*set font family*/
+$mainfonts: 'Varela Round', sans-serif;
+$secondaryfonts:'Varela Round', sans-serif;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:$lightestcolor;
+$fontcolorforlightestcolor:$darkestcolor;
+$fontcolorfobrightcolor:$contrastcolor;
+$fontcolorforcontrastcolor:$lightestcolor;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 6vmin;
+$mediumroundedcorners: 2vmin;
+$smallroundedcorners: 1vmin;
+$imageroundedcorners: 2vmin;
+$contentmargin: 2%;
+$interfaceboxshadow:3px 3px 5px grey;;
+$defaultpagepadding:2%;

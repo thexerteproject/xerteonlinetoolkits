@@ -815,8 +815,8 @@ function notes_template(){
 	 */
 
 function change_notes(template_id, form_tag){
-
-	new_notes = document.getElementById(form_tag).childNodes[0].value;
+	var i = document.getElementById(form_tag).childNodes[0].nodeName.toLowerCase() == 'textarea' ? 0 : 1;
+	new_notes = document.getElementById(form_tag).childNodes[i].value;
 
 	if(is_ok_notes(new_notes)){
 
@@ -1303,8 +1303,12 @@ function tsugi_template(){
 						type: 'POST',
 						url: $('#form-action').attr("action"),
 						data: $('#form-action').serialize(),
-						success: function () {
+						success: function (data) {
 						  location.reload();
+						},
+                        error: function(data)
+						{
+                            $(".result_message").html(data.response);
 						}
 					  });
 				});

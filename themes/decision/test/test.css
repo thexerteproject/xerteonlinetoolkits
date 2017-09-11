@@ -1,0 +1,132 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+body {
+	font-family: Arial, sans-serif;
+	color: #131313;
+}
+
+#mainHolder {
+	border: 2px solid #f0f0f0;
+}
+
+.bgColour {
+	background-color: #f0f0f0;
+}
+
+.ui-widget {
+    font-family: Arial,sans-serif;
+}
+
+.stepImg {
+	background-color: white;
+}
+
+/* _____HEADER_&_TITLES_____ */
+
+#headerBlock {
+	background:	#FFFFFF;
+}
+
+#headerBlock #titles {
+	color: #990000;
+}
+
+#btnHolder {
+	border-top: 2px solid #f0f0f0;
+	background-color: #f9f9f9;
+}
+
+#btnHolder button, #overviewBtnHolder button {
+	color: #cccccc;
+}
+
+#btnHolder button:hover, #btnHolder button:focus, #overviewBtnHolder button:hover, #overviewBtnHolder button:focus {
+	color: #ffa500;
+}
+
+#btnHolder button:active, #overviewBtnHolder button:active {
+	color:	#999999;
+}
+
+#btnHolder button:disabled:hover, #btnHolder button:disabled:focus, #overviewBtnHolder button:disabled:hover, #overviewBtnHolder button:disabled:focus {
+	color: #cccccc;
+}
+
+#btnHolder #group2 button {
+	border-left: 2px solid #f0f0f0;
+}
+
+a[href="#"]:visited { 
+   color: #0000EE;
+}
+
+.light {
+	color: white;
+}
+
+.dark {
+	color: #131313;
+}
+
+/* _____STEPS_____ */
+
+#stepHolder .step .fa-border {
+	background-color: #e0e0e0;
+	border-color: white;
+	color: white;
+}
+
+#labelHolder input {
+	border:	1px solid #e0e0e0;
+}
+
+#amount {
+	color: #f6931f;
+}
+
+/* _____OVERVIEW_____ */
+
+#overviewHolder .overviewStep {
+	background-color: white;
+}
+
+#overviewHolder .extraInfo {
+	color: gray;
+}
+
+/* _____FOOTER_____ */
+
+#footerBlock {
+	background: #FFFFFF;
+}
+
+.highlight {
+	background-color: white;
+}
+
+.hint {
+	color: red;
+	font-weight: bold;
+}
+
+.alert {
+	font-weight: bold;
+	color: red;
+}

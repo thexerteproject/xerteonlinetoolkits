@@ -21,109 +21,12 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var delicious = new function() {
-		var $pageContents,
-			$panel,
-			$resultsHolder,
-			deliciousSearch,
-			deliciousTerm;
-
-		// function called every time the page is viewed after it has initially loaded
-		this.pageChanged = function() {
-
-		};
-
-		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
-		};
 
 		this.init = function() {
-			$pageContents = $("#pageContents");
-			$panel = $("#pageContents .panel");
-			$resultsHolder = $pageContents.find("#resultsHolder");
-			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
-			
-			deliciousSearch = x_currentPageXML.getAttribute("search");
-			deliciousTerm = x_currentPageXML.getAttribute("term");
-			var deliciousCount = x_currentPageXML.getAttribute("results");
-
-			var deliciousURL;
-			if (deliciousSearch == 'popular') {
-				deliciousURL = "http://feeds.delicious.com/v2/json/popular/" + encodeURI(deliciousTerm);
-			}
-			else if (deliciousSearch == 'user') {
-				deliciousURL = "http://feeds.delicious.com/v2/json/" + encodeURI(deliciousTerm);
-			}
-			else { //recent - default
-				deliciousURL = "http://feeds.delicious.com/v2/json/tag/" + encodeURI(deliciousTerm);
-			}
-
-			$.ajax({
-				beforeSend: function() {
-					$("#loadingSpinner").show();
-					x_timer = setTimeout(function() {
-					 	$resultsHolder
-					 		.html('<div><p>' + x_getLangInfo(x_languageData.find("errorResults")[0], "label", "There was an error loading the results") + '</p></div>')
-					 		.find("div:even").addClass("shadedDiv");
-					}, 5000);
-				},
-				url: deliciousURL,
-				data: {count : deliciousCount},
-				dataType: 'jsonp',
-				jsonpCallback: "delicious.showLinks",
-				cache: false
-			});
-
-			this.sizeChanged();
+			$("#textHolder").html(x_getLangInfo(x_languageData.find("pageDeprecatedCeased")[0], "label", "This page has been deprecated as the service has ceased."));
 			x_pageLoaded();
-		};
-		
-		this.showLinks = function(data) {
-			clearTimeout(x_timer);
-			$("#loadingSpinner").hide();
 
-			// if language attributes aren't in xml will have to use english fall back
-			var headerTxt = x_currentPageXML.getAttribute("headerTxt");
-			if (headerTxt == undefined) {
-				headerTxt = "Delicious bookmarks for";
-			}
-
-			var resultsString = "";
-			$pageContents.find("#headerHolder").html("<h3>" + headerTxt + " " + deliciousSearch + " '" + deliciousTerm + "'</h3>");
-			if (data.length == 0) {
-				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-			}
-			else {
-				if (data[0] && data[0].result && data[0].result.code && data[0].result.code == 1000) {
-					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>';
-				}
-				else {
-					$.each(data, function (index, value) {
-						resultsString += '<div><p><a target="_blank" href="' + value.u + '">' + value.d + '</a></p></div>';
-					});
-				}
-			}
-			$resultsHolder
-				.html(resultsString)
-				.find("div:even").addClass("shadedDiv");
 		};
 	};
 
@@ -131,21 +34,8 @@
 
 </script>
 
-
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
 		<div id="textHolder" class="left" tabindex="1"></div>
-		
-		<div id="deliciousHolder" class="right">
-			<div class="panel">
-				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-			<div id="headerHolder"></div>
-			<div id="resultsHolder"></div>
-			</div>
-		</div>
-		
-	</div>
 
 </div>

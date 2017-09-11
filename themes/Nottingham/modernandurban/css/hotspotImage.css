@@ -1,0 +1,10 @@
+/* hotspotImage.html */
+
+    .highlight {
+	    border-radius: 1px;
+	    background: none;
+    }
+	#infoHolder {
+		background: #F8F1E5;
+		padding:1%;
+	}

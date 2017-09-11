@@ -363,12 +363,21 @@ var state = new XApiTrackingState();
 
 var scorm=false,
     lrsInstance,
-    userEMail = "mailto:email@test.com";
+    userEMail;
+
+var surf_mode = false;
+var surf_recipe, surf_course;
 
 var answeredQs = [];
 
 function XTInitialise()
 {
+    if(username == undefined)
+    {
+       userEMail = "mailto:email@test.com"
+    }else{
+        userEMail = username;
+    }
     if (! state.initialised)
     {
         state.initialised = true;
@@ -393,6 +402,10 @@ function XTInitialise()
             //alert("Failed LRS setup. Error: " + ex);
         }
     }
+    if(surf_course != undefined && surf_recipe != undefined)
+    {
+        surf_mode = true;
+    }
 
     if(lrsInstance != undefined)
     {
@@ -415,6 +428,40 @@ function XTInitialise()
         );
 
         SaveStatement(statement);
+        if(surf_mode)
+        {
+            var statement = new TinCan.Statement(
+                {
+                    actor: {
+                        mbox: userEMail
+                    },
+                    verb: {
+                        id: "http://lrs.surfuni.org/verb/joined",
+                        display: {
+                            "en-US": "Joined"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: "http://lrs.surfuni.org/object/course",
+                        definition: {
+                            name: {
+                                "en-US": "Course"
+                            }
+                        }
+                    },
+                    context: {
+                        extensions: {
+                            "http://lrs.surfuni.org/context/course": surf_course,
+                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                            "http://lrs.surfuni.org/context/label": ""
+                        }
+                    },
+                    timestamp: this.initStamp
+                }
+            );
+            SaveStatement(statement);
+        }
     }
 }
 
@@ -589,6 +636,16 @@ function XTSetPageScore(page_nr, score)
     this.pageEnd = new Date();
     var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
 
+    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
+
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+    var seconds = delta % 60;
+
     var statement = new TinCan.Statement(
         {
             actor: {
@@ -606,10 +663,55 @@ function XTSetPageScore(page_nr, score)
                 "score": {
                     "scaled": score / 100
                 },
-                "duration": pageDuration
+                "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
             },
             timestamp: this.pageEnd
 
+        }
+    );
+
+    SaveStatement(statement);
+}
+
+function XTSetPageScoreJSON(page_nr, score, JSONGraph)
+{
+    state.setPageScore(page_nr, score);
+    this.pageEnd = new Date();
+    var pageDuration = this.pageEnd.getTime() - this.pageStart.getTime();
+
+    var delta = Math.abs(this.pageEnd.getTime() - this.pageStart.getTime()) / 1000;
+
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+    var seconds = delta % 60;
+
+    var statement = new TinCan.Statement(
+        {
+            actor: {
+                mbox: userEMail
+            },
+            verb: {
+                id: "http://adlnet.gov/expapi/verbs/scored"
+            },
+            target: {
+                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+            },
+            result:{
+                "completion": true,
+                "success": score >= state.lo_passed,
+                "score": {
+                    "scaled": score / 100
+                },
+                "duration": "P" + 0 + "Y" + 0 + "M" + days + "DT" + hours + "H" + minutes + "M" + seconds + "S",
+                "extensions": {
+                    "http://xerte.org.uk/xapi/JSONGraph": JSONGraph
+                }
+            },
+            timestamp: this.pageEnd
         }
     );
 
@@ -636,7 +738,44 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
         }
     );
 
+
     SaveStatement(statement);
+
+    if(surf_mode)
+    {
+        var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://lrs.surfuni.org/verb/accessed",
+                    display: {
+                        "en-US": "Accessed"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: "http://lrs.surfuni.org/object/assessment",
+                    definition: {
+                        name: {
+                            "en-US": "Assessment"
+                        }
+                    }
+                },
+                context: {
+                    extensions: {
+                        "http://lrs.surfuni.org/context/course": surf_course,
+                        "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                        "http://lrs.surfuni.org/context/label": ""
+                    }
+                },
+                timestamp: this.initStamp
+            }
+        );
+        SaveStatement(statement);
+    }
+
 }
 
 function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedback)
@@ -666,12 +805,184 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
 
         answeredQs.push([page_nr, ia_nr]);
         SaveStatement(statement);
+
+        if(surf_mode)
+        {
+            var statement = new TinCan.Statement(
+                {
+                    actor: {
+                        mbox: userEMail
+                    },
+                    verb: {
+                        id: "http://lrs.surfuni.org/verb/submitted",
+                        display: {
+                            "en-US": "Submitted"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: "http://lrs.surfuni.org/object/assessment",
+                        definition: {
+                            name: {
+                                "en-US": "Assessment"
+                            }
+                        }
+                    },
+                    context: {
+                        extensions: {
+                            "http://lrs.surfuni.org/context/course": surf_course,
+                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                            "http://lrs.surfuni.org/context/label": ""
+                        }
+                    },
+                    timestamp: this.initStamp
+                }
+            );
+            SaveStatement(statement);
+            var statement = new TinCan.Statement(
+                {
+                    actor: {
+                        mbox: userEMail
+                    },
+                    verb: {
+                        id: "http://lrs.surfuni.org/verb/accessed",
+                        display: {
+                            "en-US": "Accessed"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: "http://lrs.surfuni.org/object/grade",
+                        definition: {
+                            name: {
+                                "en-US": "Grade"
+                            }
+                        }
+                    },
+                    result: {
+                        "response": result[0]
+                    },
+                    context: {
+                        extensions: {
+                            "http://lrs.surfuni.org/context/course": surf_course,
+                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                            "http://lrs.surfuni.org/context/label": ""
+                        }
+                    },
+                    timestamp: this.initStamp
+                }
+            );
+            SaveStatement(statement);
+            var statement = new TinCan.Statement(
+                {
+                    actor: {
+                        mbox: userEMail
+                    },
+                    verb: {
+                        id: "http://lrs.surfuni.org/verb/accessed",
+                        display: {
+                            "en-US": "Accessed"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: "http://lrs.surfuni.org/object/gradepoint",
+                        definition: {
+                            name: {
+                                "en-US": "Grade point"
+                            }
+                        }
+                    },
+                    result: {
+                        "response": result + ""
+                    },
+                    context: {
+                        extensions: {
+                            "http://lrs.surfuni.org/context/course": surf_course,
+                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                            "http://lrs.surfuni.org/context/label": ""
+                        }
+                    },
+                    timestamp: this.initStamp
+                }
+            );
+            SaveStatement(statement);
+            var statement = new TinCan.Statement(
+            {
+                actor: {
+                    mbox: userEMail
+                },
+                verb: {
+                    id: "http://lrs.surfuni.org/verb/accessed",
+                    display: {
+                        "en-US": "Accessed"
+                    }
+                },
+                object: {
+                    objectType: "Activity",
+                    id: "http://lrs.surfuni.org/object/feedback",
+                    definition: {
+                        name: {
+                            "en-US": "Feedback"
+                        }
+                    }
+                },
+                result: {
+                    "response": feedback[0]
+                },
+                context: {
+                    extensions: {
+                        "http://lrs.surfuni.org/context/course": surf_course,
+                        "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                        "http://lrs.surfuni.org/context/label": ""
+                    }
+                },
+                timestamp: this.initStamp
+            }
+        );
+            SaveStatement(statement);
+        }
     }
 }
 
 function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
 {
-    return 0;
+    //Get ID from the question
+    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
+    var x = lrsInstance.queryStatements(
+        {
+            params: {
+                verb: new TinCan.Verb(
+                    {
+                        id: "http://adlnet.gov/expapi/verbs/answered"
+                    }
+                ),
+                activity: (
+                {
+                    id: "http://xerte.org.uk/xapi/questions/" + idQ
+                }
+                )
+            },
+            callback: function(err, sr) {
+
+                var stringObjects = [];
+
+                for (x = 0; x < sr.statements.length; x++)
+                {
+                    stringObjects[x] = sr.statements[x].originalJSON;
+                }
+
+                if(err !== null) {
+                    console.log("Failed to query statements: " + err);
+                    // TODO: do something with error, didn't get statements
+                    return;
+                }
+                if (sr.more !== null) {
+                }
+            }
+        }
+
+    );
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {

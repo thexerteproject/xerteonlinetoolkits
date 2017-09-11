@@ -1,0 +1,182 @@
+/*****menu connector*****/
+#subMenuItems .subMenuItem {
+  background: $brightcolor;
+  color:$darkestcolor;
+}
+.ui-icon-carat-1-e {
+  color:#ffffff;
+}
+.ui-icon-carat-1-w {
+  color:#ffffff;
+}
+/*****button navigator*****/
+.ui-button {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+  border: none;
+  color: #ffffff;
+}
+.ui-buttonset .ui-button {
+  margin-left: 0;
+  margin-right: .2em;
+}
+.ui-state-active{
+  border-radius: $smallroundedcorners;
+  background: $lightestcolor;
+  border: none;
+  color: $darkestcolor;
+}
+
+/****tabbed navigator****/
+.ui-tabs .ui-tabs-nav li {
+  border-radius: $smallroundedcorners;
+  background: $contrastcolor;
+  border:none;
+  color:$fontcolorforcontrastcolor;
+}
+.ui-tabs .ui-tabs-nav {
+  border-radius: $smallroundedcorners;
+  background: none;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav li a {
+  color: $whiteorlightest;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: $lightestcolor;
+  color:$fontcolorfobrightcolor !important;
+  border-radius: $smallroundedcorners;
+}
+
+/***Flash cards***/
+.front.panel{
+  background:$lightestcolor;
+}
+.back.panel{
+  background:$brightcolor;
+}
+
+/*****categories*****/
+#categoryHolder .category {
+  border-radius: $mediumroundedcorners;
+}
+.highlight {
+  border-radius: $smallroundedcorners;
+  background: $lightestcolor;
+}
+/*****dialogue*****/
+#pageContents .question input {
+  border-radius: $smallroundedcorners;
+}
+/*****Dictation*****/
+#answerTxt {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: $mediumroundedcorners;
+}
+
+#targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+
+/*****model answer*****/
+#answerTxt {
+  border-radius: $mediumroundedcorners;
+}
+/*****modify exercise*****/
+#pageContents textarea {
+  border-radius: $mediumroundedcorners;
+}
+
+/*****timeline matching pairs*****/
+#targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+
+/***Charts Table***/
+table tr.shaded {
+  background: $lightestcolor;
+}
+table.header.shaded tr:first-child {
+  background: $contrastcolor;
+  color:$fontcolorforcontrastcolor;
+}
+table.header.simple tr:first-child {
+  border:none !important;
+}
+table.simple {
+  border: none;
+}
+
+/*****games memory*****/
+#pageContents .card {
+  border-radius: $smallroundedcorners;
+  border-color: $contrastcolor !important;
+}
+#cardTopHolder .card{
+  border-color: $contrastcolor !important;
+}
+/*****games puzzle*****/
+#puzzle {
+  border-radius: $mediumroundedcorners;
+}
+/*****RSS feed page*****/
+#resultsHolder div {
+  border-radius: $mediumroundedcorners;
+}
+
+/*****youtube feed page*****/
+#resultsHolder div {
+  width:97% !Important;
+  min-height: 50px;
+  padding-top: 5px;
+  border-radius: $mediumroundedcorners;
+  background-color: $lightestcolor;
+  margin:.5em;
+}
+.shadedDiv {
+  background-color: #ffffff !important;
+  border-radius: $mediumroundedcorners;
+}
+
+/*****results page*****/
+td, th {
+  border-radius: $mediumroundedcorners;
+}
+
+/*****Accordion page*******/
+.ui-accordion .ui-accordion-content {
+  border-radius: $smallroundedcorners;
+  background: $brightcolor;
+}
+.ui-accordion .ui-accordion-header {
+  border-radius: $smallroundedcorners;
+  background: $lightestcolor;
+  color:#ffffff !important;
+}
+.ui-accordion .ui-accordion-header a {
+  border-radius: $smallroundedcorners;
+  color: #ffffff;
+  background: $contrastcolor !important;
+}
+
+.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  text-decoration: none;
+  background: $brightcolor !important;
+  border-radius: $smallroundedcorners;
+  color: $darkestcolor !important;
+}
+/*****sortable grid*****/
+#gridBorders {
+  border-radius: $smallroundedcorners;
+}
+#grid .listHolder.constrainC li {
+  border-radius: $smallroundedcorners;
+}
+#grid ul li.header {
+  color: $whiteorlightest !important;
+}
+table.header.shaded tr:first-child {
+  background: $contrastcolor;
+}

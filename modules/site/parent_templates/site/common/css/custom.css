@@ -335,3 +335,27 @@ section {
 .alertMsg {
 	color: red;
 }
+
+/* --GLOSSARY-------------------------------------------------------------- */
+
+a.glossary {
+	text-decoration: none;
+	border-bottom: 1px dotted;
+}
+
+a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
+	
+}
+
+#glossaryHover {
+	display: none;
+	max-width: 200px;
+}
+
+.glossaryTip {
+	position: absolute;
+	background-color: #0088cc;
+	border-radius: 4px;
+	padding: 3px 5px;
+	color: #fff;
+}

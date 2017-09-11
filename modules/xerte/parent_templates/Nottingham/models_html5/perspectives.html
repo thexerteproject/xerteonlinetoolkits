@@ -258,7 +258,7 @@
 				}
 			});
 			
-			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "") {
+			if (x_currentPageXML.getAttribute("highlight") == "true" && x_currentPageXML.getAttribute("highlightCol") != undefined && x_currentPageXML.getAttribute("highlightCol") != "" && x_currentPageXML.getAttribute("highlightCol") != "0x") {
 				highlightColour = x_getColour(x_currentPageXML.getAttribute("highlightCol"));
 				$("#pageContents").append('<style>#thumbHolder .current { border-color: ' + highlightColour + ' !important; }</style>');
 			}
