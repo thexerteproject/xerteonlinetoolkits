@@ -35,7 +35,7 @@ class Xerte_Validate_VirusScanClamAv {
     public function isValid($filename) {
         $this->messages = array();
         if(file_exists($filename)) {
-            $command = self::$BINARY . " " . escapeshellarg($filename);
+            $command = self::$BINARY . " --no-summary " . escapeshellarg($filename);
             $retval = -1;
             exec($command, $output, $retval);
 
