@@ -46,7 +46,7 @@ class Xerte_Validate_VirusScanClamAv {
                 $output_str = implode(' ', $output);
                 error_log("Virus found in file upload? $filename --- From " . __FILE__ . " - ClamAV output: {$retval} / {$output_str}");
                 _debug("Virus found? {$retval} / {$output_str} (When scanning : $filename)");
-                $this->messages[$retval] = "Virus found? $output_str";
+                $this->messages['VIRUS_FOUND'] = "Virus found? $output_str";
             }
         }
         else {
