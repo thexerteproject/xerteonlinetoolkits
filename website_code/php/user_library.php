@@ -103,7 +103,7 @@ function create_user_id($username, $firstname, $surname){
     $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
     if($res){
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users login ID", "Succeeded in creating users login ID: User: " . $username . " Id: " . get_user_id());
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users login ID", "Succeeded in creating users login ID: User: " . $username . " Id: " . get_user_id());
         return $res;
 
     }else{
