@@ -35,6 +35,8 @@ class Xerte_Validate_VirusScanClamAv {
     public function isValid($filename) {
         $this->messages = array();
         if(file_exists($filename)) {
+            /* Chmod the file to allow ClamAV access to it. */
+            chmod($filename, 0644);
             $command = self::$BINARY . " --no-summary " . escapeshellarg($filename);
             $retval = -1;
             exec($command, $output, $retval);
