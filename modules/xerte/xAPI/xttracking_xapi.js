@@ -372,7 +372,7 @@ var answeredQs = [];
 
 function XTInitialise()
 {
-    if(username == undefined)
+    if(username == undefined || username == "")
     {
        userEMail = "mailto:email@test.com"
     }else{
@@ -673,7 +673,7 @@ function XTSetPageScore(page_nr, score)
     SaveStatement(statement);
 }
 
-function XTSetPageScoreJSON(page_nr, score, JSONGraph)
+function XTSetPageScoreJSON(page_nr, score, JSONGraph, idName)
 {
     state.setPageScore(page_nr, score);
     this.pageEnd = new Date();
@@ -698,7 +698,7 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph)
                 id: "http://adlnet.gov/expapi/verbs/scored"
             },
             target: {
-                id: "http://xerte.org.uk/xapi/questions/" + page_nr
+                id: "http://xerte.org.uk/xapi/questions/" + idName
             },
             result:{
                 "completion": true,
@@ -945,31 +945,30 @@ function XTExitInteraction(page_nr, ia_nr, ia_type, result, learneranswer, feedb
     }
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
 {
+    var stringObjects = [];
     //Get ID from the question
-    var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
+    //var idQ = this.x_currentPageXML.childNodes[ia_nr].getAttribute("linkID");
     var x = lrsInstance.queryStatements(
         {
             params: {
                 verb: new TinCan.Verb(
                     {
-                        id: "http://adlnet.gov/expapi/verbs/answered"
+                        id: "http://adlnet.gov/expapi/verbs/scored"
                     }
                 ),
                 activity: (
                 {
-                    id: "http://xerte.org.uk/xapi/questions/" + idQ
+                    id: "http://xerte.org.uk/xapi/questions/" + idName
                 }
                 )
             },
             callback: function(err, sr) {
 
-                var stringObjects = [];
-
                 for (x = 0; x < sr.statements.length; x++)
                 {
-                    stringObjects[x] = sr.statements[x].originalJSON;
+                    stringObjects[x] = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 }
 
                 if(err !== null) {
@@ -982,7 +981,11 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
             }
         }
 
+
     );
+    //TODO: Fix so it waits on a response
+    debugger;
+    return stringObjects;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {

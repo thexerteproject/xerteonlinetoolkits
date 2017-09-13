@@ -420,7 +420,7 @@
 			$("#checkBtn").hide();
             $("#qTxt").html("");
 
-            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph));
+            XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
             opinion.checked = true;
 		};
 		
