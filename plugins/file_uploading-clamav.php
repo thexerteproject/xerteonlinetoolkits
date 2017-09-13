@@ -23,7 +23,7 @@
  */
 
 /**
- * Wordpress filter (see add_filter), designed to hook in on the action/event 'editor_save_data'.
+ * Wordpress filter (see add_filter), designed to hook in on the action/event 'editor_upload_file'.
  *
  * Check that a file is free of viruses.
  * Return FALSE if it fails AV checking.
