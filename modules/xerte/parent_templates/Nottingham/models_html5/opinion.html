@@ -481,7 +481,15 @@
 						label: x_currentPageXML.getAttribute("name"),
                         data: classValues
                     }]
-                }
+                },
+				options: {
+					scale: {
+						ticks: {
+							suggestedMin: 0,
+							suggestedMax: 100
+						}
+					}
+				}
             });
 		};
 		
