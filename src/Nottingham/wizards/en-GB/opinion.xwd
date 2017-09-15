@@ -21,6 +21,7 @@
     <feedback label="Feedback" type="textArea"  height="120"/>
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
     <export label="Export Graph" type="TextInput" wysiwyg="true" optional="true"/>
+    <colour label="Colour" type="colourPicker" defaultValue="0xFF0000" optional="true"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
