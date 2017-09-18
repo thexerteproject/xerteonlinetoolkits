@@ -1085,6 +1085,7 @@ function x_continueSetUp1() {
 	}
 	
 	if (x_params.background != undefined && x_params.background != "") {
+		
 		x_checkMediaExists(x_evalURL(x_params.background), function(mediaExists) {
 			if (mediaExists) {
 				var alpha = 30;
@@ -1121,6 +1122,7 @@ function x_continueSetUp1() {
 				x_continueSetUp2();
 			}
 		});
+		
 	} else {
 		x_continueSetUp2();
 	}
@@ -1473,8 +1475,8 @@ function x_changePageStep3(x_gotoPage) {
 		}
 		
 		// show page background & hide main background
-		if ($(".pageBg#page" + x_currentPage).length > 0) {
-			$(".pageBg#page" + x_currentPage).show();
+		if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
+			$(".pageBg#pageBg" + x_currentPage).show();
 			if (x_currentPageXML.getAttribute("bgImageDark") != undefined && x_currentPageXML.getAttribute("bgImageDark") != "" && x_currentPageXML.getAttribute("bgImageDark") != "0") {
 				$("#x_bgDarken")
 					.css({
@@ -1486,7 +1488,7 @@ function x_changePageStep3(x_gotoPage) {
 				$("#x_bgDarken").hide();
 			}
 			
-			if ($("#x_mainBg").length > 0 && $(".pageBg#page" + x_currentPage).length > 0) {
+			if ($("#x_mainBg").length > 0) {
 				$("#x_mainBg").hide();
 			}
 		}
@@ -1689,9 +1691,13 @@ function x_setUpPage() {
     if (x_firstLoad == true) {
         $x_mainHolder.css("visibility", "visible");
 		if (x_params.backgroundGrey == "true") {
+			$("#x_mainBg").show();
 			$("#x_mainBg").gray(); // won't work properly if called when hidden
 			if ($("#x_mainBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-				$(".grayscale:not(#x_mainBg):not([id])").attr("id", "x_mainBg");
+				$(".grayscale:not(.pageBg)").attr("id", "x_mainBg");
+			}
+			if ($(".pageBg#pageBg" + x_currentPage).length > 0) {
+				$("#x_mainBg").hide();
 			}
 		}
         x_firstLoad = false;
@@ -1821,7 +1827,7 @@ function x_loadPageBg(loadModel) {
 		hConstrain = x_currentPageXML.getAttribute("bgImageHConstrain"),
 		alpha = x_currentPageXML.getAttribute("bgImageAlpha") != undefined && x_currentPageXML.getAttribute("bgImageAlpha") != "" ? x_currentPageXML.getAttribute("bgImageAlpha") : 100;
 	
-	var $pageBg = $('<img id="page' + x_currentPage + '" class="pageBg"/>');
+	var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
 	$pageBg
 		.attr("src", x_evalURL(x_currentPageXML.getAttribute("bgImage")))
 		.css({
@@ -1907,9 +1913,9 @@ function x_loadPageBg(loadModel) {
 	
 	if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 		$pageBg.gray();
-		if ($("#pageBg").length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
-			$(".grayscale:not(#pageBg):not([id])").attr("id", "pageBg");
-			$pageBg = $("#pageBg");
+		if ($("#pageBg" + x_currentPage).length < 1) { // IE where the greyscale is done differently - make sure the div that has replaced the original pageBg is given the pageBg id
+			$(".grayscale:not(#x_mainBg):not('[id]')").addClass("pageBg").attr("id", "pageBg" + x_currentPage);
+			$pageBg = $("#pageBg" + x_currentPage);
 			$pageBg.css("visibility", "visible");
 		}
 	}

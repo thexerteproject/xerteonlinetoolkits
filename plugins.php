@@ -43,6 +43,10 @@ require_once(dirname(__FILE__) . D_S . 'website_code' . D_S . 'php' . D_S . 'wp_
  */
 $files1 = glob(PLUGINS_PATH . D_S . '**' . D_S . '*.php');
 $files2 = glob(PLUGINS_PATH . D_S . '*.php');
+
+if ($files1 === false) $files1 = array();
+if ($files2 === false) $files2 = array();
+
 $files = array_merge($files1, $files2);
 
 foreach ($files as $file) {

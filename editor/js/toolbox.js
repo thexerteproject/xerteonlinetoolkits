@@ -2091,11 +2091,13 @@ var EDITOR = (function ($, parent) {
 									var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 									var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
 									var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+									var hidden = lo_data[key]['attributes'].hidePage;
+									
 									if ((pageID.found && pageID.value != "") || (linkID.found && linkID.value != ""))
 									{
 											var page = [];
 											// Also make sure we only take the text from the name, and not the full HTML
-											page.push(getTextFromHTML(name.value));
+											page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
 											page.push(pageID.found ? pageID.value : linkID.value);
 											pages.push(page);
 
