@@ -72,8 +72,9 @@ class ExSimpleXMLElement extends SimpleXMLElement
     }
 }
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
 {
+    _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
 
