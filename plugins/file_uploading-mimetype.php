@@ -25,24 +25,48 @@
 function filter_by_mimetype() {
 
     $args = func_get_args();
-    $files = $args[0];
-    _debug($args);
-    foreach($files as $file) {
-        _debug("Checking {$file['name']} for mimetype etc");
-        
-        $user_filename = $file['name'];
-        $php_upload_filename = $file['tmp_name'];
-        
-        $validator = new Xerte_Validate_FileMimeType();
-        if($validator->isValid($php_upload_filename)) {
-            _debug("Mime check of $php_upload_filename ($user_filename) - ok");
-        }
-        else {
-            _debug("Mime check of $php_upload_filename ($user_filename) failed. ");
-            return false;
-        }
+    $files = array();
+
+    if(!Xerte_Validate_FileMimeType::canRun() || !is_array($args[0])) {
+	return $args[0];
     }
-    return $files;
+
+    /*
+     * The file names may be supplied in two slightly different formats.
+     * As such we dig out the real and temporary file names, and store them
+     * in a local array for easier processing.
+     */
+
+    if (isset($args[0]['filenameuploaded'])) {
+	$files['file_name'][] = $args[0]['filenameuploaded']['name'];
+	$files['temp_name'][] = $args[0]['filenameuploaded']['tmp_name'];
+    }
+    else {
+	foreach ($args[0]['name'] as $key => $name) {
+	    $files['file_name'][] = $name;
+	    $files['temp_name'][] = $args[0]['tmp_name'][$key];
+	}
+    }
+
+    foreach($files['temp_name'] as $key => $file) {
+        $validator = new Xerte_Validate_FileMimeType();
+        if(!$validator->isValid($file)) {
+	    if (file_exists($file)) {
+		_debug("Mime check of {$files['file_name'][$key]} failed.");
+		error_log("Mime check of {$files['file_name'][$key]} ($file) failed");
+
+                unlink($file);
+	    }
+	    else {
+		_debug("Mime check of {$files['file_name'][$key]} failed - file does not exist");
+		error_log("Mime check of {$files['file_name'][$key]} ($file) failed - file does not exist");
+	    }
+
+	    return false;
+	}
+    }
+
+    return $args[0];
 }
 
 if(Xerte_Validate_FileMimeType::canRun()) {
