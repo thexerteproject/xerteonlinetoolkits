@@ -46,36 +46,6 @@ function filter_by_mimetype() {
 }
 
 if(Xerte_Validate_FileMimeType::canRun()) {
-    // this array should probably be defined within config.php as it's likely to be a per site setting.
-    // hopefully these are 'safe-by-default'.
-    $allowable_mime_types = array(
-        'text/plain',
-        'text/xml',
-
-        'image/jpg',
-        'image/png',
-        'image/bmp',
-        'image/gif',
-        'image/svg+xml',
-
-        'application/svg',
-
-        'audio/mp3',
-        'audio/mpeg',
-
-        'video/mp4',
-        'video/quicktime',
-        'video/mpeg',
-        'application/ogg', // .ogg files can be video or audio.
-        'application/x-shockwave-flash', // ??
-
-        'application/msword',
-        'application/vnd.ms-powerpoint', // ??
-        'application/pdf', 
-        'text/rtf',
-        // add other 'permissible' formats here.
-    );
-
-    Xerte_Validate_FileMimeType::$allowableMimeTypeList = $allowable_mime_types;
+    Xerte_Validate_FileMimeType::$allowableMimeTypeList = $xerte_toolkits_site->mimetypes;
     add_filter('editor_upload_file', 'filter_by_mimetype');
 }
