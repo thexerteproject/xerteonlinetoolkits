@@ -480,4 +480,39 @@ function upgrade_9()
         return "LRS Endpoint settings fields already present - ok ? true";
     }
 }
+
+function upgrade_10()
+{
+    // Update the list of allowed MIME types.
+
+    global $xerte_toolkits_site;
+
+    $add_types = array();
+    $new_types = array('image/jpg', 'image/bmp', 'image/svg+xml', 'application/svg', 'audio/mp3', 'video/mpeg', 'application/ogg', 'text/rtf');
+
+    if (! _db_field_exists('sitedetails', 'mimetypes')) {
+        die("Database field 'mimetypes' missing from 'sitedetails' table.");
+    }
+
+    foreach ($new_types as $new_mime_type) {
+        if (!in_array($new_mime_type, $xerte_toolkits_site->mimetypes)) {
+            $add_types[] = $new_mime_type;
+        }
+    }
+
+    // Only update the database if there are types that were missing.
+    if (!empty($add_types)) {
+        $new_str = implode(",", array_merge($xerte_toolkits_site->mimetypes, $add_types));
+
+        $table = table_by_key('sitedetails');
+        $sql = "UPDATE $table SET mimetypes = ?";
+        $res = db_query($sql, array($new_str));
+
+        // A failed update is not fatal, so just report it.
+        return "Default allowed MIME type list updated - ok ? " . ($res ? 'true' : 'false');
+    }
+    else {
+        return "Default allowed MIME type list up to date - ok ? true";
+    }
+}
 ?>
