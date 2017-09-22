@@ -41,10 +41,16 @@ class Xerte_Validate_FileExtension
         _debug($blacklist);
         _debug($extension);
 
-        if (empty($extension)) {
-            _debug("File extension not found for '$filename'.");
-            $this->messages['NO_EXTENSION'] = "File extension not found.";
-            return false;
+        if (strncasecmp(PHP_OS, 'Win', 3) == 0) {
+            /* This is for Windows filenames. */
+            if (empty($extension)) {
+                _debug("File extension not found for '$filename'.");
+                $this->messages['NO_EXTENSION'] = "File extension not found.";
+                return false;
+            }
+        }
+        elseif (!strlen($extension)) {
+            return true;
         }
 
         if (in_array($extension, $blacklist)) {
