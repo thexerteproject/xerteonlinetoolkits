@@ -27,6 +27,7 @@
  * @package
  */
 require_once("../../../config.php");
+require_once("../user_library.php");
 include "../template_status.php";
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
