@@ -40,6 +40,12 @@ function receive_message($user_name, $type, $level, $subject, $content){
 
     }
 
+    if($user_name==""){
+
+        $user_name="UNKNOWN";
+
+    }
+
     /*
      * If error log message turned on, create an error log
      */
@@ -79,60 +85,60 @@ function write_message($user_name, $type, $level, $subject, $content){
 
     global $xerte_toolkits_site;
 
-    if($user_name==""){
-
-        $user_name="UNKNOWN";
-
-    }
-
     /*
-     * Get the log file contents (a series of HTML paragraphs separated by *)
+     * Login/logout and management entries should not get logged to any other log files but their own.
      */
+
+    if ($level != "LOGINS" && $level != "MGMT") {
+        /*
+         * Get the log file contents (a series of HTML paragraphs separated by *)
+         */
 
 	$error_string = '';
 
-    if(file_exists($xerte_toolkits_site->error_log_path . $user_name . ".log")){
+        if(file_exists($xerte_toolkits_site->error_log_path . $user_name . ".log")){
 
-        $error_string = file_get_contents($xerte_toolkits_site->error_log_path . $user_name . ".log");
+            $error_string = file_get_contents($xerte_toolkits_site->error_log_path . $user_name . ".log");
 
-    }
+        }
 
-    $error_array = explode("*",$error_string);
+        $error_array = explode("*",$error_string);
 
-    /*
-     * If the error log is bigger than the maximum size, remove a section
-     */
+        /*
+         * If the error log is bigger than the maximum size, remove a section
+         */
 
-    if(count($error_array)>$xerte_toolkits_site->max_error_size){
+        if(count($error_array)>$xerte_toolkits_site->max_error_size){
 
-        array_splice($error_array,0,1);
+            array_splice($error_array,0,1);
 
-    }
+        }
 
-    /*
-     * If the error log is bigger than the maximum size, remove a section
-     */
+        /*
+         * If the error log is bigger than the maximum size, remove a section
+         */
 
-    if(file_exists($xerte_toolkits_site->error_log_path . $user_name . ".log")){
+        if(file_exists($xerte_toolkits_site->error_log_path . $user_name . ".log")){
 
-        $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $user_name . ".log" , "w");
+            $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $user_name . ".log" , "w");
 
-        $string = implode("*", $error_array) . "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
+            $string = implode("*", $error_array) . "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
 
-        fwrite($error_message_handle, $string);
+            fwrite($error_message_handle, $string);
 
-        fclose($error_message_handle);
+            fclose($error_message_handle);
 
-    }else{
+        }else{
 
-        $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $user_name . ".log" , "w");
+            $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $user_name . ".log" , "w");
 
-        $string = "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
+            $string = "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
 
-        fwrite($error_message_handle, $string);
+            fwrite($error_message_handle, $string);
 
-        fclose($error_message_handle);
+            fclose($error_message_handle);
 
+        }
     }
 
 
@@ -140,7 +146,7 @@ function write_message($user_name, $type, $level, $subject, $content){
      * Make an error log file per level as well
      */
 
-	$error_string = '';
+    $error_string = '';
 
     if(file_exists($xerte_toolkits_site->error_log_path . $level . ".log")){
 
@@ -156,11 +162,13 @@ function write_message($user_name, $type, $level, $subject, $content){
 
     }
 
+    $red = ($subject == "Failed login") ? " style='color:#FF0000;'" : "";
+
     if(file_exists($xerte_toolkits_site->error_log_path . $level . ".log")){
 
         $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $level . ".log" , "w");
 
-        $string = implode("*", $error_array) . "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
+        $string = implode("*", $error_array) . "<p" . $red . ">" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
 
         fwrite($error_message_handle, $string);
 
@@ -170,7 +178,7 @@ function write_message($user_name, $type, $level, $subject, $content){
 
         $error_message_handle = fopen($xerte_toolkits_site->error_log_path . $level . ".log" , "w");
 
-        $string = "<p>" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
+        $string = "<p" . $red . ">" . date("G:i:s - d/m/Y") . " " . $level . "<Br>" . $subject . "<Br>" . $content . "</p>*";
 
         fwrite($error_message_handle, $string);
 

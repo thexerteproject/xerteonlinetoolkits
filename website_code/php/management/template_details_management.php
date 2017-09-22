@@ -42,6 +42,9 @@ if(is_user_admin()){
 
 
 	if($res){
+		$msg = "Template changes saved by user from " . $_SERVER['REMOTE_ADDR'];
+		receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
+
 		echo TEMPLATE_CHANGE_SUCCESS;
 	}else{
 		echo TEMPLATE_CHANGE_FAIL . " " . mysql_error();

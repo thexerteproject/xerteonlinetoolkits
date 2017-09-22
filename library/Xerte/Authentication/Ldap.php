@@ -227,7 +227,7 @@ class Xerte_Authentication_Ldap extends Xerte_Authentication_Abstract
             }
 
             if ($ldapSearchResult!==false) {
-                _debug("Serach successful, getting results");
+                _debug("Search successful, getting results");
                 $ldapSearchArray = ldap_get_entries($ldapConnection, $ldapSearchResult);
                 if (!$ldapSearchArray or !isset($ldapSearchArray[0])) {
                     _debug("No entries found" . print_r($ldapSearchArray, true));
