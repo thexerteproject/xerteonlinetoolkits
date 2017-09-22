@@ -480,4 +480,30 @@ function upgrade_9()
         return "LRS Endpoint settings fields already present - ok ? true";
     }
 }
+
+function upgrade_11()
+{
+    // Create the file_extensions blacklist field.
+
+    $blacklist = 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm';
+
+    if (! _db_field_exists('sitedetails', 'file_extensions')) {
+        $error1 = _db_add_field('sitedetails', 'file_extensions', 'text', '', 'LRS_Secret');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET file_extensions = ?";
+            $error2 = db_query($sql, array($blacklist));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating file extension blacklist field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "File extension blacklist field already present - ok ? true";
+    }
+}
 ?>
