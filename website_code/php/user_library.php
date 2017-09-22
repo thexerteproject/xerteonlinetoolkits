@@ -56,7 +56,7 @@ function get_user_info(){
   if(!empty($row)) {
     return (array($row['firstname'],$row['surname'],$row['username'],$row['login_id'],$row['lastlogin']));
   }else{
-    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users Details", "Failed to get users Details");
+    receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users details", "Failed to get users details: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
   }
 
 }
@@ -80,7 +80,7 @@ function get_user_id(){
     if(!empty($row)) { 
         return $row['login_id'];	
     }else{
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users ID", "Failed to get users ID");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users login ID number", "Failed to get users login ID number: User: " . $_SESSION['toolkits_logon_username']);
     }
 
 }
@@ -103,12 +103,12 @@ function create_user_id($username, $firstname, $surname){
     $res = db_query($query, array($username, date('Y-m-d'), $firstname, $surname));
 
     if($res){
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Succeeded in creating users ID", "Succeeded in creating users ID");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users login ID", "Succeeded in creating users login ID: User: " . $username . " Id: " . get_user_id());
         return $res;
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users ID", "Failed to create users ID");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users login ID", "Failed to create users login ID: User: " . $username);
 
     }
     return false;
@@ -141,11 +141,11 @@ function recycle_bin() {
 
         if($res) {
 
-            receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users recycle bin " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
+            receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users recycle bin", "Succeeded in creating users recycle bin: User: " . $_SESSION['toolkits_logon_username']);
 
         }else{
 
-            receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users recycle bin", "Failed to create users recycle bin");
+            receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users recycle bin", "Failed to create users recycle bin: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
 
         }	
 
@@ -197,11 +197,11 @@ function create_a_virtual_root_folder(){
 
     if(db_query($query, $params) !== false){
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id'], "Succeeded in creating users root folder " .$_SESSION['toolkits_logon_id']);
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in creating users root folder", "Succeeded in creating users root folder: User: " . $_SESSION['toolkits_logon_username']);
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users root folder", "Failed to create users root folder");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to create users root folder", "Failed to create users root folder: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
 
     }
 
@@ -227,11 +227,11 @@ function update_user_logon_time(){
 
     if(db_query($query, $params) !== false){
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time " . $_SESSION['toolkits_logon_username'], "Succeeded in updating users login time " . $_SESSION['toolkits_logon_id']);
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users login time", "Succeeded in updating users login time: User: " . $_SESSION['toolkits_logon_username']);
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "MINOR", "Failed to update users login time", "Failed to update users login time");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "MINOR", "Failed to update users login time", "Failed to update users login time: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
 
     }
 
@@ -240,11 +240,11 @@ function update_user_logon_time(){
 
     if(db_query($query, $params) !== false){
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users username " . $_SESSION['toolkits_logon_username'], "Succeeded in updating usersname ");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Succeeded in updating users name", "Succeeded in updating users name: User: " . $_SESSION['toolkits_logon_username']);
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "MINOR", "Failed to update users username", "Failed to update users username");
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "MINOR", "Failed to update users name", "Failed to update users name: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
 
     }
 
@@ -277,7 +277,7 @@ function get_user_root_folder(){
 
     }else{
 
-        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users root folder", "Failed to get users root folder");		
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get users root folder", "Failed to get users root folder: User: " . $_SESSION['toolkits_logon_username'] . " Id: " . $_SESSION['toolkits_logon_id']);
 
     }
 
