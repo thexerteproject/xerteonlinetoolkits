@@ -157,18 +157,14 @@ if(is_user_admin()){
 
         echo "<select name=\"authentication_method\" id=\"authentication_method\" style=\"margin: 15px 0 0 10px; padding: 0.4em 0.15em; \">";
 
-        if(isset($row['authentication_method'])) {
-          echo "<option value=\"". $row['authentication_method'] . "\">". $row['authentication_method'] . "</option>";
-        }
-
-        echo "<option value=\"Guest\">Guest</option>
-              <option value=\"Ldap\">Ldap</option>
-              <option value=\"Db\">Db</option>
-              <option value=\"Static\">Static</option>
-              <option value=\"Moodle\">Moodle</option>
-              <option value=\"Saml2\">Saml2</option>
-              <option value=\"OAuth2\">OAuth2</option>
-            </select>";
+        echo "<option value=\"Guest\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Guest') ? " selected" : "") . ">Guest</option>";
+        echo "<option value=\"Ldap\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Ldap') ? " selected" : "") . ">Ldap</option>";
+        echo "<option value=\"Db\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Db') ? " selected" : "") . ">Db</option>";
+        echo "<option value=\"Static\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Static') ? " selected" : "") . ">Static</option>";
+        echo "<option value=\"Moodle\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Moodle') ? " selected" : "") . ">Moodle</option>";
+        echo "<option value=\"Saml2\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'Saml2') ? " selected" : "") . ">Saml2</option>";
+        echo "<option value=\"OAuth2\"" . ((isset($row['authentication_method']) && $row['authentication_method'] == 'OAuth2') ? " selected" : "") . ">OAuth2</option>";
+        echo "</select>";
 
         echo "</form></p>"; 
 
