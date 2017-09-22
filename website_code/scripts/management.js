@@ -397,7 +397,6 @@ function update_site(){
 		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 		copyright = document.getElementById("copyright").value;
-
 		copyright = copyright.split("�").join("AAA");
 
 		xmlHttp.send('site_url=' + document.getElementById("site_url").value + 
@@ -430,7 +429,7 @@ function update_site(){
 					 '&authentication_method=' + document.getElementById("authentication_method").value + 
 					 '&ldap_host=' + document.getElementById("ldap_host").value	+ 
 					 '&ldap_port=' + document.getElementById("ldap_port").value + 
-					 '&bind_pwd=' + document.getElementById("bind_pwd").value + 
+					 '&bind_pwd=' + encodeURIComponent(document.getElementById("bind_pwd").value) +
 					 '&base_dn=' + document.getElementById("base_dn").value + 
 					 '&bind_dn=' + document.getElementById("bind_dn").value + 
 					 '&flash_save_path=' + document.getElementById("flash_save_path").value + 
