@@ -74,7 +74,7 @@ if(is_user_admin()){
 
     echo "<p>" . MANAGEMENT_SITE_POD_TWO . "<form><textarea id=\"pod_two\">" . base64_decode($row['pod_two']) . "</textarea></form></p>";	
 
-    echo "<p>" . MANAGEMENT_SITE_COPYRIGHT . "<form><textarea id=\"copyright\">" . $row['copyright'] . "</textarea></form></p>";	
+    echo "<p>" . MANAGEMENT_SITE_COPYRIGHT . "<form><textarea id=\"copyright\">" . htmlspecialchars($row['copyright']) . "</textarea></form></p>";
 
     echo "<p>" . MANAGEMENT_SITE_DEMONSTRATION . "<form><textarea id=\"demonstration_page\">" . $row['demonstration_page'] . "</textarea></form></p>";	
 

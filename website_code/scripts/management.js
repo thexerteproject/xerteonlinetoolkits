@@ -411,7 +411,7 @@ function update_site(){
                      '&news_text=' + document.getElementById("news_text").value +
 					 '&pod_one=' + document.getElementById("pod_one").value + 
 					 '&pod_two=' + document.getElementById("pod_two").value + 
-					 '&copyright=' + document.getElementById("copyright").value + 
+					 '&copyright=' + encodeURIComponent(document.getElementById("copyright").value) +
 					 '&demonstration_page=' + document.getElementById("demonstration_page").value + 
 					 '&form_string=' + document.getElementById("form_string").value + 
 					 '&peer_form_string=' + document.getElementById("peer_form_string").value + 
