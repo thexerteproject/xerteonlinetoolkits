@@ -531,14 +531,20 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
 }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
 {
     var JSONGraph = {
         label: "Enter Page Title",
         classnames: ["C-1", "C-2", "C-3"],
-        classvalues: [50, 30, 40]
+        classvalues: [0, 30, 20]
     };
-    return JSONGraph;
+    var JSONGraph2 = {
+        label: "Enter Page Title",
+        classnames: ["C-1", "C-2", "C-3"],
+        classvalues: [100, 30, 40]
+    };
+    var JSONGraphArray = [JSONGraph, JSONGraph2]
+    return JSONGraphArray;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {
