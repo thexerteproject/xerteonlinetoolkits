@@ -22,6 +22,8 @@
  * @see modules/site/engine/upload.php
  */
 
+require_once(dirname(__FILE__) . '/../config.php');
+
 function filter_by_mimetype() {
 
     $args = func_get_args();
@@ -69,7 +71,7 @@ function filter_by_mimetype() {
     return $args[0];
 }
 
-if(Xerte_Validate_FileMimeType::canRun()) {
+if(Xerte_Validate_FileMimeType::canRun() && $xerte_toolkits_site->enable_mime_check) {
     Xerte_Validate_FileMimeType::$allowableMimeTypeList = $xerte_toolkits_site->mimetypes;
     add_filter('editor_upload_file', 'filter_by_mimetype');
 }
