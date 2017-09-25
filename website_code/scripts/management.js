@@ -447,6 +447,7 @@ function update_site(){
 					 '&synd_rights=' + document.getElementById("synd_rights").value + 
 					 '&synd_license=' + document.getElementById("synd_license").value + 
 					 '&import_path=' + document.getElementById("import_path").value + 
+					 '&enable_mime_check=' + document.getElementById("enable_mime_check").value + 
 					 '&mimetypes=' + document.getElementById("mimetypes").value + 
 					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
 					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
