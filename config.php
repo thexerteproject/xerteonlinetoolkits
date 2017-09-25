@@ -125,6 +125,7 @@ foreach ($row as $key => $value) {
 }
 
 // awkward ones.
+$xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check']);
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
