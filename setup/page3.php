@@ -68,7 +68,7 @@ echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['acc
 
 echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";	
 
-echo "<p>Whether the MIME file type checks should be applied to file uploads<textarea name=\"enable_mime_check\">false</textarea></p>";
+echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\">false</textarea></p>";
 
 echo "<p>The allowed upload MIME types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
     </p>";	
