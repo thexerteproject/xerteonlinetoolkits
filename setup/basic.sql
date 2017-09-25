@@ -91,6 +91,7 @@ CREATE TABLE `$sitedetails` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
   `site_url` char(255) DEFAULT NULL,
   `apache` char(255) DEFAULT NULL,
+  `enable_mime_check` char(255) DEFAULT NULL,
   `mimetypes` text,
   `site_session_name` char(255) DEFAULT NULL,
   `authentication_method` char(255) DEFAULT NULL,
