@@ -515,4 +515,28 @@ function upgrade_10()
         return "Default allowed MIME type list up to date - ok ? true";
     }
 }
+
+function upgrade_11()
+{
+    // Create, and initailize, the field for enabling MIME upload checks.
+
+    if (! _db_field_exists('sitedetails', 'enable_mime_check')) {
+        $error1 = _db_add_field('sitedetails', 'enable_mime_check', 'char(255)', 'NULL', 'apache');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET enable_mime_check = ?";
+            $error2 = db_query($sql, array('false'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating MIME checks field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "MIME checks field already present - ok ? true";
+    }
+}
 ?>
