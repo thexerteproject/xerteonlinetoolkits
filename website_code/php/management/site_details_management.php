@@ -31,6 +31,8 @@ if(is_user_admin()) {
 
     $site_texts = $_POST['site_text'] . "~~~" . $_POST['tutorial_text'];
 
+    $enable_mime_check = true_or_false($_POST['enable_mime_check']) ? 'true' : 'false';
+
     $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
         site_text=? ,news_text=? ,pod_one=? , pod_two= ? ,copyright=? ,demonstration_page=? ,form_string= ? ,peer_form_string=?,feedback_list=?,
         rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?, 
@@ -44,7 +46,7 @@ if(is_user_admin()) {
         $_POST['max_error_size'], $_POST['authentication_method'], $_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['bind_dn'], $_POST['flash_save_path'], $_POST['flash_upload_path'],
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
-        $_POST['enable_mime_check'], $_POST['mimetypes'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'],
+        $enable_mime_check, $_POST['mimetypes'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'],
         $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret']);
 
     $res = db_query($query, $data);
