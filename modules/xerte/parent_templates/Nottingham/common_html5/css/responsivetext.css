@@ -65,6 +65,9 @@ h3 {
 #pageContents .question input {
     font-size: 3.0vmin;
 }
+#pageContents #mainText {
+    font-size: 3.0vmin;
+}
 #labelHolder {
     font-size: 3.0vmin;
 }
