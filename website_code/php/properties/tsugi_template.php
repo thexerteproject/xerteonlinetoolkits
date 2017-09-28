@@ -82,7 +82,7 @@
                             <div id="xApi">
 						       <label for="tsugi_xapi_endpoint">xAPI endpoint: </label><input type="text" name="tsugi_xapi_endpoint" value="<?php echo $xapi_endpoint;?>"><br>
 						        <label for="tsugi_xapi_username">xAPI username: </label><input type="text" name="tsugi_xapi_username" value="<?php echo $xapi_username;?>"><br>
-						        <label for="tsugi_xapi_password">xAPI endpoint: </label><input type="text" name="tsugi_xapi_password" value="<?php echo $xapi_password;?>"><br>
+						        <label for="tsugi_xapi_password">xAPI password: </label><input type="text" name="tsugi_xapi_password" value="<?php echo $xapi_password;?>"><br>
                             </div>
                         </div>
 

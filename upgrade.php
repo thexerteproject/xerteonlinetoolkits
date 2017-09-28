@@ -536,7 +536,7 @@ function upgrade_11()
     }
 
     if (! _db_field_exists('templatedetails', 'tsugi_xapi_endpoint')) {
-        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_endpoint', 'text', '', 'tsugi_xapi_enabled');
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_endpoint', 'varchar(255)', '', 'tsugi_xapi_enabled');
         $error1_returned = true;
 
 
@@ -552,7 +552,7 @@ function upgrade_11()
     }
 
     if (! _db_field_exists('templatedetails', 'tsugi_xapi_key')) {
-        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_key', 'text', '', 'tsugi_xapi_endpoint');
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_key', 'varchar(255)', '', 'tsugi_xapi_endpoint');
         $error1_returned = true;
 
 
@@ -568,7 +568,7 @@ function upgrade_11()
     }
 
     if (! _db_field_exists('templatedetails', 'tsugi_xapi_secret')) {
-        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_secret', 'text', '', 'tsugi_xapi_key');
+        $error1 = _db_add_field('templatedetails', 'tsugi_xapi_secret', 'varchar(255)', '', 'tsugi_xapi_key');
         $error1_returned = true;
 
 
