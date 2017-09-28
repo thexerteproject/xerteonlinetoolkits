@@ -1335,6 +1335,8 @@ function showOptions() {
 	{
         $('#publish').hide();
 	}
+    $('#xApi').show();
+    $('#publish').show();
 }
 
      /**
