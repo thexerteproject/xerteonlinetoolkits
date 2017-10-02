@@ -71,6 +71,13 @@ echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['pas
 echo "<p>The allowed upload types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,application/msword,application/x-shockwave-flash,image/jpeg,image/pjpeg,image/png,image/gif,image/x-png,audio/mpeg,application/vnd.ms-excel,application/pdf,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation</textarea>
     </p>";
 
+if (function_exists('pathinfo')) {
+    echo "<p>Whether the file extension check should be applied to file uploads<textarea name=\"enable_file_ext_check\">false</textarea></p>";
+}
+else {
+    echo "<p>Whether the file extension check should be applied to file uploads<textarea name=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></p>";
+}
+
 echo "<p>The disallowed upload file extensions for the Media and quota page are <textarea name=\"file_extensions\">php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
     </p>";
 
