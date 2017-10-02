@@ -60,7 +60,7 @@
 
 	define("MANAGEMENT_SITE_ENABLE_MIME", "Whether the MIME file type check should be applied to file uploads ");
 
-	define("MANAGEMENT_SITE_MIME", "The allowed upload types for the Media and quota page are ");
+	define("MANAGEMENT_SITE_MIME", "The allowed uploaded MIME types for the Media and quota page are ");
 
 	define("MANAGEMENT_SITE_INTEGRATION", "The integration config path is  ");
 
