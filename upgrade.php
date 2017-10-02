@@ -497,11 +497,11 @@ function upgrade_11()
             $error2 = false;
         }
 
-        return "Creating file extension checks field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+        return "Creating file extension check field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
     }
     else
     {
-        return "File extension checks field already present - ok ? true";
+        return "File extension check field already present - ok ? true";
     }
 }
 
