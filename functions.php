@@ -275,7 +275,7 @@ function getVersion()
 
 function true_or_false($var)
 {
-    // Return various values for a variable as logical true, anything else is false.
+    // Return logical true for various values of a variable, anything else is false.
 
     if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0) {
         return true;
