@@ -170,6 +170,9 @@ $xerte_toolkits_site->error_log_path = $xerte_toolkits_site->root_file_path . $r
 
 $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
 
+/* Record the last error reported during file checks. */
+global $last_file_check_error;
+
 
 $dir = opendir(dirname(__FILE__) . "/modules/");
 

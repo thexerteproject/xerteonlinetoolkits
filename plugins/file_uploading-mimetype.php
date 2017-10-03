@@ -26,8 +26,12 @@ require_once(dirname(__FILE__) . '/../config.php');
 
 function filter_by_mimetype() {
 
+    global $last_file_check_error;
+
     $args = func_get_args();
     $files = array();
+
+    $last_file_check_error = null;
 
     if(!Xerte_Validate_FileMimeType::canRun() || !is_array($args[0])) {
 	return $args[0];
@@ -63,6 +67,8 @@ function filter_by_mimetype() {
 		_debug("Mime check of {$files['file_name'][$key]} failed - file does not exist");
 		error_log("Mime check of {$files['file_name'][$key]} ($file) failed - file does not exist");
 	    }
+
+            $last_file_check_error = $validator->GetMessages();
 
 	    return false;
 	}
