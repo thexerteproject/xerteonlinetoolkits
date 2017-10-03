@@ -448,6 +448,8 @@ function update_site(){
 					 '&synd_license=' + document.getElementById("synd_license").value + 
 					 '&import_path=' + document.getElementById("import_path").value + 
 					 '&mimetypes=' + document.getElementById("mimetypes").value + 
+					 '&enable_file_ext_check=' + document.getElementById("enable_file_ext_check").value + 
+					 '&file_extensions=' + document.getElementById("file_extensions").value + 
 					 '&LDAP_preference=' + document.getElementById("LDAP_preference").value + 
 					 '&LDAP_filter=' + document.getElementById("LDAP_filter").value + 
 					 '&integration_config_path=' + document.getElementById("integration_config_path").value + 
