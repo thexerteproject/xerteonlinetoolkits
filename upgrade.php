@@ -59,7 +59,18 @@ function _db_field_exists($table, $field) {
 function _db_add_field($table, $field, $fieldtype, $default, $after) {
     $table = table_by_key($table);
     if(! _db_field_exists($table, $field)) {
-        $query = "ALTER TABLE $table ADD COLUMN $field $fieldtype DEFAULT '$default' AFTER $after";
+        $fieldtype = strtoupper($fieldtype);
+        $query = "ALTER TABLE $table ADD COLUMN $field $fieldtype";
+
+        /* TEXT and BLOB types cannot have a default. */
+        if ($fieldtype != 'TEXT' && $fieldtype != 'BLOB') {
+            $query .= " DEFAULT '$default'";
+        }
+
+        if ($after) {
+            $query .= " AFTER $after";
+        }
+
         return db_query($query);
     } else { 
         printdebug ("field already exists: $table.$field");
