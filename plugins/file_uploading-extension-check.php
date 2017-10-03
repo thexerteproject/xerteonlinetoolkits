@@ -26,8 +26,12 @@ require_once(dirname(__FILE__) . '/../config.php');
 
 function filter_by_extension_name() {
 
+    global $last_file_check_error;
+
     $args = func_get_args();
     $files = array();
+
+    $last_file_check_error = null;
     
     if(!Xerte_Validate_FileExtension::canRun() || !is_array($args[0])) {
         return $args[0];
@@ -65,6 +69,8 @@ function filter_by_extension_name() {
                 _debug("Invalid file {$file} uploaded - file does not exist");
                 error_log("Invalid file $file ($real_path) uploaded - file does not exist");
             }
+
+            $last_file_check_error = $validator->GetMessages();
 
             return false;
         }
