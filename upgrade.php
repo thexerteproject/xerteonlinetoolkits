@@ -518,7 +518,7 @@ function upgrade_10()
 
 function upgrade_11()
 {
-    // Create, and initailize, the field for enabling MIME upload checks.
+    // Create, and initialize, the field for enabling MIME upload checks.
 
     if (! _db_field_exists('sitedetails', 'enable_mime_check')) {
         $error1 = _db_add_field('sitedetails', 'enable_mime_check', 'char(255)', 'NULL', 'apache');
