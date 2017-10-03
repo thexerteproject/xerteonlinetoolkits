@@ -72,7 +72,15 @@ if (!isset($_SESSION['toolkits_logon_username'])) {
 
 if (!empty($_FILES)) {
     if(!apply_filters('editor_upload_file', $_FILES)) {
-        _debug("file upload for " . print_r($_FILES, true) . " failed. ");
+        /* Show the last file check error if possible. */
+        if (isset($last_file_check_error) && !empty($last_file_check_error)) {
+            $err_string = implode("\n", $last_file_check_error);
+            _debug("File upload for " . print_r($_FILES, true) . " failed: " . $err_string);
+        }
+        else {
+            _debug("File upload for " . print_r($_FILES, true) . " failed.");
+        }
+
         die("File upload failed; check server logs.");
     }
 }
