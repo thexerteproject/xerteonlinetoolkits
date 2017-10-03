@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,6 @@
  */
 class Xerte_Validate_FileExtension
 {
-
     protected $messages = array();
 
     public static $BLACKLIST = array();
@@ -35,40 +34,27 @@ class Xerte_Validate_FileExtension
     {
         $this->messages = array();
 
-        if(self::canRun()) {
-            if (file_exists($filename)) {
-                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-                if (strncasecmp(PHP_OS, 'Win', 3) == 0) {
-                    /* This is for Windows filenames. */
-                    if (empty($extension)) {
-                        _debug("File extension not found for '$filename'.");
-                        $this->messages['NO_EXTENSION'] = "File extension not found.";
-                        return false;
-                    }
-                }
-                elseif (!strlen($extension)) {
-                    return true;
-                }
-
-                if (in_array($extension, self::$BLACKLIST)) {
-                    _debug("Invalid file uploaded - extension '$extension' matches entry in blacklist");
-                    $this->messages["INVALID_EXTENSION"] = "Invalid file extension - $extension is blacklisted";
-                    return false;
-                }
-
-                return  true;
-            }
-            else {
-                /* Missing files will be handled further up the check. */
+        if (strncasecmp(PHP_OS, 'Win', 3) == 0) {
+            /* This is for Windows filenames. */
+            if (empty($extension)) {
+                _debug("File extension not found for '$filename'.");
+                $this->messages['NO_EXTENSION'] = "File extension not found.";
                 return false;
             }
         }
-        else {
-            $this->messages['UNSUPPORTED'] = "Can't run - function: pathinfo not found";
+        elseif (!strlen($extension)) {
+            return true;
         }
 
-        return false;
+        if (in_array($extension, self::$BLACKLIST)) {
+            _debug("Invalid file uploaded - extension '$extension' matches entry in blacklist");
+            $this->messages["INVALID_EXTENSION"] = "Invalid file extension - $extension is blacklisted";
+            return false;
+        }
+
+        return true;
     }
 
 
