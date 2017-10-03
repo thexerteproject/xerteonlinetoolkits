@@ -94,8 +94,17 @@ if(is_user_admin()){
     echo "<p>" . MANAGEMENT_SITE_SESSION_NAME . "<form><textarea id=\"site_session_name\">" . $row['site_session_name'] . "</textarea></form>
         </p>";	
 
+    if (Xerte_Validate_FileMimeType::canRun()) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_MIME . "<form><textarea id=\"enable_mime_check\">" . $row['enable_mime_check'] . "</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_MIME . "<form><textarea id=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></form>
+            </p>";
+    }
     echo "<p>" . MANAGEMENT_SITE_MIME . "<form><textarea id=\"mimetypes\">" . $row['mimetypes'] . "</textarea></form>
-        </p>";	
+        </p>";
+
     echo "<p>" . MANAGEMENT_SITE_INTEGRATION . "<form><textarea id=\"integration_config_path\">" . $row['integration_config_path'] . "</textarea></form>
         </p>";	
 

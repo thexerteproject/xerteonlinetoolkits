@@ -272,3 +272,14 @@ function getVersion()
     $version = file(dirname(__FILE__) . "/version.txt", FILE_IGNORE_NEW_LINES);
     return $version[0];
 }
+
+function true_or_false($var)
+{
+    // Return logical true for various values of a variable, anything else is false.
+
+    if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0) {
+        return true;
+    }
+
+    return false;
+}

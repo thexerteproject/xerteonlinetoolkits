@@ -125,6 +125,7 @@ foreach ($row as $key => $value) {
 }
 
 // awkward ones.
+$xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check']);
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
@@ -168,6 +169,9 @@ $xerte_toolkits_site->play_edit_preview_query = base64_decode($row['play_edit_pr
 $xerte_toolkits_site->error_log_path = $xerte_toolkits_site->root_file_path . $row['error_log_path'];
 
 $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
+
+/* Record the last error reported during file checks. */
+global $last_file_check_error;
 
 
 $dir = opendir(dirname(__FILE__) . "/modules/");
