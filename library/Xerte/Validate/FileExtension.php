@@ -22,8 +22,7 @@ class Xerte_Validate_FileExtension
 
     protected $messages = array();
 
-    public static $BLACKLIST = 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm';
-
+    public static $BLACKLIST = array();
 
 
     public static function canRun()
@@ -36,23 +35,40 @@ class Xerte_Validate_FileExtension
     {
         $this->messages = array();
 
-        $blacklist = explode(',', strtolower(self::$BLACKLIST));
-        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        _debug($blacklist);
-        _debug($extension);
+        if(self::canRun()) {
+            if (file_exists($filename)) {
+                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        if (empty($extension)) {
-            _debug("File extension not found for '$filename'.");
-            $this->messages['NO_EXTENSION'] = "File extension not found.";
-            return false;
+                if (strncasecmp(PHP_OS, 'Win', 3) == 0) {
+                    /* This is for Windows filenames. */
+                    if (empty($extension)) {
+                        _debug("File extension not found for '$filename'.");
+                        $this->messages['NO_EXTENSION'] = "File extension not found.";
+                        return false;
+                    }
+                }
+                elseif (!strlen($extension)) {
+                    return true;
+                }
+
+                if (in_array($extension, self::$BLACKLIST)) {
+                    _debug("Invalid file uploaded - extension '$extension' matches entry in blacklist");
+                    $this->messages["INVALID_EXTENSION"] = "Invalid file extension - $extension is blacklisted";
+                    return false;
+                }
+
+                return  true;
+            }
+            else {
+                /* Missing files will be handled further up the check. */
+                return false;
+            }
+        }
+        else {
+            $this->messages['UNSUPPORTED'] = "Can't run - function: pathinfo not found";
         }
 
-        if (in_array($extension, $blacklist)) {
-            _debug("Invalid file type uploaded - '$extension' matches entry in blacklist");
-            $this->messages["INVALID_EXTENSION"] = "Invalid file format - $extension is blacklisted";
-            return false;
-        }
-        return  true;
+        return false;
     }
 
 
@@ -67,4 +83,3 @@ class Xerte_Validate_FileExtension
         return array_keys($this->messages);
     }
 }
-
