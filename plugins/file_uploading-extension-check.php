@@ -37,7 +37,7 @@ function filter_by_extension_name() {
 
     $last_file_check_error = null;
 
-    /* 
+    /*
      * The file names may be supplied in two slightly different formats.
      * As such we dig out the real and temporary file names, and store them
      * in a local array for easier processing.
