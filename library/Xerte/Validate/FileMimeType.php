@@ -46,7 +46,7 @@ class Xerte_Validate_FileMimeType {
                 if(in_array($mime_type, self::$allowableMimeTypeList)) {
                     return true;
                 }
-                $this->messages['INVALID_MIME_TYPE'] = "$mime_type is not in list of allowable types";
+                $this->messages['INVALID_MIME_TYPE'] = "MIME type $mime_type is not an allowed type";
             }
             else {
                 $this->messages['FILE_NOT_FOUND'] = "File not found - $file_name";
