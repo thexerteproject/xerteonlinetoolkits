@@ -48,7 +48,7 @@ if(is_user_admin()) {
         $_POST['max_error_size'], $_POST['authentication_method'], $_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['bind_dn'], $_POST['flash_save_path'], $_POST['flash_upload_path'],
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
-        $enable_mime_check, $_POST['mimetypes'], $enable_file_ext_check, $_POST['file_extensions'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'],
+        $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'],
         $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret']);
 
     $res = db_query($query, $data);
