@@ -550,4 +550,54 @@ function upgrade_11()
         return "MIME checks field already present - ok ? true";
     }
 }
+
+function upgrade_12()
+{
+    // Create the field for enabling file extension file upload checks.
+
+    if (! _db_field_exists('sitedetails', 'enable_file_ext_check')) {
+        $error1 = _db_add_field('sitedetails', 'enable_file_ext_check', 'char(255)', 'NULL', 'mimetypes');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET enable_file_ext_check = ?";
+            $error2 = db_query($sql, array('false'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating file extension check field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "File extension check field already present - ok ? true";
+    }
+}
+
+function upgrade_13()
+{
+    // Create the file_extensions blacklist field.
+
+    $blacklist = 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm';
+
+    if (! _db_field_exists('sitedetails', 'file_extensions')) {
+        $error1 = _db_add_field('sitedetails', 'file_extensions', 'text', '', 'enable_file_ext_check');
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET file_extensions = ?";
+            $error2 = db_query($sql, array($blacklist));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating file extension blacklist field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "File extension blacklist field already present - ok ? true";
+    }
+}
 ?>

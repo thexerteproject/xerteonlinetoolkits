@@ -21,27 +21,65 @@
 /**
  * @see modules/site/engine/upload.php
  */
+
+require_once(dirname(__FILE__) . '/../config.php');
+
 function filter_by_extension_name() {
 
-    Xerte_Validate_FileExtension::$BLACKLIST = 'php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm';
+    global $last_file_check_error;
 
     $args = func_get_args();
-    $files = $args[0];
+    $files = array();
+
+    $last_file_check_error = null;
     
-    if(!Xerte_Validate_FileExtension::canRun()) {
-        return $files;
+    if(!Xerte_Validate_FileExtension::canRun() || !is_array($args[0])) {
+        return $args[0];
     }
 
+    /* 
+     * The file names may be supplied in two slightly different formats.
+     * As such we dig out the real and temporary file names, and store them
+     * in a local array for easier processing.
+     */
 
-    foreach($files as $file) {
+    if (isset($args[0]['filenameuploaded'])) {
+        $files['file_name'][] = $args[0]['filenameuploaded']['name'];
+        $files['temp_name'][] = $args[0]['filenameuploaded']['tmp_name'];
+    }
+    else {
+        foreach ($args[0]['name'] as $key => $name) {
+            $files['file_name'][] = $name;
+            $files['temp_name'][] = $args[0]['tmp_name'][$key];
+        }
+    }
+
+    foreach($files['file_name'] as $key => $file) {
         $validator = new Xerte_Validate_FileExtension();
-        if(!$validator->isValid($file['name'])) {
-            _debug("Invalid file {$file['name']} type uploaded - matches blacklist");
+        if(!$validator->isValid($file)) {
+            $real_path = $files['temp_name'][$key];
+
+            if (file_exists($real_path)) {
+                _debug("Blacklisted file extension of uploaded file - $file");
+                error_log("Blacklisted file extension found for file $file ($real_path)");
+
+                unlink($real_path);
+            }
+            else {
+                _debug("Invalid file {$file} uploaded - file does not exist");
+                error_log("Invalid file $file ($real_path) uploaded - file does not exist");
+            }
+
+            $last_file_check_error = $validator->GetMessages();
+
             return false;
         }
     } 
 
-    return $files;
+    return $args[0];
 }
 
-add_filter('editor_upload_file', 'filter_by_extension_name');
+if (Xerte_Validate_FileExtension::canRun() && $xerte_toolkits_site->enable_file_ext_check) {
+    Xerte_Validate_FileExtension::$BLACKLIST = $xerte_toolkits_site->file_extensions;
+    add_filter('editor_upload_file', 'filter_by_extension_name');
+}

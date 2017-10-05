@@ -103,6 +103,17 @@ if(is_user_admin()){
             </p>";
     }
     echo "<p>" . MANAGEMENT_SITE_MIME . "<form><textarea id=\"mimetypes\">" . $row['mimetypes'] . "</textarea></form>
+        </p>";	
+
+    if (Xerte_Validate_FileExtension::canRun()) {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\">" . $row['enable_file_ext_check'] . "</textarea></form>
+            </p>";
+    }
+    else {
+        echo "<p>" . MANAGEMENT_SITE_ENABLE_FILE_EXT . "<form><textarea id=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></form>
+            </p>";
+    }
+    echo "<p>" . MANAGEMENT_SITE_FILE_EXTENSIONS . "<form><textarea id=\"file_extensions\">" . $row['file_extensions'] . "</textarea></form>
         </p>";
 
     echo "<p>" . MANAGEMENT_SITE_INTEGRATION . "<form><textarea id=\"integration_config_path\">" . $row['integration_config_path'] . "</textarea></form>

@@ -62,6 +62,10 @@
 
 	define("MANAGEMENT_SITE_MIME", "The allowed uploaded MIME types for the Media and quota page are ");
 
+	define("MANAGEMENT_SITE_ENABLE_FILE_EXT", "Whether the file extension check should be applied to file uploads ");
+
+	define("MANAGEMENT_SITE_FILE_EXTENSIONS", "The disallowed uploaded file extensions for the Media and quota page are ");
+
 	define("MANAGEMENT_SITE_INTEGRATION", "The integration config path is  ");
 
 	define("MANAGEMENT_SITE_ADMIN_USER", "The admin username is ");
