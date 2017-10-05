@@ -1,6 +1,7 @@
 <?php
 
 require_once("../../../config.php");
+require_once "properties_library.php";
 
 global $xerte_toolkits_site;
 
@@ -9,27 +10,23 @@ require_once($xerte_toolkits_site->tsugi_dir . "admin/admin_util.php");
 
 use \Tsugi\Core\LTIX;
 
-$template_id = $_GET["template_id"];
+$template_id = $_REQUEST["template_id"];
 if(!is_numeric($template_id))
 {
-    _debug("Invalid id");
-    exit();
+    tsugi_display_fail();
 }
 $tsugi_publish = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "on";
-if($tsugi_publish) {
-    $title = htmlspecialchars($_POST["tsugi_title"]);
-    $tsugi_key = htmlspecialchars($_POST["tsugi_key"]);
-    $tsugi_secret = htmlspecialchars($_POST["tsugi_secret"]);
-    $xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "on";
-    if ($xapi_enabled)
-    {
-        $xapi_endpoint = htmlspecialchars($_POST["tsugi_xapi_endpoint"]);
-        $xapi_username = htmlspecialchars($_POST["tsugi_xapi_username"]);
-        $xapi_password = htmlspecialchars($_POST["tsugi_xapi_password"]);
-    }
-}
+$lti_def = new stdClass();
 
-
+$lti_def->secret = (isset($_POST["tsugi_secret"]) ? htmlspecialchars($_POST["tsugi_secret"]) : "");
+$lti_def->key = (isset($_POST["tsugi_key"]) ? htmlspecialchars($_POST["tsugi_key"]) : "");
+$lti_def->title = (isset($_POST["tsugi_title"]) ? htmlspecialchars($_POST["tsugi_title"]) : "");
+$lti_def->xapi_enabled = isset($_POST["tsugi_xapi"]) && $_POST["tsugi_xapi"] == "on";
+$lti_def->published = isset($_POST["tsugi_published"]) && $_POST["tsugi_published"] == "on";
+$lti_def->url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" . $template_id;
+$lti_def->xapi_endpoint = (isset($_POST["tsugi_xapi_endpoint"]) ? htmlspecialchars($_POST["tsugi_xapi_endpoint"]) : "");
+$lti_def->xapi_username = (isset($_POST["tsugi_xapi_username"]) ? htmlspecialchars($_POST["tsugi_xapi_username"]) : "");
+$lti_def->xapi_password = (isset($_POST["tsugi_xapi_password"]) ? htmlspecialchars($_POST["tsugi_xapi_password"]) : "");
 
 $PDOX = LTIX::getConnection();
 $p = $CFG->dbprefix;
@@ -40,18 +37,16 @@ _debug("Detele " . $url);
 
 if($tsugi_publish) {
 
-    $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_key = :KEY and c.key_id = k.key_key and l.context_id=c.context_id and l.path != :URL", array(
-        ':KEY' => $tsugi_key,
-        ':URL' => $url
-))
-    ["count"];
-    if($key_count > 0)
+    $key_count = $PDOX->rowDie("SELECT COUNT(*) as count FROM {$p}lti_key k, {$p}lti_context c, {$p}lti_link l WHERE k.key_sha256 = :KEY and c.key_id = k.key_id and l.context_id=c.context_id and l.path != :URL", array(
+        ':KEY' => lti_sha256($lti_def->key),
+        ':URL' => $lti_def->url));
+    if($key_count['count'] > 0)
     {
-        header('HTTP/1.0 403 Forbidden');
-        //echo '<div class="error">Key already in use, use another key.</div>';
-        alert("Key already in use, use another key.");
-        exit(1);
+        $mesg = "Key already in use, use another key.";
+        tsugi_display($template_id, $lti_def, $mesg);
+        exit;
     }
+
 }
 
 
@@ -59,7 +54,7 @@ if($tsugi_publish) {
 //link -> context -> key
 $sql = "SELECT * FROM {$p}lti_link WHERE path = :PATH";
 $link_row = $PDOX->rowDie($sql, array(
-    ':PATH' => $url
+    ':PATH' => $lti_def->url
 ));
 $sql = "DELETE FROM {$p}lti_link WHERE link_id = :LINK_ID";
 $PDOX->queryDie($sql, array(
@@ -91,9 +86,10 @@ if($context_count == 0)
 if(!$tsugi_publish)
 {
     $p = $xerte_toolkits_site->database_table_prefix;
-    $sql = "UPDATE {$p}templatedetails SET tsugi_published = 0, tsugi_xapi_enabled = 0, tsugi_xapi_endpoint = '', tsugi_xapi_key = '', tsugi_xapi_secret = '' WHERE template_id = ?";
+    $sql = "UPDATE {$p}templatedetails SET tsugi_published = 0  WHERE template_id = ?";
     db_query($sql, array($template_id));
-    exit();
+    $mesg = "Object is no longer published.";
+    tsugi_display($template_id, $lti_def, $mesg);
 }
 
 $url = $xerte_toolkits_site->site_url . "lti2_launch.php?template_id=" .$template_id;
@@ -111,9 +107,9 @@ $sql = "INSERT INTO {$p}lti_key
 
 $param = array(
     ':key_id' => $key_id,
-    ':key_sha256' => lti_sha256($tsugi_key),
-    ':key_key' => $tsugi_key,
-    ':secret' => $tsugi_secret
+    ':key_sha256' => lti_sha256($lti_def->key),
+    ':key_key' => $lti_def->key,
+    ':secret' => $lti_def->secret
 );
 $res = $PDOX->queryDie($sql, $param);
 
@@ -124,7 +120,7 @@ $sql = "INSERT INTO {$p}lti_context
 $PDOX->queryDie($sql, array(
     ':context_id' => $context_id,
     ':context_sha256' => lti_sha256($context_id),
-    ':title' => $title,
+    ':title' => $lti_def->title,
     ':key_id' => $key_id));
 $sql = "INSERT INTO {$p}lti_link
             ( link_id, link_sha256, title, context_id, path, created_at, updated_at ) VALUES
@@ -133,22 +129,25 @@ $sql = "INSERT INTO {$p}lti_link
 $params = array(
     ':link_id' => $link_id,
     ':link_sha256' => lti_sha256($link_id),
-    ':title' => $title,
+    ':title' => $lti_def->title,
     ':context_id' => $context_id,
-    ':path' => $url
+    ':path' => $lti_def->url
 );
 $link = $PDOX->queryDie($sql, $params);
 $sql = "UPDATE {$p}templatedetails SET tsugi_published = ?, tsugi_xapi_enabled = ?, tsugi_xapi_endpoint = ?, tsugi_xapi_key = ?, tsugi_xapi_secret = ? WHERE template_id = ?";
 db_query($sql,
     array(
-        $tsugi_publish ? "1" : "0",
-        $xapi_enabled ? "1" : "0",
-        $xapi_enabled ? $xapi_endpoint : "",
-        $xapi_enabled ? $xapi_username : "",
-        $xapi_enabled ? $xapi_password : "",
+        $lti_def->published ? "1" : "0",
+        $lti_def->xapi_enabled ? "1" : "0",
+        $lti_def->xapi_enabled ? $lti_def->xapi_endpoint : "",
+        $lti_def->xapi_enabled ? $lti_def->xapi_username : "",
+        $lti_def->xapi_enabled ? $lti_def->xapi_password : "",
         $template_id
     )
 );
+
+tsugi_display($template_id, $lti_def, "Updated.");
+
 _debug("Done");
 
 

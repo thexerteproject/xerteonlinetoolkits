@@ -401,6 +401,7 @@ function XTInitialise()
         {
             //alert("Failed LRS setup. Error: " + ex);
         }
+        TinCan.enableDebug();
     }
     if(surf_course != undefined && surf_recipe != undefined)
     {
@@ -794,7 +795,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
     }
 
 }
-
+/*
     function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
         state.setPageScore(page_nr, score);
         this.pageEnd = new Date();
@@ -842,7 +843,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
             SaveStatement(statement);
         }
     }
-
+*/
     function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback) {
         state.enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, feedback);
         this.enterInteractionStamp = new Date();
@@ -1076,7 +1077,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctanswer, fee
         }
     }
 
-function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
+function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callback)
 {
     var stringObjects = [];
     //Get ID from the question
@@ -1109,12 +1110,13 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName)
                 }
                 if (sr.more !== null) {
                 }
+                callback(stringObjects);
             }
         }
     );
     //TODO: Fix so it waits on a response
-    debugger;
-    return stringObjects;
+    //debugger;
+    //return stringObjects;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {

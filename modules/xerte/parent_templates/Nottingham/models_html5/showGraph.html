@@ -49,8 +49,8 @@
 
         }
 
-        this.createDiagram = function() {
-            var importData = XTGetInteractionScore(null, null, null, null, x_currentPageXML.getAttribute("import"));
+        this.createDiagram = function(data) {
+            var importData = data;
             var numSubmits = importData.length;
             var classvalues = [];
             var objlabel = null;
@@ -115,8 +115,10 @@
         this.init = function() {
             var $pageContents = $("#pageContents");
             //$pageContents.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-
-            showGraph.createDiagram();
+            debugger
+            XTGetInteractionScore(null, null, null, null, x_currentPageXML.getAttribute("import"), function(data) {
+                showGraph.createDiagram(data);
+            });
 
 
             // call this function in every model once everything's loaded

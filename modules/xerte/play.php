@@ -40,7 +40,7 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     _load_language_file("/modules/xerte/preview.inc");
 
     $version = getVersion();
-    $string_for_flash = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
+    $string_for_flash = $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $row['template_id'] . "-" . $row['username'] . "-" . $row['template_name'] . "/";
 
     if (strlen($datafile) > 0)
     {
@@ -64,8 +64,8 @@ function show_template_page($row, $datafile="", $tsugi_enabled = false)
     }
     $string_for_flash_xml = $xmlfile . "?time=" . time();
 
-    $flash_js_dir = "modules/" . $row['template_framework'] . "/";
-    $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
+    $flash_js_dir = $xerte_toolkits_site->site_url . "modules/" . $row['template_framework'] . "/";
+    $template_path = $xerte_toolkits_site->site_url . "modules/" . $row['template_framework'] . "/parent_templates/" . $row['template_name'] . "/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
