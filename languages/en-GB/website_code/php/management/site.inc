@@ -58,13 +58,13 @@
 
 	define("MANAGEMENT_SITE_SESSION_NAME", "The PHP session name is ");
 
-	define("MANAGEMENT_SITE_ENABLE_MIME", "Whether the MIME file type check should be applied to file uploads ");
+	define("MANAGEMENT_SITE_ENABLE_MIME", "Whether the file MIME type check should be enabled for imported files ");
 
-	define("MANAGEMENT_SITE_MIME", "The allowed uploaded MIME types for the Media and quota page are ");
+	define("MANAGEMENT_SITE_MIME", "The allowed MIME types for imported files are ");
 
-	define("MANAGEMENT_SITE_ENABLE_FILE_EXT", "Whether the file extension check should be applied to file uploads ");
+	define("MANAGEMENT_SITE_ENABLE_FILE_EXT", "Whether the file extension check should be enabled for imported files ");
 
-	define("MANAGEMENT_SITE_FILE_EXTENSIONS", "The disallowed uploaded file extensions for the Media and quota page are ");
+	define("MANAGEMENT_SITE_FILE_EXTENSIONS", "The blacklisted file extensions for imported files are ");
 
 	define("MANAGEMENT_SITE_INTEGRATION", "The integration config path is  ");
 
