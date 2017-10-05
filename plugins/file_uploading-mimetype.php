@@ -31,11 +31,11 @@ function filter_by_mimetype() {
     $args = func_get_args();
     $files = array();
 
-    $last_file_check_error = null;
-
     if(!Xerte_Validate_FileMimeType::canRun() || !is_array($args[0])) {
 	return $args[0];
     }
+
+    $last_file_check_error = null;
 
     /*
      * The file names may be supplied in two slightly different formats.
