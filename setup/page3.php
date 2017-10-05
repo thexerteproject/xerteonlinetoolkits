@@ -66,10 +66,17 @@ echo "<p>The integration config path (for use if integrating with other systems 
 
 echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
 
-echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";
+echo "<p>The admin password is <textarea name=\"admin_password\">" . htmlspecialchars($_POST['password']) . "</textarea></p>";
 
-echo "<p>The allowed upload types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,application/msword,application/x-shockwave-flash,image/jpeg,image/pjpeg,image/png,image/gif,image/x-png,audio/mpeg,application/vnd.ms-excel,application/pdf,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation</textarea>
-    </p>";
+if (function_exists('mime_content_type')) {
+    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\">false</textarea></p>";
+}
+else {
+    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></p>";
+}
+
+echo "<p>The allowed upload MIME types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
+    </p>";	
 
 if (function_exists('pathinfo')) {
     echo "<p>Whether the file extension check should be applied to file uploads<textarea name=\"enable_file_ext_check\">false</textarea></p>";
