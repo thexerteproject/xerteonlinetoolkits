@@ -532,7 +532,7 @@ function upgrade_11()
     // Create, and initialize, the field for enabling MIME upload checks.
 
     if (! _db_field_exists('sitedetails', 'enable_mime_check')) {
-        $error1 = _db_add_field('sitedetails', 'enable_mime_check', 'char(255)', 'NULL', 'apache');
+        $error1 = _db_add_field('sitedetails', 'enable_mime_check', 'char(255)', '', 'apache');
 
         if ($error1) {
             $table = table_by_key('sitedetails');
@@ -556,7 +556,7 @@ function upgrade_12()
     // Create the field for enabling file extension file upload checks.
 
     if (! _db_field_exists('sitedetails', 'enable_file_ext_check')) {
-        $error1 = _db_add_field('sitedetails', 'enable_file_ext_check', 'char(255)', 'NULL', 'mimetypes');
+        $error1 = _db_add_field('sitedetails', 'enable_file_ext_check', 'char(255)', '', 'mimetypes');
 
         if ($error1) {
             $table = table_by_key('sitedetails');
