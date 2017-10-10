@@ -210,7 +210,7 @@
 				}
 				else
 				{
-                    if(x_currentPageXML.getAttribute("interactivity") == "radio-buttons") {
+                    if($thisQ.getAttribute("interactivity") == "radio-buttons") {
                         var $optionHolder = $("#sliderHolder");
                         $optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
 
@@ -273,13 +273,14 @@
                             name = $thisQ.getAttribute("name");
                         }
                     }
-                    else if(x_currentPageXML.getAttribute("interactivity") == "slider")
+                    else if($thisQ.getAttribute("interactivity") == "slider")
 					{
-                        var $sliderHolder = $("#sliderHolder"),
-                            $labelHolder = $("#labelHolder"),
+                        var $sliderHolder = $("#sliderHolder");
+						$sliderHolder.html('<div id="labelHolder"></div><div id="rangeHolder"></div>');
+						var $labelHolder = $("#labelHolder"),
                             $rangeHolder = $("#rangeHolder");
 
-                        $labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
+						$labelHolder.html('<a href="#" onclick="" class="optionTxt"></a> ');
                         var $optionTxt = $labelHolder.find(".optionTxt"),
                             $checkBtn = $("#checkBtn"),
                             correctOptions = [],
@@ -407,9 +408,9 @@
 				l_answer = [],
 				currentQuestionValue = 0;
 
-			if (x_currentPageXML.getAttribute("interactivity") == "slider")
+			if (currentQ.getAttribute("interactivity") == "slider")
                 selected = $('#slider1')[0].valueAsNumber;
-			else if (x_currentPageXML.getAttribute("interactivity") == "radio-buttons")
+			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
                 selected = $("#sliderHolder input:checked")[0].score;
             for (var i = 0; i < options.length; i++)
            	{
@@ -550,7 +551,10 @@
 				return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
 			}
 			var ctx = $("#diagram");
-			var bgColourIn = x_currentPageXML.getAttribute("colour");
+			var bgColourIn = "0x000000";
+			if (x_currentPageXML.getAttribute("colour") != null) {
+				bgColourIn = x_currentPageXML.getAttribute("colour");
+			}
 			var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
 			var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 			var ctx = $("#diagram");

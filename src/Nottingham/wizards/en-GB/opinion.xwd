@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" interactivity="slider" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
@@ -16,7 +16,6 @@
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
-    <interactivity label="Interactivity" options="Radio Buttons, Slider" type="ComboBox" data="radio-buttons,slider" defaultValue="Slider" width="120"/>
     <instructions label="Instructions" type="textArea"  height="120"/>
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120"/>
@@ -45,7 +44,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
     </newNodes>
   </opinionClass>
 
@@ -57,6 +56,7 @@
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox" />  
     <sound label="Sound" type="Media" optional="true"/>
+    <interactivity label="Interactivity" options="Radio Buttons, Slider" type="ComboBox" data="radio-buttons,slider" defaultValue="Slider" width="120"/>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="A - Tree/Tracking label" text="Here is an option" />]]></opinionOption>

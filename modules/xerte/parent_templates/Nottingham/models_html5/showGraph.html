@@ -88,7 +88,10 @@
                 return "rgba(" + r + "," + g + "," + b + "," + opa + ")";
             }
             var ctx = $("#diagram");
-            var bgColourIn = x_currentPageXML.getAttribute("colour");
+            var bgColourIn = "0x000000";
+            if (x_currentPageXML.getAttribute("colour") != null) {
+                bgColourIn = x_currentPageXML.getAttribute("colour");
+            }
             var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
             var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
             var myRadarChart = new Chart(ctx, {

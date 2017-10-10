@@ -131,7 +131,7 @@
 	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
 	  >Enter text for the page here</modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="Provide instructions here" text="Provide initial text here" prompt="Provide a prompt here" answer="Provide a model answer here"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback"
-	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" interactivity="slider" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
+	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="Enter Page Text" url="Select Image" tip1="Enter a Description for Accessibility" url2="Select Image" tip2="Enter a Description for Accessibility" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><newWindow><![CDATA[<newWindow name="Enter Page Title" text="Enter text for the page" url="Enter a URL to launch" descrip="Enter link text" previewImage="Select a preview image" tip="Enter a Description for Accessibility" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" numQuestions="*" align="left" panelWidth="Medium" instructions="Provide instructions here" showfeedback="false" feedback="Provide feedback here"
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit" 
@@ -2243,7 +2243,6 @@
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <align label="Align Text" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
-    <interactivity label="Interactivity" options="Radio Buttons, Slider" type="ComboBox" data="radio-buttons,slider" defaultValue="Slider" width="120"/>
     <instructions label="Instructions" type="textArea" height="120"/>
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true"/>
     <feedback label="Feedback" type="textArea" height="120"/>
@@ -2282,7 +2281,7 @@
     <name label="Label" type="TextInput" mandatory="true" defaultValue="C - Tree/Tracking label" wysiwyg="false"/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Q - Tree/Tracking label" prompt="Here is a prompt" scale="false" type="Single Answer" classWeight="1" interactivity="slider" />]]></opinionQuestion>
     </newNodes>
   </opinionClass><opinionQuestion menuItem="Question">
     <prompt label="Question" type="TextArea" height="100"/>
@@ -2292,6 +2291,7 @@
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox"/>  
     <sound label="Sound" type="Media" optional="true"/>
+    <interactivity label="Interactivity" options="Radio Buttons, Slider" type="ComboBox" data="radio-buttons,slider" defaultValue="Slider" width="120"/>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="A - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
