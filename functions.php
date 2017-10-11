@@ -279,7 +279,7 @@ function true_or_false($var)
 
     $var = trim($var);
 
-    if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0) {
+    if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0 || strcasecmp($var, '1') === 0) {
         return true;
     }
 
