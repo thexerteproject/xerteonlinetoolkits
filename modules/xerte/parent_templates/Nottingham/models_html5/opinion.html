@@ -75,7 +75,16 @@
 					}
 				}
 			}
-			
+			var width = $("#mainPanel").width();
+			var height = $("#mainPanel").height();
+			if(width > height) {
+				$("#diagram").width(height);
+				$("#diagram").height(height);
+			}
+			else {
+				$("#diagram").width(width);
+				$("#diagram").height(width);
+			}
 			$("#qTxt").width($panel.width());
 		};
 		
@@ -463,6 +472,7 @@
             // Last question answered - show results
             if (x_currentPageXML.getAttribute("diagram") == "true"){
                 opinion.createDiagram();
+				this.sizeChanged();
 			}
 
             var $pageContents = $("#pageContents");
