@@ -69,14 +69,30 @@ echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['acc
 echo "<p>The admin password is <textarea name=\"admin_password\">" . htmlspecialchars($_POST['password']) . "</textarea></p>";
 
 if (function_exists('mime_content_type')) {
-    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\">false</textarea></p>";
+    echo "<p>Whether the file MIME type check should be enabled for imported files<textarea name=\"enable_mime_check\">false</textarea></p>";
 }
 else {
-    echo "<p>Whether the MIME file type check should be applied to file uploads<textarea name=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></p>";
+    echo "<p>Whether the file MIME type check should be enabled for imported files<textarea name=\"enable_mime_check\" disabled=\"true\">False. The MIME check requires the PHP 'mime_content_type' function.</textarea></p>";
 }
 
-echo "<p>The allowed upload MIME types for the Media and quota page are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
+echo "<p>The allowed MIME types for imported files are <textarea name=\"mimetypes\">text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg</textarea>
     </p>";	
+
+if (function_exists('pathinfo')) {
+    echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\">false</textarea></p>";
+}
+else {
+    echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></p>";
+}
+
+echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
+    </p>";
+
+echo "<p>Whether the antivirus check should be enabled for imported files<textarea name=\"enable_clamav_check\">false</textarea></p>";
+
+echo "<p>The full pathname to the antivirus command (for performance using a daemon process is recommended)<textarea name=\"clamav_cmd\">/usr/bin/clamscan</textarea></p>";
+
+echo "<p>A space-separated list of options to be used with the above command<textarea name=\"clamav_opts\">--no-summary</textarea></p>";
 
 echo "<br><br><h3 style=\"clear:left\">RSS Feed and Syndication settings - formatting for the RSS feeds and for the syndication</h3>";
 
