@@ -571,6 +571,12 @@ function upgrade_14()
 
         if ($error1 && ! _db_field_exists('sitedetails', 'clamav_cmd')) {
             $error2 = _db_add_field('sitedetails', 'clamav_cmd', 'char(255)', '', 'enable_clamav_check');
+
+            if ($error2) {
+                $table = table_by_key('sitedetails');
+                $sql = "UPDATE $table SET clamav_cmd = ?";
+                $error2 = db_query($sql, array('/usr/bin/clamscan'));
+            }
         }
         else {
             $error2 = true;
