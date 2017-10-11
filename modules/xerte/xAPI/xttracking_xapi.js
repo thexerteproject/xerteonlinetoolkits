@@ -1097,12 +1097,15 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callbac
                 )
             },
             callback: function(err, sr) {
-
+                var lastSubmit = null;
                 for (x = 0; x < sr.statements.length; x++)
                 {
+                    if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
+                        lastSubmit = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
+                    }
                     stringObjects[x] = JSON.parse(sr.statements[x].result.extensions["http://xerte.org.uk/xapi/JSONGraph"]);
                 }
-
+                stringObjects.push(lastSubmit);
                 if (err !== null) {
                     console.log("Failed to query statements: " + err);
                     // TODO: do something with error, didn't get statements
@@ -1114,9 +1117,6 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, idName, callbac
             }
         }
     );
-    //TODO: Fix so it waits on a response
-    //debugger;
-    //return stringObjects;
 }
 function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
 {

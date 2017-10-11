@@ -55,6 +55,7 @@
             var classvalues = [];
             var objlabel = null;
             var classnames = [];
+            var lastSubmit = importData.pop();
             importData.forEach(function(obj)
             {
                 if (objlabel == null) {
@@ -94,31 +95,62 @@
             }
             var bgColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 0.5);
             var lnColour = hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
-            var myRadarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: classnames,
-                    datasets: [{
-                        label: objlabel,
-                        data: classvalues,
-                        backgroundColor: bgColour,
-                        borderColor: lnColour
-                    }]
-                },
-                options: {
-                    scale: {
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 100
+
+            if (lastSubmit == null) {
+                var myRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: classnames,
+                        datasets: [{
+                            label: objlabel,
+                            data: classvalues,
+                            backgroundColor: bgColour,
+                            borderColor: lnColour
+                        }]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            else {
+                var myRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: classnames,
+                        datasets: [{
+                            label: objlabel,
+                            data: classvalues,
+                            backgroundColor: bgColour,
+                            borderColor: lnColour
+                        },
+                            {
+                                label: lastSubmit.label,
+                                data: lastSubmit.classvalues,
+                                backgroundColor: bgColour,
+                                borderColor: lnColour
+                            }]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+
         }
         this.init = function() {
             var $pageContents = $("#pageContents");
-            //$pageContents.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-            debugger
             XTGetInteractionScore(null, null, null, null, x_currentPageXML.getAttribute("import"), function(data) {
                 showGraph.createDiagram(data);
             });
