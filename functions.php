@@ -277,7 +277,7 @@ function true_or_false($var)
 {
     // Return logical true for various values of a variable, anything else is false.
 
-    if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0) {
+    if ($var === true || $var === 1 || strcasecmp($var, 'true') === 0 || strcasecmp($var, 'yes') === 0 || strcasecmp($var, '1') === 0) {
         return true;
     }
 
