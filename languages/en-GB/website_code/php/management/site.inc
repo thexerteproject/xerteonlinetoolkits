@@ -58,9 +58,19 @@
 
 	define("MANAGEMENT_SITE_SESSION_NAME", "The PHP session name is ");
 
-	define("MANAGEMENT_SITE_ENABLE_MIME", "Whether the MIME file type check should be applied to file uploads ");
+	define("MANAGEMENT_SITE_ENABLE_MIME", "Whether the file MIME type check should be enabled for imported files ");
 
-	define("MANAGEMENT_SITE_MIME", "The allowed uploaded MIME types for the Media and quota page are ");
+	define("MANAGEMENT_SITE_MIME", "The allowed MIME types for imported files are ");
+
+	define("MANAGEMENT_SITE_ENABLE_FILE_EXT", "Whether the file extension check should be enabled for imported files ");
+
+	define("MANAGEMENT_SITE_FILE_EXTENSIONS", "The blacklisted file extensions for imported files are ");
+
+	define("MANAGEMENT_SITE_ENABLE_CLAMAV_CHK", "Whether the antivirus check should be enabled for imported files");
+
+	define("MANAGEMENT_SITE_CLAMAV_CMD", "The full pathname to the antivirus command (for performance using a daemon process is recommended)");
+
+	define("MANAGEMENT_SITE_CLAMAV_OPTS", "A space-separated list of options to be used with the above command");
 
 	define("MANAGEMENT_SITE_INTEGRATION", "The integration config path is  ");
 

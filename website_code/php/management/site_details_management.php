@@ -31,14 +31,30 @@ if(is_user_admin()) {
 
     $site_texts = $_POST['site_text'] . "~~~" . $_POST['tutorial_text'];
 
+
+    /* Ensure that the various check values are valid before saving them. */
+
     $enable_mime_check = true_or_false($_POST['enable_mime_check']) ? 'true' : 'false';
+    $enable_file_ext_check = true_or_false($_POST['enable_file_ext_check']) ? 'true' : 'false';
+    $enable_clamav_check = true_or_false($_POST['enable_clamav_check']) ? 'true' : 'false';
+
+    $clamav_cmd = trim($_POST['clamav_cmd']);
+    $clamav_cmd = preg_replace('/[;&<>|]/', '', $clamav_cmd);
+    $clam_cmd = strlen($clamav_cmd) > 0 ? realpath($clamav_cmd) : '';
+    $clamav_cmd = ($clam_cmd === false) ? $clamav_cmd : $clam_cmd;
+
+    $clamav_opts = trim($_POST['clamav_opts']);
+    $clamav_opts = preg_replace('/[^a-zA-Z0-9\s_-]/', '', $clamav_opts);
+    $clamav_opts = preg_replace('/(^|\s)[^-]\S*/', '', $clamav_opts);
+
 
     $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
-        site_text=? ,news_text=? ,pod_one=? , pod_two= ? ,copyright=? ,demonstration_page=? ,form_string= ? ,peer_form_string=?,feedback_list=?,
-        rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?, 
-        error_log_message=?, max_error_size=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=?, site_email_account=?,
-        headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?,import_path=? ,
-        apache=?, enable_mime_check=?, mimetypes=?, LDAP_preference=? ,LDAP_filter=? , integration_config_path=?, admin_username=? ,admin_password=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=? ";
+        site_text=?, news_text=?, pod_one=?,  pod_two=?, copyright=?, demonstration_page=?, form_string=?, peer_form_string=?, feedback_list=?,
+        rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?,
+        error_log_message=?, max_error_size=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=?,
+        site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=? ,
+        apache=?, enable_mime_check=?, mimetypes=?, enable_file_ext_check=?, file_extensions=?, enable_clamav_check=?, clamav_cmd=?, clamav_opts=?, LDAP_preference=?, LDAP_filter=?, integration_config_path=?,
+        admin_username=?, admin_password=?, LRS_Endpoint=?, LRS_Key=?, LRS_Secret=?";
 
     $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
         base64_encode(stripcslashes($_POST['peer_form_string'])), $_POST['feedback_list'], $_POST['rss_title'], $_POST['module_path'], $_POST['website_code_path'], $_POST['users_file_area_short'],
@@ -46,8 +62,8 @@ if(is_user_admin()) {
         $_POST['max_error_size'], $_POST['authentication_method'], $_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['bind_dn'], $_POST['flash_save_path'], $_POST['flash_upload_path'],
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
         $_POST['site_session_name'], $_POST['synd_publisher'], $_POST['synd_rights'], $_POST['synd_license'], str_replace("\\", "/", $_POST['import_path']), $_POST['apache'],
-        $enable_mime_check, $_POST['mimetypes'], $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'],
-        $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret']);
+        $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $enable_clamav_check, $clamav_cmd, $clamav_opts,
+        $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['admin_password'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret']);
 
     $res = db_query($query, $data);
 
@@ -78,7 +94,15 @@ if(is_user_admin()) {
         $msg = "Site changes saved by user from " . $_SERVER['REMOTE_ADDR'];
         receive_message("", "SYSTEM", "MGMT", "Changes saved", $msg);
 
-        echo MANAGEMENT_SITE_CHANGES_SUCCESS;
+        /* Clear the file cache because of the file check below. */
+        clearstatcache();
+
+        if ($enable_clamav_check === 'true' && (! is_file($clamav_cmd) || ! is_executable($clamav_cmd))) {
+            echo MANAGEMENT_SITE_CHANGES_OK_NOT_AV;
+        }
+        else {
+            echo MANAGEMENT_SITE_CHANGES_SUCCESS;
+        }
 
     }else{
 
