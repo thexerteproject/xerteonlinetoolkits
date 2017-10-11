@@ -129,6 +129,7 @@ $xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check'
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
 $xerte_toolkits_site->enable_file_ext_check = true_or_false($row['enable_file_ext_check']);
 $xerte_toolkits_site->file_extensions = explode(",", strtolower($row['file_extensions']));
+$xerte_toolkits_site->enable_clamav_check = true_or_false($row['enable_clamav_check']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
 $xerte_toolkits_site->news_text = base64_decode($row['news_text']);
