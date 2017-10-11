@@ -138,7 +138,7 @@ if(is_user_admin()){
         echo "<p>" . MANAGEMENT_SITE_ENABLE_CLAMAV_CHK . "<form><textarea id=\"enable_clamav_check\">" . $row['enable_clamav_check'] . "</textarea></form>
             </p>";
     }
-    echo "<p>" . MANAGEMENT_SITE_CLAMAV_CMD . "<form><textarea id=\"clamav_cmd\">" . $row['clamav_cmd'] . "</textarea></form>
+    echo "<p>" . MANAGEMENT_SITE_CLAMAV_CMD . "<form><textarea id=\"clamav_cmd\">" . str_replace('\\', '/', $row['clamav_cmd']) . "</textarea></form>
         </p>";
     echo "<p>" . MANAGEMENT_SITE_CLAMAV_OPTS . "<form><textarea id=\"clamav_opts\">" . $row['clamav_opts'] . "</textarea></form>
         </p>";
