@@ -109,7 +109,7 @@
             }
 
             $("#sliderHolder").show();
-			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
+			$("#checkBtn, #restartBtn").button("disable");
 			
 			this.currentQuestion = 0;
 			this.questions = []; // array of questions to use (index)
@@ -256,7 +256,6 @@
                                 })
                                 .change(function () {
                                     $checkBtn.button("enable");
-                                    $("#nextBtn").button("disable");
                                 });
                             $thisOption[0].score = index;
                             $thisOptionTxt
@@ -306,7 +305,6 @@
                             }
 
                             $checkBtn.button("enable");
-                            $("#nextBtn").button("disable");
 
                             $thisOptionTxt
                                 .attr("for", "option" + index)
@@ -411,6 +409,7 @@
 			if (currentQ.getAttribute("interactivity") == "slider")
                 selected = $('#slider1')[0].valueAsNumber;
 			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
+			    if ($("#sliderHolder input:checked")[0] != null)
                 selected = $("#sliderHolder input:checked")[0].score;
             for (var i = 0; i < options.length; i++)
            	{
@@ -487,7 +486,8 @@
             $("#questionAudio").empty();
 
             $("#sliderHolder").hide();
-			$("#checkBtn").hide();
+            $("#checkBtn").button("disable");
+			$("#restartBtn").button("disable");
             $("#qTxt").html("");
 
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("export"));
@@ -665,6 +665,11 @@
 			{
 				submitBtnText = "Submit";
 			}
+
+            var restartBtnText = x_currentPageXML.getAttribute("restartBtnText");
+            if (restartBtnText == undefined) {
+                restartBtnText = "Restart";
+            }
 			
 			var onCompletionText = x_currentPageXML.getAttribute("onCompletion");
 			if (onCompletionText == undefined)
@@ -683,6 +688,15 @@
 				})
 			.click(function() {
 				    opinion.trackQuestion();
+                });
+
+
+            $("#restartBtn")
+                .button({
+                    label: restartBtnText
+                })
+                .click(function() {
+                    opinion.startQuestions();
                 });
 
 
@@ -716,9 +730,10 @@
 						<div id="labelHolder"></div>
 						<div id="rangeHolder"></div>
 					</div>
-					
+
 					<div id="buttonHolder">
 						<button id="checkBtn"></button>
+						<button id="restartBtn"></button>
 					</div>
 					
 					<div id="feedback" aria-live="polite"></div>

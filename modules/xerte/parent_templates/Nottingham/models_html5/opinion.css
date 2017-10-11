@@ -1,5 +1,10 @@
 /* opinion.html */
 
+    #sliderHolder {
+    margin-top:	15px;
+    margin-bottom:	15px;
+    }
+
     #sliderHolder #labelHolder
     {
         text-align: justify;
@@ -54,4 +59,16 @@
     #sliderHolder #rangeHolder output
     {
         position: relative;
+    }
+
+    #sliderHolder .optionGroup
+    {
+    padding-top:	5px !important ;
+    padding-bottom:	5px !important ;
+    }
+
+    #buttonHolder
+    {
+    float:	right;
+    margin-bottom:	10px;
     }
