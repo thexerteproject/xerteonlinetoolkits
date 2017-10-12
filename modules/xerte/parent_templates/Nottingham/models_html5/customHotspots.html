@@ -128,7 +128,6 @@
 				highlightStyle.lineW	= x_currentPageXML.getAttribute("lineWidth");
 				highlightStyle.stroke	= "#" + colour;
 				
-				
 				// draw everything on canvas - predominately John Smith's code
 				// Setup queue
 				jobQueue = [];
@@ -387,8 +386,8 @@
 					var $hsHolder = $("#hsHolder");
 					
 					// get xy pos of click relative to position of canvas
-					var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
-						xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
+					var //offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
+						xyCoords = [e.offsetX, e.offsetY],
 						hit = false,
 						group;
 					
@@ -617,19 +616,16 @@
 						accept:	$("#labelHolder .label"),
 						drop:	function(e, ui) {
 							// helper pin has been dropped on mainCanvas
-							var $hsHolder = $("#hsHolder");
-							
-							// get xy pos of drop relative to position of canvas
-							var offset = [$hsHolder.position().left, $hsHolder.position().top + parseInt($x_pageHolder.css("margin-top"))],
-								xyCoords = [e.pageX - offset[0], e.pageY - offset[1]],
-								$thisHSCanvas = ui.draggable.data("correct");
+							var $thisHSCanvas = ui.draggable.data("correct");
 							
 							for (var i=0; i<$thisHSCanvas.length; i++) {
+								var xyCoords = [e.pageX - $thisHSCanvas[i].offset().left, e.pageY - $thisHSCanvas[i].offset().top];
+								
 								// get pixel data from the whole canvas - and then from pixel dropped on
 								var pix = $thisHSCanvas[i][0].getContext("2d").getImageData(0, 0, $thisHSCanvas[i].width(), $thisHSCanvas[i].height()),
 									dataPos = ((xyCoords[1] * $thisHSCanvas[i].width()) + xyCoords[0]) * 4;
 								
-								if (pix.data[dataPos+3] > 0) { // is it transparent?
+								if (pix.data[Math.round(dataPos)+3] > 0) { // is it transparent?
 									customHotspots.dropLabel($thisHSCanvas[i], ui.draggable, ui.helper);
 								}
 							}
