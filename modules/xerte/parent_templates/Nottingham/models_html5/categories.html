@@ -79,7 +79,7 @@
             });
 			
 			$("#scoreTxt").html(l_correct);
-			$("#totalTxt").html(l_total);
+			$("#totalTxt").html(this.totaloptions);
 			$("#feedback").show();
 			
             XTExitInteraction(x_currentPage, 0, (l_correct == this.totaloptions), l_options, l_answers, l_feedback);
@@ -118,15 +118,14 @@
 			
 			var $feedback = $("#feedback");
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
-				$feedback
-					.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-					.hide();
+				$feedback.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 			}
 			if (x_currentPageXML.getAttribute("feedbackScore") != undefined && x_currentPageXML.getAttribute("feedbackScore") != "") {
-				$feedback.append('<div>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</div>');
+				$feedback.append('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedbackScore").replace("{i}", '<span id="scoreTxt"></span>').replace("{n}", '<span id="totalTxt"></span>')) + '</p>');
 			} else if ($feedback.html().length == 0) {
 				$feedback.remove();
 			}
+			$feedback.hide();
 			
 			// buttonWidth attribute not used as button will be sized automatically
 			var buttonLabel = x_currentPageXML.getAttribute("buttonLabel");
