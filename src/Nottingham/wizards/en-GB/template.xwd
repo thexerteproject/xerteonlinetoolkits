@@ -2291,7 +2291,7 @@
     <tip label="Image Description" type="TextInput" optional="true" defaultValue="Enter a Description for Accessibility"/>
     <scale label="Reverse scale" type="CheckBox"/>  
     <sound label="Sound" type="Media" optional="true"/>
-    <interactivity label="Interactivity" options="Radio Buttons, Slider" type="ComboBox" data="radio-buttons,slider" defaultValue="Slider" width="120"/>
+    <interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
 		
     <newNodes>
       <opinionOption><![CDATA[<opinionOption name="A - Tree/Tracking label" text="Here is an option" />]]></opinionOption>
@@ -2299,6 +2299,7 @@
 
   </opinionQuestion><opinionOption menuItem="Answer" icon="icBullet">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="A - Tree/Tracking" wysiwyg="false"/>
+    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwig="true"/>
   </opinionOption><orient menu="Text" menuItem="Orientation" hint="A page for orienting users before they begin working with the content." icon="icPageWhiteQuestion" remove="true" thumb="thumbs/orient.jpg">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>

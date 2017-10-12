@@ -72,3 +72,8 @@
     float:	right;
     margin-bottom:	10px;
     }
+
+    .optionTxt p
+    {
+        display: inline;
+    }

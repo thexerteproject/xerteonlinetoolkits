@@ -211,7 +211,7 @@
 
 				$("#feedback").html("");
 
-
+				debugger;
 				
 				if ($($thisQ).children().length == 0)
 				{
@@ -281,7 +281,7 @@
                             name = $thisQ.getAttribute("name");
                         }
                     }
-                    else if($thisQ.getAttribute("interactivity") == "slider")
+                    else if($thisQ.getAttribute("interactivity") == null || $thisQ.getAttribute("interactivity") == "slider")
 					{
                         var $sliderHolder = $("#sliderHolder");
 						$sliderHolder.html('<div id="labelHolder"></div><div id="rangeHolder"></div>');
@@ -317,7 +317,7 @@
 
                             $thisOptionTxt
                                 .attr("for", "option" + index)
-                                .html(x_addLineBreaks(value.getAttribute("name")));
+                                .html(x_addLineBreaks(value.getAttribute("text")));
 
                             $thisOptionTxt[0].onclick = function()
                             {
@@ -329,7 +329,7 @@
                             };
 
                             correctOptions.push(index + 1 + "");
-                            correctAnswer.push(value.getAttribute("name"));
+                            correctAnswer.push(value.getAttribute("text"));
                         });
 
                         var labelsHidden = false;
@@ -415,7 +415,7 @@
 				l_answer = [],
 				currentQuestionValue = 0;
 
-			if (currentQ.getAttribute("interactivity") == "slider")
+			if (currentQ.getAttribute("interactivity") == null || currentQ.getAttribute("interactivity") == "slider")
                 selected = $('#slider1')[0].valueAsNumber;
 			else if (currentQ.getAttribute("interactivity") == "radio-buttons")
 			    if ($("#sliderHolder input:checked")[0] != null)
